@@ -57,7 +57,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -77,6 +77,23 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/action-group:<version>'
+
+// Required parameters
+param groupShortName = 'agiagmin001'
+param name = 'iagmin001'
+// Non-required parameters
+param location = 'global'
 ```
 
 </details>
@@ -114,11 +131,13 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     location: 'global'
     roleAssignments: [
       {
+        name: 'fc3ee4d9-d0c0-42c2-962f-082cf8d78882'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -150,7 +169,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -185,11 +204,13 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "fc3ee4d9-d0c0-42c2-962f-082cf8d78882",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -218,6 +239,66 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/action-group:<version>'
+
+// Required parameters
+param groupShortName = 'agiagmax001'
+param name = 'iagmax001'
+// Non-required parameters
+param emailReceivers = [
+  {
+    emailAddress: 'test.user@testcompany.com'
+    name: 'TestUser_-EmailAction-'
+    useCommonAlertSchema: true
+  }
+  {
+    emailAddress: 'test.user2@testcompany.com'
+    name: 'TestUser2'
+    useCommonAlertSchema: true
+  }
+]
+param location = 'global'
+param roleAssignments = [
+  {
+    name: 'fc3ee4d9-d0c0-42c2-962f-082cf8d78882'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param smsReceivers = [
+  {
+    countryCode: '1'
+    name: 'TestUser_-SMSAction-'
+    phoneNumber: '2345678901'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -256,7 +337,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -288,6 +369,27 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/insights/action-group:<version>'
+
+// Required parameters
+param groupShortName = 'agiagwaf001'
+param name = 'iagwaf001'
+// Non-required parameters
+param location = 'global'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -309,6 +411,7 @@ module actionGroup 'br/public:avm/res/insights/action-group:<version>' = {
 | [`emailReceivers`](#parameter-emailreceivers) | array | The list of email receivers that are part of this action group. |
 | [`enabled`](#parameter-enabled) | bool | Indicates whether this action group is enabled. If an action group is not enabled, then none of its receivers will receive communications. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`eventHubReceivers`](#parameter-eventhubreceivers) | array | The list of Event Hub receivers that are part of this action group. |
 | [`itsmReceivers`](#parameter-itsmreceivers) | array | The list of ITSM receivers that are part of this action group. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`logicAppReceivers`](#parameter-logicappreceivers) | array | The list of logic app receivers that are part of this action group. |
@@ -383,6 +486,13 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `eventHubReceivers`
+
+The list of Event Hub receivers that are part of this action group.
+
+- Required: No
+- Type: array
+
 ### Parameter: `itsmReceivers`
 
 The list of ITSM receivers that are part of this action group.
@@ -411,6 +521,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -427,6 +543,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -477,6 +594,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -522,7 +646,6 @@ The list of webhook receivers that are part of this action group.
 - Required: No
 - Type: array
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -534,7 +657,11 @@ The list of webhook receivers that are part of this action group.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

@@ -52,7 +52,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -76,10 +76,14 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
-      primaryAgentPoolProfile: [
+      aadProfile: {
+        aadProfileEnableAzureRBAC: true
+        aadProfileManaged: true
+      }
+      primaryAgentPoolProfiles: [
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 1
           enableAutoScaling: true
@@ -93,16 +97,15 @@ module testDeployment '../../../main.bicep' = [
           ]
           osDiskSizeGB: 0
           osType: 'Linux'
-          serviceCidr: ''
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
-          vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[0]
+          vmSize: 'Standard_DS4_v2'
+          vnetSubnetResourceId: nestedDependencies.outputs.subnetResourceIds[0]
         }
       ]
       agentPools: [
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 2
           enableAutoScaling: true
@@ -118,13 +121,13 @@ module testDeployment '../../../main.bicep' = [
           scaleSetEvictionPolicy: 'Delete'
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
-          vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[1]
+          vmSize: 'Standard_DS4_v2'
+          vnetSubnetResourceId: nestedDependencies.outputs.subnetResourceIds[1]
           proximityPlacementGroupResourceId: nestedDependencies.outputs.proximityPlacementGroupResourceId
         }
         {
           availabilityZones: [
-            '3'
+            3
           ]
           count: 2
           enableAutoScaling: true
@@ -140,11 +143,44 @@ module testDeployment '../../../main.bicep' = [
           scaleSetEvictionPolicy: 'Delete'
           scaleSetPriority: 'Regular'
           type: 'VirtualMachineScaleSets'
-          vmSize: 'Standard_DS2_v2'
-          vnetSubnetID: nestedDependencies.outputs.subnetResourceIds[2]
+          vmSize: 'Standard_DS4_v2'
+          vnetSubnetResourceId: nestedDependencies.outputs.subnetResourceIds[2]
         }
       ]
       autoUpgradeProfileUpgradeChannel: 'stable'
+      autoNodeOsUpgradeProfileUpgradeChannel: 'Unmanaged'
+      maintenanceConfigurations: [
+        {
+          name: 'aksManagedAutoUpgradeSchedule'
+          maintenanceWindow: {
+            schedule: {
+              weekly: {
+                intervalWeeks: 1
+                dayOfWeek: 'Sunday'
+              }
+            }
+            durationHours: 4
+            utcOffset: '+00:00'
+            startDate: '2024-07-15'
+            startTime: '00:00'
+          }
+        }
+        {
+          name: 'aksManagedNodeOSUpgradeSchedule'
+          maintenanceWindow: {
+            schedule: {
+              weekly: {
+                intervalWeeks: 1
+                dayOfWeek: 'Sunday'
+              }
+            }
+            durationHours: 4
+            utcOffset: '+00:00'
+            startDate: '2024-07-15'
+            startTime: '00:00'
+          }
+        }
+      ]
       enableWorkloadIdentity: true
       enableOidcIssuerProfile: true
       networkPlugin: 'azure'
@@ -171,7 +207,7 @@ module testDeployment '../../../main.bicep' = [
       enableStorageProfileFileCSIDriver: true
       enableStorageProfileSnapshotController: true
       managedIdentities: {
-        userAssignedResourcesIds: [
+        userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
@@ -181,27 +217,24 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       omsAgentEnabled: true
-      monitoringWorkspaceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      monitoringWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       enableAzureDefender: true
       enableKeyvaultSecretsProvider: true
       enablePodSecurityPolicy: false
       enableAzureMonitorProfileMetrics: true
-      customerManagedKey: {
-        keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
-        keyVaultNetworkAccess: 'Public'
-        keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      }
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
       roleAssignments: [
         {
+          name: 'ac915208-669e-4665-9792-7e2dc861f569'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -242,6 +275,11 @@ module testDeployment '../../../main.bicep' = [
               timeoutInSeconds: 180
               url: 'https://github.com/mspnp/aks-baseline'
             }
+            kustomizations: {
+              unified: {
+                path: './cluster-manifests'
+              }
+            }
           }
           {
             namespace: 'flux-system-helm'
@@ -279,9 +317,5 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

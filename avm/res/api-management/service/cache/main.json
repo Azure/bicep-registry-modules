@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5452536693649070190"
+      "version": "0.33.13.18514",
+      "templateHash": "3359248846501864533"
     },
     "name": "API Management Service Caches",
-    "description": "This module deploys an API Management Service Cache.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service Cache."
   },
   "parameters": {
     "apiManagementServiceName": {
@@ -56,22 +55,19 @@
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2023-05-01-preview",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "cache": {
       "type": "Microsoft.ApiManagement/service/caches",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "description": "[parameters('description')]",
         "connectionString": "[parameters('connectionString')]",
         "useFromLocation": "[parameters('useFromLocation')]",
         "resourceId": "[parameters('resourceId')]"
-      },
-      "dependsOn": [
-        "service"
-      ]
+      }
     }
   },
   "outputs": {

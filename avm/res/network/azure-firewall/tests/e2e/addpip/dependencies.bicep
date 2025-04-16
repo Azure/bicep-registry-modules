@@ -12,7 +12,7 @@ param managedIdentityName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -25,20 +25,20 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
       {
         name: 'AzureFirewallSubnet'
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 20, 0)
+          addressPrefix: cidrSubnet(addressPrefix, 26, 0)
         }
       }
       {
         name: 'AzureFirewallManagementSubnet'
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 20, 1)
+          addressPrefix: cidrSubnet(addressPrefix, 26, 1)
         }
       }
     ]
   }
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
   name: publicIPName
   location: location
   sku: {
@@ -55,7 +55,7 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   ]
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
   name: managedIdentityName
   location: location
 }

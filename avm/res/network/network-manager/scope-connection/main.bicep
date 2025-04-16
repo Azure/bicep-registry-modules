@@ -1,7 +1,6 @@
 metadata name = 'Network Manager Scope Connections'
 metadata description = '''This module deploys a Network Manager Scope Connection.
 Create a cross-tenant connection to manage a resource from another tenant.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment.')
 param networkManagerName string
@@ -20,11 +19,11 @@ param resourceId string
 @sys.description('Required. Tenant ID of the subscription or management group that you want to manage.')
 param tenantId string
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
 }
 
-resource scopeConnection 'Microsoft.Network/networkManagers/scopeConnections@2023-04-01' = {
+resource scopeConnection 'Microsoft.Network/networkManagers/scopeConnections@2024-05-01' = {
   name: name
   parent: networkManager
   properties: {

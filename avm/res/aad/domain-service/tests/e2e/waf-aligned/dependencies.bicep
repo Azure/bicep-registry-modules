@@ -152,7 +152,7 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01'
     azPowerShellVersion: '11.0'
     retentionInterval: 'P1D'
     arguments: ' -KeyVaultName "${keyVault.name}" -ResourceGroupName "${resourceGroup().name}" -NamePrefix "${namePrefix}" -CertPWSecretName "${certPWSecretName}" -CertSecretName "${certSecretName}"'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-PfxCertificateInKeyVault.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-PfxCertificateInKeyVault.ps1')
   }
 }
 

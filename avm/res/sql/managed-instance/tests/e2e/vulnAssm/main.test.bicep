@@ -30,7 +30,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -39,6 +39,8 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    pairedRegionScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     routeTableName: 'dep-${namePrefix}-rt-${serviceShort}'
@@ -52,39 +54,40 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 @batchSize(1)
-module testDeployment '../../../main.bicep' = [for iteration in [ 'init', 'idem' ]: {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-  params: {
-    location: resourceLocation
-    name: '${namePrefix}-${serviceShort}'
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: password
-    subnetResourceId: nestedDependencies.outputs.subnetResourceId
-    managedIdentities: {
-      systemAssigned: true
-    }
-    securityAlertPoliciesObj: {
-      emailAccountAdmins: true
-      name: 'default'
-      state: 'Enabled'
-    }
-    vulnerabilityAssessmentsObj: {
-      emailSubscriptionAdmins: true
-      name: 'default'
-      recurringScansEmails: [
-        'test1@contoso.com'
-        'test2@contoso.com'
-      ]
-      recurringScansIsEnabled: true
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      useStorageAccountAccessKey: false
-      createStorageRoleAssignment: true
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}-${serviceShort}'
+      administratorLogin: 'adminUserName'
+      administratorLoginPassword: password
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      managedIdentities: {
+        systemAssigned: true
+      }
+      securityAlertPoliciesObj: {
+        emailAccountAdmins: true
+        name: 'default'
+        state: 'Enabled'
+      }
+      vulnerabilityAssessmentsObj: {
+        emailSubscriptionAdmins: true
+        name: 'default'
+        recurringScansEmails: [
+          'test1@contoso.com'
+          'test2@contoso.com'
+        ]
+        recurringScansIsEnabled: true
+        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+        useStorageAccountAccessKey: false
+        createStorageRoleAssignment: true
+        tags: {
+          'hidden-title': 'This is visible in the resource name'
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
       }
     }
   }
-}]
+]

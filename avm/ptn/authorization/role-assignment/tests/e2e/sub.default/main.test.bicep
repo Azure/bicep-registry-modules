@@ -29,8 +29,7 @@ param subscriptionId string = '#_subscriptionId_#'
 // General resources
 // =================
 
-
-module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' ={
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
   scope: subscription('${subscriptionId}')
   name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
   params: {
@@ -39,14 +38,16 @@ module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' ={
   }
 }
 
-module nestedDependencies 'interim.dependencies.bicep' = {
-  scope: subscription('${subscriptionId}')
+module nestedDependencies 'dependencies.bicep' = {
+  scope: az.resourceGroup(subscriptionId, resourceGroupName)
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    resourceGroupName: resourceGroupName
     location: resourceLocation
   }
+  dependsOn: [
+    resourceGroup
+  ]
 }
 
 // ============== //
@@ -57,7 +58,10 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name)}-test-${serviceShort}'
   params: {
     principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-    roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+    roleDefinitionIdOrName: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+    )
     principalType: 'ServicePrincipal'
     location: resourceLocation
     subscriptionId: subscriptionId

@@ -56,6 +56,7 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
+      description: 'This is a test deployment.'
       applications: [
         {
           name: '${namePrefix}-${serviceShort}-appd-001'
@@ -66,7 +67,21 @@ module testDeployment '../../../main.bicep' = [
           supportedOSType: 'Windows'
           roleAssignments: [
             {
-              roleDefinitionIdOrName: 'Reader'
+              name: '4ef8d3d3-54be-4522-92c3-284977292d87'
+              roleDefinitionIdOrName: 'Owner'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+            {
+              roleDefinitionIdOrName: subscriptionResourceId(
+                'Microsoft.Authorization/roleDefinitions',
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+              )
               principalId: nestedDependencies.outputs.managedIdentityPrincipalId
               principalType: 'ServicePrincipal'
             }
@@ -75,84 +90,164 @@ module testDeployment '../../../main.bicep' = [
       ]
       images: [
         {
-          hyperVGeneration: 'V1'
           name: '${namePrefix}-az-imgd-ws-001'
-          offer: 'WindowsServer'
+          allowUpdateImage: true
+          hyperVGeneration: 'V1'
+          identifier: {
+            publisher: 'MicrosoftWindowsServer'
+            offer: 'WindowsServer'
+            sku: '2022-datacenter-azure-edition'
+          }
           osType: 'Windows'
-          publisher: 'MicrosoftWindowsServer'
-          sku: '2022-datacenter-azure-edition'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
+          osState: 'Generalized'
+          eula: 'test Eula'
+          architecture: 'x64'
+          description: 'testDescription'
+          privacyStatementUri: 'https://testPrivacyStatementUri.com'
+          excludedDiskTypes: ['Standard_LRS']
+          purchasePlan: {
+            name: 'testPlanName1'
+            product: 'testProduct1'
+            publisher: 'testPublisher1'
+          }
+          endOfLife: '2033-01-01'
+          releaseNoteUri: 'https://testReleaseNoteUri.com'
         }
         {
+          name: '${namePrefix}-az-imgd-ws-002'
+          allowUpdateImage: false
           hyperVGeneration: 'V2'
+          identifier: {
+            publisher: 'MicrosoftWindowsServer'
+            offer: 'WindowsServer'
+            sku: '2022-datacenter-azure-edition-hibernate'
+          }
+          osType: 'Windows'
+          vCPUs: {
+            min: 2
+            max: 8
+          }
+          memory: {
+            min: 4
+            max: 16
+          }
+
+          osState: 'Generalized'
           isHibernateSupported: true
           isAcceleratedNetworkSupported: false
-          maxRecommendedMemory: 16
-          maxRecommendedvCPUs: 8
-          minRecommendedMemory: 4
-          minRecommendedvCPUs: 2
-          name: '${namePrefix}-az-imgd-ws-002'
-          offer: 'WindowsServer'
-          osState: 'Generalized'
-          osType: 'Windows'
-          publisher: 'MicrosoftWindowsServer'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
-          sku: '2022-datacenter-azure-edition-hibernate'
         }
         {
-          hyperVGeneration: 'V2'
-          securityType: 'TrustedLaunch'
-          maxRecommendedMemory: 16
-          maxRecommendedvCPUs: 4
-          minRecommendedMemory: 4
-          minRecommendedvCPUs: 2
-          name: '${namePrefix}-az-imgd-wdtl-001'
-          offer: 'WindowsDesktop'
-          osState: 'Generalized'
+          name: '${namePrefix}-az-imgd-wdtl-003'
+          securityType: 'Standard'
           osType: 'Windows'
-          publisher: 'MicrosoftWindowsDesktop'
-          roleAssignments: [
-            {
-              roleDefinitionIdOrName: 'Reader'
-              principalId: nestedDependencies.outputs.managedIdentityPrincipalId
-              principalType: 'ServicePrincipal'
-            }
-          ]
-          sku: 'Win11-21H2'
+          osState: 'Generalized'
+          hyperVGeneration: 'V2'
+          identifier: {
+            publisher: 'MicrosoftWindowsDesktop'
+            offer: 'WindowsDesktop'
+            sku: 'Win11-21H2'
+          }
+          memory: {
+            min: 4
+            max: 16
+          }
+          vCPUs: {
+            min: 2
+            max: 8
+          }
+          purchasePlan: {
+            name: 'testPlanName'
+            product: 'testProduct'
+            publisher: 'testPublisher'
+          }
         }
         {
-          hyperVGeneration: 'V2'
-          maxRecommendedMemory: 32
-          maxRecommendedvCPUs: 4
-          minRecommendedMemory: 4
-          minRecommendedvCPUs: 1
-          name: '${namePrefix}-az-imgd-us-001'
-          offer: '0001-com-ubuntu-server-focal'
-          osState: 'Generalized'
+          name: '${namePrefix}-az-imgd-us-004'
           osType: 'Linux'
-          publisher: 'canonical'
-          sku: '20_04-lts-gen2'
+          osState: 'Generalized'
+          hyperVGeneration: 'V2'
+          identifier: {
+            publisher: 'canonical'
+            offer: '0001-com-ubuntu-minimal-focal'
+            sku: '22_04-lts-gen2'
+          }
+          memory: {
+            min: 4
+            max: 32
+          }
+          vCPUs: {
+            min: 1
+            max: 4
+          }
+          isAcceleratedNetworkSupported: false
+          diskControllerType: 'SCSI'
+        }
+        {
+          name: '${namePrefix}-az-imgd-us-005'
+          osType: 'Linux'
+          osState: 'Generalized'
+          hyperVGeneration: 'V2'
+          identifier: {
+            publisher: 'canonical'
+            offer: '0001-com-ubuntu-minimal-focal'
+            sku: '20_04-lts-gen2'
+          }
+          memory: {
+            min: 4
+            max: 32
+          }
+          vCPUs: {
+            min: 1
+            max: 4
+          }
+          isAcceleratedNetworkSupported: true
+          diskControllerType: 'SCSI, NVMe'
+        }
+        {
+          name: '${namePrefix}-az-imgd-us-006'
+          description: 'testDescription'
+          osType: 'Linux'
+          osState: 'Generalized'
+          hyperVGeneration: 'V2'
+          identifier: {
+            publisher: 'canonical'
+            offer: '0001-com-ubuntu-server-focal'
+            sku: '20_04-lts-gen2'
+          }
+          memory: {
+            min: 4
+            max: 32
+          }
+          vCPUs: {
+            min: 1
+            max: 4
+          }
+          securityType: 'TrustedLaunch'
+          architecture: 'x64'
+          endOfLife: '2033-01-01'
+          eula: 'test Eula'
+          excludedDiskTypes: ['Standard_LRS']
+          isHibernateSupported: true
+          privacyStatementUri: 'https://testPrivacyStatementUri.com'
+          purchasePlan: {
+            name: 'testPlanName'
+            product: 'testProduct'
+            publisher: 'testPublisher'
+          }
+          releaseNoteUri: 'https://testReleaseNoteUri.com'
+          isAcceleratedNetworkSupported: false
+          // diskControllerType: 'NVMe, SCSI' // --> needs to remain commented, as there is a bug setting the value starting with 'NVMe' again, which prevents the idem test to pass
         }
       ]
       roleAssignments: [
         {
+          name: '3bd58a78-108d-4f87-b404-0a03e49303d8'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -172,8 +267,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

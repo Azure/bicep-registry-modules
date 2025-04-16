@@ -8,7 +8,6 @@ This module deploys an Azure SQL Server Instance Pool.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -55,7 +54,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -75,6 +74,23 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/instance-pool:<version>'
+
+// Required parameters
+param name = '<name>'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -108,7 +124,7 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -136,6 +152,23 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/instance-pool:<version>'
+
+// Required parameters
+param name = '<name>'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param location = '<location>'
+param skuName = 'GP_Gen8IM'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -267,7 +300,6 @@ The number of vCores for the instance pool.
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -276,10 +308,6 @@ The number of vCores for the instance pool.
 | `name` | string | The name of the SQL instance pool. |
 | `resourceGroupName` | string | The resource group name of the SQL instance pool. |
 | `resourceId` | string | The ID of the SQL instance pool. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

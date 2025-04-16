@@ -28,8 +28,17 @@ param sshDeploymentScriptName string
 @description('Required. The name of the SSH Key to create.')
 param sshKeyName string
 
+@description('Required. The name of the data collection rule.')
+param dcrName string
+
 @description('Optional. The location to deploy to.')
 param location string = resourceGroup().location
+
+@description('Required. The object ID of the Backup Management Service Enterprise Application.')
+param backupManagementServiceApplicationObjectId string
+
+@description('Required. Resource ID of the log analytics worspace to stream logs from Azure monitoring agent.')
+param logAnalyticsWorkspaceResourceId string
 
 var storageAccountCSEFileName = 'scriptExtensionMasterInstaller.ps1'
 var addressPrefix = '10.0.0.0/16'
@@ -220,10 +229,10 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 }
 
 resource backupServiceKeyVaultPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('${keyVault.name}-${location}-268f6a53-9f68-4a38-ae47-166f730d86af-KeyVault-KeyVaultAdministrator-RoleAssignment')
+  name: guid('${keyVault.name}-${location}-BackupManagementService-KeyVault-KeyVaultAdministrator-RoleAssignment')
   scope: keyVault
   properties: {
-    principalId: '268f6a53-9f68-4a38-ae47-166f730d86af' // Backup Management Service Enterprise Application Object Id (Note: this is tenant specific)
+    principalId: backupManagementServiceApplicationObjectId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       '00482a5a-887f-4fb3-b363-3b7fe8e74483'
@@ -276,7 +285,7 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
     arguments: '-StorageAccountName "${storageAccount.name}" -ResourceGroupName "${resourceGroup().name}" -ContainerName "${storageAccount::blobService::container.name}" -FileName "${storageAccountCSEFileName}"'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-BlobContent.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-BlobContent.ps1')
   }
   dependsOn: [
     msiRGContrRoleAssignment
@@ -297,7 +306,7 @@ resource sshDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' 
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
     arguments: '-SSHKeyName "${sshKeyName}" -ResourceGroupName "${resourceGroup().name}"'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
   }
   dependsOn: [
     msiRGContrRoleAssignment
@@ -309,6 +318,93 @@ resource sshKey 'Microsoft.Compute/sshPublicKeys@2022-03-01' = {
   location: location
   properties: {
     publicKey: sshDeploymentScript.properties.outputs.publicKey
+  }
+}
+
+resource dcr 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
+  name: dcrName
+  location: location
+  kind: 'Linux'
+  properties: {
+    dataSources: {
+      performanceCounters: [
+        {
+          streams: [
+            'Microsoft-Perf'
+          ]
+          samplingFrequencyInSeconds: 60
+          counterSpecifiers: [
+            '\\Processor Information(_Total)\\% Processor Time'
+            '\\Processor Information(_Total)\\% Privileged Time'
+            '\\Processor Information(_Total)\\% User Time'
+            '\\Processor Information(_Total)\\Processor Frequency'
+            '\\System\\Processes'
+            '\\Process(_Total)\\Thread Count'
+            '\\Process(_Total)\\Handle Count'
+            '\\System\\System Up Time'
+            '\\System\\Context Switches/sec'
+            '\\System\\Processor Queue Length'
+            '\\Memory\\% Committed Bytes In Use'
+            '\\Memory\\Available Bytes'
+            '\\Memory\\Committed Bytes'
+            '\\Memory\\Cache Bytes'
+            '\\Memory\\Pool Paged Bytes'
+            '\\Memory\\Pool Nonpaged Bytes'
+            '\\Memory\\Pages/sec'
+            '\\Memory\\Page Faults/sec'
+            '\\Process(_Total)\\Working Set'
+            '\\Process(_Total)\\Working Set - Private'
+            '\\LogicalDisk(_Total)\\% Disk Time'
+            '\\LogicalDisk(_Total)\\% Disk Read Time'
+            '\\LogicalDisk(_Total)\\% Disk Write Time'
+            '\\LogicalDisk(_Total)\\% Idle Time'
+            '\\LogicalDisk(_Total)\\Disk Bytes/sec'
+            '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
+            '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
+            '\\LogicalDisk(_Total)\\Disk Transfers/sec'
+            '\\LogicalDisk(_Total)\\Disk Reads/sec'
+            '\\LogicalDisk(_Total)\\Disk Writes/sec'
+            '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
+            '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
+            '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
+            '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
+            '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
+            '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
+            '\\LogicalDisk(_Total)\\% Free Space'
+            '\\LogicalDisk(_Total)\\Free Megabytes'
+            '\\Network Interface(*)\\Bytes Total/sec'
+            '\\Network Interface(*)\\Bytes Sent/sec'
+            '\\Network Interface(*)\\Bytes Received/sec'
+            '\\Network Interface(*)\\Packets/sec'
+            '\\Network Interface(*)\\Packets Sent/sec'
+            '\\Network Interface(*)\\Packets Received/sec'
+            '\\Network Interface(*)\\Packets Outbound Errors'
+            '\\Network Interface(*)\\Packets Received Errors'
+          ]
+          name: 'perfCounterDataSource60'
+        }
+      ]
+    }
+    destinations: {
+      logAnalytics: [
+        {
+          workspaceResourceId: logAnalyticsWorkspaceResourceId
+          name: 'la--1264800308'
+        }
+      ]
+    }
+    dataFlows: [
+      {
+        streams: [
+          'Microsoft-Perf'
+        ]
+        destinations: [
+          'la--1264800308'
+        ]
+        transformKql: 'source'
+        outputStream: 'Microsoft-Perf'
+      }
+    ]
   }
 }
 
@@ -356,3 +452,6 @@ output storageAccountCSEFileName string = storageAccountCSEFileName
 
 @description('The Public Key of the created SSH Key.')
 output SSHKeyPublicKey string = sshKey.properties.publicKey
+
+@description('The resource ID of the created data collection rule.')
+output dataCollectionRuleResourceId string = dcr.id

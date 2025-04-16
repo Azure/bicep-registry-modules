@@ -5,15 +5,14 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "2355820538616279194"
+      "version": "0.34.44.8038",
+      "templateHash": "14463677195465146164"
     },
     "name": "Machine Learning Services Workspaces Computes",
-    "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
   },
   "definitions": {
-    "managedIdentitiesType": {
+    "managedIdentityAllType": {
       "type": "object",
       "properties": {
         "systemAssigned": {
@@ -30,11 +29,16 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -140,7 +144,8 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
@@ -160,16 +165,13 @@
     "compute": {
       "condition": "[equals(parameters('deployCompute'), true())]",
       "type": "Microsoft.MachineLearningServices/workspaces/computes",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2024-10-01",
       "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[if(empty(parameters('resourceId')), parameters('tags'), null())]",
       "sku": "[if(empty(parameters('resourceId')), createObject('name', parameters('sku'), 'tier', parameters('sku')), null())]",
       "identity": "[if(empty(parameters('resourceId')), variables('identity'), null())]",
-      "properties": "[union(createObject('description', parameters('description'), 'disableLocalAuth', parameters('disableLocalAuth'), 'computeType', parameters('computeType')), if(not(empty(parameters('resourceId'))), createObject('resourceId', parameters('resourceId')), createObject('computeLocation', parameters('computeLocation'), 'properties', parameters('properties'))))]",
-      "dependsOn": [
-        "machineLearningWorkspace"
-      ]
+      "properties": "[union(createObject('description', parameters('description'), 'disableLocalAuth', parameters('disableLocalAuth'), 'computeType', parameters('computeType')), if(not(empty(parameters('resourceId'))), createObject('resourceId', parameters('resourceId')), createObject('computeLocation', parameters('computeLocation'), 'properties', parameters('properties'))))]"
     }
   },
   "outputs": {
@@ -196,17 +198,18 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('compute', '2022-10-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('compute', '2024-10-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('compute', '2022-10-01', 'full').location]"
+      "value": "[reference('compute', '2024-10-01', 'full').location]"
     }
   }
 }

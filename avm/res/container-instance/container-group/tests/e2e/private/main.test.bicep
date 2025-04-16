@@ -53,6 +53,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
+      availabilityZone: -1
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -77,7 +78,7 @@ module testDeployment '../../../main.bicep' = [
             resources: {
               requests: {
                 cpu: 2
-                memoryInGB: 4
+                memoryInGB: '4'
               }
             }
           }
@@ -97,28 +98,34 @@ module testDeployment '../../../main.bicep' = [
             resources: {
               requests: {
                 cpu: 2
-                memoryInGB: 2
+                memoryInGB: '2'
               }
             }
           }
         }
       ]
-      ipAddressType: 'Private'
-      ipAddressPorts: [
+      ipAddress: {
+        type: 'Private'
+        ports: [
+          {
+            protocol: 'Tcp'
+            port: 80
+          }
+          {
+            protocol: 'Tcp'
+            port: 443
+          }
+          {
+            protocol: 'Tcp'
+            port: 8080
+          }
+        ]
+      }
+      subnets: [
         {
-          protocol: 'Tcp'
-          port: 80
-        }
-        {
-          protocol: 'Tcp'
-          port: 443
-        }
-        {
-          protocol: 'Tcp'
-          port: 8080
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      subnetId: nestedDependencies.outputs.subnetResourceId
     }
   }
 ]

@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "7204307644126778192"
+      "version": "0.33.93.31351",
+      "templateHash": "15202444687633091947"
     },
     "name": "Log Analytics Workspace Linked Services",
-    "description": "This module deploys a Log Analytics Workspace Linked Service.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Log Analytics Workspace Linked Service."
   },
   "parameters": {
     "logAnalyticsWorkspaceName": {
@@ -27,14 +26,14 @@
     },
     "resourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
+        "description": "Optional. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require read access."
       }
     },
     "writeAccessResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the resource that will be linked to the workspace. This should be used for linking resources which require write access."
       }
@@ -51,21 +50,18 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2022-10-01",
+      "apiVersion": "2023-09-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "linkedService": {
       "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
-      "apiVersion": "2020-08-01",
+      "apiVersion": "2023-09-01",
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
         "resourceId": "[parameters('resourceId')]",
-        "writeAccessResourceId": "[if(empty(parameters('writeAccessResourceId')), null(), parameters('writeAccessResourceId'))]"
-      },
-      "dependsOn": [
-        "workspace"
-      ]
+        "writeAccessResourceId": "[parameters('writeAccessResourceId')]"
+      }
     }
   },
   "outputs": {

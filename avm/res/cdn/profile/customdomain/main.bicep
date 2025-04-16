@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Custom Domains'
 metadata description = 'This module deploys a CDN Profile Custom Domains.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the custom domain.')
 param name string
@@ -21,6 +20,7 @@ param extendedProperties object = {}
 param preValidatedCustomDomainResourceId string = ''
 
 @allowed([
+  'AzureFirstPartyManagedCertificate'
   'CustomerCertificate'
   'ManagedCertificate'
 ])
@@ -40,10 +40,9 @@ param secretName string = ''
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
 
-  resource secrect 'secrets@2023-05-01' existing =
-    if (!empty(secretName)) {
-      name: secretName
-    }
+  resource secret 'secrets@2023-05-01' existing = if (!empty(secretName)) {
+    name: secretName
+  }
 }
 
 resource customDomain 'Microsoft.Cdn/profiles/customDomains@2023-05-01' = {
@@ -67,7 +66,7 @@ resource customDomain 'Microsoft.Cdn/profiles/customDomains@2023-05-01' = {
       minimumTlsVersion: minimumTlsVersion
       secret: !(empty(secretName))
         ? {
-            id: profile::secrect.id
+            id: profile::secret.id
           }
         : null
     }
@@ -82,3 +81,55 @@ output resourceId string = customDomain.id
 
 @description('The name of the resource group the custom domain was created in.')
 output resourceGroupName string = resourceGroup().name
+
+@description('The DNS validation records.')
+output dnsValidation dnsValidationOutputType = {
+  dnsTxtRecordName: '_dnsauth.${customDomain.properties.hostName}'
+  dnsTxtRecordValue: customDomain.properties.validationProperties.validationToken
+  dnsTxtRecordExpiry: customDomain.properties.validationProperties.expirationDate
+}
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type of the custom domain.')
+type customDomainType = {
+  @description('Required. The name of the custom domain.')
+  name: string
+
+  @description('Required. The host name of the custom domain.')
+  hostName: string
+
+  @description('Required. The type of the certificate.')
+  certificateType: 'AzureFirstPartyManagedCertificate' | 'CustomerCertificate' | 'ManagedCertificate'
+
+  @description('Optional. The resource ID of the Azure DNS zone.')
+  azureDnsZoneResourceId: string?
+
+  @description('Optional. The resource ID of the pre-validated custom domain.')
+  preValidatedCustomDomainResourceId: string?
+
+  @description('Optional. The name of the secret.')
+  secretName: string?
+
+  @description('Optional. The minimum TLS version.')
+  minimumTlsVersion: 'TLS10' | 'TLS12' | null
+
+  @description('Optional. Extended properties.')
+  extendedProperties: object?
+}
+
+@export()
+@description('The type of the DNS validation.')
+type dnsValidationOutputType = {
+  @description('The DNS record name.')
+  dnsTxtRecordName: string?
+
+  @description('The DNS record value.')
+  dnsTxtRecordValue: string?
+
+  @description('The expiry date of the DNS record.')
+  dnsTxtRecordExpiry: string?
+}

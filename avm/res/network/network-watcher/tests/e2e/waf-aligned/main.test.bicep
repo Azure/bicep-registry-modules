@@ -52,7 +52,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroupDependencies
   name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
   params: {
@@ -75,7 +75,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'NetworkWatcher_${enforcedLocation}'
-      location: enforcedLocation
       connectionMonitors: [
         {
           name: '${namePrefix}-${serviceShort}-cm-001'

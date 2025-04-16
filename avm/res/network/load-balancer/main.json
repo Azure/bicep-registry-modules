@@ -5,100 +5,134 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "13683964905263959387"
+      "version": "0.34.44.8038",
+      "templateHash": "4696406379387046288"
     },
     "name": "Load Balancers",
-    "description": "This module deploys a Load Balancer.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Load Balancer."
   },
   "definitions": {
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
                 }
               }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
             }
           },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
             }
           },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     },
     "lockType": {
       "type": "object",
@@ -123,73 +157,87 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -246,19 +294,28 @@
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -303,11 +360,12 @@
             "subnet": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'subnetId'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].subnetId))), createObject('id', parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].subnetId), null())]",
             "publicIPAddress": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'publicIPAddressId'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].publicIPAddressId))), createObject('id', parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].publicIPAddressId), null())]",
             "privateIPAddress": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'privateIPAddress'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].privateIPAddress))), parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].privateIPAddress, null())]",
-            "privateIPAddressVersion": "[if(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'privateIPAddressVersion'), parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].privateIPAddressVersion, 'IPv4')]",
+            "privateIPAddressVersion": "[coalesce(tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'privateIPAddressVersion'), 'IPv4')]",
             "privateIPAllocationMethod": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'subnetId'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].subnetId))), if(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'privateIPAddress'), 'Static', 'Dynamic'), null())]",
             "gatewayLoadBalancer": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'gatewayLoadBalancer'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].gatewayLoadBalancer))), createObject('id', parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].gatewayLoadBalancer), null())]",
             "publicIPPrefix": "[if(and(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'publicIPPrefix'), not(empty(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].publicIPPrefix))), createObject('id', parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].publicIPPrefix), null())]"
-          }
+          },
+          "zones": "[if(contains(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'zones'), map(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')].zones, lambda('zone', string(lambdaVariables('zone')))), if(not(empty(tryGet(parameters('frontendIPConfigurations')[copyIndex('frontendIPConfigurationsVar')], 'subnetResourceId'))), createArray('1', '2', '3'), null()))]"
         }
       },
       {
@@ -320,19 +378,19 @@
               "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('name'), coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')].backendAddressPoolName)]"
             },
             "backendPort": "[coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')].backendPort]",
-            "disableOutboundSnat": "[if(contains(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'disableOutboundSnat'), coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')].disableOutboundSnat, true())]",
-            "enableFloatingIP": "[if(contains(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'enableFloatingIP'), coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')].enableFloatingIP, false())]",
-            "enableTcpReset": "[if(contains(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'enableTcpReset'), coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')].enableTcpReset, false())]",
+            "disableOutboundSnat": "[coalesce(tryGet(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'disableOutboundSnat'), true())]",
+            "enableFloatingIP": "[coalesce(tryGet(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'enableFloatingIP'), false())]",
+            "enableTcpReset": "[coalesce(tryGet(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'enableTcpReset'), false())]",
             "frontendIPConfiguration": {
               "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', parameters('name'), coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')].frontendIPConfigurationName)]"
             },
             "frontendPort": "[coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')].frontendPort]",
-            "idleTimeoutInMinutes": "[if(contains(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'idleTimeoutInMinutes'), coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')].idleTimeoutInMinutes, 4)]",
-            "loadDistribution": "[if(contains(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'loadDistribution'), coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')].loadDistribution, 'Default')]",
+            "idleTimeoutInMinutes": "[coalesce(tryGet(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'idleTimeoutInMinutes'), 4)]",
+            "loadDistribution": "[coalesce(tryGet(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'loadDistribution'), 'Default')]",
             "probe": {
               "id": "[format('{0}/probes/{1}', resourceId('Microsoft.Network/loadBalancers', parameters('name')), coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')].probeName)]"
             },
-            "protocol": "[if(contains(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'protocol'), coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')].protocol, 'Tcp')]"
+            "protocol": "[coalesce(tryGet(coalesce(parameters('loadBalancingRules'), createArray())[copyIndex('loadBalancingRulesVar')], 'protocol'), 'Tcp')]"
           }
         }
       },
@@ -350,10 +408,10 @@
             "backendAddressPool": {
               "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('name'), parameters('outboundRules')[copyIndex('outboundRulesVar')].backendAddressPoolName)]"
             },
-            "protocol": "[if(contains(parameters('outboundRules')[copyIndex('outboundRulesVar')], 'protocol'), parameters('outboundRules')[copyIndex('outboundRulesVar')].protocol, 'All')]",
-            "allocatedOutboundPorts": "[if(contains(parameters('outboundRules')[copyIndex('outboundRulesVar')], 'allocatedOutboundPorts'), parameters('outboundRules')[copyIndex('outboundRulesVar')].allocatedOutboundPorts, 63984)]",
-            "enableTcpReset": "[if(contains(parameters('outboundRules')[copyIndex('outboundRulesVar')], 'enableTcpReset'), parameters('outboundRules')[copyIndex('outboundRulesVar')].enableTcpReset, true())]",
-            "idleTimeoutInMinutes": "[if(contains(parameters('outboundRules')[copyIndex('outboundRulesVar')], 'idleTimeoutInMinutes'), parameters('outboundRules')[copyIndex('outboundRulesVar')].idleTimeoutInMinutes, 4)]"
+            "protocol": "[coalesce(tryGet(parameters('outboundRules')[copyIndex('outboundRulesVar')], 'protocol'), 'All')]",
+            "allocatedOutboundPorts": "[coalesce(tryGet(parameters('outboundRules')[copyIndex('outboundRulesVar')], 'allocatedOutboundPorts'), 63984)]",
+            "enableTcpReset": "[coalesce(tryGet(parameters('outboundRules')[copyIndex('outboundRulesVar')], 'enableTcpReset'), true())]",
+            "idleTimeoutInMinutes": "[coalesce(tryGet(parameters('outboundRules')[copyIndex('outboundRulesVar')], 'idleTimeoutInMinutes'), 4)]"
           }
         }
       },
@@ -363,11 +421,11 @@
         "input": {
           "name": "[coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].name]",
           "properties": {
-            "protocol": "[if(contains(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'protocol'), coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].protocol, 'Tcp')]",
+            "protocol": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'protocol'), 'Tcp')]",
             "requestPath": "[if(not(equals(toLower(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].protocol), 'tcp')), coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].requestPath, null())]",
-            "port": "[if(contains(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'port'), coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].port, 80)]",
-            "intervalInSeconds": "[if(contains(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'intervalInSeconds'), coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].intervalInSeconds, 5)]",
-            "numberOfProbes": "[if(contains(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'numberOfProbes'), coalesce(parameters('probes'), createArray())[copyIndex('probesVar')].numberOfProbes, 2)]"
+            "port": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'port'), 80)]",
+            "intervalInSeconds": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'intervalInSeconds'), 5)]",
+            "numberOfProbes": "[coalesce(tryGet(coalesce(parameters('probes'), createArray())[copyIndex('probesVar')], 'numberOfProbes'), 2)]"
           }
         }
       },
@@ -377,6 +435,11 @@
         "input": {
           "name": "[coalesce(parameters('backendAddressPools'), createArray())[copyIndex('backendAddressPoolNames')].name]"
         }
+      },
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
     "builtInRoleNames": {
@@ -384,7 +447,7 @@
       "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -392,7 +455,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.network-loadbalancer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -411,7 +474,7 @@
     },
     "loadBalancer": {
       "type": "Microsoft.Network/loadBalancers",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2023-11-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -459,6 +522,15 @@
               "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
               "timeGrain": null
             }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
           }
         ],
         "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
@@ -475,20 +547,20 @@
     "loadBalancer_roleAssignments": {
       "copy": {
         "name": "loadBalancer_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.Network/loadBalancers/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.Network/loadBalancers', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/loadBalancers', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "loadBalancer"
@@ -501,7 +573,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-loadBalancer-backendAddressPools-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-loadBalancer-backendAddPools-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -514,9 +586,15 @@
           "name": {
             "value": "[coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].name]"
           },
-          "tunnelInterfaces": "[if(and(contains(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'tunnelInterfaces'), not(empty(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].tunnelInterfaces))), createObject('value', coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].tunnelInterfaces), createObject('value', createArray()))]",
-          "loadBalancerBackendAddresses": "[if(and(contains(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'loadBalancerBackendAddresses'), not(empty(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].loadBalancerBackendAddresses))), createObject('value', coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].loadBalancerBackendAddresses), createObject('value', createArray()))]",
-          "drainPeriodInSeconds": "[if(contains(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'drainPeriodInSeconds'), createObject('value', coalesce(parameters('backendAddressPools'), createArray())[copyIndex()].drainPeriodInSeconds), createObject('value', 0))]"
+          "tunnelInterfaces": {
+            "value": "[tryGet(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'tunnelInterfaces')]"
+          },
+          "loadBalancerBackendAddresses": {
+            "value": "[tryGet(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'loadBalancerBackendAddresses')]"
+          },
+          "drainPeriodInSeconds": {
+            "value": "[tryGet(coalesce(parameters('backendAddressPools'), createArray())[copyIndex()], 'drainPeriodInSeconds')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -524,12 +602,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "17412878196552582226"
+              "version": "0.34.44.8038",
+              "templateHash": "601516314831460935"
             },
             "name": "Load Balancer Backend Address Pools",
-            "description": "This module deploys a Load Balancer Backend Address Pools.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Load Balancer Backend Address Pools."
           },
           "parameters": {
             "loadBalancerName": {
@@ -581,7 +658,7 @@
           "resources": [
             {
               "type": "Microsoft.Network/loadBalancers/backendAddressPools",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
               "properties": {
                 "loadBalancerBackendAddresses": "[parameters('loadBalancerBackendAddresses')]",
@@ -644,29 +721,45 @@
             "value": "[parameters('inboundNatRules')[copyIndex()].frontendIPConfigurationName]"
           },
           "frontendPort": {
-            "value": "[parameters('inboundNatRules')[copyIndex()].frontendPort]"
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'frontendPort')]"
           },
-          "backendPort": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'backendPort'), createObject('value', parameters('inboundNatRules')[copyIndex()].backendPort), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPort))]",
-          "backendAddressPoolName": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'backendAddressPoolName'), createObject('value', parameters('inboundNatRules')[copyIndex()].backendAddressPoolName), createObject('value', ''))]",
-          "enableFloatingIP": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'enableFloatingIP'), createObject('value', parameters('inboundNatRules')[copyIndex()].enableFloatingIP), createObject('value', false()))]",
-          "enableTcpReset": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'enableTcpReset'), createObject('value', parameters('inboundNatRules')[copyIndex()].enableTcpReset), createObject('value', false()))]",
-          "frontendPortRangeEnd": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'frontendPortRangeEnd'), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPortRangeEnd), createObject('value', -1))]",
-          "frontendPortRangeStart": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'frontendPortRangeStart'), createObject('value', parameters('inboundNatRules')[copyIndex()].frontendPortRangeStart), createObject('value', -1))]",
-          "idleTimeoutInMinutes": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'idleTimeoutInMinutes'), createObject('value', parameters('inboundNatRules')[copyIndex()].idleTimeoutInMinutes), createObject('value', 4))]",
-          "protocol": "[if(contains(parameters('inboundNatRules')[copyIndex()], 'protocol'), createObject('value', parameters('inboundNatRules')[copyIndex()].protocol), createObject('value', 'Tcp'))]"
+          "backendPort": {
+            "value": "[parameters('inboundNatRules')[copyIndex()].backendPort]"
+          },
+          "backendAddressPoolName": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'backendAddressPoolName')]"
+          },
+          "enableFloatingIP": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'enableFloatingIP')]"
+          },
+          "enableTcpReset": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'enableTcpReset')]"
+          },
+          "frontendPortRangeEnd": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'frontendPortRangeEnd')]"
+          },
+          "frontendPortRangeStart": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'frontendPortRangeStart')]"
+          },
+          "idleTimeoutInMinutes": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'idleTimeoutInMinutes')]"
+          },
+          "protocol": {
+            "value": "[tryGet(parameters('inboundNatRules')[copyIndex()], 'protocol')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "7362889285586557037"
+              "version": "0.34.44.8038",
+              "templateHash": "18405211154213559578"
             },
             "name": "Load Balancer Inbound NAT Rules",
-            "description": "This module deploys a Load Balancer Inbound NAT Rules.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Load Balancer Inbound NAT Rules."
           },
           "parameters": {
             "loadBalancerName": {
@@ -683,19 +776,19 @@
             },
             "frontendPort": {
               "type": "int",
-              "minValue": 1,
+              "nullable": true,
+              "minValue": 0,
               "maxValue": 65534,
               "metadata": {
-                "description": "Required. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer."
+                "description": "Conditional. The port for the external endpoint. Port numbers for each rule must be unique within the Load Balancer. Required if FrontendPortRangeStart and FrontendPortRangeEnd are not specified."
               }
             },
             "backendPort": {
               "type": "int",
-              "defaultValue": "[parameters('frontendPort')]",
-              "minValue": 1,
+              "minValue": 0,
               "maxValue": 65535,
               "metadata": {
-                "description": "Optional. The port used for the internal endpoint."
+                "description": "Required. The port used for the internal endpoint."
               }
             },
             "backendAddressPoolName": {
@@ -727,20 +820,20 @@
             },
             "frontendPortRangeEnd": {
               "type": "int",
-              "defaultValue": -1,
-              "minValue": -1,
+              "nullable": true,
+              "minValue": 0,
               "maxValue": 65534,
               "metadata": {
-                "description": "Optional. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool."
+                "description": "Conditonal. The port range end for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeStart. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified."
               }
             },
             "frontendPortRangeStart": {
               "type": "int",
-              "defaultValue": -1,
-              "minValue": -1,
+              "nullable": true,
+              "minValue": 0,
               "maxValue": 65534,
               "metadata": {
-                "description": "Optional. The port range start for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeEnd. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool."
+                "description": "Conditional. The port range start for the external endpoint. This property is used together with BackendAddressPool and FrontendPortRangeEnd. Individual inbound NAT rule port mappings will be created for each backend address from BackendAddressPool. Required if FrontendPort is not specified."
               }
             },
             "idleTimeoutInMinutes": {
@@ -763,10 +856,16 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "loadBalancer": {
+              "existing": true,
+              "type": "Microsoft.Network/loadBalancers",
+              "apiVersion": "2023-11-01",
+              "name": "[parameters('loadBalancerName')]"
+            },
+            "inboundNatRule": {
               "type": "Microsoft.Network/loadBalancers/inboundNatRules",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2023-11-01",
               "name": "[format('{0}/{1}', parameters('loadBalancerName'), parameters('name'))]",
               "properties": {
                 "frontendPort": "[parameters('frontendPort')]",
@@ -777,13 +876,13 @@
                 "frontendIPConfiguration": {
                   "id": "[format('{0}/frontendIPConfigurations/{1}', resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), parameters('frontendIPConfigurationName'))]"
                 },
-                "frontendPortRangeStart": "[if(not(equals(parameters('frontendPortRangeStart'), -1)), parameters('frontendPortRangeStart'), null())]",
-                "frontendPortRangeEnd": "[if(not(equals(parameters('frontendPortRangeEnd'), -1)), parameters('frontendPortRangeEnd'), null())]",
+                "frontendPortRangeStart": "[parameters('frontendPortRangeStart')]",
+                "frontendPortRangeEnd": "[parameters('frontendPortRangeEnd')]",
                 "idleTimeoutInMinutes": "[parameters('idleTimeoutInMinutes')]",
                 "protocol": "[parameters('protocol')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -849,7 +948,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('loadBalancer', '2023-04-01', 'full').location]"
+      "value": "[reference('loadBalancer', '2023-11-01', 'full').location]"
     }
   }
 }

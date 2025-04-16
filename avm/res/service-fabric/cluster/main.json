@@ -5,14 +5,154 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "2708589601167951653"
+      "version": "0.32.4.45862",
+      "templateHash": "3884249691379598615"
     },
     "name": "Service Fabric Clusters",
-    "description": "This module deploys a Service Fabric Cluster.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Fabric Cluster."
   },
   "definitions": {
+    "certificateType": {
+      "type": "object",
+      "properties": {
+        "thumbprint": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The thumbprint of the primary certificate."
+          }
+        },
+        "thumbprintSecondary": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The thumbprint of the secondary certificate."
+          }
+        },
+        "x509StoreName": {
+          "type": "string",
+          "allowedValues": [
+            "AddressBook",
+            "AuthRoot",
+            "CertificateAuthority",
+            "Disallowed",
+            "My",
+            "Root",
+            "TrustedPeople",
+            "TrustedPublisher"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The local certificate store location."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a certificate."
+      }
+    },
+    "certificateCommonNameType": {
+      "type": "object",
+      "properties": {
+        "commonNames": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/serverCertificateCommonNameType"
+          },
+          "metadata": {
+            "description": "Required. The list of server certificates referenced by common name that are used to secure the cluster."
+          }
+        },
+        "x509StoreName": {
+          "type": "string",
+          "allowedValues": [
+            "AddressBook",
+            "AuthRoot",
+            "CertificateAuthority",
+            "Disallowed",
+            "My",
+            "Root",
+            "TrustedPeople",
+            "TrustedPublisher"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The local certificate store location."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a certificate common name."
+      }
+    },
+    "serverCertificateCommonNameType": {
+      "type": "object",
+      "properties": {
+        "certificateCommonName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The common name of the server certificate."
+          }
+        },
+        "certificateIssuerThumbprint": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The issuer thumbprint of the server certificate."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a server certificate common name."
+      }
+    },
+    "clientCertificateCommonNameType": {
+      "type": "object",
+      "properties": {
+        "certificateCommonName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The common name of the client certificate."
+          }
+        },
+        "certificateIssuerThumbprint": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The issuer thumbprint of the client certificate."
+          }
+        },
+        "isAdmin": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a client certificate common name."
+      }
+    },
+    "clientCertificateThumbprintType": {
+      "type": "object",
+      "properties": {
+        "certificateThumbprint": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The thumbprint of the client certificate."
+          }
+        },
+        "isAdmin": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a client certificate thumbprint."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -36,73 +176,87 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -128,6 +282,7 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -160,31 +315,37 @@
       }
     },
     "certificate": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/certificateType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location."
+        "description": "Conditional. The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used."
       }
     },
     "certificateCommonNames": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/certificateCommonNameType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Describes a list of server certificates referenced by common name that are used to secure the cluster."
+        "description": "Conditional. Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used."
       }
     },
     "clientCertificateCommonNames": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/clientCertificateCommonNameType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The list of client certificates referenced by common name that are allowed to manage the cluster."
+        "description": "Optional. The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used."
       }
     },
     "clientCertificateThumbprints": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/clientCertificateThumbprintType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster."
+        "description": "Optional. The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used."
       }
     },
     "clusterCodeVersion": {
@@ -349,7 +510,11 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -373,65 +538,70 @@
     "copy": [
       {
         "name": "clientCertificateCommonNamesVar",
-        "count": "[length(parameters('clientCertificateCommonNames'))]",
+        "count": "[length(coalesce(parameters('clientCertificateCommonNames'), createArray()))]",
         "input": {
-          "certificateCommonName": "[if(contains(parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')], 'certificateCommonName'), parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')].certificateCommonName, null())]",
-          "certificateIssuerThumbprint": "[if(contains(parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')], 'certificateIssuerThumbprint'), parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')].certificateIssuerThumbprint, null())]",
-          "isAdmin": "[if(contains(parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')], 'isAdmin'), parameters('clientCertificateCommonNames')[copyIndex('clientCertificateCommonNamesVar')].isAdmin, false())]"
+          "certificateCommonName": "[coalesce(parameters('clientCertificateCommonNames'), createArray())[copyIndex('clientCertificateCommonNamesVar')].certificateCommonName]",
+          "certificateIssuerThumbprint": "[coalesce(parameters('clientCertificateCommonNames'), createArray())[copyIndex('clientCertificateCommonNamesVar')].certificateIssuerThumbprint]",
+          "isAdmin": "[coalesce(parameters('clientCertificateCommonNames'), createArray())[copyIndex('clientCertificateCommonNamesVar')].isAdmin]"
         }
       },
       {
         "name": "clientCertificateThumbprintsVar",
-        "count": "[length(parameters('clientCertificateThumbprints'))]",
+        "count": "[length(coalesce(parameters('clientCertificateThumbprints'), createArray()))]",
         "input": {
-          "certificateThumbprint": "[if(contains(parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')], 'certificateThumbprint'), parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')].certificateThumbprint, null())]",
-          "isAdmin": "[if(contains(parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')], 'isAdmin'), parameters('clientCertificateThumbprints')[copyIndex('clientCertificateThumbprintsVar')].isAdmin, false())]"
+          "certificateThumbprint": "[coalesce(parameters('clientCertificateThumbprints'), createArray())[copyIndex('clientCertificateThumbprintsVar')].certificateThumbprint]",
+          "isAdmin": "[coalesce(parameters('clientCertificateThumbprints'), createArray())[copyIndex('clientCertificateThumbprintsVar')].isAdmin]"
         }
       },
       {
         "name": "fabricSettingsVar",
         "count": "[length(parameters('fabricSettings'))]",
         "input": {
-          "name": "[if(contains(parameters('fabricSettings')[copyIndex('fabricSettingsVar')], 'name'), parameters('fabricSettings')[copyIndex('fabricSettingsVar')].name, null())]",
-          "parameters": "[if(contains(parameters('fabricSettings')[copyIndex('fabricSettingsVar')], 'parameters'), parameters('fabricSettings')[copyIndex('fabricSettingsVar')].parameters, null())]"
+          "name": "[tryGet(parameters('fabricSettings')[copyIndex('fabricSettingsVar')], 'name')]",
+          "parameters": "[tryGet(parameters('fabricSettings')[copyIndex('fabricSettingsVar')], 'parameters')]"
         }
       },
       {
         "name": "fnodeTypesVar",
         "count": "[length(parameters('nodeTypes'))]",
         "input": {
-          "applicationPorts": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'applicationPorts'), createObject('endPort', if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts, 'endPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts.endPort, null()), 'startPort', if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts, 'startPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts.startPort, null())), null())]",
-          "capacities": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'capacities'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].capacities, null())]",
-          "clientConnectionEndpointPort": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'clientConnectionEndpointPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].clientConnectionEndpointPort, null())]",
-          "durabilityLevel": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'durabilityLevel'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].durabilityLevel, null())]",
-          "ephemeralPorts": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'ephemeralPorts'), createObject('endPort', if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts, 'endPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts.endPort, null()), 'startPort', if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts, 'startPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts.startPort, null())), null())]",
-          "httpGatewayEndpointPort": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'httpGatewayEndpointPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].httpGatewayEndpointPort, null())]",
-          "isPrimary": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'isPrimary'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].isPrimary, null())]",
-          "isStateless": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'isStateless'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].isStateless, null())]",
-          "multipleAvailabilityZones": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'multipleAvailabilityZones'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].multipleAvailabilityZones, null())]",
-          "name": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'name'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].name, 'Node00')]",
-          "placementProperties": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'placementProperties'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].placementProperties, null())]",
-          "reverseProxyEndpointPort": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'reverseProxyEndpointPort'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].reverseProxyEndpointPort, null())]",
-          "vmInstanceCount": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'vmInstanceCount'), parameters('nodeTypes')[copyIndex('fnodeTypesVar')].vmInstanceCount, 1)]"
+          "applicationPorts": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'applicationPorts'), createObject('endPort', tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts, 'endPort'), 'startPort', tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].applicationPorts, 'startPort')), null())]",
+          "capacities": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'capacities')]",
+          "clientConnectionEndpointPort": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'clientConnectionEndpointPort')]",
+          "durabilityLevel": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'durabilityLevel')]",
+          "ephemeralPorts": "[if(contains(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'ephemeralPorts'), createObject('endPort', tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts, 'endPort'), 'startPort', tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')].ephemeralPorts, 'startPort')), null())]",
+          "httpGatewayEndpointPort": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'httpGatewayEndpointPort')]",
+          "isPrimary": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'isPrimary')]",
+          "isStateless": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'isStateless')]",
+          "multipleAvailabilityZones": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'multipleAvailabilityZones')]",
+          "name": "[coalesce(tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'name'), 'Node00')]",
+          "placementProperties": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'placementProperties')]",
+          "reverseProxyEndpointPort": "[tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'reverseProxyEndpointPort')]",
+          "vmInstanceCount": "[coalesce(tryGet(parameters('nodeTypes')[copyIndex('fnodeTypesVar')], 'vmInstanceCount'), 1)]"
         }
       },
       {
         "name": "notificationsVar",
         "count": "[length(parameters('notifications'))]",
         "input": {
-          "isEnabled": "[if(contains(parameters('notifications')[copyIndex('notificationsVar')], 'isEnabled'), parameters('notifications')[copyIndex('notificationsVar')].isEnabled, false())]",
-          "notificationCategory": "[if(contains(parameters('notifications')[copyIndex('notificationsVar')], 'notificationCategory'), parameters('notifications')[copyIndex('notificationsVar')].notificationCategory, 'WaveProgress')]",
-          "notificationLevel": "[if(contains(parameters('notifications')[copyIndex('notificationsVar')], 'notificationLevel'), parameters('notifications')[copyIndex('notificationsVar')].notificationLevel, 'All')]",
-          "notificationTargets": "[if(contains(parameters('notifications')[copyIndex('notificationsVar')], 'notificationTargets'), parameters('notifications')[copyIndex('notificationsVar')].notificationTargets, createArray())]"
+          "isEnabled": "[coalesce(tryGet(parameters('notifications')[copyIndex('notificationsVar')], 'isEnabled'), false())]",
+          "notificationCategory": "[coalesce(tryGet(parameters('notifications')[copyIndex('notificationsVar')], 'notificationCategory'), 'WaveProgress')]",
+          "notificationLevel": "[coalesce(tryGet(parameters('notifications')[copyIndex('notificationsVar')], 'notificationLevel'), 'All')]",
+          "notificationTargets": "[coalesce(tryGet(parameters('notifications')[copyIndex('notificationsVar')], 'notificationTargets'), createArray())]"
         }
+      },
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "upgradeDescriptionVar": "[union(createObject('deltaHealthPolicy', createObject('applicationDeltaHealthPolicies', coalesce(tryGet(parameters('upgradeDescription'), 'applicationDeltaHealthPolicies'), createObject()), 'maxPercentDeltaUnhealthyApplications', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyApplications'), 0), 'maxPercentDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyNodes'), 0), 'maxPercentUpgradeDomainDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentUpgradeDomainDeltaUnhealthyNodes'), 0)), 'forceRestart', if(contains(parameters('upgradeDescription'), 'forceRestart'), parameters('upgradeDescription').forceRestart, false()), 'healthCheckRetryTimeout', if(contains(parameters('upgradeDescription'), 'healthCheckRetryTimeout'), parameters('upgradeDescription').healthCheckRetryTimeout, '00:45:00'), 'healthCheckStableDuration', if(contains(parameters('upgradeDescription'), 'healthCheckStableDuration'), parameters('upgradeDescription').healthCheckStableDuration, '00:01:00'), 'healthCheckWaitDuration', if(contains(parameters('upgradeDescription'), 'healthCheckWaitDuration'), parameters('upgradeDescription').healthCheckWaitDuration, '00:00:30'), 'upgradeDomainTimeout', if(contains(parameters('upgradeDescription'), 'upgradeDomainTimeout'), parameters('upgradeDescription').upgradeDomainTimeout, '02:00:00'), 'upgradeReplicaSetCheckTimeout', if(contains(parameters('upgradeDescription'), 'upgradeReplicaSetCheckTimeout'), parameters('upgradeDescription').upgradeReplicaSetCheckTimeout, '1.00:00:00'), 'upgradeTimeout', if(contains(parameters('upgradeDescription'), 'upgradeTimeout'), parameters('upgradeDescription').upgradeTimeout, '02:00:00')), if(contains(parameters('upgradeDescription'), 'healthPolicy'), createObject('healthPolicy', createObject('applicationHealthPolicies', if(contains(parameters('upgradeDescription').healthPolicy, 'applicationHealthPolicies'), parameters('upgradeDescription').healthPolicy.applicationHealthPolicies, createObject()), 'maxPercentUnhealthyApplications', if(contains(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyApplications'), parameters('upgradeDescription').healthPolicy.maxPercentUnhealthyApplications, 0), 'maxPercentUnhealthyNodes', if(contains(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyNodes'), parameters('upgradeDescription').healthPolicy.maxPercentUnhealthyNodes, 0))), createObject()))]",
+    "upgradeDescriptionVar": "[union(createObject('deltaHealthPolicy', createObject('applicationDeltaHealthPolicies', coalesce(tryGet(parameters('upgradeDescription'), 'applicationDeltaHealthPolicies'), createObject()), 'maxPercentDeltaUnhealthyApplications', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyApplications'), 0), 'maxPercentDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentDeltaUnhealthyNodes'), 0), 'maxPercentUpgradeDomainDeltaUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription'), 'maxPercentUpgradeDomainDeltaUnhealthyNodes'), 0)), 'forceRestart', coalesce(tryGet(parameters('upgradeDescription'), 'forceRestart'), false()), 'healthCheckRetryTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'healthCheckRetryTimeout'), '00:45:00'), 'healthCheckStableDuration', coalesce(tryGet(parameters('upgradeDescription'), 'healthCheckStableDuration'), '00:01:00'), 'healthCheckWaitDuration', coalesce(tryGet(parameters('upgradeDescription'), 'healthCheckWaitDuration'), '00:00:30'), 'upgradeDomainTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'upgradeDomainTimeout'), '02:00:00'), 'upgradeReplicaSetCheckTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'upgradeReplicaSetCheckTimeout'), '1.00:00:00'), 'upgradeTimeout', coalesce(tryGet(parameters('upgradeDescription'), 'upgradeTimeout'), '02:00:00')), if(contains(parameters('upgradeDescription'), 'healthPolicy'), createObject('healthPolicy', createObject('applicationHealthPolicies', coalesce(tryGet(parameters('upgradeDescription').healthPolicy, 'applicationHealthPolicies'), createObject()), 'maxPercentUnhealthyApplications', coalesce(tryGet(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyApplications'), 0), 'maxPercentUnhealthyNodes', coalesce(tryGet(parameters('upgradeDescription').healthPolicy, 'maxPercentUnhealthyNodes'), 0))), createObject()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -439,7 +609,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.servicefabric-cluster.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -467,13 +637,13 @@
         "applicationTypeVersionsCleanupPolicy": {
           "maxUnusedVersionsToKeep": "[parameters('maxUnusedVersionsToKeep')]"
         },
-        "azureActiveDirectory": "[if(not(empty(parameters('azureActiveDirectory'))), createObject('clientApplication', if(contains(parameters('azureActiveDirectory'), 'clientApplication'), parameters('azureActiveDirectory').clientApplication, null()), 'clusterApplication', if(contains(parameters('azureActiveDirectory'), 'clusterApplication'), parameters('azureActiveDirectory').clusterApplication, null()), 'tenantId', if(contains(parameters('azureActiveDirectory'), 'tenantId'), parameters('azureActiveDirectory').tenantId, null())), null())]",
-        "certificate": "[if(not(empty(parameters('certificate'))), createObject('thumbprint', if(contains(parameters('certificate'), 'thumbprint'), parameters('certificate').thumbprint, null()), 'thumbprintSecondary', if(contains(parameters('certificate'), 'thumbprintSecondary'), parameters('certificate').thumbprintSecondary, null()), 'x509StoreName', if(contains(parameters('certificate'), 'x509StoreName'), parameters('certificate').x509StoreName, null())), null())]",
-        "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', if(contains(parameters('certificateCommonNames'), 'commonNames'), parameters('certificateCommonNames').commonNames, null()), 'x509StoreName', if(contains(parameters('certificateCommonNames'), 'certificateCommonNamesx509StoreName'), parameters('certificateCommonNames').certificateCommonNamesx509StoreName, null())), null())]",
-        "clientCertificateCommonNames": "[if(not(empty(parameters('clientCertificateCommonNames'))), variables('clientCertificateCommonNamesVar'), null())]",
-        "clientCertificateThumbprints": "[if(not(empty(parameters('clientCertificateThumbprints'))), variables('clientCertificateThumbprintsVar'), null())]",
+        "azureActiveDirectory": "[if(not(empty(parameters('azureActiveDirectory'))), createObject('clientApplication', tryGet(parameters('azureActiveDirectory'), 'clientApplication'), 'clusterApplication', tryGet(parameters('azureActiveDirectory'), 'clusterApplication'), 'tenantId', tryGet(parameters('azureActiveDirectory'), 'tenantId')), null())]",
+        "certificate": "[if(not(empty(parameters('certificate'))), createObject('thumbprint', coalesce(tryGet(parameters('certificate'), 'thumbprint'), ''), 'thumbprintSecondary', tryGet(parameters('certificate'), 'thumbprintSecondary'), 'x509StoreName', tryGet(parameters('certificate'), 'x509StoreName')), null())]",
+        "certificateCommonNames": "[if(not(empty(parameters('certificateCommonNames'))), createObject('commonNames', coalesce(tryGet(parameters('certificateCommonNames'), 'commonNames'), createArray()), 'x509StoreName', tryGet(parameters('certificateCommonNames'), 'x509StoreName')), null())]",
+        "clientCertificateCommonNames": "[variables('clientCertificateCommonNamesVar')]",
+        "clientCertificateThumbprints": "[variables('clientCertificateThumbprintsVar')]",
         "clusterCodeVersion": "[parameters('clusterCodeVersion')]",
-        "diagnosticsStorageAccountConfig": "[if(not(empty(parameters('diagnosticsStorageAccountConfig'))), createObject('blobEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'blobEndpoint'), parameters('diagnosticsStorageAccountConfig').blobEndpoint, null()), 'protectedAccountKeyName', if(contains(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName'), parameters('diagnosticsStorageAccountConfig').protectedAccountKeyName, null()), 'protectedAccountKeyName2', if(contains(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName2'), parameters('diagnosticsStorageAccountConfig').protectedAccountKeyName2, null()), 'queueEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'queueEndpoint'), parameters('diagnosticsStorageAccountConfig').queueEndpoint, null()), 'storageAccountName', if(contains(parameters('diagnosticsStorageAccountConfig'), 'storageAccountName'), parameters('diagnosticsStorageAccountConfig').storageAccountName, null()), 'tableEndpoint', if(contains(parameters('diagnosticsStorageAccountConfig'), 'tableEndpoint'), parameters('diagnosticsStorageAccountConfig').tableEndpoint, null())), null())]",
+        "diagnosticsStorageAccountConfig": "[if(not(empty(parameters('diagnosticsStorageAccountConfig'))), createObject('blobEndpoint', tryGet(parameters('diagnosticsStorageAccountConfig'), 'blobEndpoint'), 'protectedAccountKeyName', tryGet(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName'), 'protectedAccountKeyName2', tryGet(parameters('diagnosticsStorageAccountConfig'), 'protectedAccountKeyName2'), 'queueEndpoint', tryGet(parameters('diagnosticsStorageAccountConfig'), 'queueEndpoint'), 'storageAccountName', tryGet(parameters('diagnosticsStorageAccountConfig'), 'storageAccountName'), 'tableEndpoint', tryGet(parameters('diagnosticsStorageAccountConfig'), 'tableEndpoint')), null())]",
         "eventStoreServiceEnabled": "[parameters('eventStoreServiceEnabled')]",
         "fabricSettings": "[if(not(empty(parameters('fabricSettings'))), variables('fabricSettingsVar'), null())]",
         "infrastructureServiceManager": "[parameters('infrastructureServiceManager')]",
@@ -481,8 +651,8 @@
         "nodeTypes": "[if(not(empty(parameters('nodeTypes'))), variables('fnodeTypesVar'), createArray())]",
         "notifications": "[if(not(empty(parameters('notifications'))), variables('notificationsVar'), null())]",
         "reliabilityLevel": "[if(not(empty(parameters('reliabilityLevel'))), parameters('reliabilityLevel'), 'None')]",
-        "reverseProxyCertificate": "[if(not(empty(parameters('reverseProxyCertificate'))), createObject('thumbprint', if(contains(parameters('reverseProxyCertificate'), 'thumbprint'), parameters('reverseProxyCertificate').thumbprint, null()), 'thumbprintSecondary', if(contains(parameters('reverseProxyCertificate'), 'thumbprintSecondary'), parameters('reverseProxyCertificate').thumbprintSecondary, null()), 'x509StoreName', if(contains(parameters('reverseProxyCertificate'), 'x509StoreName'), parameters('reverseProxyCertificate').x509StoreName, null())), null())]",
-        "reverseProxyCertificateCommonNames": "[if(not(empty(parameters('reverseProxyCertificateCommonNames'))), createObject('commonNames', if(contains(parameters('reverseProxyCertificateCommonNames'), 'commonNames'), parameters('reverseProxyCertificateCommonNames').commonNames, null()), 'x509StoreName', if(contains(parameters('reverseProxyCertificateCommonNames'), 'x509StoreName'), parameters('reverseProxyCertificateCommonNames').x509StoreName, null())), null())]",
+        "reverseProxyCertificate": "[if(not(empty(parameters('reverseProxyCertificate'))), createObject('thumbprint', tryGet(parameters('reverseProxyCertificate'), 'thumbprint'), 'thumbprintSecondary', tryGet(parameters('reverseProxyCertificate'), 'thumbprintSecondary'), 'x509StoreName', tryGet(parameters('reverseProxyCertificate'), 'x509StoreName')), null())]",
+        "reverseProxyCertificateCommonNames": "[if(not(empty(parameters('reverseProxyCertificateCommonNames'))), createObject('commonNames', tryGet(parameters('reverseProxyCertificateCommonNames'), 'commonNames'), 'x509StoreName', tryGet(parameters('reverseProxyCertificateCommonNames'), 'x509StoreName')), null())]",
         "sfZonalUpgradeMode": "[if(not(empty(parameters('sfZonalUpgradeMode'))), parameters('sfZonalUpgradeMode'), null())]",
         "upgradeDescription": "[if(not(empty(parameters('upgradeDescription'))), variables('upgradeDescriptionVar'), null())]",
         "upgradeMode": "[if(not(empty(parameters('upgradeMode'))), parameters('upgradeMode'), null())]",
@@ -511,20 +681,20 @@
     "serviceFabricCluster_roleAssignments": {
       "copy": {
         "name": "serviceFabricCluster_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.ServiceFabric/clusters/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.ServiceFabric/clusters', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.ServiceFabric/clusters', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "serviceFabricCluster"
@@ -561,12 +731,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "4241007545422374207"
+              "version": "0.32.4.45862",
+              "templateHash": "4295209679863031973"
             },
             "name": "Service Fabric Cluster Application Types",
-            "description": "This module deploys a Service Fabric Cluster Application Type.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Service Fabric Cluster Application Type."
           },
           "parameters": {
             "serviceFabricClusterName": {
@@ -601,10 +770,7 @@
               "type": "Microsoft.ServiceFabric/clusters/applicationTypes",
               "apiVersion": "2021-06-01",
               "name": "[format('{0}/{1}', parameters('serviceFabricClusterName'), parameters('name'))]",
-              "tags": "[parameters('tags')]",
-              "dependsOn": [
-                "serviceFabricCluster"
-              ]
+              "tags": "[parameters('tags')]"
             }
           },
           "outputs": {

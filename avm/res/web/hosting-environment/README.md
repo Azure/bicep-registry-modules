@@ -18,8 +18,8 @@ This module deploys an App Service Environment.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Web/hostingEnvironments` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2022-03-01/hostingEnvironments) |
-| `Microsoft.Web/hostingEnvironments/configurations` | [2022-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/hostingEnvironments/configurations) |
+| `Microsoft.Web/hostingEnvironments` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/hostingEnvironments) |
+| `Microsoft.Web/hostingEnvironments/configurations` | [2023-12-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2023-12-01/hostingEnvironments/configurations) |
 
 ## Usage examples
 
@@ -49,9 +49,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     // Required parameters
     name: 'whemin001'
     subnetResourceId: '<subnetResourceId>'
-    // Non-required parameters
-    kind: 'ASEv3'
-    location: '<location>'
   }
 }
 ```
@@ -61,7 +58,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,16 +71,24 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
-    },
-    // Non-required parameters
-    "kind": {
-      "value": "ASEv3"
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/hosting-environment:<version>'
+
+// Required parameters
+param name = 'whemin001'
+param subnetResourceId = '<subnetResourceId>'
 ```
 
 </details>
@@ -106,7 +111,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     name: 'whemax001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    allowNewPrivateEndpointConnections: true
     clusterSettings: [
       {
         name: 'DisableTls1.0'
@@ -125,9 +129,8 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    ftpEnabled: true
-    inboundIpAddressOverride: '10.0.0.10'
     internalLoadBalancingMode: 'Web, Publishing'
+    kind: 'ASEv3'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -139,14 +142,23 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         '<managedIdentityResourceId>'
       ]
     }
-    remoteDebugEnabled: true
+    networkConfiguration: {
+      properties: {
+        allowNewPrivateEndpointConnections: true
+        ftpEnabled: true
+        inboundIpAddressOverride: '10.0.0.10'
+        remoteDebugEnabled: true
+      }
+    }
     roleAssignments: [
       {
+        name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -163,6 +175,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       resourceType: 'App Service Environment'
     }
     upgradePreference: 'Late'
+    zoneRedundant: true
   }
 }
 ```
@@ -172,7 +185,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -187,9 +200,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "allowNewPrivateEndpointConnections": {
-      "value": true
-    },
     "clusterSettings": {
       "value": [
         {
@@ -218,14 +228,11 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         }
       ]
     },
-    "ftpEnabled": {
-      "value": true
-    },
-    "inboundIpAddressOverride": {
-      "value": "10.0.0.10"
-    },
     "internalLoadBalancingMode": {
       "value": "Web, Publishing"
+    },
+    "kind": {
+      "value": "ASEv3"
     },
     "location": {
       "value": "<location>"
@@ -244,17 +251,26 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         ]
       }
     },
-    "remoteDebugEnabled": {
-      "value": true
+    "networkConfiguration": {
+      "value": {
+        "properties": {
+          "allowNewPrivateEndpointConnections": true,
+          "ftpEnabled": true,
+          "inboundIpAddressOverride": "10.0.0.10",
+          "remoteDebugEnabled": true
+        }
+      }
     },
     "roleAssignments": {
       "value": [
         {
+          "name": "97fc1da9-bfe4-409d-b17a-da9a82fad0d0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -275,9 +291,93 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     },
     "upgradePreference": {
       "value": "Late"
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/hosting-environment:<version>'
+
+// Required parameters
+param name = 'whemax001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param clusterSettings = [
+  {
+    name: 'DisableTls1.0'
+    value: '1'
+  }
+]
+param customDnsSuffix = 'internal.contoso.com'
+param customDnsSuffixCertificateUrl = '<customDnsSuffixCertificateUrl>'
+param customDnsSuffixKeyVaultReferenceIdentity = '<customDnsSuffixKeyVaultReferenceIdentity>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param internalLoadBalancingMode = 'Web, Publishing'
+param kind = 'ASEv3'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkConfiguration = {
+  properties: {
+    allowNewPrivateEndpointConnections: true
+    ftpEnabled: true
+    inboundIpAddressOverride: '10.0.0.10'
+    remoteDebugEnabled: true
+  }
+}
+param roleAssignments = [
+  {
+    name: '97fc1da9-bfe4-409d-b17a-da9a82fad0d0'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  hostingEnvironmentName: 'whemax001'
+  resourceType: 'App Service Environment'
+}
+param upgradePreference = 'Late'
+param zoneRedundant = true
 ```
 
 </details>
@@ -300,7 +400,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
     name: 'whewaf001'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    allowNewPrivateEndpointConnections: true
     clusterSettings: [
       {
         name: 'DisableTls1.0'
@@ -319,17 +418,20 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    ftpEnabled: true
-    inboundIpAddressOverride: '10.0.0.10'
     internalLoadBalancingMode: 'Web, Publishing'
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
     }
-    remoteDebugEnabled: true
+    networkConfiguration: {
+      properties: {
+        allowNewPrivateEndpointConnections: true
+        ftpEnabled: true
+        remoteDebugEnabled: true
+      }
+    }
     tags: {
       'hidden-title': 'This is visible in the resource name'
       hostingEnvironmentName: 'whewaf001'
@@ -345,7 +447,7 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -360,9 +462,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "allowNewPrivateEndpointConnections": {
-      "value": true
-    },
     "clusterSettings": {
       "value": [
         {
@@ -391,17 +490,8 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         }
       ]
     },
-    "ftpEnabled": {
-      "value": true
-    },
-    "inboundIpAddressOverride": {
-      "value": "10.0.0.10"
-    },
     "internalLoadBalancingMode": {
       "value": "Web, Publishing"
-    },
-    "location": {
-      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -411,8 +501,14 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
         ]
       }
     },
-    "remoteDebugEnabled": {
-      "value": true
+    "networkConfiguration": {
+      "value": {
+        "properties": {
+          "allowNewPrivateEndpointConnections": true,
+          "ftpEnabled": true,
+          "remoteDebugEnabled": true
+        }
+      }
     },
     "tags": {
       "value": {
@@ -431,6 +527,59 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/web/hosting-environment:<version>'
+
+// Required parameters
+param name = 'whewaf001'
+param subnetResourceId = '<subnetResourceId>'
+// Non-required parameters
+param clusterSettings = [
+  {
+    name: 'DisableTls1.0'
+    value: '1'
+  }
+]
+param customDnsSuffix = 'internal.contoso.com'
+param customDnsSuffixCertificateUrl = '<customDnsSuffixCertificateUrl>'
+param customDnsSuffixKeyVaultReferenceIdentity = '<customDnsSuffixKeyVaultReferenceIdentity>'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param internalLoadBalancingMode = 'Web, Publishing'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param networkConfiguration = {
+  properties: {
+    allowNewPrivateEndpointConnections: true
+    ftpEnabled: true
+    remoteDebugEnabled: true
+  }
+}
+param tags = {
+  'hidden-title': 'This is visible in the resource name'
+  hostingEnvironmentName: 'whewaf001'
+  resourceType: 'App Service Environment'
+}
+param upgradePreference = 'Late'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -445,7 +594,6 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`allowNewPrivateEndpointConnections`](#parameter-allownewprivateendpointconnections) | bool | Property to enable and disable new private endpoint connection creation on ASE. |
 | [`clusterSettings`](#parameter-clustersettings) | array | Custom settings for changing the behavior of the App Service Environment. |
 | [`customDnsSuffix`](#parameter-customdnssuffix) | string | Enable the default custom domain suffix to use for all sites deployed on the ASE. If provided, then customDnsSuffixCertificateUrl and customDnsSuffixKeyVaultReferenceIdentity are required. |
 | [`customDnsSuffixCertificateUrl`](#parameter-customdnssuffixcertificateurl) | string | The URL referencing the Azure Key Vault certificate secret that should be used as the default SSL/TLS certificate for sites with the custom domain suffix. Required if customDnsSuffix is not empty. |
@@ -455,14 +603,12 @@ module hostingEnvironment 'br/public:avm/res/web/hosting-environment:<version>' 
 | [`dnsSuffix`](#parameter-dnssuffix) | string | DNS suffix of the App Service Environment. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`frontEndScaleFactor`](#parameter-frontendscalefactor) | int | Scale factor for frontends. |
-| [`ftpEnabled`](#parameter-ftpenabled) | bool | Property to enable and disable FTP on ASEV3. |
-| [`inboundIpAddressOverride`](#parameter-inboundipaddressoverride) | string | Customer provided Inbound IP Address. Only able to be set on Ase create. |
 | [`internalLoadBalancingMode`](#parameter-internalloadbalancingmode) | string | Specifies which endpoints to serve internally in the Virtual Network for the App Service Environment. - None, Web, Publishing, Web,Publishing. "None" Exposes the ASE-hosted apps on an internet-accessible IP address. |
 | [`kind`](#parameter-kind) | string | Kind of resource. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`remoteDebugEnabled`](#parameter-remotedebugenabled) | bool | Property to enable and disable Remote Debug on ASEv3. |
+| [`networkConfiguration`](#parameter-networkconfiguration) | object | Properties to configure additional networking features. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`upgradePreference`](#parameter-upgradepreference) | string | Specify preference for when and how the planned maintenance is applied. |
@@ -481,14 +627,6 @@ ResourceId for the subnet.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `allowNewPrivateEndpointConnections`
-
-Property to enable and disable new private endpoint connection creation on ASE.
-
-- Required: No
-- Type: bool
-- Default: `False`
 
 ### Parameter: `clusterSettings`
 
@@ -552,7 +690,7 @@ The diagnostic settings of the service.
 | [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
 | [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -588,7 +726,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
 - Required: No
 - Type: array
@@ -598,7 +736,8 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
 
@@ -609,10 +748,17 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
-Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -665,22 +811,6 @@ Scale factor for frontends.
 - Required: No
 - Type: int
 - Default: `15`
-
-### Parameter: `ftpEnabled`
-
-Property to enable and disable FTP on ASEV3.
-
-- Required: No
-- Type: bool
-- Default: `False`
-
-### Parameter: `inboundIpAddressOverride`
-
-Customer provided Inbound IP Address. Only able to be set on Ase create.
-
-- Required: No
-- Type: string
-- Default: `''`
 
 ### Parameter: `internalLoadBalancingMode`
 
@@ -769,7 +899,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -780,18 +910,17 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
 
-### Parameter: `remoteDebugEnabled`
+### Parameter: `networkConfiguration`
 
-Property to enable and disable Remote Debug on ASEv3.
+Properties to configure additional networking features.
 
 - Required: No
-- Type: bool
-- Default: `False`
+- Type: object
 
 ### Parameter: `roleAssignments`
 
@@ -799,6 +928,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -815,6 +950,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -861,6 +997,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -912,8 +1055,7 @@ Switch to make the App Service Environment zone redundant. If enabled, the minim
 
 - Required: No
 - Type: bool
-- Default: `False`
-
+- Default: `True`
 
 ## Outputs
 
@@ -927,7 +1069,11 @@ Switch to make the App Service Environment zone redundant. If enabled, the minim
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 
 ## Data Collection
 

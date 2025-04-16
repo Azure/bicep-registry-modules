@@ -126,7 +126,7 @@ resource storageUpload 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
     arguments: '-StorageAccountName "${storageAccount.name}" -ResourceGroupName "${resourceGroup().name}" -ContainerName "${storageAccount::blobService::container.name}" -FileName "${storageAccountCSEFileName}"'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-BlobContent.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-BlobContent.ps1')
   }
   dependsOn: [
     msiRGContrRoleAssignment

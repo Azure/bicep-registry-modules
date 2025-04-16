@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "15327912662565121564"
+      "version": "0.33.93.31351",
+      "templateHash": "10622466301065060150"
     },
     "name": "Event Hub Namespace Authorization Rule",
-    "description": "This module deploys an Event Hub Namespace Authorization Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Hub Namespace Authorization Rule."
   },
   "parameters": {
     "namespaceName": {
@@ -40,7 +39,7 @@
   "resources": [
     {
       "type": "Microsoft.EventHub/namespaces/authorizationRules",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
       "properties": {
         "rights": "[parameters('rights')]"

@@ -43,7 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -82,11 +82,13 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
+          name: 'b6d38ee8-4058-42b1-af6a-b8d585cf61ef'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -146,21 +148,46 @@ module testDeployment '../../../main.bicep' = [
           properties: {
             access: 'Allow'
             description: 'Allow inbound access on TCP 8082'
-            destinationApplicationSecurityGroups: [
-              {
-                id: nestedDependencies.outputs.applicationSecurityGroupResourceId
-              }
+            destinationApplicationSecurityGroupResourceIds: [
+              nestedDependencies.outputs.applicationSecurityGroupResourceId
             ]
             destinationPortRange: '8082'
             direction: 'Inbound'
             priority: 102
             protocol: '*'
-            sourceApplicationSecurityGroups: [
-              {
-                id: nestedDependencies.outputs.applicationSecurityGroupResourceId
-              }
+            sourceApplicationSecurityGroupResourceIds: [
+              nestedDependencies.outputs.applicationSecurityGroupResourceId
             ]
             sourcePortRange: '*'
+          }
+        }
+        {
+          name: 'Deny-All-Inbound'
+          properties: {
+            access: 'Deny'
+            direction: 'Inbound'
+            priority: 4095
+            protocol: '*'
+            sourcePortRange: '*'
+            destinationPortRange: '*'
+            sourceAddressPrefix: '*'
+            destinationAddressPrefix: '*'
+          }
+        }
+        {
+          name: 'Allow-AzureCloud-Tcp'
+          properties: {
+            access: 'Allow'
+            direction: 'Outbound'
+            priority: 250
+            protocol: 'Tcp'
+            destinationAddressPrefix: 'AzureCloud'
+            sourceAddressPrefixes: [
+              '10.10.10.0/24'
+              '192.168.1.0/24'
+            ]
+            sourcePortRange: '*'
+            destinationPortRange: '443'
           }
         }
       ]
@@ -170,9 +197,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

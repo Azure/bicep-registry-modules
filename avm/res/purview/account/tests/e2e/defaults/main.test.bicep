@@ -20,8 +20,8 @@ param serviceShort string = 'pvamin'
 param namePrefix string = '#_namePrefix_#'
 
 // Set to fixed location as the RP function returns unsupported locations
-// Right now (2024/03) the following locations are supported: eastus, eastus2, southcentralus, westcentralus, westus, westus2, westus3
-param enforcedLocation string = 'eastus'
+// Right now (2024/07) the following locations are supported: uksouth
+param enforcedLocation string = 'uksouth'
 
 // =========== //
 // Deployments //

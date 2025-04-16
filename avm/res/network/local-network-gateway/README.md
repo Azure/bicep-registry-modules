@@ -50,8 +50,6 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     ]
     localGatewayPublicIpAddress: '8.8.8.8'
     name: 'nlngmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -61,7 +59,7 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -79,13 +77,27 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     },
     "name": {
       "value": "nlngmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/local-network-gateway:<version>'
+
+// Required parameters
+param localAddressPrefixes = [
+  '192.168.1.0/24'
+]
+param localGatewayPublicIpAddress = '8.8.8.8'
+param name = 'nlngmin001'
 ```
 
 </details>
@@ -111,8 +123,10 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     localGatewayPublicIpAddress: '8.8.8.8'
     name: 'nlngmax001'
     // Non-required parameters
-    localAsn: '65123'
-    localBgpPeeringAddress: '192.168.1.5'
+    bgpSettings: {
+      localAsn: 65123
+      localBgpPeeringAddress: '192.168.1.5'
+    }
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -120,11 +134,13 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     }
     roleAssignments: [
       {
+        name: 'd14a9fe8-2358-434a-a715-3d10978088cc'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -149,7 +165,7 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -169,11 +185,11 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
       "value": "nlngmax001"
     },
     // Non-required parameters
-    "localAsn": {
-      "value": "65123"
-    },
-    "localBgpPeeringAddress": {
-      "value": "192.168.1.5"
+    "bgpSettings": {
+      "value": {
+        "localAsn": 65123,
+        "localBgpPeeringAddress": "192.168.1.5"
+      }
     },
     "location": {
       "value": "<location>"
@@ -187,11 +203,13 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     "roleAssignments": {
       "value": [
         {
+          "name": "d14a9fe8-2358-434a-a715-3d10978088cc",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -211,6 +229,58 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/local-network-gateway:<version>'
+
+// Required parameters
+param localAddressPrefixes = [
+  '192.168.1.0/24'
+]
+param localGatewayPublicIpAddress = '8.8.8.8'
+param name = 'nlngmax001'
+// Non-required parameters
+param bgpSettings = {
+  localAsn: 65123
+  localBgpPeeringAddress: '192.168.1.5'
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'd14a9fe8-2358-434a-a715-3d10978088cc'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -237,12 +307,9 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
     localGatewayPublicIpAddress: '8.8.8.8'
     name: 'nlngwaf001'
     // Non-required parameters
-    localAsn: '65123'
-    localBgpPeeringAddress: '192.168.1.5'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
+    bgpSettings: {
+      localAsn: 65123
+      localBgpPeeringAddress: '192.168.1.5'
     }
     tags: {
       Environment: 'Non-Prod'
@@ -258,7 +325,7 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -278,19 +345,10 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
       "value": "nlngwaf001"
     },
     // Non-required parameters
-    "localAsn": {
-      "value": "65123"
-    },
-    "localBgpPeeringAddress": {
-      "value": "192.168.1.5"
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
+    "bgpSettings": {
       "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
+        "localAsn": 65123,
+        "localBgpPeeringAddress": "192.168.1.5"
       }
     },
     "tags": {
@@ -307,6 +365,33 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/local-network-gateway:<version>'
+
+// Required parameters
+param localAddressPrefixes = [
+  '192.168.1.0/24'
+]
+param localGatewayPublicIpAddress = '8.8.8.8'
+param name = 'nlngwaf001'
+// Non-required parameters
+param bgpSettings = {
+  localAsn: 65123
+  localBgpPeeringAddress: '192.168.1.5'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -322,11 +407,9 @@ module localNetworkGateway 'br/public:avm/res/network/local-network-gateway:<ver
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`bgpSettings`](#parameter-bgpsettings) | object | Local network gateway's BGP speaker settings. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`fqdn`](#parameter-fqdn) | string | FQDN of local network gateway. |
-| [`localAsn`](#parameter-localasn) | string | The BGP speaker's ASN. Not providing this value will automatically disable BGP on this Local Network Gateway resource. |
-| [`localBgpPeeringAddress`](#parameter-localbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. Not providing this value will automatically disable BGP on this Local Network Gateway resource. |
-| [`localPeerWeight`](#parameter-localpeerweight) | string | The weight added to routes learned from this BGP speaker. This will only take effect if both the localAsn and the localBgpPeeringAddress values are provided. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -353,6 +436,49 @@ Name of the Local Network Gateway.
 - Required: Yes
 - Type: string
 
+### Parameter: `bgpSettings`
+
+Local network gateway's BGP speaker settings.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`localAsn`](#parameter-bgpsettingslocalasn) | int | The BGP speaker's ASN. |
+| [`localBgpPeeringAddress`](#parameter-bgpsettingslocalbgppeeringaddress) | string | The BGP peering address and BGP identifier of this BGP speaker. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`peerWeight`](#parameter-bgpsettingspeerweight) | int | The weight added to routes learned from this BGP speaker. |
+
+### Parameter: `bgpSettings.localAsn`
+
+The BGP speaker's ASN.
+
+- Required: Yes
+- Type: int
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `bgpSettings.localBgpPeeringAddress`
+
+The BGP peering address and BGP identifier of this BGP speaker.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `bgpSettings.peerWeight`
+
+The weight added to routes learned from this BGP speaker.
+
+- Required: No
+- Type: int
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -364,30 +490,6 @@ Enable/Disable usage telemetry for module.
 ### Parameter: `fqdn`
 
 FQDN of local network gateway.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `localAsn`
-
-The BGP speaker's ASN. Not providing this value will automatically disable BGP on this Local Network Gateway resource.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `localBgpPeeringAddress`
-
-The BGP peering address and BGP identifier of this BGP speaker. Not providing this value will automatically disable BGP on this Local Network Gateway resource.
-
-- Required: No
-- Type: string
-- Default: `''`
-
-### Parameter: `localPeerWeight`
-
-The weight added to routes learned from this BGP speaker. This will only take effect if both the localAsn and the localBgpPeeringAddress values are provided.
 
 - Required: No
 - Type: string
@@ -443,6 +545,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -459,6 +568,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -509,6 +619,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -533,7 +650,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -545,7 +661,11 @@ Tags of the resource.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

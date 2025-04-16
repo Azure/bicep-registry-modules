@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "13768999645959207906"
+      "version": "0.34.44.8038",
+      "templateHash": "16944244045686961069"
     },
     "name": "DNS Resolver Inbound Endpoint",
-    "description": "This module deploys a DNS Resolver Inbound Endpoint.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DNS Resolver Inbound Endpoint."
   },
   "parameters": {
     "dnsResolverName": {
@@ -84,10 +83,7 @@
             "privateIpAllocationMethod": "[parameters('privateIpAllocationMethod')]"
           }
         ]
-      },
-      "dependsOn": [
-        "dnsResolver"
-      ]
+      }
     }
   },
   "outputs": {

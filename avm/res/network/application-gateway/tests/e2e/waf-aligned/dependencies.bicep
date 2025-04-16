@@ -7,6 +7,9 @@ param virtualNetworkName string
 @description('Required. The name of the Public IP to create.')
 param publicIPName string
 
+@description('Required. The name of the Firewall Policy to create.')
+param fwPolicyName string
+
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
@@ -128,7 +131,22 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01'
     azPowerShellVersion: '8.0'
     retentionInterval: 'P1D'
     arguments: '-KeyVaultName "${keyVault.name}" -CertName "applicationGatewaySslCertificate"'
-    scriptContent: loadTextContent('../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
+  }
+}
+
+resource applicationGatewayWAFPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2022-11-01' = {
+  name: fwPolicyName
+  location: location
+  properties: {
+    managedRules: {
+      managedRuleSets: [
+        {
+          ruleSetType: 'OWASP'
+          ruleSetVersion: '3.2'
+        }
+      ]
+    }
   }
 }
 
@@ -152,3 +170,6 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
+
+@description('The resource ID of the created Application Gateway Web Application Firewall Policy.')
+output fwPolicyResourceId string = applicationGatewayWAFPolicy.id

@@ -17,9 +17,6 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'rsvmax'
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -41,12 +38,15 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    sshDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
+    sshKeyName: 'dep-${namePrefix}-ssh-${serviceShort}'
+    virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
   }
 }
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -69,12 +69,20 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: resourceLocation
-      enableTelemetry: enableDefaultTelemetry
       name: '${namePrefix}${serviceShort}001'
       backupConfig: {
         enhancedSecurityState: 'Disabled'
         softDeleteFeatureState: 'Disabled'
       }
+      protectedItems: [
+        {
+          name: 'vm;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
+          protectionContainerName: 'IaasVMContainer;iaasvmcontainerv2;${resourceGroup.name};${last(split(nestedDependencies.outputs.virtualMachineResourceId, '/'))}'
+          policyName: 'VMpolicy'
+          protectedItemType: 'Microsoft.Compute/virtualMachines'
+          sourceResourceId: nestedDependencies.outputs.virtualMachineResourceId
+        }
+      ]
       backupPolicies: [
         {
           name: 'VMpolicy'
@@ -305,10 +313,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      backupStorageConfig: {
-        crossRegionRestoreFlag: true
-        storageModelType: 'GeoRedundant'
-      }
       replicationAlertSettings: {
         customEmailAddresses: [
           'test.user@testcompany.com'
@@ -384,9 +388,13 @@ module testDeployment '../../../main.bicep' = [
               }
             }
           ]
-          privateDnsZoneResourceIds: [
-            nestedDependencies.outputs.privateDNSZoneResourceId
-          ]
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
             'hidden-title': 'This is visible in the resource name'
@@ -397,11 +405,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
+          name: '35288372-e6b4-4333-9ee6-dd997b96d52b'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -418,15 +428,19 @@ module testDeployment '../../../main.bicep' = [
       monitoringSettings: {
         azureMonitorAlertSettings: {
           alertsForAllJobFailures: 'Enabled'
+          alertsForAllFailoverIssues: 'Enabled'
+          alertsForAllReplicationIssues: 'Enabled'
         }
         classicAlertSettings: {
           alertsForCriticalOperations: 'Enabled'
+          emailNotificationsForSiteRecovery: 'Enabled'
         }
       }
-      securitySettings: {
-        immutabilitySettings: {
-          state: 'Unlocked'
-        }
+      immutabilitySettingState: 'Unlocked'
+      softDeleteSettings: {
+        enhancedSecurityState: 'Enabled'
+        softDeleteRetentionPeriodInDays: 14
+        softDeleteState: 'Enabled'
       }
       tags: {
         'hidden-title': 'This is visible in the resource name'

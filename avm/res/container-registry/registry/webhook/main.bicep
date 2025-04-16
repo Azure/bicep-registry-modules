@@ -1,6 +1,5 @@
 metadata name = 'Azure Container Registry (ACR) Webhooks'
 metadata description = 'This module deploys an Azure Container Registry (ACR) Webhook.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent registry. Required if the template is used in a standalone deployment.')
 param registryName string
@@ -21,7 +20,7 @@ param serviceUri string
 param status string = 'enabled'
 
 @description('Optional. The list of actions that trigger the webhook to post notifications.')
-param action array = [
+param action string[] = [
   'chart_delete'
   'chart_push'
   'delete'

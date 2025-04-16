@@ -17,7 +17,7 @@ This module deploys an Availability Set.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Compute/availabilitySets` | [2023-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2023-03-01/availabilitySets) |
+| `Microsoft.Compute/availabilitySets` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/availabilitySets) |
 
 ## Usage examples
 
@@ -57,7 +57,7 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -74,6 +74,22 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/availability-set:<version>'
+
+// Required parameters
+param name = 'casmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -103,11 +119,13 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
     proximityPlacementGroupResourceId: '<proximityPlacementGroupResourceId>'
     roleAssignments: [
       {
+        name: 'd9d13442-232d-4861-9ab9-bad5e90c4f71'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -118,6 +136,7 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    skuName: 'Aligned'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -132,7 +151,7 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -159,11 +178,13 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
     "roleAssignments": {
       "value": [
         {
+          "name": "d9d13442-232d-4861-9ab9-bad5e90c4f71",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -175,6 +196,9 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
         }
       ]
     },
+    "skuName": {
+      "value": "Aligned"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -183,6 +207,52 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/availability-set:<version>'
+
+// Required parameters
+param name = 'casmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param proximityPlacementGroupResourceId = '<proximityPlacementGroupResourceId>'
+param roleAssignments = [
+  {
+    name: 'd9d13442-232d-4861-9ab9-bad5e90c4f71'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param skuName = 'Aligned'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -225,7 +295,7 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -263,6 +333,31 @@ module availabilitySet 'br/public:avm/res/compute/availability-set:<version>' = 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/availability-set:<version>'
+
+// Required parameters
+param name = 'caswaf001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param proximityPlacementGroupResourceId = '<proximityPlacementGroupResourceId>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -367,7 +462,6 @@ Resource ID of a proximity placement group.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `roleAssignments`
 
@@ -375,6 +469,16 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Virtual Machine Administrator Login'`
+  - `'Virtual Machine Contributor'`
+  - `'Virtual Machine Data Access Administrator (preview)'`
+  - `'Virtual Machine User Login'`
 
 **Required parameters**
 
@@ -391,6 +495,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -441,6 +546,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -473,7 +585,6 @@ Tags of the availability set resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -485,7 +596,11 @@ Tags of the availability set resource.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

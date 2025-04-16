@@ -5,81 +5,566 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "9491401922190427460"
+      "version": "0.34.44.8038",
+      "templateHash": "4385691850958293637"
     },
     "name": "Azure NetApp Files Capacity Pools",
-    "description": "This module deploys an Azure NetApp Files Capacity Pool.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure NetApp Files Capacity Pool."
   },
   "definitions": {
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
+    "volumeType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the pool volume."
+          }
+        },
+        "coolAccess": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If enabled (true) the pool can contain cool Access enabled volumes."
+          }
+        },
+        "coolnessPeriod": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the number of days after which data that is not accessed by clients will be tiered."
+          }
+        },
+        "coolAccessRetrievalPolicy": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
+          }
+        },
+        "encryptionKeySource": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The source of the encryption key."
+          }
+        },
+        "keyVaultPrivateEndpointResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the key vault private endpoint."
+          }
+        },
+        "dataProtection": {
+          "$ref": "#/definitions/dataProtectionType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. DataProtection type volumes include an object containing details of the replication."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Location of the pool volume."
+          }
+        },
+        "zone": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set."
+          }
+        },
+        "serviceLevel": {
+          "type": "string",
+          "allowedValues": [
+            "Premium",
+            "Standard",
+            "StandardZRS",
+            "Ultra"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The pool service level. Must match the one of the parent capacity pool."
+          }
+        },
+        "networkFeatures": {
+          "type": "string",
+          "allowedValues": [
+            "Basic",
+            "Basic_Standard",
+            "Standard",
+            "Standard_Basic"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Network feature for the volume."
+          }
+        },
+        "creationToken": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription."
+          }
+        },
+        "usageThreshold": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Maximum storage quota allowed for a file system in bytes."
+          }
+        },
+        "protocolTypes": {
+          "type": "array",
+          "allowedValues": [
+            "CIFS",
+            "NFSv3",
+            "NFSv4.1"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes."
+          }
+        },
+        "exportPolicy": {
+          "$ref": "#/definitions/exportPolicyType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Export policy rules."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
           },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
+        "smbEncryption": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume."
+          }
+        },
+        "smbContinuouslyAvailable": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume."
+          }
+        },
+        "smbNonBrowsable": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume."
+          }
+        },
+        "kerberosEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Define if a volume is KerberosEnabled."
+          }
+        },
+        "volumeType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a volume in the capacity pool."
+      }
+    },
+    "_1.backupType": {
+      "type": "object",
+      "properties": {
+        "backupPolicyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the backup policy to link."
+          }
+        },
+        "policyEnforced": {
+          "type": "bool",
+          "metadata": {
+            "description": "Required. Enable to enforce the policy."
+          }
+        },
+        "backupVaultName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Backup Vault."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the backup properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "volume/main.bicep"
+        }
+      }
+    },
+    "_1.replicationType": {
+      "type": "object",
+      "properties": {
+        "endpointType": {
+          "type": "string",
+          "allowedValues": [
+            "dst",
+            "src"
+          ],
+          "metadata": {
+            "description": "Required. Indicates whether the local volume is the source or destination for the Volume Replication."
+          }
+        },
+        "remoteVolumeRegion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes."
+          }
+        },
+        "remoteVolumeResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the remote volume. Required for Data Protection volumes."
+          }
+        },
+        "replicationSchedule": {
+          "type": "string",
+          "allowedValues": [
+            "_10minutely",
+            "daily",
+            "hourly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The replication schedule for the volume (to only be set on the destination (dst))."
+          }
+        },
+        "remotePath": {
+          "type": "object",
+          "properties": {
+            "externalHostName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The Path to a ONTAP Host."
+              }
+            },
+            "serverName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of a server on the ONTAP Host."
+              }
+            },
+            "volumeName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of a volume on the server."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full path to a volume that is to be migrated into ANF. Required for Migration volumes."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the replication properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "volume/main.bicep"
+        }
+      }
+    },
+    "_1.snapshotType": {
+      "type": "object",
+      "properties": {
+        "snapshotPolicyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the snapshot policy to link."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the snapshot properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "volume/main.bicep"
+        }
+      }
+    },
+    "dataProtectionType": {
+      "type": "object",
+      "properties": {
+        "replication": {
+          "$ref": "#/definitions/_1.replicationType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Replication properties."
+          }
+        },
+        "backup": {
+          "$ref": "#/definitions/_1.backupType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Backup properties."
+          }
+        },
+        "snapshot": {
+          "$ref": "#/definitions/_1.snapshotType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Snapshot properties."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the data protection properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "volume/main.bicep"
+        }
+      }
+    },
+    "exportPolicyType": {
+      "type": "object",
+      "properties": {
+        "rules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ruleIndex": {
+                "type": "int",
+                "metadata": {
+                  "description": "Required. Order index."
+                }
+              },
+              "allowedClients": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names."
+                }
+              },
+              "chownMode": {
+                "type": "string",
+                "allowedValues": [
+                  "Restricted",
+                  "Unrestricted"
+                ],
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. This parameter specifies who is authorized to change the ownership of a file. restricted - Only root user can change the ownership of the file. unrestricted - Non-root users can change ownership of files that they own."
+                }
+              },
+              "cifs": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Allows CIFS protocol."
+                }
+              },
+              "hasRootAccess": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Has root access to volume."
+                }
+              },
+              "kerberos5ReadOnly": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5 Read only access."
+                }
+              },
+              "kerberos5ReadWrite": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5 Read and write access."
+                }
+              },
+              "kerberos5iReadOnly": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5i Read only access."
+                }
+              },
+              "kerberos5iReadWrite": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5i Read and write access."
+                }
+              },
+              "kerberos5pReadOnly": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5p Read only access."
+                }
+              },
+              "kerberos5pReadWrite": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Kerberos5p Read and write access."
+                }
+              },
+              "nfsv3": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Allows NFSv3 protocol. Enable only for NFSv3 type volumes."
+                }
+              },
+              "nfsv41": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes."
+                }
+              },
+              "unixReadOnly": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Read only access."
+                }
+              },
+              "unixReadWrite": {
+                "type": "bool",
+                "metadata": {
+                  "description": "Required. Read and write access."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The Export policy rules."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for export policy rules.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "volume/main.bicep"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
+  "functions": [
+    {
+      "namespace": "__bicep",
+      "members": {
+        "tebibytesToBytes": {
+          "parameters": [
+            {
+              "type": "int",
+              "name": "tebibytes"
+            }
+          ],
+          "output": {
+            "type": "int",
+            "value": "[mul(mul(mul(mul(parameters('tebibytes'), 1024), 1024), 1024), 1024)]"
+          },
+          "metadata": {
+            "description": "Converts from tebibytes to bytes."
+          }
+        }
+      }
+    }
+  ],
   "parameters": {
     "netAppAccountName": {
       "type": "string",
@@ -122,8 +607,10 @@
     },
     "size": {
       "type": "int",
+      "minValue": 1,
+      "maxValue": 2048,
       "metadata": {
-        "description": "Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104)."
+        "description": "Required. Provisioned size of the pool in Tebibytes (TiB)."
       }
     },
     "qosType": {
@@ -139,9 +626,12 @@
     },
     "volumes": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/volumeType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. List of volumnes to create in the capacity pool."
+        "description": "Optional. List of volumes to create in the capacity pool."
       }
     },
     "coolAccess": {
@@ -152,7 +642,11 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -170,11 +664,18 @@
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -182,43 +683,40 @@
     "netAppAccount": {
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('netAppAccountName')]"
     },
     "capacityPool": {
       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2025-01-01",
       "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
         "serviceLevel": "[parameters('serviceLevel')]",
-        "size": "[parameters('size')]",
+        "size": "[__bicep.tebibytesToBytes(parameters('size'))]",
         "qosType": "[parameters('qosType')]",
         "coolAccess": "[parameters('coolAccess')]",
         "encryptionType": "[parameters('encryptionType')]"
-      },
-      "dependsOn": [
-        "netAppAccount"
-      ]
+      }
     },
     "capacityPool_roleAssignments": {
       "copy": {
         "name": "capacityPool_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.NetApp/netAppAccounts/{0}/capacityPools/{1}', parameters('netAppAccountName'), parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netAppAccountName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netAppAccountName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "capacityPool"
@@ -227,7 +725,7 @@
     "capacityPool_volumes": {
       "copy": {
         "name": "capacityPool_volumes",
-        "count": "[length(parameters('volumes'))]",
+        "count": "[length(coalesce(parameters('volumes'), createArray()))]",
         "mode": "serial",
         "batchSize": 1
       },
@@ -247,7 +745,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('volumes')[copyIndex()].name]"
+            "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].name]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -255,16 +753,69 @@
           "serviceLevel": {
             "value": "[parameters('serviceLevel')]"
           },
-          "creationToken": "[if(contains(parameters('volumes')[copyIndex()], 'creationToken'), createObject('value', parameters('volumes')[copyIndex()].creationToken), createObject('value', parameters('volumes')[copyIndex()].name))]",
+          "creationToken": {
+            "value": "[coalesce(tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'creationToken'), coalesce(parameters('volumes'), createArray())[copyIndex()].name)]"
+          },
           "usageThreshold": {
-            "value": "[parameters('volumes')[copyIndex()].usageThreshold]"
+            "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].usageThreshold]"
           },
-          "protocolTypes": "[if(contains(parameters('volumes')[copyIndex()], 'protocolTypes'), createObject('value', parameters('volumes')[copyIndex()].protocolTypes), createObject('value', createArray()))]",
+          "protocolTypes": {
+            "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].protocolTypes]"
+          },
           "subnetResourceId": {
-            "value": "[parameters('volumes')[copyIndex()].subnetResourceId]"
+            "value": "[coalesce(parameters('volumes'), createArray())[copyIndex()].subnetResourceId]"
           },
-          "exportPolicyRules": "[if(contains(parameters('volumes')[copyIndex()], 'exportPolicyRules'), createObject('value', parameters('volumes')[copyIndex()].exportPolicyRules), createObject('value', createArray()))]",
-          "roleAssignments": "[if(contains(parameters('volumes')[copyIndex()], 'roleAssignments'), createObject('value', parameters('volumes')[copyIndex()].roleAssignments), createObject('value', createArray()))]"
+          "exportPolicy": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'exportPolicy')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "networkFeatures": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'networkFeatures')]"
+          },
+          "zone": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'zone')]"
+          },
+          "coolAccess": {
+            "value": "[coalesce(tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'coolAccess'), false())]"
+          },
+          "coolAccessRetrievalPolicy": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'coolAccessRetrievalPolicy')]"
+          },
+          "coolnessPeriod": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'coolnessPeriod')]"
+          },
+          "encryptionKeySource": {
+            "value": "[coalesce(tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'encryptionKeySource'), 'Microsoft.NetApp')]"
+          },
+          "keyVaultPrivateEndpointResourceId": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'keyVaultPrivateEndpointResourceId')]"
+          },
+          "dataProtection": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'dataProtection')]"
+          },
+          "kerberosEnabled": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'kerberosEnabled')]"
+          },
+          "smbContinuouslyAvailable": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'smbContinuouslyAvailable')]"
+          },
+          "smbEncryption": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'smbEncryption')]"
+          },
+          "smbNonBrowsable": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'smbNonBrowsable')]"
+          },
+          "volumeType": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'volumeType')]"
+          },
+          "securityStyle": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'securityStyle')]"
+          },
+          "unixPermissions": {
+            "value": "[tryGet(coalesce(parameters('volumes'), createArray())[copyIndex()], 'unixPermissions')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -273,79 +824,346 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "9587584861242006945"
+              "version": "0.34.44.8038",
+              "templateHash": "107014526168729045"
             },
             "name": "Azure NetApp Files Capacity Pool Volumes",
-            "description": "This module deploys an Azure NetApp Files Capacity Pool Volume.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
           },
           "definitions": {
-            "roleAssignmentType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "roleDefinitionIdOrName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                    }
-                  },
-                  "principalId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                    }
-                  },
-                  "principalType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Device",
-                      "ForeignGroup",
-                      "Group",
-                      "ServicePrincipal",
-                      "User"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The principal type of the assigned principal ID."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The description of the role assignment."
-                    }
-                  },
-                  "condition": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                    }
-                  },
-                  "conditionVersion": {
-                    "type": "string",
-                    "allowedValues": [
-                      "2.0"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Version of the condition."
-                    }
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                    }
+            "dataProtectionType": {
+              "type": "object",
+              "properties": {
+                "replication": {
+                  "$ref": "#/definitions/replicationType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Replication properties."
+                  }
+                },
+                "backup": {
+                  "$ref": "#/definitions/backupType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Backup properties."
+                  }
+                },
+                "snapshot": {
+                  "$ref": "#/definitions/snapshotType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Snapshot properties."
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the data protection properties."
+              }
+            },
+            "replicationType": {
+              "type": "object",
+              "properties": {
+                "endpointType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "dst",
+                    "src"
+                  ],
+                  "metadata": {
+                    "description": "Required. Indicates whether the local volume is the source or destination for the Volume Replication."
+                  }
+                },
+                "remoteVolumeRegion": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The remote region for the other end of the Volume Replication.Required for Data Protection volumes."
+                  }
+                },
+                "remoteVolumeResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of the remote volume. Required for Data Protection volumes."
+                  }
+                },
+                "replicationSchedule": {
+                  "type": "string",
+                  "allowedValues": [
+                    "_10minutely",
+                    "daily",
+                    "hourly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The replication schedule for the volume (to only be set on the destination (dst))."
+                  }
+                },
+                "remotePath": {
+                  "type": "object",
+                  "properties": {
+                    "externalHostName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Path to a ONTAP Host."
+                      }
+                    },
+                    "serverName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of a server on the ONTAP Host."
+                      }
+                    },
+                    "volumeName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of a volume on the server."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The full path to a volume that is to be migrated into ANF. Required for Migration volumes."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the replication properties."
+              }
+            },
+            "backupType": {
+              "type": "object",
+              "properties": {
+                "backupPolicyName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the backup policy to link."
+                  }
+                },
+                "policyEnforced": {
+                  "type": "bool",
+                  "metadata": {
+                    "description": "Required. Enable to enforce the policy."
+                  }
+                },
+                "backupVaultName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the Backup Vault."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the backup properties."
+              }
+            },
+            "snapshotType": {
+              "type": "object",
+              "properties": {
+                "snapshotPolicyName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the snapshot policy to link."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the snapshot properties."
+              }
+            },
+            "exportPolicyType": {
+              "type": "object",
+              "properties": {
+                "rules": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ruleIndex": {
+                        "type": "int",
+                        "metadata": {
+                          "description": "Required. Order index."
+                        }
+                      },
+                      "allowedClients": {
+                        "type": "string",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Client ingress specification as comma separated string with IPv4 CIDRs, IPv4 host addresses and host names."
+                        }
+                      },
+                      "chownMode": {
+                        "type": "string",
+                        "allowedValues": [
+                          "Restricted",
+                          "Unrestricted"
+                        ],
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. This parameter specifies who is authorized to change the ownership of a file. restricted - Only root user can change the ownership of the file. unrestricted - Non-root users can change ownership of files that they own."
+                        }
+                      },
+                      "cifs": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Allows CIFS protocol."
+                        }
+                      },
+                      "hasRootAccess": {
+                        "type": "bool",
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. Has root access to volume."
+                        }
+                      },
+                      "kerberos5ReadOnly": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5 Read only access."
+                        }
+                      },
+                      "kerberos5ReadWrite": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5 Read and write access."
+                        }
+                      },
+                      "kerberos5iReadOnly": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5i Read only access."
+                        }
+                      },
+                      "kerberos5iReadWrite": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5i Read and write access."
+                        }
+                      },
+                      "kerberos5pReadOnly": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5p Read only access."
+                        }
+                      },
+                      "kerberos5pReadWrite": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Kerberos5p Read and write access."
+                        }
+                      },
+                      "nfsv3": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Allows NFSv3 protocol. Enable only for NFSv3 type volumes."
+                        }
+                      },
+                      "nfsv41": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Allows NFSv4.1 protocol. Enable only for NFSv4.1 type volumes."
+                        }
+                      },
+                      "unixReadOnly": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Read only access."
+                        }
+                      },
+                      "unixReadWrite": {
+                        "type": "bool",
+                        "metadata": {
+                          "description": "Required. Read and write access."
+                        }
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The Export policy rules."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for export policy rules."
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
             }
           },
           "parameters": {
@@ -374,6 +1192,58 @@
                 "description": "Optional. Location of the pool volume."
               }
             },
+            "coolAccess": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. If enabled (true) the pool can contain cool Access enabled volumes."
+              }
+            },
+            "coolnessPeriod": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the number of days after which data that is not accessed by clients will be tiered."
+              }
+            },
+            "coolAccessRetrievalPolicy": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read)."
+              }
+            },
+            "encryptionKeySource": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The source of the encryption key."
+              }
+            },
+            "keyVaultPrivateEndpointResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The resource ID of the key vault private endpoint."
+              }
+            },
+            "volumeType": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
+              }
+            },
+            "zone": {
+              "type": "int",
+              "allowedValues": [
+                0,
+                1,
+                2,
+                3
+              ],
+              "metadata": {
+                "description": "Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set."
+              }
+            },
             "serviceLevel": {
               "type": "string",
               "defaultValue": "Standard",
@@ -385,6 +1255,19 @@
               ],
               "metadata": {
                 "description": "Optional. The pool service level. Must match the one of the parent capacity pool."
+              }
+            },
+            "networkFeatures": {
+              "type": "string",
+              "defaultValue": "Standard",
+              "allowedValues": [
+                "Basic",
+                "Basic_Standard",
+                "Standard",
+                "Standard_Basic"
+              ],
+              "metadata": {
+                "description": "Optional. Network feature for the volume."
               }
             },
             "creationToken": {
@@ -402,9 +1285,19 @@
             },
             "protocolTypes": {
               "type": "array",
-              "defaultValue": [],
+              "items": {
+                "type": "string"
+              },
+              "defaultValue": [
+                "NFSv3"
+              ],
+              "allowedValues": [
+                "NFSv3",
+                "NFSv4.1",
+                "CIFS"
+              ],
               "metadata": {
-                "description": "Optional. Set of protocol types."
+                "description": "Optional. Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`."
               }
             },
             "subnetResourceId": {
@@ -413,26 +1306,96 @@
                 "description": "Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes."
               }
             },
-            "exportPolicyRules": {
-              "type": "array",
-              "defaultValue": [],
+            "exportPolicy": {
+              "$ref": "#/definitions/exportPolicyType",
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Export policy rules."
+                "description": "Optional. The export policy rules."
               }
             },
             "roleAssignments": {
-              "$ref": "#/definitions/roleAssignmentType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "dataProtection": {
+              "$ref": "#/definitions/dataProtectionType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. DataProtection type volumes include an object containing details of the replication."
+              }
+            },
+            "smbEncryption": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enables SMB encryption. Only applicable for SMB/DualProtocol volume."
+              }
+            },
+            "smbContinuouslyAvailable": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Enables continuously available share property for SMB volume. Only applicable for SMB volume."
+              }
+            },
+            "smbNonBrowsable": {
+              "type": "string",
+              "defaultValue": "Disabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume."
+              }
+            },
+            "kerberosEnabled": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Define if a volume is KerberosEnabled."
+              }
+            },
+            "securityStyle": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "ntfs",
+                "unix"
+              ],
+              "metadata": {
+                "description": "Optional. Defines the security style of the Volume."
+              }
+            },
+            "unixPermissions": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Unix Permissions for NFS volume."
               }
             }
           },
           "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "remoteCapacityPoolName": "[if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[10], '')]",
+            "remoteNetAppName": "[if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[8], '')]",
             "builtInRoleNames": {
               "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             }
           },
@@ -440,52 +1403,113 @@
             "netAppAccount::capacityPool": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-              "apiVersion": "2022-11-01",
-              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]",
-              "dependsOn": [
-                "netAppAccount"
-              ]
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
+            },
+            "netAppAccount::backupVault": {
+              "condition": "[not(empty(tryGet(parameters('dataProtection'), 'backup')))]",
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))]"
+            },
+            "netAppAccount::backupPolicy": {
+              "condition": "[not(empty(tryGet(parameters('dataProtection'), 'backup')))]",
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts/backupPolicies",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName'))]"
+            },
+            "netAppAccount::snapshotPolicy": {
+              "condition": "[not(empty(tryGet(parameters('dataProtection'), 'snapshot')))]",
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))]"
+            },
+            "remoteNetAppAccount::remoteCapacityPool::remoteVolume": {
+              "condition": "[and(and(and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteNetAppName'), parameters('netAppAccountName')))), and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteCapacityPoolName'), parameters('capacityPoolName'))))), not(empty(tryGet(parameters('dataProtection'), 'replication'))))]",
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2025-01-01",
+              "subscriptionId": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[2]]",
+              "resourceGroup": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[4]]",
+              "name": "[format('{0}/{1}/{2}', split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[8], split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[10], last(split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')))]"
+            },
+            "remoteNetAppAccount::remoteCapacityPool": {
+              "condition": "[and(and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteNetAppName'), parameters('netAppAccountName')))), and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteCapacityPoolName'), parameters('capacityPoolName')))))]",
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
+              "apiVersion": "2025-01-01",
+              "subscriptionId": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[2]]",
+              "resourceGroup": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[4]]",
+              "name": "[format('{0}/{1}', split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[8], split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[10])]"
+            },
+            "vnet::subnet": {
+              "existing": true,
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "apiVersion": "2024-03-01",
+              "subscriptionId": "[split(parameters('subnetResourceId'), '/')[2]]",
+              "resourceGroup": "[split(parameters('subnetResourceId'), '/')[4]]",
+              "name": "[format('{0}/{1}', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/')))]"
             },
             "netAppAccount": {
               "existing": true,
               "type": "Microsoft.NetApp/netAppAccounts",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2025-01-01",
               "name": "[parameters('netAppAccountName')]"
+            },
+            "keyVaultPrivateEndpoint": {
+              "condition": "[not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp'))]",
+              "existing": true,
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2024-03-01",
+              "subscriptionId": "[split(parameters('keyVaultPrivateEndpointResourceId'), '/')[2]]",
+              "resourceGroup": "[split(parameters('keyVaultPrivateEndpointResourceId'), '/')[4]]",
+              "name": "[last(split(parameters('keyVaultPrivateEndpointResourceId'), '/'))]"
+            },
+            "remoteNetAppAccount": {
+              "condition": "[and(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'))), not(equals(variables('remoteNetAppName'), parameters('netAppAccountName'))))]",
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts",
+              "apiVersion": "2025-01-01",
+              "subscriptionId": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[2]]",
+              "resourceGroup": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[4]]",
+              "name": "[split(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId'), '/')[8]]"
+            },
+            "vnet": {
+              "existing": true,
+              "type": "Microsoft.Network/virtualNetworks",
+              "apiVersion": "2024-03-01",
+              "subscriptionId": "[split(parameters('subnetResourceId'), '/')[2]]",
+              "resourceGroup": "[split(parameters('subnetResourceId'), '/')[4]]",
+              "name": "[split(parameters('subnetResourceId'), '/')[8]]"
             },
             "volume": {
               "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
-              "apiVersion": "2022-11-01",
+              "apiVersion": "2025-01-01",
               "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
               "location": "[parameters('location')]",
-              "properties": {
-                "serviceLevel": "[parameters('serviceLevel')]",
-                "creationToken": "[parameters('creationToken')]",
-                "usageThreshold": "[parameters('usageThreshold')]",
-                "protocolTypes": "[parameters('protocolTypes')]",
-                "subnetId": "[parameters('subnetResourceId')]",
-                "exportPolicy": "[if(not(empty(parameters('exportPolicyRules'))), createObject('rules', parameters('exportPolicyRules')), null())]"
-              },
-              "dependsOn": [
-                "netAppAccount::capacityPool"
-              ]
+              "properties": "[shallowMerge(createArray(createObject('coolAccess', parameters('coolAccess'), 'coolAccessRetrievalPolicy', parameters('coolAccessRetrievalPolicy'), 'coolnessPeriod', parameters('coolnessPeriod'), 'securityStyle', parameters('securityStyle'), 'unixPermissions', parameters('unixPermissions'), 'encryptionKeySource', parameters('encryptionKeySource')), if(not(equals(parameters('encryptionKeySource'), 'Microsoft.NetApp')), createObject('keyVaultPrivateEndpointResourceId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultPrivateEndpointResourceId'), '/')[2], split(parameters('keyVaultPrivateEndpointResourceId'), '/')[4]), 'Microsoft.Network/privateEndpoints', last(split(parameters('keyVaultPrivateEndpointResourceId'), '/')))), createObject()), if(not(empty(parameters('volumeType'))), createObject('volumeType', parameters('volumeType')), createObject()), createObject('dataProtection', if(not(empty(parameters('dataProtection'))), createObject('replication', if(not(empty(tryGet(parameters('dataProtection'), 'replication'))), shallowMerge(createArray(createObject('endpointType', tryGet(parameters('dataProtection'), 'replication', 'endpointType'), 'remoteVolumeRegion', if(not(empty(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'))), tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeRegion'), null()), 'remoteVolumeResourceId', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remoteVolumeResourceId')), if(equals(tryGet(tryGet(parameters('dataProtection'), 'replication'), 'endpointType'), 'dst'), createObject('replicationSchedule', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'replicationSchedule')), createObject()), if(equals(parameters('volumeType'), 'Migration'), createObject('remotePath', tryGet(tryGet(parameters('dataProtection'), 'replication'), 'remotePath')), createObject()))), null()), 'backup', if(not(empty(tryGet(parameters('dataProtection'), 'backup'))), createObject('backupPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/backupPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupPolicyName')), 'policyEnforced', coalesce(tryGet(parameters('dataProtection'), 'backup', 'policyEnforced'), false()), 'backupVaultId', resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'backup', 'backupVaultName'))), null()), 'snapshot', if(not(empty(tryGet(parameters('dataProtection'), 'snapshot'))), createObject('snapshotPolicyId', resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), tryGet(parameters('dataProtection'), 'snapshot', 'snapshotPolicyName'))), null())), null()), 'networkFeatures', parameters('networkFeatures'), 'serviceLevel', parameters('serviceLevel'), 'creationToken', parameters('creationToken'), 'usageThreshold', parameters('usageThreshold'), 'protocolTypes', parameters('protocolTypes'), 'subnetId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('subnetResourceId'), '/')[2], split(parameters('subnetResourceId'), '/')[4]), 'Microsoft.Network/virtualNetworks/subnets', split(parameters('subnetResourceId'), '/')[8], last(split(parameters('subnetResourceId'), '/'))), 'exportPolicy', coalesce(parameters('exportPolicy'), createObject('rules', createArray())), 'smbContinuouslyAvailable', parameters('smbContinuouslyAvailable'), 'smbEncryption', parameters('smbEncryption'), 'smbNonBrowsable', parameters('smbNonBrowsable'), 'kerberosEnabled', parameters('kerberosEnabled'))))]",
+              "zones": "[if(not(equals(parameters('zone'), 0)), createArray(string(parameters('zone'))), null())]"
             },
             "volume_roleAssignments": {
               "copy": {
                 "name": "volume_roleAssignments",
-                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.NetApp/netAppAccounts/{0}/capacityPools/{1}/volumes/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name'))]",
-              "name": "[guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-                "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-                "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-                "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
               },
               "dependsOn": [
                 "volume"
@@ -519,14 +1543,13 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('volume', '2022-11-01', 'full').location]"
+              "value": "[reference('volume', '2025-01-01', 'full').location]"
             }
           }
         }
       },
       "dependsOn": [
-        "capacityPool",
-        "netAppAccount"
+        "capacityPool"
       ]
     }
   },
@@ -557,7 +1580,20 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('capacityPool', '2022-11-01', 'full').location]"
+      "value": "[reference('capacityPool', '2025-01-01', 'full').location]"
+    },
+    "volumeResourceIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "metadata": {
+        "description": "The resource IDs of the volume created in the capacity pool."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('volumes'), createArray()))]",
+        "input": "[reference(format('capacityPool_volumes[{0}]', copyIndex())).outputs.resourceId.value]"
+      }
     }
   }
 }

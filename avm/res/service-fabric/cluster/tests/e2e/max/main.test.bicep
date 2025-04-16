@@ -81,7 +81,7 @@ module testDeployment '../../../main.bicep' = [
             certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
           }
         ]
-        x509StoreName: ''
+        x509StoreName: 'My'
       }
       clientCertificateCommonNames: [
         {
@@ -92,16 +92,6 @@ module testDeployment '../../../main.bicep' = [
         {
           certificateCommonName: 'clientcommoncert2'
           certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
-          isAdmin: false
-        }
-      ]
-      clientCertificateThumbprints: [
-        {
-          certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-          isAdmin: false
-        }
-        {
-          certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
           isAdmin: false
         }
       ]
@@ -210,11 +200,13 @@ module testDeployment '../../../main.bicep' = [
       vmImage: 'Linux'
       roleAssignments: [
         {
+          name: '26b52f01-eebc-4056-a516-41541369258c'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

@@ -1,6 +1,5 @@
 metadata name = 'Load Balancer Backend Address Pools'
 metadata description = 'This module deploys a Load Balancer Backend Address Pools.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent load balancer. Required if the template is used in a standalone deployment.')
 param loadBalancerName string
@@ -25,11 +24,11 @@ param drainPeriodInSeconds int = 0
 @description('Optional. Backend address synchronous mode for the backend pool.')
 param syncMode string = ''
 
-resource loadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' existing = {
+resource loadBalancer 'Microsoft.Network/loadBalancers@2023-11-01' existing = {
   name: loadBalancerName
 }
 
-resource backendAddressPool 'Microsoft.Network/loadBalancers/backendAddressPools@2023-04-01' = {
+resource backendAddressPool 'Microsoft.Network/loadBalancers/backendAddressPools@2023-11-01' = {
   name: name
   properties: {
     loadBalancerBackendAddresses: loadBalancerBackendAddresses

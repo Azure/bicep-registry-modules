@@ -1,6 +1,5 @@
 metadata name = 'Azure Databricks Workspaces'
 metadata description = 'This module deploys an Azure Databricks Workspace.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the Azure Databricks workspace to create.')
 param name string
@@ -19,14 +18,17 @@ param skuName string = 'premium'
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
+import { diagnosticSettingLogsOnlyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingLogsOnlyType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -49,11 +51,13 @@ param customPublicSubnetName string = ''
 @description('Optional. Disable Public IP.')
 param disablePublicIp bool = false
 
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition to use for the managed service.')
-param customerManagedKey customerManagedKeyType
+param customerManagedKey customerManagedKeyType?
 
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition to use for the managed disk.')
-param customerManagedKeyManagedDisk customerManagedKeyManagedDiskType
+param customerManagedKeyManagedDisk customerManagedKeyWithAutoRotateType?
 
 @description('Optional. Name of the outbound Load Balancer Backend Pool for Secure Cluster Connectivity (No Public IP).')
 param loadBalancerBackendPoolName string = ''
@@ -96,14 +100,61 @@ param publicNetworkAccess string = 'Enabled'
 ])
 param requiredNsgRules string = 'AllRules'
 
+@description('Optional. Determines whether the managed storage account should be private or public. For best security practices, it is recommended to set it to Enabled.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
+param privateStorageAccount string = ''
+
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointType
+param privateEndpoints privateEndpointMultiServiceType[]?
+
+@description('Optional. Configuration details for private endpoints for the managed workspace storage account, required when privateStorageAccount is set to Enabled. For security reasons, it is recommended to use private endpoints whenever possible.')
+param storageAccountPrivateEndpoints privateEndpointMultiServiceType[]?
+
+@description('Conditional. The resource ID of the associated access connector for private access to the managed workspace storage account. Required if privateStorageAccount is enabled.')
+param accessConnectorResourceId string = ''
+
+@description('Optional. The default catalog configuration for the Databricks workspace.')
+param defaultCatalog defaultCatalogType?
+
+@description('Optional. The value for enabling automatic cluster updates in enhanced security compliance.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
+param automaticClusterUpdate string = ''
+
+@description('Optional. The compliance standards array for the security profile. Should be a list of compliance standards like "HIPAA", "NONE" or "PCI_DSS".')
+param complianceStandards array = []
+
+@description('Optional. The value to Enable or Disable for the compliance security profile.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
+param complianceSecurityProfileValue string = ''
+
+@description('Optional. The value for enabling or configuring enhanced security monitoring.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  ''
+])
+param enhancedSecurityMonitoring string = ''
+
+var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -113,54 +164,62 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.databricks-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.databricks-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKey.?keyVaultResourceId)) {
-    name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-        name: customerManagedKey.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName ?? 'dummyKey'
   }
+}
 
-resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing =
-  if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId)) {
-    name: last(split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? 'dummyVault'), '/'))
-    scope: resourceGroup(
-      split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? '//'), '/')[2],
-      split((customerManagedKeyManagedDisk.?keyVaultResourceId ?? '////'), '/')[4]
-    )
+// Added condition if the key vault for the managed disk is the same as for the default encryption. Without the condition, the same key vault would be defined twice in the same template, which is not allowed
+resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && customerManagedKeyManagedDisk.?keyVaultResourceId != customerManagedKey.?keyVaultResourceId) {
+  name: last(split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKeyManagedDisk.?keyVaultResourceId!, '/')[4]
+  )
 
-    resource cMKKey 'keys@2023-02-01' existing =
-      if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && !empty(customerManagedKeyManagedDisk.?keyName)) {
-        name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
-      }
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKeyManagedDisk.?keyVaultResourceId) && !empty(customerManagedKeyManagedDisk.?keyName)) {
+    name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
   }
+}
 
-resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
+resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -170,95 +229,95 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
   properties: {
     managedResourceGroupId: !empty(managedResourceGroupResourceId)
       ? managedResourceGroupResourceId
-      : '${subscription().id}/resourceGroups/${name}-rg'
-    parameters: union(
-      // Always added parameters
-      {
-        enableNoPublicIp: {
-          value: disablePublicIp
-        }
-        prepareEncryption: {
-          value: prepareEncryption
-        }
-        vnetAddressPrefix: {
-          value: vnetAddressPrefix
-        }
-        requireInfrastructureEncryption: {
-          value: requireInfrastructureEncryption
-        }
-      },
-      // Parameters only added if not empty
-      !empty(customVirtualNetworkResourceId)
+      : '${subscription().id}/resourceGroups/rg-${name}-managed'
+    parameters: {
+      enableNoPublicIp: {
+        value: disablePublicIp
+      }
+      prepareEncryption: {
+        value: prepareEncryption
+      }
+      vnetAddressPrefix: {
+        value: vnetAddressPrefix
+      }
+      requireInfrastructureEncryption: {
+        value: requireInfrastructureEncryption
+      }
+      ...(!empty(customVirtualNetworkResourceId)
         ? {
             customVirtualNetworkId: {
               value: customVirtualNetworkResourceId
             }
           }
-        : {},
-      !empty(amlWorkspaceResourceId)
+        : {})
+      ...(!empty(amlWorkspaceResourceId)
         ? {
             amlWorkspaceId: {
               value: amlWorkspaceResourceId
             }
           }
-        : {},
-      !empty(customPrivateSubnetName)
+        : {})
+      ...(!empty(customPrivateSubnetName)
         ? {
             customPrivateSubnetName: {
               value: customPrivateSubnetName
             }
           }
-        : {},
-      !empty(customPublicSubnetName)
+        : {})
+      ...(!empty(customPublicSubnetName)
         ? {
             customPublicSubnetName: {
               value: customPublicSubnetName
             }
           }
-        : {},
-      !empty(loadBalancerBackendPoolName)
+        : {})
+      ...(!empty(loadBalancerBackendPoolName)
         ? {
             loadBalancerBackendPoolName: {
               value: loadBalancerBackendPoolName
             }
           }
-        : {},
-      !empty(loadBalancerResourceId)
+        : {})
+      ...(!empty(loadBalancerResourceId)
         ? {
             loadBalancerId: {
               value: loadBalancerResourceId
             }
           }
-        : {},
-      !empty(natGatewayName)
+        : {})
+      ...(!empty(natGatewayName)
         ? {
             natGatewayName: {
               value: natGatewayName
             }
           }
-        : {},
-      !empty(publicIpName)
+        : {})
+      ...(!empty(publicIpName)
         ? {
             publicIpName: {
               value: publicIpName
             }
           }
-        : {},
-      !empty(storageAccountName)
+        : {})
+      ...(!empty(storageAccountName)
         ? {
             storageAccountName: {
               value: storageAccountName
             }
           }
-        : {},
-      !empty(storageAccountSkuName)
+        : {})
+      ...(!empty(storageAccountSkuName)
         ? {
             storageAccountSkuName: {
               value: storageAccountSkuName
             }
           }
-        : {}
-    )
+        : {})
+    }
+    // createdBy: {} // This is a read-only property
+    // managedDiskIdentity: {} // This is a read-only property
+    // storageAccountIdentity: {} // This is a read-only property
+    // updatedBy: {} // This is a read-only property
     publicNetworkAccess: publicNetworkAccess
     requiredNsgRules: requiredNsgRules
     encryption: !empty(customerManagedKey) || !empty(customerManagedKeyManagedDisk)
@@ -270,8 +329,8 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
                   keyVaultProperties: {
                     keyVaultUri: cMKKeyVault.properties.vaultUri
                     keyName: customerManagedKey!.keyName
-                    keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                      ? customerManagedKey!.keyVersion
+                    keyVersion: !empty(customerManagedKey.?keyVersion)
+                      ? customerManagedKey!.?keyVersion!
                       : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
                   }
                 }
@@ -280,32 +339,69 @@ resource workspace 'Microsoft.Databricks/workspaces@2023-02-01' = {
               ? {
                   keySource: 'Microsoft.Keyvault'
                   keyVaultProperties: {
-                    keyVaultUri: cMKManagedDiskKeyVault.properties.vaultUri
+                    keyVaultUri: (customerManagedKeyManagedDisk!.?keyVaultName != customerManagedKey!.?keyVaultName)
+                      ? cMKManagedDiskKeyVault.properties.vaultUri
+                      : cMKKeyVault.properties.vaultUri
                     keyName: customerManagedKeyManagedDisk!.keyName
-                    keyVersion: !empty(customerManagedKeyManagedDisk.?keyVersion ?? '')
-                      ? customerManagedKeyManagedDisk!.keyVersion
-                      : last(split(cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
+                    keyVersion: last(split(
+                      (customerManagedKeyManagedDisk!.?keyVaultName != customerManagedKey!.?keyVaultName)
+                        ? cMKManagedDiskKeyVault::cMKKey.properties.keyUriWithVersion
+                        : cMKKeyVault::cMKKey.properties.keyUriWithVersion,
+                      '/'
+                    ))
                   }
-                  rotationToLatestKeyVersionEnabled: customerManagedKeyManagedDisk.?rotationToLatestKeyVersionEnabled ?? true
+                  rotationToLatestKeyVersionEnabled: (customerManagedKeyManagedDisk.?autoRotationEnabled ?? true) ?? false
                 }
               : null
           }
         }
       : null
+    ...(!empty(privateStorageAccount)
+      ? {
+          defaultStorageFirewall: privateStorageAccount
+          accessConnector: {
+            id: accessConnectorResourceId
+            identityType: 'SystemAssigned'
+          }
+        }
+      : {})
+    ...(!empty(defaultCatalog)
+      ? {
+          defaultCatalog: {
+            initialName: ''
+            initialType: defaultCatalog.?initialType
+          }
+        }
+      : {})
+    ...(!empty(automaticClusterUpdate) || !empty(complianceStandards) || !empty(enhancedSecurityMonitoring)
+      ? {
+          enhancedSecurityCompliance: {
+            automaticClusterUpdate: {
+              value: automaticClusterUpdate
+            }
+            complianceSecurityProfile: {
+              complianceStandards: complianceStandards
+              value: complianceSecurityProfileValue
+            }
+            enhancedSecurityMonitoring: {
+              value: enhancedSecurityMonitoring
+            }
+          }
+        }
+      : {})
   }
 }
 
-resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: workspace
+resource workspace_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: workspace
+}
 
 // Note: Diagnostic Settings are only supported by the premium tier
 resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
@@ -331,14 +427,10 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
 ]
 
 resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(workspace.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -351,12 +443,16 @@ resource workspace_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 ]
 
 @batchSize(1)
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.0' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Databricks-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
-      privateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections != true
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -369,7 +465,7 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
             }
           ]
         : null
-      manualPrivateLinkServiceConnections: privateEndpoint.?manualPrivateLinkServiceConnections == true
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(workspace.id, '/'))}-${privateEndpoint.service}-${index}'
@@ -384,15 +480,78 @@ module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
+      roleAssignments: privateEndpoint.?roleAssignments
+      tags: privateEndpoint.?tags ?? tags
+      customDnsConfigs: privateEndpoint.?customDnsConfigs
+      ipConfigurations: privateEndpoint.?ipConfigurations
+      applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
+      customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
+// To reuse at multiple places instead to repeat the same code
+var _storageAccountName = workspace.properties.parameters.storageAccountName.value
+var _storageAccountId = resourceId(
+  last(split(workspace.properties.managedResourceGroupId, '/')),
+  'microsoft.storage/storageAccounts',
+  workspace.properties.parameters.storageAccountName.value
+)
+
+@batchSize(1)
+module storageAccount_storageAccountPrivateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+  for (privateEndpoint, index) in (storageAccountPrivateEndpoints ?? []): if (privateStorageAccount == 'Enabled') {
+    name: '${uniqueString(deployment().name, location)}-workspacestorage-PrivateEndpoint-${index}'
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
+    params: {
+      name: privateEndpoint.?name ?? 'pep-${_storageAccountName}-${privateEndpoint.service}-${index}'
+      privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${_storageAccountName}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: _storageAccountId
+                groupIds: [
+                  privateEndpoint.service
+                ]
+              }
+            }
+          ]
+        : null
+      manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
+        ? [
+            {
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${_storageAccountName}-${privateEndpoint.service}-${index}'
+              properties: {
+                privateLinkServiceId: _storageAccountId
+                groupIds: [
+                  privateEndpoint.service
+                ]
+                requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
+              }
+            }
+          ]
+        : null
+      subnetResourceId: privateEndpoint.subnetResourceId
+      enableTelemetry: enableReferencedModulesTelemetry
+      location: privateEndpoint.?location ?? reference(
+        split(privateEndpoint.subnetResourceId, '/subnets/')[0],
+        '2020-06-01',
+        'Full'
+      ).location
+      lock: privateEndpoint.?lock ?? lock
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -416,26 +575,42 @@ output resourceGroupName string = resourceGroup().name
 output location string = workspace.location
 
 @description('The resource ID of the managed resource group.')
-output managedResourceGroupId string = workspace.properties.managedResourceGroupId
+output managedResourceGroupResourceId string = workspace.properties.managedResourceGroupId
 
 @description('The name of the managed resource group.')
 output managedResourceGroupName string = last(split(workspace.properties.managedResourceGroupId, '/'))
 
 @description('The name of the DBFS storage account.')
-output storageAccountName string = workspace.properties.parameters.storageAccountName.value
+output storageAccountName string = _storageAccountName
 
 @description('The resource ID of the DBFS storage account.')
-output storageAccountId string = resourceId(
-  last(split(workspace.properties.managedResourceGroupId, '/')),
-  'microsoft.storage/storageAccounts',
-  workspace.properties.parameters.storageAccountName.value
-)
+output storageAccountResourceId string = _storageAccountId
 
-@description('The private endpoints for the Databricks Workspace.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: workspace_privateEndpoints[i].outputs.name
-    resourceId: workspace_privateEndpoints[i].outputs.resourceId
+@description('The workspace URL which is of the format \'adb-{workspaceId}.{random}.azuredatabricks.net\'.')
+output workspaceUrl string = workspace.properties.workspaceUrl
+
+@description('The unique identifier of the databricks workspace in databricks control plane.')
+output workspaceResourceId string = workspace.properties.workspaceId
+
+@description('The private endpoints of the Databricks Workspace.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: workspace_privateEndpoints[index].outputs.name
+    resourceId: workspace_privateEndpoints[index].outputs.resourceId
+    groupId: workspace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: workspace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: workspace_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
+@description('The private endpoints of the Databricks Workspace Storage.')
+output storagePrivateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateStorageAccount == 'Enabled' ? storageAccountPrivateEndpoints ?? [] : []): {
+    name: storageAccount_storageAccountPrivateEndpoints[index].outputs.name
+    resourceId: storageAccount_storageAccountPrivateEndpoints[index].outputs.resourceId
+    groupId: storageAccount_storageAccountPrivateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: storageAccount_storageAccountPrivateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: storageAccount_storageAccountPrivateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
@@ -443,171 +618,38 @@ output privateEndpoints array = [
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+@export()
+@description('The type for a private endpoint output.')
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
 
-type privateEndpointType = {
-  @description('Optional. The name of the private endpoint.')
-  name: string?
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
 
-  @description('Optional. The location to deploy the private endpoint to.')
-  location: string?
-
-  @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
-  service: string
-
-  @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
-  subnetResourceId: string
-
-  @description('Optional. The name of the private DNS zone group to create if `privateDnsZoneResourceIds` were provided.')
-  privateDnsZoneGroupName: string?
-
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
-
-  @description('Optional. If Manual Private Link Connection is required.')
-  isManualConnection: bool?
-
-  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
-  @maxLength(140)
-  manualConnectionRequestMessage: string?
-
-  @description('Optional. Custom DNS configurations.')
+  @description('The custom DNS configurations of the private endpoint.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint IP address.')
+    @description('FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('Required. A list of private IP addresses of the private endpoint.')
+    @description('A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
-  }[]?
+  }[]
 
-  @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-  ipConfigurations: {
-    @description('Required. The name of the resource that is unique within a resource group.')
-    name: string
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
-    @description('Required. Properties of private endpoint IP configurations.')
-    properties: {
-      @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-      groupId: string
+@export()
+@description('The type for a default catalog configuration.')
+type defaultCatalogType = {
+  //This value cannot be set to a custom value. Reason --> 'InvalidInitialCatalogName' message: 'Currently custom initial catalog name is not supported. This capability will be added in future.'
+  //@description('Optional. Set the name of the Catalog.')
+  //initialName: ''
 
-      @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
-      memberName: string
-
-      @description('Required. A private IP address obtained from the private endpoint\'s subnet.')
-      privateIPAddress: string
-    }
-  }[]?
-
-  @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
-  applicationSecurityGroupResourceIds: string[]?
-
-  @description('Optional. The custom name of the network interface attached to the private endpoint.')
-  customNetworkInterfaceName: string?
-
-  @description('Optional. Specify the type of lock.')
-  lock: lockType
-
-  @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
-
-  @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: object?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
-}[]?
-
-type customerManagedKeyType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
-
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
-
-  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
-  userAssignedIdentityResourceId: string?
-}?
-
-type customerManagedKeyManagedDiskType = {
-  @description('Required. The resource ID of a key vault to reference a customer managed key for encryption from.')
-  keyVaultResourceId: string
-
-  @description('Required. The name of the customer managed key to use for encryption.')
-  keyName: string
-
-  @description('Optional. The version of the customer managed key to reference for encryption. If not provided, using \'latest\'.')
-  keyVersion: string?
-
-  @description('Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.')
-  userAssignedIdentityResourceId: string?
-
-  @description('Optional. Indicate whether the latest key version should be automatically used for Managed Disk Encryption. Enabled by default.')
-  rotationToLatestKeyVersionEnabled: bool?
-}?
-
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
+  @description('Required. Choose between HiveMetastore or UnityCatalog.')
+  initialType: 'HiveMetastore' | 'UnityCatalog'
+}

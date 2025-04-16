@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "6638776759595697100"
+      "version": "0.34.44.8038",
+      "templateHash": "17191426470259312613"
     },
     "name": "DNS Resolver Outbound Endpoint",
-    "description": "This module deploys a DNS Resolver Outbound Endpoint.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a DNS Resolver Outbound Endpoint."
   },
   "parameters": {
     "dnsResolverName": {
@@ -64,10 +63,7 @@
         "subnet": {
           "id": "[parameters('subnetResourceId')]"
         }
-      },
-      "dependsOn": [
-        "dnsResolver"
-      ]
+      }
     }
   },
   "outputs": {

@@ -17,9 +17,6 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'rsvdr'
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
-
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
@@ -45,7 +42,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: resourceLocation
-      enableTelemetry: enableDefaultTelemetry
       name: rsvName
       replicationFabrics: [
         {
@@ -53,17 +49,17 @@ module testDeployment '../../../main.bicep' = [
           replicationContainers: [
             {
               name: 'ne-container1'
-              replicationContainerMappings: [
+              mappings: [
                 {
                   policyName: 'Default_values'
                   targetContainerName: 'pluto'
-                  targetProtectionContainerId: '${resourceGroup.id}/providers/Microsoft.RecoveryServices/vaults/${rsvName}/replicationFabrics/NorthEurope/replicationProtectionContainers/ne-container2'
+                  targetProtectionContainerResourceId: '${resourceGroup.id}/providers/Microsoft.RecoveryServices/vaults/${rsvName}/replicationFabrics/NorthEurope/replicationProtectionContainers/ne-container2'
                 }
               ]
             }
             {
               name: 'ne-container2'
-              replicationContainerMappings: [
+              mappings: [
                 {
                   policyName: 'Default_values'
                   targetContainerFabricName: 'WE-2'
@@ -79,7 +75,7 @@ module testDeployment '../../../main.bicep' = [
           replicationContainers: [
             {
               name: 'we-container1'
-              replicationContainerMappings: [
+              mappings: [
                 {
                   policyName: 'Default_values'
                   targetContainerFabricName: 'NorthEurope'

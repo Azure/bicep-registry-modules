@@ -1,7 +1,6 @@
 metadata name = 'Network Manager Security Admin Configuration Rule Collection Rules'
 metadata description = '''This module deploys an Azure Virtual Network Manager (AVNM) Security Admin Configuration Rule Collection Rule.
 A security admin configuration contains a set of rule collections. Each rule collection contains one or more security admin rules.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent network manager. Required if the template is used in a standalone deployment.')
 param networkManagerName string
@@ -29,10 +28,10 @@ param description string = ''
 param access string
 
 @sys.description('Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535.')
-param destinationPortRanges array = []
+param destinationPortRanges string[]?
 
 @sys.description('Optional. The destnations filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
-param destinations array = []
+param destinations destinationType[]?
 
 @allowed([
   'Inbound'
@@ -58,24 +57,24 @@ param priority int
 param protocol string
 
 @sys.description('Optional. List of destination port ranges. This specifies on which ports traffic will be allowed or denied by this rule. Provide an (*) to allow traffic on any port. Port ranges are between 1-65535.')
-param sourcePortRanges array = []
+param sourcePortRanges string[]?
 
 @sys.description('Optional. The source filter can be an IP Address or a service tag. Each filter contains the properties AddressPrefixType (IPPrefix or ServiceTag) and AddressPrefix (using CIDR notation (e.g. 192.168.99.0/24 or 2001:1234::/64) or a service tag (e.g. AppService.WestEurope)). Combining CIDR and Service tags in one rule filter is not permitted.')
-param sources array = []
+param sources sourceType[]?
 
-resource networkManager 'Microsoft.Network/networkManagers@2023-04-01' existing = {
+resource networkManager 'Microsoft.Network/networkManagers@2024-05-01' existing = {
   name: networkManagerName
 
-  resource securityAdminConfiguration 'securityAdminConfigurations@2023-04-01' existing = {
+  resource securityAdminConfiguration 'securityAdminConfigurations' existing = {
     name: securityAdminConfigurationName
 
-    resource ruleCollection 'ruleCollections@2023-04-01' existing = {
+    resource ruleCollection 'ruleCollections' existing = {
       name: ruleCollectionName
     }
   }
 }
 
-resource rule 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules@2023-04-01' = {
+resource rule 'Microsoft.Network/networkManagers/securityAdminConfigurations/ruleCollections/rules@2024-05-01' = {
   name: name
   parent: networkManager::securityAdminConfiguration::ruleCollection
   kind: 'Custom'
@@ -100,3 +99,27 @@ output resourceId string = rule.id
 
 @sys.description('The resource group the rule was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@sys.description('The type of a destination.')
+type destinationType = {
+  @sys.description('Required. Address prefix type.')
+  addressPrefixType: 'IPPrefix' | 'ServiceTag'
+
+  @sys.description('Required. Address prefix.')
+  addressPrefix: string
+}
+
+@export()
+@sys.description('The type of a source.')
+type sourceType = {
+  @sys.description('Required. Address prefix type.')
+  addressPrefixType: 'IPPrefix' | 'ServiceTag'
+
+  @sys.description('Required. Address prefix.')
+  addressPrefix: string
+}

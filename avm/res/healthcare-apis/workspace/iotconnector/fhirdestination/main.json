@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "11968373756464803910"
+      "version": "0.34.44.8038",
+      "templateHash": "14347135798074620531"
     },
     "name": "Healthcare API Workspace IoT Connector FHIR Destinations",
-    "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Healthcare API Workspace IoT Connector FHIR Destination."
   },
   "parameters": {
     "name": {
@@ -26,7 +25,7 @@
         "template": []
       },
       "metadata": {
-        "description": "Required. The mapping JSON that determines how normalized data is converted to FHIR Observations."
+        "description": "Optional. The mapping JSON that determines how normalized data is converted to FHIR Observations."
       }
     },
     "iotConnectorName": {

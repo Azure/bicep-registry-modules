@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "17545129357717553911"
+      "version": "0.32.4.45862",
+      "templateHash": "14584593053562456884"
     },
     "name": "Registration Definitions",
-    "description": "This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation') on a subscription or resource group scope.\nThis type of delegation is very similar to role assignments but here the principal that is assigned a role is in a remote/managing Azure Active Directory tenant.\nThe templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation') on a subscription or resource group scope.\nThis type of delegation is very similar to role assignments but here the principal that is assigned a role is in a remote/managing Azure Active Directory tenant.\nThe templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant."
   },
   "definitions": {
     "authorizationType": {
@@ -45,6 +44,10 @@
             "description": "Required. The identifier of the Azure built-in role that defines the permissions that the Azure Active Directory principal will have on the projected scope."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Authorization object describing the access Azure Active Directory principals in the managedBy tenant will receive on the delegated resource in the managed tenant."
       }
     }
   },
@@ -109,7 +112,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.managedservices-registrationdef.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('metadataLocation')), 0, 4))]",
       "location": "[parameters('metadataLocation')]",
       "properties": {
@@ -175,8 +178,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.170.59819",
-              "templateHash": "4647489518796202760"
+              "version": "0.32.4.45862",
+              "templateHash": "7285056022582604734"
             },
             "name": "Registration Assignment",
             "description": "Create a registration assignment.",

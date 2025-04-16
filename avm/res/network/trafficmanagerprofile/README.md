@@ -45,10 +45,7 @@ This instance deploys the module with the minimum set of required parameters.
 module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<version>' = {
   name: 'trafficmanagerprofileDeployment'
   params: {
-    // Required parameters
     name: 'ntmpmin001'
-    // Non-required parameters
-    location: 'global'
   }
 }
 ```
@@ -58,23 +55,31 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "ntmpmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "global"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
+
+param name = 'ntmpmin001'
 ```
 
 </details>
@@ -118,11 +123,13 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
     relativeName: 'ntmpmax001-rn'
     roleAssignments: [
       {
+        name: '76e7bd82-b689-4072-87be-519bfabf733e'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -147,7 +154,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -190,11 +197,13 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
     "roleAssignments": {
       "value": [
         {
+          "name": "76e7bd82-b689-4072-87be-519bfabf733e",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -214,6 +223,65 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
+
+// Required parameters
+param name = 'ntmpmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param location = 'global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param relativeName = 'ntmpmax001-rn'
+param roleAssignments = [
+  {
+    name: '76e7bd82-b689-4072-87be-519bfabf733e'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -254,7 +322,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       {
         name: 'webApp01Endpoint'
         properties: {
-          endpointLocation: 'eastus'
+          endpointLocation: '<endpointLocation>'
           endpointStatus: 'Enabled'
           priority: 1
           targetResourceId: '<targetResourceId>'
@@ -265,7 +333,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
       {
         name: 'webApp02Endpoint'
         properties: {
-          endpointLocation: 'westus'
+          endpointLocation: '<endpointLocation>'
           endpointStatus: 'Enabled'
           priority: 2
           targetResourceId: '<targetResourceId>'
@@ -274,11 +342,6 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
       }
     ]
-    location: 'global'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     monitorConfig: {
       path: '/'
       port: '443'
@@ -298,7 +361,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -331,7 +394,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         {
           "name": "webApp01Endpoint",
           "properties": {
-            "endpointLocation": "eastus",
+            "endpointLocation": "<endpointLocation>",
             "endpointStatus": "Enabled",
             "priority": 1,
             "targetResourceId": "<targetResourceId>",
@@ -342,7 +405,7 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
         {
           "name": "webApp02Endpoint",
           "properties": {
-            "endpointLocation": "westus",
+            "endpointLocation": "<endpointLocation>",
             "endpointStatus": "Enabled",
             "priority": 2,
             "targetResourceId": "<targetResourceId>",
@@ -351,15 +414,6 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
           "type": "Microsoft.Network/trafficManagerProfiles/azureEndpoints"
         }
       ]
-    },
-    "location": {
-      "value": "global"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "monitorConfig": {
       "value": {
@@ -382,6 +436,68 @@ module trafficmanagerprofile 'br/public:avm/res/network/trafficmanagerprofile:<v
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/trafficmanagerprofile:<version>'
+
+// Required parameters
+param name = 'ntmpwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param endpoints = [
+  {
+    name: 'webApp01Endpoint'
+    properties: {
+      endpointLocation: '<endpointLocation>'
+      endpointStatus: 'Enabled'
+      priority: 1
+      targetResourceId: '<targetResourceId>'
+      weight: 1
+    }
+    type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+  }
+  {
+    name: 'webApp02Endpoint'
+    properties: {
+      endpointLocation: '<endpointLocation>'
+      endpointStatus: 'Enabled'
+      priority: 2
+      targetResourceId: '<targetResourceId>'
+      weight: 1
+    }
+    type: 'Microsoft.Network/trafficManagerProfiles/azureEndpoints'
+  }
+]
+param monitorConfig = {
+  path: '/'
+  port: '443'
+  protocol: 'https'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -434,7 +550,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -544,7 +660,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -673,6 +789,14 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Traffic Manager Contributor'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -689,6 +813,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -735,6 +860,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -805,7 +937,6 @@ The DNS Time-To-Live (TTL), in seconds. This informs the local DNS resolvers and
 - Type: int
 - Default: `60`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -816,7 +947,11 @@ The DNS Time-To-Live (TTL), in seconds. This informs the local DNS resolvers and
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

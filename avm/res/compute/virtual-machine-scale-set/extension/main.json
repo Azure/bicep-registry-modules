@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "1737879623418595926"
+      "version": "0.33.93.31351",
+      "templateHash": "2691883054312794420"
     },
     "name": "Virtual Machine Scale Set Extensions",
-    "description": "This module deploys a Virtual Machine Scale Set Extension.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Machine Scale Set Extension."
   },
   "parameters": {
     "virtualMachineScaleSetName": {

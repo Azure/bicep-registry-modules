@@ -37,7 +37,7 @@ module nestedDependencies 'dependencies.bicep' = {
   }
 }
 
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -67,7 +67,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceGroup.location
       tags: {
         'hidden-title': 'This is visible in the resource name'
         resourceType: 'App Service Environment'
@@ -81,10 +80,13 @@ module testDeployment '../../../main.bicep' = [
           value: '1'
         }
       ]
-      allowNewPrivateEndpointConnections: true
-      ftpEnabled: true
-      inboundIpAddressOverride: '10.0.0.10'
-      remoteDebugEnabled: true
+      networkConfiguration: {
+        properties: {
+          allowNewPrivateEndpointConnections: true
+          ftpEnabled: true
+          remoteDebugEnabled: true
+        }
+      }
       upgradePreference: 'Late'
       diagnosticSettings: [
         {

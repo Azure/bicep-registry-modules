@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "3826907101153138616"
+      "version": "0.34.44.8038",
+      "templateHash": "16080632612286518435"
     },
     "name": "DocumentDB Database Account SQL Databases",
-    "description": "This module deploys a SQL Database in a CosmosDB Account.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a SQL Database in a CosmosDB Account."
   },
   "parameters": {
     "databaseAccountName": {
@@ -39,14 +38,14 @@
       "type": "int",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
+        "description": "Optional. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
       }
     },
     "autoscaleSettingsMaxThroughput": {
       "type": "int",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled."
+        "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
       }
     },
     "tags": {
@@ -61,12 +60,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[parameters('databaseAccountName')]"
     },
     "sqlDatabase": {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -120,6 +119,9 @@
           "kind": {
             "value": "[tryGet(parameters('containers')[copyIndex()], 'kind')]"
           },
+          "version": {
+            "value": "[tryGet(parameters('containers')[copyIndex()], 'version')]"
+          },
           "paths": {
             "value": "[tryGet(parameters('containers')[copyIndex()], 'paths')]"
           },
@@ -135,12 +137,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11250469246171251281"
+              "version": "0.34.44.8038",
+              "templateHash": "8834615293032195419"
             },
             "name": "DocumentDB Database Account SQL Database Containers",
-            "description": "This module deploys a SQL Database Container in a CosmosDB Account.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a SQL Database Container in a CosmosDB Account."
           },
           "parameters": {
             "databaseAccountName": {
@@ -188,7 +189,7 @@
               "type": "int",
               "defaultValue": 400,
               "metadata": {
-                "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used."
+                "description": "Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
               }
             },
             "autoscaleSettingsMaxThroughput": {
@@ -196,7 +197,7 @@
               "nullable": true,
               "maxValue": 1000000,
               "metadata": {
-                "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled."
+                "description": "Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level."
               }
             },
             "tags": {
@@ -236,11 +237,21 @@
               "defaultValue": "Hash",
               "allowedValues": [
                 "Hash",
-                "MultiHash",
-                "Range"
+                "MultiHash"
               ],
               "metadata": {
                 "description": "Optional. Default to Hash. Indicates the kind of algorithm used for partitioning."
+              }
+            },
+            "version": {
+              "type": "int",
+              "defaultValue": 1,
+              "allowedValues": [
+                1,
+                2
+              ],
+              "metadata": {
+                "description": "Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition."
               }
             }
           },
@@ -252,27 +263,24 @@
                 "input": "[if(startsWith(parameters('paths')[copyIndex('partitionKeyPaths')], '/'), parameters('paths')[copyIndex('partitionKeyPaths')], format('/{0}', parameters('paths')[copyIndex('partitionKeyPaths')]))]"
               }
             ],
-            "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, 1)), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
+            "containerResourceParams": "[union(createObject('conflictResolutionPolicy', parameters('conflictResolutionPolicy'), 'defaultTtl', parameters('defaultTtl'), 'id', parameters('name'), 'indexingPolicy', if(not(empty(parameters('indexingPolicy'))), parameters('indexingPolicy'), null()), 'partitionKey', createObject('paths', variables('partitionKeyPaths'), 'kind', parameters('kind'), 'version', if(equals(parameters('kind'), 'MultiHash'), 2, parameters('version'))), 'uniqueKeyPolicy', if(not(empty(parameters('uniqueKeyPolicyKeys'))), createObject('uniqueKeys', parameters('uniqueKeyPolicyKeys')), null())), if(not(equals(parameters('analyticalStorageTtl'), 0)), createObject('analyticalStorageTtl', parameters('analyticalStorageTtl')), createObject()))]"
           },
           "resources": {
             "databaseAccount::sqlDatabase": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-              "apiVersion": "2023-04-15",
-              "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]",
-              "dependsOn": [
-                "databaseAccount"
-              ]
+              "apiVersion": "2024-11-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]"
             },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "container": {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -280,7 +288,7 @@
                 "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(and(equals(parameters('autoscaleSettingsMaxThroughput'), null()), not(equals(parameters('throughput'), -1))), parameters('throughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleSettingsMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleSettingsMaxThroughput')), null())))]"
               },
               "dependsOn": [
-                "databaseAccount::sqlDatabase"
+                "databaseAccount"
               ]
             }
           },

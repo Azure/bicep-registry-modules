@@ -19,9 +19,9 @@ This module deploys a Virtual Network (vNet).
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/virtualNetworks` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/virtualNetworkPeerings) |
+| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 
 ## Usage examples
 
@@ -32,9 +32,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Deploying a bi-directional peering](#example-3-deploying-a-bi-directional-peering)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using an IPv6 address space](#example-2-using-an-ipv6-address-space)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Deploying a bi-directional peering](#example-4-deploying-a-bi-directional-peering)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -65,7 +66,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -92,7 +93,133 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '10.0.0.0/16'
+]
+param name = 'nvnmin001'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using an IPv6 address space_
+
+This instance deploys the module using an IPv6 address space.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
+  name: 'virtualNetworkDeployment'
+  params: {
+    // Required parameters
+    addressPrefixes: [
+      '10.0.0.0/21'
+      'fd00:592b:3014::/64'
+    ]
+    name: 'nvnipv6001'
+    // Non-required parameters
+    location: '<location>'
+    subnets: [
+      {
+        addressPrefixes: [
+          '10.0.0.0/24'
+          'fd00:592b:3014::/64'
+        ]
+        name: 'ipv6-subnet'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "addressPrefixes": {
+      "value": [
+        "10.0.0.0/21",
+        "fd00:592b:3014::/64"
+      ]
+    },
+    "name": {
+      "value": "nvnipv6001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "subnets": {
+      "value": [
+        {
+          "addressPrefixes": [
+            "10.0.0.0/24",
+            "fd00:592b:3014::/64"
+          ],
+          "name": "ipv6-subnet"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '10.0.0.0/21'
+  'fd00:592b:3014::/64'
+]
+param name = 'nvnipv6001'
+// Non-required parameters
+param location = '<location>'
+param subnets = [
+  {
+    addressPrefixes: [
+      '10.0.0.0/24'
+      'fd00:592b:3014::/64'
+    ]
+    name: 'ipv6-subnet'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -137,9 +264,21 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     }
     roleAssignments: [
       {
+        name: 'f5c27a7b-9b18-4dc1-b002-db3c38e80b64'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Reader'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
     subnets: [
@@ -155,29 +294,28 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           {
             principalId: '<principalId>'
             principalType: 'ServicePrincipal'
-            roleDefinitionIdOrName: 'Reader'
+            roleDefinitionIdOrName: 'Owner'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+          }
+          {
+            principalId: '<principalId>'
+            principalType: 'ServicePrincipal'
+            roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
         routeTableResourceId: '<routeTableResourceId>'
         serviceEndpoints: [
-          {
-            service: 'Microsoft.Storage'
-          }
-          {
-            service: 'Microsoft.Sql'
-          }
+          'Microsoft.Sql'
+          'Microsoft.Storage'
         ]
       }
       {
         addressPrefix: '<addressPrefix>'
-        delegations: [
-          {
-            name: 'netappDel'
-            properties: {
-              serviceName: 'Microsoft.Netapp/volumes'
-            }
-          }
-        ]
+        delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-002'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
@@ -219,7 +357,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -273,9 +411,21 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "f5c27a7b-9b18-4dc1-b002-db3c38e80b64",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Reader"
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
     },
@@ -293,29 +443,28 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
             {
               "principalId": "<principalId>",
               "principalType": "ServicePrincipal",
-              "roleDefinitionIdOrName": "Reader"
+              "roleDefinitionIdOrName": "Owner"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+            },
+            {
+              "principalId": "<principalId>",
+              "principalType": "ServicePrincipal",
+              "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
           "routeTableResourceId": "<routeTableResourceId>",
           "serviceEndpoints": [
-            {
-              "service": "Microsoft.Storage"
-            },
-            {
-              "service": "Microsoft.Sql"
-            }
+            "Microsoft.Sql",
+            "Microsoft.Storage"
           ]
         },
         {
           "addressPrefix": "<addressPrefix>",
-          "delegations": [
-            {
-              "name": "netappDel",
-              "properties": {
-                "serviceName": "Microsoft.Netapp/volumes"
-              }
-            }
-          ],
+          "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-002",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
@@ -358,7 +507,135 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 </details>
 <p>
 
-### Example 3: _Deploying a bi-directional peering_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '<addressPrefix>'
+]
+param name = 'nvnmax001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param dnsServers = [
+  '10.0.1.4'
+  '10.0.1.5'
+]
+param flowTimeoutInMinutes = 20
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'f5c27a7b-9b18-4dc1-b002-db3c38e80b64'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param subnets = [
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'GatewaySubnet'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'az-subnet-x-001'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    routeTableResourceId: '<routeTableResourceId>'
+    serviceEndpoints: [
+      'Microsoft.Sql'
+      'Microsoft.Storage'
+    ]
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    delegation: 'Microsoft.Netapp/volumes'
+    name: 'az-subnet-x-002'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'az-subnet-x-003'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'az-subnet-x-004'
+    natGatewayResourceId: ''
+    networkSecurityGroupResourceId: ''
+    routeTableResourceId: ''
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'AzureBastionSubnet'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'AzureFirewallSubnet'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Deploying a bi-directional peering_
 
 This instance deploys the module with both an inbound and outbound peering.
 
@@ -387,7 +664,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         remotePeeringAllowVirtualNetworkAccess: true
         remotePeeringEnabled: true
         remotePeeringName: 'customName'
-        remoteVirtualNetworkId: '<remoteVirtualNetworkId>'
+        remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
         useRemoteGateways: false
       }
     ]
@@ -420,7 +697,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -450,7 +727,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           "remotePeeringAllowVirtualNetworkAccess": true,
           "remotePeeringEnabled": true,
           "remotePeeringName": "customName",
-          "remoteVirtualNetworkId": "<remoteVirtualNetworkId>",
+          "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>",
           "useRemoteGateways": false
         }
       ]
@@ -486,7 +763,59 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '10.1.0.0/24'
+]
+param name = 'nvnpeer001'
+// Non-required parameters
+param location = '<location>'
+param peerings = [
+  {
+    allowForwardedTraffic: true
+    allowGatewayTransit: false
+    allowVirtualNetworkAccess: true
+    remotePeeringAllowForwardedTraffic: true
+    remotePeeringAllowVirtualNetworkAccess: true
+    remotePeeringEnabled: true
+    remotePeeringName: 'customName'
+    remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+    useRemoteGateways: false
+  }
+]
+param subnets = [
+  {
+    addressPrefix: '10.1.0.0/26'
+    name: 'GatewaySubnet'
+  }
+  {
+    addressPrefix: '10.1.0.64/26'
+    name: 'AzureBastionSubnet'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+  {
+    addressPrefix: '10.1.0.128/26'
+    name: 'AzureFirewallSubnet'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -525,10 +854,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     ]
     flowTimeoutInMinutes: 20
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     subnets: [
       {
         addressPrefix: '<addressPrefix>'
@@ -547,24 +872,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
         ]
         routeTableResourceId: '<routeTableResourceId>'
         serviceEndpoints: [
-          {
-            service: 'Microsoft.Storage'
-          }
-          {
-            service: 'Microsoft.Sql'
-          }
+          'Microsoft.Sql'
+          'Microsoft.Storage'
         ]
       }
       {
         addressPrefix: '<addressPrefix>'
-        delegations: [
-          {
-            name: 'netappDel'
-            properties: {
-              serviceName: 'Microsoft.Netapp/volumes'
-            }
-          }
-        ]
+        delegation: 'Microsoft.Netapp/volumes'
         name: 'az-subnet-x-002'
         networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
       }
@@ -599,7 +913,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -644,12 +958,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "subnets": {
       "value": [
         {
@@ -669,24 +977,13 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
           ],
           "routeTableResourceId": "<routeTableResourceId>",
           "serviceEndpoints": [
-            {
-              "service": "Microsoft.Storage"
-            },
-            {
-              "service": "Microsoft.Sql"
-            }
+            "Microsoft.Sql",
+            "Microsoft.Storage"
           ]
         },
         {
           "addressPrefix": "<addressPrefix>",
-          "delegations": [
-            {
-              "name": "netappDel",
-              "properties": {
-                "serviceName": "Microsoft.Netapp/volumes"
-              }
-            }
-          ],
+          "delegation": "Microsoft.Netapp/volumes",
           "name": "az-subnet-x-002",
           "networkSecurityGroupResourceId": "<networkSecurityGroupResourceId>"
         },
@@ -722,6 +1019,93 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '<addressPrefix>'
+]
+param name = 'nvnwaf001'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param dnsServers = [
+  '10.0.1.4'
+  '10.0.1.5'
+]
+param flowTimeoutInMinutes = 20
+param location = '<location>'
+param subnets = [
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'GatewaySubnet'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'az-subnet-x-001'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Reader'
+      }
+    ]
+    routeTableResourceId: '<routeTableResourceId>'
+    serviceEndpoints: [
+      'Microsoft.Sql'
+      'Microsoft.Storage'
+    ]
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    delegation: 'Microsoft.Netapp/volumes'
+    name: 'az-subnet-x-002'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'az-subnet-x-003'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'AzureBastionSubnet'
+    networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
+  }
+  {
+    addressPrefix: '<addressPrefix>'
+    name: 'AzureFirewallSubnet'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -740,13 +1124,15 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsServers`](#parameter-dnsservers) | array | DNS Servers associated to the Virtual Network. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`enableVmProtection`](#parameter-enablevmprotection) | bool | Indicates if VM protection is enabled for all the subnets in the virtual network. |
 | [`flowTimeoutInMinutes`](#parameter-flowtimeoutinminutes) | int | The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes. Default value 0 will set the property to null. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`peerings`](#parameter-peerings) | array | Virtual Network Peerings configurations. |
+| [`peerings`](#parameter-peerings) | array | Virtual Network Peering configurations. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`subnets`](#parameter-subnets) | array | An Array of subnets to deploy to the Virtual Network. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`virtualNetworkBgpCommunity`](#parameter-virtualnetworkbgpcommunity) | string | The BGP community associated with the virtual network. |
 | [`vnetEncryption`](#parameter-vnetencryption) | bool | Indicates if encryption is enabled on virtual network and if VM without encryption is allowed in encrypted VNet. Requires the EnableVNetEncryption feature to be registered for the subscription and a supported region to use this property. |
 | [`vnetEncryptionEnforcement`](#parameter-vnetencryptionenforcement) | string | If the encrypted VNet allows VM that does not support encryption. Can only be used when vnetEncryption is enabled. |
 
@@ -770,7 +1156,6 @@ Resource ID of the DDoS protection plan to assign the VNET to. If it's left blan
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
@@ -789,7 +1174,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -899,7 +1284,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -924,7 +1309,6 @@ DNS Servers associated to the Virtual Network.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `enableTelemetry`
 
@@ -934,6 +1318,13 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `enableVmProtection`
+
+Indicates if VM protection is enabled for all the subnets in the virtual network.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `flowTimeoutInMinutes`
 
 The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes. Default value 0 will set the property to null.
@@ -941,6 +1332,7 @@ The flow timeout in minutes for the Virtual Network, which is used to enable con
 - Required: No
 - Type: int
 - Default: `0`
+- MaxValue: 30
 
 ### Parameter: `location`
 
@@ -988,11 +1380,132 @@ Specify the name of lock.
 
 ### Parameter: `peerings`
 
-Virtual Network Peerings configurations.
+Virtual Network Peering configurations.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`remoteVirtualNetworkResourceId`](#parameter-peeringsremotevirtualnetworkresourceid) | string | The Resource ID of the VNet that is this Local VNet is being peered to. Should be in the format of a Resource ID. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowForwardedTraffic`](#parameter-peeringsallowforwardedtraffic) | bool | Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network. Default is true. |
+| [`allowGatewayTransit`](#parameter-peeringsallowgatewaytransit) | bool | If gateway links can be used in remote virtual networking to link to this virtual network. Default is false. |
+| [`allowVirtualNetworkAccess`](#parameter-peeringsallowvirtualnetworkaccess) | bool | Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. Default is true. |
+| [`doNotVerifyRemoteGateways`](#parameter-peeringsdonotverifyremotegateways) | bool | Do not verify the provisioning state of the remote gateway. Default is true. |
+| [`name`](#parameter-peeringsname) | string | The Name of VNET Peering resource. If not provided, default value will be peer-localVnetName-remoteVnetName. |
+| [`remotePeeringAllowForwardedTraffic`](#parameter-peeringsremotepeeringallowforwardedtraffic) | bool | Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network. Default is true. |
+| [`remotePeeringAllowGatewayTransit`](#parameter-peeringsremotepeeringallowgatewaytransit) | bool | If gateway links can be used in remote virtual networking to link to this virtual network. Default is false. |
+| [`remotePeeringAllowVirtualNetworkAccess`](#parameter-peeringsremotepeeringallowvirtualnetworkaccess) | bool | Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. Default is true. |
+| [`remotePeeringDoNotVerifyRemoteGateways`](#parameter-peeringsremotepeeringdonotverifyremotegateways) | bool | Do not verify the provisioning state of the remote gateway. Default is true. |
+| [`remotePeeringEnabled`](#parameter-peeringsremotepeeringenabled) | bool | Deploy the outbound and the inbound peering. |
+| [`remotePeeringName`](#parameter-peeringsremotepeeringname) | string | The name of the VNET Peering resource in the remove Virtual Network. If not provided, default value will be peer-remoteVnetName-localVnetName. |
+| [`remotePeeringUseRemoteGateways`](#parameter-peeringsremotepeeringuseremotegateways) | bool | If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false. |
+| [`useRemoteGateways`](#parameter-peeringsuseremotegateways) | bool | If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false. |
+
+### Parameter: `peerings.remoteVirtualNetworkResourceId`
+
+The Resource ID of the VNet that is this Local VNet is being peered to. Should be in the format of a Resource ID.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `peerings.allowForwardedTraffic`
+
+Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network. Default is true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `peerings.allowGatewayTransit`
+
+If gateway links can be used in remote virtual networking to link to this virtual network. Default is false.
+
+- Required: No
+- Type: bool
+
+### Parameter: `peerings.allowVirtualNetworkAccess`
+
+Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. Default is true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `peerings.doNotVerifyRemoteGateways`
+
+Do not verify the provisioning state of the remote gateway. Default is true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `peerings.name`
+
+The Name of VNET Peering resource. If not provided, default value will be peer-localVnetName-remoteVnetName.
+
+- Required: No
+- Type: string
+
+### Parameter: `peerings.remotePeeringAllowForwardedTraffic`
+
+Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network. Default is true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `peerings.remotePeeringAllowGatewayTransit`
+
+If gateway links can be used in remote virtual networking to link to this virtual network. Default is false.
+
+- Required: No
+- Type: bool
+
+### Parameter: `peerings.remotePeeringAllowVirtualNetworkAccess`
+
+Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. Default is true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `peerings.remotePeeringDoNotVerifyRemoteGateways`
+
+Do not verify the provisioning state of the remote gateway. Default is true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `peerings.remotePeeringEnabled`
+
+Deploy the outbound and the inbound peering.
+
+- Required: No
+- Type: bool
+
+### Parameter: `peerings.remotePeeringName`
+
+The name of the VNET Peering resource in the remove Virtual Network. If not provided, default value will be peer-remoteVnetName-localVnetName.
+
+- Required: No
+- Type: string
+
+### Parameter: `peerings.remotePeeringUseRemoteGateways`
+
+If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false.
+
+- Required: No
+- Type: bool
+
+### Parameter: `peerings.useRemoteGateways`
+
+If remote gateways can be used on this virtual network. If the flag is set to true, and allowGatewayTransit on remote peering is also true, virtual network will use gateways of remote virtual network for transit. Only one peering can have this flag set to true. This flag cannot be set if virtual network already has a gateway. Default is false.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `roleAssignments`
 
@@ -1000,6 +1513,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1016,6 +1536,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1066,6 +1587,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1089,7 +1617,261 @@ An Array of subnets to deploy to the Virtual Network.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-subnetsname) | string | The Name of the subnet resource. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-subnetsaddressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
+| [`addressPrefixes`](#parameter-subnetsaddressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`applicationGatewayIPConfigurations`](#parameter-subnetsapplicationgatewayipconfigurations) | array | Application gateway IP configurations of virtual network resource. |
+| [`defaultOutboundAccess`](#parameter-subnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
+| [`delegation`](#parameter-subnetsdelegation) | string | The delegation to enable on the subnet. |
+| [`natGatewayResourceId`](#parameter-subnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
+| [`networkSecurityGroupResourceId`](#parameter-subnetsnetworksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
+| [`privateEndpointNetworkPolicies`](#parameter-subnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
+| [`privateLinkServiceNetworkPolicies`](#parameter-subnetsprivatelinkservicenetworkpolicies) | string | enable or disable apply network policies on private link service in the subnet. |
+| [`roleAssignments`](#parameter-subnetsroleassignments) | array | Array of role assignments to create. |
+| [`routeTableResourceId`](#parameter-subnetsroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
+| [`serviceEndpointPolicies`](#parameter-subnetsserviceendpointpolicies) | array | An array of service endpoint policies. |
+| [`serviceEndpoints`](#parameter-subnetsserviceendpoints) | array | The service endpoints to enable on the subnet. |
+| [`sharingScope`](#parameter-subnetssharingscope) | string | Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty. |
+
+### Parameter: `subnets.name`
+
+The Name of the subnet resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnets.addressPrefix`
+
+The address prefix for the subnet. Required if `addressPrefixes` is empty.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.addressPrefixes`
+
+List of address prefixes for the subnet. Required if `addressPrefix` is empty.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.applicationGatewayIPConfigurations`
+
+Application gateway IP configurations of virtual network resource.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.defaultOutboundAccess`
+
+Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet.
+
+- Required: No
+- Type: bool
+
+### Parameter: `subnets.delegation`
+
+The delegation to enable on the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.natGatewayResourceId`
+
+The resource ID of the NAT Gateway to use for the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.networkSecurityGroupResourceId`
+
+The resource ID of the network security group to assign to the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.privateEndpointNetworkPolicies`
+
+enable or disable apply network policies on private endpoint in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+    'NetworkSecurityGroupEnabled'
+    'RouteTableEnabled'
+  ]
+  ```
+
+### Parameter: `subnets.privateLinkServiceNetworkPolicies`
+
+enable or disable apply network policies on private link service in the subnet.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `subnets.roleAssignments`
+
+Array of role assignments to create.
+
+- Required: No
+- Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-subnetsroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-subnetsroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-subnetsroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-subnetsroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-subnetsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-subnetsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-subnetsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-subnetsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `subnets.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnets.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `subnets.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `subnets.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `subnets.routeTableResourceId`
+
+The resource ID of the route table to assign to the subnet.
+
+- Required: No
+- Type: string
+
+### Parameter: `subnets.serviceEndpointPolicies`
+
+An array of service endpoint policies.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.serviceEndpoints`
+
+The service endpoints to enable on the subnet.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.sharingScope`
+
+Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DelegatedServices'
+    'Tenant'
+  ]
+  ```
 
 ### Parameter: `tags`
 
@@ -1097,6 +1879,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `virtualNetworkBgpCommunity`
+
+The BGP community associated with the virtual network.
+
+- Required: No
+- Type: string
 
 ### Parameter: `vnetEncryption`
 
@@ -1121,7 +1910,6 @@ If the encrypted VNet allows VM that does not support encryption. Can only be us
   ]
   ```
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1135,7 +1923,11 @@ If the encrypted VNet allows VM that does not support encryption. Can only be us
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes
 
@@ -1150,7 +1942,7 @@ As the virtual network peering array allows you to deploy not only a one-way but
 | Parameter Name | Type | Default Value | Possible Values | Description |
 | :-- | :-- | :-- | :-- | :-- |
 | `remotePeeringEnabled` | bool | `false` |  | Optional. Set to true to also deploy the reverse peering for the configured remote virtual networks to the local network |
-| `remotePeeringName` | string | `'${last(split(peering.remoteVirtualNetworkId, '/'))}-${name}'` | | Optional. The Name of Vnet Peering resource. If not provided, default value will be <remoteVnetName>-<localVnetName> |
+| `remotePeeringName` | string | `'${last(split(peering.remoteVirtualNetworkId, '/'))}-${name}'` | | Optional. The Name of VNET Peering resource. If not provided, default value will be <remoteVnetName>-<localVnetName> |
 | `remotePeeringAllowForwardedTraffic` | bool | `true` | | Optional. Whether the forwarded traffic from the VMs in the local virtual network will be allowed/disallowed in remote virtual network. |
 | `remotePeeringAllowGatewayTransit` | bool | `false` | | Optional. If gateway links can be used in remote virtual networking to link to this virtual network. |
 | `remotePeeringAllowVirtualNetworkAccess` | bool | `true` | | Optional. Whether the VMs in the local virtual network space would be able to access the VMs in remote virtual network space. |

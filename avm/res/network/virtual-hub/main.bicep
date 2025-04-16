@@ -1,7 +1,6 @@
 metadata name = 'Virtual Hubs'
 metadata description = '''This module deploys a Virtual Hub.
 If you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module.'''
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The virtual hub name.')
 param name string
@@ -19,28 +18,35 @@ param addressPrefix string
 param allowBranchToBranchTraffic bool = true
 
 @description('Optional. Resource ID of the Azure Firewall to link to.')
-param azureFirewallResourceId string = ''
+param azureFirewallResourceId string?
 
 @description('Optional. Resource ID of the Express Route Gateway to link to.')
-param expressRouteGatewayId string = ''
+param expressRouteGatewayResourceId string?
 
 @description('Optional. Resource ID of the Point-to-Site VPN Gateway to link to.')
-param p2SVpnGatewayId string = ''
+param p2SVpnGatewayResourceId string?
+
+@description('Optional. The preferred routing preference for this virtual hub.')
+@allowed([
+  'ASPath'
+  'ExpressRoute'
+  'VpnGateway'
+])
+param hubRoutingPreference string?
 
 @description('Optional. The preferred routing gateway types.')
 @allowed([
   'ExpressRoute'
   'None'
   'VpnGateway'
-  ''
 ])
-param preferredRoutingGateway string = ''
+param preferredRoutingGateway string?
 
 @description('Optional. VirtualHub route tables.')
-param routeTableRoutes array = []
+param routeTableRoutes array?
 
 @description('Optional. ID of the Security Partner Provider to link to.')
-param securityPartnerProviderId string = ''
+param securityPartnerProviderResourceId string = ''
 
 @description('Optional. The Security Provider name.')
 param securityProviderName string = ''
@@ -59,27 +65,32 @@ param virtualHubRouteTableV2s array = []
 param virtualRouterAsn int?
 
 @description('Optional. VirtualRouter IPs.')
-param virtualRouterIps array = []
+param virtualRouterIps array?
 
 @description('Required. Resource ID of the virtual WAN to link to.')
-param virtualWanId string
+param virtualWanResourceId string
 
 @description('Optional. Resource ID of the VPN Gateway to link to.')
-param vpnGatewayId string = ''
+param vpnGatewayResourceId string?
+
+@description('Optional. The routing intent configuration to create for the virtual hub.')
+param routingIntent routingIntentType?
 
 @description('Optional. Route tables to create for the virtual hub.')
-param hubRouteTables array = []
+param hubRouteTables hubRouteTableType[]?
 
 @description('Optional. Virtual network connections to create for the virtual hub.')
-param hubVirtualNetworkConnections array = []
+param hubVirtualNetworkConnections hubVirtualNetworkConnectionType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
     '46d3xbcp.res.network-virtualhub.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
@@ -100,7 +111,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2023-11-01' = {
   name: name
   location: location
   tags: tags
@@ -112,38 +123,39 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' = {
           id: azureFirewallResourceId
         }
       : null
-    expressRouteGateway: !empty(expressRouteGatewayId)
+    expressRouteGateway: !empty(expressRouteGatewayResourceId)
       ? {
-          id: expressRouteGatewayId
+          id: expressRouteGatewayResourceId
         }
       : null
-    p2SVpnGateway: !empty(p2SVpnGatewayId)
+    p2SVpnGateway: !empty(p2SVpnGatewayResourceId)
       ? {
-          id: p2SVpnGatewayId
+          id: p2SVpnGatewayResourceId
         }
       : null
-    preferredRoutingGateway: !empty(preferredRoutingGateway) ? any(preferredRoutingGateway) : null
+    hubRoutingPreference: hubRoutingPreference
+    preferredRoutingGateway: preferredRoutingGateway
     routeTable: !empty(routeTableRoutes)
       ? {
           routes: routeTableRoutes
         }
       : null
-    securityPartnerProvider: !empty(securityPartnerProviderId)
+    securityPartnerProvider: !empty(securityPartnerProviderResourceId)
       ? {
-          id: securityPartnerProviderId
+          id: securityPartnerProviderResourceId
         }
       : null
     securityProviderName: securityProviderName
     sku: sku
     virtualHubRouteTableV2s: virtualHubRouteTableV2s
     virtualRouterAsn: virtualRouterAsn
-    virtualRouterIps: !empty(virtualRouterIps) ? virtualRouterIps : null
+    virtualRouterIps: virtualRouterIps
     virtualWan: {
-      id: virtualWanId
+      id: virtualWanResourceId
     }
-    vpnGateway: !empty(vpnGatewayId)
+    vpnGateway: !empty(vpnGatewayResourceId)
       ? {
-          id: vpnGatewayId
+          id: vpnGatewayResourceId
         }
       : null
   }
@@ -160,31 +172,37 @@ resource virtualHub_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty
   scope: virtualHub
 }
 
-module virtualHub_routeTables 'hub-route-table/main.bicep' = [
-  for (routeTable, index) in hubRouteTables: {
+module virtualHub_routingIntent 'routingIntent/main.bicep' = if (!empty(azureFirewallResourceId) && !empty(routingIntent)) {
+  name: '${uniqueString(deployment().name, location)}-routingIntent'
+  params: {
+    virtualHubName: virtualHub.name
+    azureFirewallResourceId: azureFirewallResourceId!
+    internetToFirewall: routingIntent.?internetToFirewall
+    privateToFirewall: routingIntent.?privateToFirewall
+  }
+}
+
+module virtualHub_routeTables 'hubRouteTable/main.bicep' = [
+  for (routeTable, index) in (hubRouteTables ?? []): {
     name: '${uniqueString(deployment().name, location)}-routeTable-${index}'
     params: {
       virtualHubName: virtualHub.name
       name: routeTable.name
-      labels: contains(routeTable, 'labels') ? routeTable.labels : []
-      routes: contains(routeTable, 'routes') ? routeTable.routes : []
+      labels: routeTable.?labels
+      routes: routeTable.?routes
     }
   }
 ]
 
-module virtualHub_hubVirtualNetworkConnections 'hub-virtual-network-connection/main.bicep' = [
-  for (virtualNetworkConnection, index) in hubVirtualNetworkConnections: {
+module virtualHub_hubVirtualNetworkConnections 'hubVirtualNetworkConnection/main.bicep' = [
+  for (virtualNetworkConnection, index) in (hubVirtualNetworkConnections ?? []): {
     name: '${uniqueString(deployment().name, location)}-connection-${index}'
     params: {
       virtualHubName: virtualHub.name
       name: virtualNetworkConnection.name
-      enableInternetSecurity: contains(virtualNetworkConnection, 'enableInternetSecurity')
-        ? virtualNetworkConnection.enableInternetSecurity
-        : true
-      remoteVirtualNetworkId: virtualNetworkConnection.remoteVirtualNetworkId
-      routingConfiguration: contains(virtualNetworkConnection, 'routingConfiguration')
-        ? virtualNetworkConnection.routingConfiguration
-        : {}
+      enableInternetSecurity: virtualNetworkConnection.?enableInternetSecurity
+      remoteVirtualNetworkResourceId: virtualNetworkConnection.remoteVirtualNetworkResourceId
+      routingConfiguration: virtualNetworkConnection.?routingConfiguration
     }
     dependsOn: [
       virtualHub_routeTables
@@ -208,10 +226,41 @@ output location string = virtualHub.location
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+@export()
+@description('The type of a virtual hub route table.')
+type hubRouteTableType = {
+  @description('Required. The route table name.')
+  name: string
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+  @description('Optional. List of labels associated with this route table.')
+  labels: array?
+
+  @description('Optional. List of all routes.')
+  routes: array?
+}
+
+@export()
+@description('The type of a routing intent.')
+type routingIntentType = {
+  @description('Optional. Configures Routing Intent to forward Private traffic to the firewall (RFC1918).')
+  privateToFirewall: bool?
+
+  @description('Optional. Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).')
+  internetToFirewall: bool?
+}
+
+@export()
+@description('The type of a hub virtual network connection.')
+type hubVirtualNetworkConnectionType = {
+  @description('Required. The connection name.')
+  name: string
+
+  @description('Optional. Enable internet security.')
+  enableInternetSecurity: bool?
+
+  @description('Required. Resource ID of the virtual network to link to.')
+  remoteVirtualNetworkResourceId: string
+
+  @description('Optional. Routing Configuration indicating the associated and propagated route tables for this connection.')
+  routingConfiguration: object?
+}

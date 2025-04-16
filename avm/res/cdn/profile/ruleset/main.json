@@ -5,12 +5,86 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "1809010747275335698"
+      "version": "0.34.1.11899",
+      "templateHash": "15877646874005216929"
     },
     "name": "CDN Profiles Rule Sets",
-    "description": "This module deploys a CDN Profile rule set.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a CDN Profile rule set."
+  },
+  "definitions": {
+    "ruleSetType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the rule set."
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ruleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of rules."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the rule set."
+      }
+    },
+    "ruleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the rule."
+          }
+        },
+        "order": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The order in which the rules are applied for the endpoint."
+          }
+        },
+        "actions": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied.."
+          }
+        },
+        "conditions": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of conditions that must be matched for the actions to be executed."
+          }
+        },
+        "matchProcessingBehavior": {
+          "type": "string",
+          "allowedValues": [
+            "Continue",
+            "Stop"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type of the rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule/main.bicep"
+        }
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -27,6 +101,9 @@
     },
     "rules": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/ruleType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optinal. The rules to apply to the rule set."
@@ -43,10 +120,7 @@
     "ruleSet": {
       "type": "Microsoft.Cdn/profiles/ruleSets",
       "apiVersion": "2023-05-01",
-      "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
-      "dependsOn": [
-        "profile"
-      ]
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]"
     },
     "ruleSet_rules": {
       "copy": {
@@ -91,12 +165,59 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "8195283154733773558"
+              "version": "0.34.1.11899",
+              "templateHash": "9504457217668690067"
             },
             "name": "CDN Profiles Rules",
-            "description": "This module deploys a CDN Profile rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a CDN Profile rule."
+          },
+          "definitions": {
+            "ruleType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the rule."
+                  }
+                },
+                "order": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. The order in which the rules are applied for the endpoint."
+                  }
+                },
+                "actions": {
+                  "type": "array",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A list of actions that are executed when all the conditions of a rule are satisfied.."
+                  }
+                },
+                "conditions": {
+                  "type": "array",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. A list of conditions that must be matched for the actions to be executed."
+                  }
+                },
+                "matchProcessingBehavior": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Continue",
+                    "Stop"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. If this rule is a match should the rules engine continue running the remaining rules or stop. If not present, defaults to Continue."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of the rule."
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -154,10 +275,7 @@
               "existing": true,
               "type": "Microsoft.Cdn/profiles/ruleSets",
               "apiVersion": "2023-05-01",
-              "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]",
-              "dependsOn": [
-                "profile"
-              ]
+              "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSetName'))]"
             },
             "profile": {
               "existing": true,
@@ -174,10 +292,7 @@
                 "actions": "[parameters('actions')]",
                 "conditions": "[parameters('conditions')]",
                 "matchProcessingBehavior": "[parameters('matchProcessingBehavior')]"
-              },
-              "dependsOn": [
-                "profile::ruleSet"
-              ]
+              }
             }
           },
           "outputs": {

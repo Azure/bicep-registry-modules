@@ -42,6 +42,9 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'dep-${namePrefix}-test-${serviceShort}'
+      managedIdentities: {
+        systemAssigned: true
+      }
       location: 'global'
       originResponseTimeoutSeconds: 60
       sku: 'Standard_AzureFrontDoor'
@@ -49,6 +52,11 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'dep-${namePrefix}-test-${serviceShort}-custom-domain'
           hostName: 'dep-${namePrefix}-test-${serviceShort}-custom-domain.azurewebsites.net'
+          certificateType: 'ManagedCertificate'
+        }
+        {
+          name: 'dep-${namePrefix}-test2-${serviceShort}-custom-domain'
+          hostName: 'dep-${namePrefix}-test2-${serviceShort}-custom-domain.azurewebsites.net'
           certificateType: 'ManagedCertificate'
         }
       ]
@@ -98,7 +106,7 @@ module testDeployment '../../../main.bicep' = [
             {
               name: 'dep-${namePrefix}-test-${serviceShort}-afd-route'
               originGroupName: 'dep-${namePrefix}-test-${serviceShort}-origin-group'
-              customDomainName: 'dep-${namePrefix}-test-${serviceShort}-custom-domain'
+              customDomainNames: ['dep-${namePrefix}-test-${serviceShort}-custom-domain']
               ruleSets: [
                 {
                   name: 'dep${namePrefix}test${serviceShort}ruleset'
@@ -111,3 +119,6 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+output dnsValidationRecords array = testDeployment[0].outputs.dnsValidation
+output afdEndpointNames array = testDeployment[0].outputs.frontDoorEndpointHostNames

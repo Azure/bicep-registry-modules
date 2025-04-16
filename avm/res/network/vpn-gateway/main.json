@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "16246563114829739207"
+      "version": "0.33.13.18514",
+      "templateHash": "13461484235913765557"
     },
     "name": "VPN Gateways",
-    "description": "This module deploys a VPN Gateway.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a VPN Gateway."
   },
   "definitions": {
     "lockType": {
@@ -36,7 +35,12 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -110,6 +114,7 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -126,7 +131,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[take(format('46d3xbcp.res.network-vpngateway.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
@@ -218,9 +223,15 @@
           "vpnGatewayName": {
             "value": "[parameters('name')]"
           },
-          "externalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'externalMappings'), createObject('value', parameters('natRules')[copyIndex()].externalMappings), createObject('value', createArray()))]",
-          "internalMappings": "[if(contains(parameters('natRules')[copyIndex()], 'internalMappings'), createObject('value', parameters('natRules')[copyIndex()].internalMappings), createObject('value', createArray()))]",
-          "ipConfigurationId": "[if(contains(parameters('natRules')[copyIndex()], 'ipConfigurationId'), createObject('value', parameters('natRules')[copyIndex()].ipConfigurationId), createObject('value', ''))]",
+          "externalMappings": {
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'externalMappings')]"
+          },
+          "internalMappings": {
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'internalMappings')]"
+          },
+          "ipConfigurationId": {
+            "value": "[tryGet(parameters('natRules')[copyIndex()], 'ipConfigurationId')]"
+          },
           "mode": {
             "value": "[tryGet(parameters('natRules')[copyIndex()], 'mode')]"
           },
@@ -235,12 +246,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "15540036539979482149"
+              "version": "0.33.13.18514",
+              "templateHash": "11380942489395706225"
             },
             "name": "VPN Gateway NAT Rules",
-            "description": "This module deploys a VPN Gateway NAT Rule.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a VPN Gateway NAT Rule."
           },
           "parameters": {
             "name": {
@@ -316,10 +326,7 @@
                 "ipConfigurationId": "[parameters('ipConfigurationId')]",
                 "mode": "[parameters('mode')]",
                 "type": "[parameters('type')]"
-              },
-              "dependsOn": [
-                "vpnGateway"
-              ]
+              }
             }
           },
           "outputs": {
@@ -404,6 +411,9 @@
           "vpnConnectionProtocolType": {
             "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'vpnConnectionProtocolType')]"
           },
+          "ipsecPolicies": {
+            "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'ipsecPolicies')]"
+          },
           "trafficSelectorPolicies": {
             "value": "[tryGet(parameters('vpnConnections')[copyIndex()], 'trafficSelectorPolicies')]"
           },
@@ -417,12 +427,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "13703101435058090684"
+              "version": "0.33.13.18514",
+              "templateHash": "6343342170986309278"
             },
             "name": "VPN Gateway VPN Connections",
-            "description": "This module deploys a VPN Gateway VPN Connection.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a VPN Gateway VPN Connection."
           },
           "parameters": {
             "name": {

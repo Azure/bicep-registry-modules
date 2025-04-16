@@ -15,7 +15,9 @@ This module deploys an App Managed Environment (also known as a Container App En
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/managedEnvironments` | [2023-11-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2023-11-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments/certificates` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/certificates) |
+| `Microsoft.App/managedEnvironments/storages` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -29,7 +31,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Enable public access](#example-3-enable-public-access)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -52,7 +55,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
-    location: '<location>'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     workloadProfiles: [
@@ -72,7 +74,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -99,9 +101,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "internal": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
     },
@@ -125,6 +124,36 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'amemin001'
+// Non-required parameters
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetId = '<infrastructureSubnetId>'
+param internal = true
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 2: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
@@ -142,6 +171,15 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemax001'
     // Non-required parameters
+    appInsightsConnectionString: '<appInsightsConnectionString>'
+    certificate: {
+      certificateKeyVaultProperties: {
+        identityResourceId: '<identityResourceId>'
+        keyVaultUrl: '<keyVaultUrl>'
+      }
+      name: 'dep-cert-amemax'
+    }
+    dnsSuffix: 'contoso.com'
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
@@ -157,6 +195,19 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         '<managedIdentityResourceId>'
       ]
     }
+    openTelemetryConfiguration: {
+      logsConfiguration: {
+        destinations: [
+          'appInsights'
+        ]
+      }
+      tracesConfiguration: {
+        destinations: [
+          'appInsights'
+        ]
+      }
+    }
+    peerTrafficEncryption: true
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     roleAssignments: [
@@ -166,6 +217,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -174,6 +226,20 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    storages: [
+      {
+        accessMode: 'ReadWrite'
+        kind: 'SMB'
+        shareName: 'smbfileshare'
+        storageAccountName: '<storageAccountName>'
+      }
+      {
+        accessMode: 'ReadWrite'
+        kind: 'NFS'
+        shareName: 'nfsfileshare'
+        storageAccountName: '<storageAccountName>'
       }
     ]
     tags: {
@@ -197,7 +263,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -212,6 +278,21 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amemax001"
     },
     // Non-required parameters
+    "appInsightsConnectionString": {
+      "value": "<appInsightsConnectionString>"
+    },
+    "certificate": {
+      "value": {
+        "certificateKeyVaultProperties": {
+          "identityResourceId": "<identityResourceId>",
+          "keyVaultUrl": "<keyVaultUrl>"
+        },
+        "name": "dep-cert-amemax"
+      }
+    },
+    "dnsSuffix": {
+      "value": "contoso.com"
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -241,6 +322,23 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         ]
       }
     },
+    "openTelemetryConfiguration": {
+      "value": {
+        "logsConfiguration": {
+          "destinations": [
+            "appInsights"
+          ]
+        },
+        "tracesConfiguration": {
+          "destinations": [
+            "appInsights"
+          ]
+        }
+      }
+    },
+    "peerTrafficEncryption": {
+      "value": true
+    },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
     },
@@ -255,6 +353,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -263,6 +362,22 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "storages": {
+      "value": [
+        {
+          "accessMode": "ReadWrite",
+          "kind": "SMB",
+          "shareName": "smbfileshare",
+          "storageAccountName": "<storageAccountName>"
+        },
+        {
+          "accessMode": "ReadWrite",
+          "kind": "NFS",
+          "shareName": "nfsfileshare",
+          "storageAccountName": "<storageAccountName>"
         }
       ]
     },
@@ -289,7 +404,231 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'amemax001'
+// Non-required parameters
+param appInsightsConnectionString = '<appInsightsConnectionString>'
+param certificate = {
+  certificateKeyVaultProperties: {
+    identityResourceId: '<identityResourceId>'
+    keyVaultUrl: '<keyVaultUrl>'
+  }
+  name: 'dep-cert-amemax'
+}
+param dnsSuffix = 'contoso.com'
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetId = '<infrastructureSubnetId>'
+param internal = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param openTelemetryConfiguration = {
+  logsConfiguration: {
+    destinations: [
+      'appInsights'
+    ]
+  }
+  tracesConfiguration: {
+    destinations: [
+      'appInsights'
+    ]
+  }
+}
+param peerTrafficEncryption = true
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param storages = [
+  {
+    accessMode: 'ReadWrite'
+    kind: 'SMB'
+    shareName: 'smbfileshare'
+    storageAccountName: '<storageAccountName>'
+  }
+  {
+    accessMode: 'ReadWrite'
+    kind: 'NFS'
+    shareName: 'nfsfileshare'
+    storageAccountName: '<storageAccountName>'
+  }
+]
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 3: _Enable public access_
+
+This instance deploys the module with public access enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
+  name: 'managedEnvironmentDeployment'
+  params: {
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    name: 'amepa001'
+    // Non-required parameters
+    dockerBridgeCidr: '172.16.0.1/28'
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
+    infrastructureSubnetId: '<infrastructureSubnetId>'
+    location: '<location>'
+    platformReservedCidr: '172.17.17.0/24'
+    platformReservedDnsIP: '172.17.17.17'
+    publicNetworkAccess: 'Enabled'
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    "name": {
+      "value": "amepa001"
+    },
+    // Non-required parameters
+    "dockerBridgeCidr": {
+      "value": "172.16.0.1/28"
+    },
+    "infrastructureResourceGroupName": {
+      "value": "<infrastructureResourceGroupName>"
+    },
+    "infrastructureSubnetId": {
+      "value": "<infrastructureSubnetId>"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "platformReservedCidr": {
+      "value": "172.17.17.0/24"
+    },
+    "platformReservedDnsIP": {
+      "value": "172.17.17.17"
+    },
+    "publicNetworkAccess": {
+      "value": "Enabled"
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'amepa001'
+// Non-required parameters
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetId = '<infrastructureSubnetId>'
+param location = '<location>'
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param publicNetworkAccess = 'Enabled'
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -310,30 +649,9 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetId: '<infrastructureSubnetId>'
     internal: true
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
+    logsDestination: 'log-analytics'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
-    roleAssignments: [
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-      }
-      {
-        principalId: '<principalId>'
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-      }
-    ]
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -355,7 +673,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -382,39 +700,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "internal": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
+    "logsDestination": {
+      "value": "log-analytics"
     },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
     },
     "platformReservedDnsIP": {
       "value": "172.17.17.17"
-    },
-    "roleAssignments": {
-      "value": [
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-        },
-        {
-          "principalId": "<principalId>",
-          "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
-        }
-      ]
     },
     "tags": {
       "value": {
@@ -439,6 +732,40 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'amewaf001'
+// Non-required parameters
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetId = '<infrastructureSubnetId>'
+param internal = true
+param logsDestination = 'log-analytics'
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -465,6 +792,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
+| [`certificate`](#parameter-certificate) | object | A Managed Environment Certificate. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
@@ -475,7 +804,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
+| [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether to allow or block all public traffic. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`storages`](#parameter-storages) | array | The list of storages to mount on the environment. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this Managed Environment is zone-redundant. |
 
@@ -548,6 +881,94 @@ Workload profiles configured for the Managed Environment. Required if zoneRedund
 - Required: No
 - Type: array
 - Default: `[]`
+
+### Parameter: `appInsightsConnectionString`
+
+Application Insights connection string.
+
+- Required: No
+- Type: securestring
+- Default: `''`
+
+### Parameter: `certificate`
+
+A Managed Environment Certificate.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateKeyVaultProperties`](#parameter-certificatecertificatekeyvaultproperties) | object | A key vault reference. |
+| [`certificatePassword`](#parameter-certificatecertificatepassword) | string | The password of the certificate. |
+| [`certificateType`](#parameter-certificatecertificatetype) | string | The type of the certificate. |
+| [`certificateValue`](#parameter-certificatecertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
+| [`name`](#parameter-certificatename) | string | The name of the certificate. |
+
+### Parameter: `certificate.certificateKeyVaultProperties`
+
+A key vault reference.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identityResourceId`](#parameter-certificatecertificatekeyvaultpropertiesidentityresourceid) | string | The resource ID of the identity. This is the identity that will be used to access the key vault. |
+| [`keyVaultUrl`](#parameter-certificatecertificatekeyvaultpropertieskeyvaulturl) | string | A key vault URL referencing the wildcard certificate that will be used for the custom domain. |
+
+### Parameter: `certificate.certificateKeyVaultProperties.identityResourceId`
+
+The resource ID of the identity. This is the identity that will be used to access the key vault.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificate.certificateKeyVaultProperties.keyVaultUrl`
+
+A key vault URL referencing the wildcard certificate that will be used for the custom domain.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificate.certificatePassword`
+
+The password of the certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.certificateType`
+
+The type of the certificate.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ImagePullTrustedCA'
+    'ServerSSLCertificate'
+  ]
+  ```
+
+### Parameter: `certificate.certificateValue`
+
+The value of the certificate. PFX or PEM blob.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.name`
+
+The name of the certificate.
+
+- Required: No
+- Type: string
 
 ### Parameter: `certificatePassword`
 
@@ -661,7 +1082,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -672,10 +1093,41 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
+
+### Parameter: `openTelemetryConfiguration`
+
+Open Telemetry configuration.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `peerTrafficEncryption`
+
+Whether or not to encrypt peer traffic.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `publicNetworkAccess`
+
+Whether to allow or block all public traffic.
+
+- Required: No
+- Type: string
+- Default: `'Disabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -683,6 +1135,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -699,6 +1157,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -749,6 +1208,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -766,6 +1232,64 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `storages`
+
+The list of storages to mount on the environment.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`accessMode`](#parameter-storagesaccessmode) | string | Access mode for storage: "ReadOnly" or "ReadWrite". |
+| [`kind`](#parameter-storageskind) | string | Type of storage: "SMB" or "NFS". |
+| [`shareName`](#parameter-storagessharename) | string | File share name. |
+| [`storageAccountName`](#parameter-storagesstorageaccountname) | string | Storage account name. |
+
+### Parameter: `storages.accessMode`
+
+Access mode for storage: "ReadOnly" or "ReadWrite".
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ReadOnly'
+    'ReadWrite'
+  ]
+  ```
+
+### Parameter: `storages.kind`
+
+Type of storage: "SMB" or "NFS".
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NFS'
+    'SMB'
+  ]
+  ```
+
+### Parameter: `storages.shareName`
+
+File share name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `storages.storageAccountName`
+
+Storage account name.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -781,21 +1305,26 @@ Whether or not this Managed Environment is zone-redundant.
 - Type: bool
 - Default: `True`
 
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `defaultDomain` | string | The Default domain of the Managed Environment. |
+| `domainVerificationId` | string | The domain verification id for custom domains. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the Managed Environment. |
 | `resourceGroupName` | string | The name of the resource group the Managed Environment was deployed into. |
 | `resourceId` | string | The resource ID of the Managed Environment. |
+| `staticIp` | string | The IP address of the Managed Environment. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

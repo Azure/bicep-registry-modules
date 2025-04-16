@@ -2,7 +2,6 @@ metadata name = 'Registration Definitions'
 metadata description = '''This module deploys a `Registration Definition` and a `Registration Assignment` (often referred to as 'Lighthouse' or 'resource delegation') on a subscription or resource group scope.
 This type of delegation is very similar to role assignments but here the principal that is assigned a role is in a remote/managing Azure Active Directory tenant.
 The templates are run towards the tenant where the Azure resources you want to delegate access to are, providing 'authorizations' (aka. access delegation) to principals in a remote/managing tenant.'''
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 
@@ -32,25 +31,25 @@ param registrationId string = empty(resourceGroupName)
   ? guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId)
   : guid(managedByTenantId, subscription().tenantId, subscription().subscriptionId, resourceGroupName)
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, metadataLocation), 0, 4)}'
-    location: metadataLocation // Required in current template scope
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.managedservices-registrationdef.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, metadataLocation), 0, 4)}'
+  location: metadataLocation // Required in current template scope
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource registrationDefinition 'Microsoft.ManagedServices/registrationDefinitions@2022-10-01' = {
   name: registrationId
@@ -62,23 +61,21 @@ resource registrationDefinition 'Microsoft.ManagedServices/registrationDefinitio
   }
 }
 
-resource registrationAssignment_sub 'Microsoft.ManagedServices/registrationAssignments@2022-10-01' =
-  if (empty(resourceGroupName)) {
-    name: registrationId
-    properties: {
-      registrationDefinitionId: registrationDefinition.id
-    }
+resource registrationAssignment_sub 'Microsoft.ManagedServices/registrationAssignments@2022-10-01' = if (empty(resourceGroupName)) {
+  name: registrationId
+  properties: {
+    registrationDefinitionId: registrationDefinition.id
   }
+}
 
-module registrationAssignment_rg 'modules/registrationAssignment.bicep' =
-  if (!empty(resourceGroupName)) {
-    name: '${uniqueString(deployment().name)}-RegDef-RegAssignment'
-    scope: resourceGroup(resourceGroupName)
-    params: {
-      registrationDefinitionId: registrationDefinition.id
-      registrationAssignmentId: registrationId
-    }
+module registrationAssignment_rg 'modules/registrationAssignment.bicep' = if (!empty(resourceGroupName)) {
+  name: '${uniqueString(deployment().name)}-RegDef-RegAssignment'
+  scope: resourceGroup(resourceGroupName)
+  params: {
+    registrationDefinitionId: registrationDefinition.id
+    registrationAssignmentId: registrationId
   }
+}
 
 @description('The name of the registration definition.')
 output name string = registrationDefinition.name
@@ -98,6 +95,8 @@ output assignmentResourceId string = empty(resourceGroupName)
 // Definitions      //
 // ================ //
 
+@export()
+@description('Authorization object describing the access Azure Active Directory principals in the managedBy tenant will receive on the delegated resource in the managed tenant.')
 type authorizationType = {
   @description('Conditional. The list of role definition ids which define all the permissions that the user in the authorization can assign to other principals. Required if the `roleDefinitionId` refers to the User Access Administrator Role.')
   delegatedRoleDefinitionIds: string[]?

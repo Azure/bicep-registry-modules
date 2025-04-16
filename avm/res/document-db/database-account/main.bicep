@@ -1,6 +1,5 @@
 metadata name = 'DocumentDB Database Accounts'
 metadata description = 'This module deploys a DocumentDB Database Account.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Database Account.')
 param name string
@@ -11,17 +10,18 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the Database Account resource.')
 param tags object?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
-@description('Optional. Default to Standard. The offer type for the Cosmos DB database account.')
+@description('Optional. Default to Standard. The offer type for the Azure Cosmos DB database account.')
 @allowed([
   'Standard'
 ])
 param databaseAccountOfferType string = 'Standard'
 
 @description('Optional. Default to the location where the account is deployed. Locations enabled for the Cosmos DB account.')
-param locations failoverLocationsType[] = []
+param locations failoverLocationType[] = []
 
 @allowed([
   'Eventual'
@@ -33,8 +33,8 @@ param locations failoverLocationsType[] = []
 @description('Optional. Default to Session. The default consistency level of the Cosmos DB account.')
 param defaultConsistencyLevel string = 'Session'
 
-@description('Optional. Default to false. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
-param disableLocalAuth bool = false
+@description('Optional. Default to true. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
+param disableLocalAuth bool = true
 
 @description('Optional. Default to false. Flag to indicate whether to enable storage analytics.')
 param enableAnalyticalStorage bool = false
@@ -48,8 +48,8 @@ param enableFreeTier bool = false
 @description('Optional. Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.')
 param enableMultipleWriteLocations bool = false
 
-@description('Optional. Default to false. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
-param disableKeyBasedMetadataWriteAccess bool = false
+@description('Optional. Default to true. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
+param disableKeyBasedMetadataWriteAccess bool = true
 
 @minValue(1)
 @maxValue(2147483647)
@@ -67,11 +67,20 @@ param maxIntervalInSeconds int = 300
   '3.6'
   '4.0'
   '4.2'
+  '5.0'
+  '6.0'
+  '7.0'
 ])
 param serverVersion string = '4.2'
 
 @description('Optional. SQL Databases configurations.')
 param sqlDatabases sqlDatabaseType[] = []
+
+@description('Optional. SQL Role Definitions configurations.')
+param sqlRoleAssignmentsPrincipalIds array = []
+
+@description('Optional. SQL Role Definitions configurations.')
+param sqlRoleDefinitions sqlRoleDefinitionType[]?
 
 @description('Optional. MongoDB Databases configurations.')
 param mongodbDatabases array = []
@@ -79,17 +88,26 @@ param mongodbDatabases array = []
 @description('Optional. Gremlin Databases configurations.')
 param gremlinDatabases array = []
 
+@description('Optional. Table configurations.')
+param tables array = []
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s).')
+param totalThroughputLimit int = -1
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
-@description('Optional. Array of role assignment objects that contain the \'roleDefinitionIdOrName\' and \'principalIds\' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-param roleAssignments roleAssignmentType
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. Array of role assignments to create.')
+param roleAssignments roleAssignmentType[]?
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
 
 @allowed([
   'EnableCassandra'
@@ -98,8 +116,12 @@ param diagnosticSettings diagnosticSettingType
   'EnableMongo'
   'DisableRateLimitingResponses'
   'EnableServerless'
+  'EnableNoSQLVectorSearch'
+  'EnableNoSQLFullTextSearch'
+  'EnableMaterializedViews'
+  'DeleteAllItemsByPartitionKey'
 ])
-@description('Optional. List of Cosmos DB capabilities for the account.')
+@description('Optional. List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.')
 param capabilitiesToAdd string[] = []
 
 @allowed([
@@ -134,14 +156,27 @@ param backupRetentionIntervalInHours int = 8
 @description('Optional. Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type.')
 param backupStorageRedundancy string = 'Local'
 
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
-param privateEndpoints privateEndpointType
+param privateEndpoints privateEndpointMultiServiceType[]?
 
-@description('Optional. Key vault reference and secret settings to add the connection strings and keys generated by the cosmosdb account.')
-param secretsKeyVault secretsKeyVaultType?
+@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
+param secretsExportConfiguration secretsExportConfigurationType?
 
-@description('Optional. The network configuration of this module.')
-param networkRestrictions networkRestrictionsType?
+@description('Optional. The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: \'Disabled\' }`.')
+param networkRestrictions networkRestrictionType = {
+  ipRules: []
+  virtualNetworkRules: []
+  publicNetworkAccess: 'Disabled'
+}
+
+@allowed([
+  'Tls12'
+])
+@description('Optional. Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.')
+param minimumTlsVersion string = 'Tls12'
+
+var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -236,37 +271,41 @@ var virtualNetworkRules = [
 var databaseAccountProperties = union(
   {
     databaseAccountOfferType: databaseAccountOfferType
+    backupPolicy: backupPolicy
+    capabilities: capabilities
+    minimalTlsVersion: minimumTlsVersion
+    capacity: {
+      totalThroughputLimit: totalThroughputLimit
+    }
   },
-  ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases))
+  ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
     ? {
-        // Common properties
+        // NoSQL, MongoDB RU, Table, and Apache Gremlin common properties
         consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
         enableMultipleWriteLocations: enableMultipleWriteLocations
         locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
 
         ipRules: ipRules
         virtualNetworkRules: virtualNetworkRules
-        networkAclBypass: networkRestrictions.?networkAclBypass ?? 'AzureServices'
-        publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Enabled'
+        networkAclBypass: networkRestrictions.?networkAclBypass ?? 'None'
+        publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
         isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
 
-        capabilities: capabilities
         enableFreeTier: enableFreeTier
-        backupPolicy: backupPolicy
         enableAutomaticFailover: automaticFailover
         enableAnalyticalStorage: enableAnalyticalStorage
       }
     : {}),
-  (!empty(sqlDatabases)
+  ((!empty(sqlDatabases) || !empty(tables))
     ? {
-        // SQLDB properties
+        // NoSQL and Table properties
         disableLocalAuth: disableLocalAuth
         disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
       }
     : {}),
   (!empty(mongodbDatabases)
     ? {
-        // MongoDb properties
+        // MongoDB RU properties
         apiProperties: {
           serverVersion: serverVersion
         }
@@ -308,7 +347,19 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-07-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.documentdb-databaseaccount.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -326,7 +377,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
   name: name
   location: location
   tags: tags
@@ -376,14 +427,10 @@ resource databaseAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettin
 ]
 
 resource databaseAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(databaseAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(databaseAccount.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -408,6 +455,20 @@ module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [
   }
 ]
 
+module databaseAccount_sqlRoleDefinitions 'sql-role/main.bicep' = [
+  for sqlRoleDefinition in (sqlRoleDefinitions ?? []): {
+    name: '${uniqueString(deployment().name, location)}-sqlrd-${sqlRoleDefinition.name}'
+    params: {
+      name: sqlRoleDefinition.name
+      databaseAccountName: databaseAccount.name
+      dataActions: sqlRoleDefinition.?dataActions
+      roleName: sqlRoleDefinition.?roleName
+      roleType: sqlRoleDefinition.?roleType
+      principalIds: sqlRoleAssignmentsPrincipalIds
+    }
+  }
+]
+
 module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
   for mongodbDatabase in mongodbDatabases: {
     name: '${uniqueString(deployment().name, location)}-mongodb-${mongodbDatabase.name}'
@@ -415,7 +476,7 @@ module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
       databaseAccountName: databaseAccount.name
       name: mongodbDatabase.name
       tags: mongodbDatabase.?tags ?? tags
-      collections: contains(mongodbDatabase, 'collections') ? mongodbDatabase.collections : []
+      collections: mongodbDatabase.?collections
       throughput: mongodbDatabase.?throughput
     }
   }
@@ -428,17 +489,33 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [
       databaseAccountName: databaseAccount.name
       name: gremlinDatabase.name
       tags: gremlinDatabase.?tags ?? tags
-      graphs: contains(gremlinDatabase, 'graphs') ? gremlinDatabase.graphs : []
-      maxThroughput: contains(gremlinDatabase, 'maxThroughput') ? gremlinDatabase.maxThroughput : 4000
+      graphs: gremlinDatabase.?graphs
+      maxThroughput: gremlinDatabase.?maxThroughput
       throughput: gremlinDatabase.?throughput
     }
   }
 ]
 
-module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4.1' = [
+module databaseAccount_tables 'table/main.bicep' = [
+  for table in tables: {
+    name: '${uniqueString(deployment().name, location)}-table-${table.name}'
+    params: {
+      databaseAccountName: databaseAccount.name
+      name: table.name
+      tags: table.?tags ?? tags
+      maxThroughput: table.?maxThroughput
+      throughput: table.?throughput
+    }
+  }
+]
+
+module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-databaseAccount-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(databaseAccount.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -469,15 +546,14 @@ module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpo
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock
-      privateDnsZoneGroupName: privateEndpoint.?privateDnsZoneGroupName
-      privateDnsZoneResourceIds: privateEndpoint.?privateDnsZoneResourceIds
+      privateDnsZoneGroup: privateEndpoint.?privateDnsZoneGroup
       roleAssignments: privateEndpoint.?roleAssignments
       tags: privateEndpoint.?tags ?? tags
       customDnsConfigs: privateEndpoint.?customDnsConfigs
@@ -488,48 +564,88 @@ module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpo
   }
 ]
 
-module keyVault 'modules/secrets-key-vault.bicep' = if (secretsKeyVault != null) {
+module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
-  scope: resourceGroup(secretsKeyVault.?resourceGroupName ?? resourceGroup().name)
+  scope: resourceGroup(
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
+  )
   params: {
-    keyVaultName: secretsKeyVault!.keyVaultName
-
-    keySecrets: [
-      {
-        secretName: secretsKeyVault.?primaryWriteKeySecretName ?? 'Primary-Write-Key'
-        secretValue: databaseAccount.listKeys().primaryMasterKey
-      }
-      {
-        secretName: secretsKeyVault.?primaryReadOnlyKeySecretName ?? 'Primary-Readonly-Key'
-        secretValue: databaseAccount.listKeys().primaryReadonlyMasterKey
-      }
-      {
-        secretName: secretsKeyVault.?primaryWriteConnectionStringSecretName ?? 'Primary-Write-ConnectionString'
-        secretValue: databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
-      }
-      {
-        secretName: secretsKeyVault.?primaryReadonlyConnectionStringSecretName ?? 'Primary-Readonly-ConnectionString'
-        secretValue: databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
-      }
-      {
-        secretName: secretsKeyVault.?secondaryWriteKeySecretName ?? 'Secondary-Write-Key'
-        secretValue: databaseAccount.listKeys().secondaryMasterKey
-      }
-      {
-        secretName: secretsKeyVault.?secondaryReadonlyKeySecretName ?? 'Secondary-Readonly-Key'
-        secretValue: databaseAccount.listKeys().secondaryReadonlyMasterKey
-      }
-      {
-        secretName: secretsKeyVault.?secondaryWriteConnectionStringSecretName ?? 'Secondary-Write-ConnectionString'
-        secretValue: databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
-      }
-      {
-        secretName: secretsKeyVault.?secondaryReadonlyConnectionStringSecretName ?? 'Secondary-Readonly-ConnectionString'
-        secretValue: databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
-      }
-    ]
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
+    secretsToSet: union(
+      [],
+      contains(secretsExportConfiguration!, 'primaryWriteKeySecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?primaryWriteKeySecretName
+              value: databaseAccount.listKeys().primaryMasterKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'primaryReadOnlyKeySecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?primaryReadOnlyKeySecretName
+              value: databaseAccount.listKeys().primaryReadonlyMasterKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'primaryWriteConnectionStringSecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?primaryWriteConnectionStringSecretName
+              value: databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'primaryReadonlyConnectionStringSecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?primaryReadonlyConnectionStringSecretName
+              value: databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryWriteKeySecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?secondaryWriteKeySecretName
+              value: databaseAccount.listKeys().secondaryMasterKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryReadonlyKeySecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?secondaryReadonlyKeySecretName
+              value: databaseAccount.listKeys().secondaryReadonlyMasterKey
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryWriteConnectionStringSecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?secondaryWriteConnectionStringSecretName
+              value: databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
+            }
+          ]
+        : [],
+      contains(secretsExportConfiguration!, 'secondaryReadonlyConnectionStringSecretName')
+        ? [
+            {
+              name: secretsExportConfiguration!.?secondaryReadonlyConnectionStringSecretName
+              value: databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
+            }
+          ]
+        : []
+    )
   }
 }
+
+@description('The references to the secrets exported to the provided Key Vault.')
+output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
+  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
+  : {}
 
 @description('The name of the database account.')
 output name string = databaseAccount.name
@@ -541,195 +657,93 @@ output resourceId string = databaseAccount.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = databaseAccount.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = databaseAccount.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = databaseAccount.location
+
+@description('The endpoint of the database account.')
+output endpoint string = databaseAccount.properties.documentEndpoint
+
+@description('The private endpoints of the database account.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: databaseAccount_privateEndpoints[index].outputs.name
+    resourceId: databaseAccount_privateEndpoints[index].outputs.resourceId
+    groupId: databaseAccount_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: databaseAccount_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: databaseAccount_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
 
 // =============== //
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
+@export()
+@description('The type for the private endpoint output.')
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
 
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type privateEndpointType = {
-  @description('Optional. The name of the private endpoint.')
-  name: string?
-
-  @description('Optional. The location to deploy the private endpoint to.')
-  location: string?
-
-  @description('Optional. The name of the private link connection to create.')
-  privateLinkServiceConnectionName: string?
-
-  @description('Required. The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".')
-  service: string
-
-  @description('Required. Resource ID of the subnet where the endpoint needs to be created.')
-  subnetResourceId: string
-
-  @description('Optional. The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.')
-  privateDnsZoneGroupName: string?
-
-  @description('Optional. The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.')
-  privateDnsZoneResourceIds: string[]?
-
-  @description('Optional. If Manual Private Link Connection is required.')
-  isManualConnection: bool?
-
-  @description('Optional. A message passed to the owner of the remote resource with the manual connection request.')
-  @maxLength(140)
-  manualConnectionRequestMessage: string?
-
-  @description('Optional. Custom DNS configurations.')
+  @description('The custom DNS configurations of the private endpoint.')
   customDnsConfigs: {
-    @description('Required. Fqdn that resolves to private endpoint ip address.')
+    @description('FQDN that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('Required. A list of private ip addresses of the private endpoint.')
+    @description('A list of private IP addresses of the private endpoint.')
     ipAddresses: string[]
-  }[]?
+  }[]
 
-  @description('Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints.')
-  ipConfigurations: {
-    @description('Required. The name of the resource that is unique within a resource group.')
-    name: string
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
-    @description('Required. Properties of private endpoint IP configurations.')
-    properties: {
-      @description('Required. The ID of a group obtained from the remote resource that this private endpoint should connect to.')
-      groupId: string
-
-      @description('Required. The member name of a group obtained from the remote resource that this private endpoint should connect to.')
-      memberName: string
-
-      @description('Required. A private ip address obtained from the private endpoint\'s subnet.')
-      privateIPAddress: string
-    }
-  }[]?
-
-  @description('Optional. Application security groups in which the private endpoint IP configuration is included.')
-  applicationSecurityGroupResourceIds: string[]?
-
-  @description('Optional. The custom name of the network interface attached to the private endpoint.')
-  customNetworkInterfaceName: string?
-
-  @description('Optional. Specify the type of lock.')
-  lock: lockType
-
-  @description('Optional. Array of role assignments to create.')
-  roleAssignments: roleAssignmentType
-
-  @description('Optional. Tags to be applied on all resources/resource groups in this deployment.')
-  tags: object?
-
-  @description('Optional. Enable/Disable usage telemetry for module.')
-  enableTelemetry: bool?
-
-  @description('Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.')
-  resourceGroupName: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
-
-type failoverLocationsType = {
+@export()
+@description('The type for the failover location.')
+type failoverLocationType = {
   @description('Required. The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.')
   failoverPriority: int
 
-  @description('Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region')
+  @description('Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.')
   isZoneRedundant: bool?
 
   @description('Required. The name of the region.')
   locationName: string
 }
 
+@export()
+@description('The type for the SQL Role Definitions.')
+type sqlRoleDefinitionType = {
+  @description('Required. Name of the SQL Role Definition.')
+  name: string
+
+  @description('Optional. An array of data actions that are allowed.')
+  dataAction: array?
+
+  @description('Optional. A user-friendly name for the Role Definition. Must be unique for the database account.')
+  roleName: string?
+
+  @description('Optional. Indicates whether the Role Definition was built-in or user created.')
+  roleType: ('CustomRole' | 'BuiltInRole')?
+}
+
+@export()
+@description('The type for the SQL database.')
 type sqlDatabaseType = {
   @description('Required. Name of the SQL database .')
   name: string
 
-  @description('Optional. Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.')
+  @description('Optional. Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
   throughput: int?
 
-  @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to.  The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.')
+  @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
   autoscaleSettingsMaxThroughput: int?
 
   @description('Optional. Array of containers to deploy in the SQL database.')
@@ -746,7 +760,7 @@ type sqlDatabaseType = {
     analyticalStorageTtl: int?
 
     @maxValue(1000000)
-    @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled.')
+    @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level.')
     autoscaleSettingsMaxThroughput: int?
 
     @description('Optional. The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.')
@@ -772,62 +786,74 @@ type sqlDatabaseType = {
     @description('Optional. Default to Hash. Indicates the kind of algorithm used for partitioning.')
     kind: ('Hash' | 'MultiHash')?
 
+    @description('Optional. Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.')
+    version: (1 | 2)?
+
     @description('Optional. Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.')
     throughput: int?
 
     @description('Optional. The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.')
     uniqueKeyPolicyKeys: {
-      @description('Required. List of paths must be unique for each document in the Azure Cosmos DB service')
+      @description('Required. List of paths must be unique for each document in the Azure Cosmos DB service.')
       paths: string[]
     }[]?
   }[]?
 }
 
-type secretsKeyVaultType = {
-  @description('Required. The key vault name where to store the keys and connection strings generated by the modules.')
-  keyVaultName: string
+@export()
+@description('The type for the secrets export configuration.')
+type secretsExportConfigurationType = {
+  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
+  keyVaultResourceId: string
 
-  @description('Optional. Default to the resource group where this account is. The resource group name where the key vault is.')
-  resourceGroupName: string?
-
-  @description('Optional. Default to Primary-Write-Key. The primary write key secret name to create.')
+  @description('Optional. The primary write key secret name to create.')
   primaryWriteKeySecretName: string?
 
-  @description('Optional. Default to Primary-Readonly-Key. The primary readonly key secret name to create.')
+  @description('Optional. The primary readonly key secret name to create.')
   primaryReadOnlyKeySecretName: string?
 
-  @description('Optional. Default to Primary-Write-ConnectionString. The primary write connection string secret name to create.')
+  @description('Optional. The primary write connection string secret name to create.')
   primaryWriteConnectionStringSecretName: string?
 
-  @description('Optional. Default to Primary-Readonly-ConnectionString. The primary readonly connection string secret name to create.')
+  @description('Optional. The primary readonly connection string secret name to create.')
   primaryReadonlyConnectionStringSecretName: string?
 
-  @description('Optional. Default to Secondary-Write-Key. The primary write key secret name to create.')
+  @description('Optional. The primary write key secret name to create.')
   secondaryWriteKeySecretName: string?
 
-  @description('Optional. Default to Secondary-Readonly-Key. The primary readonly key secret name to create.')
+  @description('Optional. The primary readonly key secret name to create.')
   secondaryReadonlyKeySecretName: string?
 
-  @description('Optional. Default to Secondary-Write-ConnectionString. The primary write connection string secret name to create.')
+  @description('Optional. The primary write connection string secret name to create.')
   secondaryWriteConnectionStringSecretName: string?
 
-  @description('Optional. Default to Secondary-Readonly-ConnectionString. The primary readonly connection string secret name to create.')
+  @description('Optional. The primary readonly connection string secret name to create.')
   secondaryReadonlyConnectionStringSecretName: string?
 }
 
-type networkRestrictionsType = {
-  @description('Optional. Default to []. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
-  ipRules: string[]
+import { secretSetType } from 'modules/keyVaultExport.bicep'
+@export()
+@description('The type for the secrets output.')
+type secretsOutputType = {
+  @description('An exported secret\'s references.')
+  *: secretSetType
+}
 
-  @description('Optional. Default to AzureServices. Specifies the network ACL bypass for Azure services.')
+@export()
+@description('The type for the network restriction.')
+type networkRestrictionType = {
+  @description('Optional. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
+  ipRules: string[]?
+
+  @description('Optional. Default to None. Specifies the network ACL bypass for Azure services.')
   networkAclBypass: ('AzureServices' | 'None')?
 
-  @description('Optional. Default to Enabled. Whether requests from Public Network are allowed.')
+  @description('Optional. Default to Disabled. Whether requests from Public Network are allowed.')
   publicNetworkAccess: ('Enabled' | 'Disabled')?
 
-  @description('Optional. Default to []. List of Virtual Network ACL rules configured for the Cosmos DB account..')
+  @description('Optional. List of Virtual Network ACL rules configured for the Cosmos DB account..')
   virtualNetworkRules: {
     @description('Required. Resource ID of a subnet.')
     subnetResourceId: string
-  }[]
+  }[]?
 }

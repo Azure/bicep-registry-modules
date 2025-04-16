@@ -8,14 +8,13 @@ This module deploys an Application Gateway Web Application Firewall (WAF) Policy
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2022-11-01/ApplicationGatewayWebApplicationFirewallPolicies) |
+| `Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/ApplicationGatewayWebApplicationFirewallPolicies) |
 
 ## Usage examples
 
@@ -63,7 +62,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -90,6 +89,30 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:<version>'
+
+// Required parameters
+param managedRules = {
+  managedRuleSets: [
+    {
+      ruleSetType: 'OWASP'
+      ruleSetVersion: '3.2'
+    }
+  ]
+}
+param name = 'nagwafpmin001'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -127,7 +150,10 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     // Non-required parameters
     location: '<location>'
     policySettings: {
+      customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
+      customBlockResponseStatusCode: 403
       fileUploadLimitInMb: 10
+      jsChallengeCookieExpirationInMins: 60
       mode: 'Prevention'
       state: 'Enabled'
     }
@@ -145,7 +171,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -178,7 +204,10 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     },
     "policySettings": {
       "value": {
+        "customBlockResponseBody": "PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg==",
+        "customBlockResponseStatusCode": 403,
         "fileUploadLimitInMb": 10,
+        "jsChallengeCookieExpirationInMins": 60,
         "mode": "Prevention",
         "state": "Enabled"
       }
@@ -191,6 +220,49 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:<version>'
+
+// Required parameters
+param managedRules = {
+  managedRuleSets: [
+    {
+      ruleGroupOverrides: []
+      ruleSetType: 'OWASP'
+      ruleSetVersion: '3.2'
+    }
+    {
+      ruleGroupOverrides: []
+      ruleSetType: 'Microsoft_BotManagerRuleSet'
+      ruleSetVersion: '0.1'
+    }
+  ]
+}
+param name = 'nagwafpmax001'
+// Non-required parameters
+param location = '<location>'
+param policySettings = {
+  customBlockResponseBody: 'PGh0bWw+CjxoZWFkZXI+PHRpdGxlPkhlbGxvPC90aXRsZT48L2hlYWRlcj4KPGJvZHk+CkhlbGxvIHdvcmxkCjwvYm9keT4KPC9odG1sPg=='
+  customBlockResponseStatusCode: 403
+  fileUploadLimitInMb: 10
+  jsChallengeCookieExpirationInMins: 60
+  mode: 'Prevention'
+  state: 'Enabled'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -229,6 +301,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     location: '<location>'
     policySettings: {
       fileUploadLimitInMb: 10
+      jsChallengeCookieExpirationInMins: 60
       mode: 'Prevention'
       state: 'Enabled'
     }
@@ -246,7 +319,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -279,6 +352,7 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
     "policySettings": {
       "value": {
         "fileUploadLimitInMb": 10,
+        "jsChallengeCookieExpirationInMins": 60,
         "mode": "Prevention",
         "state": "Enabled"
       }
@@ -297,6 +371,45 @@ module applicationGatewayWebApplicationFirewallPolicy 'br/public:avm/res/network
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/application-gateway-web-application-firewall-policy:<version>'
+
+// Required parameters
+param managedRules = {
+  managedRuleSets: [
+    {
+      ruleGroupOverrides: []
+      ruleSetType: 'OWASP'
+      ruleSetVersion: '3.2'
+    }
+    {
+      ruleSetType: 'Microsoft_BotManagerRuleSet'
+      ruleSetVersion: '0.1'
+    }
+  ]
+}
+param name = 'nagwafpwaf001'
+// Non-required parameters
+param location = '<location>'
+param policySettings = {
+  fileUploadLimitInMb: 10
+  jsChallengeCookieExpirationInMins: 60
+  mode: 'Prevention'
+  state: 'Enabled'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -368,7 +481,6 @@ Resource tags.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -377,10 +489,6 @@ Resource tags.
 | `name` | string | The name of the application gateway WAF policy. |
 | `resourceGroupName` | string | The resource group the application gateway WAF policy was deployed into. |
 | `resourceId` | string | The resource ID of the application gateway WAF policy. |
-
-## Cross-referenced modules
-
-_None_
 
 ## Data Collection
 

@@ -1,6 +1,5 @@
 metadata name = 'Consumption Budgets'
 metadata description = 'This module deploys a Consumption Budget for Subscriptions.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 
@@ -39,7 +38,7 @@ param endDate string = ''
   'GreaterThan'
   'GreaterThanOrEqualTo'
 ])
-@description('Required. The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.')
+@description('Optional. The comparison operator. The operator can be either `EqualTo`, `GreaterThan`, or `GreaterThanOrEqualTo`.')
 param operator string = 'GreaterThan'
 
 @maxLength(5)
@@ -65,7 +64,7 @@ param actionGroups array?
   'Actual'
   'Forecasted'
 ])
-@description('Required. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
+@description('Optional. The type of threshold to use for the budget. The threshold type can be either `Actual` or `Forecasted`.')
 param thresholdType string = 'Actual'
 
 @description('Optional. The filter to use for restricting which resources are considered within the budget.')
@@ -94,25 +93,25 @@ var notificationsArray = [
   }
 ]
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.consumption-budget.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    location: location
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.consumption-budget.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  location: location
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource budget 'Microsoft.Consumption/budgets@2023-11-01' = {
   name: name

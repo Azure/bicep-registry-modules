@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "16451316437757175736"
+      "version": "0.33.93.31351",
+      "templateHash": "6036875058945996178"
     },
     "name": "Azure Container Registry (ACR) Replications",
-    "description": "This module deploys an Azure Container Registry (ACR) Replication.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Azure Container Registry (ACR) Replication."
   },
   "parameters": {
     "registryName": {
@@ -74,10 +73,7 @@
       "properties": {
         "regionEndpointEnabled": "[parameters('regionEndpointEnabled')]",
         "zoneRedundancy": "[parameters('zoneRedundancy')]"
-      },
-      "dependsOn": [
-        "registry"
-      ]
+      }
     }
   },
   "outputs": {

@@ -103,9 +103,15 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
     }
     subnets: [
       {
-        name: 'defaultSubnet'
+        name: 'subnet01'
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          addressPrefix: cidrSubnet(addressPrefix, 24, 0)
+        }
+      }
+      {
+        name: 'subnet02'
+        properties: {
+          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
         }
       }
     ]
@@ -118,11 +124,17 @@ output virtualNetworkName string = virtualNetwork.name
 @description('The resource ID of the created Virtual Network.')
 output virtualNetworkResourceId string = virtualNetwork.id
 
-@description('The name of the created Virtual Network Subnet.')
-output subnetName string = virtualNetwork.properties.subnets[0].name
+@description('The name of the created Virtual Network Subnet 1.')
+output subnet1Name string = virtualNetwork.properties.subnets[0].name
 
-@description('The resource ID of the created Virtual Network Subnet.')
-output subnetResourceId string = virtualNetwork.properties.subnets[0].id
+@description('The resource ID of the created Virtual Network Subnet 1.')
+output subnet1ResourceId string = virtualNetwork.properties.subnets[0].id
+
+@description('The name of the created Virtual Network Subnet 2.')
+output subnet2Name string = virtualNetwork.properties.subnets[1].name
+
+@description('The resource ID of the created Virtual Network Subnet 2.')
+output subnet2ResourceId string = virtualNetwork.properties.subnets[1].id
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId

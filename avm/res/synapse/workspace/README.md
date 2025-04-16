@@ -23,10 +23,12 @@ This module deploys a Synapse Workspace.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/accessPolicies` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/accessPolicies) |
-| `Microsoft.Network/privateEndpoints` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.KeyVault/vaults/accessPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies) |
+| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Synapse/workspaces` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces) |
+| `Microsoft.Synapse/workspaces/administrators` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/administrators) |
+| `Microsoft.Synapse/workspaces/firewallRules` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/firewallRules) |
 | `Microsoft.Synapse/workspaces/integrationRuntimes` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/integrationRuntimes) |
 | `Microsoft.Synapse/workspaces/keys` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Synapse/2021-06-01/workspaces/keys) |
 
@@ -41,9 +43,10 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-2-using-encryption-with-customer-managed-key)
 - [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
-- [Using managed Vnet](#example-4-using-managed-vnet)
-- [Using large parameter set](#example-5-using-large-parameter-set)
-- [WAF-aligned](#example-6-waf-aligned)
+- [Using firewall rules](#example-4-using-firewall-rules)
+- [Using managed Vnet](#example-5-using-managed-vnet)
+- [Using large parameter set](#example-6-using-large-parameter-set)
+- [WAF-aligned](#example-7-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -63,8 +66,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
     name: 'swmin001'
     sqlAdministratorLogin: 'synwsadmin'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -74,7 +75,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -93,13 +94,26 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "sqlAdministratorLogin": {
       "value": "synwsadmin"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/synapse/workspace:<version>'
+
+// Required parameters
+param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
+param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
+param name = 'swmin001'
+param sqlAdministratorLogin = 'synwsadmin'
 ```
 
 </details>
@@ -129,7 +143,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
     }
     encryptionActivateWorkspace: true
-    location: '<location>'
   }
 }
 ```
@@ -139,7 +152,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -168,12 +181,32 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     },
     "encryptionActivateWorkspace": {
       "value": true
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/synapse/workspace:<version>'
+
+// Required parameters
+param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
+param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
+param name = 'swensa001'
+param sqlAdministratorLogin = 'synwsadmin'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+}
+param encryptionActivateWorkspace = true
 ```
 
 </details>
@@ -203,7 +236,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    location: '<location>'
   }
 }
 ```
@@ -213,7 +245,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -240,9 +272,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -251,7 +280,142 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 4: _Using managed Vnet_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/synapse/workspace:<version>'
+
+// Required parameters
+param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
+param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
+param name = 'swenua001'
+param sqlAdministratorLogin = 'synwsadmin'
+// Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using firewall rules_
+
+This instance deploys the module with the configuration of firewall rules.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
+  name: 'workspaceDeployment'
+  params: {
+    // Required parameters
+    defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
+    defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
+    name: 'swfwr001'
+    sqlAdministratorLogin: 'synwsadmin'
+    // Non-required parameters
+    firewallRules: [
+      {
+        endIpAddress: '87.14.134.20'
+        name: 'fwrule01'
+        startIpAddress: '87.14.134.20'
+      }
+      {
+        endIpAddress: '87.14.134.22'
+        name: 'fwrule02'
+        startIpAddress: '87.14.134.21'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "defaultDataLakeStorageAccountResourceId": {
+      "value": "<defaultDataLakeStorageAccountResourceId>"
+    },
+    "defaultDataLakeStorageFilesystem": {
+      "value": "<defaultDataLakeStorageFilesystem>"
+    },
+    "name": {
+      "value": "swfwr001"
+    },
+    "sqlAdministratorLogin": {
+      "value": "synwsadmin"
+    },
+    // Non-required parameters
+    "firewallRules": {
+      "value": [
+        {
+          "endIpAddress": "87.14.134.20",
+          "name": "fwrule01",
+          "startIpAddress": "87.14.134.20"
+        },
+        {
+          "endIpAddress": "87.14.134.22",
+          "name": "fwrule02",
+          "startIpAddress": "87.14.134.21"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/synapse/workspace:<version>'
+
+// Required parameters
+param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
+param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
+param name = 'swfwr001'
+param sqlAdministratorLogin = 'synwsadmin'
+// Non-required parameters
+param firewallRules = [
+  {
+    endIpAddress: '87.14.134.20'
+    name: 'fwrule01'
+    startIpAddress: '87.14.134.20'
+  }
+  {
+    endIpAddress: '87.14.134.22'
+    name: 'fwrule02'
+    startIpAddress: '87.14.134.21'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 5: _Using managed Vnet_
 
 This instance deploys the module using a managed Vnet.
 
@@ -273,7 +437,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     allowedAadTenantIdsForLinking: [
       '<tenantId>'
     ]
-    location: '<location>'
     managedVirtualNetwork: true
     preventDataExfiltration: true
   }
@@ -285,7 +448,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -311,9 +474,6 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         "<tenantId>"
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedVirtualNetwork": {
       "value": true
     },
@@ -327,7 +487,30 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 5: _Using large parameter set_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/synapse/workspace:<version>'
+
+// Required parameters
+param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
+param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
+param name = 'swmanv001'
+param sqlAdministratorLogin = 'synwsadmin'
+// Non-required parameters
+param allowedAadTenantIdsForLinking = [
+  '<tenantId>'
+]
+param managedVirtualNetwork = true
+param preventDataExfiltration = true
+```
+
+</details>
+<p>
+
+### Example 6: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -346,6 +529,11 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     name: 'swmax001'
     sqlAdministratorLogin: 'synwsadmin'
     // Non-required parameters
+    administrator: {
+      administratorType: 'ServicePrincipal'
+      login: 'dep-msi-swmax'
+      sid: '<sid>'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -379,9 +567,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     managedVirtualNetwork: true
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'SQL'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -391,9 +583,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'SQL'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -403,9 +599,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'SqlOnDemand'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -415,20 +615,26 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       }
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'Dev'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
     roleAssignments: [
       {
+        name: '499f9243-2170-4204-807d-ee6d0f94a0d0'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -448,7 +654,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -469,6 +675,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": "synwsadmin"
     },
     // Non-required parameters
+    "administrator": {
+      "value": {
+        "administratorType": "ServicePrincipal",
+        "login": "dep-msi-swmax",
+        "sid": "<sid>"
+      }
+    },
     "diagnosticSettings": {
       "value": [
         {
@@ -515,9 +728,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "SQL",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -527,9 +744,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "SQL",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -539,9 +760,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "SqlOnDemand",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -551,9 +776,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
           }
         },
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "Dev",
           "subnetResourceId": "<subnetResourceId>"
         }
@@ -562,11 +791,13 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "499f9243-2170-4204-807d-ee6d0f94a0d0",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -585,7 +816,141 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
-### Example 6: _WAF-aligned_
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/synapse/workspace:<version>'
+
+// Required parameters
+param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
+param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
+param name = 'swmax001'
+param sqlAdministratorLogin = 'synwsadmin'
+// Non-required parameters
+param administrator = {
+  administratorType: 'ServicePrincipal'
+  login: 'dep-msi-swmax'
+  sid: '<sid>'
+}
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'SynapseRbacOperations'
+      }
+      {
+        category: 'SynapseLinkEvent'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param initialWorkspaceAdminObjectID = '<initialWorkspaceAdminObjectID>'
+param integrationRuntimes = [
+  {
+    name: 'shir01'
+    type: 'SelfHosted'
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param managedVirtualNetwork = true
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'SQL'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'SQL'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'SqlOnDemand'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'Dev'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: '499f9243-2170-4204-807d-ee6d0f94a0d0'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 7: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -627,13 +992,16 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         type: 'SelfHosted'
       }
     ]
-    location: '<location>'
     managedVirtualNetwork: true
     privateEndpoints: [
       {
-        privateDnsZoneResourceIds: [
-          '<privateDNSZoneResourceId>'
-        ]
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
         service: 'SQL'
         subnetResourceId: '<subnetResourceId>'
         tags: {
@@ -657,7 +1025,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -705,18 +1073,19 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "managedVirtualNetwork": {
       "value": true
     },
     "privateEndpoints": {
       "value": [
         {
-          "privateDnsZoneResourceIds": [
-            "<privateDNSZoneResourceId>"
-          ],
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
           "service": "SQL",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
@@ -741,6 +1110,70 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/synapse/workspace:<version>'
+
+// Required parameters
+param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
+param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
+param name = 'swwaf001'
+param sqlAdministratorLogin = 'synwsadmin'
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'SynapseRbacOperations'
+      }
+      {
+        category: 'SynapseLinkEvent'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param integrationRuntimes = [
+  {
+    name: 'shir01'
+    type: 'SelfHosted'
+  }
+]
+param managedVirtualNetwork = true
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'SQL'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -758,6 +1191,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`accountUrl`](#parameter-accounturl) | string | The account URL of the data lake storage account. |
+| [`administrator`](#parameter-administrator) | object | The Entra ID administrator for the synapse workspace. |
 | [`allowedAadTenantIdsForLinking`](#parameter-allowedaadtenantidsforlinking) | array | Allowed AAD Tenant IDs For Linking. |
 | [`azureADOnlyAuthentication`](#parameter-azureadonlyauthentication) | bool | Enable or Disable AzureADOnlyAuthentication on All Workspace sub-resource. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
@@ -765,6 +1199,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encryptionActivateWorkspace`](#parameter-encryptionactivateworkspace) | bool | Activate workspace by adding the system managed identity in the KeyVault containing the customer managed key and activating the workspace. |
+| [`firewallRules`](#parameter-firewallrules) | array | List of firewall rules to be created in the workspace. |
 | [`initialWorkspaceAdminObjectID`](#parameter-initialworkspaceadminobjectid) | string | AAD object ID of initial workspace admin. |
 | [`integrationRuntimes`](#parameter-integrationruntimes) | array | The Integration Runtimes to create. |
 | [`linkedAccessCheckOnTargetResource`](#parameter-linkedaccesscheckontargetresource) | bool | Linked Access Check On Target Resource. |
@@ -818,6 +1253,55 @@ The account URL of the data lake storage account.
 - Type: string
 - Default: `[format('https://{0}.dfs.{1}', last(split(parameters('defaultDataLakeStorageAccountResourceId'), '/')), environment().suffixes.storage)]`
 
+### Parameter: `administrator`
+
+The Entra ID administrator for the synapse workspace.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`administratorType`](#parameter-administratoradministratortype) | string | Workspace active directory administrator type. |
+| [`login`](#parameter-administratorlogin) | securestring | Login of the workspace active directory administrator. |
+| [`sid`](#parameter-administratorsid) | securestring | Object ID of the workspace active directory administrator. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tenantId`](#parameter-administratortenantid) | securestring | Tenant ID of the workspace active directory administrator. |
+
+### Parameter: `administrator.administratorType`
+
+Workspace active directory administrator type.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `administrator.login`
+
+Login of the workspace active directory administrator.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `administrator.sid`
+
+Object ID of the workspace active directory administrator.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `administrator.tenantId`
+
+Tenant ID of the workspace active directory administrator.
+
+- Required: No
+- Type: securestring
+
 ### Parameter: `allowedAadTenantIdsForLinking`
 
 Allowed AAD Tenant IDs For Linking.
@@ -852,7 +1336,7 @@ The customer managed key definition.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using 'latest'. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time. |
 | [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
 
 ### Parameter: `customerManagedKey.keyName`
@@ -871,7 +1355,7 @@ The resource ID of a key vault to reference a customer managed key for encryptio
 
 ### Parameter: `customerManagedKey.keyVersion`
 
-The version of the customer managed key to reference for encryption. If not provided, using 'latest'.
+The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time.
 
 - Required: No
 - Type: string
@@ -905,7 +1389,7 @@ The diagnostic settings of the service.
 | [`eventHubAuthorizationRuleResourceId`](#parameter-diagnosticsettingseventhubauthorizationruleresourceid) | string | Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to. |
 | [`eventHubName`](#parameter-diagnosticsettingseventhubname) | string | Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`logAnalyticsDestinationType`](#parameter-diagnosticsettingsloganalyticsdestinationtype) | string | A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type. |
-| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection. |
+| [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
@@ -941,7 +1425,7 @@ A string indicating whether the export to Log Analytics should use the default d
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups`
 
-The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to '' to disable log collection.
+The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.
 
 - Required: No
 - Type: array
@@ -951,7 +1435,8 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
+| [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
 
@@ -962,10 +1447,17 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
-Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to 'AllLogs' to collect all logs.
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
+
+### Parameter: `diagnosticSettings.logCategoriesAndGroups.enabled`
+
+Enable or disable the category explicitly. Default is `true`.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `diagnosticSettings.marketplacePartnerResourceId`
 
@@ -1010,6 +1502,42 @@ Activate workspace by adding the system managed identity in the KeyVault contain
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `firewallRules`
+
+List of firewall rules to be created in the workspace.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`endIpAddress`](#parameter-firewallrulesendipaddress) | string | The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. |
+| [`name`](#parameter-firewallrulesname) | string | The name of the firewall rule. |
+| [`startIpAddress`](#parameter-firewallrulesstartipaddress) | string | The start IP address of the firewall rule. Must be IPv4 format. |
+
+### Parameter: `firewallRules.endIpAddress`
+
+The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.name`
+
+The name of the firewall rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `firewallRules.startIpAddress`
+
+The start IP address of the firewall rule. Must be IPv4 format.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `initialWorkspaceAdminObjectID`
 
@@ -1090,13 +1618,13 @@ The managed identity definition for this resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `managedResourceGroupName`
@@ -1134,7 +1662,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file". |
+| [`service`](#parameter-privateendpointsservice) | string | The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints. |
 | [`subnetResourceId`](#parameter-privateendpointssubnetresourceid) | string | Resource ID of the subnet where the endpoint needs to be created. |
 
 **Optional parameters**
@@ -1151,16 +1679,15 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`lock`](#parameter-privateendpointslock) | object | Specify the type of lock. |
 | [`manualConnectionRequestMessage`](#parameter-privateendpointsmanualconnectionrequestmessage) | string | A message passed to the owner of the remote resource with the manual connection request. |
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
-| [`privateDnsZoneGroupName`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided. |
-| [`privateDnsZoneResourceIds`](#parameter-privateendpointsprivatednszoneresourceids) | array | The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones. |
+| [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
 ### Parameter: `privateEndpoints.service`
 
-The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file".
+The subresource to deploy the private endpoint for. For example "blob", "table", "queue" or "file" for a Storage Account's Private Endpoints.
 
 - Required: Yes
 - Type: string
@@ -1190,15 +1717,13 @@ Custom DNS configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | Fqdn that resolves to private endpoint IP address. |
 | [`ipAddresses`](#parameter-privateendpointscustomdnsconfigsipaddresses) | array | A list of private IP addresses of the private endpoint. |
 
-### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+**Optional parameters**
 
-Fqdn that resolves to private endpoint IP address.
-
-- Required: No
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`fqdn`](#parameter-privateendpointscustomdnsconfigsfqdn) | string | FQDN that resolves to private endpoint IP address. |
 
 ### Parameter: `privateEndpoints.customDnsConfigs.ipAddresses`
 
@@ -1206,6 +1731,13 @@ A list of private IP addresses of the private endpoint.
 
 - Required: Yes
 - Type: array
+
+### Parameter: `privateEndpoints.customDnsConfigs.fqdn`
+
+FQDN that resolves to private endpoint IP address.
+
+- Required: No
+- Type: string
 
 ### Parameter: `privateEndpoints.customNetworkInterfaceName`
 
@@ -1342,19 +1874,64 @@ The name of the private endpoint.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneGroupName`
+### Parameter: `privateEndpoints.privateDnsZoneGroup`
 
-The name of the private DNS zone group to create if privateDnsZoneResourceIds were provided.
+The private DNS zone group to configure for the private endpoint.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneGroupConfigs`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigs) | array | The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupname) | string | The name of the Private DNS Zone Group. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs`
+
+The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`privateDnsZoneResourceId`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsprivatednszoneresourceid) | string | The resource id of the private DNS zone. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-privateendpointsprivatednszonegroupprivatednszonegroupconfigsname) | string | The name of the private DNS Zone Group config. |
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.privateDnsZoneResourceId`
+
+The resource id of the private DNS zone.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `privateEndpoints.privateDnsZoneGroup.privateDnsZoneGroupConfigs.name`
+
+The name of the private DNS Zone Group config.
 
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.privateDnsZoneResourceIds`
+### Parameter: `privateEndpoints.privateDnsZoneGroup.name`
 
-The private DNS zone groups to associate the private endpoint with. A DNS zone group can support up to 5 DNS zones.
+The name of the Private DNS Zone Group.
 
 - Required: No
-- Type: array
+- Type: string
 
 ### Parameter: `privateEndpoints.privateLinkServiceConnectionName`
 
@@ -1363,9 +1940,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1376,6 +1953,17 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'DNS Resolver Contributor'`
+  - `'DNS Zone Contributor'`
+  - `'Domain Services Contributor'`
+  - `'Domain Services Reader'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Private DNS Zone Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -1392,6 +1980,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-privateendpointsroleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-privateendpointsroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-privateendpointsroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-privateendpointsroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-privateendpointsroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `privateEndpoints.roleAssignments.principalId`
@@ -1438,6 +2027,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `privateEndpoints.roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `privateEndpoints.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1495,6 +2091,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Resource Policy Contributor'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1511,6 +2114,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1561,6 +2165,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1600,7 +2211,6 @@ Git integration settings.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1608,6 +2218,7 @@ Git integration settings.
 | `connectivityEndpoints` | object | The workspace connectivity endpoints. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the deployed Synapse Workspace. |
+| `privateEndpoints` | array | The private endpoints of the Synapse Workspace. |
 | `resourceGroupName` | string | The resource group of the deployed Synapse Workspace. |
 | `resourceID` | string | The resource ID of the deployed Synapse Workspace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -1618,7 +2229,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.4.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

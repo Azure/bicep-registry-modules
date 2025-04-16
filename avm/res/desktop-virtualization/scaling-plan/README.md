@@ -17,7 +17,7 @@ This module deploys an Azure Virtual Desktop Scaling Plan.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DesktopVirtualization/scalingPlans` | [2022-09-09](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2022-09-09/scalingPlans) |
+| `Microsoft.DesktopVirtualization/scalingPlans` | [2023-09-05](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2023-09-05/scalingPlans) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -58,7 +58,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -75,6 +75,22 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>'
+
+// Required parameters
+param name = 'dvspmin002'
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -125,11 +141,13 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     }
     roleAssignments: [
       {
+        name: 'c2c1c560-2169-405a-a8dc-7427e403e5ac'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -262,7 +280,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -316,11 +334,13 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
     "roleAssignments": {
       "value": [
         {
+          "name": "c2c1c560-2169-405a-a8dc-7427e403e5ac",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -456,6 +476,180 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>'
+
+// Required parameters
+param name = 'dvspmax002'
+// Non-required parameters
+param description = 'myDescription'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param friendlyName = 'friendlyName'
+param hostPoolReferences = [
+  {
+    hostPoolArmPath: '<hostPoolArmPath>'
+    scalingPlanEnabled: true
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'c2c1c560-2169-405a-a8dc-7427e403e5ac'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param schedules = [
+  {
+    daysOfWeek: [
+      'Friday'
+      'Monday'
+      'Thursday'
+      'Wednesday'
+    ]
+    name: 'WeekdaySchedule'
+    offPeakLoadBalancingAlgorithm: 'DepthFirst'
+    offPeakStartTime: {
+      hour: 20
+      minute: 0
+    }
+    peakLoadBalancingAlgorithm: 'DepthFirst'
+    peakStartTime: {
+      hour: 9
+      minute: 0
+    }
+    rampDownCapacityThresholdPct: 90
+    rampDownForceLogoffUsers: true
+    rampDownLoadBalancingAlgorithm: 'DepthFirst'
+    rampDownMinimumHostsPct: 0
+    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+    rampDownStartTime: {
+      hour: 18
+      minute: 0
+    }
+    rampDownStopHostsWhen: 'ZeroActiveSessions'
+    rampDownWaitTimeMinutes: 30
+    rampUpCapacityThresholdPct: 80
+    rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+    rampUpMinimumHostsPct: 20
+    rampUpStartTime: {
+      hour: 7
+      minute: 0
+    }
+  }
+  {
+    daysOfWeek: [
+      'Tuesday'
+    ]
+    name: 'weekdaysSchedule-agent-updates'
+    offPeakLoadBalancingAlgorithm: 'DepthFirst'
+    offPeakStartTime: {
+      hour: 20
+      minute: 0
+    }
+    peakLoadBalancingAlgorithm: 'DepthFirst'
+    peakStartTime: {
+      hour: 9
+      minute: 0
+    }
+    rampDownCapacityThresholdPct: 90
+    rampDownForceLogoffUsers: true
+    rampDownLoadBalancingAlgorithm: 'DepthFirst'
+    rampDownMinimumHostsPct: 0
+    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+    rampDownStartTime: {
+      hour: 19
+      minute: 0
+    }
+    rampDownStopHostsWhen: 'ZeroActiveSessions'
+    rampDownWaitTimeMinutes: 30
+    rampUpCapacityThresholdPct: 80
+    rampUpLoadBalancingAlgorithm: 'BreadthFirst'
+    rampUpMinimumHostsPct: 20
+    rampUpStartTime: {
+      hour: 7
+      minute: 0
+    }
+  }
+  {
+    daysOfWeek: [
+      'Saturday'
+      'Sunday'
+    ]
+    name: 'WeekendSchedule'
+    offPeakLoadBalancingAlgorithm: 'DepthFirst'
+    offPeakStartTime: {
+      hour: 18
+      minute: 0
+    }
+    peakLoadBalancingAlgorithm: 'DepthFirst'
+    peakStartTime: {
+      hour: 10
+      minute: 0
+    }
+    rampDownCapacityThresholdPct: 90
+    rampDownForceLogoffUsers: true
+    rampDownLoadBalancingAlgorithm: 'DepthFirst'
+    rampDownMinimumHostsPct: 0
+    rampDownNotificationMessage: 'You will be logged off in 30 min. Make sure to save your work.'
+    rampDownStartTime: {
+      hour: 16
+      minute: 0
+    }
+    rampDownStopHostsWhen: 'ZeroActiveSessions'
+    rampDownWaitTimeMinutes: 30
+    rampUpCapacityThresholdPct: 90
+    rampUpLoadBalancingAlgorithm: 'DepthFirst'
+    rampUpMinimumHostsPct: 0
+    rampUpStartTime: {
+      hour: 9
+      minute: 0
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -497,7 +691,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -542,6 +736,36 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/desktop-virtualization/scaling-plan:<version>'
+
+// Required parameters
+param name = 'dvspwaf002'
+// Non-required parameters
+param description = 'myDescription'
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param friendlyName = 'myFriendlyName'
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -556,7 +780,7 @@ module scalingPlan 'br/public:avm/res/desktop-virtualization/scaling-plan:<versi
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-description) | string | Description of the Scaling Plan. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The database-level diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exclusionTag`](#parameter-exclusiontag) | string | Exclusion tag to be used for exclusion of VMs from Scaling Plan. |
 | [`friendlyName`](#parameter-friendlyname) | string | Friendly name of the Scaling Plan. |
@@ -586,7 +810,7 @@ Description of the Scaling Plan.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The database-level diagnostic settings of the service.
 
 - Required: No
 - Type: array
@@ -644,7 +868,7 @@ The name of logs that will be streamed. "allLogs" includes all possible logs for
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`category`](#parameter-diagnosticsettingslogcategoriesandgroupscategory) | string | Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here. |
-| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs. |
+| [`categoryGroup`](#parameter-diagnosticsettingslogcategoriesandgroupscategorygroup) | string | Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs. |
 | [`enabled`](#parameter-diagnosticsettingslogcategoriesandgroupsenabled) | bool | Enable or disable the category explicitly. Default is `true`. |
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.category`
@@ -656,7 +880,7 @@ Name of a Diagnostic Log category for a resource type this setting is applied to
 
 ### Parameter: `diagnosticSettings.logCategoriesAndGroups.categoryGroup`
 
-Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `AllLogs` to collect all logs.
+Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.
 
 - Required: No
 - Type: string
@@ -710,7 +934,6 @@ Exclusion tag to be used for exclusion of VMs from Scaling Plan.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `friendlyName`
 
@@ -726,7 +949,6 @@ Host pool references of the Scaling Plan.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `hostPoolType`
 
@@ -735,6 +957,13 @@ Host pool type of the Scaling Plan.
 - Required: No
 - Type: string
 - Default: `'Pooled'`
+- Allowed:
+  ```Bicep
+  [
+    'Personal'
+    'Pooled'
+  ]
+  ```
 
 ### Parameter: `location`
 
@@ -786,6 +1015,26 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Owner'`
+  - `'Contributor'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
+  - `'Application Group Contributor'`
+  - `'Desktop Virtualization Application Group Contributor'`
+  - `'Desktop Virtualization Application Group Reader'`
+  - `'Desktop Virtualization Contributor'`
+  - `'Desktop Virtualization Host Pool Contributor'`
+  - `'Desktop Virtualization Host Pool Reader'`
+  - `'Desktop Virtualization Power On Off Contributor'`
+  - `'Desktop Virtualization Reader'`
+  - `'Desktop Virtualization Session Host Operator'`
+  - `'Desktop Virtualization User'`
+  - `'Desktop Virtualization User Session Operator'`
+  - `'Desktop Virtualization Virtual Machine Contributor'`
+  - `'Desktop Virtualization Workspace Contributor'`
+  - `'Desktop Virtualization Workspace Reader'`
 
 **Required parameters**
 
@@ -802,6 +1051,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -852,6 +1102,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -875,7 +1132,6 @@ Schedules of the Scaling Plan.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 
@@ -892,7 +1148,6 @@ Time zone of the Scaling Plan. Defaults to UTC.
 - Type: string
 - Default: `'UTC'`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -904,7 +1159,11 @@ Time zone of the Scaling Plan. Defaults to UTC.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

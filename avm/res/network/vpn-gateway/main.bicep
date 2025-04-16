@@ -1,6 +1,5 @@
 metadata name = 'VPN Gateways'
 metadata description = 'This module deploys a VPN Gateway.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the VPN gateway.')
 param name string
@@ -32,33 +31,34 @@ param vpnGatewayScaleUnit int = 2
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: take(
-      '46d3xbcp.res.network-vpngateway.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
-      64
-    )
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: take(
+    '46d3xbcp.res.network-vpngateway.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    64
+  )
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource vpnGateway 'Microsoft.Network/vpnGateways@2023-04-01' = {
   name: name
@@ -100,17 +100,16 @@ resource vpnGateway 'Microsoft.Network/vpnGateways@2023-04-01' = {
   }
 }
 
-resource vpnGateway_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: vpnGateway
+resource vpnGateway_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: vpnGateway
+}
 
 module vpnGateway_natRules 'nat-rule/main.bicep' = [
   for (natRule, index) in natRules: {
@@ -118,9 +117,9 @@ module vpnGateway_natRules 'nat-rule/main.bicep' = [
     params: {
       name: natRule.name
       vpnGatewayName: vpnGateway.name
-      externalMappings: contains(natRule, 'externalMappings') ? natRule.externalMappings : []
-      internalMappings: contains(natRule, 'internalMappings') ? natRule.internalMappings : []
-      ipConfigurationId: contains(natRule, 'ipConfigurationId') ? natRule.ipConfigurationId : ''
+      externalMappings: natRule.?externalMappings
+      internalMappings: natRule.?internalMappings
+      ipConfigurationId: natRule.?ipConfigurationId
       mode: natRule.?mode
       type: natRule.?type
     }
@@ -144,6 +143,7 @@ module vpnGateway_vpnConnections 'vpn-connection/main.bicep' = [
       useLocalAzureIpAddress: connection.?useLocalAzureIpAddress
       usePolicyBasedTrafficSelectors: connection.?usePolicyBasedTrafficSelectors
       vpnConnectionProtocolType: connection.?vpnConnectionProtocolType
+      ipsecPolicies: connection.?ipsecPolicies
       trafficSelectorPolicies: connection.?trafficSelectorPolicies
       vpnLinkConnections: connection.?vpnLinkConnections
     }
@@ -161,15 +161,3 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = vpnGateway.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?

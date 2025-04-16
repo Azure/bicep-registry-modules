@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "5914852504306173482"
+      "version": "0.33.13.18514",
+      "templateHash": "13471923779604074887"
     },
     "name": "API Management Service Backends",
-    "description": "This module deploys an API Management Service Backend.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service Backend."
   },
   "parameters": {
     "apiManagementServiceName": {
@@ -95,12 +94,12 @@
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2023-05-01-preview",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "backend": {
       "type": "Microsoft.ApiManagement/service/backends",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "title": "[parameters('title')]",
@@ -114,10 +113,7 @@
         "tls": "[parameters('tls')]",
         "url": "[parameters('url')]",
         "protocol": "[parameters('protocol')]"
-      },
-      "dependsOn": [
-        "service"
-      ]
+      }
     }
   },
   "outputs": {

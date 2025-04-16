@@ -1,8 +1,6 @@
 name: "avm.res.web.hosting-environment"
 
 on:
-  schedule:
-    - cron: "0 12 1/15 * *" # Bi-Weekly Test (on 1st & 15th of month)
   workflow_dispatch:
     inputs:
       staticValidation:
@@ -32,8 +30,8 @@ on:
       - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.web.hosting-environment.yml"
       - "avm/res/web/hosting-environment/**"
-      - "avm/utilities/pipelines/**"
-      - "!avm/utilities/pipelines/platform/**"
+      - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
@@ -48,7 +46,7 @@ jobs:
   #   Initialize pipeline   #
   ###########################
   job_initialize_pipeline:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: "Initialize pipeline"
     steps:
       - name: "Checkout"

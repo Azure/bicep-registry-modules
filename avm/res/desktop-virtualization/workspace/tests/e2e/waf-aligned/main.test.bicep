@@ -31,7 +31,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // Diagnostics
 // ===========
 
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -54,7 +54,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}002'
-      location: resourceLocation
       diagnosticSettings: [
         {
           eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
@@ -69,8 +68,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      diagnosticDependencies
-    ]
   }
 ]

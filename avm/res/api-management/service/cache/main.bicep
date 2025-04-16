@@ -1,6 +1,5 @@
 metadata name = 'API Management Service Caches'
 metadata description = 'This module deploys an API Management Service Cache.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
@@ -20,11 +19,11 @@ param resourceId string?
 @sys.description('Required. Location identifier to use cache from (should be either \'default\' or valid Azure region identifier).')
 param useFromLocation string
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource cache 'Microsoft.ApiManagement/service/caches@2021-08-01' = {
+resource cache 'Microsoft.ApiManagement/service/caches@2022-08-01' = {
   name: name
   parent: service
   properties: {

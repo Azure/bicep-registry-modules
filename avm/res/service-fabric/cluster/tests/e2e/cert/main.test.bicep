@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Certificate'
-metadata description = 'This instance deploys the module with a certificate.'
+metadata name = 'Using client and server certificate parameter set'
+metadata description = 'This instance deploys the module with client and server certificates using thumbprints and common names.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-servicefabric.clusters-${ser
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sfccer'
+param serviceShort string = 'sfccrt'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -41,14 +41,24 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       managementEndpoint: 'https://${namePrefix}${serviceShort}001.westeurope.cloudapp.azure.com:19080'
       reliabilityLevel: 'None'
-      certificate: {
-        thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+      certificateCommonNames: {
+        commonNames: [
+          {
+            certificateCommonName: 'certcommon'
+            certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+          }
+        ]
         x509StoreName: 'My'
       }
+      clientCertificateThumbprints: [
+        {
+          certificateThumbprint: 'D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE'
+          isAdmin: true
+        }
+      ]
       nodeTypes: [
         {
           applicationPorts: {

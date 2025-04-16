@@ -1,6 +1,5 @@
 metadata name = 'Container Apps'
 metadata description = 'This module deploys a Container App.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Container App.')
 param name string
@@ -8,8 +7,29 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+@description('Optional. Bool to disable all ingress traffic for the container app.')
+param disableIngress bool = false
+
 @description('Optional. Bool indicating if the App exposes an external HTTP endpoint.')
 param ingressExternal bool = true
+
+@allowed([
+  'accept'
+  'ignore'
+  'require'
+])
+@description('Optional. Client certificate mode for mTLS.')
+param clientCertificateMode string = 'ignore'
+
+@description('Optional. Object userd to configure CORS policy.')
+param corsPolicy corsPolicyType?
+
+@allowed([
+  'none'
+  'sticky'
+])
+@description('Optional. Bool indicating if the Container App should enable session affinity.')
+param stickySessionsAffinity string = 'none'
 
 @allowed([
   'auto'
@@ -20,20 +40,29 @@ param ingressExternal bool = true
 @description('Optional. Ingress transport protocol.')
 param ingressTransport string = 'auto'
 
+@description('Optional. Dev ContainerApp service type.')
+param service object = {}
+
+@description('Optional. Toggle to include the service configuration.')
+param includeAddOns bool = false
+
+@description('Optional. Settings to expose additional ports on container app.')
+param additionalPortMappings ingressPortMappingType[]?
+
 @description('Optional. Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections.')
 param ingressAllowInsecure bool = true
 
 @description('Optional. Target Port in containers for traffic from ingress.')
 param ingressTargetPort int = 80
 
-@description('Optional. Maximum number of container replicas. Defaults to 10 if not set.')
-param scaleMaxReplicas int = 10
+@description('Optional. The scaling settings of the service.')
+param scaleSettings scaleType = {
+  maxReplicas: 10
+  minReplicas: 3
+}
 
-@description('Optional. Minimum number of container replicas. Defaults to 3 if not set.')
-param scaleMinReplicas int = 3
-
-@description('Optional. Scaling rules.')
-param scaleRules array = []
+@description('Optional. List of container app services bound to the app.')
+param serviceBinds serviceBindingType[]?
 
 @allowed([
   'Multiple'
@@ -43,10 +72,11 @@ param scaleRules array = []
 param activeRevisionsMode string = 'Single'
 
 @description('Required. Resource ID of environment.')
-param environmentId string
+param environmentResourceId string
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -54,11 +84,13 @@ param tags object?
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
 param registries array = []
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -87,18 +119,23 @@ param trafficWeight int = 100
 @description('Optional. Dapr configuration for the Container App.')
 param dapr object = {}
 
+@description('Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.')
+param identitySettings resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.configuration.identitySettings?
+
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
 
+@description('Optional. Runtime configuration for the Container App.')
+param runtime runtimeType?
+
 @description('Required. List of container definitions for the Container App.')
-param containers array
+param containers containerType[]
 
 @description('Optional. List of specialized containers that run before app containers.')
 param initContainersTemplate array = []
 
 @description('Optional. The secrets of the Container App.')
-@secure()
-param secrets object = {}
+param secrets secretType[]?
 
 @description('Optional. User friendly suffix that is appended to the revision name.')
 param revisionSuffix string = ''
@@ -109,7 +146,8 @@ param volumes array = []
 @description('Optional. Workload profile name to pin for container app execution.')
 param workloadProfileName string = ''
 
-var secretList = !empty(secrets) ? secrets.secureList : []
+@description('Optional. The name of the Container App Auth configs.')
+param authConfig authConfigType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -134,7 +172,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -144,92 +182,134 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.app-containerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.app-containerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource containerApp 'Microsoft.App/containerApps@2023-05-01' = {
+resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
   name: name
   tags: tags
   location: location
   identity: identity
   properties: {
-    environmentId: environmentId
+    environmentId: environmentResourceId
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
-      ingress: {
-        allowInsecure: ingressAllowInsecure
-        customDomains: !empty(customDomains) ? customDomains : null
-        exposedPort: exposedPort
-        external: ingressExternal
-        ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
-        targetPort: ingressTargetPort
-        traffic: [
-          {
-            label: trafficLabel
-            latestRevision: trafficLatestRevision
-            revisionName: trafficRevisionName
-            weight: trafficWeight
+      identitySettings: !empty(identitySettings) ? identitySettings : null
+      ingress: disableIngress
+        ? null
+        : {
+            additionalPortMappings: additionalPortMappings
+            allowInsecure: ingressTransport != 'tcp' ? ingressAllowInsecure : false
+            customDomains: !empty(customDomains) ? customDomains : null
+            corsPolicy: corsPolicy != null && ingressTransport != 'tcp'
+              ? {
+                  allowCredentials: corsPolicy.?allowCredentials ?? false
+                  allowedHeaders: corsPolicy.?allowedHeaders ?? []
+                  allowedMethods: corsPolicy.?allowedMethods ?? []
+                  allowedOrigins: corsPolicy.?allowedOrigins ?? []
+                  exposeHeaders: corsPolicy.?exposeHeaders ?? []
+                  maxAge: corsPolicy.?maxAge
+                }
+              : null
+            clientCertificateMode: ingressTransport != 'tcp' ? clientCertificateMode : null
+            exposedPort: exposedPort
+            external: ingressExternal
+            ipSecurityRestrictions: !empty(ipSecurityRestrictions) ? ipSecurityRestrictions : null
+            targetPort: ingressTargetPort
+            stickySessions: {
+              affinity: stickySessionsAffinity
+            }
+            traffic: ingressTransport != 'tcp'
+              ? [
+                  {
+                    label: trafficLabel
+                    latestRevision: trafficLatestRevision
+                    revisionName: trafficRevisionName
+                    weight: trafficWeight
+                  }
+                ]
+              : null
+            transport: ingressTransport
           }
-        ]
-        transport: ingressTransport
-      }
+      service: (includeAddOns && !empty(service)) ? service : null
       maxInactiveRevisions: maxInactiveRevisions
       registries: !empty(registries) ? registries : null
-      secrets: secretList
+      secrets: secrets
+      runtime: {
+        dotnet: !empty(runtime.?dotnet)
+          ? {
+              autoConfigureDataProtection: runtime.?dotnet.autoConfigureDataProtection
+            }
+          : null
+        java: !empty(runtime.?java)
+          ? {
+              enableMetrics: runtime.?java.enableMetrics
+              javaAgent: {
+                enabled: runtime.?java.enableJavaAgent
+                logging: {
+                  loggerSettings: runtime.?java.?loggerSettings
+                }
+              }
+            }
+          : null
+      }
     }
     template: {
       containers: containers
       initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
       revisionSuffix: revisionSuffix
-      scale: {
-        maxReplicas: scaleMaxReplicas
-        minReplicas: scaleMinReplicas
-        rules: !empty(scaleRules) ? scaleRules : null
-      }
+      scale: scaleSettings
+      serviceBinds: (includeAddOns && !empty(serviceBinds)) ? serviceBinds : null
       volumes: !empty(volumes) ? volumes : null
     }
     workloadProfileName: workloadProfileName
   }
 }
 
-resource containerApp_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: containerApp
+resource containerApp_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: containerApp
+}
 
 resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(containerApp.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(containerApp.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -241,11 +321,24 @@ resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2
   }
 ]
 
+module containerAppAuthConfigs './auth-config/main.bicep' = if (!empty(authConfig)) {
+  name: '${uniqueString(deployment().name, location)}-auth-config'
+  params: {
+    containerAppName: containerApp.name
+    encryptionSettings: authConfig.?encryptionSettings
+    globalValidation: authConfig.?globalValidation
+    httpSettings: authConfig.?httpSettings
+    identityProviders: authConfig.?identityProviders
+    login: authConfig.?login
+    platform: authConfig.?platform
+  }
+}
+
 @description('The resource ID of the Container App.')
 output resourceId string = containerApp.id
 
 @description('The configuration of ingress fqdn.')
-output fqdn string = containerApp.properties.configuration.ingress.fqdn
+output fqdn string = disableIngress ? 'IngressDisabled' : containerApp.properties.configuration.ingress.fqdn
 
 @description('The name of the resource group the Container App was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -254,7 +347,7 @@ output resourceGroupName string = resourceGroup().name
 output name string = containerApp.name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = containerApp.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = containerApp.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = containerApp.location
@@ -263,41 +356,281 @@ output location string = containerApp.location
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
+@export()
+@description('The type for a container.')
+type containerType = {
+  @description('Optional. Container start command arguments.')
+  args: string[]?
 
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
+  @description('Optional. Container start command.')
+  command: string[]?
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
+  @description('Optional. Container environment variables.')
+  env: environmentVarType[]?
+
+  @description('Required. Container image tag.')
+  image: string
+
+  @description('Optional. Custom container name.')
   name: string?
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+  @description('Optional. List of probes for the container.')
+  probes: containerAppProbeType[]?
 
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+  @description('Required. Container resource requirements.')
+  resources: object
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+  @description('Optional. Container volume mounts.')
+  volumeMounts: volumeMountType[]?
+}
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+@export()
+@description('The type for an ingress port mapping.')
+type ingressPortMappingType = {
+  @description('Optional. Specifies the exposed port for the target port. If not specified, it defaults to target port.')
+  exposedPort: int?
 
-  @description('Optional. The description of the role assignment.')
-  description: string?
+  @description('Required. Specifies whether the app port is accessible outside of the environment.')
+  external: bool
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+  @description('Required. Specifies the port the container listens on.')
+  targetPort: int
+}
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+@description('The type for a service binding.')
+type serviceBindingType = {
+  @description('Required. The name of the service.')
+  name: string
 
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @description('Required. The service ID.')
+  serviceId: string
+}
+
+@export()
+@description('The type for an environment variable.')
+type environmentVarType = {
+  @description('Required. Environment variable name.')
+  name: string
+
+  @description('Optional. Name of the Container App secret from which to pull the environment variable value.')
+  secretRef: string?
+
+  @description('Optional. Non-secret environment variable value.')
+  value: string?
+}
+
+@description('The type for a container app probe.')
+type containerAppProbeType = {
+  @description('Optional. Minimum consecutive failures for the probe to be considered failed after having succeeded. Defaults to 3.')
+  @minValue(1)
+  @maxValue(10)
+  failureThreshold: int?
+
+  @description('Optional. HTTPGet specifies the http request to perform.')
+  httpGet: containerAppProbeHttpGetType?
+
+  @description('Optional. Number of seconds after the container has started before liveness probes are initiated.')
+  @minValue(1)
+  @maxValue(60)
+  initialDelaySeconds: int?
+
+  @description('Optional. How often (in seconds) to perform the probe. Default to 10 seconds.')
+  @minValue(1)
+  @maxValue(240)
+  periodSeconds: int?
+
+  @description('Optional. Minimum consecutive successes for the probe to be considered successful after having failed. Defaults to 1. Must be 1 for liveness and startup.')
+  @minValue(1)
+  @maxValue(10)
+  successThreshold: int?
+
+  @description('Optional. The TCP socket specifies an action involving a TCP port. TCP hooks not yet supported.')
+  tcpSocket: containerAppProbeTcpSocketType?
+
+  @description('Optional. Optional duration in seconds the pod needs to terminate gracefully upon probe failure. The grace period is the duration in seconds after the processes running in the pod are sent a termination signal and the time when the processes are forcibly halted with a kill signal. Set this value longer than the expected cleanup time for your process. If this value is nil, the pod\'s terminationGracePeriodSeconds will be used. Otherwise, this value overrides the value provided by the pod spec. Value must be non-negative integer. The value zero indicates stop immediately via the kill signal (no opportunity to shut down). This is an alpha field and requires enabling ProbeTerminationGracePeriod feature gate. Maximum value is 3600 seconds (1 hour).')
+  terminationGracePeriodSeconds: int?
+
+  @description('Optional. Number of seconds after which the probe times out. Defaults to 1 second.')
+  @minValue(1)
+  @maxValue(240)
+  timeoutSeconds: int?
+
+  @description('Optional. The type of probe.')
+  type: ('Liveness' | 'Startup' | 'Readiness')?
+}
+
+@export()
+@description('The type for a CORS policy.')
+type corsPolicyType = {
+  @description('Optional. Switch to determine whether the resource allows credentials.')
+  allowCredentials: bool?
+
+  @description('Optional. Specifies the content for the access-control-allow-headers header.')
+  allowedHeaders: string[]?
+
+  @description('Optional. Specifies the content for the access-control-allow-methods header.')
+  allowedMethods: string[]?
+
+  @description('Optional. Specifies the content for the access-control-allow-origins header.')
+  allowedOrigins: string[]?
+
+  @description('Optional. Specifies the content for the access-control-expose-headers header.')
+  exposeHeaders: string[]?
+
+  @description('Optional. Specifies the content for the access-control-max-age header.')
+  maxAge: int?
+}
+
+@description('The type for a container app probe HTTP GET.')
+type containerAppProbeHttpGetType = {
+  @description('Optional. Host name to connect to. Defaults to the pod IP.')
+  host: string?
+
+  @description('Optional. HTTP headers to set in the request.')
+  httpHeaders: containerAppProbeHttpGetHeadersItemType[]?
+
+  @description('Required. Path to access on the HTTP server.')
+  path: string
+
+  @description('Required. Name or number of the port to access on the container.')
+  port: int
+
+  @description('Optional. Scheme to use for connecting to the host. Defaults to HTTP.')
+  scheme: ('HTTP' | 'HTTPS')?
+}
+
+@description('The type for a container app probe HTTP GET header.')
+type containerAppProbeHttpGetHeadersItemType = {
+  @description('Required. Name of the header.')
+  name: string
+
+  @description('Required. Value of the header.')
+  value: string
+}
+
+@description('The type for a container app probe TCP socket.')
+type containerAppProbeTcpSocketType = {
+  @description('Optional. Host name to connect to, defaults to the pod IP.')
+  host: string?
+
+  @description('Required. Number of the port to access on the container. Name must be an IANA_SVC_NAME.')
+  @minValue(1)
+  @maxValue(65535)
+  port: int
+}
+
+@description('The scale settings for the Container App.')
+type scaleType = {
+  @description('Required. The maximum number of replicas.')
+  maxReplicas: int
+
+  @description('Required. The minimum number of replicas.')
+  minReplicas: int
+
+  @description('Optional. The cooldown period in seconds.')
+  cooldownPeriod: int?
+
+  @description('Optional. The polling interval in seconds.')
+  pollingInterval: int?
+
+  @description('Optional. The scaling rules.')
+  rules: scaleRuleType[]?
+}
+
+@description('The scaling rules for the Container App.')
+type scaleRuleType = {
+  @description('Required. The name of the scaling rule.')
+  name: string
+
+  @description('Optional. The custom scaling rule.')
+  custom: object?
+
+  @description('Optional. The Azure Queue based scaling rule.')
+  azureQueue: object?
+
+  @description('Optional. The HTTP requests based scaling rule.')
+  http: object?
+
+  @description('Optional. The TCP based scaling rule.')
+  tcp: object?
+}
+
+@description('The type for a volume mount.')
+type volumeMountType = {
+  @description('Required. Path within the container at which the volume should be mounted.Must not contain \':\'.')
+  mountPath: string
+
+  @description('Optional. Path within the volume from which the container\'s volume should be mounted. Defaults to "" (volume\'s root).')
+  subPath: string?
+
+  @description('Required. This must match the Name of a Volume.')
+  volumeName: string
+}
+
+@export()
+@description('Optional. App runtime configuration for the Container App.')
+type runtimeType = {
+  @description('Optional. Runtime configuration for ASP.NET Core.')
+  dotnet: {
+    @description('Required. Enable to auto configure the ASP.NET Core Data Protection feature.')
+    autoConfigureDataProtection: bool
+  }?
+
+  @description('Optional. Runtime configuration for Java.')
+  java: {
+    @description('Required. Enable JMX core metrics for the Java app.')
+    enableMetrics: bool
+
+    @description('Required. Enable Java agent injection for the Java app.')
+    enableJavaAgent: bool
+
+    @description('Optional. Java agent logging configuration.')
+    loggerSettings: {
+      @description('Required. Name of the logger.')
+      logger: string
+
+      @description('Required. Java agent logging level.')
+      level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
+    }[]?
+  }?
+}
+
+@export()
+@description('The type for a secret.')
+type secretType = {
+  @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
+  identity: string?
+
+  @description('Conditional. The URL of the Azure Key Vault secret referenced by the Container App. Required if `value` is null.')
+  keyVaultUrl: string?
+
+  @description('Optional. The name of the container app secret.')
+  name: string?
+
+  @description('Conditional. The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null.')
+  @secure()
+  value: string?
+}
+
+@export()
+@description('The type for the container app\'s authentication configuration.')
+type authConfigType = {
+  @description('Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.')
+  encryptionSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.encryptionSettings?
+
+  @description('Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization.')
+  globalValidation: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.globalValidation?
+
+  @description('Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization.')
+  httpSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.httpSettings?
+
+  @description('Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization.')
+  identityProviders: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.identityProviders?
+
+  @description('Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization.')
+  login: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.login?
+
+  @description('Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization.')
+  platform: resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.platform?
+}
+

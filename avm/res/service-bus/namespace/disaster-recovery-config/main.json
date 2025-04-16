@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "2457681488755677620"
+      "version": "0.34.44.8038",
+      "templateHash": "14109784390213501614"
     },
     "name": "Service Bus Namespace Disaster Recovery Configs",
-    "description": "This module deploys a Service Bus Namespace Disaster Recovery Config",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Bus Namespace Disaster Recovery Config"
   },
   "parameters": {
     "namespaceName": {

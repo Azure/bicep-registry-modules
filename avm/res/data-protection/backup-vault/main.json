@@ -5,26 +5,163 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "17999944940585257784"
+      "version": "0.33.93.31351",
+      "templateHash": "18129990982185634757"
     },
     "name": "Data Protection Backup Vaults",
-    "description": "This module deploys a Data Protection Backup Vault.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Data Protection Backup Vault."
   },
   "definitions": {
-    "managedIdentitiesType": {
+    "softDeleteSettingType": {
       "type": "object",
       "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
+        "retentionDurationInDays": {
+          "type": "int",
           "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
+            "description": "Required. The soft delete retention period in days."
+          }
+        },
+        "state": {
+          "type": "string",
+          "allowedValues": [
+            "AlwaysON",
+            "Off",
+            "On"
+          ],
+          "metadata": {
+            "description": "Required. The soft delete state."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for soft delete settings."
+      }
+    },
+    "backupInstanceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the backup instance."
+          }
+        },
+        "friendlyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The friendly name of the backup instance."
+          }
+        },
+        "dataSourceInfo": {
+          "$ref": "#/definitions/dataSourceInfoType",
+          "metadata": {
+            "description": "Required. The data source info for the backup instance."
+          }
+        },
+        "policyInfo": {
+          "$ref": "#/definitions/policyInfoType",
+          "metadata": {
+            "description": "Required. The policy info for the backup instance."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a backup instance."
+      }
+    },
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "dataSourceInfoType": {
+      "type": "object",
+      "properties": {
+        "datasourceType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The data source type of the resource."
+          }
+        },
+        "resourceID": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the resource."
+          }
+        },
+        "resourceLocation": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The location of the data source."
+          }
+        },
+        "resourceName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Unique identifier of the resource in the context of parent."
+          }
+        },
+        "resourceType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource type of the data source."
+          }
+        },
+        "resourceUri": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Uri of the resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for backup instance data source info properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "backup-instance/main.bicep"
+        }
+      }
     },
     "lockType": {
       "type": "object",
@@ -49,73 +186,138 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "policyInfoType": {
+      "type": "object",
+      "properties": {
+        "policyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the backup instance policy."
+          }
+        },
+        "policyParameters": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. Policy parameters for the backup instance."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for backup instance policy info properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "backup-instance/main.bicep"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -140,28 +342,71 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "infrastructureEncryption": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether or not the service applies a secondary layer of encryption. For security reasons, it is recommended to set it to Enabled."
+      }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key (CMK) definition. ENABLING CMK WITH USER ASSIGNED MANAGED IDENTITY IS A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault) FOR CLARIFICATION."
+      }
+    },
+    "softDeleteSettings": {
+      "$ref": "#/definitions/softDeleteSettingType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The soft delete related settings."
+      }
+    },
+    "immutabilitySettingState": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Disabled",
+        "Locked",
+        "Unlocked"
+      ],
+      "metadata": {
+        "description": "Optional. The immmutability setting state of the backup vault resource."
       }
     },
     "tags": {
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Tags of the Recovery Service Vault resource."
+        "description": "Optional. Tags of the backup vault resource."
       }
     },
     "dataStoreType": {
@@ -201,28 +446,39 @@
     },
     "backupPolicies": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of all backup policies."
       }
     },
-    "securitySettings": {
-      "type": "object",
-      "defaultValue": {},
+    "backupInstances": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/backupInstanceType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Security settings for the backup vault."
+        "description": "Optional. List of all backup instances."
       }
     },
     "featureSettings": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "description": "Optional. Feature settings for the backup vault."
       }
     }
   },
   "variables": {
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), 'SystemAssigned', null())), null())]",
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), createObject('type', 'None'))]",
     "builtInRoleNames": {
       "Backup Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5e467623-bb1f-42f4-a55d-6e525e11384b')]",
       "Backup Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00c29273-979b-4161-815c-10b084fb9324')]",
@@ -230,15 +486,24 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
   "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.dataprotection-backupvault.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -255,9 +520,27 @@
         }
       }
     },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-02-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
+    },
+    "cMKUserAssignedIdentity": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
+    },
     "backupVault": {
       "type": "Microsoft.DataProtection/backupVaults",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2024-04-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -275,8 +558,15 @@
           }
         ],
         "featureSettings": "[parameters('featureSettings')]",
-        "securitySettings": "[parameters('securitySettings')]"
-      }
+        "securitySettings": {
+          "encryptionSettings": "[if(not(empty(parameters('customerManagedKey'))), createObject('infrastructureEncryption', parameters('infrastructureEncryption'), 'kekIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), createObject('identityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), 'identityType', 'UserAssigned'), createObject('identityType', 'SystemAssigned')), 'keyVaultProperties', createObject('keyUri', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), reference('cMKKeyVault::cMKKey').keyUri, reference('cMKKeyVault::cMKKey').keyUriWithVersion))), 'state', 'Enabled'), null())]",
+          "immutabilitySettings": "[if(not(empty(parameters('immutabilitySettingState'))), createObject('state', parameters('immutabilitySettingState')), null())]",
+          "softDeleteSettings": "[parameters('softDeleteSettings')]"
+        }
+      },
+      "dependsOn": [
+        "cMKKeyVault::cMKKey"
+      ]
     },
     "backupVault_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -295,20 +585,20 @@
     "backupVault_roleAssignments": {
       "copy": {
         "name": "backupVault_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.DataProtection/backupVaults/{0}', parameters('name'))]",
-      "name": "[guid(resourceId('Microsoft.DataProtection/backupVaults', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.DataProtection/backupVaults', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "backupVault"
@@ -317,7 +607,7 @@
     "backupVault_backupPolicies": {
       "copy": {
         "name": "backupVault_backupPolicies",
-        "count": "[length(parameters('backupPolicies'))]"
+        "count": "[length(coalesce(parameters('backupPolicies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -332,10 +622,10 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('backupPolicies')[copyIndex()].name]"
+            "value": "[coalesce(parameters('backupPolicies'), createArray())[copyIndex()].name]"
           },
           "properties": {
-            "value": "[parameters('backupPolicies')[copyIndex()].properties]"
+            "value": "[coalesce(parameters('backupPolicies'), createArray())[copyIndex()].properties]"
           }
         },
         "template": {
@@ -344,12 +634,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.26.54.24096",
-              "templateHash": "11424915933898928003"
+              "version": "0.33.93.31351",
+              "templateHash": "12332562471547164783"
             },
             "name": "Data Protection Backup Vault Backup Policies",
-            "description": "This module deploys a Data Protection Backup Vault Backup Policy.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Data Protection Backup Vault Backup Policy."
           },
           "parameters": {
             "backupVaultName": {
@@ -376,7 +665,7 @@
           "resources": [
             {
               "type": "Microsoft.DataProtection/backupVaults/backupPolicies",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2024-04-01",
               "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('name'))]",
               "properties": "[parameters('properties')]"
             }
@@ -409,6 +698,305 @@
       "dependsOn": [
         "backupVault"
       ]
+    },
+    "backupVault_backupInstances": {
+      "copy": {
+        "name": "backupVault_backupInstances",
+        "count": "[length(coalesce(parameters('backupInstances'), createArray()))]",
+        "mode": "serial",
+        "batchSize": 1
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-BV-BackupInstance-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "backupVaultName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('backupInstances'), createArray())[copyIndex()].name]"
+          },
+          "friendlyName": {
+            "value": "[tryGet(coalesce(parameters('backupInstances'), createArray())[copyIndex()], 'friendlyName')]"
+          },
+          "dataSourceInfo": {
+            "value": "[coalesce(parameters('backupInstances'), createArray())[copyIndex()].dataSourceInfo]"
+          },
+          "policyInfo": {
+            "value": "[coalesce(parameters('backupInstances'), createArray())[copyIndex()].policyInfo]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "10390013005713732753"
+            },
+            "name": "Data Protection Backup Vault Backup Instances",
+            "description": "This module deploys a Data Protection Backup Vault Backup Instance."
+          },
+          "definitions": {
+            "dataSourceInfoType": {
+              "type": "object",
+              "properties": {
+                "datasourceType": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The data source type of the resource."
+                  }
+                },
+                "resourceID": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the resource."
+                  }
+                },
+                "resourceLocation": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The location of the data source."
+                  }
+                },
+                "resourceName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Unique identifier of the resource in the context of parent."
+                  }
+                },
+                "resourceType": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource type of the data source."
+                  }
+                },
+                "resourceUri": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The Uri of the resource."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for backup instance data source info properties."
+              }
+            },
+            "policyInfoType": {
+              "type": "object",
+              "properties": {
+                "policyName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the backup instance policy."
+                  }
+                },
+                "policyParameters": {
+                  "type": "object",
+                  "metadata": {
+                    "description": "Required. Policy parameters for the backup instance."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for backup instance policy info properties."
+              }
+            }
+          },
+          "parameters": {
+            "backupVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Backup Vault. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the backup instance."
+              }
+            },
+            "friendlyName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The friendly name of the backup instance."
+              }
+            },
+            "dataSourceInfo": {
+              "$ref": "#/definitions/dataSourceInfoType",
+              "metadata": {
+                "description": "Required. Gets or sets the data source information."
+              }
+            },
+            "policyInfo": {
+              "$ref": "#/definitions/policyInfoType",
+              "metadata": {
+                "description": "Required. Gets or sets the policy information."
+              }
+            }
+          },
+          "resources": {
+            "backupVault::backupPolicy": {
+              "existing": true,
+              "type": "Microsoft.DataProtection/backupVaults/backupPolicies",
+              "apiVersion": "2024-04-01",
+              "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('policyInfo').policyName)]"
+            },
+            "backupVault": {
+              "existing": true,
+              "type": "Microsoft.DataProtection/backupVaults",
+              "apiVersion": "2024-04-01",
+              "name": "[parameters('backupVaultName')]"
+            },
+            "backupInstance_snapshotRG_rbac": {
+              "condition": "[equals(parameters('dataSourceInfo').resourceType, 'Microsoft.Compute/disks')]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(format('{0}-{1}-Disk-Snapshot-Contributor', resourceGroup().id, resourceId('Microsoft.DataProtection/backupVaults', parameters('backupVaultName'))))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+                "principalId": "[reference('backupVault', '2024-04-01', 'full').identity.principalId]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "backupVault"
+              ]
+            },
+            "backupInstance": {
+              "type": "Microsoft.DataProtection/backupVaults/backupInstances",
+              "apiVersion": "2024-04-01",
+              "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('name'))]",
+              "properties": {
+                "friendlyName": "[parameters('friendlyName')]",
+                "objectType": "BackupInstance",
+                "dataSourceInfo": "[union(parameters('dataSourceInfo'), createObject('objectType', 'Datasource'))]",
+                "policyInfo": {
+                  "policyId": "[resourceId('Microsoft.DataProtection/backupVaults/backupPolicies', parameters('backupVaultName'), parameters('policyInfo').policyName)]",
+                  "policyParameters": "[parameters('policyInfo').policyParameters]"
+                }
+              },
+              "dependsOn": [
+                "backupInstance_dataSourceResource_rbac",
+                "backupInstance_snapshotRG_rbac"
+              ]
+            },
+            "backupInstance_dataSourceResource_rbac": {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-RBAC', deployment().name)]",
+              "resourceGroup": "[split(parameters('dataSourceInfo').resourceID, '/')[4]]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "resourceId": {
+                    "value": "[parameters('dataSourceInfo').resourceID]"
+                  },
+                  "principalId": {
+                    "value": "[reference('backupVault', '2024-04-01', 'full').identity.principalId]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.33.93.31351",
+                      "templateHash": "12922926946246637028"
+                    }
+                  },
+                  "parameters": {
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the backup instance data source."
+                      }
+                    },
+                    "principalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "resourceType": "[format('{0}/{1}', split(parameters('resourceId'), '/')[6], split(parameters('resourceId'), '/')[7])]"
+                  },
+                  "resources": [
+                    {
+                      "condition": "[equals(variables('resourceType'), 'Microsoft.Storage/storageAccounts')]",
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', last(split(parameters('resourceId'), '/')))]",
+                      "name": "[guid(format('{0}-{1}-Storage-Account-Backup-Contributor', parameters('resourceId'), parameters('principalId')))]",
+                      "properties": {
+                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'e5e2a7ff-d759-4cd2-bb51-3152d37e2eb1')]",
+                        "principalId": "[parameters('principalId')]",
+                        "principalType": "ServicePrincipal"
+                      }
+                    },
+                    {
+                      "condition": "[equals(variables('resourceType'), 'Microsoft.Compute/disks')]",
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.Compute/disks/{0}', last(split(parameters('resourceId'), '/')))]",
+                      "name": "[guid(format('{0}-{1}-Disk-Backup-Reader', parameters('resourceId'), parameters('principalId')))]",
+                      "properties": {
+                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24')]",
+                        "principalId": "[parameters('principalId')]",
+                        "principalType": "ServicePrincipal"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "backupVault"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the backup instance."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the backup instance."
+              },
+              "value": "[resourceId('Microsoft.DataProtection/backupVaults/backupInstances', parameters('backupVaultName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the backup instance was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "backupVault",
+        "backupVault_backupPolicies"
+      ]
     }
   },
   "outputs": {
@@ -435,17 +1023,18 @@
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[coalesce(tryGet(tryGet(reference('backupVault', '2023-05-01', 'full'), 'identity'), 'principalId'), '')]"
+      "value": "[tryGet(tryGet(reference('backupVault', '2024-04-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('backupVault', '2023-05-01', 'full').location]"
+      "value": "[reference('backupVault', '2024-04-01', 'full').location]"
     }
   }
 }

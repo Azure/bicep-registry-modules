@@ -42,7 +42,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       ruleCollectionGroups: [
         {
           name: '${namePrefix}-rule-001'
@@ -87,7 +86,9 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
       allowSqlRedirect: true
-      autoLearnPrivateRanges: 'Enabled'
+      snat: {
+        autoLearnPrivateRanges: 'Enabled'
+      }
       threatIntelMode: 'Deny'
     }
   }

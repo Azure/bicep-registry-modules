@@ -1,6 +1,5 @@
 metadata name = 'WCF Relay Authorization Rules'
 metadata description = 'This module deploys a WCF Relay Authorization Rule.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the authorization rule.')
 param name string

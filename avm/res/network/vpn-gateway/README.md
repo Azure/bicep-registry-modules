@@ -49,8 +49,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     // Required parameters
     name: 'vpngmin001'
     virtualHubResourceId: '<virtualHubResourceId>'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -60,7 +58,7 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -73,13 +71,24 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     },
     "virtualHubResourceId": {
       "value": "<virtualHubResourceId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-gateway:<version>'
+
+// Required parameters
+param name = 'vpngmin001'
+param virtualHubResourceId = '<virtualHubResourceId>'
 ```
 
 </details>
@@ -156,7 +165,7 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -235,6 +244,67 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-gateway:<version>'
+
+// Required parameters
+param name = 'vpngmax001'
+param virtualHubResourceId = '<virtualHubResourceId>'
+// Non-required parameters
+param bgpSettings = {
+  asn: 65515
+  peerWeight: 0
+}
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param natRules = [
+  {
+    externalMappings: [
+      {
+        addressSpace: '192.168.21.0/24'
+      }
+    ]
+    internalMappings: [
+      {
+        addressSpace: '10.4.0.0/24'
+      }
+    ]
+    mode: 'EgressSnat'
+    name: 'natRule1'
+    type: 'Static'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vpnConnections = [
+  {
+    connectionBandwidth: 100
+    enableBgp: false
+    enableInternetSecurity: true
+    enableRateLimiting: false
+    name: '<name>'
+    remoteVpnSiteResourceId: '<remoteVpnSiteResourceId>'
+    routingWeight: 0
+    useLocalAzureIpAddress: false
+    usePolicyBasedTrafficSelectors: false
+    vpnConnectionProtocolType: 'IKEv2'
+  }
+]
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -257,10 +327,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
       peerWeight: 0
     }
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     natRules: [
       {
         externalMappings: [
@@ -306,7 +372,7 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -329,12 +395,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     },
     "location": {
       "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "natRules": {
       "value": [
@@ -385,6 +445,62 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/vpn-gateway:<version>'
+
+// Required parameters
+param name = 'vpngwaf001'
+param virtualHubResourceId = '<virtualHubResourceId>'
+// Non-required parameters
+param bgpSettings = {
+  asn: 65515
+  peerWeight: 0
+}
+param location = '<location>'
+param natRules = [
+  {
+    externalMappings: [
+      {
+        addressSpace: '192.168.21.0/24'
+      }
+    ]
+    internalMappings: [
+      {
+        addressSpace: '10.4.0.0/24'
+      }
+    ]
+    mode: 'EgressSnat'
+    name: 'natRule1'
+    type: 'Static'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param vpnConnections = [
+  {
+    connectionBandwidth: 100
+    enableBgp: false
+    enableInternetSecurity: true
+    enableRateLimiting: false
+    name: '<name>'
+    remoteVpnSiteResourceId: '<remoteVpnSiteResourceId>'
+    routingWeight: 0
+    useLocalAzureIpAddress: false
+    usePolicyBasedTrafficSelectors: false
+    vpnConnectionProtocolType: 'IKEv2'
+  }
+]
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -531,7 +647,6 @@ The scale unit for this VPN gateway.
 - Type: int
 - Default: `2`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -543,7 +658,11 @@ The scale unit for this VPN gateway.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

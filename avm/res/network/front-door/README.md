@@ -18,7 +18,7 @@ This module deploys an Azure Front Door.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/frontDoors` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-05-01/frontDoors) |
+| `Microsoft.Network/frontDoors` | [2021-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2021-06-01/frontDoors) |
 
 ## Usage examples
 
@@ -137,7 +137,7 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -243,6 +243,101 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door:<version>'
+
+// Required parameters
+param backendPools = [
+  {
+    name: 'backendPool'
+    properties: {
+      backends: [
+        {
+          address: 'biceptest.local'
+          backendHostHeader: 'backendAddress'
+          enabledState: 'Enabled'
+          httpPort: 80
+          httpsPort: 443
+          priority: 1
+          weight: 50
+        }
+      ]
+      HealthProbeSettings: {
+        id: '<id>'
+      }
+      LoadBalancingSettings: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendEndpoints = [
+  {
+    name: 'frontEnd'
+    properties: {
+      hostName: '<hostName>'
+      sessionAffinityEnabledState: 'Disabled'
+      sessionAffinityTtlSeconds: 60
+    }
+  }
+]
+param healthProbeSettings = [
+  {
+    name: 'heathProbe'
+    properties: {
+      intervalInSeconds: 60
+      path: '/'
+      protocol: 'Https'
+    }
+  }
+]
+param loadBalancingSettings = [
+  {
+    name: 'loadBalancer'
+    properties: {
+      additionalLatencyMilliseconds: 0
+      sampleSize: 50
+      successfulSamplesRequired: 1
+    }
+  }
+]
+param name = '<name>'
+param routingRules = [
+  {
+    name: 'routingRule'
+    properties: {
+      acceptedProtocols: [
+        'Https'
+      ]
+      enabledState: 'Enabled'
+      frontendEndpoints: [
+        {
+          id: '<id>'
+        }
+      ]
+      patternsToMatch: [
+        '/*'
+      ]
+      routeConfiguration: {
+        '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
+        backendPool: {
+          id: '<id>'
+        }
+      }
+    }
+  }
+]
+// Non-required parameters
+param location = '<location>'
 ```
 
 </details>
@@ -377,11 +472,13 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
     }
     roleAssignments: [
       {
+        name: 'b2c1ef5f-3422-4a49-8e55-7789fe980b64'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -407,7 +504,7 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -551,11 +648,13 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "b2c1ef5f-3422-4a49-8e55-7789fe980b64",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -578,6 +677,157 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
       }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door:<version>'
+
+// Required parameters
+param backendPools = [
+  {
+    name: 'backendPool'
+    properties: {
+      backends: [
+        {
+          address: 'biceptest.local'
+          backendHostHeader: 'backendAddress'
+          enabledState: 'Enabled'
+          httpPort: 80
+          httpsPort: 443
+          priority: 1
+          privateLinkAlias: ''
+          privateLinkApprovalMessage: ''
+          privateLinkLocation: ''
+          weight: 50
+        }
+      ]
+      HealthProbeSettings: {
+        id: '<id>'
+      }
+      LoadBalancingSettings: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendEndpoints = [
+  {
+    name: 'frontEnd'
+    properties: {
+      hostName: '<hostName>'
+      sessionAffinityEnabledState: 'Disabled'
+      sessionAffinityTtlSeconds: 60
+    }
+  }
+]
+param healthProbeSettings = [
+  {
+    name: 'heathProbe'
+    properties: {
+      enabledState: ''
+      healthProbeMethod: ''
+      intervalInSeconds: 60
+      path: '/'
+      protocol: 'Https'
+    }
+  }
+]
+param loadBalancingSettings = [
+  {
+    name: 'loadBalancer'
+    properties: {
+      additionalLatencyMilliseconds: 0
+      sampleSize: 50
+      successfulSamplesRequired: 1
+    }
+  }
+]
+param name = '<name>'
+param routingRules = [
+  {
+    name: 'routingRule'
+    properties: {
+      acceptedProtocols: [
+        'Http'
+        'Https'
+      ]
+      enabledState: 'Enabled'
+      frontendEndpoints: [
+        {
+          id: '<id>'
+        }
+      ]
+      patternsToMatch: [
+        '/*'
+      ]
+      routeConfiguration: {
+        '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
+        backendPool: {
+          id: '<id>'
+        }
+        forwardingProtocol: 'MatchRequest'
+      }
+    }
+  }
+]
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        category: 'FrontdoorAccessLog'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enforceCertificateNameCheck = 'Disabled'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'b2c1ef5f-3422-4a49-8e55-7789fe980b64'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param sendRecvTimeoutSeconds = 10
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
 }
 ```
 
@@ -711,7 +961,7 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -852,6 +1102,122 @@ module frontDoor 'br/public:avm/res/network/front-door:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/front-door:<version>'
+
+// Required parameters
+param backendPools = [
+  {
+    name: 'backendPool'
+    properties: {
+      backends: [
+        {
+          address: 'biceptest.local'
+          backendHostHeader: 'backendAddress'
+          enabledState: 'Enabled'
+          httpPort: 80
+          httpsPort: 443
+          priority: 1
+          privateLinkAlias: ''
+          privateLinkApprovalMessage: ''
+          privateLinkLocation: ''
+          weight: 50
+        }
+      ]
+      HealthProbeSettings: {
+        id: '<id>'
+      }
+      LoadBalancingSettings: {
+        id: '<id>'
+      }
+    }
+  }
+]
+param frontendEndpoints = [
+  {
+    name: 'frontEnd'
+    properties: {
+      hostName: '<hostName>'
+      sessionAffinityEnabledState: 'Disabled'
+      sessionAffinityTtlSeconds: 60
+    }
+  }
+]
+param healthProbeSettings = [
+  {
+    name: 'heathProbe'
+    properties: {
+      enabledState: 'Enabled'
+      healthProbeMethod: 'HEAD'
+      intervalInSeconds: 60
+      path: '/healthz'
+      protocol: 'Https'
+    }
+  }
+]
+param loadBalancingSettings = [
+  {
+    name: 'loadBalancer'
+    properties: {
+      additionalLatencyMilliseconds: 0
+      sampleSize: 50
+      successfulSamplesRequired: 1
+    }
+  }
+]
+param name = '<name>'
+param routingRules = [
+  {
+    name: 'routingRule'
+    properties: {
+      acceptedProtocols: [
+        'Http'
+        'Https'
+      ]
+      enabledState: 'Enabled'
+      frontendEndpoints: [
+        {
+          id: '<id>'
+        }
+      ]
+      patternsToMatch: [
+        '/*'
+      ]
+      routeConfiguration: {
+        '@odata.type': '#Microsoft.Azure.FrontDoor.Models.FrontdoorForwardingConfiguration'
+        backendPool: {
+          id: '<id>'
+        }
+        forwardingProtocol: 'MatchRequest'
+      }
+    }
+  }
+]
+// Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param enforceCertificateNameCheck = 'Disabled'
+param location = '<location>'
+param sendRecvTimeoutSeconds = 10
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -940,7 +1306,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -1050,7 +1416,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -1150,6 +1516,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1166,6 +1539,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1216,6 +1590,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -1240,6 +1621,7 @@ Certificate name check time of the frontdoor resource.
 - Required: No
 - Type: int
 - Default: `240`
+- MaxValue: 240
 
 ### Parameter: `tags`
 
@@ -1247,7 +1629,6 @@ Resource tags.
 
 - Required: No
 - Type: object
-
 
 ## Outputs
 
@@ -1259,7 +1640,11 @@ Resource tags.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

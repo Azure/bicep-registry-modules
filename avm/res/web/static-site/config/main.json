@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "4029344815380998105"
+      "version": "0.34.44.8038",
+      "templateHash": "10411947595066907075"
     },
     "name": "Static Web App Site Config",
-    "description": "This module deploys a Static Web App Site Config.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Static Web App Site Config."
   },
   "parameters": {
     "kind": {

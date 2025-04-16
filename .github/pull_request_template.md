@@ -22,11 +22,11 @@ Closes #456
 
 ## Type of Change
 
-<!-- Use the check-boxes [x] on the options that are relevant. -->
+<!-- Use the checkboxes [x] on the options that are relevant. -->
 
-- [ ] Update to CI Environment or utlities (Non-module effecting changes)
+- [ ] Update to CI Environment or utilities (Non-module affecting changes)
 - [ ] Azure Verified Module updates:
-  - [ ] Bugfix containing backwards compatible bug fixes, and I have NOT bumped the MAJOR or MINOR version in `version.json`:
+  - [ ] Bugfix containing backwards-compatible bug fixes, and I have NOT bumped the MAJOR or MINOR version in `version.json`:
     - [ ] Someone has opened a bug report issue, and I have included "Closes #{bug_report_issue_number}" in the PR description.
     - [ ] The bug was found by the module author, and no one has opened an issue to report it yet.
   - [ ] Feature update backwards compatible feature updates, and I have bumped the MINOR version in `version.json`.
@@ -39,4 +39,4 @@ Closes #456
 - [ ] I have run `Set-AVMModule` locally to generate the supporting module files.
 - [ ] My corresponding pipelines / checks run clean and green without any errors or warnings
 
-<!--  Please keep up to day with the contribution guide at https://aka.ms/avm/contribute/bicep -->
+<!--  Please keep up to date with the contribution guide at https://aka.ms/avm/contribute/bicep -->

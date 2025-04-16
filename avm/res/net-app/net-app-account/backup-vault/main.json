@@ -1,0 +1,296 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.34.44.8038",
+      "templateHash": "14413490968843992443"
+    },
+    "name": "Azure NetApp Files Volume Backup Vault",
+    "description": "This module deploys a NetApp Files Backup Vault."
+  },
+  "definitions": {
+    "backupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the backup."
+          }
+        },
+        "label": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Label for backup."
+          }
+        },
+        "snapshotName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the snapshot."
+          }
+        },
+        "volumeName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the volume to backup."
+          }
+        },
+        "capacityPoolName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the capacity pool containing the volume."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a backup."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "vault",
+      "metadata": {
+        "description": "Optional. The name of the backup vault."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location of the backup vault."
+      }
+    },
+    "netAppAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "backups": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/backupType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The list of backups to create."
+      }
+    }
+  },
+  "resources": {
+    "netAppAccount": {
+      "existing": true,
+      "type": "Microsoft.NetApp/netAppAccounts",
+      "apiVersion": "2025-01-01",
+      "name": "[parameters('netAppAccountName')]"
+    },
+    "backupVault": {
+      "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
+      "apiVersion": "2025-01-01",
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "properties": {}
+    },
+    "backupVault_backups": {
+      "copy": {
+        "name": "backupVault_backups",
+        "count": "[length(coalesce(parameters('backups'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-ANF-Backup-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "netAppAccountName": {
+            "value": "[parameters('netAppAccountName')]"
+          },
+          "backupVaultName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'name')]"
+          },
+          "label": {
+            "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'label')]"
+          },
+          "snapshotName": {
+            "value": "[tryGet(coalesce(parameters('backups'), createArray())[copyIndex()], 'snapshotName')]"
+          },
+          "volumeName": {
+            "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].volumeName]"
+          },
+          "capacityPoolName": {
+            "value": "[coalesce(parameters('backups'), createArray())[copyIndex()].capacityPoolName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "15429195500404839384"
+            },
+            "name": "Azure NetApp Files Volume Backup",
+            "description": "This module deploys a backup of a NetApp Files Volume."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "defaultValue": "backup",
+              "metadata": {
+                "description": "Optional. The name of the backup."
+              }
+            },
+            "backupVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent backup vault. Required if the template is used in a standalone deployment."
+              }
+            },
+            "netAppAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "label": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Label for backup."
+              }
+            },
+            "snapshotName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of the snapshot."
+              }
+            },
+            "volumeName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the volume to backup."
+              }
+            },
+            "capacityPoolName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the capacity pool containing the volume."
+              }
+            }
+          },
+          "resources": {
+            "netAppAccount::remoteCapacityPool::volume": {
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
+            },
+            "netAppAccount::backupVault": {
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]"
+            },
+            "netAppAccount::remoteCapacityPool": {
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
+            },
+            "netAppAccount": {
+              "existing": true,
+              "type": "Microsoft.NetApp/netAppAccounts",
+              "apiVersion": "2025-01-01",
+              "name": "[parameters('netAppAccountName')]"
+            },
+            "backup": {
+              "type": "Microsoft.NetApp/netAppAccounts/backupVaults/backups",
+              "apiVersion": "2025-01-01",
+              "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('name'))]",
+              "properties": {
+                "label": "[parameters('label')]",
+                "snapshotName": "[parameters('snapshotName')]",
+                "volumeResourceId": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the backup."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The Resource ID of the backup."
+              },
+              "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupVaults/backups', parameters('netAppAccountName'), parameters('backupVaultName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the backup was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "backupVault"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the backup vault."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The Resource ID of the backup vault."
+      },
+      "value": "[resourceId('Microsoft.NetApp/netAppAccounts/backupVaults', parameters('netAppAccountName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the backup vault was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('backupVault', '2025-01-01', 'full').location]"
+    }
+  }
+}

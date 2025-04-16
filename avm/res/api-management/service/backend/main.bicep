@@ -1,6 +1,5 @@
 metadata name = 'API Management Service Backends'
 metadata description = 'This module deploys an API Management Service Backend.'
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
@@ -38,11 +37,11 @@ param tls object = {
 @sys.description('Required. Runtime URL of the Backend.')
 param url string
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource backend 'Microsoft.ApiManagement/service/backends@2021-08-01' = {
+resource backend 'Microsoft.ApiManagement/service/backends@2022-08-01' = {
   name: name
   parent: service
   properties: {

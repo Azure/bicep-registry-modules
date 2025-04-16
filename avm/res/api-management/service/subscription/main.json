@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "12071485798846786639"
+      "version": "0.33.13.18514",
+      "templateHash": "3748720225613039754"
     },
     "name": "API Management Service Subscriptions",
-    "description": "This module deploys an API Management Service Subscription.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an API Management Service Subscription."
   },
   "parameters": {
     "allowTracing": {
@@ -18,6 +17,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Optional. Determines whether tracing can be enabled."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "maxLength": 100,
+      "metadata": {
+        "description": "Required. API Management Service Subscriptions name. Must be 1 to 100 characters long."
       }
     },
     "apiManagementServiceName": {
@@ -72,25 +78,22 @@
     "service": {
       "existing": true,
       "type": "Microsoft.ApiManagement/service",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2023-05-01-preview",
       "name": "[parameters('apiManagementServiceName')]"
     },
     "subscription": {
       "type": "Microsoft.ApiManagement/service/subscriptions",
-      "apiVersion": "2021-08-01",
+      "apiVersion": "2022-08-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
       "properties": {
         "scope": "[parameters('scope')]",
-        "displayName": "[parameters('name')]",
+        "displayName": "[parameters('displayName')]",
         "ownerId": "[parameters('ownerId')]",
         "primaryKey": "[parameters('primaryKey')]",
         "secondaryKey": "[parameters('secondaryKey')]",
         "state": "[parameters('state')]",
         "allowTracing": "[parameters('allowTracing')]"
-      },
-      "dependsOn": [
-        "service"
-      ]
+      }
     }
   },
   "outputs": {

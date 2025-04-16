@@ -1,6 +1,5 @@
 metadata name = 'Diagnostic Settings (Activity Logs) for Azure Subscriptions'
 metadata description = 'This module deploys a Subscription wide export of the Activity Log.'
-metadata owner = 'Azure/module-maintainers'
 
 targetScope = 'subscription'
 
@@ -22,10 +21,10 @@ param eventHubAuthorizationRuleResourceId string?
 param eventHubName string?
 
 @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-param logCategoriesAndGroups logCategoriesAndGroupsType
+param logCategoriesAndGroups logCategoriesAndGroupsType[]?
 
 @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-param metricCategories metricCategoriesType?
+param metricCategories metricCategoriesType[]?
 
 @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
 @allowed([
@@ -44,25 +43,25 @@ param enableTelemetry bool = true
 @description('Optional. Location deployment metadata.')
 param location string = deployment().location
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.insights-diagnosticsetting.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    location: location
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.insights-diagnosticsetting.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  location: location
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource diagnosticSetting 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: name
@@ -113,7 +112,7 @@ type logCategoriesAndGroupsType = {
 
   @description('Optional. Enable or disable the category explicitly. Default is `true`.')
   enabled: bool?
-}[]?
+}
 
 @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
 type metricCategoriesType = {
@@ -122,4 +121,4 @@ type metricCategoriesType = {
 
   @description('Optional. Enable or disable the category explicitly. Default is `true`.')
   enabled: bool?
-}[]?
+}

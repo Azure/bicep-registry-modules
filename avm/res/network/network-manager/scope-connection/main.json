@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "8767540456657043434"
+      "version": "0.34.44.8038",
+      "templateHash": "8848113451130000358"
     },
     "name": "Network Manager Scope Connections",
-    "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant."
   },
   "parameters": {
     "networkManagerName": {
@@ -49,7 +48,7 @@
   "resources": [
     {
       "type": "Microsoft.Network/networkManagers/scopeConnections",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('networkManagerName'), parameters('name'))]",
       "properties": {
         "description": "[parameters('description')]",

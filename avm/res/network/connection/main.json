@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "17255378550715069548"
+      "version": "0.34.44.8038",
+      "templateHash": "5128164965296759109"
     },
     "name": "Virtual Network Gateway Connections",
-    "description": "This module deploys a Virtual Network Gateway Connection.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Network Gateway Connection."
   },
   "definitions": {
     "lockType": {
@@ -36,7 +35,12 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -119,6 +123,13 @@
         "description": "Optional. Enable policy-based traffic selectors."
       }
     },
+    "trafficSelectorPolicies": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The traffic selector policies to be considered by this connection."
+      }
+    },
     "enablePrivateLinkFastPath": {
       "type": "bool",
       "defaultValue": false,
@@ -165,6 +176,7 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -222,7 +234,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.network-connection.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -258,6 +270,7 @@
         "peer": "[if(equals(parameters('connectionType'), 'ExpressRoute'), parameters('peer'), null())]",
         "authorizationKey": "[if(and(equals(parameters('connectionType'), 'ExpressRoute'), not(empty(parameters('authorizationKey')))), parameters('authorizationKey'), null())]",
         "sharedKey": "[if(not(equals(parameters('connectionType'), 'ExpressRoute')), parameters('vpnSharedKey'), null())]",
+        "trafficSelectorPolicies": "[parameters('trafficSelectorPolicies')]",
         "usePolicyBasedTrafficSelectors": "[parameters('usePolicyBasedTrafficSelectors')]",
         "ipsecPolicies": "[if(not(empty(parameters('customIPSecPolicy').ipsecEncryption)), createArray(createObject('saLifeTimeSeconds', parameters('customIPSecPolicy').saLifeTimeSeconds, 'saDataSizeKilobytes', parameters('customIPSecPolicy').saDataSizeKilobytes, 'ipsecEncryption', parameters('customIPSecPolicy').ipsecEncryption, 'ipsecIntegrity', parameters('customIPSecPolicy').ipsecIntegrity, 'ikeEncryption', parameters('customIPSecPolicy').ikeEncryption, 'ikeIntegrity', parameters('customIPSecPolicy').ikeIntegrity, 'dhGroup', parameters('customIPSecPolicy').dhGroup, 'pfsGroup', parameters('customIPSecPolicy').pfsGroup)), parameters('customIPSecPolicy').ipsecEncryption)]",
         "routingWeight": "[parameters('routingWeight')]",

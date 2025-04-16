@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "7757490711276971084"
+      "version": "0.33.93.31351",
+      "templateHash": "6600585942129882296"
     },
     "name": "Event Hub Namespace Event Hub Consumer Groups",
-    "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
   },
   "parameters": {
     "namespaceName": {
@@ -41,7 +40,7 @@
   "resources": [
     {
       "type": "Microsoft.EventHub/namespaces/eventhubs/consumergroups",
-      "apiVersion": "2022-10-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('eventHubName'), parameters('name'))]",
       "properties": {
         "userMetadata": "[if(not(empty(parameters('userMetadata'))), parameters('userMetadata'), null())]"

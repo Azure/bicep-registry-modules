@@ -1,12 +1,11 @@
 metadata name = 'Deployment Scripts'
 metadata description = 'This module deploys Deployment Scripts.'
-metadata owner = 'Azure/module-maintainers'
 
 // ================ //
 // Parameters       //
 // ================ //
 @description('Required. Name of the Deployment Script.')
-@maxLength(24)
+@maxLength(90)
 param name string
 
 @description('Optional. Location for all resources.')
@@ -19,8 +18,9 @@ param location string = resourceGroup().location
 ])
 param kind string
 
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityOnlyUserAssignedType?
 
 @description('Optional. Resource tags.')
 param tags object?
@@ -37,8 +37,8 @@ param scriptContent string?
 @description('Optional. Uri for the external script. This is the entry point for the external script. To run an internal script, use the scriptContent parameter instead.')
 param primaryScriptUri string?
 
-@description('Optional. The environment variables to pass over to the script. The list is passed as an object with a key name "secureList" and the value is the list of environment variables (array). The list must have a \'name\' and a \'value\' or a \'secretValue\' property for each object.')
-param environmentVariables environmentVariableType
+@description('Optional. The environment variables to pass over to the script.')
+param environmentVariables environmentVariableType[]?
 
 @description('Optional. List of supporting files for the external script (defined in primaryScriptUri). Does not work with internal scripts (code defined in scriptContent).')
 param supportingScriptUris array?
@@ -50,7 +50,7 @@ param subnetResourceIds string[]?
 param arguments string?
 
 @description('Optional. Interval for which the service retains the script resource after it reaches a terminal state. Resource will be deleted when this duration expires. Duration is based on ISO 8601 pattern (for example P7D means one week).')
-param retentionInterval string?
+param retentionInterval string = 'P1D'
 
 @description('Generated. Do not provide a value! This date value is used to make sure the script run every time the template is deployed.')
 param baseTime string = utcNow('yyyy-MM-dd-HH-mm-ss')
@@ -75,11 +75,13 @@ param storageAccountResourceId string = ''
 @description('Optional. Maximum allowed script execution time specified in ISO 8601 format. Default value is PT1H - 1 hour; \'PT30M\' - 30 minutes; \'P5D\' - 5 days; \'P1Y\' 1 year.')
 param timeout string?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -92,7 +94,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -101,6 +103,17 @@ var builtInRoleNames = {
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
   )
 }
+
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
 
 var subnetIds = [
   for subnetResourceId in (subnetResourceIds ?? []): {
@@ -114,26 +127,25 @@ var containerSettings = {
 }
 
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }),
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
 var identity = !empty(managedIdentities)
   ? {
-      type: !empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null
+      type: !empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-04-01' existing =
-  if (!empty(storageAccountResourceId)) {
-    name: last(split((!empty(storageAccountResourceId) ? storageAccountResourceId : 'dummyAccount'), '/'))!
-    scope: resourceGroup(
-      split((!empty(storageAccountResourceId) ? storageAccountResourceId : '//'), '/')[2],
-      split((!empty(storageAccountResourceId) ? storageAccountResourceId : '////'), '/')[4]
-    )
-  }
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(storageAccountResourceId)) {
+  name: last(split((!empty(storageAccountResourceId) ? storageAccountResourceId : 'dummyAccount'), '/'))!
+  scope: resourceGroup(
+    split((!empty(storageAccountResourceId) ? storageAccountResourceId : '//'), '/')[2],
+    split((!empty(storageAccountResourceId) ? storageAccountResourceId : '////'), '/')[4]
+  )
+}
 
 var storageAccountSettings = !empty(storageAccountResourceId)
   ? {
@@ -142,64 +154,28 @@ var storageAccountSettings = !empty(storageAccountResourceId)
     }
   : null
 
-// ============ //
-// Dependencies //
-// ============ //
+// ================ //
+// Resources        //
+// ================ //
 
-resource deploymentScript_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: deploymentScript
-  }
-
-resource deploymentScript_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(deploymentScript.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
-    properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
-      principalId: roleAssignment.principalId
-      description: roleAssignment.?description
-      principalType: roleAssignment.?principalType
-      condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
-      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
-    }
-    scope: deploymentScript
-  }
-]
-
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.resources-deploymentscript.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.resources-deploymentscript.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
-
-// ================ //
-// Resources        //
-// ================ //
+}
 
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: name
@@ -213,7 +189,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     containerSettings: !empty(containerSettings) ? containerSettings : null
     storageAccountSettings: !empty(storageAccountResourceId) ? storageAccountSettings : null
     arguments: arguments
-    environmentVariables: environmentVariables != null ? environmentVariables!.secureList : []
+    environmentVariables: environmentVariables
     scriptContent: !empty(scriptContent) ? scriptContent : null
     primaryScriptUri: !empty(primaryScriptUri) ? primaryScriptUri : null
     supportingScriptUris: !empty(supportingScriptUris) ? supportingScriptUris : null
@@ -222,6 +198,38 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     retentionInterval: retentionInterval
     timeout: timeout
   }
+}
+
+resource deploymentScript_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: deploymentScript
+}
+
+resource deploymentScript_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(deploymentScript.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
+    properties: {
+      roleDefinitionId: roleAssignment.roleDefinitionId
+      principalId: roleAssignment.principalId
+      description: roleAssignment.?description
+      principalType: roleAssignment.?principalType
+      condition: roleAssignment.?condition
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
+    }
+    scope: deploymentScript
+  }
+]
+
+resource deploymentScriptLogs 'Microsoft.Resources/deploymentScripts/logs@2023-08-01' existing = {
+  name: 'default'
+  parent: deploymentScript
 }
 
 // ================ //
@@ -241,54 +249,23 @@ output name string = deploymentScript.name
 output location string = deploymentScript.location
 
 @description('The output of the deployment script.')
-output outputs object = contains(deploymentScript.properties, 'outputs') ? deploymentScript.properties.outputs : {}
+output outputs object = deploymentScript.properties.?outputs ?? {}
+
+@description('The logs of the deployment script.')
+output deploymentScriptLogs string[] = split(deploymentScriptLogs.properties.log, '\n')
 
 // ================ //
 // Definitions      //
 // ================ //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type managedIdentitiesType = {
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourcesIds: string[]
-}?
-
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-@secure()
 type environmentVariableType = {
-  @description('Optional. The list of environment variables to pass over to the deployment script.')
-  secureList: {
-    name: string
-    secureValue: string?
-    value: string?
-  }[]
-}?
+  @description('Required. The name of the environment variable.')
+  name: string
+
+  @description('Conditional. The value of the secure environment variable. Required if `value` is null.')
+  @secure()
+  secureValue: string?
+
+  @description('Conditional. The value of the environment variable. Required if `secureValue` is null.')
+  value: string?
+}

@@ -16,7 +16,7 @@ This module deploys a Virtual Network Subnet.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
 
 ## Parameters
 
@@ -24,38 +24,54 @@ This module deploys a Virtual Network Subnet.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefix`](#parameter-addressprefix) | string | The address prefix for the subnet. |
+| [`name`](#parameter-name) | string | The Name of the subnet resource. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-addressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
+| [`addressPrefixes`](#parameter-addressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
 | [`virtualNetworkName`](#parameter-virtualnetworkname) | string | The name of the parent virtual network. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-addressprefixes) | array | List of address prefixes for the subnet. |
 | [`applicationGatewayIPConfigurations`](#parameter-applicationgatewayipconfigurations) | array | Application gateway IP configurations of virtual network resource. |
-| [`delegations`](#parameter-delegations) | array | The delegations to enable on the subnet. |
-| [`ipAllocations`](#parameter-ipallocations) | array | Array of IpAllocation which reference this subnet. |
-| [`name`](#parameter-name) | string | The Name of the subnet resource. |
+| [`defaultOutboundAccess`](#parameter-defaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
+| [`delegation`](#parameter-delegation) | string | The delegation to enable on the subnet. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`natGatewayResourceId`](#parameter-natgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroupResourceId`](#parameter-networksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
-| [`privateEndpointNetworkPolicies`](#parameter-privateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
-| [`privateLinkServiceNetworkPolicies`](#parameter-privatelinkservicenetworkpolicies) | string | enable or disable apply network policies on private link service in the subnet. |
+| [`privateEndpointNetworkPolicies`](#parameter-privateendpointnetworkpolicies) | string | Enable or disable apply network policies on private endpoint in the subnet. |
+| [`privateLinkServiceNetworkPolicies`](#parameter-privatelinkservicenetworkpolicies) | string | Enable or disable apply network policies on private link service in the subnet. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`routeTableResourceId`](#parameter-routetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
 | [`serviceEndpointPolicies`](#parameter-serviceendpointpolicies) | array | An array of service endpoint policies. |
 | [`serviceEndpoints`](#parameter-serviceendpoints) | array | The service endpoints to enable on the subnet. |
+| [`sharingScope`](#parameter-sharingscope) | string | Set this property to Tenant to allow sharing the subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if the subnet is empty. |
 
-### Parameter: `addressPrefix`
+### Parameter: `name`
 
-The address prefix for the subnet.
+The Name of the subnet resource.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `addressPrefix`
+
+The address prefix for the subnet. Required if `addressPrefixes` is empty.
+
+- Required: No
+- Type: string
+
+### Parameter: `addressPrefixes`
+
+List of address prefixes for the subnet. Required if `addressPrefix` is empty.
+
+- Required: No
+- Type: array
 
 ### Parameter: `virtualNetworkName`
 
@@ -63,14 +79,6 @@ The name of the parent virtual network. Required if the template is used in a st
 
 - Required: Yes
 - Type: string
-
-### Parameter: `addressPrefixes`
-
-List of address prefixes for the subnet.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ### Parameter: `applicationGatewayIPConfigurations`
 
@@ -80,28 +88,27 @@ Application gateway IP configurations of virtual network resource.
 - Type: array
 - Default: `[]`
 
-### Parameter: `delegations`
+### Parameter: `defaultOutboundAccess`
 
-The delegations to enable on the subnet.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `ipAllocations`
-
-Array of IpAllocation which reference this subnet.
+Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet.
 
 - Required: No
-- Type: array
-- Default: `[]`
+- Type: bool
 
-### Parameter: `name`
+### Parameter: `delegation`
 
-The Name of the subnet resource.
+The delegation to enable on the subnet.
 
-- Required: Yes
+- Required: No
 - Type: string
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `natGatewayResourceId`
 
@@ -109,7 +116,6 @@ The resource ID of the NAT Gateway to use for the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `networkSecurityGroupResourceId`
 
@@ -117,35 +123,32 @@ The resource ID of the network security group to assign to the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `privateEndpointNetworkPolicies`
 
-enable or disable apply network policies on private endpoint in the subnet.
+Enable or disable apply network policies on private endpoint in the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
+    'NetworkSecurityGroupEnabled'
+    'RouteTableEnabled'
   ]
   ```
 
 ### Parameter: `privateLinkServiceNetworkPolicies`
 
-enable or disable apply network policies on private link service in the subnet.
+Enable or disable apply network policies on private link service in the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -157,6 +160,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -173,6 +183,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -223,6 +234,13 @@ The description of the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments.principalType`
 
 The principal type of the assigned principal ID.
@@ -246,7 +264,6 @@ The resource ID of the route table to assign to the subnet.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `serviceEndpointPolicies`
 
@@ -264,20 +281,37 @@ The service endpoints to enable on the subnet.
 - Type: array
 - Default: `[]`
 
+### Parameter: `sharingScope`
+
+Set this property to Tenant to allow sharing the subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if the subnet is empty.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DelegatedServices'
+    'Tenant'
+  ]
+  ```
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `addressPrefix` | string | The address prefix for the subnet. |
+| `addressPrefixes` | array | List of address prefixes for the subnet. |
 | `name` | string | The name of the virtual network peering. |
 | `resourceGroupName` | string | The resource group the virtual network peering was deployed into. |
 | `resourceId` | string | The resource ID of the virtual network peering. |
-| `subnetAddressPrefix` | string | The address prefix for the subnet. |
-| `subnetAddressPrefixes` | array | List of address prefixes for the subnet. |
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Notes
 

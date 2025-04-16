@@ -28,14 +28,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/service-fabric/cluster:<version>`.
 
-- [Certificate](#example-1-certificate)
+- [Using client and server certificate parameter set](#example-1-using-client-and-server-certificate-parameter-set)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using large parameter set](#example-3-using-large-parameter-set)
 - [WAF-aligned](#example-4-waf-aligned)
 
-### Example 1: _Certificate_
+### Example 1: _Using client and server certificate parameter set_
 
-This instance deploys the module with a certificate.
+This instance deploys the module with client and server certificates using thumbprints and common names.
 
 
 <details>
@@ -47,8 +47,8 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    managementEndpoint: 'https://sfccer001.westeurope.cloudapp.azure.com:19080'
-    name: 'sfccer001'
+    managementEndpoint: 'https://sfccrt001.westeurope.cloudapp.azure.com:19080'
+    name: 'sfccrt001'
     nodeTypes: [
       {
         applicationPorts: {
@@ -68,11 +68,21 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     ]
     reliabilityLevel: 'None'
     // Non-required parameters
-    certificate: {
-      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    certificateCommonNames: {
+      commonNames: [
+        {
+          certificateCommonName: 'certcommon'
+          certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+        }
+      ]
       x509StoreName: 'My'
     }
-    location: '<location>'
+    clientCertificateThumbprints: [
+      {
+        certificateThumbprint: 'D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE'
+        isAdmin: true
+      }
+    ]
   }
 }
 ```
@@ -82,7 +92,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -91,10 +101,10 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
   "parameters": {
     // Required parameters
     "managementEndpoint": {
-      "value": "https://sfccer001.westeurope.cloudapp.azure.com:19080"
+      "value": "https://sfccrt001.westeurope.cloudapp.azure.com:19080"
     },
     "name": {
-      "value": "sfccer001"
+      "value": "sfccrt001"
     },
     "nodeTypes": {
       "value": [
@@ -119,17 +129,76 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       "value": "None"
     },
     // Non-required parameters
-    "certificate": {
+    "certificateCommonNames": {
       "value": {
-        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
+        "commonNames": [
+          {
+            "certificateCommonName": "certcommon",
+            "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
+          }
+        ],
         "x509StoreName": "My"
       }
     },
-    "location": {
-      "value": "<location>"
+    "clientCertificateThumbprints": {
+      "value": [
+        {
+          "certificateThumbprint": "D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE",
+          "isAdmin": true
+        }
+      ]
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-fabric/cluster:<version>'
+
+// Required parameters
+param managementEndpoint = 'https://sfccrt001.westeurope.cloudapp.azure.com:19080'
+param name = 'sfccrt001'
+param nodeTypes = [
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Bronze'
+    ephemeralPorts: {
+      endPort: 65534
+      startPort: 49152
+    }
+    httpGatewayEndpointPort: 19080
+    isPrimary: true
+    name: 'Node01'
+  }
+]
+param reliabilityLevel = 'None'
+// Non-required parameters
+param certificateCommonNames = {
+  commonNames: [
+    {
+      certificateCommonName: 'certcommon'
+      certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    }
+  ]
+  x509StoreName: 'My'
+}
+param clientCertificateThumbprints = [
+  {
+    certificateThumbprint: 'D945B0AC4BDF78D31FB6F09CF375E0B9DC7BBBBE'
+    isAdmin: true
+  }
+]
 ```
 
 </details>
@@ -170,7 +239,9 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     ]
     reliabilityLevel: 'None'
     // Non-required parameters
-    location: '<location>'
+    certificate: {
+      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    }
   }
 }
 ```
@@ -180,7 +251,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -217,10 +288,49 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       "value": "None"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "certificate": {
+      "value": {
+        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
+      }
     }
   }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-fabric/cluster:<version>'
+
+// Required parameters
+param managementEndpoint = 'https://sfcmin001.westeurope.cloudapp.azure.com:19080'
+param name = 'sfcmin001'
+param nodeTypes = [
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Bronze'
+    ephemeralPorts: {
+      endPort: 65534
+      startPort: 49152
+    }
+    httpGatewayEndpointPort: 19080
+    isPrimary: true
+    name: 'Node01'
+  }
+]
+param reliabilityLevel = 'None'
+// Non-required parameters
+param certificate = {
+  thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
 }
 ```
 
@@ -306,7 +416,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
           certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
         }
       ]
-      x509StoreName: ''
+      x509StoreName: 'My'
     }
     clientCertificateCommonNames: [
       {
@@ -317,16 +427,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       {
         certificateCommonName: 'clientcommoncert2'
         certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
-        isAdmin: false
-      }
-    ]
-    clientCertificateThumbprints: [
-      {
-        certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-        isAdmin: false
-      }
-      {
-        certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
         isAdmin: false
       }
     ]
@@ -380,11 +480,13 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     ]
     roleAssignments: [
       {
+        name: '26b52f01-eebc-4056-a516-41541369258c'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -428,7 +530,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -516,7 +618,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
             "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
           }
         ],
-        "x509StoreName": ""
+        "x509StoreName": "My"
       }
     },
     "clientCertificateCommonNames": {
@@ -529,18 +631,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         {
           "certificateCommonName": "clientcommoncert2",
           "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC131",
-          "isAdmin": false
-        }
-      ]
-    },
-    "clientCertificateThumbprints": {
-      "value": [
-        {
-          "certificateThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
-          "isAdmin": false
-        },
-        {
-          "certificateThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC131",
           "isAdmin": false
         }
       ]
@@ -608,11 +698,13 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "26b52f01-eebc-4056-a516-41541369258c",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -656,6 +748,189 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-fabric/cluster:<version>'
+
+// Required parameters
+param managementEndpoint = 'https://sfcmax001.westeurope.cloudapp.azure.com:19080'
+param name = 'sfcmax001'
+param nodeTypes = [
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Silver'
+    ephemeralPorts: {
+      endPort: 65534
+      startPort: 49152
+    }
+    httpGatewayEndpointPort: 19080
+    isPrimary: true
+    isStateless: false
+    multipleAvailabilityZones: false
+    name: 'Node01'
+    placementProperties: {}
+    reverseProxyEndpointPort: ''
+    vmInstanceCount: 5
+  }
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Bronze'
+    ephemeralPorts: {
+      endPort: 64000
+      httpGatewayEndpointPort: 19007
+      isPrimary: true
+      name: 'Node02'
+      startPort: 49000
+      vmInstanceCount: 5
+    }
+  }
+]
+param reliabilityLevel = 'Silver'
+// Non-required parameters
+param addOnFeatures = [
+  'BackupRestoreService'
+  'DnsService'
+  'RepairManager'
+  'ResourceMonitorService'
+]
+param applicationTypes = [
+  {
+    name: 'WordCount'
+  }
+]
+param azureActiveDirectory = {
+  clientApplication: '<clientApplication>'
+  clusterApplication: 'cf33fea8-b30f-424f-ab73-c48d99e0b222'
+  tenantId: '<tenantId>'
+}
+param certificateCommonNames = {
+  commonNames: [
+    {
+      certificateCommonName: 'certcommon'
+      certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    }
+  ]
+  x509StoreName: 'My'
+}
+param clientCertificateCommonNames = [
+  {
+    certificateCommonName: 'clientcommoncert1'
+    certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    isAdmin: false
+  }
+  {
+    certificateCommonName: 'clientcommoncert2'
+    certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
+    isAdmin: false
+  }
+]
+param diagnosticsStorageAccountConfig = {
+  blobEndpoint: '<blobEndpoint>'
+  protectedAccountKeyName: 'StorageAccountKey1'
+  queueEndpoint: '<queueEndpoint>'
+  storageAccountName: '<storageAccountName>'
+  tableEndpoint: '<tableEndpoint>'
+}
+param fabricSettings = [
+  {
+    name: 'Security'
+    parameters: [
+      {
+        name: 'ClusterProtectionLevel'
+        value: 'EncryptAndSign'
+      }
+    ]
+  }
+  {
+    name: 'UpgradeService'
+    parameters: [
+      {
+        name: 'AppPollIntervalInSeconds'
+        value: '60'
+      }
+    ]
+  }
+]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param maxUnusedVersionsToKeep = 2
+param notifications = [
+  {
+    isEnabled: true
+    notificationCategory: 'WaveProgress'
+    notificationLevel: 'Critical'
+    notificationTargets: [
+      {
+        notificationChannel: 'EmailUser'
+        receivers: [
+          'SomeReceiver'
+        ]
+      }
+    ]
+  }
+]
+param roleAssignments = [
+  {
+    name: '26b52f01-eebc-4056-a516-41541369258c'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  clusterName: 'sfcmax001'
+  'hidden-title': 'This is visible in the resource name'
+  resourceType: 'Service Fabric'
+}
+param upgradeDescription = {
+  deltaHealthPolicy: {
+    maxPercentDeltaUnhealthyApplications: 0
+    maxPercentDeltaUnhealthyNodes: 0
+    maxPercentUpgradeDomainDeltaUnhealthyNodes: 0
+  }
+  forceRestart: false
+  healthCheckRetryTimeout: '00:45:00'
+  healthCheckStableDuration: '00:01:00'
+  healthCheckWaitDuration: '00:00:30'
+  healthPolicy: {
+    maxPercentUnhealthyApplications: 0
+    maxPercentUnhealthyNodes: 0
+  }
+  upgradeDomainTimeout: '02:00:00'
+  upgradeReplicaSetCheckTimeout: '1.00:00:00'
+  upgradeTimeout: '02:00:00'
+}
+param vmImage = 'Linux'
 ```
 
 </details>
@@ -733,14 +1008,9 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       clusterApplication: 'cf33fea8-b30f-424f-ab73-c48d99e0b222'
       tenantId: '<tenantId>'
     }
-    certificateCommonNames: {
-      commonNames: [
-        {
-          certificateCommonName: 'certcommon'
-          certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-        }
-      ]
-      x509StoreName: ''
+    certificate: {
+      thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+      x509StoreName: 'My'
     }
     clientCertificateCommonNames: [
       {
@@ -751,16 +1021,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
       {
         certificateCommonName: 'clientcommoncert2'
         certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
-        isAdmin: false
-      }
-    ]
-    clientCertificateThumbprints: [
-      {
-        certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
-        isAdmin: false
-      }
-      {
-        certificateThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
         isAdmin: false
       }
     ]
@@ -791,7 +1051,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         ]
       }
     ]
-    location: '<location>'
     maxUnusedVersionsToKeep: 2
     notifications: [
       {
@@ -841,7 +1100,7 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -921,15 +1180,10 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         "tenantId": "<tenantId>"
       }
     },
-    "certificateCommonNames": {
+    "certificate": {
       "value": {
-        "commonNames": [
-          {
-            "certificateCommonName": "certcommon",
-            "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130"
-          }
-        ],
-        "x509StoreName": ""
+        "thumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
+        "x509StoreName": "My"
       }
     },
     "clientCertificateCommonNames": {
@@ -942,18 +1196,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
         {
           "certificateCommonName": "clientcommoncert2",
           "certificateIssuerThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC131",
-          "isAdmin": false
-        }
-      ]
-    },
-    "clientCertificateThumbprints": {
-      "value": [
-        {
-          "certificateThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC130",
-          "isAdmin": false
-        },
-        {
-          "certificateThumbprint": "0AC113D5E1D94C401DDEB0EE2B1B96CC131",
           "isAdmin": false
         }
       ]
@@ -988,9 +1230,6 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
           ]
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     },
     "maxUnusedVersionsToKeep": {
       "value": 2
@@ -1049,6 +1288,159 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/service-fabric/cluster:<version>'
+
+// Required parameters
+param managementEndpoint = 'https://sfcwaf001.westeurope.cloudapp.azure.com:19080'
+param name = 'sfcwaf001'
+param nodeTypes = [
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Silver'
+    ephemeralPorts: {
+      endPort: 65534
+      startPort: 49152
+    }
+    httpGatewayEndpointPort: 19080
+    isPrimary: true
+    isStateless: false
+    multipleAvailabilityZones: false
+    name: 'Node01'
+    placementProperties: {}
+    reverseProxyEndpointPort: ''
+    vmInstanceCount: 5
+  }
+  {
+    applicationPorts: {
+      endPort: 30000
+      startPort: 20000
+    }
+    clientConnectionEndpointPort: 19000
+    durabilityLevel: 'Bronze'
+    ephemeralPorts: {
+      endPort: 64000
+      httpGatewayEndpointPort: 19007
+      isPrimary: true
+      name: 'Node02'
+      startPort: 49000
+      vmInstanceCount: 5
+    }
+  }
+]
+param reliabilityLevel = 'Silver'
+// Non-required parameters
+param addOnFeatures = [
+  'BackupRestoreService'
+  'DnsService'
+  'RepairManager'
+  'ResourceMonitorService'
+]
+param applicationTypes = [
+  {
+    name: 'WordCount'
+  }
+]
+param azureActiveDirectory = {
+  clientApplication: '<clientApplication>'
+  clusterApplication: 'cf33fea8-b30f-424f-ab73-c48d99e0b222'
+  tenantId: '<tenantId>'
+}
+param certificate = {
+  thumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+  x509StoreName: 'My'
+}
+param clientCertificateCommonNames = [
+  {
+    certificateCommonName: 'clientcommoncert1'
+    certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC130'
+    isAdmin: false
+  }
+  {
+    certificateCommonName: 'clientcommoncert2'
+    certificateIssuerThumbprint: '0AC113D5E1D94C401DDEB0EE2B1B96CC131'
+    isAdmin: false
+  }
+]
+param diagnosticsStorageAccountConfig = {
+  blobEndpoint: '<blobEndpoint>'
+  protectedAccountKeyName: 'StorageAccountKey1'
+  queueEndpoint: '<queueEndpoint>'
+  storageAccountName: '<storageAccountName>'
+  tableEndpoint: '<tableEndpoint>'
+}
+param fabricSettings = [
+  {
+    name: 'Security'
+    parameters: [
+      {
+        name: 'ClusterProtectionLevel'
+        value: 'EncryptAndSign'
+      }
+    ]
+  }
+  {
+    name: 'UpgradeService'
+    parameters: [
+      {
+        name: 'AppPollIntervalInSeconds'
+        value: '60'
+      }
+    ]
+  }
+]
+param maxUnusedVersionsToKeep = 2
+param notifications = [
+  {
+    isEnabled: true
+    notificationCategory: 'WaveProgress'
+    notificationLevel: 'Critical'
+    notificationTargets: [
+      {
+        notificationChannel: 'EmailUser'
+        receivers: [
+          'SomeReceiver'
+        ]
+      }
+    ]
+  }
+]
+param tags = {
+  clusterName: 'sfcwaf001'
+  'hidden-title': 'This is visible in the resource name'
+  resourceType: 'Service Fabric'
+}
+param upgradeDescription = {
+  deltaHealthPolicy: {
+    maxPercentDeltaUnhealthyApplications: 0
+    maxPercentDeltaUnhealthyNodes: 0
+    maxPercentUpgradeDomainDeltaUnhealthyNodes: 0
+  }
+  forceRestart: false
+  healthCheckRetryTimeout: '00:45:00'
+  healthCheckStableDuration: '00:01:00'
+  healthCheckWaitDuration: '00:00:30'
+  healthPolicy: {
+    maxPercentUnhealthyApplications: 0
+    maxPercentUnhealthyNodes: 0
+  }
+  upgradeDomainTimeout: '02:00:00'
+  upgradeReplicaSetCheckTimeout: '1.00:00:00'
+  upgradeTimeout: '02:00:00'
+}
+param vmImage = 'Linux'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -1061,6 +1453,13 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 | [`nodeTypes`](#parameter-nodetypes) | array | The list of node types in the cluster. |
 | [`reliabilityLevel`](#parameter-reliabilitylevel) | string | The reliability level sets the replica set size of system services. Learn about ReliabilityLevel (https://learn.microsoft.com/en-us/azure/service-fabric/service-fabric-cluster-capacity). - None - Run the System services with a target replica set count of 1. This should only be used for test clusters. - Bronze - Run the System services with a target replica set count of 3. This should only be used for test clusters. - Silver - Run the System services with a target replica set count of 5. - Gold - Run the System services with a target replica set count of 7. - Platinum - Run the System services with a target replica set count of 9. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificate`](#parameter-certificate) | object | The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used. |
+| [`certificateCommonNames`](#parameter-certificatecommonnames) | object | Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -1068,10 +1467,8 @@ module cluster 'br/public:avm/res/service-fabric/cluster:<version>' = {
 | [`addOnFeatures`](#parameter-addonfeatures) | array | The list of add-on features to enable in the cluster. |
 | [`applicationTypes`](#parameter-applicationtypes) | array | Array of Service Fabric cluster application types. |
 | [`azureActiveDirectory`](#parameter-azureactivedirectory) | object | The settings to enable AAD authentication on the cluster. |
-| [`certificate`](#parameter-certificate) | object | Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location. |
-| [`certificateCommonNames`](#parameter-certificatecommonnames) | object | Describes a list of server certificates referenced by common name that are used to secure the cluster. |
-| [`clientCertificateCommonNames`](#parameter-clientcertificatecommonnames) | array | The list of client certificates referenced by common name that are allowed to manage the cluster. |
-| [`clientCertificateThumbprints`](#parameter-clientcertificatethumbprints) | array | The list of client certificates referenced by thumbprint that are allowed to manage the cluster. |
+| [`clientCertificateCommonNames`](#parameter-clientcertificatecommonnames) | array | The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used. |
+| [`clientCertificateThumbprints`](#parameter-clientcertificatethumbprints) | array | The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used. |
 | [`clusterCodeVersion`](#parameter-clustercodeversion) | string | The Service Fabric runtime version of the cluster. This property can only by set the user when upgradeMode is set to "Manual". To get list of available Service Fabric versions for new clusters use ClusterVersion API. To get the list of available version for existing clusters use availableClusterVersions. |
 | [`diagnosticsStorageAccountConfig`](#parameter-diagnosticsstorageaccountconfig) | object | The storage account information for storing Service Fabric diagnostic logs. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1134,6 +1531,127 @@ The reliability level sets the replica set size of system services. Learn about 
   ]
   ```
 
+### Parameter: `certificate`
+
+The certificate to use for securing the cluster. The certificate provided will be used for node to node security within the cluster, SSL certificate for cluster management endpoint and default admin client. Required if the certificateCommonNames parameter is not used.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`thumbprint`](#parameter-certificatethumbprint) | string | The thumbprint of the primary certificate. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`thumbprintSecondary`](#parameter-certificatethumbprintsecondary) | string | The thumbprint of the secondary certificate. |
+| [`x509StoreName`](#parameter-certificatex509storename) | string | The local certificate store location. |
+
+### Parameter: `certificate.thumbprint`
+
+The thumbprint of the primary certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificate.thumbprintSecondary`
+
+The thumbprint of the secondary certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.x509StoreName`
+
+The local certificate store location.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AddressBook'
+    'AuthRoot'
+    'CertificateAuthority'
+    'Disallowed'
+    'My'
+    'Root'
+    'TrustedPeople'
+    'TrustedPublisher'
+  ]
+  ```
+
+### Parameter: `certificateCommonNames`
+
+Describes a list of server certificates referenced by common name that are used to secure the cluster. Required if the certificate parameter is not used.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`commonNames`](#parameter-certificatecommonnamescommonnames) | array | The list of server certificates referenced by common name that are used to secure the cluster. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`x509StoreName`](#parameter-certificatecommonnamesx509storename) | string | The local certificate store location. |
+
+### Parameter: `certificateCommonNames.commonNames`
+
+The list of server certificates referenced by common name that are used to secure the cluster.
+
+- Required: Yes
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateCommonName`](#parameter-certificatecommonnamescommonnamescertificatecommonname) | string | The common name of the server certificate. |
+| [`certificateIssuerThumbprint`](#parameter-certificatecommonnamescommonnamescertificateissuerthumbprint) | string | The issuer thumbprint of the server certificate. |
+
+### Parameter: `certificateCommonNames.commonNames.certificateCommonName`
+
+The common name of the server certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificateCommonNames.commonNames.certificateIssuerThumbprint`
+
+The issuer thumbprint of the server certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `certificateCommonNames.x509StoreName`
+
+The local certificate store location.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AddressBook'
+    'AuthRoot'
+    'CertificateAuthority'
+    'Disallowed'
+    'My'
+    'Root'
+    'TrustedPeople'
+    'TrustedPublisher'
+  ]
+  ```
+
 ### Parameter: `addOnFeatures`
 
 The list of add-on features to enable in the cluster.
@@ -1167,37 +1685,69 @@ The settings to enable AAD authentication on the cluster.
 - Type: object
 - Default: `{}`
 
-### Parameter: `certificate`
-
-Describes the certificate details like thumbprint of the primary certificate, thumbprint of the secondary certificate and the local certificate store location.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `certificateCommonNames`
-
-Describes a list of server certificates referenced by common name that are used to secure the cluster.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
 ### Parameter: `clientCertificateCommonNames`
 
-The list of client certificates referenced by common name that are allowed to manage the cluster.
+The list of client certificates referenced by common name that are allowed to manage the cluster. Cannot be used if the clientCertificateThumbprints parameter is used.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateCommonName`](#parameter-clientcertificatecommonnamescertificatecommonname) | string | The common name of the client certificate. |
+| [`certificateIssuerThumbprint`](#parameter-clientcertificatecommonnamescertificateissuerthumbprint) | string | The issuer thumbprint of the client certificate. |
+| [`isAdmin`](#parameter-clientcertificatecommonnamesisadmin) | bool | Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster. |
+
+### Parameter: `clientCertificateCommonNames.certificateCommonName`
+
+The common name of the client certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `clientCertificateCommonNames.certificateIssuerThumbprint`
+
+The issuer thumbprint of the client certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `clientCertificateCommonNames.isAdmin`
+
+Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `clientCertificateThumbprints`
 
-The list of client certificates referenced by thumbprint that are allowed to manage the cluster.
+The list of client certificates referenced by thumbprint that are allowed to manage the cluster. Cannot be used if the clientCertificateCommonNames parameter is used.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateThumbprint`](#parameter-clientcertificatethumbprintscertificatethumbprint) | string | The thumbprint of the client certificate. |
+| [`isAdmin`](#parameter-clientcertificatethumbprintsisadmin) | bool | Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster. |
+
+### Parameter: `clientCertificateThumbprints.certificateThumbprint`
+
+The thumbprint of the client certificate.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `clientCertificateThumbprints.isAdmin`
+
+Indicates if the client certificate has admin access to the cluster. Non admin clients can perform only read only operations on the cluster.
+
+- Required: Yes
+- Type: bool
 
 ### Parameter: `clusterCodeVersion`
 
@@ -1328,6 +1878,12 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1344,6 +1900,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -1390,6 +1947,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -1516,7 +2080,6 @@ Boolean to pause automatic runtime version upgrades to the cluster.
 - Type: bool
 - Default: `False`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -1529,7 +2092,11 @@ Boolean to pause automatic runtime version upgrades to the cluster.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

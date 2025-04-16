@@ -1,6 +1,5 @@
 metadata name = 'Public DNS Zones'
 metadata description = 'This module deploys a Public DNS zone.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. DNS zone name.')
 @minLength(1)
@@ -8,46 +7,48 @@ metadata owner = 'Azure/module-maintainers'
 param name string
 
 @description('Optional. Array of A records.')
-param a array?
+param a aType[]?
 
 @description('Optional. Array of AAAA records.')
-param aaaa array?
+param aaaa aaaaType[]?
 
 @description('Optional. Array of CNAME records.')
-param cname array?
+param cname cnameType[]?
 
 @description('Optional. Array of CAA records.')
-param caa array?
+param caa caaType[]?
 
 @description('Optional. Array of MX records.')
-param mx array?
+param mx mxType[]?
 
 @description('Optional. Array of NS records.')
-param ns array?
+param ns nsType[]?
 
 @description('Optional. Array of PTR records.')
-param ptr array?
+param ptr ptrType[]?
 
 @description('Optional. Array of SOA records.')
-param soa array?
+param soa soaType[]?
 
 @description('Optional. Array of SRV records.')
-param srv array?
+param srv srvType[]?
 
 @description('Optional. Array of TXT records.')
-param txt array?
+param txt txtType[]?
 
 @description('Optional. The location of the dnsZone. Should be global.')
 param location string = 'global'
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -80,7 +81,7 @@ var builtInRoleNames = {
     'b12aa53e-6015-4669-85d0-8515ebb3ae7f'
   )
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -90,24 +91,35 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.network-dnszone.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.network-dnszone.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
 resource dnsZone 'Microsoft.Network/dnsZones@2018-05-01' = {
   name: name
@@ -261,27 +273,22 @@ module dnsZone_TXT 'txt/main.bicep' = [
   }
 ]
 
-resource dnsZone_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: dnsZone
+resource dnsZone_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: dnsZone
+}
 
 resource dnsZone_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(dnsZone.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(dnsZone.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -305,37 +312,256 @@ output resourceId string = dnsZone.id
 @description('The location the resource was deployed into.')
 output location string = dnsZone.location
 
+@description('The name servers of the DNS zone.')
+output nameServers array = dnsZone.properties.nameServers
+
 // =============== //
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+type aType = {
+  @description('Required. The name of the record.')
+  name: string
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+  @description('Optional. The metadata of the record.')
+  metadata: object?
 
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+  @description('Optional. The TTL of the record.')
+  ttl: int?
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+  @description('Optional. A reference to an azure resource from where the dns resource value is taken. Also known as an alias record sets and are only supported for record types A, AAAA and CNAME. A resource ID can be an Azure Traffic Manager, Azure CDN, Front Door, Static Web App, or a resource ID of a record set of the same type in the DNS zone (i.e. A, AAAA or CNAME). Cannot be used in conjuction with the "aRecords" property.')
+  targetResourceId: string?
 
-  @description('Optional. The description of the role assignment.')
-  description: string?
+  @description('Optional. The list of A records in the record set.')
+  aRecords: {
+    @description('Required. The IPv4 address of this A record.')
+    ipv4Address: string
+  }[]?
+}
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+type aaaaType = {
+  @description('Required. The name of the record.')
+  name: string
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+  @description('Optional. The metadata of the record.')
+  metadata: object?
 
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. A reference to an azure resource from where the dns resource value is taken. Also known as an alias record sets and are only supported for record types A, AAAA and CNAME. A resource ID can be an Azure Traffic Manager, Azure CDN, Front Door, Static Web App, or a resource ID of a record set of the same type in the DNS zone (i.e. A, AAAA or CNAME). Cannot be used in conjuction with the "aRecords" property.')
+  targetResourceId: string?
+
+  @description('Optional. The list of AAAA records in the record set.')
+  aaaaRecords: {
+    @description('Required. The IPv6 address of this AAAA record.')
+    ipv6Address: string
+  }[]?
+}
+
+type cnameType = {
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. A reference to an azure resource from where the dns resource value is taken. Also known as an alias record sets and are only supported for record types A, AAAA and CNAME. A resource ID can be an Azure Traffic Manager, Azure CDN, Front Door, Static Web App, or a resource ID of a record set of the same type in the DNS zone (i.e. A, AAAA or CNAME). Cannot be used in conjuction with the "aRecords" property.')
+  targetResourceId: string?
+
+  @description('Optional. The CNAME record in the record set.')
+  cnameRecord: {
+    @description('Required. The canonical name of the CNAME record.')
+    cname: string
+  }?
+}
+
+type caaType = {
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The list of CAA records in the record set.')
+  caaRecords: {
+    @description('Required. The flags for this CAA record as an integer between 0 and 255.')
+    @minValue(0)
+    @maxValue(255)
+    flags: int
+
+    @description('Required. The tag for this CAA record..')
+    tag: string
+
+    @description('Required. The value for this CAA record.')
+    value: string
+  }[]?
+}
+
+type mxType = {
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The list of MX records in the record set.')
+  mxRecords: {
+    @description('Required. The domain name of the mail host for this MX record.')
+    exchange: string
+
+    @description('Required. The preference value for this MX record.')
+    preference: int
+  }[]?
+}
+
+type nsType = {
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The list of NS records in the record set.')
+  nsRecords: {
+    @description('Required. The name server name for this NS record.')
+    nsdname: string
+  }[]?
+}
+
+type ptrType = {
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The list of PTR records in the record set.')
+  ptrRecords: {
+    @description('Required. The PTR target domain name for this PTR record.')
+    ptrdname: string
+  }[]?
+}
+
+type soaType = {
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The SOA record in the record set.')
+  soaRecord: {
+    @description('Required. The email contact for this SOA record.')
+    email: string
+
+    @description('Required. The expire time for this SOA record.')
+    expireTime: int
+
+    @description('Required. The domain name of the authoritative name server for this SOA record.')
+    host: string
+
+    @description('Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration.')
+    minimumTtl: int
+
+    @description('Required. The refresh value for this SOA record.')
+    refreshTime: int
+
+    @description('Required. The retry time for this SOA record.')
+    retryTime: int
+
+    @description('Required. The serial number for this SOA record.')
+    serialNumber: int
+  }?
+}
+
+type srvType = {
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The list of SRV records in the record set.')
+  srvRecords: {
+    @description('Required. The priority value for this SRV record.')
+    priority: int
+
+    @description('Required. The weight value for this SRV record.')
+    weight: int
+
+    @description('Required. The port value for this SRV record.')
+    port: int
+
+    @description('Required. The target domain name for this SRV record.')
+    target: string
+  }[]?
+}
+
+type txtType = {
+  @description('Required. The name of the record.')
+  name: string
+
+  @description('Optional. The metadata of the record.')
+  metadata: object?
+
+  @description('Optional. The TTL of the record.')
+  ttl: int?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The list of TXT records in the record set.')
+  txtRecords: {
+    @description('Required. The text value of this TXT record.')
+    value: string[]
+  }[]?
+}

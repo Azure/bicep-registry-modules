@@ -1,6 +1,5 @@
 metadata name = 'App ManagedEnvironments'
 metadata description = 'This module deploys an App Managed Environment (also known as a Container App Environment).'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. Name of the Container Apps Managed Environment.')
 param name string
@@ -14,17 +13,23 @@ param location string = resourceGroup().location
 @description('Optional. Tags of the resource.')
 param tags object?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Logs destination.')
 param logsDestination string = 'log-analytics'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. Application Insights connection string.')
+@secure()
+param appInsightsConnectionString string = ''
 
 @description('Optional. Application Insights connection string used by Dapr to export Service to Service communication telemetry.')
 @secure()
@@ -49,6 +54,16 @@ param platformReservedCidr string = ''
 @description('Conditional. An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param platformReservedDnsIP string = ''
 
+@description('Optional. Whether or not to encrypt peer traffic.')
+param peerTrafficEncryption bool = true
+
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+@description('Optional. Whether to allow or block all public traffic.')
+param publicNetworkAccess string = 'Disabled'
+
 @description('Optional. Whether or not this Managed Environment is zone-redundant.')
 param zoneRedundant bool = true
 
@@ -63,8 +78,12 @@ param certificateValue string = ''
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
+
+@description('Optional. Open Telemetry configuration.')
+param openTelemetryConfiguration object = {}
 
 @description('Conditional. Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param workloadProfiles array = []
@@ -72,12 +91,17 @@ param workloadProfiles array = []
 @description('Conditional. Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param infrastructureResourceGroupName string = take('ME_${name}', 63)
 
+@description('Optional. The list of storages to mount on the environment.')
+param storages storageType[]?
+
+@description('Optional. A Managed Environment Certificate.')
+param certificate certificateType?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
-
 
 var identity = !empty(managedIdentities)
   ? {
@@ -92,7 +116,7 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -102,37 +126,50 @@ var builtInRoleNames = {
   )
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
-  if (enableTelemetry) {
-    name: '46d3xbcp.res.app-managedenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-    properties: {
-      mode: 'Incremental'
-      template: {
-        '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-        contentVersion: '1.0.0.0'
-        resources: []
-        outputs: {
-          telemetry: {
-            type: 'String'
-            value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-          }
+var formattedRoleAssignments = [
+  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.res.app-managedenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
     }
   }
+}
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-06-01' existing =
-  if (!empty(logAnalyticsWorkspaceResourceId)) {
-    name: last(split(logAnalyticsWorkspaceResourceId, '/'))!
-    scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
-  }
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(logAnalyticsWorkspaceResourceId)) {
+  name: last(split(logAnalyticsWorkspaceResourceId, '/'))!
+  scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
+}
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-preview' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
+    appInsightsConfiguration: {
+      connectionString: appInsightsConnectionString
+    }
     appLogsConfiguration: {
       destination: logsDestination
       logAnalyticsConfiguration: {
@@ -146,7 +183,20 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-previe
       certificatePassword: certificatePassword
       certificateValue: !empty(certificateValue) ? certificateValue : null
       dnsSuffix: dnsSuffix
+      certificateKeyVaultProperties: !empty(certificate.?certificateKeyVaultProperties)
+        ? {
+            identity: certificate!.?certificateKeyVaultProperties!.identityResourceId
+            keyVaultUrl: certificate!.?certificateKeyVaultProperties!.keyVaultUrl
+          }
+        : null
     }
+    openTelemetryConfiguration: !empty(openTelemetryConfiguration) ? openTelemetryConfiguration : null
+    peerTrafficConfiguration: {
+      encryption: {
+        enabled: peerTrafficEncryption
+      }
+    }
+    publicNetworkAccess: publicNetworkAccess
     vnetConfiguration: {
       internal: internal
       infrastructureSubnetId: !empty(infrastructureSubnetId) ? infrastructureSubnetId : null
@@ -158,17 +208,43 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2023-11-02-previe
     zoneRedundant: zoneRedundant
     infrastructureResourceGroup: infrastructureResourceGroupName
   }
+
+  resource storage 'storages' = [
+    for storage in (storages ?? []): {
+      name: storage.shareName
+      properties: {
+        nfsAzureFile: storage.kind == 'NFS'
+          ? {
+              accessMode: storage.accessMode
+              server: '${storage.storageAccountName}.file.${environment().suffixes.storage}'
+              shareName: '/${storage.storageAccountName}/${storage.shareName}'
+            }
+          : null
+        azureFile: storage.kind == 'SMB'
+          ? {
+              accessMode: storage.accessMode
+              accountName: storage.storageAccountName
+              accountKey: listkeys(
+                resourceId('Microsoft.Storage/storageAccounts', storage.storageAccountName),
+                '2023-01-01'
+              ).keys[0].value
+              shareName: storage.shareName
+            }
+          : null
+      }
+    }
+  ]
 }
 
 resource managedEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (roleAssignments ?? []): {
-    name: guid(managedEnvironment.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
+  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
+    name: roleAssignment.?name ?? guid(
+      managedEnvironment.id,
+      roleAssignment.principalId,
+      roleAssignment.roleDefinitionId
+    )
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-            ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      roleDefinitionId: roleAssignment.roleDefinitionId
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
@@ -180,17 +256,28 @@ resource managedEnvironment_roleAssignments 'Microsoft.Authorization/roleAssignm
   }
 ]
 
-resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' =
-  if (!empty(lock ?? {}) && lock.?kind != 'None') {
-    name: lock.?name ?? 'lock-${name}'
-    properties: {
-      level: lock.?kind ?? ''
-      notes: lock.?kind == 'CanNotDelete'
-        ? 'Cannot delete resource or child resources.'
-        : 'Cannot delete or modify the resource or child resources.'
-    }
-    scope: managedEnvironment
+resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
   }
+  scope: managedEnvironment
+}
+
+module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(certificate)) {
+  name: '${uniqueString(deployment().name)}-Managed-Environment-Certificate'
+  params: {
+    name: certificate.?name ?? 'cert-${name}'
+    managedEnvironmentName: managedEnvironment.name
+    certificateKeyVaultProperties: certificate.?certificateKeyVaultProperties
+    certificateType: certificate.?certificateType
+    certificateValue: certificate.?certificateValue
+    certificatePassword: certificate.?certificatePassword
+  }
+}
 
 @description('The name of the resource group the Managed Environment was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -205,50 +292,54 @@ output name string = managedEnvironment.name
 output resourceId string = managedEnvironment.id
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string = managedEnvironment.?identity.?principalId ?? ''
+output systemAssignedMIPrincipalId string? = managedEnvironment.?identity.?principalId
 
 @description('The Default domain of the Managed Environment.')
 output defaultDomain string = managedEnvironment.properties.defaultDomain
+
+@description('The IP address of the Managed Environment.')
+output staticIp string = managedEnvironment.properties.staticIp
+
+@description('The domain verification id for custom domains.')
+output domainVerificationId string = managedEnvironment.properties.customDomainConfiguration.customDomainVerificationId
 
 // =============== //
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
+import { certificateKeyVaultPropertiesType } from 'certificates/main.bicep'
 
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourceIds: string[]?
-}?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
+@export()
+@description('The type for a certificate.')
+type certificateType = {
+  @description('Optional. The name of the certificate.')
   name: string?
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+  @description('Optional. The type of the certificate.')
+  certificateType: ('ServerSSLCertificate' | 'ImagePullTrustedCA')?
 
-type roleAssignmentType = {
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+  @description('Optional. The value of the certificate. PFX or PEM blob.')
+  certificateValue: string?
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
+  @description('Optional. The password of the certificate.')
+  certificatePassword: string?
 
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
+  @description('Optional. A key vault reference.')
+  certificateKeyVaultProperties: certificateKeyVaultPropertiesType
+}
 
-  @description('Optional. The description of the role assignment.')
-  description: string?
+@export()
+@description('The type of the storage.')
+type storageType = {
+  @description('Required. Access mode for storage: "ReadOnly" or "ReadWrite".')
+  accessMode: ('ReadOnly' | 'ReadWrite')
 
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
+  @description('Required. Type of storage: "SMB" or "NFS".')
+  kind: ('SMB' | 'NFS')
 
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
+  @description('Required. Storage account name.')
+  storageAccountName: string
 
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @description('Required. File share name.')
+  shareName: string
+}

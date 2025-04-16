@@ -1,6 +1,5 @@
 metadata name = 'User Assigned Identity Federated Identity Credential'
 metadata description = 'This module deploys a User Assigned Identity Federated Identity Credential.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent user assigned identity. Required if the template is used in a standalone deployment.')
 param userAssignedIdentityName string
@@ -17,11 +16,11 @@ param issuer string
 @description('Required. The identifier of the external software workload within the external identity provider. Like the audience value, it has no fixed format, as each IdP uses their own - sometimes a GUID, sometimes a colon delimited identifier, sometimes arbitrary strings. The value here must match the sub claim within the token presented to Azure AD.')
 param subject string
 
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = {
   name: userAssignedIdentityName
 }
 
-resource federatedIdentityCredential 'Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials@2023-01-31' = {
+resource federatedIdentityCredential 'Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials@2024-11-30' = {
   name: name
   parent: userAssignedIdentity
   properties: {

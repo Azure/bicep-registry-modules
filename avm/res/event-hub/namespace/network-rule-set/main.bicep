@@ -1,6 +1,5 @@
 metadata name = 'Event Hub Namespace Network Rule Sets'
 metadata description = 'This module deploys an Event Hub Namespace Network Rule Set.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent event hub namespace. Required if the template is used in a standalone deployment.')
 param namespaceName string
@@ -33,9 +32,7 @@ param networkRuleSetName string = 'default'
 
 var networkRules = [
   for (virtualNetworkRule, index) in virtualNetworkRules: {
-    ignoreMissingVnetServiceEndpoint: contains(virtualNetworkRule, 'ignoreMissingVnetServiceEndpoint')
-      ? virtualNetworkRule.ignoreMissingVnetServiceEndpoint
-      : null
+    ignoreMissingVnetServiceEndpoint: virtualNetworkRule.?ignoreMissingVnetServiceEndpoint
     subnet: contains(virtualNetworkRule, 'subnetResourceId')
       ? {
           id: virtualNetworkRule.subnetResourceId
@@ -44,11 +41,11 @@ var networkRules = [
   }
 ]
 
-resource namespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' existing = {
+resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
   name: namespaceName
 }
 
-resource networkRuleSet 'Microsoft.EventHub/namespaces/networkRuleSets@2022-10-01-preview' = {
+resource networkRuleSet 'Microsoft.EventHub/namespaces/networkRuleSets@2024-01-01' = {
   name: networkRuleSetName
   parent: namespace
   properties: {

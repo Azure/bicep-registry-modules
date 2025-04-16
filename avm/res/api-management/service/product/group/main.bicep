@@ -1,6 +1,5 @@
 metadata name = 'API Management Service Products Groups'
 metadata description = 'This module deploys an API Management Service Product Group.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
@@ -11,7 +10,7 @@ param productName string
 @description('Required. Name of the product group.')
 param name string
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 
   resource product 'products@2021-04-01-preview' existing = {
@@ -19,7 +18,7 @@ resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
   }
 }
 
-resource group 'Microsoft.ApiManagement/service/products/groups@2021-08-01' = {
+resource group 'Microsoft.ApiManagement/service/products/groups@2022-08-01' = {
   name: name
   parent: service::product
 }

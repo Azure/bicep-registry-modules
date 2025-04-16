@@ -1,9 +1,12 @@
 metadata name = 'API Management Service Subscriptions'
 metadata description = 'This module deploys an API Management Service Subscription.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Optional. Determines whether tracing can be enabled.')
 param allowTracing bool = true
+
+@description('Required. API Management Service Subscriptions name. Must be 1 to 100 characters long.')
+@maxLength(100)
+param displayName string
 
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
@@ -26,16 +29,16 @@ param state string?
 @description('Required. Subscription name.')
 param name string
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource subscription 'Microsoft.ApiManagement/service/subscriptions@2021-08-01' = {
+resource subscription 'Microsoft.ApiManagement/service/subscriptions@2022-08-01' = {
   name: name
   parent: service
   properties: {
     scope: scope
-    displayName: name
+    displayName: displayName
     ownerId: ownerId
     primaryKey: primaryKey
     secondaryKey: secondaryKey

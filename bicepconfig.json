@@ -1,0 +1,12 @@
+// This is a Bicep configuration file. It can be used to control how Bicep operates and to customize validation settings for the Bicep linter. The linter uses these settings when evaluating your Bicep files for best practices.
+// For further information, please refer to the official documentation at: https://learn.microsoft.com/en-us/azure/azure-resource-manager/bicep/bicep-config
+{
+    "experimentalFeaturesEnabled": {
+        "publishSource": true
+    },
+    "analyzers": {
+        "core": {
+            "rules": {}
+        }
+    }
+}

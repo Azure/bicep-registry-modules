@@ -17,9 +17,9 @@ param serviceShort string = 'dddapln'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Pipeline is selecting random regions which dont support all cosmos features and have constraints when creating new cosmos
+// The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'eastasia'
+var enforcedLocation = 'spaincentral'
 
 // ============== //
 // General resources
@@ -41,11 +41,18 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
-      disableLocalAuth: true
-      backupPolicyType: 'Continuous'
-      disableKeyBasedMetadataWriteAccess: true
-      defaultConsistencyLevel: 'ConsistentPrefix'
-      backupPolicyContinuousTier: 'Continuous7Days'
+
+      enableTelemetry: false
+      databaseAccountOfferType: 'Standard'
+      totalThroughputLimit: 4000
+      capabilitiesToAdd: [
+        'EnableServerless'
+      ]
+
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
       locations: [
         {
           failoverPriority: 0
@@ -58,6 +65,11 @@ module testDeployment '../../../main.bicep' = [
           name: 'no-containers-specified'
         }
       ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
 ]

@@ -1,12 +1,14 @@
 metadata name = 'API Management Service APIs'
 metadata description = 'This module deploys an API Management Service API.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
 param name string
 
 @description('Optional. Array of Policies to apply to the Service API.')
 param policies array?
+
+@description('Optional. Array of diagnostics to apply to the Service API.')
+param diagnostics array?
 
 @description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
@@ -63,6 +65,9 @@ param format string = 'openapi'
 @description('Optional. Indicates if API revision is current API revision.')
 param isCurrent bool = true
 
+@description('Conditional. The name of the API management service logger. Required if using api/diagnostics.')
+param loggerName string = ''
+
 @description('Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.')
 param path string
 
@@ -99,11 +104,11 @@ param value string?
 @description('Optional. Criteria to limit import of WSDL to a subset of the document.')
 param wsdlSelector object?
 
-resource service 'Microsoft.ApiManagement/service@2021-08-01' existing = {
+resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
   name: apiManagementServiceName
 }
 
-resource api 'Microsoft.ApiManagement/service/apis@2021-08-01' = {
+resource api 'Microsoft.ApiManagement/service/apis@2022-08-01' = {
   name: name
   parent: service
   properties: {
@@ -136,8 +141,29 @@ module policy 'policy/main.bicep' = [
     params: {
       apiManagementServiceName: apiManagementServiceName
       apiName: api.name
-      format: contains(policy, 'format') ? policy.format : 'xml'
+      format: policy.?format ?? 'xml'
       value: policy.value
+    }
+  }
+]
+
+module diagnostic 'diagnostics/main.bicep' = [
+  for (diagnostic, index) in diagnostics ?? []: {
+    name: '${deployment().name}-diagnostics-${index}'
+    params: {
+      name: diagnostic.?name
+      apiManagementServiceName: apiManagementServiceName
+      apiName: api.name
+      loggerName: loggerName
+      alwaysLog: diagnostic.?alwaysLog
+      backend: diagnostic.?backend
+      frontend: diagnostic.?frontend
+      httpCorrelationProtocol: diagnostic.?httpCorrelationProtocol
+      logClientIp: diagnostic.?logClientIp
+      metrics: diagnostic.?metrics
+      operationNameFormat: diagnostic.?operationNameFormat
+      samplingPercentage: diagnostic.?samplingPercentage
+      verbosity: diagnostic.?verbosity
     }
   }
 ]

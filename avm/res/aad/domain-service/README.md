@@ -100,7 +100,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -187,6 +187,64 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/aad/domain-service:<version>'
+
+// Required parameters
+param domainName = 'onmicrosoft.com'
+// Non-required parameters
+param additionalRecipients = [
+  '@noreply.github.com'
+]
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
+param externalAccess = 'Enabled'
+param ldaps = 'Enabled'
+param location = '<location>'
+param lock = {
+  kind: 'None'
+  name: 'myCustomLockName'
+}
+param name = 'aaddswaf001'
+param pfxCertificate = '<pfxCertificate>'
+param pfxCertificatePassword = '<pfxCertificatePassword>'
+param replicaSets = [
+  {
+    location: 'NorthEurope'
+    subnetId: '<subnetId>'
+  }
+]
+param sku = 'Standard'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -223,7 +281,7 @@ module domainService 'br/public:avm/res/aad/domain-service:<version>' = {
 | [`notifyGlobalAdmins`](#parameter-notifyglobaladmins) | string | The value is to notify the Global Admins. |
 | [`ntlmV1`](#parameter-ntlmv1) | string | The value is to enable clients making request using NTLM v1. |
 | [`replicaSets`](#parameter-replicasets) | array | Additional replica set for the managed domain. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
 | [`sku`](#parameter-sku) | string | The name of the SKU specific to Azure ADDS Services. |
 | [`syncNtlmPasswords`](#parameter-syncntlmpasswords) | string | The value is to enable synchronized users to use NTLM authentication. |
 | [`syncOnPremPasswords`](#parameter-synconprempasswords) | string | The value is to enable on-premises users to authenticate against managed domain. |
@@ -236,6 +294,11 @@ The domain name specific to the Azure ADDS service.
 
 - Required: Yes
 - Type: string
+- Example:
+  ```Bicep
+  - 'contoso.onmicrosoft.com'
+  - 'aaddscontoso.com'
+  ```
 
 ### Parameter: `pfxCertificate`
 
@@ -260,6 +323,11 @@ The email recipient value to receive alerts.
 - Required: No
 - Type: array
 - Default: `[]`
+- Example:
+  ```Bicep
+  - ['john@doh.org']
+  - ['john@doh.org','jane@doh.org']
+  ```
 
 ### Parameter: `diagnosticSettings`
 
@@ -278,7 +346,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -388,7 +456,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -481,7 +549,7 @@ The value is to enable Kerberos requests that use RC4 encryption.
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
@@ -593,7 +661,7 @@ The value is to enable clients making request using NTLM v1.
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
@@ -629,13 +697,20 @@ The id of the subnet that Domain Services will be deployed on. The subnet has so
 
 - Required: Yes
 - Type: string
+- Example: `/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/<resourceGroup>/providers/Microsoft.Network/virtualNetworks/<vnetName>/subnets/<subnetName>`
 
 ### Parameter: `roleAssignments`
 
-Array of role assignments to create.
+Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -652,6 +727,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -698,6 +774,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -771,6 +854,13 @@ Tags of the resource.
 
 - Required: No
 - Type: object
+- Example:
+  ```Bicep
+  {
+      "key1": "value1",
+      "key2": "value2"
+  }
+  ```
 
 ### Parameter: `tlsV1`
 
@@ -778,7 +868,7 @@ The value is to enable clients making request using TLSv1.
 
 - Required: No
 - Type: string
-- Default: `'Enabled'`
+- Default: `'Disabled'`
 - Allowed:
   ```Bicep
   [
@@ -786,7 +876,6 @@ The value is to enable clients making request using TLSv1.
     'Enabled'
   ]
   ```
-
 
 ## Outputs
 
@@ -799,7 +888,11 @@ The value is to enable clients making request using TLSv1.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

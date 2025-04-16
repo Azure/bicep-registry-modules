@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "353917243244046230"
+      "version": "0.33.93.31351",
+      "templateHash": "17347618187908890991"
     },
     "name": "Eventgrid Namespace Permissions Bindings",
-    "description": "This module deploys an Eventgrid Namespace Permission Binding.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys an Eventgrid Namespace Permission Binding."
   },
   "parameters": {
     "namespaceName": {
@@ -71,10 +70,7 @@
         "description": "[parameters('description')]",
         "permission": "[parameters('permission')]",
         "topicSpaceName": "[parameters('topicSpaceName')]"
-      },
-      "dependsOn": [
-        "namespace"
-      ]
+      }
     }
   },
   "outputs": {

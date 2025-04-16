@@ -1,19 +1,253 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "14488930902207824569"
+      "version": "0.34.44.8038",
+      "templateHash": "5245442494145554335"
     },
     "name": "Service Bus Namespace Topic Subscription",
-    "description": "This module deploys a Service Bus Namespace Topic Subscription.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Service Bus Namespace Topic Subscription."
+  },
+  "definitions": {
+    "clientAffinePropertiesType": {
+      "type": "object",
+      "properties": {
+        "clientId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Indicates the Client ID of the application that created the client-affine subscription."
+          }
+        },
+        "isDurable": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is durable or not. Defaults to true."
+          }
+        },
+        "isShared": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. For client-affine subscriptions, this value indicates whether the subscription is shared or not. Defaults to false."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties specific to client affine subscriptions."
+      }
+    },
+    "_1.actionType": {
+      "type": "object",
+      "properties": {
+        "compatibilityLevel": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+          }
+        },
+        "requiresPreprocessing": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+          }
+        },
+        "sqlExpression": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
+          }
+        }
+      },
+      "metadata": {
+        "description": "A type for the filter actions of a Service Bus Namespace Topic Subscription Rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule/main.bicep"
+        }
+      }
+    },
+    "_1.correlationFilterType": {
+      "type": "object",
+      "properties": {
+        "contentType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Content type of the message."
+          }
+        },
+        "correlationId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Identifier of the correlation."
+          }
+        },
+        "label": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application specific label."
+          }
+        },
+        "messageId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Identifier of the message."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Dictionary object for custom filters."
+          }
+        },
+        "replyTo": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Address of the queue to reply to."
+          }
+        },
+        "replyToSessionId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Session identifier to reply to."
+          }
+        },
+        "requiresPreprocessing": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+          }
+        },
+        "sessionId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Session identifier."
+          }
+        },
+        "to": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Address to send to."
+          }
+        }
+      },
+      "metadata": {
+        "description": "A type for the properties of a correlation filter of a Service Bus Namespace Topic Subscription Rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule/main.bicep"
+        }
+      }
+    },
+    "_1.filterTypeType": {
+      "type": "string",
+      "allowedValues": [
+        "CorrelationFilter",
+        "SqlFilter"
+      ],
+      "metadata": {
+        "description": "A type for the type of a Service Bus Namespace Topic Subscription Rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule/main.bicep"
+        }
+      }
+    },
+    "_1.sqlFilterType": {
+      "type": "object",
+      "properties": {
+        "compatibilityLevel": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+          }
+        },
+        "requiresPreprocessing": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+          }
+        },
+        "sqlExpression": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The SQL expression. e.g. MyProperty='ABC'."
+          }
+        }
+      },
+      "metadata": {
+        "description": "A type for the properties of a SQL filter of a Service Bus Namespace Topic Subscription Rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule/main.bicep"
+        }
+      }
+    },
+    "ruleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Service Bus Namespace Topic Subscription Rule."
+          }
+        },
+        "action": {
+          "$ref": "#/definitions/_1.actionType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
+          }
+        },
+        "correlationFilter": {
+          "$ref": "#/definitions/_1.correlationFilterType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Properties of correlationFilter."
+          }
+        },
+        "filterType": {
+          "$ref": "#/definitions/_1.filterTypeType",
+          "metadata": {
+            "description": "Required. Filter type that is evaluated against a BrokeredMessage."
+          }
+        },
+        "sqlFilter": {
+          "$ref": "#/definitions/_1.sqlFilterType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Properties of sqlFilter."
+          }
+        }
+      },
+      "metadata": {
+        "description": "A type for a Service Bus Namespace Topic Subscription Rule.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "rule/main.bicep"
+        }
+      }
+    }
   },
   "parameters": {
     "name": {
       "type": "string",
+      "minLength": 1,
+      "maxLength": 50,
       "metadata": {
         "description": "Required. The name of the service bus namespace topic subscription."
       }
@@ -32,23 +266,23 @@
     },
     "autoDeleteOnIdle": {
       "type": "string",
-      "defaultValue": "PT1H",
+      "defaultValue": "P10675198DT2H48M5.477S",
       "metadata": {
         "description": "Optional. ISO 8601 timespan idle interval after which the subscription is automatically deleted. The minimum duration is 5 minutes."
       }
     },
     "clientAffineProperties": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/clientAffinePropertiesType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. The properties that are associated with a subscription that is client-affine."
+        "description": "Conditional. The properties that are associated with a subscription that is client-affine. Required if 'isClientAffine' is set to true."
       }
     },
     "deadLetteringOnFilterEvaluationExceptions": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. A value that indicates whether a subscription has dead letter support when a message expires."
+        "description": "Optional. A value that indicates whether a subscription has dead letter support on filter evaluation exceptions."
       }
     },
     "deadLetteringOnMessageExpiration": {
@@ -62,7 +296,7 @@
       "type": "string",
       "defaultValue": "P10675199DT2H48M5.4775807S",
       "metadata": {
-        "description": "Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes."
+        "description": "Optional. ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself."
       }
     },
     "duplicateDetectionHistoryTimeWindow": {
@@ -83,28 +317,28 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+        "description": "Optional. Queue/Topic name to forward the Dead Letter messages to."
       }
     },
     "forwardTo": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to."
+        "description": "Optional. Queue/Topic name to forward the messages to."
       }
     },
     "isClientAffine": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+        "description": "Optional. A value that indicates whether the subscription has an affinity to the client id."
       }
     },
     "lockDuration": {
       "type": "string",
       "defaultValue": "PT1M",
       "metadata": {
-        "description": "Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute."
+        "description": "Optional. ISO 8061 lock duration timespan for the subscription. The default value is 1 minute."
       }
     },
     "maxDeliveryCount": {
@@ -118,7 +352,17 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. A value that indicates whether the subscription supports the concept of session."
+        "description": "Optional. A value that indicates whether the subscription supports the concept of sessions."
+      }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/ruleType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The subscription rules."
       }
     },
     "status": {
@@ -140,14 +384,26 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "namespace::topic": {
+      "existing": true,
+      "type": "Microsoft.ServiceBus/namespaces/topics",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
+    },
+    "namespace": {
+      "existing": true,
+      "type": "Microsoft.ServiceBus/namespaces",
+      "apiVersion": "2022-10-01-preview",
+      "name": "[parameters('namespaceName')]"
+    },
+    "subscription": {
       "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
       "apiVersion": "2021-11-01",
       "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('name'))]",
       "properties": {
         "autoDeleteOnIdle": "[parameters('autoDeleteOnIdle')]",
-        "clientAffineProperties": "[parameters('clientAffineProperties')]",
+        "clientAffineProperties": "[if(not(empty(parameters('clientAffineProperties'))), createObject('clientId', tryGet(parameters('clientAffineProperties'), 'clientId'), 'isDurable', coalesce(tryGet(parameters('clientAffineProperties'), 'isDurable'), true()), 'isShared', coalesce(tryGet(parameters('clientAffineProperties'), 'isShared'), false())), null())]",
         "deadLetteringOnFilterEvaluationExceptions": "[parameters('deadLetteringOnFilterEvaluationExceptions')]",
         "deadLetteringOnMessageExpiration": "[parameters('deadLetteringOnMessageExpiration')]",
         "defaultMessageTimeToLive": "[parameters('defaultMessageTimeToLive')]",
@@ -161,8 +417,368 @@
         "requiresSession": "[parameters('requiresSession')]",
         "status": "[parameters('status')]"
       }
+    },
+    "subscription_rule": {
+      "copy": {
+        "name": "subscription_rule",
+        "count": "[length(coalesce(parameters('rules'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-rule-{1}', deployment().name, copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].name]"
+          },
+          "subscriptionName": {
+            "value": "[parameters('name')]"
+          },
+          "namespaceName": {
+            "value": "[parameters('namespaceName')]"
+          },
+          "topicName": {
+            "value": "[parameters('topicName')]"
+          },
+          "action": {
+            "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'action')]"
+          },
+          "correlationFilter": {
+            "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'correlationFilter')]"
+          },
+          "filterType": {
+            "value": "[coalesce(parameters('rules'), createArray())[copyIndex()].filterType]"
+          },
+          "sqlFilter": {
+            "value": "[tryGet(coalesce(parameters('rules'), createArray())[copyIndex()], 'sqlFilter')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "3457937988681830091"
+            },
+            "name": "Service Bus Namespace Topic Subscription Rule",
+            "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
+          },
+          "definitions": {
+            "ruleType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the Service Bus Namespace Topic Subscription Rule."
+                  }
+                },
+                "action": {
+                  "$ref": "#/definitions/actionType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
+                  }
+                },
+                "correlationFilter": {
+                  "$ref": "#/definitions/correlationFilterType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Properties of correlationFilter."
+                  }
+                },
+                "filterType": {
+                  "$ref": "#/definitions/filterTypeType",
+                  "metadata": {
+                    "description": "Required. Filter type that is evaluated against a BrokeredMessage."
+                  }
+                },
+                "sqlFilter": {
+                  "$ref": "#/definitions/sqlFilterType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Properties of sqlFilter."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "A type for a Service Bus Namespace Topic Subscription Rule."
+              }
+            },
+            "actionType": {
+              "type": "object",
+              "properties": {
+                "compatibilityLevel": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+                  }
+                },
+                "requiresPreprocessing": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                  }
+                },
+                "sqlExpression": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. SQL expression. e.g. MyProperty='ABC'."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "A type for the filter actions of a Service Bus Namespace Topic Subscription Rule."
+              }
+            },
+            "correlationFilterType": {
+              "type": "object",
+              "properties": {
+                "contentType": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Content type of the message."
+                  }
+                },
+                "correlationId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Identifier of the correlation."
+                  }
+                },
+                "label": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Application specific label."
+                  }
+                },
+                "messageId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Identifier of the message."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Dictionary object for custom filters."
+                  }
+                },
+                "replyTo": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Address of the queue to reply to."
+                  }
+                },
+                "replyToSessionId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Session identifier to reply to."
+                  }
+                },
+                "requiresPreprocessing": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                  }
+                },
+                "sessionId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Session identifier."
+                  }
+                },
+                "to": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Address to send to."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "A type for the properties of a correlation filter of a Service Bus Namespace Topic Subscription Rule."
+              }
+            },
+            "filterTypeType": {
+              "type": "string",
+              "allowedValues": [
+                "CorrelationFilter",
+                "SqlFilter"
+              ],
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "A type for the type of a Service Bus Namespace Topic Subscription Rule."
+              }
+            },
+            "sqlFilterType": {
+              "type": "object",
+              "properties": {
+                "compatibilityLevel": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20."
+                  }
+                },
+                "requiresPreprocessing": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Value that indicates whether the rule action requires preprocessing."
+                  }
+                },
+                "sqlExpression": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The SQL expression. e.g. MyProperty='ABC'."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "A type for the properties of a SQL filter of a Service Bus Namespace Topic Subscription Rule."
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50,
+              "metadata": {
+                "description": "Required. The name of the service bus namespace topic subscription rule."
+              }
+            },
+            "namespaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment."
+              }
+            },
+            "topicName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Service Bus Namespace Topic. Required if the template is used in a standalone deployment."
+              }
+            },
+            "subscriptionName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Service Bus Namespace Topic Subscription. Required if the template is used in a standalone deployment."
+              }
+            },
+            "action": {
+              "$ref": "#/definitions/actionType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression."
+              }
+            },
+            "correlationFilter": {
+              "$ref": "#/definitions/correlationFilterType",
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. Properties of a correlation filter. Required if 'filterType' is set to 'CorrelationFilter'."
+              }
+            },
+            "filterType": {
+              "$ref": "#/definitions/filterTypeType",
+              "metadata": {
+                "description": "Required. Filter type that is evaluated against a BrokeredMessage."
+              }
+            },
+            "sqlFilter": {
+              "$ref": "#/definitions/sqlFilterType",
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. Properties of a SQL filter. Required if 'filterType' is set to 'SqlFilter'."
+              }
+            }
+          },
+          "resources": {
+            "namespace::topic::subscription": {
+              "existing": true,
+              "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions",
+              "apiVersion": "2021-11-01",
+              "name": "[format('{0}/{1}/{2}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'))]"
+            },
+            "namespace::topic": {
+              "existing": true,
+              "type": "Microsoft.ServiceBus/namespaces/topics",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('topicName'))]"
+            },
+            "namespace": {
+              "existing": true,
+              "type": "Microsoft.ServiceBus/namespaces",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[parameters('namespaceName')]"
+            },
+            "rule": {
+              "type": "Microsoft.ServiceBus/namespaces/topics/subscriptions/rules",
+              "apiVersion": "2022-10-01-preview",
+              "name": "[format('{0}/{1}/{2}/{3}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'), parameters('name'))]",
+              "properties": {
+                "action": "[if(not(empty(parameters('action'))), parameters('action'), null())]",
+                "correlationFilter": "[if(not(empty(parameters('correlationFilter'))), parameters('correlationFilter'), null())]",
+                "filterType": "[parameters('filterType')]",
+                "sqlFilter": "[if(not(empty(parameters('sqlFilter'))), createObject('compatibilityLevel', coalesce(tryGet(parameters('sqlFilter'), 'compatibilityLevel'), 20), 'requiresPreprocessing', tryGet(parameters('sqlFilter'), 'requiresPreprocessing'), 'sqlExpression', tryGet(parameters('sqlFilter'), 'sqlExpression')), null())]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the rule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The Resource ID of the rule."
+              },
+              "value": "[resourceId('Microsoft.ServiceBus/namespaces/topics/subscriptions/rules', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the rule was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "subscription"
+      ]
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",

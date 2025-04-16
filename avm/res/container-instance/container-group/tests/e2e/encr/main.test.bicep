@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-containerinstance.containerg
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cicgenc'
+param serviceShort string = 'cicenc'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
@@ -57,6 +57,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
+      availabilityZone: -1
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -81,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
             resources: {
               requests: {
                 cpu: 2
-                memoryInGB: 2
+                memoryInGB: '2'
               }
             }
           }
@@ -101,22 +102,24 @@ module testDeployment '../../../main.bicep' = [
             resources: {
               requests: {
                 cpu: 2
-                memoryInGB: 2
+                memoryInGB: '2'
               }
             }
           }
         }
       ]
-      ipAddressPorts: [
-        {
-          protocol: 'Tcp'
-          port: 80
-        }
-        {
-          protocol: 'Tcp'
-          port: 443
-        }
-      ]
+      ipAddress: {
+        ports: [
+          {
+            protocol: 'Tcp'
+            port: 80
+          }
+          {
+            protocol: 'Tcp'
+            port: 443
+          }
+        ]
+      }
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [

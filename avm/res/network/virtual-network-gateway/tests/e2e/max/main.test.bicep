@@ -44,7 +44,7 @@ module nestedDependencies 'dependencies.bicep' = {
 
 // Diagnostics
 // ===========
-module diagnosticDependencies '../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
   params: {
@@ -71,8 +71,13 @@ module testDeployment '../../../main.bicep' = [
       vpnGatewayGeneration: 'Generation2'
       skuName: 'VpnGw2AZ'
       gatewayType: 'Vpn'
-      vNetResourceId: nestedDependencies.outputs.vnetResourceId
-      activeActive: true
+      virtualNetworkResourceId: nestedDependencies.outputs.vnetResourceId
+      clusterSettings: {
+        clusterMode: 'activeActiveBgp'
+        secondPipName: '${namePrefix}${serviceShort}001-pip2'
+        customBgpIpAddresses: ['169.254.21.4', '169.254.21.5']
+        secondCustomBgpIpAddresses: ['169.254.22.4', '169.254.22.5']
+      }
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -101,11 +106,13 @@ module testDeployment '../../../main.bicep' = [
       ]
       roleAssignments: [
         {
+          name: 'db30550e-70b7-4dbe-901e-e9363b69c05f'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -126,7 +133,7 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
       enablePrivateIpAddress: true
-      gatewayDefaultSiteLocalNetworkGatewayId: nestedDependencies.outputs.localNetworkGatewayResourceId
+      gatewayDefaultSiteLocalNetworkGatewayResourceId: nestedDependencies.outputs.localNetworkGatewayResourceId
       disableIPSecReplayProtection: true
       allowRemoteVnetTraffic: true
       natRules: [
@@ -165,9 +172,19 @@ module testDeployment '../../../main.bicep' = [
       ]
       enableBgpRouteTranslationForNat: true
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
+
+output activeActive bool = testDeployment[0].outputs.activeActive
+output asn int? = testDeployment[0].outputs.?asn
+output customBgpIpAddresses string? = testDeployment[0].outputs.?customBgpIpAddresses
+output defaultBgpIpAddresses string? = testDeployment[0].outputs.?defaultBgpIpAddresses
+output ipConfigurations array? = testDeployment[0].outputs.?ipConfigurations
+output location string = testDeployment[0].outputs.location
+output name string = testDeployment[0].outputs.name
+output primaryPublicIpAddress string = testDeployment[0].outputs.primaryPublicIpAddress
+output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
+output resourceId string = testDeployment[0].outputs.resourceId
+output secondaryCustomBgpIpAddress string? = testDeployment[0].outputs.?secondaryCustomBgpIpAddress
+output secondaryDefaultBgpIpAddress string? = testDeployment[0].outputs.?secondaryDefaultBgpIpAddress
+output secondaryPublicIpAddress string? = testDeployment[0].outputs.?secondaryPublicIpAddress

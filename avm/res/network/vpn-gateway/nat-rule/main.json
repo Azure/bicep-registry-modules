@@ -5,12 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "15540036539979482149"
+      "version": "0.33.13.18514",
+      "templateHash": "11380942489395706225"
     },
     "name": "VPN Gateway NAT Rules",
-    "description": "This module deploys a VPN Gateway NAT Rule.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a VPN Gateway NAT Rule."
   },
   "parameters": {
     "name": {
@@ -86,10 +85,7 @@
         "ipConfigurationId": "[parameters('ipConfigurationId')]",
         "mode": "[parameters('mode')]",
         "type": "[parameters('type')]"
-      },
-      "dependsOn": [
-        "vpnGateway"
-      ]
+      }
     }
   },
   "outputs": {

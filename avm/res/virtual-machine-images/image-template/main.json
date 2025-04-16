@@ -5,119 +5,13 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "16618215702378872010"
+      "version": "0.33.13.18514",
+      "templateHash": "17650936874255172135"
     },
     "name": "Virtual Machine Image Templates",
-    "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB)."
   },
   "definitions": {
-    "lockType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the name of lock."
-          }
-        },
-        "kind": {
-          "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Specify the type of lock."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "managedIdentitiesType": {
-      "type": "object",
-      "properties": {
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
-          }
-        }
-      }
-    },
     "distributionType": {
       "type": "object",
       "discriminator": {
@@ -133,6 +27,9 @@
             "$ref": "#/definitions/unManagedDistributionType"
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "sharedImageDistributionType": {
@@ -164,7 +61,7 @@
         "sharedImageGalleryImageDefinitionResourceId": {
           "type": "string",
           "metadata": {
-            "description": "Conditional. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>."
+            "description": "Required. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>."
           }
         },
         "sharedImageGalleryImageDefinitionTargetVersion": {
@@ -202,6 +99,9 @@
             "description": "Optional. The storage account type of the image. Defaults to [Standard_LRS]."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "unManagedDistributionType": {
@@ -236,6 +136,9 @@
             "description": "Conditional. Name of the managed or unmanaged image that will be created."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "managedImageDistributionType": {
@@ -284,6 +187,9 @@
             "description": "Conditional. Name of the managed or unmanaged image that will be created."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "validationProcessType": {
@@ -396,7 +302,135 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "managedIdentityOnlyUserAssignedType": {
+      "type": "object",
+      "properties": {
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -451,11 +485,12 @@
     },
     "customizationSteps": {
       "type": "array",
+      "nullable": true,
       "metadata": {
-        "description": "Required. Customization steps to be run when building the VM image."
+        "description": "Optional. Customization steps to be run when building the VM image."
       }
     },
-    "stagingResourceGroup": {
+    "stagingResourceGroupResourceId": {
       "type": "string",
       "nullable": true,
       "metadata": {
@@ -464,6 +499,7 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -479,7 +515,7 @@
       "type": "string",
       "defaultValue": "[utcNow('yyyy-MM-dd-HH-mm-ss')]",
       "metadata": {
-        "description": "Generated. Do not provide a value! This date value is used to generate a unique image template name."
+        "description": "Generated. Do not provide a value! This date is used to generate a unique image template name."
       }
     },
     "enableTelemetry": {
@@ -490,7 +526,11 @@
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -512,13 +552,14 @@
       }
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
       "metadata": {
         "description": "Required. The managed identity definition for this resource."
       }
     },
     "validationProcess": {
       "$ref": "#/definitions/validationProcessType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration options and list of validations to be performed on the resulting image."
       }
@@ -533,9 +574,56 @@
       "metadata": {
         "description": "Optional. The optimize property can be enabled while creating a VM image and allows VM optimization to improve image creation time."
       }
+    },
+    "autoRunState": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Indicates whether or not to automatically run the image template build on template creation or update."
+      }
+    },
+    "errorHandlingOnCustomizerError": {
+      "type": "string",
+      "defaultValue": "cleanup",
+      "allowedValues": [
+        "cleanup",
+        "abort"
+      ],
+      "metadata": {
+        "description": "Optional. If there is a customizer error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. This is the default behavior. If there is a customizer error and this field is set to 'abort', the build VM will be preserved."
+      }
+    },
+    "errorHandlingOnValidationError": {
+      "type": "string",
+      "defaultValue": "cleanup",
+      "allowedValues": [
+        "cleanup",
+        "abort"
+      ],
+      "metadata": {
+        "description": "Optional. If there is a validation error and this field is set to 'cleanup', the build VM and associated network resources will be cleaned up. If there is a validation error and this field is set to 'abort', the build VM will be preserved. This is the default behavior."
+      }
+    },
+    "managedResourceTags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags that will be applied to the resource group and/or resources created by the service."
+      }
     }
   },
   "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
     "identity": {
       "type": "UserAssigned",
       "userAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]"
@@ -544,7 +632,7 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -552,7 +640,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.virtualmachineimages-imagetemplate.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -571,32 +659,12 @@
     },
     "imageTemplate": {
       "type": "Microsoft.VirtualMachineImages/imageTemplates",
-      "apiVersion": "2023-07-01",
+      "apiVersion": "2024-02-01",
       "name": "[format('{0}-{1}', parameters('name'), parameters('baseTime'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
-      "properties": {
-        "copy": [
-          {
-            "name": "distribute",
-            "count": "[length(parameters('distributions'))]",
-            "input": "[union(createObject('type', parameters('distributions')[copyIndex('distribute')].type, 'artifactTags', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'artifactTags'), createObject('sourceType', parameters('imageSource').type, 'sourcePublisher', tryGet(parameters('imageSource'), 'publisher'), 'sourceOffer', tryGet(parameters('imageSource'), 'offer'), 'sourceSku', tryGet(parameters('imageSource'), 'sku'), 'sourceVersion', tryGet(parameters('imageSource'), 'version'), 'sourceImageId', tryGet(parameters('imageSource'), 'imageId'), 'sourceImageVersionID', tryGet(parameters('imageSource'), 'imageVersionID'), 'creationTime', parameters('baseTime')))), if(equals(parameters('distributions')[copyIndex('distribute')].type, 'ManagedImage'), createObject('runOutputName', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'runOutputName'), format('{0}-{1}-ManagedImage', parameters('distributions')[copyIndex('distribute')].imageName, parameters('baseTime'))), 'location', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'location'), parameters('location')), 'imageId', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'imageResourceId'), format('{0}/resourceGroups/{1}/providers/Microsoft.Compute/images/{2}-{3}', subscription().id, resourceGroup().name, parameters('distributions')[copyIndex('distribute')].imageName, parameters('baseTime')))), createObject()), if(equals(parameters('distributions')[copyIndex('distribute')].type, 'SharedImage'), createObject('runOutputName', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'runOutputName'), if(not(empty(tryGet(parameters('distributions')[copyIndex('distribute')], 'sharedImageGalleryImageDefinitionResourceId'))), format('{0}-SharedImage', last(split(coalesce(parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionResourceId, '/'), '/'))), 'SharedImage')), 'galleryImageId', if(not(empty(tryGet(parameters('distributions')[copyIndex('distribute')], 'sharedImageGalleryImageDefinitionTargetVersion'))), format('{0}/versions/{1}', parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionResourceId, parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionTargetVersion), parameters('distributions')[copyIndex('distribute')].sharedImageGalleryImageDefinitionResourceId), 'excludeFromLatest', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'excludeFromLatest'), false()), 'replicationRegions', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'replicationRegions'), createArray(parameters('location'))), 'storageAccountType', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'storageAccountType'), 'Standard_LRS')), createObject()), if(equals(parameters('distributions')[copyIndex('distribute')].type, 'VHD'), createObject('runOutputName', coalesce(tryGet(parameters('distributions')[copyIndex('distribute')], 'runOutputName'), format('{0}-VHD', parameters('distributions')[copyIndex('distribute')].imageName))), createObject()))]"
-          }
-        ],
-        "buildTimeoutInMinutes": "[parameters('buildTimeoutInMinutes')]",
-        "vmProfile": {
-          "vmSize": "[parameters('vmSize')]",
-          "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
-          "userAssignedIdentities": "[parameters('vmUserAssignedIdentities')]",
-          "vnetConfig": "[if(not(empty(parameters('subnetResourceId'))), createObject('subnetId', parameters('subnetResourceId')), null())]"
-        },
-        "source": "[parameters('imageSource')]",
-        "customize": "[parameters('customizationSteps')]",
-        "stagingResourceGroup": "[parameters('stagingResourceGroup')]",
-        "validate": "[parameters('validationProcess')]",
-        "optimize": "[if(not(equals(parameters('optimizeVmBoot'), null())), createObject('vmBoot', createObject('state', parameters('optimizeVmBoot'))), null())]"
-      }
+      "properties": "[shallowMerge(createArray(createObject('buildTimeoutInMinutes', parameters('buildTimeoutInMinutes'), 'vmProfile', createObject('vmSize', parameters('vmSize'), 'osDiskSizeGB', parameters('osDiskSizeGB'), 'userAssignedIdentities', parameters('vmUserAssignedIdentities'), 'vnetConfig', if(not(empty(parameters('subnetResourceId'))), createObject('subnetId', parameters('subnetResourceId')), null())), 'source', parameters('imageSource')), if(not(empty(parameters('customizationSteps'))), createObject('customize', parameters('customizationSteps')), createObject()), createObject('stagingResourceGroup', parameters('stagingResourceGroupResourceId'), 'distribute', map(parameters('distributions'), lambda('distribution', shallowMerge(createArray(createObject('type', lambdaVariables('distribution').type, 'artifactTags', coalesce(tryGet(lambdaVariables('distribution'), 'artifactTags'), createObject('sourceType', parameters('imageSource').type, 'sourcePublisher', tryGet(parameters('imageSource'), 'publisher'), 'sourceOffer', tryGet(parameters('imageSource'), 'offer'), 'sourceSku', tryGet(parameters('imageSource'), 'sku'), 'sourceVersion', tryGet(parameters('imageSource'), 'version'), 'sourceImageId', tryGet(parameters('imageSource'), 'imageId'), 'sourceImageVersionID', tryGet(parameters('imageSource'), 'imageVersionID'), 'creationTime', parameters('baseTime')))), if(equals(lambdaVariables('distribution').type, 'ManagedImage'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), format('{0}-{1}-ManagedImage', lambdaVariables('distribution').imageName, parameters('baseTime'))), 'location', coalesce(tryGet(lambdaVariables('distribution'), 'location'), parameters('location')), 'imageId', coalesce(tryGet(lambdaVariables('distribution'), 'imageResourceId'), format('{0}/resourceGroups/{1}/providers/Microsoft.Compute/images/{2}-{3}', subscription().id, resourceGroup().name, lambdaVariables('distribution').imageName, parameters('baseTime')))), createObject()), if(equals(lambdaVariables('distribution').type, 'SharedImage'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), format('{0}-SharedImage', last(split(tryGet(lambdaVariables('distribution'), 'sharedImageGalleryImageDefinitionResourceId'), '/')))), 'galleryImageId', if(not(empty(tryGet(lambdaVariables('distribution'), 'sharedImageGalleryImageDefinitionTargetVersion'))), format('{0}/versions/{1}', lambdaVariables('distribution').sharedImageGalleryImageDefinitionResourceId, lambdaVariables('distribution').sharedImageGalleryImageDefinitionTargetVersion), lambdaVariables('distribution').sharedImageGalleryImageDefinitionResourceId), 'excludeFromLatest', coalesce(tryGet(lambdaVariables('distribution'), 'excludeFromLatest'), false()), 'replicationRegions', coalesce(tryGet(lambdaVariables('distribution'), 'replicationRegions'), createArray(parameters('location'))), 'storageAccountType', coalesce(tryGet(lambdaVariables('distribution'), 'storageAccountType'), 'Standard_LRS')), createObject()), if(equals(lambdaVariables('distribution').type, 'VHD'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), format('{0}-VHD', lambdaVariables('distribution').imageName))), createObject()))))), 'validate', parameters('validationProcess'), 'optimize', if(not(equals(parameters('optimizeVmBoot'), null())), createObject('vmBoot', createObject('state', parameters('optimizeVmBoot'))), null()), 'autoRun', createObject('state', parameters('autoRunState')), 'errorHandling', createObject('onCustomizerError', parameters('errorHandlingOnCustomizerError'), 'onValidationError', parameters('errorHandlingOnValidationError')), 'managedResourceTags', parameters('managedResourceTags'))))]"
     },
     "imageTemplate_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -615,20 +683,20 @@
     "imageTemplate_roleAssignments": {
       "copy": {
         "name": "imageTemplate_roleAssignments",
-        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]"
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "scope": "[format('Microsoft.VirtualMachineImages/imageTemplates/{0}', format('{0}-{1}', parameters('name'), parameters('baseTime')))]",
-      "name": "[guid(resourceId('Microsoft.VirtualMachineImages/imageTemplates', format('{0}-{1}', parameters('name'), parameters('baseTime'))), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.VirtualMachineImages/imageTemplates', format('{0}-{1}', parameters('name'), parameters('baseTime'))), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
-        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
-        "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
-        "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
-        "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
-        "condition": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition')]",
-        "conditionVersion": "[if(not(empty(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
         "imageTemplate"
@@ -676,7 +744,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('imageTemplate', '2023-07-01', 'full').location]"
+      "value": "[reference('imageTemplate', '2024-02-01', 'full').location]"
     }
   }
 }

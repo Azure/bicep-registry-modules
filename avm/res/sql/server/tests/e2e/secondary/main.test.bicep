@@ -47,32 +47,34 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 // Test Execution //
 // ============== //
-
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-  params: {
-    name: '${namePrefix}-${serviceShort}-sec'
-    location: resourceLocation
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: password
-    databases: [
-      {
-        name: nestedDependencies.outputs.databaseName
-        skuTier: 'Basic'
-        skuName: 'Basic'
-        maxSizeBytes: 2147483648
-        createMode: 'Secondary'
-        sourceDatabaseResourceId: nestedDependencies.outputs.databaseResourceId
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}-${serviceShort}-sec'
+      location: resourceLocation
+      administratorLogin: 'adminUserName'
+      administratorLoginPassword: password
+      databases: [
+        {
+          name: nestedDependencies.outputs.databaseName
+          sku: {
+            name: 'Basic'
+            tier: 'Basic'
+          }
+          maxSizeBytes: 2147483648
+          createMode: 'Secondary'
+          sourceDatabaseResourceId: nestedDependencies.outputs.databaseResourceId
+          zoneRedundant: false
+        }
+      ]
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
       }
-    ]
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
     }
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}
+]

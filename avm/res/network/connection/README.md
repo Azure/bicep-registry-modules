@@ -65,7 +65,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -98,6 +98,30 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/connection:<version>'
+
+// Required parameters
+param name = 'ncmin001'
+virtualNetworkGateway1: {
+  id: '<id>'
+}
+// Non-required parameters
+param connectionType = 'Vnet2Vnet'
+param location = '<location>'
+virtualNetworkGateway2: {
+  id: '<id>'
+}
+param vpnSharedKey = '<vpnSharedKey>'
 ```
 
 </details>
@@ -149,7 +173,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -209,6 +233,42 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/connection:<version>'
+
+// Required parameters
+param name = 'ncmax001'
+virtualNetworkGateway1: {
+  id: '<id>'
+}
+// Non-required parameters
+param connectionType = 'Vnet2Vnet'
+param dpdTimeoutSeconds = 45
+param enableBgp = false
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+param usePolicyBasedTrafficSelectors = false
+virtualNetworkGateway2: {
+  id: '<id>'
+}
+param vpnSharedKey = '<vpnSharedKey>'
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -252,7 +312,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -303,6 +363,38 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/connection:<version>'
+
+// Required parameters
+param name = 'ncwaf001'
+virtualNetworkGateway1: {
+  id: '<id>'
+}
+// Non-required parameters
+param connectionType = 'Vnet2Vnet'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+virtualNetworkGateway2: {
+  id: '<id>'
+}
+param vpnSharedKey = '<vpnSharedKey>'
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -333,6 +425,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
 | [`peer`](#parameter-peer) | object | The remote peer. Used for connection connectionType [ExpressRoute]. |
 | [`routingWeight`](#parameter-routingweight) | int | The weight added to routes learned from this BGP speaker. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+| [`trafficSelectorPolicies`](#parameter-trafficselectorpolicies) | array | The traffic selector policies to be considered by this connection. |
 | [`useLocalAzureIpAddress`](#parameter-uselocalazureipaddress) | bool | Use private local Azure IP for the connection. Only available for IPSec Virtual Network Gateways that use the Azure Private IP Property. |
 | [`usePolicyBasedTrafficSelectors`](#parameter-usepolicybasedtrafficselectors) | bool | Enable policy-based traffic selectors. |
 | [`virtualNetworkGateway2`](#parameter-virtualnetworkgateway2) | object | The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vnet]. |
@@ -435,6 +528,8 @@ The dead peer detection timeout of this connection in seconds. Setting the timeo
 - Required: No
 - Type: int
 - Default: `45`
+- MinValue: 9
+- MaxValue: 3600
 
 ### Parameter: `enableBgp`
 
@@ -542,6 +637,14 @@ Tags of the resource.
 - Required: No
 - Type: object
 
+### Parameter: `trafficSelectorPolicies`
+
+The traffic selector policies to be considered by this connection.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
 ### Parameter: `useLocalAzureIpAddress`
 
 Use private local Azure IP for the connection. Only available for IPSec Virtual Network Gateways that use the Azure Private IP Property.
@@ -574,7 +677,6 @@ Specifies a VPN shared key. The same value has to be specified on both Virtual N
 - Type: securestring
 - Default: `''`
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -586,7 +688,11 @@ Specifies a VPN shared key. The same value has to be specified on both Virtual N
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 

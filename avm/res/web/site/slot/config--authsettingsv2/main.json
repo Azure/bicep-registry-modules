@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.170.59819",
-      "templateHash": "512112730780239094"
+      "version": "0.33.93.31351",
+      "templateHash": "4602741618711602070"
     },
     "name": "Site Slot Auth Settings V2 Config",
-    "description": "This module deploys a Site Auth Settings V2 Configuration.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Site Auth Settings V2 Configuration."
   },
   "parameters": {
     "appName": {
@@ -31,11 +30,17 @@
         "functionapp,linux",
         "functionapp,workflowapp",
         "functionapp,workflowapp,linux",
+        "functionapp,linux,container",
+        "functionapp,linux,container,azurecontainerapps",
         "app,linux",
-        "app"
+        "app",
+        "linux,api",
+        "api",
+        "app,linux,container",
+        "app,container,windows"
       ],
       "metadata": {
-        "description": "Required. Type of slot to deploy."
+        "description": "Required. Type of site to deploy."
       }
     },
     "authSettingV2Configuration": {
@@ -48,7 +53,7 @@
   "resources": [
     {
       "type": "Microsoft.Web/sites/slots/config",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2024-04-01",
       "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), 'authsettingsV2')]",
       "kind": "[parameters('kind')]",
       "properties": "[parameters('authSettingV2Configuration')]"

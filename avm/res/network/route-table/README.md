@@ -44,10 +44,7 @@ This instance deploys the module with the minimum set of required parameters.
 module routeTable 'br/public:avm/res/network/route-table:<version>' = {
   name: 'routeTableDeployment'
   params: {
-    // Required parameters
     name: 'nrtmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -57,23 +54,31 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "nrtmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/route-table:<version>'
+
+param name = 'nrtmin001'
 ```
 
 </details>
@@ -102,11 +107,13 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
     }
     roleAssignments: [
       {
+        name: 'de4b134c-7087-480d-892f-ce6629720d29'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
@@ -141,7 +148,7 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -165,11 +172,13 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
     "roleAssignments": {
       "value": [
         {
+          "name": "de4b134c-7087-480d-892f-ce6629720d29",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
@@ -207,6 +216,60 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/route-table:<version>'
+
+// Required parameters
+param name = 'nrtmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param roleAssignments = [
+  {
+    name: 'de4b134c-7087-480d-892f-ce6629720d29'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param routes = [
+  {
+    name: 'default'
+    properties: {
+      addressPrefix: '0.0.0.0/0'
+      nextHopIpAddress: '172.16.0.20'
+      nextHopType: 'VirtualAppliance'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
 ### Example 3: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
@@ -223,11 +286,6 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
     // Required parameters
     name: 'nrtwaf001'
     // Non-required parameters
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     routes: [
       {
         name: 'default'
@@ -252,7 +310,7 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 
 <details>
 
-<summary>via JSON Parameter file</summary>
+<summary>via JSON parameters file</summary>
 
 ```json
 {
@@ -264,15 +322,6 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
       "value": "nrtwaf001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "routes": {
       "value": [
         {
@@ -299,6 +348,35 @@ module routeTable 'br/public:avm/res/network/route-table:<version>' = {
 </details>
 <p>
 
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/route-table:<version>'
+
+// Required parameters
+param name = 'nrtwaf001'
+// Non-required parameters
+param routes = [
+  {
+    name: 'default'
+    properties: {
+      addressPrefix: '0.0.0.0/0'
+      nextHopIpAddress: '172.16.0.20'
+      nextHopType: 'VirtualAppliance'
+    }
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
 
 ## Parameters
 
@@ -393,6 +471,13 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'Network Contributor'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -409,6 +494,7 @@ Array of role assignments to create.
 | [`conditionVersion`](#parameter-roleassignmentsconditionversion) | string | Version of the condition. |
 | [`delegatedManagedIdentityResourceId`](#parameter-roleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
 | [`description`](#parameter-roleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-roleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
 
 ### Parameter: `roleAssignments.principalId`
@@ -455,6 +541,13 @@ The Resource Id of the delegated managed identity resource.
 ### Parameter: `roleAssignments.description`
 
 The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
 
 - Required: No
 - Type: string
@@ -515,7 +608,6 @@ Properties of the route.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`addressPrefix`](#parameter-routespropertiesaddressprefix) | string | The destination CIDR to which the route applies. |
-| [`hasBgpOverride`](#parameter-routespropertieshasbgpoverride) | bool | A value indicating whether this route overrides overlapping BGP routes regardless of LPM. |
 | [`nextHopIpAddress`](#parameter-routespropertiesnexthopipaddress) | string | The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance. |
 
 ### Parameter: `routes.properties.nextHopType`
@@ -542,13 +634,6 @@ The destination CIDR to which the route applies.
 - Required: No
 - Type: string
 
-### Parameter: `routes.properties.hasBgpOverride`
-
-A value indicating whether this route overrides overlapping BGP routes regardless of LPM.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `routes.properties.nextHopIpAddress`
 
 The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.
@@ -563,7 +648,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-
 ## Outputs
 
 | Output | Type | Description |
@@ -575,7 +659,11 @@ Tags of the resource.
 
 ## Cross-referenced modules
 
-_None_
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

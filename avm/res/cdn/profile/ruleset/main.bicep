@@ -1,6 +1,5 @@
 metadata name = 'CDN Profiles Rule Sets'
 metadata description = 'This module deploys a CDN Profile rule set.'
-metadata owner = 'Azure/module-maintainers'
 
 @description('Required. The name of the rule set.')
 param name string
@@ -9,7 +8,7 @@ param name string
 param profileName string
 
 @description('Optinal. The rules to apply to the rule set.')
-param rules array?
+param rules ruleType[]?
 
 resource profile 'Microsoft.Cdn/profiles@2023-05-01' existing = {
   name: profileName
@@ -43,3 +42,19 @@ output resourceId string = ruleSet.id
 
 @description('The name of the resource group the custom domain was created in.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+import { ruleType } from './rule/main.bicep'
+
+@export()
+@description('The type of the rule set.')
+type ruleSetType = {
+  @description('Required. Name of the rule set.')
+  name: string
+
+  @description('Optional. Array of rules.')
+  rules: ruleType[]?
+}

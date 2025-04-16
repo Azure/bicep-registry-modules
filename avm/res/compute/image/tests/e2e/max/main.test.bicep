@@ -47,6 +47,7 @@ module nestedDependencies 'dependencies.bicep' = {
     imageTemplateNamePrefix: 'dep-${namePrefix}-imgt-${serviceShort}'
     triggerImageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-triggerImageTemplate'
     copyVhdDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-copyVhdToStorage'
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-waitForPropagation'
   }
 }
 
@@ -68,11 +69,13 @@ module testDeployment '../../../main.bicep' = [
       hyperVGeneration: 'V1'
       roleAssignments: [
         {
+          name: '2dfcdedd-220c-4b6b-b8bd-58e22e0c5434'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'

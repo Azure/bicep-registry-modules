@@ -4,12 +4,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.26.54.24096",
-      "templateHash": "13701757307300485900"
+      "version": "0.33.93.31351",
+      "templateHash": "11177184067861792085"
     },
     "name": "Recovery Services Vault Replication Policies",
-    "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario.",
-    "owner": "Azure/module-maintainers"
+    "description": "This module deploys a Recovery Services Vault Replication Policy for Disaster Recovery scenario.\n\n> **Note**: this version of the module only supports the `instanceType: 'A2A'` scenario."
   },
   "parameters": {
     "recoveryVaultName": {

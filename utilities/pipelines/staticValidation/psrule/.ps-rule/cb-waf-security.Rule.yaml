@@ -1,0 +1,48 @@
+---
+# Synopsis: Custom baseline for AVM WAF security pillar recommendations that are enforced in CI.
+apiVersion: github.com/microsoft/PSRule/v1
+kind: Baseline
+metadata:
+  name: CB.AVM.WAF.Security
+spec:
+  rule:
+    include:
+      - Azure.ACR.AdminUser
+      - Azure.ACR.ContainerScan
+      - Azure.ACR.ContentTrust
+      - Azure.ACR.Firewall
+      - Azure.AKS.AzureRBAC
+      - Azure.AppGw.UseHTTPS
+      - Azure.AppGw.SSLPolicy
+      - Azure.AppGw.WAFEnabled
+      - Azure.AppGw.UseWAF
+      - Azure.AppService.WebSecureFtp
+      - Azure.AppService.MinTLS
+      - Azure.Cosmos.MinTLS
+      - Azure.Defender.Api
+      - Azure.Defender.AppServices
+      - Azure.Defender.Arm
+      - Azure.Defender.Containers
+      - Azure.Defender.CosmosDb
+      - Azure.Defender.Cspm
+      - Azure.Defender.Dns
+      - Azure.Defender.KeyVault
+      - Azure.Defender.OssRdb
+      - Azure.Defender.SQL
+      - Azure.Defender.SQLOnVM
+      - Azure.Defender.SecurityContact
+      - Azure.Defender.Servers
+      - Azure.Defender.Storage.DataScan
+      - Azure.Defender.Storage.MalwareScan
+      - Azure.Defender.Storage
+      - Azure.Firewall.Mode
+      - Azure.Firewall.PolicyMode
+      - Azure.Redis.MinTLS
+      - Azure.Redis.NonSslPort
+      - Azure.Storage.DefenderCloud
+      - Azure.Storage.Defender.MalwareScan
+      - Azure.Storage.SecureTransfer
+      - Azure.Storage.BlobPublicAccess
+      - Azure.Storage.BlobAccessType
+      - Azure.Storage.Firewall
+      - Azure.Storage.MinTLS

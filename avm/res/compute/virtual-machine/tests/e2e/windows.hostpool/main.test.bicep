@@ -11,8 +11,9 @@ metadata description = 'This instance deploys the module and registers it in a h
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+// Capacity constraints for VM type
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'cvmwinhp'
@@ -24,10 +25,6 @@ param password string = newGuid()
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-// Set to fixed location as the RP function returns unsupported locations
-// Right now (2024/04) the following locations are supported: centralindia,uksouth,ukwest,japaneast,australiaeast,canadaeast,canadacentral,northeurope,westeurope,eastus,eastus2,westus,westus2,westus3,northcentralus,southcentralus,westcentralus,centralus
-param enforcedLocation string = 'westeurope'
-
 // ============ //
 // Dependencies //
 // ============ //
@@ -36,7 +33,7 @@ param enforcedLocation string = 'westeurope'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 module nestedDependencies 'dependencies.bicep' = {
@@ -58,7 +55,7 @@ module nestedDependencies 'dependencies.bicep' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       location: enforcedLocation
       name: '${namePrefix}${serviceShort}'
@@ -92,7 +89,7 @@ module testDeployment '../../../main.bicep' = [
         }
       }
       osType: 'Windows'
-      vmSize: 'Standard_DS2_v2'
+      vmSize: 'Standard_D2s_v3'
       adminPassword: password
       extensionAadJoinConfig: {
         enabled: true

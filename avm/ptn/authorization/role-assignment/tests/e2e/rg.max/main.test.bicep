@@ -28,7 +28,7 @@ param subscriptionId string = '#_subscriptionId_#'
 
 // General resources
 // =================
-module resourceGroupDeploy 'br/public:avm/res/resources/resource-group:0.2.3' ={
+module resourceGroup 'br/public:avm/res/resources/resource-group:0.2.3' = {
   scope: subscription('${subscriptionId}')
   name: '${uniqueString(deployment().name, resourceLocation)}-resourceGroup'
   params: {
@@ -38,12 +38,15 @@ module resourceGroupDeploy 'br/public:avm/res/resources/resource-group:0.2.3' ={
 }
 
 module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup(subscriptionId, resourceGroupName)
+  scope: az.resourceGroup(subscriptionId, resourceGroupName)
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
   }
+  dependsOn: [
+    resourceGroup
+  ]
 }
 
 // ============== //
@@ -59,6 +62,6 @@ module testDeployment '../../../main.bicep' = {
     principalType: 'ServicePrincipal'
     location: resourceLocation
     subscriptionId: subscriptionId
-    resourceGroupName: resourceGroupName
+    resourceGroupName: resourceGroup.outputs.name
   }
 }

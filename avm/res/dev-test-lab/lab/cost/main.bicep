@@ -2,7 +2,6 @@ metadata name = 'DevTest Lab Costs'
 metadata description = '''This module deploys a DevTest Lab Cost.
 
 Manage lab costs by setting a spending target that can be viewed in the Monthly Estimated Cost Trend chart. DevTest Labs can send a notification when spending reaches the specified target threshold.'''
-metadata owner = 'Azure/module-maintainers'
 
 @sys.description('Conditional. The name of the parent lab. Required if the template is used in a standalone deployment.')
 param labName string
@@ -18,10 +17,10 @@ param cycleType string
 param tags object?
 
 @sys.description('Conditional. Reporting cycle start date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to "Custom".')
-param cycleStartDateTime string = ''
+param cycleStartDateTime string?
 
 @sys.description('Conditional. Reporting cycle end date in the zulu time format (e.g. 2023-12-01T00:00:00.000Z). Required if cycleType is set to "Custom".')
-param cycleEndDateTime string = ''
+param cycleEndDateTime string?
 
 @allowed([
   'Enabled'
