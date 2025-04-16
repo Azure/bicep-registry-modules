@@ -1,11 +1,16 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+    "_EXPERIMENTAL_FEATURES_ENABLED": [
+      "Extensibility"
+    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "4291338019800376753"
+      "version": "0.33.93.31351",
+      "templateHash": "15857663382956586725"
     },
     "name": "DBforMySQL Flexible Server Advanced Threat Protection",
     "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
@@ -29,8 +34,14 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "flexibleServer": {
+      "existing": true,
+      "type": "Microsoft.DBforMySQL/flexibleServers",
+      "apiVersion": "2023-12-30",
+      "name": "[parameters('flexibleServerName')]"
+    },
+    "advancedThreatProtectionSettings": {
       "type": "Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings",
       "apiVersion": "2023-12-30",
       "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
@@ -38,7 +49,7 @@
         "state": "[parameters('advancedThreatProtection')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
