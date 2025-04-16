@@ -253,5 +253,47 @@ type longTermBackupRetentionPolicyType = {
   yearlyRetention: string?
 }
 
+@export()
+type deploymentsType = {
+  @description('Optional. Specify the name of cognitive service account deployment.')
+  name: string?
+
+  @description('Required. Properties of Cognitive Services account deployment model.')
+  model: {
+    @description('Required. The name of Cognitive Services account deployment model.')
+    name: string
+
+    @description('Required. The format of Cognitive Services account deployment model.')
+    format: string
+
+    @description('Required. The version of Cognitive Services account deployment model.')
+    version: string
+  }
+
+  @description('Optional. The resource model definition representing SKU.')
+  sku: {
+    @description('Required. The name of the resource model definition representing SKU.')
+    name: string
+
+    @description('Optional. The capacity of the resource model definition representing SKU.')
+    capacity: int?
+
+    @description('Optional. The tier of the resource model definition representing SKU.')
+    tier: string?
+
+    @description('Optional. The size of the resource model definition representing SKU.')
+    size: string?
+
+    @description('Optional. The family of the resource model definition representing SKU.')
+    family: string?
+  }?
+
+  @description('Optional. The name of RAI policy.')
+  raiPolicyName: string?
+
+  @description('Optional. The version upgrade option.')
+  versionUpgradeOption: string?
+}
+
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'

@@ -10,6 +10,9 @@ param solutionLocation string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Required. Configuration for the virtual machine.')
+param virtualMachineConfiguration virtualMachineConfigurationType
+
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags object = {
   app: solutionPrefix
@@ -42,96 +45,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
     }
   }
 } */
-
-module networkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.1' = {
-  name: 'avm.ptn.sa.macae.network-network-security-group'
-  params: {
-    name: '${solutionPrefix}nsgr'
-    location: solutionLocation
-    tags: tags
-    enableTelemetry: enableTelemetry
-    securityRules: [
-      // {
-      //   name: 'DenySshRdpOutbound'
-      //   properties: {
-      //     priority: 200
-      //     access: 'Deny'
-      //     protocol: '*'
-      //     direction: 'Outbound'
-      //     sourceAddressPrefix: 'VirtualNetwork'
-      //     sourcePortRange: '*'
-      //     destinationAddressPrefix: '*'
-      //     destinationPortRanges: [
-      //       '3389'
-      //       '22'
-      //     ]
-      //   }
-      // }
-    ]
-  }
-}
-
-module networkSecurityGroupContainers 'br/public:avm/res/network/network-security-group:0.5.1' = {
-  name: 'avm.ptn.sa.macae.network-network-security-group-containers'
-  params: {
-    name: '${solutionPrefix}nsgrcntr'
-    location: solutionLocation
-    tags: tags
-    enableTelemetry: enableTelemetry
-    securityRules: [
-      //CONFIGURE: https://learn.microsoft.com/en-us/azure/container-apps/networking?tabs=workload-profiles-env%2Cazure-cli#network-rules
-      // {
-      //   name: 'DenySshRdpOutbound'
-      //   properties: {
-      //     priority: 200
-      //     access: 'Deny'
-      //     protocol: '*'
-      //     direction: 'Outbound'
-      //     sourceAddressPrefix: 'VirtualNetwork'
-      //     sourcePortRange: '*'
-      //     destinationAddressPrefix: '*'
-      //     destinationPortRanges: [
-      //       '3389'
-      //       '22'
-      //     ]
-      //   }
-      // }
-    ]
-  }
-}
-
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = {
-  name: 'avm.ptn.sa.macae.network-virtual-network'
-  params: {
-    name: '${solutionPrefix}vnet'
-    location: solutionLocation
-    tags: tags
-    enableTelemetry: enableTelemetry
-    addressPrefixes: ['10.0.0.0/8']
-    subnets: [
-      // The default subnet **must** be the first in the subnets array
-      {
-        addressPrefix: '10.0.0.0/24' //subnet of size /23 is required for container app
-        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        name: 'default'
-        networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
-      }
-      {
-        // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
-        // https://learn.microsoft.com/en-us/azure/container-apps/networking?tabs=workload-profiles-env%2Cazure-cli#custom-vnet-configuration
-        addressPrefix: '10.0.2.0/23' //subnet of size /23 is required for container app
-        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        name: 'containers'
-        networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
-      }
-      {
-        addressPrefix: '10.0.4.0/26'
-        name: 'AzureBastionSubnet'
-        //networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
-      }
-    ]
-  }
-}
 
 // ========== Log Analytics Workspace ========== //
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
@@ -174,6 +87,191 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   }
 }
 
+// ========== Network Security Groups ========== //
+
+module networkSecurityGroupDefault 'br/public:avm/res/network/network-security-group:0.5.1' = {
+  name: 'avm.ptn.sa.macae.network-network-security-group-default'
+  params: {
+    name: '${solutionPrefix}nsgrdflt'
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    securityRules: [
+      // {
+      //   name: 'DenySshRdpOutbound'
+      //   properties: {
+      //     priority: 200
+      //     access: 'Deny'
+      //     protocol: '*'
+      //     direction: 'Outbound'
+      //     sourceAddressPrefix: 'VirtualNetwork'
+      //     sourcePortRange: '*'
+      //     destinationAddressPrefix: '*'
+      //     destinationPortRanges: [
+      //       '3389'
+      //       '22'
+      //     ]
+      //   }
+      // }
+    ]
+  }
+}
+
+module networkSecurityGroupContainers 'br/public:avm/res/network/network-security-group:0.5.1' = {
+  name: 'avm.ptn.sa.macae.network-network-security-group-containers'
+  params: {
+    name: '${solutionPrefix}nsgrcntr'
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    securityRules: [
+      //CONFIGURE
+    ]
+  }
+}
+
+// ========== NAT Gateway ========== //
+
+module natGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = {
+  name: 'avm.ptn.sa.macae.network-nat-gateway'
+  params: {
+    name: '${solutionPrefix}natg'
+    tags: tags
+    location: solutionLocation
+    enableTelemetry: enableTelemetry
+    zone: 1
+    publicIPAddressObjects: [
+      {
+        diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+        name: '${solutionPrefix}natgip'
+        skuTier: 'Regional'
+        zones: [1, 2, 3]
+        tags: tags
+        idleTimeoutInMinutes: 30
+      }
+    ]
+  }
+}
+
+// ========== Virtual Network ========== //
+
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = {
+  name: 'avm.ptn.sa.macae.network-virtual-network'
+  params: {
+    name: '${solutionPrefix}vnet'
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    addressPrefixes: ['10.0.0.0/8']
+    subnets: [
+      // The default subnet **must** be the first in the subnets array
+      {
+        addressPrefix: '10.0.0.0/24'
+        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
+        name: 'default'
+        networkSecurityGroupResourceId: networkSecurityGroupDefault.outputs.resourceId
+      }
+      {
+        // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
+        // https://learn.microsoft.com/en-us/azure/container-apps/networking?tabs=workload-profiles-env%2Cazure-cli#custom-vnet-configuration
+        addressPrefix: '10.0.2.0/23' //subnet of size /23 is required for container app
+        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
+        name: 'containers'
+        networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
+      }
+      {
+        addressPrefix: '10.0.4.0/26'
+        name: 'AzureBastionSubnet'
+        //networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
+      }
+      {
+        addressPrefix: '10.0.4.64/26'
+        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
+        name: 'virtual-machines'
+        natGatewayResourceId: natGateway.outputs.resourceId
+        //networkSecurityGroupResourceId: networkSecurityGroupVMs.outputs.resourceId
+      }
+    ]
+  }
+}
+
+// ========== Bastion host ========== //
+
+module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = {
+  name: 'avm.ptn.sa.macae.private-dns-zone-bastion-host'
+  params: {
+    name: '${solutionPrefix}aisv'
+    location: solutionLocation
+    skuName: 'Standard'
+    enableTelemetry: enableTelemetry
+    tags: tags
+    virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+    disableCopyPaste: false
+    enableFileCopy: false
+    enableIpConnect: true
+    //enableKerberos: bastionConfiguration.?enableKerberos
+    enableShareableLink: true
+    //scaleUnits: bastionConfiguration.?scaleUnits
+  }
+}
+
+// ========== Virtual machine ========== //
+
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = {
+  name: 'avm.ptn.sa.macae.compute-virtual-machine'
+  params: {
+    name: '${solutionPrefix}vmws'
+    computerName: take('${solutionPrefix}vmws', 15)
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    adminUsername: virtualMachineConfiguration.adminUsername
+    adminPassword: virtualMachineConfiguration.adminPassword
+    nicConfigurations: [
+      {
+        //networkSecurityGroupResourceId: virtualMachineConfiguration.?nicConfigurationConfiguration.networkSecurityGroupResourceId
+        nicSuffix: 'nic01'
+        diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[3]
+            diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+          }
+        ]
+      }
+    ]
+    imageReference: {
+      publisher: 'microsoft-dsvm'
+      offer: 'dsvm-win-2022'
+      sku: 'winserver-2022'
+      version: 'latest'
+    }
+    osDisk: {
+      createOption: 'FromImage'
+      managedDisk: {
+        storageAccountType: 'Premium_ZRS'
+      }
+      diskSizeGB: 128
+      caching: 'ReadWrite'
+    }
+    //patchMode: virtualMachineConfiguration.?patchMode
+    osType: 'Windows'
+    encryptionAtHost: false //The property 'securityProfile.encryptionAtHost' is not valid because the 'Microsoft.Compute/EncryptionAtHost' feature is not enabled for this subscription.
+    vmSize: 'Standard_D2s_v3'
+    zone: 0
+    extensionAadJoinConfig: {
+      enabled: true
+      typeHandlerVersion: '1.0'
+    }
+    // extensionMonitoringAgentConfig: {
+    //   enabled: true
+    // }
+    //    maintenanceConfigurationResourceId: virtualMachineConfiguration.?maintenanceConfigurationResourceId
+  }
+}
 // ========== DNS Zone for AI Foundry: Open AI ========== //
 var openAiSubResource = 'account'
 var openAiPrivateDnsZones = {
@@ -330,7 +428,7 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.10.2
     location: solutionLocation
     tags: tags
     enableTelemetry: enableTelemetry
-    logsDestination: 'log-analtyics'
+    logsDestination: 'log-analytics'
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     appInsightsConnectionString: applicationInsights.outputs.connectionString
     publicNetworkAccess: 'Disabled'
@@ -339,13 +437,15 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.10.2
     internal: true
   }
 }
-resource aspireDashboard 'Microsoft.App/managedEnvironments/dotNetComponents@2024-10-02-preview' = {
-  name: '${solutionPrefix}cenv/aspire-dashboard'
-  properties: {
-    componentType: 'AspireDashboard'
-  }
-  dependsOn: [containerAppEnvironment]
-}
+
+// TODO: This needs network access to Azure to work
+// resource aspireDashboard 'Microsoft.App/managedEnvironments/dotNetComponents@2024-10-02-preview' = {
+//   name: '${solutionPrefix}cenv/aspire-dashboard'
+//   properties: {
+//     componentType: 'AspireDashboard'
+//   }
+//   dependsOn: [containerAppEnvironment]
+// }
 
 // ========== DNS zone for Container App Environment ========== //
 module dnsZoneContainerApp 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
@@ -502,3 +602,14 @@ module webSite 'br/public:avm/res/web/site:0.15.1' = {
 //
 // Add your User-defined-types here, if any
 //
+
+@export()
+@description('The type for a virtual machine configuration.')
+type virtualMachineConfigurationType = {
+  @description('Required. The username for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
+  adminUsername: string
+
+  @description('Required. The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
+  @secure()
+  adminPassword: string
+}
