@@ -48,12 +48,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemin001'
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
@@ -82,9 +81,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "name": {
       "value": "amemin001"
     },
@@ -95,8 +91,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
@@ -132,12 +128,11 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amemin001'
 // Non-required parameters
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
@@ -168,10 +163,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemax001'
     // Non-required parameters
     appInsightsConnectionString: '<appInsightsConnectionString>'
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    }
     certificate: {
       certificateKeyVaultProperties: {
         identityResourceId: '<identityResourceId>'
@@ -182,7 +180,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     dnsSuffix: 'contoso.com'
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
     location: '<location>'
     lock: {
@@ -271,15 +269,18 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "name": {
       "value": "amemax001"
     },
     // Non-required parameters
     "appInsightsConnectionString": {
       "value": "<appInsightsConnectionString>"
+    },
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "log-analytics",
+        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
+      }
     },
     "certificate": {
       "value": {
@@ -299,8 +300,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
@@ -412,10 +413,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amemax001'
 // Non-required parameters
 param appInsightsConnectionString = '<appInsightsConnectionString>'
+param appLogsConfiguration = {
+  destination: 'log-analytics'
+  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+}
 param certificate = {
   certificateKeyVaultProperties: {
     identityResourceId: '<identityResourceId>'
@@ -426,7 +430,7 @@ param certificate = {
 param dnsSuffix = 'contoso.com'
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
 param location = '<location>'
 param lock = {
@@ -517,12 +521,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amepa001'
     // Non-required parameters
+    appLogsConfiguration: {
+      destination: 'none'
+    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     location: '<location>'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
@@ -552,21 +558,23 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "name": {
       "value": "amepa001"
     },
     // Non-required parameters
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "none"
+      }
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "location": {
       "value": "<location>"
@@ -605,12 +613,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amepa001'
 // Non-required parameters
+param appLogsConfiguration = {
+  destination: 'none'
+}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param location = '<location>'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
@@ -642,14 +652,16 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amewaf001'
     // Non-required parameters
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
-    logsDestination: 'log-analytics'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     tags: {
@@ -681,27 +693,27 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "name": {
       "value": "amewaf001"
     },
     // Non-required parameters
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "log-analytics",
+        "logAnalyticsWorkspaceResourceId": "<logAnalyticsWorkspaceResourceId>"
+      }
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
-    },
-    "logsDestination": {
-      "value": "log-analytics"
     },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
@@ -740,14 +752,16 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amewaf001'
 // Non-required parameters
+param appLogsConfiguration = {
+  destination: 'log-analytics'
+  logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
-param logsDestination = 'log-analytics'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param tags = {
@@ -773,7 +787,6 @@ param workloadProfiles = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990). |
 | [`name`](#parameter-name) | string | Name of the Container Apps Managed Environment. |
 
 **Conditional parameters**
@@ -782,8 +795,8 @@ param workloadProfiles = [
 | :-- | :-- | :-- |
 | [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
-| [`infrastructureSubnetId`](#parameter-infrastructuresubnetid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
-| [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`infrastructureSubnetResourceId`](#parameter-infrastructuresubnetresourceid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetResourceId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant. |
 | [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`workloadProfiles`](#parameter-workloadprofiles) | array | Workload profiles configured for the Managed Environment. Required if zoneRedundant is set to true to make the resource WAF compliant. |
@@ -793,6 +806,7 @@ param workloadProfiles = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
+| [`appLogsConfiguration`](#parameter-applogsconfiguration) | object | The AppLogsConfiguration for the Managed Environment. |
 | [`certificate`](#parameter-certificate) | object | A Managed Environment Certificate. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
@@ -802,7 +816,6 @@ param workloadProfiles = [
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
 | [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
@@ -811,13 +824,6 @@ param workloadProfiles = [
 | [`storages`](#parameter-storages) | array | The list of storages to mount on the environment. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this Managed Environment is zone-redundant. |
-
-### Parameter: `logAnalyticsWorkspaceResourceId`
-
-Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `name`
 
@@ -842,7 +848,7 @@ Name of the infrastructure resource group. If not provided, it will be set with 
 - Type: string
 - Default: `[take(format('ME_{0}', parameters('name')), 63)]`
 
-### Parameter: `infrastructureSubnetId`
+### Parameter: `infrastructureSubnetResourceId`
 
 Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.
 
@@ -852,7 +858,7 @@ Resource ID of a subnet for infrastructure components. This is used to deploy th
 
 ### Parameter: `internal`
 
-Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.
+Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetResourceId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.
 
 - Required: No
 - Type: bool
@@ -889,6 +895,47 @@ Application Insights connection string.
 - Required: No
 - Type: securestring
 - Default: `''`
+
+### Parameter: `appLogsConfiguration`
+
+The AppLogsConfiguration for the Managed Environment.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-applogsconfigurationdestination) | string | The destination of the logs. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-applogsconfigurationloganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to 'log-analytics'. |
+
+### Parameter: `appLogsConfiguration.destination`
+
+The destination of the logs.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'azure-monitor'
+    'log-analytics'
+    'none'
+  ]
+  ```
+
+### Parameter: `appLogsConfiguration.logAnalyticsWorkspaceResourceId`
+
+Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to 'log-analytics'.
+
+- Required: No
+- Type: string
 
 ### Parameter: `certificate`
 
@@ -1061,14 +1108,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-
-### Parameter: `logsDestination`
-
-Logs destination.
-
-- Required: No
-- Type: string
-- Default: `'log-analytics'`
 
 ### Parameter: `managedIdentities`
 
