@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "8317801660539599309"
+      "version": "0.34.44.8038",
+      "templateHash": "15429195500404839384"
     },
     "name": "Azure NetApp Files Volume Backup",
     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -63,28 +63,19 @@
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
       "apiVersion": "2025-01-01",
-      "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]",
-      "dependsOn": [
-        "netAppAccount::remoteCapacityPool"
-      ]
+      "name": "[format('{0}/{1}/{2}', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
     },
     "netAppAccount::backupVault": {
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts/backupVaults",
       "apiVersion": "2025-01-01",
-      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]",
-      "dependsOn": [
-        "netAppAccount"
-      ]
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('backupVaultName'))]"
     },
     "netAppAccount::remoteCapacityPool": {
       "existing": true,
       "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
       "apiVersion": "2025-01-01",
-      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]",
-      "dependsOn": [
-        "netAppAccount"
-      ]
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('capacityPoolName'))]"
     },
     "netAppAccount": {
       "existing": true,
@@ -100,11 +91,7 @@
         "label": "[parameters('label')]",
         "snapshotName": "[parameters('snapshotName')]",
         "volumeResourceId": "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools/volumes', parameters('netAppAccountName'), parameters('capacityPoolName'), parameters('volumeName'))]"
-      },
-      "dependsOn": [
-        "netAppAccount::backupVault",
-        "netAppAccount::remoteCapacityPool"
-      ]
+      }
     }
   },
   "outputs": {
