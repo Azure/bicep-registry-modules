@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "14622141287138177723"
+      "templateHash": "1248033141932046886"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -103,13 +103,46 @@
     },
     "appLogsConfigurationType": {
       "type": "object",
+      "discriminator": {
+        "propertyName": "destination",
+        "mapping": {
+          "azure-monitor": {
+            "$ref": "#/definitions/appLogsConfigurationMonitorType"
+          },
+          "log-analytics": {
+            "$ref": "#/definitions/appLogsConfigurationLawType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the App Logs Configuration."
+      }
+    },
+    "appLogsConfigurationMonitorType": {
+      "type": "object",
       "properties": {
         "destination": {
           "type": "string",
           "allowedValues": [
-            "azure-monitor",
-            "log-analytics",
-            "none"
+            "azure-monitor"
+          ],
+          "metadata": {
+            "description": "Required. The destination of the logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the App Logs Configuration if using azure-monitor."
+      }
+    },
+    "appLogsConfigurationLawType": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string",
+          "allowedValues": [
+            "log-analytics"
           ],
           "metadata": {
             "description": "Required. The destination of the logs."
@@ -117,15 +150,13 @@
         },
         "logAnalyticsWorkspaceResourceId": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to 'log-analytics'."
+            "description": "Required. Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to 'log-analytics'."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the App Logs Configuration."
+        "description": "The type for the App Logs Configuration if using log-analytics."
       }
     },
     "certificateKeyVaultPropertiesType": {

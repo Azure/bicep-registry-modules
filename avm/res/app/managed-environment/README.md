@@ -523,9 +523,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Required parameters
     name: 'amepa001'
     // Non-required parameters
-    appLogsConfiguration: {
-      destination: 'none'
-    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
@@ -562,11 +559,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amepa001"
     },
     // Non-required parameters
-    "appLogsConfiguration": {
-      "value": {
-        "destination": "none"
-      }
-    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -615,9 +607,6 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'amepa001'
 // Non-required parameters
-param appLogsConfiguration = {
-  destination: 'none'
-}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
@@ -902,20 +891,27 @@ The AppLogsConfiguration for the Managed Environment.
 
 - Required: No
 - Type: object
+- Discriminator: `destination`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`azure-monitor`](#variant-applogsconfigurationdestination-azure-monitor) | The type for the App Logs Configuration if using azure-monitor. |
+| [`log-analytics`](#variant-applogsconfigurationdestination-log-analytics) | The type for the App Logs Configuration if using log-analytics. |
+
+### Variant: `appLogsConfiguration.destination-azure-monitor`
+The type for the App Logs Configuration if using azure-monitor.
+
+To use this variant, set the property `destination` to `azure-monitor`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`destination`](#parameter-applogsconfigurationdestination) | string | The destination of the logs. |
+| [`destination`](#parameter-applogsconfigurationdestination-azure-monitordestination) | string | The destination of the logs. |
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-applogsconfigurationloganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to 'log-analytics'. |
-
-### Parameter: `appLogsConfiguration.destination`
+### Parameter: `appLogsConfiguration.destination-azure-monitor.destination`
 
 The destination of the logs.
 
@@ -925,16 +921,39 @@ The destination of the logs.
   ```Bicep
   [
     'azure-monitor'
-    'log-analytics'
-    'none'
   ]
   ```
 
-### Parameter: `appLogsConfiguration.logAnalyticsWorkspaceResourceId`
+### Variant: `appLogsConfiguration.destination-log-analytics`
+The type for the App Logs Configuration if using log-analytics.
+
+To use this variant, set the property `destination` to `log-analytics`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-applogsconfigurationdestination-log-analyticsdestination) | string | The destination of the logs. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-applogsconfigurationdestination-log-analyticsloganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to 'log-analytics'. |
+
+### Parameter: `appLogsConfiguration.destination-log-analytics.destination`
+
+The destination of the logs.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'log-analytics'
+  ]
+  ```
+
+### Parameter: `appLogsConfiguration.destination-log-analytics.logAnalyticsWorkspaceResourceId`
 
 Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to 'log-analytics'.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `certificate`

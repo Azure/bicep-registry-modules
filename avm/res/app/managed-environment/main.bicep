@@ -355,11 +355,21 @@ type storageType = {
 }
 
 @export()
+@discriminator('destination')
 @description('The type for the App Logs Configuration.')
-type appLogsConfigurationType = {
-  @description('Required. The destination of the logs.')
-  destination: ('log-analytics' | 'azure-monitor' | 'none')
+type appLogsConfigurationType = appLogsConfigurationMonitorType | appLogsConfigurationLawType
 
-  @description('Optional. Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to \'log-analytics\'.')
-  logAnalyticsWorkspaceResourceId: string?
+@description('The type for the App Logs Configuration if using azure-monitor.')
+type appLogsConfigurationMonitorType = {
+  @description('Required. The destination of the logs.')
+  destination: 'azure-monitor'
+}
+
+@description('The type for the App Logs Configuration if using log-analytics.')
+type appLogsConfigurationLawType = {
+  @description('Required. The destination of the logs.')
+  destination: 'log-analytics'
+
+  @description('Required. Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to \'log-analytics\'.')
+  logAnalyticsWorkspaceResourceId: string
 }
