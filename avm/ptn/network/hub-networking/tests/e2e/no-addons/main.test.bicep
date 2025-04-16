@@ -57,7 +57,6 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
       location: resourceLocation
       hubVirtualNetworks: {
         hub1: {
@@ -81,11 +80,6 @@ module testDeployment '../../../main.bicep' = [
               workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
             }
           ]
-          location: resourceLocation
-          lock: {
-            kind: 'CanNotDelete'
-            name: 'hub1Lock'
-          }
           routes: [
             {
               name: 'defaultRoute'
@@ -109,11 +103,6 @@ module testDeployment '../../../main.bicep' = [
               addressPrefix: cidrSubnet(addressPrefix, 26, 2)
             }
           ]
-          tags: {
-            'hidden-title': 'This is visible in the resource name'
-            Environment: 'Non-Prod'
-            Role: 'DeploymentValidation'
-          }
           vnetEncryption: false
           vnetEncryptionEnforcement: 'AllowUnencrypted'
         }
