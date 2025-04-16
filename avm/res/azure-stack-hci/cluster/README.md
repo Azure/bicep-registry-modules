@@ -44,8 +44,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: '<name>'
-    // Non-required parameters
     deploymentSettings: {
       clusterNodeNames: '<clusterNodeNames>'
       clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
@@ -158,6 +156,8 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       ]
       subnetMask: '255.255.255.0'
     }
+    name: '<name>'
+    // Non-required parameters
     deploymentUser: 'deployUser'
     deploymentUserPassword: '<deploymentUserPassword>'
     localAdminPassword: '<localAdminPassword>'
@@ -181,10 +181,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "<name>"
-    },
-    // Non-required parameters
     "deploymentSettings": {
       "value": {
         "clusterNodeNames": "<clusterNodeNames>",
@@ -299,6 +295,10 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "subnetMask": "255.255.255.0"
       }
     },
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
     "deploymentUser": {
       "value": "deployUser"
     },
@@ -332,8 +332,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
 using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
 
 // Required parameters
-param name = '<name>'
-// Non-required parameters
 param deploymentSettings = {
   clusterNodeNames: '<clusterNodeNames>'
   clusterWitnessStorageAccountName: '<clusterWitnessStorageAccountName>'
@@ -446,6 +444,8 @@ param deploymentSettings = {
   ]
   subnetMask: '255.255.255.0'
 }
+param name = '<name>'
+// Non-required parameters
 param deploymentUser = 'deployUser'
 param deploymentUserPassword = '<deploymentUserPassword>'
 param localAdminPassword = '<localAdminPassword>'
@@ -471,8 +471,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
   name: 'clusterDeployment'
   params: {
     // Required parameters
-    name: '<name>'
-    // Non-required parameters
     deploymentSettings: {
       bitlockerBootVolume: true
       bitlockerDataVolumes: true
@@ -591,6 +589,8 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       ]
       subnetMask: '255.255.255.0'
     }
+    name: '<name>'
+    // Non-required parameters
     deploymentUser: 'deployUser'
     deploymentUserPassword: '<deploymentUserPassword>'
     localAdminPassword: '<localAdminPassword>'
@@ -619,10 +619,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "<name>"
-    },
-    // Non-required parameters
     "deploymentSettings": {
       "value": {
         "bitlockerBootVolume": true,
@@ -743,6 +739,10 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         "subnetMask": "255.255.255.0"
       }
     },
+    "name": {
+      "value": "<name>"
+    },
+    // Non-required parameters
     "deploymentUser": {
       "value": "deployUser"
     },
@@ -783,8 +783,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
 using 'br/public:avm/res/azure-stack-hci/cluster:<version>'
 
 // Required parameters
-param name = '<name>'
-// Non-required parameters
 param deploymentSettings = {
   bitlockerBootVolume: true
   bitlockerDataVolumes: true
@@ -903,6 +901,8 @@ param deploymentSettings = {
   ]
   subnetMask: '255.255.255.0'
 }
+param name = '<name>'
+// Non-required parameters
 param deploymentUser = 'deployUser'
 param deploymentUserPassword = '<deploymentUserPassword>'
 param localAdminPassword = '<localAdminPassword>'
@@ -925,6 +925,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`deploymentSettings`](#parameter-deploymentsettings) | object | The deployment settings of the cluster. |
 | [`name`](#parameter-name) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. |
 
 **Conditional parameters**
@@ -947,7 +948,6 @@ param tags = {
 | [`defaultARBApplicationContentType`](#parameter-defaultarbapplicationcontenttype) | string | Content type of the default ARB application. |
 | [`defaultARBApplicationTags`](#parameter-defaultarbapplicationtags) | object | Tags of the default ARB application. |
 | [`deploymentOperations`](#parameter-deploymentoperations) | array | The cluster deployment operations to execute. Defaults to "[Validate, Deploy]". |
-| [`deploymentSettings`](#parameter-deploymentsettings) | object | The deployment settings of the cluster. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`keyvaultResourceGroup`](#parameter-keyvaultresourcegroup) | string | Key vault resource group, which is used for for storing secrets for the HCI cluster. |
 | [`keyvaultSubscriptionId`](#parameter-keyvaultsubscriptionid) | string | Key vault subscription ID, which is used for for storing secrets for the HCI cluster. |
@@ -962,111 +962,11 @@ param tags = {
 | [`witnessStoragekeyContentType`](#parameter-witnessstoragekeycontenttype) | string | Content type of the witness storage key. |
 | [`witnessStoragekeyTags`](#parameter-witnessstoragekeytags) | object | Tags of the witness storage key. |
 
-### Parameter: `name`
-
-The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `deploymentUser`
-
-The name of the deployment user. Required if useSharedKeyVault is true.
-
-- Required: No
-- Type: string
-
-### Parameter: `deploymentUserPassword`
-
-The password of the deployment user. Required if useSharedKeyVault is true.
-
-- Required: No
-- Type: securestring
-
-### Parameter: `localAdminPassword`
-
-The password of the local admin user. Required if useSharedKeyVault is true.
-
-- Required: No
-- Type: securestring
-
-### Parameter: `localAdminUser`
-
-The name of the local admin user. Required if useSharedKeyVault is true.
-
-- Required: No
-- Type: string
-
-### Parameter: `servicePrincipalId`
-
-The service principal ID for ARB. Required if useSharedKeyVault is true.
-
-- Required: No
-- Type: string
-
-### Parameter: `servicePrincipalSecret`
-
-The service principal secret for ARB. Required if useSharedKeyVault is true.
-
-- Required: No
-- Type: securestring
-
-### Parameter: `azureStackLCMUserCredentialContentType`
-
-Content type of the azure stack lcm user credential.
-
-- Required: No
-- Type: string
-- Default: `'Secret'`
-
-### Parameter: `azureStackLCMUserCredentialTags`
-
-Tags of azure stack LCM user credential.
-
-- Required: No
-- Type: object
-
-### Parameter: `defaultARBApplicationContentType`
-
-Content type of the default ARB application.
-
-- Required: No
-- Type: string
-- Default: `'Secret'`
-
-### Parameter: `defaultARBApplicationTags`
-
-Tags of the default ARB application.
-
-- Required: No
-- Type: object
-
-### Parameter: `deploymentOperations`
-
-The cluster deployment operations to execute. Defaults to "[Validate, Deploy]".
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    'Deploy'
-    'Validate'
-  ]
-  ```
-- Allowed:
-  ```Bicep
-  [
-    'Deploy'
-    'Validate'
-  ]
-  ```
-
 ### Parameter: `deploymentSettings`
 
 The deployment settings of the cluster.
 
-- Required: No
+- Required: Yes
 - Type: object
 
 **Required parameters**
@@ -1591,6 +1491,106 @@ Limits the applications and the code that you can run on your Azure Stack HCI cl
 - Required: No
 - Type: bool
 
+### Parameter: `name`
+
+The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `deploymentUser`
+
+The name of the deployment user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: string
+
+### Parameter: `deploymentUserPassword`
+
+The password of the deployment user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `localAdminPassword`
+
+The password of the local admin user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `localAdminUser`
+
+The name of the local admin user. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePrincipalId`
+
+The service principal ID for ARB. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: string
+
+### Parameter: `servicePrincipalSecret`
+
+The service principal secret for ARB. Required if useSharedKeyVault is true.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `azureStackLCMUserCredentialContentType`
+
+Content type of the azure stack lcm user credential.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `azureStackLCMUserCredentialTags`
+
+Tags of azure stack LCM user credential.
+
+- Required: No
+- Type: object
+
+### Parameter: `defaultARBApplicationContentType`
+
+Content type of the default ARB application.
+
+- Required: No
+- Type: string
+- Default: `'Secret'`
+
+### Parameter: `defaultARBApplicationTags`
+
+Tags of the default ARB application.
+
+- Required: No
+- Type: object
+
+### Parameter: `deploymentOperations`
+
+The cluster deployment operations to execute. Defaults to "[Validate, Deploy]".
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    'Deploy'
+    'Validate'
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    'Deploy'
+    'Validate'
+  ]
+  ```
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -1794,6 +1794,7 @@ Tags of the witness storage key.
 | `resourceGroupName` | string | The resource group of the cluster. |
 | `resourceId` | string | The ID of the cluster. |
 | `systemAssignedMIPrincipalId` | string | The managed identity of the cluster. |
+| `vSwitchName` | string | The name of the vSwitch. |
 
 ## Data Collection
 

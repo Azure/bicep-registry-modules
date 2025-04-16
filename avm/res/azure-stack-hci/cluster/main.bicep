@@ -26,8 +26,8 @@ param deploymentOperations string[] = ['Validate', 'Deploy']
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The deployment settings of the cluster.')
-param deploymentSettings deploymentSettingsType?
+@description('Required. The deployment settings of the cluster.')
+param deploymentSettings deploymentSettingsType
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
@@ -218,7 +218,16 @@ module deploymentSetting 'deployment-setting/main.bicep' = [
       domainOUPath: deploymentSettings!.domainOUPath
       endingIPAddress: deploymentSettings!.endingIPAddress
       keyVaultName: deploymentSettings!.keyVaultName
-      networkIntents: deploymentSettings!.networkIntents
+      networkIntents: [
+        for intent in deploymentSettings.networkIntents: {
+          ...intent
+          qosPolicyOverrides: {
+            bandwidthPercentage_SMB: intent.qosPolicyOverrides.bandwidthPercentageSMB
+            priorityValue8021Action_Cluster: intent.qosPolicyOverrides.priorityValue8021ActionCluster
+            priorityValue8021Action_SMB: intent.qosPolicyOverrides.priorityValue8021ActionSMB
+          }
+        }
+      ]
       startingIPAddress: deploymentSettings!.startingIPAddress
       storageConnectivitySwitchless: deploymentSettings!.storageConnectivitySwitchless
       storageNetworks: deploymentSettings!.storageNetworks
@@ -231,7 +240,7 @@ module deploymentSetting 'deployment-setting/main.bicep' = [
       enableStorageAutoIp: deploymentSettings!.?enableStorageAutoIp
       episodicDataUpload: deploymentSettings!.?episodicDataUpload
       hvciProtection: deploymentSettings!.?hvciProtection
-      isEuropeanUnionLocation: deploymentSettings!.?isRFEuropeanUnionLocation
+      isEuropeanUnionLocation: deploymentSettings!.?isEuropeanUnionLocation
       sideChannelMitigationEnforced: deploymentSettings!.?sideChannelMitigationEnforced
       smbClusterEncryption: deploymentSettings!.?smbClusterEncryption
       smbSigningEnforced: deploymentSettings!.?smbSigningEnforced
@@ -258,6 +267,9 @@ resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   }
 ]
 
+var managementNetworks = filter(deploymentSettings.networkIntents, n => contains(n.trafficType, 'Management'))
+var managementIntentName = length(managementNetworks) > 0 ? managementNetworks[0].name : ''
+
 @description('The name of the cluster.')
 output name string = cluster.name
 
@@ -272,6 +284,9 @@ output systemAssignedMIPrincipalId string = cluster.identity.principalId
 
 @description('The location of the cluster.')
 output location string = cluster.location
+
+@description('The name of the vSwitch.')
+output vSwitchName string = 'ConvergedSwitch(${managementIntentName})'
 
 // =============== //
 //   Definitions   //

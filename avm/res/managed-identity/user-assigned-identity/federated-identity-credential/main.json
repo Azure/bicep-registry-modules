@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "16526104427295478987"
+      "version": "0.34.44.8038",
+      "templateHash": "13656021764446440473"
     },
     "name": "User Assigned Identity Federated Identity Credential",
     "description": "This module deploys a User Assigned Identity Federated Identity Credential."
@@ -45,7 +45,7 @@
   "resources": [
     {
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "name": "[format('{0}/{1}', parameters('userAssignedIdentityName'), parameters('name'))]",
       "properties": {
         "audiences": "[parameters('audiences')]",

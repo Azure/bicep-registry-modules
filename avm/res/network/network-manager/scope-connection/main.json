@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "837833951169039445"
+      "version": "0.34.44.8038",
+      "templateHash": "8848113451130000358"
     },
     "name": "Network Manager Scope Connections",
     "description": "This module deploys a Network Manager Scope Connection.\nCreate a cross-tenant connection to manage a resource from another tenant."
