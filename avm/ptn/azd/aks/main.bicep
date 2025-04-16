@@ -102,7 +102,7 @@ param publicNetworkAccess string = 'Enabled'
 param loadBalancerSku string = 'standard'
 
 @description('Optional. Scope maps setting.')
-param scopeMaps scopeMapsType
+param scopeMaps scopeMapType[]?
 
 @description('Optional. Specifies whether the webApplicationRoutingEnabled add-on is enabled or not.')
 param webApplicationRoutingEnabled bool = true
@@ -435,7 +435,9 @@ output containerRegistryLoginServer string = containerRegistry.outputs.loginServ
 //   Definitions   //
 // =============== //
 
-type scopeMapsType = {
+@export()
+@description('The type of a scope map.')
+type scopeMapType = {
   @description('Optional. The name of the scope map.')
   name: string?
 
@@ -444,4 +446,4 @@ type scopeMapsType = {
 
   @description('Optional. The user friendly description of the scope map.')
   description: string?
-}[]?
+}
