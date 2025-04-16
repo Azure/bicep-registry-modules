@@ -93,6 +93,10 @@ param witnessStorageAccountSubscriptionId string?
 @description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.')
 param witnessStorageAccountResourceGroup string?
 
+@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
+@secure()
+param hciResourceProviderObjectId string
+
 // ============= //
 //   Variables   //
 // ============= //
@@ -197,6 +201,8 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     defaultARBApplicationTags: defaultARBApplicationTags
     witnessStorageAccountResourceGroup: witnessStorageAccountResourceGroup ?? resourceGroup().name
     witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
+    hciResourceProviderObjectId: hciResourceProviderObjectId
+    clusterNodeNames: deploymentSettings!.clusterNodeNames
   }
 }
 
@@ -240,13 +246,14 @@ module deploymentSetting 'deployment-setting/main.bicep' = [
       enableStorageAutoIp: deploymentSettings!.?enableStorageAutoIp
       episodicDataUpload: deploymentSettings!.?episodicDataUpload
       hvciProtection: deploymentSettings!.?hvciProtection
-      isEuropeanUnionLocation: deploymentSettings!.?isRFEuropeanUnionLocation
+      isEuropeanUnionLocation: deploymentSettings!.?isEuropeanUnionLocation
       sideChannelMitigationEnforced: deploymentSettings!.?sideChannelMitigationEnforced
       smbClusterEncryption: deploymentSettings!.?smbClusterEncryption
       smbSigningEnforced: deploymentSettings!.?smbSigningEnforced
       storageConfigurationMode: deploymentSettings!.?storageConfigurationMode
       streamingDataClient: deploymentSettings!.?streamingDataClient
       wdacEnforced: deploymentSettings!.?wdacEnforced
+      hciResourceProviderObjectId: hciResourceProviderObjectId
     }
   }
 ]
@@ -267,6 +274,9 @@ resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-0
   }
 ]
 
+var managementNetworks = filter(deploymentSettings.networkIntents, n => contains(n.trafficType, 'Management'))
+var managementIntentName = length(managementNetworks) > 0 ? managementNetworks[0].name : ''
+
 @description('The name of the cluster.')
 output name string = cluster.name
 
@@ -281,6 +291,9 @@ output systemAssignedMIPrincipalId string = cluster.identity.principalId
 
 @description('The location of the cluster.')
 output location string = cluster.location
+
+@description('The name of the vSwitch.')
+output vSwitchName string = 'ConvergedSwitch(${managementIntentName})'
 
 // =============== //
 //   Definitions   //

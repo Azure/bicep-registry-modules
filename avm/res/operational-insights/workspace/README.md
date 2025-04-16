@@ -230,7 +230,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       ]
     }
     publicNetworkAccessForIngestion: 'Disabled'
-    publicNetworkAccessForQuery: 'Disabled'
+    publicNetworkAccessForQuery: 'Enabled'
     savedSearches: [
       {
         category: 'VDC Saved Searches'
@@ -557,7 +557,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": "Disabled"
     },
     "publicNetworkAccessForQuery": {
-      "value": "Disabled"
+      "value": "Enabled"
     },
     "savedSearches": {
       "value": [
@@ -866,7 +866,7 @@ param managedIdentities = {
   ]
 }
 param publicNetworkAccessForIngestion = 'Disabled'
-param publicNetworkAccessForQuery = 'Disabled'
+param publicNetworkAccessForQuery = 'Enabled'
 param savedSearches = [
   {
     category: 'VDC Saved Searches'

@@ -17,13 +17,13 @@ This module deploys an Azure NetApp File.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts) |
-| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/backupPolicies) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/backupVaults) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/backupVaults/backups) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/capacityPools/volumes) |
-| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/snapshotPolicies) |
+| `Microsoft.NetApp/netAppAccounts` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts) |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupPolicies) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupVaults) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupVaults/backups) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/snapshotPolicies) |
 
 ## Usage examples
 
@@ -1732,7 +1732,6 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-capacitypoolsvolumesdataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
-| [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
 **Optional parameters**
 
@@ -1741,6 +1740,7 @@ Replication properties.
 | [`remotePath`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
 | [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
 | [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
+| [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume (to only be set on the destination (dst)). |
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.endpointType`
 
@@ -1753,21 +1753,6 @@ Indicates whether the local volume is the source or destination for the Volume R
   [
     'dst'
     'src'
-  ]
-  ```
-
-### Parameter: `capacityPools.volumes.dataProtection.replication.replicationSchedule`
-
-The replication schedule for the volume.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '_10minutely'
-    'daily'
-    'hourly'
   ]
   ```
 
@@ -1820,6 +1805,21 @@ The resource ID of the remote volume. Required for Data Protection volumes.
 
 - Required: No
 - Type: string
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.replicationSchedule`
+
+The replication schedule for the volume (to only be set on the destination (dst)).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '_10minutely'
+    'daily'
+    'hourly'
+  ]
+  ```
 
 ### Parameter: `capacityPools.volumes.dataProtection.snapshot`
 
