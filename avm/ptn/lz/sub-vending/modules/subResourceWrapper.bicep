@@ -246,6 +246,10 @@ var deploymentNames = {
     'lz-vend-bastion-nsg-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
     64
   )
+  createBastionHost: take(
+    'lz-vend-bastion-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
+    64
+  )
   createLzRoleAssignmentsSub: take('lz-vend-rbac-sub-create-${uniqueString(subscriptionId, deployment().name)}', 64)
   createLzRoleAssignmentsRsgsSelf: take(
     'lz-vend-rbac-rsg-self-create-${uniqueString(subscriptionId, deployment().name)}',
@@ -803,7 +807,7 @@ module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-
         scheduleInfo: assignment.scheduleInfo
       }
       principalId: assignment.principalId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
@@ -842,7 +846,7 @@ module createLzPimEligibleRoleAssignmentsSub 'br/public:avm/ptn/authorization/pi
       }
       subscriptionId: subscriptionId
       principalId: assignment.principalId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
@@ -882,7 +886,7 @@ module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorizati
         scheduleInfo: assignment.scheduleInfo
       }
       subscriptionId: subscriptionId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
@@ -924,7 +928,7 @@ module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization
         scheduleInfo: assignment.scheduleInfo
       }
       subscriptionId: subscriptionId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       resourceGroupName: split(assignment.relativeScope, '/')[2]
       principalId: assignment.principalId
       roleDefinitionIdOrName: assignment.definition
@@ -964,7 +968,7 @@ module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authoriz
       }
       subscriptionId: subscriptionId
       principalId: assignment.principalId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
@@ -1002,7 +1006,7 @@ module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorizat
       }
       subscriptionId: subscriptionId
       principalId: assignment.principalId
-      requestType: assignment.?requestType ?? 'AdminAssign'
+      requestType: assignment.?requestType ?? 'AdminUpdate'
       roleDefinitionIdOrName: assignment.definition
       justification: assignment.?justification ?? null
       enableTelemetry: enableTelemetry
@@ -1249,7 +1253,7 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virt
 }
 
 module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
-  name: 'bastion-${virtualNetworkName}'
+  name: deploymentNames.createBastionHost
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
     createResourceGroupForLzNetworking
@@ -1378,7 +1382,7 @@ type excludeRolesType = {
   templateName: 'excludeRoles'
 
   @description('Required. The list of roles that are not allowed to be assigned by the delegate.')
-  ExludededRoles: array
+  excludedRoles: array
 }
 
 // Discriminator for the constrainedDelegationTemplatesType
@@ -1423,7 +1427,7 @@ func generateCodeRolesAndPrincipals(constrainRolesAndPrincipals constrainRolesAn
 @description('Generates the code for the "Exclude Roles" condition template.')
 @export()
 func generateCodeExcludeRoles(excludeRoles excludeRolesType) string =>
-  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.ExludededRoles)}})) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.ExludededRoles)}}))))'
+  '((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/write\'}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.excludedRoles)}})) AND ((!(ActionMatches{\'Microsoft.Authorization/roleAssignments/delete\'}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {${joinArray(excludeRoles.excludedRoles)}}))))'
 
 // Helper functions
 @export()
@@ -1536,6 +1540,9 @@ type pimRoleAssignmentTypeType = {
   @description('Required. The type of the role assignment.')
   roleAssignmentType: 'Active' | 'Eligible'
 
+  @description('Optional. The type of the PIM request.')
+  requestType: requestTypeType?
+
   @description('Required. The schedule information for the role assignment.')
   scheduleInfo: roleAssignmentScheduleType
 
@@ -1553,6 +1560,9 @@ type pimRoleAssignmentTypeType = {
 
   @description('Optional. The justification for the role assignment.')
   justification: string?
+
+  @description('Optional. The condition for the role assignment.')
+  roleAssignmentCondition: roleAssignmentConditionType?
 }
 
 @discriminator('durationType')

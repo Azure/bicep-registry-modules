@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "4728679665886035782"
+      "version": "0.34.44.8038",
+      "templateHash": "10318004586526838056"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -142,7 +142,7 @@
             "description": "Required. Name of the RBAC condition template."
           }
         },
-        "ExludededRoles": {
+        "excludedRoles": {
           "type": "array",
           "metadata": {
             "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
@@ -229,6 +229,26 @@
         }
       },
       "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.requestTypeType": {
+      "type": "string",
+      "allowedValues": [
+        "AdminAssign",
+        "AdminExtend",
+        "AdminRemove",
+        "AdminRenew",
+        "AdminUpdate",
+        "SelfActivate",
+        "SelfDeactivate",
+        "SelfExtend",
+        "SelfRenew"
+      ],
+      "metadata": {
+        "description": "Optional. The request type of the role assignment.",
         "__bicep_imported_from!": {
           "sourceTemplate": "modules/subResourceWrapper.bicep"
         }
@@ -505,6 +525,13 @@
             "description": "Required. The type of the role assignment."
           }
         },
+        "requestType": {
+          "$ref": "#/definitions/_1.requestTypeType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The type of the PIM request."
+          }
+        },
         "scheduleInfo": {
           "$ref": "#/definitions/_1.roleAssignmentScheduleType",
           "metadata": {
@@ -541,6 +568,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The justification for the role assignment."
+          }
+        },
+        "roleAssignmentCondition": {
+          "$ref": "#/definitions/_1.roleAssignmentConditionType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The condition for the role assignment."
           }
         }
       },
@@ -1235,8 +1269,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8425865084067531624"
+              "version": "0.34.44.8038",
+              "templateHash": "2299207875893670124"
             }
           },
           "parameters": {
@@ -1464,8 +1498,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "11709090420766635636"
+              "version": "0.34.44.8038",
+              "templateHash": "874881940488545006"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -1707,7 +1741,7 @@
                     "description": "Required. Name of the RBAC condition template."
                   }
                 },
-                "ExludededRoles": {
+                "excludedRoles": {
                   "type": "array",
                   "metadata": {
                     "description": "Required. The list of roles that are not allowed to be assigned by the delegate."
@@ -2033,6 +2067,13 @@
                     "description": "Required. The type of the role assignment."
                   }
                 },
+                "requestType": {
+                  "$ref": "#/definitions/requestTypeType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The type of the PIM request."
+                  }
+                },
                 "scheduleInfo": {
                   "$ref": "#/definitions/roleAssignmentScheduleType",
                   "metadata": {
@@ -2069,6 +2110,13 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. The justification for the role assignment."
+                  }
+                },
+                "roleAssignmentCondition": {
+                  "$ref": "#/definitions/roleAssignmentConditionType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The condition for the role assignment."
                   }
                 }
               },
@@ -2225,7 +2273,7 @@
                   ],
                   "output": {
                     "type": "string",
-                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', __bicep.joinArray(parameters('excludeRoles').ExludededRoles), __bicep.joinArray(parameters('excludeRoles').ExludededRoles))]"
+                    "value": "[format('((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/write''}}) OR ( @Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{0}}})) AND ((!(ActionMatches{{''Microsoft.Authorization/roleAssignments/delete''}}) OR (@Request[Microsoft.Authorization/roleAssignments:RoleDefinitionId] ForAnyOfAllValues:GuidNotEquals {{{1}}}))))', __bicep.joinArray(parameters('excludeRoles').excludedRoles), __bicep.joinArray(parameters('excludeRoles').excludedRoles))]"
                   },
                   "metadata": {
                     "description": "Generates the code for the \"Exclude Roles\" condition template.",
@@ -2640,6 +2688,7 @@
               "createLzVirtualWanConnection": "[take(format('lz-vend-vhc-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('virtualNetworkName'), variables('virtualHubResourceIdChecked'), deployment().name)), 64)]",
               "createLzNsg": "[take(format('lz-vend-nsg-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('virtualNetworkName'), deployment().name)), 64)]",
               "createBastionNsg": "[take(format('lz-vend-bastion-nsg-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('virtualNetworkName'), deployment().name)), 64)]",
+              "createBastionHost": "[take(format('lz-vend-bastion-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('virtualNetworkName'), deployment().name)), 64)]",
               "createLzRoleAssignmentsSub": "[take(format('lz-vend-rbac-sub-create-{0}', uniqueString(parameters('subscriptionId'), deployment().name)), 64)]",
               "createLzRoleAssignmentsRsgsSelf": "[take(format('lz-vend-rbac-rsg-self-create-{0}', uniqueString(parameters('subscriptionId'), deployment().name)), 64)]",
               "createLzRoleAssignmentsRsgsNotSelf": "[take(format('lz-vend-rbac-rsg-nself-create-{0}', uniqueString(parameters('subscriptionId'), deployment().name)), 64)]",
@@ -2727,8 +2776,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "8452628568304993719"
+                      "version": "0.34.44.8038",
+                      "templateHash": "10171076818497029341"
                     }
                   },
                   "parameters": {
@@ -2788,8 +2837,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "11019372772177629958"
+                      "version": "0.34.44.8038",
+                      "templateHash": "17760161620795039177"
                     }
                   },
                   "parameters": {
@@ -2848,8 +2897,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "8397259050503224920"
+                              "version": "0.34.44.8038",
+                              "templateHash": "15155659393206962294"
                             }
                           },
                           "parameters": {
@@ -2904,8 +2953,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.93.31351",
-                                      "templateHash": "7623404265819505597"
+                                      "version": "0.34.44.8038",
+                                      "templateHash": "11361529448519193838"
                                     }
                                   },
                                   "parameters": {
@@ -2982,8 +3031,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "8957892045766331539"
+                              "version": "0.34.44.8038",
+                              "templateHash": "12330446698888719301"
                             }
                           },
                           "parameters": {
@@ -3037,8 +3086,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.93.31351",
-                                      "templateHash": "14513856367602857749"
+                                      "version": "0.34.44.8038",
+                                      "templateHash": "18198824601755075788"
                                     }
                                   },
                                   "parameters": {
@@ -3638,8 +3687,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "11019372772177629958"
+                      "version": "0.34.44.8038",
+                      "templateHash": "17760161620795039177"
                     }
                   },
                   "parameters": {
@@ -3698,8 +3747,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "8397259050503224920"
+                              "version": "0.34.44.8038",
+                              "templateHash": "15155659393206962294"
                             }
                           },
                           "parameters": {
@@ -3754,8 +3803,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.93.31351",
-                                      "templateHash": "7623404265819505597"
+                                      "version": "0.34.44.8038",
+                                      "templateHash": "11361529448519193838"
                                     }
                                   },
                                   "parameters": {
@@ -3832,8 +3881,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "8957892045766331539"
+                              "version": "0.34.44.8038",
+                              "templateHash": "12330446698888719301"
                             }
                           },
                           "parameters": {
@@ -3887,8 +3936,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.93.31351",
-                                      "templateHash": "14513856367602857749"
+                                      "version": "0.34.44.8038",
+                                      "templateHash": "18198824601755075788"
                                     }
                                   },
                                   "parameters": {
@@ -7001,8 +7050,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "12390675321128699904"
+                      "version": "0.34.44.8038",
+                      "templateHash": "10550847613760163837"
                     }
                   },
                   "parameters": {
@@ -9224,7 +9273,7 @@
                     "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].principalId]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "roleDefinitionIdOrName": {
                     "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].definition]"
@@ -11047,7 +11096,7 @@
                     "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].principalId]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsSubscription')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "roleDefinitionIdOrName": {
                     "value": "[variables('pimRoleAssignmentsSubscription')[copyIndex()].definition]"
@@ -12864,7 +12913,7 @@
                     "value": "[parameters('subscriptionId')]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "resourceGroupName": {
                     "value": "[split(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope, '/')[2]]"
@@ -14690,7 +14739,7 @@
                     "value": "[parameters('subscriptionId')]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "resourceGroupName": {
                     "value": "[split(variables('pimRoleAssignmentsResourceGroupSelf')[copyIndex()].relativeScope, '/')[2]]"
@@ -16519,7 +16568,7 @@
                     "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "roleDefinitionIdOrName": {
                     "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].definition]"
@@ -18339,7 +18388,7 @@
                     "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].principalId]"
                   },
                   "requestType": {
-                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'requestType'), 'AdminAssign')]"
+                    "value": "[coalesce(tryGet(variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()], 'requestType'), 'AdminUpdate')]"
                   },
                   "roleDefinitionIdOrName": {
                     "value": "[variables('pimRoleAssignmentsResourceGroupNotSelf')[copyIndex()].definition]"
@@ -35370,7 +35419,7 @@
               "condition": "[and(parameters('virtualNetworkDeployBastion'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('bastion-{0}', parameters('virtualNetworkName'))]",
+              "name": "[variables('deploymentNames').createBastionHost]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('virtualNetworkResourceGroupName')]",
               "properties": {
