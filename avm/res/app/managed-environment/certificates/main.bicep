@@ -11,7 +11,7 @@ param managedEnvironmentName string
 param location string = resourceGroup().location
 
 @description('Optional. A key vault reference to the certificate to use for the custom domain.')
-param certificateKeyVaultProperties certificateKeyVaultPropertiesType
+param certificateKeyVaultProperties certificateKeyVaultPropertiesType?
 
 @allowed(['ServerSSLCertificate', 'ImagePullTrustedCA'])
 @description('Optional. The type of the certificate.')
@@ -70,4 +70,4 @@ type certificateKeyVaultPropertiesType = {
 
   @description('Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain.')
   keyVaultUrl: string
-}?
+}
