@@ -1227,7 +1227,7 @@ function ConvertTo-FormattedJSONParameterObject {
         [regex]$pattern = '^\s*\"{0}([0-9a-zA-Z_]+):'
         $line = $pattern.replace($line, '"$1":', 1)
 
-        # [2.5] Syntax: Replace Bicep resource ID references
+        # [2.5] Syntax: Replace DSL-specific syntax
         $mayHaveValue = $line -match '^\s*.+?:\s+'
         if ($mayHaveValue) {
 
@@ -1237,7 +1237,7 @@ function ConvertTo-FormattedJSONParameterObject {
             $isLineWithEmptyObjectValue = $line -match '^.+:\s*{\s*}\s*$' # e.g., test: {}
             $isLineWithObjectPropertyReferenceValue = $lineValue -match '(?<=[^"])\b\.\b(?=[^"]*$)' # e.g., resourceGroupResources.outputs.virtualWWANResourceId, but not "domainName": "onmicrosoft.com"
             $isLineWithReferenceInLineKey = ($line -split ':')[0].Trim() -like '*.*'
-            $isLineWithStringNestedReference = $lineValue -match "['|`"]{1}.*\$\{.+" # e.g., "Download ${initializeSoftwareScriptName}"  or '${last(...)}'
+            $isLineWithStringNestedReference = $lineValue -match "['|`"]{1}.*(?<!\\)\$\{.+" # e.g., "Download ${initializeSoftwareScriptName}"  or '${last(...)}', but NOT "abc: \${xyz}"
             $isLineWithStringValue = $lineValue -match '^".+"$' # e.g. "value"
             $isLineWithFunction = $lineValue -match '^[a-zA-Z0-9]+\(.+' # e.g., split(something) or loadFileAsBase64("./test.pfx")
             $isLineWithPlainValue = $lineValue -match '^\w+$' # e.g. adminPassword: password
@@ -1291,7 +1291,7 @@ function ConvertTo-FormattedJSONParameterObject {
             }
         } else {
             if ($line -notlike '*"*"*' -and $line -like '*.*') {
-                # In case of a array value like '[ \n -> resourceGroupResources.outputs.managedIdentityPrincipalId <- \n ]' we'll only show "<managedIdentityPrincipalId>""
+                # In case of a array value like '[ \n -> resourceGroupResources.outputs.managedIdentityPrincipalId <- \n ]' we'll only show "<managedIdentityPrincipalId>"
                 $line = '"<{0}>"' -f $line.Split('.')[-1].Trim()
             } elseif ($line -match '^\s*[a-zA-Z]+\s*$') {
                 # If there is simply only a value such as a variable reference, we'll wrap it as a string to replace. For example a reference of a variable `addressPrefix` will be replaced with `"<addressPrefix>"`
@@ -1302,6 +1302,10 @@ function ConvertTo-FormattedJSONParameterObject {
             }
         }
 
+        # Escape characters that would be invalid in JSON
+        $line = $line -replace '\\\$', '\\$' # Replace "abc: \${xzy}" with "abc: \\${xzy}"
+
+        # Overwrite value
         $paramInJSONFormatArray[$index] = $line
     }
 
@@ -1417,6 +1421,7 @@ function ConvertTo-FormattedBicep {
             $line = $line -replace ',$', '' # Update any [xyz: abc,xyz,] to [xyz: abc,xyz]
             $line = $line -replace "'(\w+)':", '$1:' # Update any  ['xyz': xyz] to [xyz: xyz]
             $line = $line -replace "'(.+.getSecret\('.+'\))'", '$1' # Update any  [xyz: 'xyz.GetSecret()'] to [xyz: xyz.GetSecret()]
+            $line = $line -replace '\\\\\$', '\$' # Replace JSON-escaped "\\${aValue}" with Bicep counterpart "\${aValue}"
             $line
         }
         $bicepParamsArray = $bicepParamsArray[1..($bicepParamsArray.count - 2)]

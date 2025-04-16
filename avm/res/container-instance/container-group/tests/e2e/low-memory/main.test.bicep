@@ -43,6 +43,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
+      availabilityZone: -1
       containers: [
         {
           name: '${namePrefix}-az-aci-x-001'
@@ -63,12 +64,14 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      ipAddressPorts: [
-        {
-          protocol: 'Tcp'
-          port: 443
-        }
-      ]
+      ipAddress: {
+        ports: [
+          {
+            protocol: 'Tcp'
+            port: 443
+          }
+        ]
+      }
     }
   }
 ]

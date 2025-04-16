@@ -62,6 +62,12 @@ module testDeployment '../../../main.bicep' = [
         'hidden-title': 'This is visible in the resource name'
         Env: 'test'
       }
+      identitySettings: [
+        {
+          identity: nestedDependencies.outputs.managedIdentityResourceId
+          lifecycle: 'None'
+        }
+      ]
       roleAssignments: [
         {
           name: 'e9bac1ee-aebe-4513-9337-49e87a7be05e'
@@ -161,6 +167,17 @@ module testDeployment '../../../main.bicep' = [
         minReplicas: 4
         cooldownPeriod: 500
         pollingInterval: 45
+      }
+      authConfig: {
+        httpSettings: {
+          requireHttps: true
+        }
+        globalValidation: {
+          unauthenticatedClientAction: 'Return401'
+        }
+        platform: {
+          enabled: true
+        }
       }
     }
   }
