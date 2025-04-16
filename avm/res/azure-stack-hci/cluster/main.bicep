@@ -138,75 +138,6 @@ var formattedRoleAssignments = [
 // if deployment operations requested, validation must be performed first so we reverse sort the array
 var sortedDeploymentOperations = (!empty(deploymentOperations)) ? sort(deploymentOperations, (a, b) => a > b) : []
 
-var azureConnectedMachineResourceManagerRoleID = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  'f5819b54-e033-4d82-ac66-4fec3cbf3f4c'
-)
-var readerRoleID = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-)
-var azureStackHCIDeviceManagementRole = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
-)
-
-resource SPConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(
-    subscription().subscriptionId,
-    hciResourceProviderObjectId,
-    'ConnectedMachineResourceManagerRolePermissions',
-    resourceGroup().id
-  )
-  scope: resourceGroup()
-  properties: {
-    roleDefinitionId: azureConnectedMachineResourceManagerRoleID
-    principalId: hciResourceProviderObjectId
-    principalType: 'ServicePrincipal'
-    description: 'Created by Azure Stack HCI deployment template'
-  }
-}
-
-resource AzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(
-    subscription().subscriptionId,
-    hciResourceProviderObjectId,
-    'azureConnectedMachineResourceManager',
-    resourceGroup().id
-  )
-  properties: {
-    roleDefinitionId: azureConnectedMachineResourceManagerRoleID
-    principalId: hciResourceProviderObjectId
-    principalType: 'ServicePrincipal'
-    description: 'Created by Azure Stack HCI deployment template'
-  }
-}
-
-resource AzureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(
-    subscription().subscriptionId,
-    hciResourceProviderObjectId,
-    'azureStackHCIDeviceManagementRole',
-    resourceGroup().id
-  )
-  properties: {
-    roleDefinitionId: azureStackHCIDeviceManagementRole
-    principalId: hciResourceProviderObjectId
-    principalType: 'ServicePrincipal'
-    description: 'Created by Azure Stack HCI deployment template'
-  }
-}
-
-resource ReaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'reader', resourceGroup().id)
-  properties: {
-    roleDefinitionId: readerRoleID
-    principalId: hciResourceProviderObjectId
-    principalType: 'ServicePrincipal'
-    description: 'Created by Azure Stack HCI deployment template'
-  }
-}
-
 // ============= //
 //   Resources   //
 // ============= //
@@ -271,6 +202,7 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     witnessStorageAccountResourceGroup: witnessStorageAccountResourceGroup ?? resourceGroup().name
     witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
     hciResourceProviderObjectId: hciResourceProviderObjectId
+    clusterNodeNames: deploymentSettings!.clusterNodeNames
   }
 }
 
@@ -321,6 +253,7 @@ module deploymentSetting 'deployment-setting/main.bicep' = [
       storageConfigurationMode: deploymentSettings!.?storageConfigurationMode
       streamingDataClient: deploymentSettings!.?streamingDataClient
       wdacEnforced: deploymentSettings!.?wdacEnforced
+      hciResourceProviderObjectId: hciResourceProviderObjectId
     }
   }
 ]

@@ -65,6 +65,9 @@ param witnessStorageAccountResourceGroup string
 @secure()
 param hciResourceProviderObjectId string
 
+@description('Required. Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2].')
+param clusterNodeNames array
+
 resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   name: storageAccountName
   scope: resourceGroup(witnessStorageAccountSubscriptionId, witnessStorageAccountResourceGroup)
@@ -79,16 +82,28 @@ var keyVaultSecretUserRoleID = subscriptionResourceId(
   '4633458b-17de-408a-b874-0445c86b69e6'
 )
 
-resource KeyVaultSecretsUserPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'keyVaultSecretUser', resourceGroup().id)
-  scope: keyVault
-  properties: {
-    roleDefinitionId: keyVaultSecretUserRoleID
-    principalId: hciResourceProviderObjectId
-    principalType: 'ServicePrincipal'
-    description: 'Created by Azure Stack HCI deployment template'
+var arcNodeResourceIds = [
+  for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
+]
+
+resource KeyVaultSecretsUserPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+  for hciNode in arcNodeResourceIds: {
+    name: guid(
+      subscription().subscriptionId,
+      hciResourceProviderObjectId,
+      'keyVaultSecretUser',
+      hciNode,
+      resourceGroup().id
+    )
+    scope: keyVault
+    properties: {
+      roleDefinitionId: keyVaultSecretUserRoleID
+      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
+      principalType: 'ServicePrincipal'
+      description: 'Created by Azure Stack HCI deployment template'
+    }
   }
-}
+]
 
 resource azureStackLCMUserCredential 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   parent: keyVault
