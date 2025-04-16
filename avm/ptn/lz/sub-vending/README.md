@@ -71,13 +71,14 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/lz/sub-vending:<version>`.
 
 - [Deploy subscription with Bastion.](#example-1-deploy-subscription-with-bastion)
-- [Using only defaults.](#example-2-using-only-defaults)
-- [Hub and spoke topology.](#example-3-hub-and-spoke-topology)
-- [Hub and spoke topology with NAT gateway.](#example-4-hub-and-spoke-topology-with-nat-gateway)
-- [Using PIM Active Role assignments.](#example-5-using-pim-active-role-assignments)
-- [Using PIM Eligible Role assignments.](#example-6-using-pim-eligible-role-assignments)
-- [Using RBAC conditions.](#example-7-using-rbac-conditions)
-- [Vwan topology.](#example-8-vwan-topology)
+- [Using custom RBAC.](#example-2-using-custom-rbac)
+- [Using only defaults.](#example-3-using-only-defaults)
+- [Hub and spoke topology.](#example-4-hub-and-spoke-topology)
+- [Hub and spoke topology with NAT gateway.](#example-5-hub-and-spoke-topology-with-nat-gateway)
+- [Using PIM Active Role assignments.](#example-6-using-pim-active-role-assignments)
+- [Using PIM Eligible Role assignments.](#example-7-using-pim-eligible-role-assignments)
+- [Using RBAC conditions.](#example-8-using-rbac-conditions)
+- [Vwan topology.](#example-9-vwan-topology)
 
 ### Example 1: _Deploy subscription with Bastion._
 
@@ -268,7 +269,161 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 2: _Using only defaults._
+### Example 2: _Using custom RBAC._
+
+This instance deploys the module with custom RBAC for the role assignments.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  name: 'subVendingDeployment'
+  params: {
+    resourceProviders: {}
+    roleAssignmentEnabled: true
+    roleAssignments: [
+      {
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/fe651197-73b0-4f39-92b3-3ee9dbeeb14f'
+        isCustomRole: true
+        principalId: '<principalId>'
+        principalType: 'User'
+        relativeScope: ''
+      }
+      {
+        definition: 'contributor'
+        principalId: '<principalId>'
+        principalType: 'User'
+        relativeScope: ''
+      }
+    ]
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceProviders": {
+      "value": {}
+    },
+    "roleAssignmentEnabled": {
+      "value": true
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "definition": "/providers/Microsoft.Authorization/roleDefinitions/fe651197-73b0-4f39-92b3-3ee9dbeeb14f",
+          "isCustomRole": true,
+          "principalId": "<principalId>",
+          "principalType": "User",
+          "relativeScope": ""
+        },
+        {
+          "definition": "contributor",
+          "principalId": "<principalId>",
+          "principalType": "User",
+          "relativeScope": ""
+        }
+      ]
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param resourceProviders = {}
+param roleAssignmentEnabled = true
+param roleAssignments = [
+  {
+    definition: '/providers/Microsoft.Authorization/roleDefinitions/fe651197-73b0-4f39-92b3-3ee9dbeeb14f'
+    isCustomRole: true
+    principalId: '<principalId>'
+    principalType: 'User'
+    relativeScope: ''
+  }
+  {
+    definition: 'contributor'
+    principalId: '<principalId>'
+    principalType: 'User'
+    relativeScope: ''
+  }
+]
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+```
+
+</details>
+<p>
+
+### Example 3: _Using only defaults._
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -370,7 +525,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 3: _Hub and spoke topology._
+### Example 4: _Hub and spoke topology._
 
 This instance deploys a subscription with a hub-spoke network topology.
 
@@ -633,7 +788,7 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 4: _Hub and spoke topology with NAT gateway._
+### Example 5: _Hub and spoke topology with NAT gateway._
 
 This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
 
@@ -877,7 +1032,7 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 5: _Using PIM Active Role assignments._
+### Example 6: _Using PIM Active Role assignments._
 
 This instance deploys the module with PIM Active Role assignments.
 
@@ -1064,7 +1219,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 6: _Using PIM Eligible Role assignments._
+### Example 7: _Using PIM Eligible Role assignments._
 
 This instance deploys the module with PIM Eligible Role assignments.
 
@@ -1235,7 +1390,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 7: _Using RBAC conditions._
+### Example 8: _Using RBAC conditions._
 
 This instance deploys the module with RBAC conditions for the role assignments.
 
@@ -1404,7 +1559,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 8: _Vwan topology._
+### Example 9: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
 
@@ -1798,6 +1953,8 @@ Supply an array of objects containing the details of the PIM role assignments to
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`justification`](#parameter-pimroleassignmentsjustification) | string | The justification for the role assignment. |
+| [`requestType`](#parameter-pimroleassignmentsrequesttype) | string | The request type of the role assignment. |
+| [`roleAssignmentCondition`](#parameter-pimroleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
 | [`ticketInfo`](#parameter-pimroleassignmentsticketinfo) | object | The ticket information for the role assignment. |
 
 ### Parameter: `pimRoleAssignments.definition`
@@ -1962,6 +2119,231 @@ The justification for the role assignment.
 - Required: No
 - Type: string
 
+### Parameter: `pimRoleAssignments.requestType`
+
+The request type of the role assignment.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AdminAssign'
+    'AdminExtend'
+    'AdminRemove'
+    'AdminRenew'
+    'AdminUpdate'
+    'SelfActivate'
+    'SelfDeactivate'
+    'SelfExtend'
+    'SelfRenew'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition`
+
+The condition for the role assignment.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`conditionVersion`](#parameter-pimroleassignmentsroleassignmentconditionconditionversion) | string | The version of the condition template. |
+| [`delegationCode`](#parameter-pimroleassignmentsroleassignmentconditiondelegationcode) | string | The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '. |
+| [`roleConditionType`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontype) | object | The type of template for the role assignment condition. |
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.conditionVersion`
+
+The version of the condition template.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.delegationCode`
+
+The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '.
+
+- Required: No
+- Type: string
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType`
+
+The type of template for the role assignment condition.
+
+- Required: No
+- Type: object
+- Discriminator: `templateName`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`excludeRoles`](#variant-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderoles) |  |
+| [`constrainRoles`](#variant-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainroles) |  |
+| [`constrainRolesAndPrincipalTypes`](#variant-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypes) |  |
+| [`constrainRolesAndPrincipals`](#variant-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipals) |  |
+
+### Variant: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles`
+
+
+To use this variant, set the property `templateName` to `excludeRoles`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`excludedRoles`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexcludedroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.excludedRoles`
+
+The list of roles that are not allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'excludeRoles'
+  ]
+  ```
+
+### Variant: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles`
+
+
+To use this variant, set the property `templateName` to `constrainRoles`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rolesToAssign`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRoles'
+  ]
+  ```
+
+### Variant: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes`
+
+
+To use this variant, set the property `templateName` to `constrainRolesAndPrincipalTypes`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principleTypesToAssign`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesprincipletypestoassign) | array | The list of principle types that are allowed to be assigned roles by the delegate. |
+| [`rolesToAssign`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.principleTypesToAssign`
+
+The list of principle types that are allowed to be assigned roles by the delegate.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRolesAndPrincipalTypes'
+  ]
+  ```
+
+### Variant: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals`
+
+
+To use this variant, set the property `templateName` to `constrainRolesAndPrincipals`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalsToAssignTo`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsprincipalstoassignto) | array | The list of principals that are allowed to be assigned roles by the delegate. |
+| [`rolesToAssign`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-pimroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalstemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.principalsToAssignTo`
+
+The list of principals that are allowed to be assigned roles by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `pimRoleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRolesAndPrincipals'
+  ]
+  ```
+
 ### Parameter: `pimRoleAssignments.ticketInfo`
 
 The ticket information for the role assignment.
@@ -2094,6 +2476,7 @@ Supply an array of objects containing the details of the role assignments to cre
       // Owner role assignment at resource group scope
       principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
       definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+      isCustomRole: true
       relativeScope: '/resourceGroups/{resourceGroupName}'
     }
   ]
@@ -2111,6 +2494,7 @@ Supply an array of objects containing the details of the role assignments to cre
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`isCustomRole`](#parameter-roleassignmentsiscustomrole) | bool | Determine if the role assignment is a custom role or not. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the user, group, or service principal. |
 | [`roleAssignmentCondition`](#parameter-roleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
 
@@ -2134,6 +2518,13 @@ The relative scope of the role assignment.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `roleAssignments.isCustomRole`
+
+Determine if the role assignment is a custom role or not.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `roleAssignments.principalType`
 
@@ -2211,10 +2602,10 @@ To use this variant, set the property `templateName` to `excludeRoles`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`ExludededRoles`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexludededroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
+| [`excludedRoles`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexcludedroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
 | [`templateName`](#parameter-roleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolestemplatename) | string | Name of the RBAC condition template. |
 
-### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.ExludededRoles`
+### Parameter: `roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.excludedRoles`
 
 The list of roles that are not allowed to be assigned by the delegate.
 
