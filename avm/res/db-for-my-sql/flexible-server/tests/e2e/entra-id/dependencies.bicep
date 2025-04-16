@@ -28,5 +28,5 @@ output managedIdentityClientId string = managedIdentity.properties.clientId
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 @description('The name of the created Managed Identity.')
 output managedIdentityName string = managedIdentity.name
-@description('The SID of the EntraAdmin user.')
+@description('The object ID of the EntraAdmin user.')
 output entraAdminSid string = entraAdmin.id
