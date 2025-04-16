@@ -212,7 +212,8 @@ output resourceGroupName string = resourceGroup().name
 //   Definitions   //
 // =============== //
 
-import { ruleType } from 'subscription/main.bicep'
+import { ruleType } from 'subscription/rule/main.bicep'
+
 @export()
 @description('The type for a subscription.')
 type subscriptionType = {
@@ -237,10 +238,10 @@ type subscriptionType = {
   @description('Optional. A value that indicates whether a subscription has dead letter support when a message expires.')
   deadLetteringOnMessageExpiration: bool?
 
-  @description('Optional. A value that indicates whether a subscription has dead letter support when a message expires.')
+  @description('Optional. A value that indicates whether a subscription has dead letter support on filter evaluation exceptions.')
   deadLetteringOnFilterEvaluationExceptions: bool?
 
-  @description('Optional. ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes.')
+  @description('Optional. ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself.')
   defaultMessageTimeToLive: string?
 
   @description('Optional. ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes.')
@@ -249,13 +250,13 @@ type subscriptionType = {
   @description('Optional. A value that indicates whether server-side batched operations are enabled.')
   enableBatchedOperations: bool?
 
-  @description('Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to.')
+  @description('Optional. Queue/Topic name to forward the Dead Letter messages to.')
   forwardDeadLetteredMessagesTo: string?
 
-  @description('Optional. The name of the recipient entity to which all the messages sent to the subscription are forwarded to.')
+  @description('Optional. Queue/Topic name to forward the messages to.')
   forwardTo: string?
 
-  @description('Optional. A value that indicates whether the subscription supports the concept of session.')
+  @description('Optional. A value that indicates whether the subscription has an affinity to the client id.')
   isClientAffine: bool?
 
   @description('Optional. ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute.')
@@ -264,7 +265,7 @@ type subscriptionType = {
   @description('Optional. Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10.')
   maxDeliveryCount: int?
 
-  @description('Optional. A value that indicates whether the subscription supports the concept of session.')
+  @description('Optional. A value that indicates whether the subscription supports the concept of sessions.')
   requiresSession: bool?
 
   @description('Optional. The subscription rules.')
