@@ -191,6 +191,7 @@ module virtualHub_routingIntent 'routingIntent/main.bicep' = if (!empty(azureFir
   }
 }
 
+// Initially create the route tables without routes
 module virtualHub_routeTables 'hubRouteTable/main.bicep' = [
   for (routeTable, index) in (hubRouteTables ?? []): {
     name: '${uniqueString(deployment().name, location)}-routeTable-${index}'
@@ -198,7 +199,6 @@ module virtualHub_routeTables 'hubRouteTable/main.bicep' = [
       virtualHubName: virtualHub.name
       name: routeTable.name
       labels: routeTable.?labels
-      routes: routeTable.?routes
     }
   }
 ]
@@ -213,9 +213,26 @@ module virtualHub_hubVirtualNetworkConnections 'hubVirtualNetworkConnection/main
       remoteVirtualNetworkResourceId: virtualNetworkConnection.remoteVirtualNetworkResourceId
       routingConfiguration: virtualNetworkConnection.?routingConfiguration
     }
-    /*dependsOn: [
+    dependsOn: [
       virtualHub_routeTables
-    ]*/
+    ]
+  }
+]
+
+// Idempotently re-run route table deployments to add routes
+// This is a workaround to account for any routes that point to Virtual Network Connections created after the route tables
+module virtualHub_routeTables2 'hubRouteTable/main.bicep' = [
+  for (routeTable, index) in (hubRouteTables ?? []): {
+    name: '${uniqueString(deployment().name, location)}-routeTable2-${index}'
+    params: {
+      virtualHubName: virtualHub.name
+      name: routeTable.name
+      labels: routeTable.?labels
+      routes: routeTable.?routes
+    }
+    dependsOn: [
+      virtualHub_hubVirtualNetworkConnections
+    ]
   }
 ]
 
@@ -245,24 +262,22 @@ type hubRouteTableType = {
   labels: array?
 
   @description('Optional. List of all routes.')
-  routes: [
-    {
-      @description('Optional. The route name.')
-      destinations: string[]
+  routes: {
+    @description('Optional. The route name.')
+    destinations: string[]
 
-      @description('Optional. The address prefix for the route.')
-      destinationType: ('CIDR')
+    @description('Optional. The address prefix for the route.')
+    destinationType: ('CIDR')
 
-      @description('Optional. The name of the route.')
-      name: string
+    @description('Optional. The name of the route.')
+    name: string
 
-      @description('Optional. The next hop type for the route.')
-      nextHopType: string
+    @description('Optional. The next hop type for the route.')
+    nextHopType: string
 
-      @description('Optional. The next hop IP address for the route.')
-      nextHop: string?
-    }
-  ]?
+    @description('Optional. The next hop IP address for the route.')
+    nextHop: string?
+  }[]?
 }
 
 @export()

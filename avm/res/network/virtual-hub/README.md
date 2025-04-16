@@ -122,6 +122,17 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     hubRouteTables: [
       {
         name: 'routeTable1'
+        routes: [
+          {
+            destinations: [
+              '10.150.0.0/24'
+            ]
+            destinationType: 'CIDR'
+            name: 'route1'
+            nextHop: '<nextHop>'
+            nextHopType: 'ResourceId'
+          }
+        ]
       }
     ]
     hubVirtualNetworkConnections: [
@@ -203,7 +214,18 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     "hubRouteTables": {
       "value": [
         {
-          "name": "routeTable1"
+          "name": "routeTable1",
+          "routes": [
+            {
+              "destinations": [
+                "10.150.0.0/24"
+              ],
+              "destinationType": "CIDR",
+              "name": "route1",
+              "nextHop": "<nextHop>",
+              "nextHopType": "ResourceId"
+            }
+          ]
         }
       ]
     },
@@ -290,6 +312,17 @@ param virtualWanResourceId = '<virtualWanResourceId>'
 param hubRouteTables = [
   {
     name: 'routeTable1'
+    routes: [
+      {
+        destinations: [
+          '10.150.0.0/24'
+        ]
+        destinationType: 'CIDR'
+        name: 'route1'
+        nextHop: '<nextHop>'
+        nextHopType: 'ResourceId'
+      }
+    ]
   }
 ]
 param hubVirtualNetworkConnections = [
@@ -755,6 +788,57 @@ List of all routes.
 
 - Required: No
 - Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destinations`](#parameter-hubroutetablesroutesdestinations) | array | The route name. |
+| [`destinationType`](#parameter-hubroutetablesroutesdestinationtype) | string | The address prefix for the route. |
+| [`name`](#parameter-hubroutetablesroutesname) | string | The name of the route. |
+| [`nextHop`](#parameter-hubroutetablesroutesnexthop) | string | The next hop IP address for the route. |
+| [`nextHopType`](#parameter-hubroutetablesroutesnexthoptype) | string | The next hop type for the route. |
+
+### Parameter: `hubRouteTables.routes.destinations`
+
+The route name.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `hubRouteTables.routes.destinationType`
+
+The address prefix for the route.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CIDR'
+  ]
+  ```
+
+### Parameter: `hubRouteTables.routes.name`
+
+The name of the route.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `hubRouteTables.routes.nextHop`
+
+The next hop IP address for the route.
+
+- Required: No
+- Type: string
+
+### Parameter: `hubRouteTables.routes.nextHopType`
+
+The next hop type for the route.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `hubRoutingPreference`
 

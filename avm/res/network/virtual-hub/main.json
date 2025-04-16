@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "4808142346696572792"
+      "templateHash": "630429371048265718"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
@@ -30,51 +30,48 @@
         },
         "routes": {
           "type": "array",
-          "prefixItems": [
-            {
-              "type": "object",
-              "properties": {
-                "destinations": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Optional. The route name."
-                  }
+          "items": {
+            "type": "object",
+            "properties": {
+              "destinations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
                 },
-                "destinationType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "CIDR"
-                  ],
-                  "metadata": {
-                    "description": "Optional. The address prefix for the route."
-                  }
-                },
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Optional. The name of the route."
-                  }
-                },
-                "nextHopType": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Optional. The next hop type for the route."
-                  }
-                },
-                "nextHop": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The next hop IP address for the route."
-                  }
+                "metadata": {
+                  "description": "Optional. The route name."
+                }
+              },
+              "destinationType": {
+                "type": "string",
+                "allowedValues": [
+                  "CIDR"
+                ],
+                "metadata": {
+                  "description": "Optional. The address prefix for the route."
+                }
+              },
+              "name": {
+                "type": "string",
+                "metadata": {
+                  "description": "Optional. The name of the route."
+                }
+              },
+              "nextHopType": {
+                "type": "string",
+                "metadata": {
+                  "description": "Optional. The next hop type for the route."
+                }
+              },
+              "nextHop": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The next hop IP address for the route."
                 }
               }
             }
-          ],
-          "items": false,
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. List of all routes."
@@ -577,9 +574,6 @@
           },
           "labels": {
             "value": "[tryGet(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'labels')]"
-          },
-          "routes": {
-            "value": "[tryGet(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'routes')]"
           }
         },
         "template": {
@@ -792,7 +786,123 @@
         }
       },
       "dependsOn": [
-        "virtualHub"
+        "virtualHub",
+        "virtualHub_routeTables"
+      ]
+    },
+    "virtualHub_routeTables2": {
+      "copy": {
+        "name": "virtualHub_routeTables2",
+        "count": "[length(coalesce(parameters('hubRouteTables'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-routeTable2-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualHubName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].name]"
+          },
+          "labels": {
+            "value": "[tryGet(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'labels')]"
+          },
+          "routes": {
+            "value": "[tryGet(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'routes')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "6773877177810809325"
+            },
+            "name": "Virtual Hub Route Tables",
+            "description": "This module deploys a Virtual Hub Route Table."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The route table name."
+              }
+            },
+            "virtualHubName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual hub. Required if the template is used in a standalone deployment."
+              }
+            },
+            "labels": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of labels associated with this route table."
+              }
+            },
+            "routes": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of all routes."
+              }
+            }
+          },
+          "resources": {
+            "virtualHub": {
+              "existing": true,
+              "type": "Microsoft.Network/virtualHubs",
+              "apiVersion": "2022-11-01",
+              "name": "[parameters('virtualHubName')]"
+            },
+            "hubRouteTable": {
+              "type": "Microsoft.Network/virtualHubs/hubRouteTables",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
+              "properties": {
+                "labels": "[parameters('labels')]",
+                "routes": "[parameters('routes')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed virtual hub route table."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed virtual hub route table."
+              },
+              "value": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the virtual hub route table was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "virtualHub",
+        "virtualHub_hubVirtualNetworkConnections"
       ]
     }
   },

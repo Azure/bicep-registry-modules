@@ -62,6 +62,17 @@ module testDeployment '../../../main.bicep' = [
       hubRouteTables: [
         {
           name: 'routeTable1'
+          routes: [
+            {
+              name: 'route1'
+              destinationType: 'CIDR'
+              destinations: [
+                '10.150.0.0/24'
+              ]
+              nextHop: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/connections/connection1'
+              nextHopType: 'ResourceId'
+            }
+          ]
         }
       ]
       hubVirtualNetworkConnections: [
