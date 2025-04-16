@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "14482202250504712444"
+      "templateHash": "14622141287138177723"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -49,6 +49,7 @@
         },
         "certificateKeyVaultProperties": {
           "$ref": "#/definitions/certificateKeyVaultPropertiesType",
+          "nullable": true,
           "metadata": {
             "description": "Optional. A key vault reference."
           }
@@ -143,7 +144,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "description": "The type for the certificate's key vault properties.",
         "__bicep_imported_from!": {
@@ -665,7 +665,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "15951560263054769031"
+              "templateHash": "14812297244642020789"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -687,7 +687,6 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type for the certificate's key vault properties."
@@ -716,6 +715,7 @@
             },
             "certificateKeyVaultProperties": {
               "$ref": "#/definitions/certificateKeyVaultPropertiesType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A key vault reference to the certificate to use for the custom domain."
               }

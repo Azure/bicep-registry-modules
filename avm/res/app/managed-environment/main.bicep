@@ -335,7 +335,7 @@ type certificateType = {
   certificatePassword: string?
 
   @description('Optional. A key vault reference.')
-  certificateKeyVaultProperties: certificateKeyVaultPropertiesType
+  certificateKeyVaultProperties: certificateKeyVaultPropertiesType?
 }
 
 @export()
