@@ -370,6 +370,6 @@ type appLogsConfigurationLawType = {
   @description('Required. The destination of the logs.')
   destination: 'log-analytics'
 
-  @description('Required. Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to \'log-analytics\'.')
+  @description('Required. Existing Log Analytics Workspace resource ID.')
   logAnalyticsWorkspaceResourceId: string
 }

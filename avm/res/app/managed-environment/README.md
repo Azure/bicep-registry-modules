@@ -934,7 +934,7 @@ To use this variant, set the property `destination` to `log-analytics`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`destination`](#parameter-applogsconfigurationdestination-log-analyticsdestination) | string | The destination of the logs. |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-applogsconfigurationdestination-log-analyticsloganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to 'log-analytics'. |
+| [`logAnalyticsWorkspaceResourceId`](#parameter-applogsconfigurationdestination-log-analyticsloganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. |
 
 ### Parameter: `appLogsConfiguration.destination-log-analytics.destination`
 
@@ -951,7 +951,7 @@ The destination of the logs.
 
 ### Parameter: `appLogsConfiguration.destination-log-analytics.logAnalyticsWorkspaceResourceId`
 
-Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to 'log-analytics'.
+Existing Log Analytics Workspace resource ID.
 
 - Required: Yes
 - Type: string

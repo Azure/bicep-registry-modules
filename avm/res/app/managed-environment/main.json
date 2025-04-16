@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "1248033141932046886"
+      "templateHash": "4005158335575378668"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -151,7 +151,7 @@
         "logAnalyticsWorkspaceResourceId": {
           "type": "string",
           "metadata": {
-            "description": "Required. Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to 'log-analytics'."
+            "description": "Required. Existing Log Analytics Workspace resource ID."
           }
         }
       },
