@@ -51,7 +51,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       workloadProfiles: [
         {
           workloadProfileType: 'D4'
@@ -64,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
       dockerBridgeCidr: '172.16.0.1/28'
       platformReservedCidr: '172.17.17.0/24'
       platformReservedDnsIP: '172.17.17.17'
-      infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
+      infrastructureSubnetResourceId: nestedDependencies.outputs.subnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
     }
   }

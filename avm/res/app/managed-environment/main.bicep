@@ -4,9 +4,6 @@ metadata description = 'This module deploys an App Managed Environment (also kno
 @description('Required. Name of the Container Apps Managed Environment.')
 param name string
 
-@description('Required. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).')
-param logAnalyticsWorkspaceResourceId string
-
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
@@ -20,9 +17,6 @@ param managedIdentities managedIdentityAllType?
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
-
-@description('Optional. Logs destination.')
-param logsDestination string = 'log-analytics'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -43,9 +37,9 @@ param daprAIInstrumentationKey string = ''
 param dockerBridgeCidr string = ''
 
 @description('Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.')
-param infrastructureSubnetId string = ''
+param infrastructureSubnetResourceId string = ''
 
-@description('Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.')
+@description('Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetResourceId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param internal bool = false
 
 @description('Conditional. IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant.')
@@ -96,6 +90,9 @@ param storages storageType[]?
 
 @description('Optional. A Managed Environment Certificate.')
 param certificate certificateType?
+
+@description('Optional. The AppLogsConfiguration for the Managed Environment.')
+param appLogsConfiguration appLogsConfigurationType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -156,9 +153,12 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(logAnalyticsWorkspaceResourceId)) {
-  name: last(split(logAnalyticsWorkspaceResourceId, '/'))!
-  scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)) {
+  name: last(split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId!, '/'))!
+  scope: resourceGroup(
+    split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId!, '/')[2],
+    split(appLogsConfiguration.?logAnalyticsWorkspaceResourceId!, '/')[4]
+  )
 }
 
 resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
@@ -170,13 +170,19 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     appInsightsConfiguration: {
       connectionString: appInsightsConnectionString
     }
-    appLogsConfiguration: {
-      destination: logsDestination
-      logAnalyticsConfiguration: {
-        customerId: logAnalyticsWorkspace.properties.customerId
-        sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
-      }
-    }
+    appLogsConfiguration: !empty(appLogsConfiguration)
+      ? {
+          destination: appLogsConfiguration!.destination
+          ...(!empty(appLogsConfiguration.?logAnalyticsWorkspaceResourceId)
+            ? {
+                logAnalyticsConfiguration: {
+                  customerId: logAnalyticsWorkspace.properties.customerId
+                  sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
+                }
+              }
+            : {})
+        }
+      : null
     daprAIConnectionString: daprAIConnectionString
     daprAIInstrumentationKey: daprAIInstrumentationKey
     customDomainConfiguration: {
@@ -199,10 +205,14 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     publicNetworkAccess: publicNetworkAccess
     vnetConfiguration: {
       internal: internal
-      infrastructureSubnetId: !empty(infrastructureSubnetId) ? infrastructureSubnetId : null
-      dockerBridgeCidr: !empty(infrastructureSubnetId) ? dockerBridgeCidr : null
-      platformReservedCidr: empty(workloadProfiles) && !empty(infrastructureSubnetId) ? platformReservedCidr : null
-      platformReservedDnsIP: empty(workloadProfiles) && !empty(infrastructureSubnetId) ? platformReservedDnsIP : null
+      infrastructureSubnetId: !empty(infrastructureSubnetResourceId) ? infrastructureSubnetResourceId : null
+      dockerBridgeCidr: !empty(infrastructureSubnetResourceId) ? dockerBridgeCidr : null
+      platformReservedCidr: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
+        ? platformReservedCidr
+        : null
+      platformReservedDnsIP: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
+        ? platformReservedDnsIP
+        : null
     }
     workloadProfiles: !empty(workloadProfiles) ? workloadProfiles : null
     zoneRedundant: zoneRedundant
@@ -342,4 +352,14 @@ type storageType = {
 
   @description('Required. File share name.')
   shareName: string
+}
+
+@export()
+@description('The type for the App Logs Configuration.')
+type appLogsConfigurationType = {
+  @description('Required. The destination of the logs.')
+  destination: ('log-analytics' | 'azure-monitor' | 'none')
+
+  @description('Optional. Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to \'log-analytics\'.')
+  logAnalyticsWorkspaceResourceId: string?
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "11395333038508730086"
+      "version": "0.34.44.8038",
+      "templateHash": "14482202250504712444"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -98,6 +98,33 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of the storage."
+      }
+    },
+    "appLogsConfigurationType": {
+      "type": "object",
+      "properties": {
+        "destination": {
+          "type": "string",
+          "allowedValues": [
+            "azure-monitor",
+            "log-analytics",
+            "none"
+          ],
+          "metadata": {
+            "description": "Required. The destination of the logs."
+          }
+        },
+        "logAnalyticsWorkspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Existing Log Analytics Workspace resource ID. Must only be provided if destination is set to 'log-analytics'."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the App Logs Configuration."
       }
     },
     "certificateKeyVaultPropertiesType": {
@@ -265,12 +292,6 @@
         "description": "Required. Name of the Container Apps Managed Environment."
       }
     },
-    "logAnalyticsWorkspaceResourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990)."
-      }
-    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -300,13 +321,6 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
-      }
-    },
-    "logsDestination": {
-      "type": "string",
-      "defaultValue": "log-analytics",
-      "metadata": {
-        "description": "Optional. Logs destination."
       }
     },
     "enableTelemetry": {
@@ -344,7 +358,7 @@
         "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
-    "infrastructureSubnetId": {
+    "infrastructureSubnetResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -355,7 +369,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then \"infrastructureSubnetId\" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant."
+        "description": "Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then \"infrastructureSubnetResourceId\" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
     "platformReservedCidr": {
@@ -462,6 +476,13 @@
       "metadata": {
         "description": "Optional. A Managed Environment Certificate."
       }
+    },
+    "appLogsConfiguration": {
+      "$ref": "#/definitions/appLogsConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The AppLogsConfiguration for the Managed Environment."
+      }
     }
   },
   "variables": {
@@ -520,13 +541,13 @@
       }
     },
     "logAnalyticsWorkspace": {
-      "condition": "[not(empty(parameters('logAnalyticsWorkspaceResourceId')))]",
+      "condition": "[not(empty(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId')))]",
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
       "apiVersion": "2023-09-01",
-      "subscriptionId": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2]]",
-      "resourceGroup": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]]",
-      "name": "[last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))]"
+      "subscriptionId": "[split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/'))]"
     },
     "managedEnvironment": {
       "type": "Microsoft.App/managedEnvironments",
@@ -539,13 +560,7 @@
         "appInsightsConfiguration": {
           "connectionString": "[parameters('appInsightsConnectionString')]"
         },
-        "appLogsConfiguration": {
-          "destination": "[parameters('logsDestination')]",
-          "logAnalyticsConfiguration": {
-            "customerId": "[reference('logAnalyticsWorkspace').customerId]",
-            "sharedKey": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2023-09-01').primarySharedKey]"
-          }
-        },
+        "appLogsConfiguration": "[if(not(empty(parameters('appLogsConfiguration'))), shallowMerge(createArray(createObject('destination', parameters('appLogsConfiguration').destination), if(not(empty(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'))), createObject('logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/')[2], split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/'))), '2023-09-01').primarySharedKey)), createObject()))), null())]",
         "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
         "daprAIInstrumentationKey": "[parameters('daprAIInstrumentationKey')]",
         "customDomainConfiguration": {
@@ -563,10 +578,10 @@
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "vnetConfiguration": {
           "internal": "[parameters('internal')]",
-          "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('infrastructureSubnetId'), null())]",
-          "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('dockerBridgeCidr'), null())]",
-          "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), parameters('platformReservedCidr'), null())]",
-          "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), parameters('platformReservedDnsIP'), null())]"
+          "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetResourceId'))), parameters('infrastructureSubnetResourceId'), null())]",
+          "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetResourceId'))), parameters('dockerBridgeCidr'), null())]",
+          "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetResourceId')))), parameters('platformReservedCidr'), null())]",
+          "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetResourceId')))), parameters('platformReservedDnsIP'), null())]"
         },
         "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), parameters('workloadProfiles'), null())]",
         "zoneRedundant": "[parameters('zoneRedundant')]",
@@ -649,8 +664,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10404997262108850284"
+              "version": "0.34.44.8038",
+              "templateHash": "15951560263054769031"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
