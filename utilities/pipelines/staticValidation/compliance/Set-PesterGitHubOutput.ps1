@@ -165,7 +165,7 @@ function Set-PesterGitHubOutput {
                 $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $errorMessage, $testReference
             } else {
                 # Can happen if the test throws an exception instead of properly failing
-                $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $error[0].Exception.Message, ((($error[0].InvocationInfo.PositionMessage -replace '_', '\_') -replace '\n', '<br>') -replace '\r', '') | Out-String
+                $fileContent += '| {0} | {1} | |' -f $testName, ($failedTest.ErrorRecord -join '<br>')
             }
         }
     } else {
