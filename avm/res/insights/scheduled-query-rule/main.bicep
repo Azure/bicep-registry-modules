@@ -90,7 +90,7 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(managedIdentities.?userAssignedResourceIds)
-            ? 'UserAssigned' // fail('You can only configure either a system-assigned or user-assigned identities, not both.') // Not supported by PSRule: https://github.com/microsoft/PSRule/issues/2840
+            ? fail('You can only configure either a system-assigned or user-assigned identities, not both.')
             : 'SystemAssigned')
         : (!empty(managedIdentities.?userAssignedResourceIds) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
