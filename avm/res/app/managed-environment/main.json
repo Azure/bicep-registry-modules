@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "18342086610939241088"
+      "templateHash": "11489949855661359424"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -49,6 +49,7 @@
         },
         "certificateKeyVaultProperties": {
           "$ref": "#/definitions/certificateKeyVaultPropertiesType",
+          "nullable": true,
           "metadata": {
             "description": "Optional. A key vault reference."
           }
@@ -153,7 +154,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "description": "The type for the certificate's key vault properties.",
         "__bicep_imported_from!": {
@@ -368,7 +368,7 @@
         "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
       }
     },
-    "infrastructureSubnetId": {
+    "infrastructureSubnetResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -579,10 +579,10 @@
         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
         "vnetConfiguration": {
           "internal": "[parameters('internal')]",
-          "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('infrastructureSubnetId'), null())]",
-          "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('dockerBridgeCidr'), null())]",
-          "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), parameters('platformReservedCidr'), null())]",
-          "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), parameters('platformReservedDnsIP'), null())]"
+          "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetResourceId'))), parameters('infrastructureSubnetResourceId'), null())]",
+          "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetResourceId'))), parameters('dockerBridgeCidr'), null())]",
+          "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetResourceId')))), parameters('platformReservedCidr'), null())]",
+          "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetResourceId')))), parameters('platformReservedDnsIP'), null())]"
         },
         "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), parameters('workloadProfiles'), null())]",
         "zoneRedundant": "[parameters('zoneRedundant')]",
@@ -663,7 +663,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10404997262108850284"
+              "templateHash": "3341092726138278864"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
@@ -685,7 +685,6 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
                 "__bicep_export!": true,
                 "description": "The type for the certificate's key vault properties."
@@ -714,6 +713,7 @@
             },
             "certificateKeyVaultProperties": {
               "$ref": "#/definitions/certificateKeyVaultPropertiesType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A key vault reference to the certificate to use for the custom domain."
               }

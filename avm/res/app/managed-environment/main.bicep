@@ -37,7 +37,7 @@ param daprAIInstrumentationKey string = ''
 param dockerBridgeCidr string = ''
 
 @description('Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.')
-param infrastructureSubnetId string = ''
+param infrastructureSubnetResourceId string = ''
 
 @description('Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param internal bool = false
@@ -185,10 +185,14 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     publicNetworkAccess: publicNetworkAccess
     vnetConfiguration: {
       internal: internal
-      infrastructureSubnetId: !empty(infrastructureSubnetId) ? infrastructureSubnetId : null
-      dockerBridgeCidr: !empty(infrastructureSubnetId) ? dockerBridgeCidr : null
-      platformReservedCidr: empty(workloadProfiles) && !empty(infrastructureSubnetId) ? platformReservedCidr : null
-      platformReservedDnsIP: empty(workloadProfiles) && !empty(infrastructureSubnetId) ? platformReservedDnsIP : null
+      infrastructureSubnetId: !empty(infrastructureSubnetResourceId) ? infrastructureSubnetResourceId : null
+      dockerBridgeCidr: !empty(infrastructureSubnetResourceId) ? dockerBridgeCidr : null
+      platformReservedCidr: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
+        ? platformReservedCidr
+        : null
+      platformReservedDnsIP: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
+        ? platformReservedDnsIP
+        : null
     }
     workloadProfiles: !empty(workloadProfiles) ? workloadProfiles : null
     zoneRedundant: zoneRedundant
@@ -311,7 +315,7 @@ type certificateType = {
   certificatePassword: string?
 
   @description('Optional. A key vault reference.')
-  certificateKeyVaultProperties: certificateKeyVaultPropertiesType
+  certificateKeyVaultProperties: certificateKeyVaultPropertiesType?
 }
 
 @export()

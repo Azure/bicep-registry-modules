@@ -90,7 +90,7 @@ module testDeployment '../../../main.bicep' = [
       peerTrafficEncryption: true
       platformReservedCidr: '172.17.17.0/24'
       platformReservedDnsIP: '172.17.17.17'
-      infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
+      infrastructureSubnetResourceId: nestedDependencies.outputs.subnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
       managedIdentities: {
         systemAssigned: true

@@ -56,7 +56,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
@@ -100,8 +100,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
@@ -144,7 +144,7 @@ param appLogsConfiguration = {
 }
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
@@ -179,7 +179,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Non-required parameters
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
@@ -218,8 +218,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
@@ -259,7 +259,7 @@ param name = 'amemin001'
 // Non-required parameters
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
@@ -310,7 +310,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     dnsSuffix: 'contoso.com'
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
     location: '<location>'
     lock: {
@@ -433,8 +433,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
@@ -566,7 +566,7 @@ param certificate = {
 param dnsSuffix = 'contoso.com'
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
 param location = '<location>'
 param lock = {
@@ -668,7 +668,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     location: '<location>'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
@@ -717,8 +717,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "location": {
       "value": "<location>"
@@ -768,7 +768,7 @@ param appLogsConfiguration = {
 }
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param location = '<location>'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
@@ -811,7 +811,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
@@ -863,8 +863,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
@@ -917,7 +917,7 @@ param appLogsConfiguration = {
 }
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
@@ -952,7 +952,7 @@ param workloadProfiles = [
 | :-- | :-- | :-- |
 | [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
-| [`infrastructureSubnetId`](#parameter-infrastructuresubnetid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`infrastructureSubnetResourceId`](#parameter-infrastructuresubnetresourceid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant. |
 | [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
@@ -1005,7 +1005,7 @@ Name of the infrastructure resource group. If not provided, it will be set with 
 - Type: string
 - Default: `[take(format('ME_{0}', parameters('name')), 63)]`
 
-### Parameter: `infrastructureSubnetId`
+### Parameter: `infrastructureSubnetResourceId`
 
 Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.
 
