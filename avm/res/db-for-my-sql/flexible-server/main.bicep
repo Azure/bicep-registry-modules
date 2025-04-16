@@ -315,12 +315,12 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2023-12-30' = {
           type: 'AzureKeyVault'
           geoBackupKeyURI: geoRedundantBackup == 'Enabled'
             ? (!empty(customerManagedKeyGeo.?keyVersion ?? '')
-                ? '${cMKGeoKeyVault::cMKKey.properties.keyUri}/${customerManagedKeyGeo!.keyVersion}'
+                ? '${cMKGeoKeyVault::cMKKey.properties.keyUri}/${customerManagedKeyGeo.?keyVersion}'
                 : cMKGeoKeyVault::cMKKey.properties.keyUriWithVersion)
             : null
           geoBackupUserAssignedIdentityId: geoRedundantBackup == 'Enabled' ? cMKGeoUserAssignedIdentity.id : null
           primaryKeyURI: !empty(customerManagedKey.?keyVersion ?? '')
-            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
+            ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey.?keyVersion}'
             : cMKKeyVault::cMKKey.properties.keyUriWithVersion
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
         }
