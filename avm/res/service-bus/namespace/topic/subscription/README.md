@@ -27,6 +27,7 @@ This module deploys a Service Bus Namespace Topic Subscription.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`clientAffineProperties`](#parameter-clientaffineproperties) | object | The properties that are associated with a subscription that is client-affine. Required if 'isClientAffine' is set to true. |
 | [`namespaceName`](#parameter-namespacename) | string | The name of the parent Service Bus Namespace. Required if the template is used in a standalone deployment. |
 | [`topicName`](#parameter-topicname) | string | The name of the parent Service Bus Namespace Topic. Required if the template is used in a standalone deployment. |
 
@@ -35,18 +36,17 @@ This module deploys a Service Bus Namespace Topic Subscription.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoDeleteOnIdle`](#parameter-autodeleteonidle) | string | ISO 8601 timespan idle interval after which the subscription is automatically deleted. The minimum duration is 5 minutes. |
-| [`clientAffineProperties`](#parameter-clientaffineproperties) | object | The properties that are associated with a subscription that is client-affine. |
-| [`deadLetteringOnFilterEvaluationExceptions`](#parameter-deadletteringonfilterevaluationexceptions) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
+| [`deadLetteringOnFilterEvaluationExceptions`](#parameter-deadletteringonfilterevaluationexceptions) | bool | A value that indicates whether a subscription has dead letter support on filter evaluation exceptions. |
 | [`deadLetteringOnMessageExpiration`](#parameter-deadletteringonmessageexpiration) | bool | A value that indicates whether a subscription has dead letter support when a message expires. |
-| [`defaultMessageTimeToLive`](#parameter-defaultmessagetimetolive) | string | ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes. |
+| [`defaultMessageTimeToLive`](#parameter-defaultmessagetimetolive) | string | ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself. |
 | [`duplicateDetectionHistoryTimeWindow`](#parameter-duplicatedetectionhistorytimewindow) | string | ISO 8601 timespan that defines the duration of the duplicate detection history. The default value is 10 minutes. |
 | [`enableBatchedOperations`](#parameter-enablebatchedoperations) | bool | A value that indicates whether server-side batched operations are enabled. |
-| [`forwardDeadLetteredMessagesTo`](#parameter-forwarddeadletteredmessagesto) | string | The name of the recipient entity to which all the messages sent to the subscription are forwarded to. |
-| [`forwardTo`](#parameter-forwardto) | string | The name of the recipient entity to which all the messages sent to the subscription are forwarded to. |
-| [`isClientAffine`](#parameter-isclientaffine) | bool | A value that indicates whether the subscription supports the concept of session. |
-| [`lockDuration`](#parameter-lockduration) | string | ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute. |
+| [`forwardDeadLetteredMessagesTo`](#parameter-forwarddeadletteredmessagesto) | string | Queue/Topic name to forward the Dead Letter messages to. |
+| [`forwardTo`](#parameter-forwardto) | string | Queue/Topic name to forward the messages to. |
+| [`isClientAffine`](#parameter-isclientaffine) | bool | A value that indicates whether the subscription has an affinity to the client id. |
+| [`lockDuration`](#parameter-lockduration) | string | ISO 8061 lock duration timespan for the subscription. The default value is 1 minute. |
 | [`maxDeliveryCount`](#parameter-maxdeliverycount) | int | Number of maximum deliveries. A message is automatically deadlettered after this number of deliveries. Default value is 10. |
-| [`requiresSession`](#parameter-requiressession) | bool | A value that indicates whether the subscription supports the concept of session. |
+| [`requiresSession`](#parameter-requiressession) | bool | A value that indicates whether the subscription supports the concept of sessions. |
 | [`rules`](#parameter-rules) | array | The subscription rules. |
 | [`status`](#parameter-status) | string | Enumerates the possible values for the status of a messaging entity. |
 
@@ -56,6 +56,47 @@ The name of the service bus namespace topic subscription.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `clientAffineProperties`
+
+The properties that are associated with a subscription that is client-affine. Required if 'isClientAffine' is set to true.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`clientId`](#parameter-clientaffinepropertiesclientid) | string | Indicates the Client ID of the application that created the client-affine subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isDurable`](#parameter-clientaffinepropertiesisdurable) | bool | For client-affine subscriptions, this value indicates whether the subscription is durable or not. Defaults to true. |
+| [`isShared`](#parameter-clientaffinepropertiesisshared) | bool | For client-affine subscriptions, this value indicates whether the subscription is shared or not. Defaults to false. |
+
+### Parameter: `clientAffineProperties.clientId`
+
+Indicates the Client ID of the application that created the client-affine subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `clientAffineProperties.isDurable`
+
+For client-affine subscriptions, this value indicates whether the subscription is durable or not. Defaults to true.
+
+- Required: No
+- Type: bool
+
+### Parameter: `clientAffineProperties.isShared`
+
+For client-affine subscriptions, this value indicates whether the subscription is shared or not. Defaults to false.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `namespaceName`
 
@@ -79,17 +120,9 @@ ISO 8601 timespan idle interval after which the subscription is automatically de
 - Type: string
 - Default: `'P10675198DT2H48M5.477S'`
 
-### Parameter: `clientAffineProperties`
-
-The properties that are associated with a subscription that is client-affine.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
 ### Parameter: `deadLetteringOnFilterEvaluationExceptions`
 
-A value that indicates whether a subscription has dead letter support when a message expires.
+A value that indicates whether a subscription has dead letter support on filter evaluation exceptions.
 
 - Required: No
 - Type: bool
@@ -105,7 +138,7 @@ A value that indicates whether a subscription has dead letter support when a mes
 
 ### Parameter: `defaultMessageTimeToLive`
 
-ISO 8601 timespan idle interval after which the message expires. The minimum duration is 5 minutes.
+ISO 8061 Default message timespan to live value. This is the duration after which the message expires, starting from when the message is sent to Service Bus. This is the default value used when TimeToLive is not set on a message itself.
 
 - Required: No
 - Type: string
@@ -129,7 +162,7 @@ A value that indicates whether server-side batched operations are enabled.
 
 ### Parameter: `forwardDeadLetteredMessagesTo`
 
-The name of the recipient entity to which all the messages sent to the subscription are forwarded to.
+Queue/Topic name to forward the Dead Letter messages to.
 
 - Required: No
 - Type: string
@@ -137,7 +170,7 @@ The name of the recipient entity to which all the messages sent to the subscript
 
 ### Parameter: `forwardTo`
 
-The name of the recipient entity to which all the messages sent to the subscription are forwarded to.
+Queue/Topic name to forward the messages to.
 
 - Required: No
 - Type: string
@@ -145,7 +178,7 @@ The name of the recipient entity to which all the messages sent to the subscript
 
 ### Parameter: `isClientAffine`
 
-A value that indicates whether the subscription supports the concept of session.
+A value that indicates whether the subscription has an affinity to the client id.
 
 - Required: No
 - Type: bool
@@ -153,7 +186,7 @@ A value that indicates whether the subscription supports the concept of session.
 
 ### Parameter: `lockDuration`
 
-ISO 8601 timespan duration of a peek-lock; that is, the amount of time that the message is locked for other receivers. The maximum value for LockDuration is 5 minutes; the default value is 1 minute.
+ISO 8061 lock duration timespan for the subscription. The default value is 1 minute.
 
 - Required: No
 - Type: string
@@ -169,7 +202,7 @@ Number of maximum deliveries. A message is automatically deadlettered after this
 
 ### Parameter: `requiresSession`
 
-A value that indicates whether the subscription supports the concept of session.
+A value that indicates whether the subscription supports the concept of sessions.
 
 - Required: No
 - Type: bool
@@ -186,7 +219,8 @@ The subscription rules.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-rulesname) | string | The name of the service bus namespace topic subscription rule. |
+| [`filterType`](#parameter-rulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
+| [`name`](#parameter-rulesname) | string | The name of the Service Bus Namespace Topic Subscription Rule. |
 
 **Optional parameters**
 
@@ -194,12 +228,25 @@ The subscription rules.
 | :-- | :-- | :-- |
 | [`action`](#parameter-rulesaction) | object | Represents the filter actions which are allowed for the transformation of a message that have been matched by a filter expression. |
 | [`correlationFilter`](#parameter-rulescorrelationfilter) | object | Properties of correlationFilter. |
-| [`filterType`](#parameter-rulesfiltertype) | string | Filter type that is evaluated against a BrokeredMessage. |
 | [`sqlFilter`](#parameter-rulessqlfilter) | object | Properties of sqlFilter. |
+
+### Parameter: `rules.filterType`
+
+Filter type that is evaluated against a BrokeredMessage.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CorrelationFilter'
+    'SqlFilter'
+  ]
+  ```
 
 ### Parameter: `rules.name`
 
-The name of the service bus namespace topic subscription rule.
+The name of the Service Bus Namespace Topic Subscription Rule.
 
 - Required: Yes
 - Type: string
@@ -247,12 +294,6 @@ Properties of correlationFilter.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`to`](#parameter-rulescorrelationfilterto) | string | Address to send to. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -261,18 +302,12 @@ Properties of correlationFilter.
 | [`correlationId`](#parameter-rulescorrelationfiltercorrelationid) | string | Identifier of the correlation. |
 | [`label`](#parameter-rulescorrelationfilterlabel) | string | Application specific label. |
 | [`messageId`](#parameter-rulescorrelationfiltermessageid) | string | Identifier of the message. |
-| [`properties`](#parameter-rulescorrelationfilterproperties) | array | dictionary object for custom filters. |
+| [`properties`](#parameter-rulescorrelationfilterproperties) | object | Dictionary object for custom filters. |
 | [`replyTo`](#parameter-rulescorrelationfilterreplyto) | string | Address of the queue to reply to. |
 | [`replyToSessionId`](#parameter-rulescorrelationfilterreplytosessionid) | string | Session identifier to reply to. |
 | [`requiresPreprocessing`](#parameter-rulescorrelationfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
 | [`sessionId`](#parameter-rulescorrelationfiltersessionid) | string | Session identifier. |
-
-### Parameter: `rules.correlationFilter.to`
-
-Address to send to.
-
-- Required: Yes
-- Type: string
+| [`to`](#parameter-rulescorrelationfilterto) | string | Address to send to. |
 
 ### Parameter: `rules.correlationFilter.contentType`
 
@@ -304,16 +339,10 @@ Identifier of the message.
 
 ### Parameter: `rules.correlationFilter.properties`
 
-dictionary object for custom filters.
+Dictionary object for custom filters.
 
 - Required: No
-- Type: array
-- Allowed:
-  ```Bicep
-  [
-    {}
-  ]
-  ```
+- Type: object
 
 ### Parameter: `rules.correlationFilter.replyTo`
 
@@ -343,19 +372,12 @@ Session identifier.
 - Required: No
 - Type: string
 
-### Parameter: `rules.filterType`
+### Parameter: `rules.correlationFilter.to`
 
-Filter type that is evaluated against a BrokeredMessage.
+Address to send to.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CorrelationFilter'
-    'SqlFilter'
-  ]
-  ```
 
 ### Parameter: `rules.sqlFilter`
 
@@ -364,13 +386,25 @@ Properties of sqlFilter.
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sqlExpression`](#parameter-rulessqlfiltersqlexpression) | string | The SQL expression. e.g. MyProperty='ABC'. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`compatibilityLevel`](#parameter-rulessqlfiltercompatibilitylevel) | int | This property is reserved for future use. An integer value showing the compatibility level, currently hard-coded to 20. |
 | [`requiresPreprocessing`](#parameter-rulessqlfilterrequirespreprocessing) | bool | Value that indicates whether the rule action requires preprocessing. |
-| [`sqlExpression`](#parameter-rulessqlfiltersqlexpression) | string | SQL expression. e.g. MyProperty='ABC'. |
+
+### Parameter: `rules.sqlFilter.sqlExpression`
+
+The SQL expression. e.g. MyProperty='ABC'.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `rules.sqlFilter.compatibilityLevel`
 
@@ -385,13 +419,6 @@ Value that indicates whether the rule action requires preprocessing.
 
 - Required: No
 - Type: bool
-
-### Parameter: `rules.sqlFilter.sqlExpression`
-
-SQL expression. e.g. MyProperty='ABC'.
-
-- Required: No
-- Type: string
 
 ### Parameter: `status`
 
