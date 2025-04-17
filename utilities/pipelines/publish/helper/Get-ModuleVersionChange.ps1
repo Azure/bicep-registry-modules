@@ -35,7 +35,6 @@ function Get-ModuleVersionChange {
     )
 
     # the diff will be empty, if the version.json file was not updated
-    # if the version did not change, the function will return null
     $diff = git diff --diff-filter=AM HEAD^ HEAD $VersionFilePath | Out-String
 
     if ($diff -match '\-\s*"version":\s*"([0-9]{1})\.([0-9]{1})".*') {

@@ -1421,7 +1421,6 @@ Describe 'Module tests' -Tag 'Module' {
                     isTopLevelModule    = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType          = $moduleType
                     moduleVersionExists = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-                    changelogFilePath   = Join-Path -Path $moduleFolderPath 'CHANGELOG.md'
                     changelogContent    = Get-Content (Join-Path -Path $moduleFolderPath 'CHANGELOG.md') -ErrorAction SilentlyContinue
                 }
             }
@@ -1430,14 +1429,8 @@ Describe 'Module tests' -Tag 'Module' {
         It '[<moduleFolderName>] `CHANGELOG.md` must not be empty.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
 
             param(
-                [string] $changelogFilePath,
                 [string[]] $changelogContent
             )
-
-            if (-not (Test-Path -Path $changelogFilePath)) {
-                Set-ItResult -Skipped -Because 'CHANGELOG.md file not found.'
-                return
-            }
 
             # the changelog should not be empty
             $changelogContent.Length | Should -BeGreaterThan 0 -Because 'the changelog should not be empty'
@@ -1448,14 +1441,9 @@ Describe 'Module tests' -Tag 'Module' {
             param(
                 [string] $moduleType,
                 [string] $moduleFolderName,
-                [string] $changelogFilePath,
                 [string[]] $changelogContent
             )
 
-            if (-not (Test-Path -Path $changelogFilePath)) {
-                Set-ItResult -Skipped -Because "CHANGELOG.md file was not found in path [$changelogFilePath]."
-                return
-            }
             if ($changelogContent.Count -le 4) {
                 Set-ItResult -Skipped -Because "The CHANGELOG.md file's header is either missing or incorrect. You can find an example of the header [here](https://azure.github.io/Azure-Verified-Modules/spec/BCPNRF22/#example-content-of-the-changelogmd)."
                 return
@@ -1476,11 +1464,10 @@ Describe 'Module tests' -Tag 'Module' {
             param(
                 [string] $moduleFolderPath,
                 [string] $moduleFolderName,
-                [string] $changelogFilePath,
                 [string[]] $changelogContent
             )
 
-            if (-not (Test-Path -Path $changelogFilePath) -or $changelogContent.Count -le 4) {
+            if ($changelogContent.Count -le 4) {
                 Set-ItResult -Skipped -Because 'CHANGELOG.md file not found or uncomplete.'
                 return
             }
@@ -1499,11 +1486,10 @@ Describe 'Module tests' -Tag 'Module' {
         It '[<moduleFolderName>] `CHANGELOG.md` file''s sections must be sorted in a decending order.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
 
             param(
-                [string] $changelogFilePath,
                 [string[]] $changelogContent
             )
 
-            if (-not (Test-Path -Path $changelogFilePath) -or $changelogContent.Count -le 4) {
+            if ($changelogContent.Count -le 4) {
                 Set-ItResult -Skipped -Because 'CHANGELOG.md file not found or uncomplete.'
                 return
             }
@@ -1516,11 +1502,10 @@ Describe 'Module tests' -Tag 'Module' {
         It '[<moduleFolderName>] `CHANGELOG.md` versions must contain valid `Changes` and `Breaking Changes` sections.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
 
             param(
-                [string] $changelogFilePath,
                 [string[]] $changelogContent
             )
 
-            if (-not (Test-Path -Path $changelogFilePath) -or $changelogContent.Count -le 4) {
+            if ($changelogContent.Count -le 4) {
                 Set-ItResult -Skipped -Because 'CHANGELOG.md file not found or uncomplete.'
                 return
             }
@@ -1576,13 +1561,12 @@ Describe 'Module tests' -Tag 'Module' {
 
             param(
                 [string] $moduleFolderPath,
-                [string] $changelogFilePath,
                 [string] $moduleType,
                 [string] $moduleFolderName,
                 [string[]] $changelogContent
             )
 
-            if (-not (Test-Path -Path $changelogFilePath) -or $changelogContent.Count -le 4) {
+            if ($changelogContent.Count -le 4) {
                 Set-ItResult -Skipped -Because 'CHANGELOG.md file not found or uncomplete.'
                 return
             }
