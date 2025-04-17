@@ -52,8 +52,8 @@ param principalType string?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-module roleAssignment_mg 'scope-mg/main.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
-  name: '${uniqueString(deployment().name, location)}-RoleAssignment-MG-Module'
+module roleAssignment_mg 'mg-scope/main.bicep' = if (empty(subscriptionId) && empty(resourceGroupName)) {
+  name: '${uniqueString(deployment().name, location)}-RoleAssignment-Mg-Scope'
   scope: managementGroup(managementGroupId)
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName
@@ -69,8 +69,8 @@ module roleAssignment_mg 'scope-mg/main.bicep' = if (empty(subscriptionId) && em
   }
 }
 
-module roleAssignment_sub 'scope-sub/main.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
-  name: '${uniqueString(deployment().name, location)}-RoleAssignment-Sub-Module'
+module roleAssignment_sub 'sub-scope/main.bicep' = if (!empty(subscriptionId) && empty(resourceGroupName)) {
+  name: '${uniqueString(deployment().name, location)}-RoleAssignment-Sub-Scope'
   scope: subscription(subscriptionId!)
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName
@@ -85,8 +85,8 @@ module roleAssignment_sub 'scope-sub/main.bicep' = if (!empty(subscriptionId) &&
   }
 }
 
-module roleAssignment_rg 'scope-rg/main.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
-  name: '${uniqueString(deployment().name, location)}-RoleAssignment-RG-Module'
+module roleAssignment_rg 'rg-scope/main.bicep' = if (!empty(resourceGroupName) && !empty(subscriptionId)) {
+  name: '${uniqueString(deployment().name, location)}-RoleAssignment-Rg-Scope'
   scope: resourceGroup(subscriptionId!, resourceGroupName!)
   params: {
     roleDefinitionIdOrName: roleDefinitionIdOrName

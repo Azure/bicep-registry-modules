@@ -1,7 +1,7 @@
-metadata name = 'Role Assignments (Subscription scope)'
-metadata description = 'This module deploys a Role Assignment to a Subscription scope.'
+metadata name = 'Role Assignments (Management Group scope)'
+metadata description = 'This module deploys a Role Assignment to a Management Group scope.'
 
-targetScope = 'subscription'
+targetScope = 'managementGroup'
 
 @sys.description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param name string?
@@ -11,6 +11,9 @@ param roleDefinitionIdOrName string
 
 @sys.description('Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity).')
 param principalId string
+
+@sys.description('Optional. Group ID of the Management Group to assign the RBAC role to. If not provided, will use the current scope for deployment.')
+param managementGroupId string = managementGroup().name
 
 @sys.description('Optional. The description of the role assignment.')
 param description string?
@@ -47,6 +50,10 @@ var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Resource Policy Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '36243c78-bf99-498c-9df9-86d9f8d28608'
+  )
   'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
@@ -54,6 +61,10 @@ var builtInRoleNames = {
   'User Access Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+  'Management Group Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'ac63b705-f282-497d-ac71-919bf39d939d'
   )
 }
 
@@ -66,7 +77,7 @@ var roleDefinitionIdVar = builtInRoleNames[?roleDefinitionIdOrName] ?? (contains
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.authorization-roleassignment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.authorization-roleassignment.mgscp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -85,7 +96,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: name ?? guid(subscription().subscriptionId, roleDefinitionIdVar, principalId)
+  name: name ?? guid(managementGroupId, roleDefinitionIdVar, principalId)
   properties: {
     roleDefinitionId: roleDefinitionIdVar
     principalId: principalId
@@ -103,8 +114,5 @@ output name string = roleAssignment.name
 @sys.description('The resource ID of the Role Assignment.')
 output resourceId string = roleAssignment.id
 
-@sys.description('The name of the resource group the role assignment was applied at.')
-output subscriptionName string = subscription().displayName
-
 @sys.description('The scope this Role Assignment applies to.')
-output scope string = subscription().id
+output scope string = az.resourceId('Microsoft.Management/managementGroups', managementGroupId)
