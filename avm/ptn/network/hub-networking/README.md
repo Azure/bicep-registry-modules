@@ -678,6 +678,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enableBastion: false
         enablePeering: false
         flowTimeoutInMinutes: 30
+        location: '<location>'
         routes: [
           {
             name: 'defaultRoute'
@@ -748,6 +749,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enableBastion": false,
           "enablePeering": false,
           "flowTimeoutInMinutes": 30,
+          "location": "<location>",
           "routes": [
             {
               "name": "defaultRoute",
@@ -818,6 +820,7 @@ param hubVirtualNetworks = {
     enableBastion: false
     enablePeering: false
     flowTimeoutInMinutes: 30
+    location: '<location>'
     routes: [
       {
         name: 'defaultRoute'
@@ -910,6 +913,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
         enableBastion: true
         enablePeering: false
         flowTimeoutInMinutes: 30
+        location: '<location>'
         routes: [
           {
             name: 'defaultRoute'
@@ -1006,6 +1010,7 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
           "enableBastion": true,
           "enablePeering": false,
           "flowTimeoutInMinutes": 30,
+          "location": "<location>",
           "routes": [
             {
               "name": "defaultRoute",
@@ -1102,6 +1107,7 @@ param hubVirtualNetworks = {
     enableBastion: true
     enablePeering: false
     flowTimeoutInMinutes: 30
+    location: '<location>'
     routes: [
       {
         name: 'defaultRoute'

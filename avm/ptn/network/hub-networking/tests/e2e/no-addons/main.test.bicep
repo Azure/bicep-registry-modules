@@ -80,6 +80,7 @@ module testDeployment '../../../main.bicep' = [
               workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
             }
           ]
+          location: resourceLocation
           routes: [
             {
               name: 'defaultRoute'
