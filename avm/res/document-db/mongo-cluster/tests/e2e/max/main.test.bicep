@@ -155,9 +155,5 @@ module testDeployment '../../../main.bicep' = [
       sku: 'M30'
       storage: 256
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
