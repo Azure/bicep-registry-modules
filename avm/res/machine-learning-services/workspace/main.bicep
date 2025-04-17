@@ -46,7 +46,7 @@ param associatedContainerRegistryResourceId string?
 @sys.description('Optional. Enable service-side encryption.')
 param enableServiceSideCMKEncryption bool?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -56,11 +56,11 @@ param hbiWorkspace bool = false
 @sys.description('Conditional. The resource ID of the hub to associate with the workspace. Required if \'kind\' is set to \'Project\'.')
 param hubResourceId string?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
@@ -76,7 +76,7 @@ param tags object?
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The managed identity definition for this resource. At least one identity type is required.')
 param managedIdentities managedIdentityAllType = {
   systemAssigned: true
@@ -109,7 +109,7 @@ param systemDatastoresAuthMode string?
 param workspaceHubConfig workspaceHubConfigType?
 
 // Diagnostic Settings
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
@@ -119,7 +119,7 @@ param description string?
 @sys.description('Optional. URL for the discovery service to identify regional endpoints for machine learning experimentation services.')
 param discoveryUrl string?
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -385,10 +385,13 @@ resource workspace_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@202
   }
 ]
 
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.0' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(workspace.id, '/'))}-${privateEndpoint.?service ?? 'amlworkspace'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -472,11 +475,48 @@ output systemAssignedMIPrincipalId string? = workspace.?identity.?principalId
 @sys.description('The location the resource was deployed into.')
 output location string = workspace.location
 
+@sys.description('The private endpoints of the resource.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (pe, index) in (privateEndpoints ?? []): {
+    name: workspace_privateEndpoints[index].outputs.name
+    resourceId: workspace_privateEndpoints[index].outputs.resourceId
+    groupId: workspace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: workspace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: workspace_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
 
 @export()
+@sys.description('The type for the private endpoint output.')
+type privateEndpointOutputType = {
+  @sys.description('The name of the private endpoint.')
+  name: string
+
+  @sys.description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @sys.description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @sys.description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @sys.description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @sys.description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @sys.description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
+
+@export()
+@sys.description('The type for the feature store setting.')
 type featureStoreSettingType = {
   @sys.description('Optional. Compute runtime config for feature store type workspace.')
   computeRuntime: {
@@ -493,9 +533,11 @@ type featureStoreSettingType = {
 
 @export()
 @discriminator('type')
+@sys.description('The type for the outbound rule.')
 type outboundRuleType = fqdnoutboundRuleType | privateEndpointoutboundRuleType | serviceTagoutboundRuleType
 
 @export()
+@sys.description('The type for the FQDN outbound rule.')
 type fqdnoutboundRuleType = {
   @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
   type: 'FQDN'
@@ -508,6 +550,7 @@ type fqdnoutboundRuleType = {
 }
 
 @export()
+@sys.description('The type for the private endpoint outbound rule.')
 type privateEndpointoutboundRuleType = {
   @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\' or \'AllowInternetOutbound\'.')
   type: 'PrivateEndpoint'
@@ -529,6 +572,7 @@ type privateEndpointoutboundRuleType = {
 }
 
 @export()
+@sys.description('The type for the service tag outbound rule.')
 type serviceTagoutboundRuleType = {
   @sys.description('Required. Type of a managed network Outbound Rule of a machine learning workspace. Only supported when \'isolationMode\' is \'AllowOnlyApprovedOutbound\'.')
   type: 'ServiceTag'
@@ -550,6 +594,7 @@ type serviceTagoutboundRuleType = {
 }
 
 @export()
+@sys.description('The type for the managed network setting.')
 type managedNetworkSettingType = {
   @sys.description('Required. Isolation mode for the managed network of a machine learning workspace.')
   isolationMode: 'AllowInternetOutbound' | 'AllowOnlyApprovedOutbound' | 'Disabled'
@@ -565,6 +610,7 @@ type managedNetworkSettingType = {
 }
 
 @export()
+@sys.description('The type for the serverless compute setting.')
 type serverlessComputeSettingType = {
   @sys.description('Optional. The resource ID of an existing virtual network subnet in which serverless compute nodes should be deployed.')
   serverlessComputeCustomSubnet: string?
@@ -574,6 +620,7 @@ type serverlessComputeSettingType = {
 }
 
 @export()
+@sys.description('The type for the workspace hub configuration.')
 type workspaceHubConfigType = {
   @sys.description('Optional. The resource IDs of additional storage accounts to attach to the workspace.')
   additionalWorkspaceStorageAccounts: string[]?
@@ -585,6 +632,7 @@ type workspaceHubConfigType = {
 import { categoryType, connectionPropertyType } from 'connection/main.bicep'
 
 @export()
+@sys.description('The type for the workspace connection.')
 type connectionType = {
   @sys.description('Required. Name of the connection to create.')
   name: string

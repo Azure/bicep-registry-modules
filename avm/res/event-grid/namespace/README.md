@@ -821,7 +821,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
       dynamic: [
         {
           key: 'dynamic1'
-          value: '<value>'
+          value: '\${client.authenticationName}'
         }
       ]
       static: [
@@ -993,7 +993,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
         "dynamic": [
           {
             "key": "dynamic1",
-            "value": "<value>"
+            "value": "\\${client.authenticationName}"
           }
         ],
         "static": [
@@ -1151,7 +1151,7 @@ param routingEnrichments = {
   dynamic: [
     {
       key: 'dynamic1'
-      value: '<value>'
+      value: '\${client.authenticationName}'
     }
   ]
   static: [
@@ -1304,7 +1304,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
       dynamic: [
         {
           key: 'dynamic1'
-          value: '<value>'
+          value: '\${client.authenticationName}'
         }
       ]
       static: [
@@ -1476,7 +1476,7 @@ module namespace 'br/public:avm/res/event-grid/namespace:<version>' = {
         "dynamic": [
           {
             "key": "dynamic1",
-            "value": "<value>"
+            "value": "\\${client.authenticationName}"
           }
         ],
         "static": [
@@ -1634,7 +1634,7 @@ param routingEnrichments = {
   dynamic: [
     {
       key: 'dynamic1'
-      value: '<value>'
+      value: '\${client.authenticationName}'
     }
   ]
   static: [
