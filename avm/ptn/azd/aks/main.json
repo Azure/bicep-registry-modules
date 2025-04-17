@@ -5,44 +5,44 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "289840400836213033"
+      "version": "0.34.44.8038",
+      "templateHash": "9214995165139420052"
     },
     "name": "Azd AKS",
     "description": "Creates an Azure Kubernetes Service (AKS) cluster with a system agent pool as well as an additional user agent pool.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
   },
   "definitions": {
-    "scopeMapsType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the scope map."
-            }
+    "scopeMapType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the scope map."
+          }
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "actions": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "metadata": {
-              "description": "Required. The list of scoped permissions for registry artifacts."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The user friendly description of the scope map."
-            }
+          "metadata": {
+            "description": "Required. The list of scoped permissions for registry artifacts."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The user friendly description of the scope map."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a scope map."
+      }
     },
     "aadProfileType": {
       "type": "object",
@@ -615,7 +615,11 @@
       }
     },
     "scopeMaps": {
-      "$ref": "#/definitions/scopeMapsType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/scopeMapType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Scope maps setting."
       }
