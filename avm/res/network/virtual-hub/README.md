@@ -789,7 +789,7 @@ List of all routes.
 - Required: No
 - Type: array
 
-**Conditional parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |

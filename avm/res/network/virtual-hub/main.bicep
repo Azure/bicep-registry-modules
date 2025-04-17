@@ -263,19 +263,19 @@ type hubRouteTableType = {
 
   @description('Optional. List of all routes.')
   routes: {
-    @description('Conditional. The address prefix for the route, required if defining routes.')
+    @description('Required. The address prefix for the route, required if defining routes.')
     destinations: string[]
 
-    @description('Conditional. The destination type for the route, required if defining routes.')
+    @description('Required. The destination type for the route, required if defining routes.')
     destinationType: ('CIDR')
 
-    @description('Conditional. The name of the route, required if defining routes.')
+    @description('Required. The name of the route, required if defining routes.')
     name: string
 
-    @description('Conditional. The next hop type for the route, required if defining routes.')
+    @description('Required. The next hop type for the route, required if defining routes.')
     nextHopType: string
 
-    @description('Conditional. The next hop IP address for the route, required if defining routes.')
+    @description('Required. The next hop IP address for the route, required if defining routes.')
     nextHop: string
   }[]?
 }
