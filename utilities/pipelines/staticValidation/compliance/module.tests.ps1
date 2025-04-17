@@ -536,7 +536,7 @@ Describe 'Module tests' -Tag 'Module' {
                     moduleType                = $moduleType
                     versionFileExists         = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
                     isMultiScopeModule        = (Split-Path $moduleFolderPath -Leaf) -match '\/(rg|sub|mg)-scope$'
-                    hasMultiScopeChildModules = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.Name -match '\/(rg|sub|mg)-scope$' }).Count -gt 0
+                    hasMultiScopeChildModules = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.Name -match '\/(rg|sub|mg)\-scope$' }).Count -gt 0
 
                 }
             }

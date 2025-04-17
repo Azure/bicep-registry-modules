@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "12848282493915543219"
+      "templateHash": "13407592738159136102"
     },
     "name": "Role Assignments (All scopes)",
     "description": "This module deploys a Role Assignment at a Management Group, Subscription or Resource Group scope.'\n\n> NOTE: This multi-scope module won't be published as is and only its nested modules should be used.\n"
@@ -110,7 +110,7 @@
       "condition": "[and(empty(parameters('subscriptionId')), empty(parameters('resourceGroupName')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-RoleAssignment-MG-Module', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-RoleAssignment-Mg-Scope', uniqueString(deployment().name, parameters('location')))]",
       "scope": "[format('Microsoft.Management/managementGroups/{0}', parameters('managementGroupId'))]",
       "location": "[deployment().location]",
       "properties": {
@@ -158,7 +158,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "6296153074104041658"
+              "templateHash": "5018706986756524797"
             },
             "name": "Role Assignments (Management Group scope)",
             "description": "This module deploys a Role Assignment to a Management Group scope."
@@ -267,7 +267,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.ptn.authorization-roleassignment.mgscp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -329,7 +329,7 @@
       "condition": "[and(not(empty(parameters('subscriptionId'))), empty(parameters('resourceGroupName')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-RoleAssignment-Sub-Module', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-RoleAssignment-Sub-Scope', uniqueString(deployment().name, parameters('location')))]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "location": "[deployment().location]",
       "properties": {
@@ -374,7 +374,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "6194612880634659414"
+              "templateHash": "4620206930237038050"
             },
             "name": "Role Assignments (Subscription scope)",
             "description": "This module deploys a Role Assignment to a Subscription scope."
@@ -474,7 +474,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.ptn.authorization-roleassignment.subscp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -543,7 +543,7 @@
       "condition": "[and(not(empty(parameters('resourceGroupName'))), not(empty(parameters('subscriptionId'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-RoleAssignment-RG-Module', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-RoleAssignment-Rg-Scope', uniqueString(deployment().name, parameters('location')))]",
       "subscriptionId": "[parameters('subscriptionId')]",
       "resourceGroup": "[parameters('resourceGroupName')]",
       "properties": {
@@ -585,7 +585,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "6831097585593617641"
+              "templateHash": "14135793099057947297"
             },
             "name": "Role Assignments (Resource Group scope)",
             "description": "This module deploys a Role Assignment to a Resource Group scope."
@@ -678,7 +678,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.ptn.authorization-roleassignment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+              "name": "[format('46d3xbcp.ptn.authorization-roleassignment.rgscp{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
