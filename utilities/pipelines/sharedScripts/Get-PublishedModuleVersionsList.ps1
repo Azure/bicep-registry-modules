@@ -9,13 +9,13 @@ Get a list of tags from a container registry repository. The tags are sorted in 
 Mandatory. The tag list url of a container registry.
 
 .EXAMPLE
-Get-ModulePublishedVersions TagListUrl 'https://mcr.microsoft.com/v2/bicep/avm/res/vault/key-vault/tags/list'
+Get-PublishedModuleVersionsList TagListUrl 'https://mcr.microsoft.com/v2/bicep/avm/res/vault/key-vault/tags/list'
 
 Returns the module versions for module `avm/res/vault/key-vault`. E.g., `@(0.1.0, 0.1.1, (...))`
 
 #>
 
-function Get-ModulePublishedVersions {
+function Get-PublishedModuleVersionsList {
 
     [CmdletBinding()]
     param (

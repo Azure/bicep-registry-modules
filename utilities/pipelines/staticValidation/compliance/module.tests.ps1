@@ -1581,7 +1581,7 @@ Describe 'Module tests' -Tag 'Module' {
 
             # get all tags for a module
             $tagListUrl = "https://mcr.microsoft.com/v2/bicep/avm/$moduleType/$moduleFolderName/tags/list"
-            $publishedTags = Get-ModulePublishedVersions -TagListUrl $tagListUrl
+            $publishedTags = Get-PublishedModuleVersionsList -TagListUrl $tagListUrl
 
             $incorrectVersions = [System.Collections.ArrayList]@()
             $regex = '##\s(\d+\.\d+\.\d+)'
