@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "2919468847561768594"
+      "templateHash": "9693676827612995059"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
@@ -39,7 +39,7 @@
                   "type": "string"
                 },
                 "metadata": {
-                  "description": "Required. The address prefix for the route, required if defining routes."
+                  "description": "Required. The address prefix for the route."
                 }
               },
               "destinationType": {
@@ -48,25 +48,25 @@
                   "CIDR"
                 ],
                 "metadata": {
-                  "description": "Required. The destination type for the route, required if defining routes."
+                  "description": "Required. The destination type for the route."
                 }
               },
               "name": {
                 "type": "string",
                 "metadata": {
-                  "description": "Required. The name of the route, required if defining routes."
+                  "description": "Required. The name of the route."
                 }
               },
               "nextHopType": {
                 "type": "string",
                 "metadata": {
-                  "description": "Required. The next hop type for the route, required if defining routes."
+                  "description": "Required. The next hop type for the route."
                 }
               },
               "nextHop": {
                 "type": "string",
                 "metadata": {
-                  "description": "Required. The next hop IP address for the route, required if defining routes."
+                  "description": "Required. The next hop IP address for the route."
                 }
               }
             }

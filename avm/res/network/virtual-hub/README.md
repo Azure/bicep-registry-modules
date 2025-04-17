@@ -793,22 +793,22 @@ List of all routes.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`destinations`](#parameter-hubroutetablesroutesdestinations) | array | The address prefix for the route, required if defining routes. |
-| [`destinationType`](#parameter-hubroutetablesroutesdestinationtype) | string | The destination type for the route, required if defining routes. |
-| [`name`](#parameter-hubroutetablesroutesname) | string | The name of the route, required if defining routes. |
-| [`nextHop`](#parameter-hubroutetablesroutesnexthop) | string | The next hop IP address for the route, required if defining routes. |
-| [`nextHopType`](#parameter-hubroutetablesroutesnexthoptype) | string | The next hop type for the route, required if defining routes. |
+| [`destinations`](#parameter-hubroutetablesroutesdestinations) | array | The address prefix for the route. |
+| [`destinationType`](#parameter-hubroutetablesroutesdestinationtype) | string | The destination type for the route. |
+| [`name`](#parameter-hubroutetablesroutesname) | string | The name of the route. |
+| [`nextHop`](#parameter-hubroutetablesroutesnexthop) | string | The next hop IP address for the route. |
+| [`nextHopType`](#parameter-hubroutetablesroutesnexthoptype) | string | The next hop type for the route. |
 
 ### Parameter: `hubRouteTables.routes.destinations`
 
-The address prefix for the route, required if defining routes.
+The address prefix for the route.
 
 - Required: Yes
 - Type: array
 
 ### Parameter: `hubRouteTables.routes.destinationType`
 
-The destination type for the route, required if defining routes.
+The destination type for the route.
 
 - Required: Yes
 - Type: string
@@ -821,21 +821,21 @@ The destination type for the route, required if defining routes.
 
 ### Parameter: `hubRouteTables.routes.name`
 
-The name of the route, required if defining routes.
+The name of the route.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `hubRouteTables.routes.nextHop`
 
-The next hop IP address for the route, required if defining routes.
+The next hop IP address for the route.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `hubRouteTables.routes.nextHopType`
 
-The next hop type for the route, required if defining routes.
+The next hop type for the route.
 
 - Required: Yes
 - Type: string
