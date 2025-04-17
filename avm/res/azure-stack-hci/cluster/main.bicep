@@ -93,6 +93,10 @@ param witnessStorageAccountSubscriptionId string?
 @description('Optional. Storage account resource group, which is used as the witness for the HCI Windows Failover Cluster.')
 param witnessStorageAccountResourceGroup string?
 
+@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
+@secure()
+param hciResourceProviderObjectId string
+
 // ============= //
 //   Variables   //
 // ============= //
@@ -197,6 +201,8 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     defaultARBApplicationTags: defaultARBApplicationTags
     witnessStorageAccountResourceGroup: witnessStorageAccountResourceGroup ?? resourceGroup().name
     witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
+    hciResourceProviderObjectId: hciResourceProviderObjectId
+    clusterNodeNames: deploymentSettings!.clusterNodeNames
   }
 }
 
@@ -247,6 +253,7 @@ module deploymentSetting 'deployment-setting/main.bicep' = [
       storageConfigurationMode: deploymentSettings!.?storageConfigurationMode
       streamingDataClient: deploymentSettings!.?streamingDataClient
       wdacEnforced: deploymentSettings!.?wdacEnforced
+      hciResourceProviderObjectId: hciResourceProviderObjectId
     }
   }
 ]

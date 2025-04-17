@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "17279097223066691618"
+      "version": "0.34.44.8038",
+      "templateHash": "8793526531064407412"
     },
     "name": "Container Apps Landing Zone Accelerator",
     "description": "This Azure Container Apps pattern module represents an Azure Container Apps deployment aligned with the cloud adoption framework"
@@ -241,6 +241,13 @@
       "metadata": {
         "description": "Optional. DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is \"false\"."
       }
+    },
+    "deployAgentPool": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Deploy the agent pool for the container registry. Default value is true."
+      }
     }
   },
   "resources": {
@@ -298,8 +305,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "1998809914851577461"
+              "version": "0.34.44.8038",
+              "templateHash": "1720455244460583658"
             }
           },
           "parameters": {
@@ -979,8 +986,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12840913516429389632"
+              "version": "0.34.44.8038",
+              "templateHash": "17651094098153877148"
             }
           },
           "parameters": {
@@ -8303,8 +8310,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "9447750732919489087"
+                      "version": "0.34.44.8038",
+                      "templateHash": "15171248637547501079"
                     }
                   },
                   "parameters": {
@@ -14937,8 +14944,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "6275130158563311802"
+                      "version": "0.34.44.8038",
+                      "templateHash": "6397614368367084490"
                     }
                   },
                   "parameters": {
@@ -21558,6 +21565,9 @@
           },
           "logAnalyticsWorkspaceId": {
             "value": "[reference('spoke').outputs.logAnalyticsWorkspaceId.value]"
+          },
+          "deployAgentPool": {
+            "value": "[parameters('deployAgentPool')]"
           }
         },
         "template": {
@@ -21566,8 +21576,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "6969527040213596528"
+              "version": "0.34.44.8038",
+              "templateHash": "14754541296409017226"
             }
           },
           "parameters": {
@@ -21627,6 +21637,13 @@
               "metadata": {
                 "description": "Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false."
               }
+            },
+            "deployAgentPool": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Deploy the agent pool for the container registry. Default value is true."
+              }
             }
           },
           "resources": [
@@ -21673,6 +21690,9 @@
                   },
                   "deployZoneRedundantResources": {
                     "value": "[parameters('deployZoneRedundantResources')]"
+                  },
+                  "deployAgentPool": {
+                    "value": "[parameters('deployAgentPool')]"
                   }
                 },
                 "template": {
@@ -21681,8 +21701,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15466368506945451556"
+                      "version": "0.34.44.8038",
+                      "templateHash": "14483073323584541408"
                     }
                   },
                   "parameters": {
@@ -21756,6 +21776,13 @@
                       "metadata": {
                         "description": "Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false."
                       }
+                    },
+                    "deployAgentPool": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Deploy the agent pool for the container registry. Default value is true."
+                      }
                     }
                   },
                   "variables": {
@@ -21765,6 +21792,7 @@
                   },
                   "resources": [
                     {
+                      "condition": "[parameters('deployAgentPool')]",
                       "type": "Microsoft.ContainerRegistry/registries/agentPools",
                       "apiVersion": "2019-06-01-preview",
                       "name": "[format('{0}/agentpool', parameters('containerRegistryName'))]",
@@ -28039,7 +28067,7 @@
                       "metadata": {
                         "description": "The name of the internal agent pool for the container registry."
                       },
-                      "value": "[format('{0}/agentpool', parameters('containerRegistryName'))]"
+                      "value": "[if(parameters('deployAgentPool'), format('{0}/agentpool', parameters('containerRegistryName')), '')]"
                     },
                     "containerRegistryUserAssignedIdentityId": {
                       "type": "string",
@@ -28100,8 +28128,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "10698940016173685847"
+                      "version": "0.34.44.8038",
+                      "templateHash": "8632100406937289467"
                     }
                   },
                   "parameters": {
@@ -34534,8 +34562,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "9114024843666406128"
+                      "version": "0.34.44.8038",
+                      "templateHash": "4680108667449468352"
                     }
                   },
                   "parameters": {
@@ -43373,8 +43401,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9556345634689864978"
+              "version": "0.34.44.8038",
+              "templateHash": "5311467483078974494"
             }
           },
           "parameters": {
@@ -47919,8 +47947,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "10560768458982253350"
+              "version": "0.34.44.8038",
+              "templateHash": "3310645327839200950"
             }
           },
           "parameters": {
@@ -49256,8 +49284,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "8781626590153006652"
+              "version": "0.34.44.8038",
+              "templateHash": "11635660072961991441"
             }
           },
           "parameters": {
@@ -49886,8 +49914,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "18055972328556033625"
+                      "version": "0.34.44.8038",
+                      "templateHash": "18196642519122770581"
                     }
                   },
                   "parameters": {
@@ -50828,8 +50856,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "4193655968987192463"
+                      "version": "0.34.44.8038",
+                      "templateHash": "2158826537322667436"
                     }
                   },
                   "parameters": {

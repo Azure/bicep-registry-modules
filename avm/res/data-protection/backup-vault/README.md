@@ -480,6 +480,29 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
           }
         }
       }
+      {
+        dataSourceInfo: {
+          datasourceType: 'Microsoft.Compute/disks'
+          resourceID: '<resourceID>'
+          resourceLocation: '<resourceLocation>'
+          resourceName: '<resourceName>'
+          resourceType: 'Microsoft.Compute/disks'
+          resourceUri: '<resourceUri>'
+        }
+        name: '<name>'
+        policyInfo: {
+          policyName: '<policyName>'
+          policyParameters: {
+            dataStoreParametersList: [
+              {
+                dataStoreType: 'OperationalStore'
+                objectType: 'AzureOperationalStoreParameters'
+                resourceGroupId: '<resourceGroupId>'
+              }
+            ]
+          }
+        }
+      }
     ]
     backupPolicies: [
       {
@@ -697,6 +720,29 @@ module backupVault 'br/public:avm/res/data-protection/backup-vault:<version>' = 
                 {
                   "containersList": "<containersList>",
                   "objectType": "BlobBackupDatasourceParameters"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "dataSourceInfo": {
+            "datasourceType": "Microsoft.Compute/disks",
+            "resourceID": "<resourceID>",
+            "resourceLocation": "<resourceLocation>",
+            "resourceName": "<resourceName>",
+            "resourceType": "Microsoft.Compute/disks",
+            "resourceUri": "<resourceUri>"
+          },
+          "name": "<name>",
+          "policyInfo": {
+            "policyName": "<policyName>",
+            "policyParameters": {
+              "dataStoreParametersList": [
+                {
+                  "dataStoreType": "OperationalStore",
+                  "objectType": "AzureOperationalStoreParameters",
+                  "resourceGroupId": "<resourceGroupId>"
                 }
               ]
             }
@@ -950,6 +996,29 @@ param backupInstances = [
           {
             containersList: '<containersList>'
             objectType: 'BlobBackupDatasourceParameters'
+          }
+        ]
+      }
+    }
+  }
+  {
+    dataSourceInfo: {
+      datasourceType: 'Microsoft.Compute/disks'
+      resourceID: '<resourceID>'
+      resourceLocation: '<resourceLocation>'
+      resourceName: '<resourceName>'
+      resourceType: 'Microsoft.Compute/disks'
+      resourceUri: '<resourceUri>'
+    }
+    name: '<name>'
+    policyInfo: {
+      policyName: '<policyName>'
+      policyParameters: {
+        dataStoreParametersList: [
+          {
+            dataStoreType: 'OperationalStore'
+            objectType: 'AzureOperationalStoreParameters'
+            resourceGroupId: '<resourceGroupId>'
           }
         ]
       }
