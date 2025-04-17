@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.applicationgateway-$
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nagmin'
+param serviceShort string = 'nagbas'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -37,7 +37,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    fwPolicyName: 'dep-${namePrefix}-fwp-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -57,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
       // You parameters go here
       name: resourceName
       location: resourceLocation
-      firewallPolicyResourceId: nestedDependencies.outputs.fwPolicyResourceId
+      sku: 'Basic'
       gatewayIPConfigurations: [
         {
           name: 'publicIPConfig1'
