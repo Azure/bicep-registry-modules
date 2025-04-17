@@ -59,7 +59,7 @@ jobs:
             RepositoryOwner = "${{ github.repository_owner }}"
             RepositoryName  = "${{ github.event.repository.name }}"
             RepoRoot        = $env:GITHUB_WORKSPACE
-            WhatIf          = [System.Convert]::ToBoolean((fromJson("${{ needs.job_initialize_pipeline.outputs.workflowInput }}")).whatIf)
+            WhatIf          = [System.Convert]::ToBoolean((fromJson('${{ needs.job_initialize_pipeline.outputs.workflowInput }}')).whatIf)
 
           }
 
