@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'Standard'
+metadata description = 'This instance deploys the module using the Standard_v2 sku.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.applicationgateways-
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nagwaf'
+param serviceShort string = 'nagstd'
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
 param enableTelemetry bool = true
@@ -43,25 +43,10 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    fwPolicyName: 'dep-${namePrefix}-fwp-${serviceShort}'
     publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     certDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-  }
-}
-
-// Diagnostics
-// ===========
-module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-diagnosticDependencies'
-  params: {
-    storageAccountName: 'dep${namePrefix}diasa${serviceShort}01'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
-    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}'
-    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}'
-    location: resourceLocation
   }
 }
 
@@ -91,16 +76,6 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
         }
-        {
-          name: 'privateVmBackendPool'
-          properties: {
-            backendAddresses: [
-              {
-                ipAddress: '10.0.0.4'
-              }
-            ]
-          }
-        }
       ]
       backendHttpSettingsCollection: [
         {
@@ -113,93 +88,15 @@ module testDeployment '../../../main.bicep' = [
             requestTimeout: 30
           }
         }
-        {
-          name: 'privateVmHttpSetting'
-          properties: {
-            cookieBasedAffinity: 'Disabled'
-            pickHostNameFromBackendAddress: false
-            port: 80
-            probe: {
-              id: '${appGWExpectedResourceID}/probes/privateVmHttpSettingProbe'
-            }
-            protocol: 'Http'
-            requestTimeout: 30
-          }
-        }
-      ]
-      diagnosticSettings: [
-        {
-          name: 'customSetting'
-          metricCategories: [
-            {
-              category: 'AllMetrics'
-            }
-          ]
-          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-        }
       ]
       enableHttp2: true
-      privateLinkConfigurations: [
-        {
-          name: 'pvtlink01'
-          id: '${appGWExpectedResourceID}/privateLinkConfigurations/pvtlink01'
-          properties: {
-            ipConfigurations: [
-              {
-                name: 'privateLinkIpConfig1'
-                id: '${appGWExpectedResourceID}/privateLinkConfigurations/pvtlink01/ipConfigurations/privateLinkIpConfig1'
-                properties: {
-                  privateIPAllocationMethod: 'Dynamic'
-                  primary: false
-                  subnet: {
-                    id: nestedDependencies.outputs.privateLinkSubnetResourceId
-                  }
-                }
-              }
-            ]
-          }
-        }
-      ]
-      privateEndpoints: [
-        {
-          privateDnsZoneGroup: {
-            privateDnsZoneGroupConfigs: [
-              {
-                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-              }
-            ]
-          }
-          service: 'public'
-          subnetResourceId: nestedDependencies.outputs.privateLinkSubnetResourceId
-          tags: {
-            Environment: 'Non-Prod'
-            Role: 'DeploymentValidation'
-          }
-        }
-      ]
       frontendIPConfigurations: [
-        {
-          name: 'private'
-          properties: {
-            privateIPAddress: '10.0.0.20'
-            privateIPAllocationMethod: 'Static'
-            subnet: {
-              id: nestedDependencies.outputs.defaultSubnetResourceId
-            }
-          }
-        }
         {
           name: 'public'
           properties: {
             privateIPAllocationMethod: 'Dynamic'
             publicIPAddress: {
               id: nestedDependencies.outputs.publicIPResourceId
-            }
-            privateLinkConfiguration: {
-              id: '${appGWExpectedResourceID}/privateLinkConfigurations/pvtlink01'
             }
           }
         }
@@ -212,21 +109,9 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          name: 'port4433'
-          properties: {
-            port: 4433
-          }
-        }
-        {
           name: 'port80'
           properties: {
             port: 80
-          }
-        }
-        {
-          name: 'port8080'
-          properties: {
-            port: 8080
           }
         }
       ]
@@ -259,23 +144,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          name: 'private4433'
-          properties: {
-            frontendIPConfiguration: {
-              id: '${appGWExpectedResourceID}/frontendIPConfigurations/private'
-            }
-            frontendPort: {
-              id: '${appGWExpectedResourceID}/frontendPorts/port4433'
-            }
-            hostNames: []
-            protocol: 'https'
-            requireServerNameIndication: false
-            sslCertificate: {
-              id: '${appGWExpectedResourceID}/sslCertificates/${namePrefix}-az-apgw-x-001-ssl-certificate'
-            }
-          }
-        }
-        {
           name: 'httpRedirect80'
           properties: {
             frontendIPConfiguration: {
@@ -287,41 +155,6 @@ module testDeployment '../../../main.bicep' = [
             hostNames: []
             protocol: 'Http'
             requireServerNameIndication: false
-          }
-        }
-        {
-          name: 'httpRedirect8080'
-          properties: {
-            frontendIPConfiguration: {
-              id: '${appGWExpectedResourceID}/frontendIPConfigurations/private'
-            }
-            frontendPort: {
-              id: '${appGWExpectedResourceID}/frontendPorts/port8080'
-            }
-            hostNames: []
-            protocol: 'Http'
-            requireServerNameIndication: false
-          }
-        }
-      ]
-      probes: [
-        {
-          name: 'privateVmHttpSettingProbe'
-          properties: {
-            host: '10.0.0.4'
-            interval: 60
-            match: {
-              statusCodes: [
-                '200'
-                '401'
-              ]
-            }
-            minServers: 3
-            path: '/'
-            pickHostNameFromBackendHttpSettings: false
-            protocol: 'Http'
-            timeout: 15
-            unhealthyThreshold: 5
           }
         }
       ]
@@ -339,22 +172,6 @@ module testDeployment '../../../main.bicep' = [
             ]
             targetListener: {
               id: '${appGWExpectedResourceID}/httpListeners/public443'
-            }
-          }
-        }
-        {
-          name: 'httpRedirect8080'
-          properties: {
-            includePath: true
-            includeQueryString: true
-            redirectType: 'Permanent'
-            requestRoutingRules: [
-              {
-                id: '${appGWExpectedResourceID}/requestRoutingRules/httpRedirect8080-private4433'
-              }
-            ]
-            targetListener: {
-              id: '${appGWExpectedResourceID}/httpListeners/private4433'
             }
           }
         }
@@ -377,22 +194,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
-          name: 'private4433-privateVmHttpSetting-privateVmHttpSetting'
-          properties: {
-            backendAddressPool: {
-              id: '${appGWExpectedResourceID}/backendAddressPools/privateVmBackendPool'
-            }
-            backendHttpSettings: {
-              id: '${appGWExpectedResourceID}/backendHttpSettingsCollection/privateVmHttpSetting'
-            }
-            httpListener: {
-              id: '${appGWExpectedResourceID}/httpListeners/private4433'
-            }
-            priority: 250
-            ruleType: 'Basic'
-          }
-        }
-        {
           name: 'httpRedirect80-public443'
           properties: {
             httpListener: {
@@ -405,24 +206,8 @@ module testDeployment '../../../main.bicep' = [
             ruleType: 'Basic'
           }
         }
-        {
-          name: 'httpRedirect8080-private4433'
-          properties: {
-            httpListener: {
-              id: '${appGWExpectedResourceID}/httpListeners/httpRedirect8080'
-            }
-            priority: 350
-            redirectConfiguration: {
-              id: '${appGWExpectedResourceID}/redirectConfigurations/httpRedirect8080'
-            }
-            ruleType: 'Basic'
-            rewriteRuleSet: {
-              id: '${appGWExpectedResourceID}/rewriteRuleSets/customRewrite'
-            }
-          }
-        }
       ]
-      sku: 'WAF_v2'
+      sku: 'Standard_v2'
       sslCertificates: [
         {
           name: '${namePrefix}-az-apgw-x-001-ssl-certificate'
@@ -463,7 +248,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      firewallPolicyResourceId: nestedDependencies.outputs.fwPolicyResourceId
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
