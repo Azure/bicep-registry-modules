@@ -56,3 +56,6 @@ output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
 @description('The resource ID of the created Log Analytics Workspace.')
 output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
+
+@description('The name of the created Log Analytics Workspace.')
+output logAnalyticsWorkspaceCustomerId string = logAnalyticsWorkspace.properties.customerId
