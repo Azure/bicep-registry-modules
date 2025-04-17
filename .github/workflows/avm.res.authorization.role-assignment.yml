@@ -33,7 +33,7 @@ on:
       # - "utilities/pipelines/**"
       # - "!utilities/pipelines/platform/**"
       # - "!*/**/README.md"
-      - "avm/res/authorization/role-assignment/scope-mg/version.json"
+      - "avm/res/authorization/role-assignment/mg-scope/version.json"
 
 env:
   modulePath: "avm/res/authorization/role-assignment"
