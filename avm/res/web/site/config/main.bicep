@@ -4,6 +4,24 @@ metadata description = 'This module deploys a Site App Setting.'
 @description('Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment.')
 param appName string
 
+param siteConfig siteConfigType
+
+@description('Required. The name of the config.')
+@allowed([
+  'appsettings'
+  'authsettings'
+  'authsettingsV2'
+  'azurestorageaccounts'
+  'backup'
+  'connectionstrings'
+  'logs'
+  'metadata'
+  'pushsettings'
+  'slotConfigNames'
+  'web'
+])
+param name string
+
 @description('Required. Type of site to deploy.')
 @allowed([
   'functionapp' // function app windows os
@@ -18,6 +36,7 @@ param appName string
   'api' // windows api app
   'app,linux,container' // linux container app
   'app,container,windows' // windows container app
+  'string'
 ])
 param kind string
 
@@ -77,7 +96,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing 
 }
 
 resource appSettings 'Microsoft.Web/sites/config@2024-04-01' = {
-  name: 'appsettings'
+  name: name
   kind: kind
   parent: app
   properties: expandedAppSettings
@@ -91,3 +110,16 @@ output resourceId string = appSettings.id
 
 @description('The resource group the site config was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+@discriminator('name')
+type siteConfigType = appSettingsType | authSettingsType
+
+type appSettingsType = {
+  name: 'appsettings'
+  kind: 'string'
+}
+
+type authSettingsType = {
+  name: 'authsettings'
+  kind: 'string'
+}

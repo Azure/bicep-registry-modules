@@ -1,4 +1,4 @@
-# Site Deployment Extension  `[Microsoft.Web/sites/slots/extensions]`
+# Site Deployment Extension  `[Microsoft.Web/sites/extensions]`
 
 This module deploys a Site extension for MSDeploy.
 

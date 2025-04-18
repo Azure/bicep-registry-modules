@@ -74,33 +74,15 @@ param siteConfig object = {
 @description('Optional. The Function App configuration object.')
 param functionAppConfig object?
 
-@description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
-param storageAccountResourceId string?
+@description('Optional. The web site config.')
+param configs object[]?
 
-@description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
-param storageAccountUseIdentityAuthentication bool = false
-
-@description('Optional. The Site Config, Web settings to deploy.')
-param webConfiguration object?
-
-@description('Optional. The extension MSDeployment configuration.')
-param msDeployConfiguration object?
-
-@description('Optional. Resource ID of the app insight to leverage for this resource.')
-param appInsightResourceId string?
-
-@description('Optional. The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
-param appSettingsKeyValuePairs object?
-
-@description('Optional. The auth settings V2 configuration.')
-param authSettingV2Configuration object?
+@description('Optional. The extensions configuration.')
+param extensions object[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
-
-@description('Optional. The logs settings configuration.')
-param logsConfiguration object?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
@@ -301,54 +283,33 @@ resource app 'Microsoft.Web/sites@2024-04-01' = {
   }
 }
 
-module app_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs) || !empty(appInsightResourceId) || !empty(storageAccountResourceId)) {
-  name: '${uniqueString(deployment().name, location)}-Site-Config-AppSettings'
-  params: {
-    appName: app.name
-    kind: kind
-    storageAccountResourceId: storageAccountResourceId
-    storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
-    appInsightResourceId: appInsightResourceId
-    appSettingsKeyValuePairs: appSettingsKeyValuePairs
-    currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
+module app_config 'config/main.bicep' = [
+  for (config, index) in (configs ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Site-Config'
+    params: {
+      appName: app.name
+      name: config.name
+      kind: config.kind
+      appInsightResourceId: config.?appInsightResourceId
+      appSettingsKeyValuePairs: config.?appSettingsKeyValuePairs
+      currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
+      storageAccountResourceId: config.?storageAccountResourceId
+      storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
+    }
   }
-}
+]
 
-module app_authsettingsv2 'config--authsettingsv2/main.bicep' = if (!empty(authSettingV2Configuration)) {
-  name: '${uniqueString(deployment().name, location)}-Site-Config-AuthSettingsV2'
-  params: {
-    appName: app.name
-    kind: kind
-    authSettingV2Configuration: authSettingV2Configuration ?? {}
+module app_extensions 'extension/main.bicep' = [
+  for (extension, index) in (extensions ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Site-Extension=${index}'
+    params: {
+      appName: app.name
+      name: extension.?name
+      kind: extension.?kind
+      properties: extension.properties
+    }
   }
-}
-
-module app_logssettings 'config--logs/main.bicep' = if (!empty(logsConfiguration ?? {})) {
-  name: '${uniqueString(deployment().name, location)}-Site-Config-Logs'
-  params: {
-    appName: app.name
-    logsConfiguration: logsConfiguration
-  }
-  dependsOn: [
-    app_appsettings
-  ]
-}
-
-module app_websettings 'config--web/main.bicep' = if (!empty(webConfiguration ?? {})) {
-  name: '${uniqueString(deployment().name, location)}-Site-Config-Web'
-  params: {
-    appName: app.name
-    webConfiguration: webConfiguration
-  }
-}
-
-module extension_msdeploy 'extensions--msdeploy/main.bicep' = if (!empty(msDeployConfiguration)) {
-  name: '${uniqueString(deployment().name, location)}-Site-Extension-MSDeploy'
-  params: {
-    appName: app.name
-    msDeployConfiguration: msDeployConfiguration ?? {}
-  }
-}
+]
 
 @batchSize(1)
 module app_slots 'slot/main.bicep' = [
@@ -369,14 +330,10 @@ module app_slots 'slot/main.bicep' = [
       virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
       siteConfig: slot.?siteConfig ?? siteConfig
       functionAppConfig: slot.?functionAppConfig ?? functionAppConfig
-      storageAccountResourceId: slot.?storageAccountResourceId ?? storageAccountResourceId
-      storageAccountUseIdentityAuthentication: slot.?storageAccountUseIdentityAuthentication ?? storageAccountUseIdentityAuthentication
-      appInsightResourceId: slot.?appInsightResourceId ?? appInsightResourceId
-      authSettingV2Configuration: slot.?authSettingV2Configuration ?? authSettingV2Configuration
-      msDeployConfiguration: slot.?msDeployConfiguration ?? msDeployConfiguration
+      configs: slot.?configs ?? configs
+      extensions: slot.?extensions ?? extensions
       diagnosticSettings: slot.?diagnosticSettings
       roleAssignments: slot.?roleAssignments
-      appSettingsKeyValuePairs: slot.?appSettingsKeyValuePairs ?? appSettingsKeyValuePairs
       basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
       lock: slot.?lock ?? lock
       privateEndpoints: slot.?privateEndpoints ?? []

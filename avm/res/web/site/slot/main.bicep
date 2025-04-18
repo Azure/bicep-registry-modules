@@ -60,23 +60,11 @@ param siteConfig object = {
 @description('Optional. The Function App config object.')
 param functionAppConfig object?
 
-@description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
-param storageAccountResourceId string?
+@description('Optional. The web site config.')
+param configs object[]?
 
-@description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
-param storageAccountUseIdentityAuthentication bool = false
-
-@description('Optional. Resource ID of the app insight to leverage for this resource.')
-param appInsightResourceId string?
-
-@description('Optional. The app settings-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
-param appSettingsKeyValuePairs object?
-
-@description('Optional. The auth settings V2 configuration.')
-param authSettingV2Configuration object?
-
-@description('Optional. The extension MSDeployment configuration.')
-param msDeployConfiguration object?
+@description('Optional. The extensions configuration.')
+param extensions object[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -261,30 +249,6 @@ resource slot 'Microsoft.Web/sites/slots@2024-04-01' = {
   }
 }
 
-module slot_appsettings 'config--appsettings/main.bicep' = if (!empty(appSettingsKeyValuePairs) || !empty(appInsightResourceId) || !empty(storageAccountResourceId)) {
-  name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AppSettings'
-  params: {
-    slotName: slot.name
-    appName: app.name
-    kind: kind
-    storageAccountResourceId: storageAccountResourceId
-    storageAccountUseIdentityAuthentication: storageAccountUseIdentityAuthentication
-    appInsightResourceId: appInsightResourceId
-    appSettingsKeyValuePairs: appSettingsKeyValuePairs
-    currentAppSettings: !empty(slot.id) ? list('${slot.id}/config/appsettings', '2023-12-01').properties : {}
-  }
-}
-
-module slot_authsettingsv2 'config--authsettingsv2/main.bicep' = if (!empty(authSettingV2Configuration)) {
-  name: '${uniqueString(deployment().name, location)}-Slot-${name}-Config-AuthSettingsV2'
-  params: {
-    slotName: slot.name
-    appName: app.name
-    kind: kind
-    authSettingV2Configuration: authSettingV2Configuration ?? {}
-  }
-}
-
 module slot_basicPublishingCredentialsPolicies 'basic-publishing-credentials-policy/main.bicep' = [
   for (basicPublishingCredentialsPolicy, index) in (basicPublishingCredentialsPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-Slot-Publish-Cred-${index}'
@@ -309,13 +273,33 @@ module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep
   }
 ]
 
-module slot_extensionMSdeploy 'extensions--msdeploy/main.bicep' = if (!empty(msDeployConfiguration)) {
-  name: '${uniqueString(deployment().name, location)}-Site-Extension-MSDeploy'
-  params: {
-    appName: app.name
-    msDeployConfiguration: msDeployConfiguration ?? {}
+module slot_config 'config/main.bicep' = [
+  for (config, index) in (configs ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Slot-Config'
+    params: {
+      appName: app.name
+      name: config.name
+      kind: config.kind
+      appInsightResourceId: config.?appInsightResourceId
+      appSettingsKeyValuePairs: config.?appSettingsKeyValuePairs
+      currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
+      storageAccountResourceId: config.?storageAccountResourceId
+      storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
+    }
   }
-}
+]
+
+module app_extensions 'extension/main.bicep' = [
+  for (extension, index) in (extensions ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Slot-Extension=${index}'
+    params: {
+      appName: app.name
+      name: extension.?name
+      kind: extension.?kind
+      properties: extension.properties
+    }
+  }
+]
 
 resource slot_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
