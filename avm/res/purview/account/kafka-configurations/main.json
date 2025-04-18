@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15325623298496137052"
+      "templateHash": "7593073805552024077"
     },
     "name": "Purview Account Kafka Configuration",
     "description": "This module deploys a Purview Account Kafka Configuration."
@@ -139,6 +139,13 @@
         "description": "The name of the Resource Group the Kafka configuration was created in."
       },
       "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Kafka configuration."
+      },
+      "value": "[resourceId('Microsoft.Purview/accounts/kafkaConfigurations', parameters('accountName'), parameters('name'))]"
     }
   }
 }

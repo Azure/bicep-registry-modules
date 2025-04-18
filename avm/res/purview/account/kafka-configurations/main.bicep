@@ -34,6 +34,9 @@ resource kafkaConfiguration 'Microsoft.Purview/accounts/kafkaConfigurations@2024
 @description('The name of the Resource Group the Kafka configuration was created in.')
 output resourceGroupName string = resourceGroup().name
 
+@description('The resource ID of the Kafka configuration.')
+output resourceId string = kafkaConfiguration.id
+
 @export()
 @description('Optional. The type for Kafka configuration properties.')
 type kafkaConfigurationType = {
