@@ -36,6 +36,8 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The resource ID of the Kafka configuration.')
 output resourceId string = kafkaConfiguration.id
+@description('The name of the Kafka configuration.')
+output name string = kafkaConfiguration.name
 
 @export()
 @description('Optional. The type for Kafka configuration properties.')

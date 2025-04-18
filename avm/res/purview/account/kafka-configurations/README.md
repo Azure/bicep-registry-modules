@@ -149,5 +149,6 @@ The partition ID for the notification event hub. If not set, all partitions will
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `name` | string | The name of the Kafka configuration. |
 | `resourceGroupName` | string | The name of the Resource Group the Kafka configuration was created in. |
 | `resourceId` | string | The resource ID of the Kafka configuration. |
