@@ -41,6 +41,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    eventHubNamespaceName: 'dep-${namePrefix}-ehn-${serviceShort}'
+    eventHubName: 'dep-${namePrefix}-eh-${serviceShort}'
     location: enforcedLocation
   }
 }
@@ -119,6 +121,20 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
+      kafkaConfigurations: [
+        {
+          name: 'customKafkaConfig'
+          consumerGroup: '$Default'
+          credentials: {
+            identityId: nestedDependencies.outputs.managedIdentityResourceId
+            type: 'UserAssigned'
+          }
+          eventHubResourceId: nestedDependencies.outputs.eventHubResourceId
+          eventHubType: 'Hook'
+          eventStreamingState: 'Enabled'
+          eventStreamingType: 'Azure'
+        }
+      ]
       accountPrivateEndpoints: [
         {
           privateDnsZoneGroup: {
@@ -175,6 +191,7 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
           service: 'blob'
+          isManualConnection: true
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
             'hidden-title': 'This is visible in the resource name'
@@ -211,24 +228,24 @@ module testDeployment '../../../main.bicep' = [
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      eventHubPrivateEndpoints: [
-        {
-          privateDnsZoneGroup: {
-            privateDnsZoneGroupConfigs: [
-              {
-                privateDnsZoneResourceId: nestedDependencies.outputs.eventHubPrivateDNSResourceId
-              }
-            ]
-          }
-          service: 'namespace'
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-          tags: {
-            'hidden-title': 'This is visible in the resource name'
-            Environment: 'Non-Prod'
-            Role: 'DeploymentValidation'
-          }
-        }
-      ]
+      // eventHubPrivateEndpoints: [
+      //   {
+      //     privateDnsZoneGroup: {
+      //       privateDnsZoneGroupConfigs: [
+      //         {
+      //           privateDnsZoneResourceId: nestedDependencies.outputs.eventHubPrivateDNSResourceId
+      //         }
+      //       ]
+      //     }
+      //     service: 'namespace'
+      //     subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      //     tags: {
+      //       'hidden-title': 'This is visible in the resource name'
+      //       Environment: 'Non-Prod'
+      //       Role: 'DeploymentValidation'
+      //     }
+      //   }
+      // ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

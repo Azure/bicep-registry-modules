@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11260171183181471992"
+      "templateHash": "6415499398275663014"
     },
     "name": "Purview Accounts",
     "description": "This module deploys a Purview Account."
@@ -303,6 +303,81 @@
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "kafkaConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Kafka configuration."
+          }
+        },
+        "consumerGroup": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The consumer group for the hook event hub."
+          }
+        },
+        "credentials": {
+          "type": "object",
+          "properties": {
+            "identityId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The identity ID of the Kafka configuration."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The type of the credentials for the Kafka configuration."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The credentials for the event streaming service."
+          }
+        },
+        "eventHubPartitionId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The partition ID for the notification event hub. If not set, all partitions will be used."
+          }
+        },
+        "eventHubResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The event hub resource ID of the Kafka configuration."
+          }
+        },
+        "eventHubType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The event hub type."
+          }
+        },
+        "eventStreamingState": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The event streaming state."
+          }
+        },
+        "eventStreamingType": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The event streaming type."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The type for Kafka configuration properties.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "kafka-configurations/main.bicep"
         }
       }
     },
@@ -607,7 +682,7 @@
     },
     "managedEventHubState": {
       "type": "string",
-      "defaultValue": "Enabled",
+      "defaultValue": "Disabled",
       "allowedValues": [
         "Enabled",
         "Disabled",
@@ -646,6 +721,36 @@
       ],
       "metadata": {
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set."
+      }
+    },
+    "tenantEndpointState": {
+      "type": "string",
+      "defaultValue": "NotSpecified",
+      "allowedValues": [
+        "Enabled",
+        "Disabled",
+        "NotSpecified"
+      ],
+      "metadata": {
+        "description": "Optional. The state of tenant endpoint."
+      }
+    },
+    "accountSku": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "allowedValues": [
+        "Standard",
+        "Free"
+      ],
+      "metadata": {
+        "description": "Optional. The SKU of the Purview Account."
+      }
+    },
+    "accountSkuCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "Optional. The capacity of the Purview Account SKU. The default value is 1."
       }
     },
     "diagnosticSettings": {
@@ -718,6 +823,16 @@
         "description": "Optional. Configuration details for Purview Managed Event Hub namespace private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'namespace'."
       }
     },
+    "kafkaConfigurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/kafkaConfigurationType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Configuration details for Kafka configurations."
+      }
+    },
     "enableTelemetry": {
       "type": "bool",
       "defaultValue": true,
@@ -778,17 +893,25 @@
     },
     "account": {
       "type": "Microsoft.Purview/accounts",
-      "apiVersion": "2021-12-01",
+      "apiVersion": "2024-04-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
         "cloudConnectors": {},
+        "ingestionStorage": {
+          "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+        },
         "managedEventHubState": "[parameters('managedEventHubState')]",
         "managedResourceGroupName": "[parameters('managedResourceGroupName')]",
         "managedResourcesPublicNetworkAccess": "[parameters('managedResourcesPublicNetworkAccess')]",
-        "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "tenantEndpointState": "[parameters('tenantEndpointState')]"
+      },
+      "sku": {
+        "capacity": "[parameters('accountSkuCapacity')]",
+        "name": "[parameters('accountSku')]"
       }
     },
     "account_lock": {
@@ -2401,8 +2524,8 @@
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob'), copyIndex()))]"
           },
-          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob'), copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').managedResources.storageAccount, 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob')))))), createObject('value', null()))]",
-          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob'), copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').managedResources.storageAccount, 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob')), 'requestMessage', coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob'), copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').ingestionStorage.id, 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob')))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob'), copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').ingestionStorage.id, 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'service'), 'blob')), 'requestMessage', coalesce(tryGet(coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('storageBlobPrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -3158,8 +3281,8 @@
           "name": {
             "value": "[coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue'), copyIndex()))]"
           },
-          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue'), copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').managedResources.storageAccount, 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue')))))), createObject('value', null()))]",
-          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue'), copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').managedResources.storageAccount, 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue')), 'requestMessage', coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue'), copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').ingestionStorage.id, 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue')))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.Purview/accounts', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue'), copyIndex())), 'properties', createObject('privateLinkServiceId', reference('account').ingestionStorage.id, 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'service'), 'queue')), 'requestMessage', coalesce(tryGet(coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
           "subnetResourceId": {
             "value": "[coalesce(parameters('storageQueuePrivateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
           },
@@ -4652,6 +4775,190 @@
       "dependsOn": [
         "account"
       ]
+    },
+    "account_kafkaConfigurations": {
+      "copy": {
+        "name": "account_kafkaConfigurations",
+        "count": "[length(coalesce(parameters('kafkaConfigurations'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-kafka-configuration-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('kafkaConfigurations'), createArray())[copyIndex()].name]"
+          },
+          "accountName": {
+            "value": "[parameters('name')]"
+          },
+          "kafkaConfig": {
+            "value": "[coalesce(parameters('kafkaConfigurations'), createArray())[copyIndex()]]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "8607660198972152044"
+            },
+            "name": "Purview Account Kafka Configuration",
+            "description": "This module deploys a Purview Account Kafka Configuration."
+          },
+          "definitions": {
+            "kafkaConfigurationType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the Kafka configuration."
+                  }
+                },
+                "consumerGroup": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The consumer group for the hook event hub."
+                  }
+                },
+                "credentials": {
+                  "type": "object",
+                  "properties": {
+                    "identityId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The identity ID of the Kafka configuration."
+                      }
+                    },
+                    "type": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The type of the credentials for the Kafka configuration."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The credentials for the event streaming service."
+                  }
+                },
+                "eventHubPartitionId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The partition ID for the notification event hub. If not set, all partitions will be used."
+                  }
+                },
+                "eventHubResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The event hub resource ID of the Kafka configuration."
+                  }
+                },
+                "eventHubType": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The event hub type."
+                  }
+                },
+                "eventStreamingState": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The event streaming state."
+                  }
+                },
+                "eventStreamingType": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The event streaming type."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Optional. The type for Kafka configuration properties."
+              }
+            }
+          },
+          "parameters": {
+            "accountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Purview account."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Kafka configuration."
+              }
+            },
+            "kafkaConfig": {
+              "$ref": "#/definitions/kafkaConfigurationType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The Kafka configuration properties."
+              }
+            }
+          },
+          "resources": {
+            "account": {
+              "existing": true,
+              "type": "Microsoft.Purview/accounts",
+              "apiVersion": "2024-04-01-preview",
+              "name": "[parameters('accountName')]"
+            },
+            "kafkaConfiguration": {
+              "type": "Microsoft.Purview/accounts/kafkaConfigurations",
+              "apiVersion": "2024-04-01-preview",
+              "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
+              "properties": {
+                "consumerGroup": "[tryGet(parameters('kafkaConfig'), 'consumerGroup')]",
+                "credentials": {
+                  "identityId": "[tryGet(parameters('kafkaConfig'), 'credentials', 'identityId')]",
+                  "type": "[tryGet(parameters('kafkaConfig'), 'credentials', 'type')]"
+                },
+                "eventHubPartitionId": "[tryGet(parameters('kafkaConfig'), 'eventHubPartitionId')]",
+                "eventHubResourceId": "[tryGet(parameters('kafkaConfig'), 'eventHubResourceId')]",
+                "eventHubType": "[tryGet(parameters('kafkaConfig'), 'eventHubType')]",
+                "eventStreamingState": "[tryGet(parameters('kafkaConfig'), 'eventStreamingState')]",
+                "eventStreamingType": "[tryGet(parameters('kafkaConfig'), 'eventStreamingType')]"
+              }
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the Kafka configuration was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Kafka configuration."
+              },
+              "value": "[resourceId('Microsoft.Purview/accounts/kafkaConfigurations', parameters('accountName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Kafka configuration."
+              },
+              "value": "[parameters('name')]"
+            }
+          }
+        }
+      }
     }
   },
   "outputs": {
@@ -4681,35 +4988,39 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('account', '2021-12-01', 'full').location]"
+      "value": "[reference('account', '2024-04-01-preview', 'full').location]"
     },
     "managedResourceGroupName": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The name of the managed resource group."
       },
-      "value": "[reference('account').managedResourceGroupName]"
+      "value": "[tryGet(reference('account'), 'managedResourceGroupName')]"
     },
     "managedResourceGroupId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The resource ID of the managed resource group."
       },
-      "value": "[reference('account').managedResources.resourceGroup]"
+      "value": "[tryGet(tryGet(reference('account'), 'managedResources'), 'resourceGroup')]"
     },
     "managedStorageAccountId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The resource ID of the managed storage account."
       },
-      "value": "[reference('account').managedResources.storageAccount]"
+      "value": "[tryGet(tryGet(reference('account'), 'managedResources'), 'storageAccount')]"
     },
     "managedEventHubId": {
       "type": "string",
+      "nullable": true,
       "metadata": {
         "description": "The resource ID of the managed Event Hub Namespace."
       },
-      "value": "[reference('account').managedResources.eventHubNamespace]"
+      "value": "[tryGet(tryGet(reference('account'), 'managedResources'), 'eventHubNamespace')]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -4717,7 +5028,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('account', '2021-12-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('account', '2024-04-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "accountPrivateEndpoints": {
       "type": "array",
