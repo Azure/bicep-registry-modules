@@ -21,6 +21,7 @@ This module deploys a Purview Account.
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Purview/accounts` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Purview/2024-04-01-preview/accounts) |
+| `Microsoft.Purview/accounts/kafkaConfigurations` | [2024-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Purview/2024-04-01-preview/accounts/kafkaConfigurations) |
 
 ## Usage examples
 
@@ -116,7 +117,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
     name: 'pvaing001'
     // Non-required parameters
     location: '<location>'
-    managedResourcesPublicNetworkAccess: 'Disabled'
+    publicNetworkAccess: 'Enabled'
   }
 }
 ```
@@ -141,8 +142,8 @@ module account 'br/public:avm/res/purview/account:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "managedResourcesPublicNetworkAccess": {
-      "value": "Disabled"
+    "publicNetworkAccess": {
+      "value": "Enabled"
     }
   }
 }
@@ -162,7 +163,7 @@ using 'br/public:avm/res/purview/account:<version>'
 param name = 'pvaing001'
 // Non-required parameters
 param location = '<location>'
-param managedResourcesPublicNetworkAccess = 'Disabled'
+param publicNetworkAccess = 'Enabled'
 ```
 
 </details>
@@ -216,22 +217,18 @@ module account 'br/public:avm/res/purview/account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    eventHubPrivateEndpoints: [
+    kafkaConfigurations: [
       {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
+        consumerGroup: '$Default'
+        credentials: {
+          identityId: '<identityId>'
+          type: 'UserAssigned'
         }
-        service: 'namespace'
-        subnetResourceId: '<subnetResourceId>'
-        tags: {
-          Environment: 'Non-Prod'
-          'hidden-title': 'This is visible in the resource name'
-          Role: 'DeploymentValidation'
-        }
+        eventHubResourceId: '<eventHubResourceId>'
+        eventHubType: 'Hook'
+        eventStreamingState: 'Enabled'
+        eventStreamingType: 'Azure'
+        name: 'customKafkaConfig'
       }
     ]
     location: '<location>'
@@ -295,6 +292,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
     ]
     storageBlobPrivateEndpoints: [
       {
+        isManualConnection: true
         privateDnsZoneGroup: {
           privateDnsZoneGroupConfigs: [
             {
@@ -401,23 +399,19 @@ module account 'br/public:avm/res/purview/account:<version>' = {
         }
       ]
     },
-    "eventHubPrivateEndpoints": {
+    "kafkaConfigurations": {
       "value": [
         {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
+          "consumerGroup": "$Default",
+          "credentials": {
+            "identityId": "<identityId>",
+            "type": "UserAssigned"
           },
-          "service": "namespace",
-          "subnetResourceId": "<subnetResourceId>",
-          "tags": {
-            "Environment": "Non-Prod",
-            "hidden-title": "This is visible in the resource name",
-            "Role": "DeploymentValidation"
-          }
+          "eventHubResourceId": "<eventHubResourceId>",
+          "eventHubType": "Hook",
+          "eventStreamingState": "Enabled",
+          "eventStreamingType": "Azure",
+          "name": "customKafkaConfig"
         }
       ]
     },
@@ -497,6 +491,7 @@ module account 'br/public:avm/res/purview/account:<version>' = {
     "storageBlobPrivateEndpoints": {
       "value": [
         {
+          "isManualConnection": true,
           "privateDnsZoneGroup": {
             "privateDnsZoneGroupConfigs": [
               {
@@ -600,22 +595,18 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param eventHubPrivateEndpoints = [
+param kafkaConfigurations = [
   {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
+    consumerGroup: '$Default'
+    credentials: {
+      identityId: '<identityId>'
+      type: 'UserAssigned'
     }
-    service: 'namespace'
-    subnetResourceId: '<subnetResourceId>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
+    eventHubResourceId: '<eventHubResourceId>'
+    eventHubType: 'Hook'
+    eventStreamingState: 'Enabled'
+    eventStreamingType: 'Azure'
+    name: 'customKafkaConfig'
   }
 ]
 param location = '<location>'
@@ -679,6 +670,7 @@ param roleAssignments = [
 ]
 param storageBlobPrivateEndpoints = [
   {
+    isManualConnection: true
     privateDnsZoneGroup: {
       privateDnsZoneGroupConfigs: [
         {
@@ -768,19 +760,6 @@ module account 'br/public:avm/res/purview/account:<version>' = {
         eventHubName: '<eventHubName>'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
-      }
-    ]
-    eventHubPrivateEndpoints: [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-            }
-          ]
-        }
-        service: 'namespace'
-        subnetResourceId: '<subnetResourceId>'
       }
     ]
     location: '<location>'
@@ -873,21 +852,6 @@ module account 'br/public:avm/res/purview/account:<version>' = {
           "eventHubName": "<eventHubName>",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
-        }
-      ]
-    },
-    "eventHubPrivateEndpoints": {
-      "value": [
-        {
-          "privateDnsZoneGroup": {
-            "privateDnsZoneGroupConfigs": [
-              {
-                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
-              }
-            ]
-          },
-          "service": "namespace",
-          "subnetResourceId": "<subnetResourceId>"
         }
       ]
     },
@@ -990,19 +954,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param eventHubPrivateEndpoints = [
-  {
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [
-        {
-          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
-        }
-      ]
-    }
-    service: 'namespace'
-    subnetResourceId: '<subnetResourceId>'
-  }
-]
 param location = '<location>'
 param managedResourceGroupName = 'pvawaf001-managed-rg'
 param portalPrivateEndpoints = [
@@ -1073,6 +1024,7 @@ param tags = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventHubPrivateEndpoints`](#parameter-eventhubprivateendpoints) | array | Configuration details for Purview Managed Event Hub namespace private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to 'namespace'. |
+| [`kafkaConfigurations`](#parameter-kafkaconfigurations) | array | Configuration details for Kafka configurations. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedEventHubState`](#parameter-managedeventhubstate) | string | The state of the managed Event Hub. |
@@ -2092,6 +2044,108 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 - Required: No
 - Type: object
+
+### Parameter: `kafkaConfigurations`
+
+Configuration details for Kafka configurations.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`consumerGroup`](#parameter-kafkaconfigurationsconsumergroup) | string | The consumer group for the hook event hub. |
+| [`credentials`](#parameter-kafkaconfigurationscredentials) | object | The credentials for the event streaming service. |
+| [`eventHubResourceId`](#parameter-kafkaconfigurationseventhubresourceid) | string | The event hub resource ID of the Kafka configuration. |
+| [`eventHubType`](#parameter-kafkaconfigurationseventhubtype) | string | The event hub type. |
+| [`eventStreamingState`](#parameter-kafkaconfigurationseventstreamingstate) | string | The event streaming state. |
+| [`eventStreamingType`](#parameter-kafkaconfigurationseventstreamingtype) | string | The event streaming type. |
+| [`name`](#parameter-kafkaconfigurationsname) | string | The name of the Kafka configuration. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventHubPartitionId`](#parameter-kafkaconfigurationseventhubpartitionid) | string | The partition ID for the notification event hub. If not set, all partitions will be used. |
+
+### Parameter: `kafkaConfigurations.consumerGroup`
+
+The consumer group for the hook event hub.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `kafkaConfigurations.credentials`
+
+The credentials for the event streaming service.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identityId`](#parameter-kafkaconfigurationscredentialsidentityid) | string | The identity ID of the Kafka configuration. |
+| [`type`](#parameter-kafkaconfigurationscredentialstype) | string | The type of the credentials for the Kafka configuration. |
+
+### Parameter: `kafkaConfigurations.credentials.identityId`
+
+The identity ID of the Kafka configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `kafkaConfigurations.credentials.type`
+
+The type of the credentials for the Kafka configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `kafkaConfigurations.eventHubResourceId`
+
+The event hub resource ID of the Kafka configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `kafkaConfigurations.eventHubType`
+
+The event hub type.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `kafkaConfigurations.eventStreamingState`
+
+The event streaming state.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `kafkaConfigurations.eventStreamingType`
+
+The event streaming type.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `kafkaConfigurations.name`
+
+The name of the Kafka configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `kafkaConfigurations.eventHubPartitionId`
+
+The partition ID for the notification event hub. If not set, all partitions will be used.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 

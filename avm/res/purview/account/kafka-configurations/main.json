@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "12342256771637344726"
+      "templateHash": "15325623298496137052"
     },
     "name": "Purview Account Kafka Configuration",
     "description": "This module deploys a Purview Account Kafka Configuration."
@@ -15,6 +15,12 @@
     "kafkaConfigurationType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Kafka configuration."
+          }
+        },
         "consumerGroup": {
           "type": "string",
           "metadata": {
@@ -93,8 +99,9 @@
         "description": "Required. The name of the Kafka configuration."
       }
     },
-    "kakfaConfiguration": {
+    "kafkaConfig": {
       "$ref": "#/definitions/kafkaConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Kafka configuration properties."
       }
@@ -112,34 +119,20 @@
       "apiVersion": "2024-04-01-preview",
       "name": "[format('{0}/{1}', parameters('accountName'), parameters('name'))]",
       "properties": {
-        "consumerGroup": "[tryGet(parameters('kakfaConfiguration'), 'consumerGroup')]",
+        "consumerGroup": "[tryGet(parameters('kafkaConfig'), 'consumerGroup')]",
         "credentials": {
-          "identityId": "string",
-          "type": "string"
+          "identityId": "[tryGet(parameters('kafkaConfig'), 'credentials', 'identityId')]",
+          "type": "[tryGet(parameters('kafkaConfig'), 'credentials', 'type')]"
         },
-        "eventHubPartitionId": "[tryGet(parameters('kakfaConfiguration'), 'eventHubPartitionId')]",
-        "eventHubResourceId": "[tryGet(parameters('kakfaConfiguration'), 'eventHubResourceId')]",
-        "eventHubType": "[tryGet(parameters('kakfaConfiguration'), 'eventHubType')]",
-        "eventStreamingState": "[tryGet(parameters('kakfaConfiguration'), 'eventStreamingState')]",
-        "eventStreamingType": "[tryGet(parameters('kakfaConfiguration'), 'eventStreamingType')]"
+        "eventHubPartitionId": "[tryGet(parameters('kafkaConfig'), 'eventHubPartitionId')]",
+        "eventHubResourceId": "[tryGet(parameters('kafkaConfig'), 'eventHubResourceId')]",
+        "eventHubType": "[tryGet(parameters('kafkaConfig'), 'eventHubType')]",
+        "eventStreamingState": "[tryGet(parameters('kafkaConfig'), 'eventStreamingState')]",
+        "eventStreamingType": "[tryGet(parameters('kafkaConfig'), 'eventStreamingType')]"
       }
     }
   },
   "outputs": {
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the Kafka configuration."
-      },
-      "value": "[parameters('name')]"
-    },
-    "resourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the Kafka configuration."
-      },
-      "value": "[resourceId('Microsoft.Purview/accounts/kafkaConfigurations', parameters('accountName'), parameters('name'))]"
-    },
     "resourceGroupName": {
       "type": "string",
       "metadata": {

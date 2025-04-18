@@ -85,6 +85,9 @@ param storageQueuePrivateEndpoints privateEndpointSingleServiceType[]?
 @description('Optional. Configuration details for Purview Managed Event Hub namespace private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'namespace\'.')
 param eventHubPrivateEndpoints privateEndpointSingleServiceType[]?
 
+@description('Optional. Configuration details for Kafka configurations.')
+param kafkaConfigurations kafkaConfigurationType[]?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -339,7 +342,7 @@ module account_storageBlobPrivateEndpoints 'br/public:avm/res/network/private-en
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
               properties: {
-                privateLinkServiceId: account.properties.managedResources.storageAccount
+                privateLinkServiceId: account.properties.ingestionStorage.id
                 groupIds: [
                   privateEndpoint.?service ?? 'blob'
                 ]
@@ -352,7 +355,7 @@ module account_storageBlobPrivateEndpoints 'br/public:avm/res/network/private-en
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
               properties: {
-                privateLinkServiceId: account.properties.managedResources.storageAccount
+                privateLinkServiceId: account.properties.ingestionStorage.id
                 groupIds: [
                   privateEndpoint.?service ?? 'blob'
                 ]
@@ -394,7 +397,7 @@ module account_storageQueuePrivateEndpoints 'br/public:avm/res/network/private-e
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
               properties: {
-                privateLinkServiceId: account.properties.managedResources.storageAccount
+                privateLinkServiceId: account.properties.ingestionStorage.id
                 groupIds: [
                   privateEndpoint.?service ?? 'queue'
                 ]
@@ -407,7 +410,7 @@ module account_storageQueuePrivateEndpoints 'br/public:avm/res/network/private-e
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
               properties: {
-                privateLinkServiceId: account.properties.managedResources.storageAccount
+                privateLinkServiceId: account.properties.ingestionStorage.id
                 groupIds: [
                   privateEndpoint.?service ?? 'queue'
                 ]
@@ -486,6 +489,17 @@ module account_eventHubPrivateEndpoints 'br/public:avm/res/network/private-endpo
       ipConfigurations: privateEndpoint.?ipConfigurations
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
+    }
+  }
+]
+
+module account_kafkaConfigurations 'kafka-configurations/main.bicep' = [
+  for (kafkaConfiguration, index) in (kafkaConfigurations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-kafka-configuration-${index}'
+    params: {
+      name: kafkaConfiguration.name
+      accountName: name
+      kafkaConfig: kafkaConfiguration
     }
   }
 ]
@@ -591,6 +605,8 @@ output eventHubPrivateEndpoints privateEndpointOutputType[] = [
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { kafkaConfigurationType } from 'kafka-configurations/main.bicep'
 
 @export()
 type privateEndpointOutputType = {

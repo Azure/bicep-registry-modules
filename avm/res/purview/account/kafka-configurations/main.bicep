@@ -8,7 +8,7 @@ param accountName string
 param name string
 
 @description('Optional. The Kafka configuration properties.')
-param kakfaConfiguration kafkaConfigurationType
+param kafkaConfig kafkaConfigurationType?
 
 resource account 'Microsoft.Purview/accounts@2024-04-01-preview' existing = {
   name: accountName
@@ -18,24 +18,18 @@ resource kafkaConfiguration 'Microsoft.Purview/accounts/kafkaConfigurations@2024
   parent: account
   name: name
   properties: {
-    consumerGroup: kakfaConfiguration.?consumerGroup
+    consumerGroup: kafkaConfig.?consumerGroup
     credentials: {
-      identityId: 'string'
-      type: 'string'
+      identityId: kafkaConfig.?credentials.identityId
+      type: kafkaConfig.?credentials.type
     }
-    eventHubPartitionId: kakfaConfiguration.?eventHubPartitionId
-    eventHubResourceId: kakfaConfiguration.?eventHubResourceId
-    eventHubType: kakfaConfiguration.?eventHubType
-    eventStreamingState: kakfaConfiguration.?eventStreamingState
-    eventStreamingType: kakfaConfiguration.?eventStreamingType
+    eventHubPartitionId: kafkaConfig.?eventHubPartitionId
+    eventHubResourceId: kafkaConfig.?eventHubResourceId
+    eventHubType: kafkaConfig.?eventHubType
+    eventStreamingState: kafkaConfig.?eventStreamingState
+    eventStreamingType: kafkaConfig.?eventStreamingType
   }
 }
-
-@description('The name of the Kafka configuration.')
-output name string = kafkaConfiguration.name
-
-@description('The resource ID of the Kafka configuration.')
-output resourceId string = kafkaConfiguration.id
 
 @description('The name of the Resource Group the Kafka configuration was created in.')
 output resourceGroupName string = resourceGroup().name
@@ -43,6 +37,9 @@ output resourceGroupName string = resourceGroup().name
 @export()
 @description('Optional. The type for Kafka configuration properties.')
 type kafkaConfigurationType = {
+  @description('Required. The name of the Kafka configuration.')
+  name: string
+
   @description('Required. The consumer group for the hook event hub.')
   consumerGroup: string
 

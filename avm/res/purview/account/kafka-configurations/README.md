@@ -27,7 +27,7 @@ This module deploys a Purview Account Kafka Configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kakfaConfiguration`](#parameter-kakfaconfiguration) | object | The Kafka configuration properties. |
+| [`kafkaConfig`](#parameter-kafkaconfig) | object | The Kafka configuration properties. |
 
 ### Parameter: `accountName`
 
@@ -43,7 +43,7 @@ The name of the Kafka configuration.
 - Required: Yes
 - Type: string
 
-### Parameter: `kakfaConfiguration`
+### Parameter: `kafkaConfig`
 
 The Kafka configuration properties.
 
@@ -54,27 +54,28 @@ The Kafka configuration properties.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`consumerGroup`](#parameter-kakfaconfigurationconsumergroup) | string | The consumer group for the hook event hub. |
-| [`credentials`](#parameter-kakfaconfigurationcredentials) | object | The credentials for the event streaming service. |
-| [`eventHubResourceId`](#parameter-kakfaconfigurationeventhubresourceid) | string | The event hub resource ID of the Kafka configuration. |
-| [`eventHubType`](#parameter-kakfaconfigurationeventhubtype) | string | The event hub type. |
-| [`eventStreamingState`](#parameter-kakfaconfigurationeventstreamingstate) | string | The event streaming state. |
-| [`eventStreamingType`](#parameter-kakfaconfigurationeventstreamingtype) | string | The event streaming type. |
+| [`consumerGroup`](#parameter-kafkaconfigconsumergroup) | string | The consumer group for the hook event hub. |
+| [`credentials`](#parameter-kafkaconfigcredentials) | object | The credentials for the event streaming service. |
+| [`eventHubResourceId`](#parameter-kafkaconfigeventhubresourceid) | string | The event hub resource ID of the Kafka configuration. |
+| [`eventHubType`](#parameter-kafkaconfigeventhubtype) | string | The event hub type. |
+| [`eventStreamingState`](#parameter-kafkaconfigeventstreamingstate) | string | The event streaming state. |
+| [`eventStreamingType`](#parameter-kafkaconfigeventstreamingtype) | string | The event streaming type. |
+| [`name`](#parameter-kafkaconfigname) | string | The name of the Kafka configuration. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`eventHubPartitionId`](#parameter-kakfaconfigurationeventhubpartitionid) | string | The partition ID for the notification event hub. If not set, all partitions will be used. |
+| [`eventHubPartitionId`](#parameter-kafkaconfigeventhubpartitionid) | string | The partition ID for the notification event hub. If not set, all partitions will be used. |
 
-### Parameter: `kakfaConfiguration.consumerGroup`
+### Parameter: `kafkaConfig.consumerGroup`
 
 The consumer group for the hook event hub.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `kakfaConfiguration.credentials`
+### Parameter: `kafkaConfig.credentials`
 
 The credentials for the event streaming service.
 
@@ -85,52 +86,59 @@ The credentials for the event streaming service.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`identityId`](#parameter-kakfaconfigurationcredentialsidentityid) | string | The identity ID of the Kafka configuration. |
-| [`type`](#parameter-kakfaconfigurationcredentialstype) | string | The type of the credentials for the Kafka configuration. |
+| [`identityId`](#parameter-kafkaconfigcredentialsidentityid) | string | The identity ID of the Kafka configuration. |
+| [`type`](#parameter-kafkaconfigcredentialstype) | string | The type of the credentials for the Kafka configuration. |
 
-### Parameter: `kakfaConfiguration.credentials.identityId`
+### Parameter: `kafkaConfig.credentials.identityId`
 
 The identity ID of the Kafka configuration.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `kakfaConfiguration.credentials.type`
+### Parameter: `kafkaConfig.credentials.type`
 
 The type of the credentials for the Kafka configuration.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `kakfaConfiguration.eventHubResourceId`
+### Parameter: `kafkaConfig.eventHubResourceId`
 
 The event hub resource ID of the Kafka configuration.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `kakfaConfiguration.eventHubType`
+### Parameter: `kafkaConfig.eventHubType`
 
 The event hub type.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `kakfaConfiguration.eventStreamingState`
+### Parameter: `kafkaConfig.eventStreamingState`
 
 The event streaming state.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `kakfaConfiguration.eventStreamingType`
+### Parameter: `kafkaConfig.eventStreamingType`
 
 The event streaming type.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `kakfaConfiguration.eventHubPartitionId`
+### Parameter: `kafkaConfig.name`
+
+The name of the Kafka configuration.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `kafkaConfig.eventHubPartitionId`
 
 The partition ID for the notification event hub. If not set, all partitions will be used.
 
@@ -141,6 +149,4 @@ The partition ID for the notification event hub. If not set, all partitions will
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the Kafka configuration. |
 | `resourceGroupName` | string | The name of the Resource Group the Kafka configuration was created in. |
-| `resourceId` | string | The resource ID of the Kafka configuration. |
