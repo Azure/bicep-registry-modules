@@ -17,9 +17,6 @@ param softDeleteRetentionDays int = 30
 param logsRetentionInDays int = 30
 
 param tenantId string
-@secure()
-param hciResourceProviderObjectId string
-param arcNodeResourceIds array
 param deploymentUsername string = 'deployUser'
 @secure()
 param deploymentUserPassword string
