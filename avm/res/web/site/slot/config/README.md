@@ -1,6 +1,6 @@
-# Site Slot App Settings `[Microsoft.Web/sites/slots/config]`
+# Site App Settings `[Microsoft.Web/sites/config]`
 
-This module deploys a Site Slot App Setting.
+This module deploys a Site App Setting.
 
 ## Navigation
 
@@ -13,7 +13,7 @@ This module deploys a Site Slot App Setting.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/slots/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config) |
+| `Microsoft.Web/sites/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config) |
 
 ## Parameters
 
@@ -22,7 +22,6 @@ This module deploys a Site Slot App Setting.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`kind`](#parameter-kind) | string | Type of site to deploy. |
-| [`slotName`](#parameter-slotname) | string | Slot name to be configured. |
 
 **Conditional parameters**
 
@@ -63,13 +62,6 @@ Type of site to deploy.
     'linux,api'
   ]
   ```
-
-### Parameter: `slotName`
-
-Slot name to be configured.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `appName`
 
@@ -119,9 +111,9 @@ If the provided storage account requires Identity based authentication ('allowSh
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the slot config. |
-| `resourceGroupName` | string | The resource group the slot config was deployed into. |
-| `resourceId` | string | The resource ID of the slot config. |
+| `name` | string | The name of the site config. |
+| `resourceGroupName` | string | The resource group the site config was deployed into. |
+| `resourceId` | string | The resource ID of the site config. |
 
 ## Notes
 
@@ -136,12 +128,16 @@ For all other app settings key-value pairs use this object.
 
 ```json
 "appSettingsKeyValuePairs": {
-    "value": {
-      "AzureFunctionsJobHost__logging__logLevel__default": "Trace",
-      "EASYAUTH_SECRET": "https://adp-#_namePrefix_#-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password",
-      "FUNCTIONS_EXTENSION_VERSION": "~4",
-      "FUNCTIONS_WORKER_RUNTIME": "dotnet"
-    }
+    "value": [
+        {
+            "name": "key1",
+            "value": "val1"
+        },
+        {
+            "name": "key2",
+            "value": "val2"
+        }
+    ]
 }
 ```
 
@@ -152,16 +148,17 @@ For all other app settings key-value pairs use this object.
 <summary>Bicep format</summary>
 
 ```bicep
-appSettingsKeyValuePairs: {
-  AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
-  EASYAUTH_SECRET: 'https://adp-#_namePrefix_#-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password'
-  FUNCTIONS_EXTENSION_VERSION: '~4'
-  FUNCTIONS_WORKER_RUNTIME: 'dotnet'
-}
+appSettingsKeyValuePairs: [
+    {
+        name: 'key1'
+        value: 'val1'
+    }
+    {
+        name: 'key2'
+        value: 'val2'
+    }
+]
 ```
-
-</details>
-<p>
 
 </details>
 <p>

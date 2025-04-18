@@ -1,11 +1,12 @@
-metadata name = 'Site Slot App Settings'
-metadata description = 'This module deploys a Site Slot App Setting.'
-
-@description('Required. Slot name to be configured.')
-param slotName string
+metadata name = 'Site App Settings'
+metadata description = 'This module deploys a Site App Setting.'
 
 @description('Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment.')
 param appName string
+
+@description('Required. The name of the config.')
+@allowed(['logs', 'appsettings', 'authsettingsV2', 'web'])
+param name string
 
 @description('Required. Type of site to deploy.')
 @allowed([
@@ -21,6 +22,7 @@ param appName string
   'api' // windows api app
   'app,linux,container' // linux container app
   'app,container,windows' // windows container app
+  'string'
 ])
 param kind string
 
@@ -46,7 +48,9 @@ var azureWebJobsValues = !empty(storageAccountResourceId) && !(storageAccountUse
   : !empty(storageAccountResourceId) && storageAccountUseIdentityAuthentication
       ? union(
           { AzureWebJobsStorage__accountName: storageAccount.name },
-          { AzureWebJobsStorage__blobServiceUri: storageAccount.properties.primaryEndpoints.blob }
+          { AzureWebJobsStorage__blobServiceUri: storageAccount.properties.primaryEndpoints.blob },
+          { AzureWebJobsStorage__queueServiceUri: storageAccount.properties.primaryEndpoints.queue },
+          { AzureWebJobsStorage__tableServiceUri: storageAccount.properties.primaryEndpoints.table }
         )
       : {}
 
@@ -63,12 +67,8 @@ var expandedAppSettings = union(
   appInsightsValues
 )
 
-resource app 'Microsoft.Web/sites@2024-04-01' existing = {
+resource app 'Microsoft.Web/sites@2023-12-01' existing = {
   name: appName
-
-  resource slot 'slots' existing = {
-    name: slotName
-  }
 }
 
 resource appInsight 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(appInsightResourceId)) {
@@ -77,22 +77,22 @@ resource appInsight 'Microsoft.Insights/components@2020-02-02' existing = if (!e
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(storageAccountResourceId)) {
-  name: last(split(storageAccountResourceId!, '/'))!
+  name: last(split(storageAccountResourceId!, '/'))
   scope: resourceGroup(split(storageAccountResourceId!, '/')[2], split(storageAccountResourceId!, '/')[4])
 }
 
-resource slotSettings 'Microsoft.Web/sites/slots/config@2024-04-01' = {
+resource appSettings 'Microsoft.Web/sites/config@2024-04-01' = {
   name: 'appsettings'
   kind: kind
-  parent: app::slot
+  parent: app
   properties: expandedAppSettings
 }
 
-@description('The name of the slot config.')
-output name string = slotSettings.name
+@description('The name of the site config.')
+output name string = appSettings.name
 
-@description('The resource ID of the slot config.')
-output resourceId string = slotSettings.id
+@description('The resource ID of the site config.')
+output resourceId string = appSettings.id
 
-@description('The resource group the slot config was deployed into.')
+@description('The resource group the site config was deployed into.')
 output resourceGroupName string = resourceGroup().name
