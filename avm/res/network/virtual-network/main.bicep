@@ -303,6 +303,7 @@ output location string = virtualNetwork.location
 //   Definitions   //
 // =============== //
 
+@export()
 type peeringType = {
   @description('Optional. The Name of VNET Peering resource. If not provided, default value will be peer-localVnetName-remoteVnetName.')
   name: string?
@@ -347,6 +348,7 @@ type peeringType = {
   remotePeeringUseRemoteGateways: bool?
 }
 
+@export()
 type subnetType = {
   @description('Required. The Name of the subnet resource.')
   name: string
