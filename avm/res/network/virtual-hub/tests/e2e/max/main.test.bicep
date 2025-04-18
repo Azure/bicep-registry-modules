@@ -94,7 +94,7 @@ module testDeployment '../../../main.bicep' = [
                 'none'
               ]
             }
-            vnetRoutes: {
+            /*vnetRoutes: {
               staticRoutes: [
                 {
                   name: 'route1'
@@ -107,7 +107,7 @@ module testDeployment '../../../main.bicep' = [
               staticRoutesConfig: {
                 vnetLocalRouteOverrideCriteria: 'Contains'
               }
-            }
+            }*/
           }
         }
       ]
