@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: '${namePrefix}${serviceShort}002'
       location: resourceLocation
       administratorLogin: 'Admin003'
       administratorLoginPassword: password
@@ -93,9 +93,9 @@ module testDeployment '../../../main.bicep' = [
       networkAcls: {
         customRules: [
           {
-            firewallRuleName: 'allow-1.2.3.4-to-5.6.7.8'
-            endIpAddress: '5.6.7.8'
-            startIpAddress: '1.2.3.4'
+            firewallRuleName: 'allow-192.168.1.0-to-192.168.2.0'
+            endIpAddress: '192.168.2.0'
+            startIpAddress: '192.168.1.0'
           }
         ]
         allowAzureIPs: true

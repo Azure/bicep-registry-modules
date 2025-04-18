@@ -234,7 +234,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     // Required parameters
     administratorLogin: 'Admin003'
     administratorLoginPassword: '<administratorLoginPassword>'
-    name: 'ddmcmax001'
+    name: 'ddmcmax002'
     nodeCount: 2
     sku: 'M30'
     storage: 256
@@ -261,9 +261,9 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       allowAzureIPs: true
       customRules: [
         {
-          endIpAddress: '5.6.7.8'
-          firewallRuleName: 'allow-1.2.3.4-to-5.6.7.8'
-          startIpAddress: '1.2.3.4'
+          endIpAddress: '192.168.2.0'
+          firewallRuleName: 'allow-192.168.1.0-to-192.168.2.0'
+          startIpAddress: '192.168.1.0'
         }
       ]
     }
@@ -338,7 +338,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       "value": "<administratorLoginPassword>"
     },
     "name": {
-      "value": "ddmcmax001"
+      "value": "ddmcmax002"
     },
     "nodeCount": {
       "value": 2
@@ -381,9 +381,9 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
         "allowAzureIPs": true,
         "customRules": [
           {
-            "endIpAddress": "5.6.7.8",
-            "firewallRuleName": "allow-1.2.3.4-to-5.6.7.8",
-            "startIpAddress": "1.2.3.4"
+            "endIpAddress": "192.168.2.0",
+            "firewallRuleName": "allow-192.168.1.0-to-192.168.2.0",
+            "startIpAddress": "192.168.1.0"
           }
         ]
       }
@@ -458,7 +458,7 @@ using 'br/public:avm/res/document-db/mongo-cluster:<version>'
 // Required parameters
 param administratorLogin = 'Admin003'
 param administratorLoginPassword = '<administratorLoginPassword>'
-param name = 'ddmcmax001'
+param name = 'ddmcmax002'
 param nodeCount = 2
 param sku = 'M30'
 param storage = 256
@@ -485,9 +485,9 @@ param networkAcls = {
   allowAzureIPs: true
   customRules: [
     {
-      endIpAddress: '5.6.7.8'
-      firewallRuleName: 'allow-1.2.3.4-to-5.6.7.8'
-      startIpAddress: '1.2.3.4'
+      endIpAddress: '192.168.2.0'
+      firewallRuleName: 'allow-192.168.1.0-to-192.168.2.0'
+      startIpAddress: '192.168.1.0'
     }
   ]
 }
