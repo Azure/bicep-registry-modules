@@ -5,15 +5,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "14414473163926575059"
+      "templateHash": "12345283968664385257"
     },
-    "name": "main",
-    "description": "avm tests"
+    "name": "<Add module name>",
+    "description": "<Add description>"
   },
   "parameters": {
     "solutionPrefix": {
       "type": "string",
-      "defaultValue": "plswk",
       "metadata": {
         "description": "Required. Name of the resource to create."
       }

@@ -1,8 +1,8 @@
-metadata name = 'main'
-metadata description = 'avm tests'
+metadata name = '<Add module name>'
+metadata description = '<Add description>'
 
 @description('Required. Name of the resource to create.')
-param solutionPrefix string = 'plswk'
+param solutionPrefix string
 
 @description('Optional. Location for all Resources.')
 param solutionLocation string = resourceGroup().location
