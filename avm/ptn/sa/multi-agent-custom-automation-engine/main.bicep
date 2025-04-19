@@ -1,8 +1,8 @@
-metadata name = '<Add module name>'
-metadata description = '<Add description>'
+metadata name = 'main'
+metadata description = 'avm tests'
 
 @description('Required. Name of the resource to create.')
-param solutionPrefix string
+param solutionPrefix string = 'plswk'
 
 @description('Optional. Location for all Resources.')
 param solutionLocation string = resourceGroup().location
@@ -104,6 +104,9 @@ module aiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
       staticsEnabled: false
     }
     publicNetworkAccess: 'Enabled' //TODO: block and connect to vnet
+    managedIdentities: {
+      systemAssigned: true
+    }
     roleAssignments: [
       {
         principalId: userAssignedIdentity.outputs.principalId
@@ -121,7 +124,7 @@ module aiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
         }
         sku: {
           name: 'GlobalStandard'
-          capacity: 50
+          capacity: 10
         }
       }
     ]
@@ -200,7 +203,7 @@ resource aspireDashboard 'Microsoft.App/managedEnvironments/dotNetComponents@202
   }
   dependsOn: [containerAppEnvironment]
 }
-
+var test = containerApp.outputs.systemAssignedMIPrincipalId
 // ==========Backend Container App Service ========== //
 module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
   name: 'avm.ptn.sa.macae.container-app'
@@ -210,7 +213,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
     location: solutionLocation
     enableTelemetry: enableTelemetry
     environmentResourceId: containerAppEnvironment.outputs.resourceId
-    managedIdentities: { userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId] }
+    managedIdentities: { systemAssigned: true, userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId] }
     ingressTargetPort: 8000
     ingressExternal: true
     activeRevisionsMode: 'Single'
@@ -268,7 +271,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
           }
           {
             name: 'AZURE_OPENAI_API_VERSION'
-            value: aiServicesDeploymentGptVersion
+            value: '2024-08-01-preview'
           }
           {
             name: 'FRONTEND_SITE_NAME'
@@ -323,6 +326,67 @@ module webSite 'br/public:avm/res/web/site:0.15.1' = {
   }
 }
 
+resource aoaiUserRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' existing = {
+  name: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' //'Cognitive Services OpenAI User'
+}
+
+resource assignAoaRole 'Microsoft.Resources/deployments@2021-04-01' = {
+  name: 'assignAoaRole'
+  dependsOn: [
+    containerApp
+    aiServices
+  ]
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: [
+        {
+          type: 'Microsoft.Authorization/roleAssignments'
+          apiVersion: '2022-04-01'
+          name: guid(
+            '${containerApp.outputs.resourceId}',
+            '${aiServices.outputs.resourceId}',
+            '${aoaiUserRoleDefinition.id}'
+          )
+          properties: {
+            principalId: '${containerApp.outputs.systemAssignedMIPrincipalId}'
+            roleDefinitionId: '${aoaiUserRoleDefinition.id}'
+            principalType: 'ServicePrincipal'
+          }
+        }
+      ]
+    }
+  }
+}
+// ========== Cosmos DB Role Assignment ========== //
+resource contributorRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2021-06-15' existing = {
+  name: '${cosmosDb.outputs.name}/00000000-0000-0000-0000-000000000002'
+}
+var cosmosAssignCli = 'az cosmosdb sql role assignment create --resource-group "${resourceGroup().name}" --account-name "${cosmosDb.outputs.name}" --role-definition-id "${contributorRoleDefinition.id}" --scope "${cosmosDb.outputs.resourceId}" --principal-id "${containerApp.outputs.systemAssignedMIPrincipalId}"'
+
+module deploymentScriptCLI 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+  name: 'deploymentScriptCLI'
+  params: {
+    kind: 'AzureCLI'
+    name: 'assignCosmosDbRole'
+    location: resourceGroup().location
+    azCliVersion: '2.69.0'
+    scriptContent: cosmosAssignCli
+    managedIdentities: {
+      userAssignedResourceIds: [
+        userAssignedIdentity.outputs.resourceId
+      ]
+    }
+  }
+  dependsOn: [
+    containerApp
+    cosmosDb
+  ]
+}
+
+output cosmosAssignCli string = cosmosAssignCli
 // ============ //
 // Outputs      //
 // ============ //
