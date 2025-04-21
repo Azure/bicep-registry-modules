@@ -63,7 +63,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'routeTable1'
           routes: [
-            {
+            /*{
               name: 'route1'
               destinationType: 'CIDR'
               destinations: [
@@ -72,7 +72,7 @@ module testDeployment '../../../main.bicep' = [
               //nextHop: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/virtualHubVnetConnections/connection1'
               nextHop: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubVirtualNetworkConnections/connection1'
               nextHopType: 'ResourceId'
-            }
+            }*/
           ]
         }
       ]
@@ -94,7 +94,7 @@ module testDeployment '../../../main.bicep' = [
                 'none'
               ]
             }
-            /*vnetRoutes: {
+            vnetRoutes: {
               staticRoutes: [
                 {
                   name: 'route1'
@@ -107,7 +107,7 @@ module testDeployment '../../../main.bicep' = [
               staticRoutesConfig: {
                 vnetLocalRouteOverrideCriteria: 'Contains'
               }
-            }*/
+            }
           }
         }
       ]
