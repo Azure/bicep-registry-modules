@@ -156,6 +156,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       ]
       subnetMask: '255.255.255.0'
     }
+    hciResourceProviderObjectId: '<hciResourceProviderObjectId>'
     name: '<name>'
     // Non-required parameters
     deploymentUser: 'deployUser'
@@ -294,6 +295,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         ],
         "subnetMask": "255.255.255.0"
       }
+    },
+    "hciResourceProviderObjectId": {
+      "value": "<hciResourceProviderObjectId>"
     },
     "name": {
       "value": "<name>"
@@ -444,6 +448,7 @@ param deploymentSettings = {
   ]
   subnetMask: '255.255.255.0'
 }
+param hciResourceProviderObjectId = '<hciResourceProviderObjectId>'
 param name = '<name>'
 // Non-required parameters
 param deploymentUser = 'deployUser'
@@ -589,6 +594,7 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
       ]
       subnetMask: '255.255.255.0'
     }
+    hciResourceProviderObjectId: '<hciResourceProviderObjectId>'
     name: '<name>'
     // Non-required parameters
     deploymentUser: 'deployUser'
@@ -738,6 +744,9 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
         ],
         "subnetMask": "255.255.255.0"
       }
+    },
+    "hciResourceProviderObjectId": {
+      "value": "<hciResourceProviderObjectId>"
     },
     "name": {
       "value": "<name>"
@@ -901,6 +910,7 @@ param deploymentSettings = {
   ]
   subnetMask: '255.255.255.0'
 }
+param hciResourceProviderObjectId = '<hciResourceProviderObjectId>'
 param name = '<name>'
 // Non-required parameters
 param deploymentUser = 'deployUser'
@@ -926,6 +936,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`deploymentSettings`](#parameter-deploymentsettings) | object | The deployment settings of the cluster. |
+| [`hciResourceProviderObjectId`](#parameter-hciresourceproviderobjectid) | securestring | The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the 'Microsoft.AzureStackHCI' provider was registered in the subscription. |
 | [`name`](#parameter-name) | string | The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure. |
 
 **Conditional parameters**
@@ -1491,6 +1502,13 @@ Limits the applications and the code that you can run on your Azure Stack HCI cl
 - Required: No
 - Type: bool
 
+### Parameter: `hciResourceProviderObjectId`
+
+The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the 'Microsoft.AzureStackHCI' provider was registered in the subscription.
+
+- Required: Yes
+- Type: securestring
+
 ### Parameter: `name`
 
 The name of the Azure Stack HCI cluster - this must be a valid Active Directory computer name and will be the name of your cluster in Azure.
@@ -1794,6 +1812,7 @@ Tags of the witness storage key.
 | `resourceGroupName` | string | The resource group of the cluster. |
 | `resourceId` | string | The ID of the cluster. |
 | `systemAssignedMIPrincipalId` | string | The managed identity of the cluster. |
+| `vSwitchName` | string | The name of the vSwitch. |
 
 ## Data Collection
 

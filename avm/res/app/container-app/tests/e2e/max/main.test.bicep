@@ -168,6 +168,17 @@ module testDeployment '../../../main.bicep' = [
         cooldownPeriod: 500
         pollingInterval: 45
       }
+      authConfig: {
+        httpSettings: {
+          requireHttps: true
+        }
+        globalValidation: {
+          unauthenticatedClientAction: 'Return401'
+        }
+        platform: {
+          enabled: true
+        }
+      }
     }
   }
 ]

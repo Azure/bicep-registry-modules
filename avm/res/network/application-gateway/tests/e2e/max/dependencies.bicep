@@ -16,9 +16,12 @@ param keyVaultName string
 @description('Required. The name of the Deployment Script to create for the Certificate generation.')
 param certDeploymentScriptName string
 
+@description('Required. The name of the Firewall Policy to create.')
+param fwPolicyName string
+
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -45,11 +48,11 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.appgateway.net'
   location: 'global'
 
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'
     location: 'global'
     properties: {
@@ -61,7 +64,7 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
-resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
+resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
   name: publicIPName
   location: location
   sku: {
@@ -78,12 +81,12 @@ resource publicIP 'Microsoft.Network/publicIPAddresses@2023-04-01' = {
   ]
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: keyVaultName
   location: location
   properties: {
@@ -102,7 +105,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${managedIdentity.name}-KeyVault-Admin-RoleAssignment')
+  name: guid('msi-${managedIdentity.name}-${keyVault.name}-KeyVault-Admin-RoleAssignment')
   scope: keyVault
   properties: {
     principalId: managedIdentity.properties.principalId
@@ -114,7 +117,7 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
+resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: certDeploymentScriptName
   location: location
   kind: 'AzurePowerShell'
@@ -129,6 +132,21 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2020-10-01'
     retentionInterval: 'P1D'
     arguments: '-KeyVaultName "${keyVault.name}" -CertName "applicationGatewaySslCertificate"'
     scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1')
+  }
+}
+
+resource applicationGatewayWAFPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2024-05-01' = {
+  name: fwPolicyName
+  location: location
+  properties: {
+    managedRules: {
+      managedRuleSets: [
+        {
+          ruleSetType: 'OWASP'
+          ruleSetVersion: '3.2'
+        }
+      ]
+    }
   }
 }
 
@@ -152,3 +170,6 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The resource ID of the created Private DNS Zone.')
 output privateDNSZoneResourceId string = privateDNSZone.id
+
+@description('The resource ID of the created Application Gateway Web Application Firewall Policy.')
+output fwPolicyResourceId string = applicationGatewayWAFPolicy.id
