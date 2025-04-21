@@ -16,9 +16,6 @@ param keyVaultName string
 @description('Required. The name of the Deployment Script to create for the Certificate generation.')
 param certDeploymentScriptName string
 
-@description('Required. The name of the Firewall Policy to create.')
-param fwPolicyName string
-
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
@@ -37,30 +34,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
           addressPrefix: cidrSubnet(addressPrefix, 24, 0)
         }
       }
-      {
-        name: 'privateLinkSubnet'
-        properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 24, 1)
-          privateLinkServiceNetworkPolicies: 'Disabled'
-        }
-      }
     ]
-  }
-}
-
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
-  name: 'privatelink.appgateway.net'
-  location: 'global'
-
-  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
-    name: '${virtualNetwork.name}-vnetlink'
-    location: 'global'
-    properties: {
-      virtualNetwork: {
-        id: virtualNetwork.id
-      }
-      registrationEnabled: false
-    }
   }
 }
 
@@ -135,26 +109,8 @@ resource certDeploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01'
   }
 }
 
-resource applicationGatewayWAFPolicy 'Microsoft.Network/ApplicationGatewayWebApplicationFirewallPolicies@2024-05-01' = {
-  name: fwPolicyName
-  location: location
-  properties: {
-    managedRules: {
-      managedRuleSets: [
-        {
-          ruleSetType: 'OWASP'
-          ruleSetVersion: '3.2'
-        }
-      ]
-    }
-  }
-}
-
 @description('The resource ID of the created Virtual Network default subnet.')
 output defaultSubnetResourceId string = virtualNetwork.properties.subnets[0].id
-
-@description('The resource ID of the created Virtual Network private link subnet.')
-output privateLinkSubnetResourceId string = virtualNetwork.properties.subnets[1].id
 
 @description('The resource ID of the created Public IP.')
 output publicIPResourceId string = publicIP.id
@@ -167,9 +123,3 @@ output certificateSecretUrl string = certDeploymentScript.properties.outputs.sec
 
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
-
-@description('The resource ID of the created Private DNS Zone.')
-output privateDNSZoneResourceId string = privateDNSZone.id
-
-@description('The resource ID of the created Application Gateway Web Application Firewall Policy.')
-output fwPolicyResourceId string = applicationGatewayWAFPolicy.id
