@@ -240,10 +240,12 @@ module testDeployment '../../../main.bicep' = [
         status: 'Enabled'
         dailyRecurrenceTime: '19:00'
         timeZone: 'UTC'
-        notificationStatus: 'Enabled'
-        notificationEmail: 'test@contoso.com'
-        notificationLocale: 'en'
-        notificationTimeInMinutes: 30
+        notificationSettings: {
+          status: 'Enabled'
+          emailRecipient: 'test@contoso.com'
+          notificationLocale: 'en'
+          timeInMinutes: 30
+        }
       }
       extensionAntiMalwareConfig: {
         enabled: true

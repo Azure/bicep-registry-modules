@@ -28,10 +28,10 @@ param secureBootEnabled bool = false
 param vTpmEnabled bool = false
 
 @description('Required. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image.')
-param imageReference object
+param imageReference imageReferenceType
 
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
-param plan object = {}
+param plan planType?
 
 @description('Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param osDisk osDiskType
@@ -141,7 +141,7 @@ param backupVaultResourceGroup string = resourceGroup().name
 param backupPolicyName string = 'DefaultPolicy'
 
 @description('Optional. The configuration for auto-shutdown.')
-param autoShutdownConfig object = {}
+param autoShutdownConfig autoShutDownConfigType = {}
 
 @description('Optional. The resource Id of a maintenance configuration for this VM.')
 param maintenanceConfigurationResourceId string = ''
@@ -535,7 +535,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   identity: identity
   tags: tags
   zones: zone != 0 ? array(string(zone)) : null
-  plan: !empty(plan) ? plan : null
+  plan: plan
   properties: {
     hardwareProfile: {
       vmSize: vmSize
@@ -695,13 +695,13 @@ resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15
       time: autoShutdownConfig.?dailyRecurrenceTime ?? '19:00'
     }
     timeZoneId: autoShutdownConfig.?timeZone ?? 'UTC'
-    notificationSettings: contains(autoShutdownConfig, 'notificationStatus')
+    notificationSettings: contains(autoShutdownConfig, 'notificationSettings')
       ? {
-          status: autoShutdownConfig.?notificationStatus ?? 'Disabled'
-          emailRecipient: autoShutdownConfig.?notificationEmail ?? ''
-          notificationLocale: autoShutdownConfig.?notificationLocale ?? 'en'
-          webhookUrl: autoShutdownConfig.?notificationWebhookUrl ?? ''
-          timeInMinutes: autoShutdownConfig.?notificationTimeInMinutes ?? 30
+          status: autoShutdownConfig.?status ?? 'Disabled'
+          emailRecipient: autoShutdownConfig.?notificationSettings.?emailRecipient ?? ''
+          notificationLocale: autoShutdownConfig.?notificationSettings.?notificationLocale ?? 'en'
+          webhookUrl: autoShutdownConfig.?notificationSettings.?webhookUrl ?? ''
+          timeInMinutes: autoShutdownConfig.?notificationSettings.?timeInMinutes ?? 30
         }
       : null
   }
@@ -1203,4 +1203,76 @@ type nicConfigurationType = {
 
   @description('Optional. Array of role assignments to create.')
   roleAssignments: roleAssignmentType[]?
+}
+
+@export()
+@description('The type describing the image reference.')
+type imageReferenceType = {
+  @description('Optional. Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call.')
+  communityGalleryImageId: string?
+
+  @description('Optional. The resource Id of the image reference.')
+  id: string?
+
+  @description('Optional. Specifies the offer of the platform image or marketplace image used to create the virtual machine.')
+  offer: string?
+
+  @description('Optional. The image publisher.')
+  publisher: string?
+
+  @description('Optional. The SKU of the image.')
+  sku: string?
+
+  @description('Optional. Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or \'latest\'. Even if you use \'latest\', the VM image will not automatically update after deploy time even if a new version becomes available.')
+  version: string?
+
+  @description('Optional. Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call.')
+  sharedGalleryImageId: string?
+}
+
+@export()
+@description('Specifies information about the marketplace image used to create the virtual machine.')
+type planType = {
+  @description('Optional. The name of the plan.')
+  name: string?
+
+  @description('Optional. Specifies the product of the image from the marketplace.')
+  product: string?
+
+  @description('Optional. The publisher ID.')
+  publisher: string?
+
+  @description('Optional. The promotion code.')
+  promotionCode: string?
+}
+
+@export()
+@description('The type describing the configuration profile.')
+type autoShutDownConfigType = {
+  @description('Optional. The status of the auto shutdown configuration.')
+  status: 'Enabled' | 'Disabled'?
+
+  @description('Optional. The time zone ID (e.g. China Standard Time, Greenland Standard Time, Pacific Standard time, etc.).')
+  timeZone: string?
+
+  @description('Optional. The time of day the schedule will occur.')
+  dailyRecurrenceTime: string?
+
+  @description('Optional. The resource ID of the schedule.')
+  notificationSettings: {
+    @description('Optional. The status of the notification settings.')
+    status: 'Enabled' | 'Disabled'?
+
+    @description('Optional. The email address to send notifications to (can be a list of semi-colon separated email addresses).')
+    emailRecipient: string?
+
+    @description('Optional. The locale to use when sending a notification (fallback for unsupported languages is EN).')
+    notificationLocale: string?
+
+    @description('Optional. The webhook URL to which the notification will be sent.')
+    webhookUrl: string?
+
+    @description('Optional. The time in minutes before shutdown to send notifications.')
+    timeInMinutes: int?
+  }?
 }
