@@ -1402,6 +1402,7 @@ Describe 'Module tests' -Tag 'Module' {
                 [string] $moduleFolderPath
             )
 
+            Write-Verbose "[$moduleFolderPath]" -Verbose
             if ($moduleFolderPath -contains 'res/network/nat-gateway') {
                 # Using a warning and skip, since nat-gateway has already been released with version 1.x.
                 Write-Warning "[$moduleFolderPath] has already been released with version 1.x"
