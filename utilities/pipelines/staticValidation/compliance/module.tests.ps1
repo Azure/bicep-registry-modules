@@ -1412,39 +1412,39 @@ Describe 'Module tests' -Tag 'Module' {
             $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
             $major, $minor = $versionFileContent.version -split '\.'
             $major | Should -Be 0 -Because 'module version must be incremented via Minor and Patch versions only for the time being.'
+        }
 
-            # If the child modules version has been increased, all versioned parent modules up the chain should increase their version as well
-            It '[<moduleFolderName>] parent module versions should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule -and $_.versionFileExists }) {
+        # If the child modules version has been increased, all versioned parent modules up the chain should increase their version as well
+        It '[<moduleFolderName>] parent module versions should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule -and $_.versionFileExists }) {
 
-                param (
-                    [string] $moduleFolderPath,
-                    [string] $moduleType
-                )
+            param (
+                [string] $moduleFolderPath,
+                [string] $moduleType
+            )
 
-                $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+            $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
 
-                # If the child module version is not 0.1.0 and ends with .0 (i.e., if the child module version.json has been updated), check if the parent module version(s) have been updated
-                # Note: The first release of a child module does not require the parent module to be updated
-                if ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0')) {
-                    $upperBoundPath = Join-Path $repoRootPath 'avm' $moduleType
-                    $moduleDirectParentPath = Split-Path $moduleFolderPath -Parent
+            # If the child module version is not 0.1.0 and ends with .0 (i.e., if the child module version.json has been updated), check if the parent module version(s) have been updated
+            # Note: The first release of a child module does not require the parent module to be updated
+            if ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0')) {
+                $upperBoundPath = Join-Path $repoRootPath 'avm' $moduleType
+                $moduleDirectParentPath = Split-Path $moduleFolderPath -Parent
 
-                    # Get the list of all versioned parent folders
-                    $versionedParentFolderPaths = @()
-                    $versionedParentFolderPaths = Get-ParentFolderPathList -Path $moduleDirectParentPath -UpperBoundPath $upperBoundPath -Filter 'OnlyVersionedModules'
-                    $incorrectVersionedParents = @()
+                # Get the list of all versioned parent folders
+                $versionedParentFolderPaths = @()
+                $versionedParentFolderPaths = Get-ParentFolderPathList -Path $moduleDirectParentPath -UpperBoundPath $upperBoundPath -Filter 'OnlyVersionedModules'
+                $incorrectVersionedParents = @()
 
-                    # Check if the parent module version(s) have been updated
-                    foreach ($parentFolderPath in $versionedParentFolderPaths) {
-                        $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
-                        if (-not $moduleVersion.EndsWith('.0')) {
-                            $null, $null, $parentResourceTypeIdentifier = ($parentFolderPath -split "[\/|\\]avm[\/|\\]($moduleType)[\/|\\]") # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
-                            $incorrectVersionedParents += $parentResourceTypeIdentifier
-                        }
+                # Check if the parent module version(s) have been updated
+                foreach ($parentFolderPath in $versionedParentFolderPaths) {
+                    $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
+                    if (-not $moduleVersion.EndsWith('.0')) {
+                        $null, $null, $parentResourceTypeIdentifier = ($parentFolderPath -split "[\/|\\]avm[\/|\\]($moduleType)[\/|\\]") # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+                        $incorrectVersionedParents += $parentResourceTypeIdentifier
                     }
                 }
-                $incorrectVersionedParents | Should -BeNullOrEmpty -Because ('The child module version [{0}] has been increased, but the parent module version(s) [{1}] have not been updated.' -f $childModuleVersion, ($incorrectVersionedParents -join ', '))
             }
+            $incorrectVersionedParents | Should -BeNullOrEmpty -Because ('The child module version [{0}] has been increased, but the parent module version(s) [{1}] have not been updated.' -f $childModuleVersion, ($incorrectVersionedParents -join ', '))
         }
     }
 }
