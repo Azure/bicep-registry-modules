@@ -294,6 +294,7 @@ module app_config 'config/main.bicep' = [
       storageAccountResourceId: config.?storageAccountResourceId
       storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
       properties: config.properties
+      currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
       // additionalProperties: config.?additionalProperties
     }
   }

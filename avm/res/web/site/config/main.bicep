@@ -53,7 +53,7 @@ param applicationInsightResourceId string?
 param properties object = {}
 
 @description('Optional. The current app settings.')
-var currentAppSettings = !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
+param currentAppSettings object? // = !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
 
 var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseIdentityAuthentication
   ? {
