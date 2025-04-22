@@ -4870,7 +4870,7 @@ Array of role assignments to create.
   - `'Kubernetes Agentless Operator'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
 
 **Required parameters**
