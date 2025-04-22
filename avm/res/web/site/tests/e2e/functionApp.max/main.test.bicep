@@ -74,75 +74,85 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       kind: 'functionapp'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-      appInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
-      appSettingsKeyValuePairs: {
-        AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
-        EASYAUTH_SECRET: 'https://${namePrefix}-KeyVault${environment().suffixes.keyvaultDns}/secrets/Modules-Test-SP-Password'
-        FUNCTIONS_EXTENSION_VERSION: '~4'
-        FUNCTIONS_WORKER_RUNTIME: 'dotnet'
-      }
-      authSettingV2Configuration: {
-        globalValidation: {
-          requireAuthentication: true
-          unauthenticatedClientAction: 'Return401'
-        }
-        httpSettings: {
-          forwardProxy: {
-            convention: 'NoProxy'
-          }
-          requireHttps: true
-          routes: {
-            apiPrefix: '/.auth'
+      configs: [
+        {
+          name: 'appsettings'
+          applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
+          additionalProperties: {
+            AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
+            EASYAUTH_SECRET: 'https://${namePrefix}-KeyVault${environment().suffixes.keyvaultDns}/secrets/Modules-Test-SP-Password'
+            FUNCTIONS_EXTENSION_VERSION: '~4'
+            FUNCTIONS_WORKER_RUNTIME: 'dotnet'
           }
         }
-        identityProviders: {
-          azureActiveDirectory: {
-            enabled: true
-            login: {
-              disableWWWAuthenticate: false
+        {
+          name: 'authsettingsV2'
+          properties: {
+            globalValidation: {
+              requireAuthentication: true
+              unauthenticatedClientAction: 'Return401'
             }
-            registration: {
-              clientId: 'd874dd2f-2032-4db1-a053-f0ec243685aa'
-              clientSecretSettingName: 'EASYAUTH_SECRET'
-              openIdIssuer: 'https://sts.windows.net/${tenant().tenantId}/v2.0/'
-            }
-            validation: {
-              allowedAudiences: [
-                'api://d874dd2f-2032-4db1-a053-f0ec243685aa'
-              ]
-              defaultAuthorizationPolicy: {
-                allowedPrincipals: {}
+            httpSettings: {
+              forwardProxy: {
+                convention: 'NoProxy'
               }
-              jwtClaimChecks: {}
+              requireHttps: true
+              routes: {
+                apiPrefix: '/.auth'
+              }
+            }
+            identityProviders: {
+              azureActiveDirectory: {
+                enabled: true
+                login: {
+                  disableWWWAuthenticate: false
+                }
+                registration: {
+                  clientId: 'd874dd2f-2032-4db1-a053-f0ec243685aa'
+                  clientSecretSettingName: 'EASYAUTH_SECRET'
+                  openIdIssuer: 'https://sts.windows.net/${tenant().tenantId}/v2.0/'
+                }
+                validation: {
+                  allowedAudiences: [
+                    'api://d874dd2f-2032-4db1-a053-f0ec243685aa'
+                  ]
+                  defaultAuthorizationPolicy: {
+                    allowedPrincipals: {}
+                  }
+                  jwtClaimChecks: {}
+                }
+              }
+            }
+            login: {
+              allowedExternalRedirectUrls: [
+                'string'
+              ]
+              cookieExpiration: {
+                convention: 'FixedTime'
+                timeToExpiration: '08:00:00'
+              }
+              nonce: {
+                nonceExpirationInterval: '00:05:00'
+                validateNonce: true
+              }
+              preserveUrlFragmentsForLogins: false
+              routes: {}
+              tokenStore: {
+                azureBlobStorage: {}
+                enabled: true
+                fileSystem: {}
+                tokenRefreshExtensionHours: 72
+              }
+            }
+            platform: {
+              enabled: true
+              runtimeVersion: '~1'
             }
           }
         }
-        login: {
-          allowedExternalRedirectUrls: [
-            'string'
-          ]
-          cookieExpiration: {
-            convention: 'FixedTime'
-            timeToExpiration: '08:00:00'
-          }
-          nonce: {
-            nonceExpirationInterval: '00:05:00'
-            validateNonce: true
-          }
-          preserveUrlFragmentsForLogins: false
-          routes: {}
-          tokenStore: {
-            azureBlobStorage: {}
-            enabled: true
-            fileSystem: {}
-            tokenRefreshExtensionHours: 72
-          }
-        }
-        platform: {
-          enabled: true
-          runtimeVersion: '~1'
-        }
-      }
+      ]
       basicPublishingCredentialsPolicies: [
         {
           name: 'ftp'
@@ -167,10 +177,10 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
+      // lock: {
+      //   kind: 'CanNotDelete'
+      //   name: 'myCustomLockName'
+      // }
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
@@ -225,8 +235,6 @@ module testDeployment '../../../main.bicep' = [
         alwaysOn: true
         use32BitWorkerProcess: false
       }
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      storageAccountUseIdentityAuthentication: true
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [

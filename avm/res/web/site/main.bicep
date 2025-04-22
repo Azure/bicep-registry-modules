@@ -74,8 +74,9 @@ param siteConfig object = {
 @description('Optional. The Function App configuration object.')
 param functionAppConfig object?
 
+import { siteConfigType } from 'config/main.bicep'
 @description('Optional. The web site config.')
-param configs object[]?
+param configs siteConfigType[]?
 
 @description('Optional. The extensions configuration.')
 param extensions object[]?
@@ -88,8 +89,8 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-@description('Optional. Configuration for deployment slots for an app.')
-param slots array?
+// @description('Optional. Configuration for deployment slots for an app.')
+// param slots array?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -285,23 +286,18 @@ resource app 'Microsoft.Web/sites@2024-04-01' = {
 
 module app_config 'config/main.bicep' = [
   for (config, index) in (configs ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Site-Config'
+    name: '${uniqueString(deployment().name, location)}-Site-Config-${index}'
     params: {
       appName: app.name
-      name: config.name
-      kind: config.kind
-      appInsightResourceId: config.?appInsightResourceId
-      appSettingsKeyValuePairs: config.?appSettingsKeyValuePairs
-      currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
-      storageAccountResourceId: config.?storageAccountResourceId
-      storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
+      kind: kind
+      siteConfig: config.siteConfig
     }
   }
 ]
 
 module app_extensions 'extension/main.bicep' = [
   for (extension, index) in (extensions ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Site-Extension=${index}'
+    name: '${uniqueString(deployment().name, location)}-Site-Extension-${index}'
     params: {
       appName: app.name
       name: extension.?name
@@ -311,54 +307,54 @@ module app_extensions 'extension/main.bicep' = [
   }
 ]
 
-@batchSize(1)
-module app_slots 'slot/main.bicep' = [
-  for (slot, index) in (slots ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Slot-${slot.name}'
-    params: {
-      name: slot.name
-      appName: app.name
-      location: location
-      kind: kind
-      serverFarmResourceId: serverFarmResourceId
-      httpsOnly: slot.?httpsOnly ?? httpsOnly
-      appServiceEnvironmentResourceId: appServiceEnvironmentResourceId
-      clientAffinityEnabled: slot.?clientAffinityEnabled ?? clientAffinityEnabled
-      managedIdentities: slot.?managedIdentities ?? managedIdentities
-      keyVaultAccessIdentityResourceId: slot.?keyVaultAccessIdentityResourceId ?? keyVaultAccessIdentityResourceId
-      storageAccountRequired: slot.?storageAccountRequired ?? storageAccountRequired
-      virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
-      siteConfig: slot.?siteConfig ?? siteConfig
-      functionAppConfig: slot.?functionAppConfig ?? functionAppConfig
-      configs: slot.?configs ?? configs
-      extensions: slot.?extensions ?? extensions
-      diagnosticSettings: slot.?diagnosticSettings
-      roleAssignments: slot.?roleAssignments
-      basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
-      lock: slot.?lock ?? lock
-      privateEndpoints: slot.?privateEndpoints ?? []
-      tags: slot.?tags ?? tags
-      clientCertEnabled: slot.?clientCertEnabled
-      clientCertExclusionPaths: slot.?clientCertExclusionPaths
-      clientCertMode: slot.?clientCertMode
-      cloningInfo: slot.?cloningInfo
-      containerSize: slot.?containerSize
-      customDomainVerificationId: slot.?customDomainVerificationId
-      dailyMemoryTimeQuota: slot.?dailyMemoryTimeQuota
-      enabled: slot.?enabled
-      hostNameSslStates: slot.?hostNameSslStates
-      hyperV: slot.?hyperV
-      publicNetworkAccess: slot.?publicNetworkAccess ?? ((!empty(slot.?privateEndpoints) || !empty(privateEndpoints))
-        ? 'Disabled'
-        : 'Enabled')
-      redundancyMode: slot.?redundancyMode
-      vnetContentShareEnabled: slot.?vnetContentShareEnabled
-      vnetImagePullEnabled: slot.?vnetImagePullEnabled
-      vnetRouteAllEnabled: slot.?vnetRouteAllEnabled
-      hybridConnectionRelays: slot.?hybridConnectionRelays
-    }
-  }
-]
+// @batchSize(1)
+// module app_slots 'slot/main.bicep' = [
+//   for (slot, index) in (slots ?? []): {
+//     name: '${uniqueString(deployment().name, location)}-Slot-${slot.name}'
+//     params: {
+//       name: slot.name
+//       appName: app.name
+//       location: location
+//       kind: kind
+//       serverFarmResourceId: serverFarmResourceId
+//       httpsOnly: slot.?httpsOnly ?? httpsOnly
+//       appServiceEnvironmentResourceId: appServiceEnvironmentResourceId
+//       clientAffinityEnabled: slot.?clientAffinityEnabled ?? clientAffinityEnabled
+//       managedIdentities: slot.?managedIdentities ?? managedIdentities
+//       keyVaultAccessIdentityResourceId: slot.?keyVaultAccessIdentityResourceId ?? keyVaultAccessIdentityResourceId
+//       storageAccountRequired: slot.?storageAccountRequired ?? storageAccountRequired
+//       virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
+//       siteConfig: slot.?siteConfig ?? siteConfig
+//       functionAppConfig: slot.?functionAppConfig ?? functionAppConfig
+//       configs: slot.?configs ?? configs
+//       extensions: slot.?extensions ?? extensions
+//       diagnosticSettings: slot.?diagnosticSettings
+//       roleAssignments: slot.?roleAssignments
+//       basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
+//       lock: slot.?lock ?? lock
+//       privateEndpoints: slot.?privateEndpoints ?? []
+//       tags: slot.?tags ?? tags
+//       clientCertEnabled: slot.?clientCertEnabled
+//       clientCertExclusionPaths: slot.?clientCertExclusionPaths
+//       clientCertMode: slot.?clientCertMode
+//       cloningInfo: slot.?cloningInfo
+//       containerSize: slot.?containerSize
+//       customDomainVerificationId: slot.?customDomainVerificationId
+//       dailyMemoryTimeQuota: slot.?dailyMemoryTimeQuota
+//       enabled: slot.?enabled
+//       hostNameSslStates: slot.?hostNameSslStates
+//       hyperV: slot.?hyperV
+//       publicNetworkAccess: slot.?publicNetworkAccess ?? ((!empty(slot.?privateEndpoints) || !empty(privateEndpoints))
+//         ? 'Disabled'
+//         : 'Enabled')
+//       redundancyMode: slot.?redundancyMode
+//       vnetContentShareEnabled: slot.?vnetContentShareEnabled
+//       vnetImagePullEnabled: slot.?vnetImagePullEnabled
+//       vnetRouteAllEnabled: slot.?vnetRouteAllEnabled
+//       hybridConnectionRelays: slot.?hybridConnectionRelays
+//     }
+//   }
+// ]
 
 module app_basicPublishingCredentialsPolicies 'basic-publishing-credentials-policy/main.bicep' = [
   for (basicPublishingCredentialsPolicy, index) in (basicPublishingCredentialsPolicies ?? []): {
@@ -500,11 +496,11 @@ output name string = app.name
 @description('The resource ID of the site.')
 output resourceId string = app.id
 
-@description('The list of the slots.')
-output slots array = [for (slot, index) in (slots ?? []): app_slots[index].name]
+// @description('The list of the slots.')
+// output slots array = [for (slot, index) in (slots ?? []): app_slots[index].name]
 
-@description('The list of the slot resource ids.')
-output slotResourceIds array = [for (slot, index) in (slots ?? []): app_slots[index].outputs.resourceId]
+// @description('The list of the slot resource ids.')
+// output slotResourceIds array = [for (slot, index) in (slots ?? []): app_slots[index].outputs.resourceId]
 
 @description('The resource group the site was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -512,10 +508,10 @@ output resourceGroupName string = resourceGroup().name
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = app.?identity.?principalId
 
-@description('The principal ID of the system assigned identity of slots.')
-output slotSystemAssignedMIPrincipalIds string[] = [
-  for (slot, index) in (slots ?? []): app_slots[index].outputs.?systemAssignedMIPrincipalId ?? ''
-]
+// @description('The principal ID of the system assigned identity of slots.')
+// output slotSystemAssignedMIPrincipalIds string[] = [
+//   for (slot, index) in (slots ?? []): app_slots[index].outputs.?systemAssignedMIPrincipalId ?? ''
+// ]
 
 @description('The location the resource was deployed into.')
 output location string = app.location
@@ -537,8 +533,8 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
-@description('The private endpoints of the slots.')
-output slotPrivateEndpoints array = [for (slot, index) in (slots ?? []): app_slots[index].outputs.privateEndpoints]
+// @description('The private endpoints of the slots.')
+// output slotPrivateEndpoints array = [for (slot, index) in (slots ?? []): app_slots[index].outputs.privateEndpoints]
 
 @description('The outbound IP addresses of the app.')
 output outboundIpAddresses string = app.properties.outboundIpAddresses
