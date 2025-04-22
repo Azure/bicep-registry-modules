@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = [
       istioServiceMeshEnabled: true
       istioServiceMeshInternalIngressGatewayEnabled: true
       istioServiceMeshRevisions: [
-        'asm-1-25'
+        'asm-1-24'
       ]
       istioServiceMeshCertificateAuthority: {
         certChainObjectName: nestedDependencies.outputs.certChainSecretName
