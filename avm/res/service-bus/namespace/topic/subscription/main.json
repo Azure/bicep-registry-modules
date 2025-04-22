@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "5245442494145554335"
+      "templateHash": "6989075886470606260"
     },
     "name": "Service Bus Namespace Topic Subscription",
     "description": "This module deploys a Service Bus Namespace Topic Subscription."
@@ -465,7 +465,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "3457937988681830091"
+              "templateHash": "13321810258056992588"
             },
             "name": "Service Bus Namespace Topic Subscription Rule",
             "description": "This module deploys a Service Bus Namespace Topic Subscription Rule."
@@ -742,8 +742,8 @@
               "apiVersion": "2022-10-01-preview",
               "name": "[format('{0}/{1}/{2}/{3}', parameters('namespaceName'), parameters('topicName'), parameters('subscriptionName'), parameters('name'))]",
               "properties": {
-                "action": "[if(not(empty(parameters('action'))), parameters('action'), null())]",
-                "correlationFilter": "[if(not(empty(parameters('correlationFilter'))), parameters('correlationFilter'), null())]",
+                "action": "[parameters('action')]",
+                "correlationFilter": "[parameters('correlationFilter')]",
                 "filterType": "[parameters('filterType')]",
                 "sqlFilter": "[if(not(empty(parameters('sqlFilter'))), createObject('compatibilityLevel', coalesce(tryGet(parameters('sqlFilter'), 'compatibilityLevel'), 20), 'requiresPreprocessing', tryGet(parameters('sqlFilter'), 'requiresPreprocessing'), 'sqlExpression', tryGet(parameters('sqlFilter'), 'sqlExpression')), null())]"
               }
