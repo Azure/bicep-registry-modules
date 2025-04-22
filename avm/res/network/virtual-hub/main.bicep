@@ -274,7 +274,7 @@ type hubRouteTableType = {
     name: string
 
     @description('Required. The next hop type for the route.')
-    nextHopType: string
+    nextHopType: ('ResourceId')
 
     @description('Required. The next hop IP address for the route.')
     nextHop: string

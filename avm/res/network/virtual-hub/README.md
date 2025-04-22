@@ -122,7 +122,17 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
     hubRouteTables: [
       {
         name: 'routeTable1'
-        routes: []
+        routes: [
+          {
+            destinations: [
+              '10.150.0.0/24'
+            ]
+            destinationType: 'CIDR'
+            name: 'route1'
+            nextHop: '<nextHop>'
+            nextHopType: 'ResourceId'
+          }
+        ]
       }
     ]
     hubVirtualNetworkConnections: [
@@ -142,20 +152,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
             labels: [
               'none'
             ]
-          }
-          vnetRoutes: {
-            staticRoutes: [
-              {
-                addressPrefixes: [
-                  '10.150.0.0/24'
-                ]
-                name: 'route1'
-                nextHopIpAddress: '10.150.0.5'
-              }
-            ]
-            staticRoutesConfig: {
-              vnetLocalRouteOverrideCriteria: 'Contains'
-            }
           }
         }
       }
@@ -205,7 +201,17 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
       "value": [
         {
           "name": "routeTable1",
-          "routes": []
+          "routes": [
+            {
+              "destinations": [
+                "10.150.0.0/24"
+              ],
+              "destinationType": "CIDR",
+              "name": "route1",
+              "nextHop": "<nextHop>",
+              "nextHopType": "ResourceId"
+            }
+          ]
         }
       ]
     },
@@ -227,20 +233,6 @@ module virtualHub 'br/public:avm/res/network/virtual-hub:<version>' = {
               "labels": [
                 "none"
               ]
-            },
-            "vnetRoutes": {
-              "staticRoutes": [
-                {
-                  "addressPrefixes": [
-                    "10.150.0.0/24"
-                  ],
-                  "name": "route1",
-                  "nextHopIpAddress": "10.150.0.5"
-                }
-              ],
-              "staticRoutesConfig": {
-                "vnetLocalRouteOverrideCriteria": "Contains"
-              }
             }
           }
         }
@@ -292,7 +284,17 @@ param virtualWanResourceId = '<virtualWanResourceId>'
 param hubRouteTables = [
   {
     name: 'routeTable1'
-    routes: []
+    routes: [
+      {
+        destinations: [
+          '10.150.0.0/24'
+        ]
+        destinationType: 'CIDR'
+        name: 'route1'
+        nextHop: '<nextHop>'
+        nextHopType: 'ResourceId'
+      }
+    ]
   }
 ]
 param hubVirtualNetworkConnections = [
@@ -312,20 +314,6 @@ param hubVirtualNetworkConnections = [
         labels: [
           'none'
         ]
-      }
-      vnetRoutes: {
-        staticRoutes: [
-          {
-            addressPrefixes: [
-              '10.150.0.0/24'
-            ]
-            name: 'route1'
-            nextHopIpAddress: '10.150.0.5'
-          }
-        ]
-        staticRoutesConfig: {
-          vnetLocalRouteOverrideCriteria: 'Contains'
-        }
       }
     }
   }
@@ -809,6 +797,12 @@ The next hop type for the route.
 
 - Required: Yes
 - Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ResourceId'
+  ]
+  ```
 
 ### Parameter: `hubRoutingPreference`
 
