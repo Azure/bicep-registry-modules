@@ -3102,10 +3102,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     adminPassword: '<adminPassword>'
     autoShutdownConfig: {
       dailyRecurrenceTime: '19:00'
-      notificationEmail: 'test@contoso.com'
-      notificationLocale: 'en'
-      notificationStatus: 'Enabled'
-      notificationTimeInMinutes: 30
+      notificationSettings: {
+        emailRecipient: 'test@contoso.com'
+        notificationLocale: 'en'
+        status: 'Enabled'
+        timeInMinutes: 30
+      }
       status: 'Enabled'
       timeZone: 'UTC'
     }
@@ -3433,10 +3435,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "autoShutdownConfig": {
       "value": {
         "dailyRecurrenceTime": "19:00",
-        "notificationEmail": "test@contoso.com",
-        "notificationLocale": "en",
-        "notificationStatus": "Enabled",
-        "notificationTimeInMinutes": 30,
+        "notificationSettings": {
+          "emailRecipient": "test@contoso.com",
+          "notificationLocale": "en",
+          "status": "Enabled",
+          "timeInMinutes": 30
+        },
         "status": "Enabled",
         "timeZone": "UTC"
       }
@@ -3792,10 +3796,12 @@ param zone = 2
 param adminPassword = '<adminPassword>'
 param autoShutdownConfig = {
   dailyRecurrenceTime: '19:00'
-  notificationEmail: 'test@contoso.com'
-  notificationLocale: 'en'
-  notificationStatus: 'Enabled'
-  notificationTimeInMinutes: 30
+  notificationSettings: {
+    emailRecipient: 'test@contoso.com'
+    notificationLocale: 'en'
+    status: 'Enabled'
+    timeInMinutes: 30
+  }
   status: 'Enabled'
   timeZone: 'UTC'
 }
@@ -5017,7 +5023,7 @@ param location = '<location>'
 | [`userData`](#parameter-userdata) | string | UserData for the VM, which must be base-64 encoded. Customer should not pass any secrets in here. |
 | [`virtualMachineScaleSetResourceId`](#parameter-virtualmachinescalesetresourceid) | string | Resource ID of a virtual machine scale set, where the VM should be added. |
 | [`vTpmEnabled`](#parameter-vtpmenabled) | bool | Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings.  SecurityType should be set to TrustedLaunch to enable UefiSettings. |
-| [`winRM`](#parameter-winrm) | array | Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object. |
+| [`winRMListeners`](#parameter-winrmlisteners) | array | Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. |
 
 **Generated parameters**
 
@@ -5038,6 +5044,67 @@ OS image reference. In case of marketplace images, it's the combination of the p
 
 - Required: Yes
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`communityGalleryImageId`](#parameter-imagereferencecommunitygalleryimageid) | string | Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call. |
+| [`id`](#parameter-imagereferenceid) | string | The resource Id of the image reference. |
+| [`offer`](#parameter-imagereferenceoffer) | string | Specifies the offer of the platform image or marketplace image used to create the virtual machine. |
+| [`publisher`](#parameter-imagereferencepublisher) | string | The image publisher. |
+| [`sharedGalleryImageId`](#parameter-imagereferencesharedgalleryimageid) | string | Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call. |
+| [`sku`](#parameter-imagereferencesku) | string | The SKU of the image. |
+| [`version`](#parameter-imagereferenceversion) | string | Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. Even if you use 'latest', the VM image will not automatically update after deploy time even if a new version becomes available. |
+
+### Parameter: `imageReference.communityGalleryImageId`
+
+Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.id`
+
+The resource Id of the image reference.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.offer`
+
+Specifies the offer of the platform image or marketplace image used to create the virtual machine.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.publisher`
+
+The image publisher.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.sharedGalleryImageId`
+
+Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.sku`
+
+The SKU of the image.
+
+- Required: No
+- Type: string
+
+### Parameter: `imageReference.version`
+
+Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. Even if you use 'latest', the VM image will not automatically update after deploy time even if a new version becomes available.
+
+- Required: No
+- Type: string
 
 ### Parameter: `name`
 
@@ -6766,7 +6833,34 @@ Specifies additional XML formatted information that can be included in the Unatt
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`content`](#parameter-additionalunattendcontentcontent) | string | Specifies the XML formatted content that is added to the unattend.xml file for the specified path and component. The XML must be less than 4KB and must include the root element for the setting or feature that is being inserted. |
+| [`settingName`](#parameter-additionalunattendcontentsettingname) | string | Specifies the name of the setting to which the content applies. |
+
+### Parameter: `additionalUnattendContent.content`
+
+Specifies the XML formatted content that is added to the unattend.xml file for the specified path and component. The XML must be less than 4KB and must include the root element for the setting or feature that is being inserted.
+
+- Required: No
+- Type: string
+
+### Parameter: `additionalUnattendContent.settingName`
+
+Specifies the name of the setting to which the content applies.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AutoLogon'
+    'FirstLogonCommands'
+  ]
+  ```
 
 ### Parameter: `adminPassword`
 
@@ -6791,6 +6885,102 @@ The configuration for auto-shutdown.
 - Required: No
 - Type: object
 - Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dailyRecurrenceTime`](#parameter-autoshutdownconfigdailyrecurrencetime) | string | The time of day the schedule will occur. |
+| [`notificationSettings`](#parameter-autoshutdownconfignotificationsettings) | object | The resource ID of the schedule. |
+| [`status`](#parameter-autoshutdownconfigstatus) | string | The status of the auto shutdown configuration. |
+| [`timeZone`](#parameter-autoshutdownconfigtimezone) | string | The time zone ID (e.g. China Standard Time, Greenland Standard Time, Pacific Standard time, etc.). |
+
+### Parameter: `autoShutdownConfig.dailyRecurrenceTime`
+
+The time of day the schedule will occur.
+
+- Required: No
+- Type: string
+
+### Parameter: `autoShutdownConfig.notificationSettings`
+
+The resource ID of the schedule.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`emailRecipient`](#parameter-autoshutdownconfignotificationsettingsemailrecipient) | string | The email address to send notifications to (can be a list of semi-colon separated email addresses). |
+| [`notificationLocale`](#parameter-autoshutdownconfignotificationsettingsnotificationlocale) | string | The locale to use when sending a notification (fallback for unsupported languages is EN). |
+| [`status`](#parameter-autoshutdownconfignotificationsettingsstatus) | string | The status of the notification settings. |
+| [`timeInMinutes`](#parameter-autoshutdownconfignotificationsettingstimeinminutes) | int | The time in minutes before shutdown to send notifications. |
+| [`webhookUrl`](#parameter-autoshutdownconfignotificationsettingswebhookurl) | string | The webhook URL to which the notification will be sent. |
+
+### Parameter: `autoShutdownConfig.notificationSettings.emailRecipient`
+
+The email address to send notifications to (can be a list of semi-colon separated email addresses).
+
+- Required: No
+- Type: string
+
+### Parameter: `autoShutdownConfig.notificationSettings.notificationLocale`
+
+The locale to use when sending a notification (fallback for unsupported languages is EN).
+
+- Required: No
+- Type: string
+
+### Parameter: `autoShutdownConfig.notificationSettings.status`
+
+The status of the notification settings.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `autoShutdownConfig.notificationSettings.timeInMinutes`
+
+The time in minutes before shutdown to send notifications.
+
+- Required: No
+- Type: int
+
+### Parameter: `autoShutdownConfig.notificationSettings.webhookUrl`
+
+The webhook URL to which the notification will be sent.
+
+- Required: No
+- Type: string
+
+### Parameter: `autoShutdownConfig.status`
+
+The status of the auto shutdown configuration.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `autoShutdownConfig.timeZone`
+
+The time zone ID (e.g. China Standard Time, Greenland Standard Time, Pacific Standard time, etc.).
+
+- Required: No
+- Type: string
 
 ### Parameter: `availabilitySetResourceId`
 
@@ -6862,7 +7052,61 @@ Specifies set of certificates that should be installed onto the virtual machine.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sourceVault`](#parameter-certificatestobeinstalledsourcevault) | object | The relative URL of the Key Vault containing all of the certificates in VaultCertificates. |
+| [`vaultCertificates`](#parameter-certificatestobeinstalledvaultcertificates) | array | The list of key vault references in SourceVault which contain certificates. |
+
+### Parameter: `certificatesToBeInstalled.sourceVault`
+
+The relative URL of the Key Vault containing all of the certificates in VaultCertificates.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-certificatestobeinstalledsourcevaultid) | string | Resource ID of the sub resource. |
+
+### Parameter: `certificatesToBeInstalled.sourceVault.id`
+
+Resource ID of the sub resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificatesToBeInstalled.vaultCertificates`
+
+The list of key vault references in SourceVault which contain certificates.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateStore`](#parameter-certificatestobeinstalledvaultcertificatescertificatestore) | string | For Windows VMs, specifies the certificate store on the Virtual Machine to which the certificate should be added. The specified certificate store is implicitly in the LocalMachine account. For Linux VMs, the certificate file is placed under the /var/lib/waagent directory, with the file name <UppercaseThumbprint>.crt for the X509 certificate file and <UppercaseThumbprint>.prv for private key. Both of these files are .pem formatted. |
+| [`certificateUrl`](#parameter-certificatestobeinstalledvaultcertificatescertificateurl) | string | This is the URL of a certificate that has been uploaded to Key Vault as a secret. |
+
+### Parameter: `certificatesToBeInstalled.vaultCertificates.certificateStore`
+
+For Windows VMs, specifies the certificate store on the Virtual Machine to which the certificate should be added. The specified certificate store is implicitly in the LocalMachine account. For Linux VMs, the certificate file is placed under the /var/lib/waagent directory, with the file name <UppercaseThumbprint>.crt for the X509 certificate file and <UppercaseThumbprint>.prv for private key. Both of these files are .pem formatted.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificatesToBeInstalled.vaultCertificates.certificateUrl`
+
+This is the URL of a certificate that has been uploaded to Key Vault as a secret.
+
+- Required: No
+- Type: string
 
 ### Parameter: `computerName`
 
@@ -7287,7 +7531,64 @@ Specifies the gallery applications that should be made available to the VM/VMSS.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`packageReferenceId`](#parameter-galleryapplicationspackagereferenceid) | string | Specifies the GalleryApplicationVersion resource id on the form of /subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{application}/versions/{version}. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`configurationReference`](#parameter-galleryapplicationsconfigurationreference) | string | Specifies the uri to an azure blob that will replace the default configuration for the package if provided. |
+| [`enableAutomaticUpgrade`](#parameter-galleryapplicationsenableautomaticupgrade) | bool | If set to true, when a new Gallery Application version is available in PIR/SIG, it will be automatically updated for the VM/VMSS. |
+| [`order`](#parameter-galleryapplicationsorder) | int | Specifies the order in which the packages have to be installed. |
+| [`tags`](#parameter-galleryapplicationstags) | string | Specifies a passthrough value for more generic context. |
+| [`treatFailureAsDeploymentFailure`](#parameter-galleryapplicationstreatfailureasdeploymentfailure) | bool | If true, any failure for any operation in the VmApplication will fail the deployment. |
+
+### Parameter: `galleryApplications.packageReferenceId`
+
+Specifies the GalleryApplicationVersion resource id on the form of /subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{application}/versions/{version}.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `galleryApplications.configurationReference`
+
+Specifies the uri to an azure blob that will replace the default configuration for the package if provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `galleryApplications.enableAutomaticUpgrade`
+
+If set to true, when a new Gallery Application version is available in PIR/SIG, it will be automatically updated for the VM/VMSS.
+
+- Required: No
+- Type: bool
+
+### Parameter: `galleryApplications.order`
+
+Specifies the order in which the packages have to be installed.
+
+- Required: No
+- Type: int
+
+### Parameter: `galleryApplications.tags`
+
+Specifies a passthrough value for more generic context.
+
+- Required: No
+- Type: string
+
+### Parameter: `galleryApplications.treatFailureAsDeploymentFailure`
+
+If true, any failure for any operation in the VmApplication will fail the deployment.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `guestConfiguration`
 
@@ -7442,7 +7743,43 @@ Specifies information about the marketplace image used to create the virtual mac
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-planname) | string | The name of the plan. |
+| [`product`](#parameter-planproduct) | string | Specifies the product of the image from the marketplace. |
+| [`promotionCode`](#parameter-planpromotioncode) | string | The promotion code. |
+| [`publisher`](#parameter-planpublisher) | string | The publisher ID. |
+
+### Parameter: `plan.name`
+
+The name of the plan.
+
+- Required: No
+- Type: string
+
+### Parameter: `plan.product`
+
+Specifies the product of the image from the marketplace.
+
+- Required: No
+- Type: string
+
+### Parameter: `plan.promotionCode`
+
+The promotion code.
+
+- Required: No
+- Type: string
+
+### Parameter: `plan.publisher`
+
+The publisher ID.
+
+- Required: No
+- Type: string
 
 ### Parameter: `priority`
 
@@ -7717,13 +8054,40 @@ Specifies whether vTPM should be enabled on the virtual machine. This parameter 
 - Type: bool
 - Default: `False`
 
-### Parameter: `winRM`
+### Parameter: `winRMListeners`
 
-Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object.
+Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateUrl`](#parameter-winrmlistenerscertificateurl) | string | The URL of a certificate that has been uploaded to Key Vault as a secret. |
+| [`protocol`](#parameter-winrmlistenersprotocol) | string | Specifies the protocol of WinRM listener. |
+
+### Parameter: `winRMListeners.certificateUrl`
+
+The URL of a certificate that has been uploaded to Key Vault as a secret.
+
+- Required: No
+- Type: string
+
+### Parameter: `winRMListeners.protocol`
+
+Specifies the protocol of WinRM listener.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Http'
+    'Https'
+  ]
+  ```
 
 ### Parameter: `baseTime`
 

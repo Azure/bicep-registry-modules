@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "8630540528716561176"
+      "templateHash": "7277353243135389127"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -368,6 +368,329 @@
         "description": "The type for the NIC configuration."
       }
     },
+    "imageReferenceType": {
+      "type": "object",
+      "properties": {
+        "communityGalleryImageId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call."
+          }
+        },
+        "id": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource Id of the image reference."
+          }
+        },
+        "offer": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the offer of the platform image or marketplace image used to create the virtual machine."
+          }
+        },
+        "publisher": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The image publisher."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The SKU of the image."
+          }
+        },
+        "version": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or 'latest'. Even if you use 'latest', the VM image will not automatically update after deploy time even if a new version becomes available."
+          }
+        },
+        "sharedGalleryImageId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type describing the image reference."
+      }
+    },
+    "planType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the plan."
+          }
+        },
+        "product": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the product of the image from the marketplace."
+          }
+        },
+        "publisher": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The publisher ID."
+          }
+        },
+        "promotionCode": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The promotion code."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Specifies information about the marketplace image used to create the virtual machine."
+      }
+    },
+    "autoShutDownConfigType": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The status of the auto shutdown configuration."
+          }
+        },
+        "timeZone": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The time zone ID (e.g. China Standard Time, Greenland Standard Time, Pacific Standard time, etc.)."
+          }
+        },
+        "dailyRecurrenceTime": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The time of day the schedule will occur."
+          }
+        },
+        "notificationSettings": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The status of the notification settings."
+              }
+            },
+            "emailRecipient": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The email address to send notifications to (can be a list of semi-colon separated email addresses)."
+              }
+            },
+            "notificationLocale": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The locale to use when sending a notification (fallback for unsupported languages is EN)."
+              }
+            },
+            "webhookUrl": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The webhook URL to which the notification will be sent."
+              }
+            },
+            "timeInMinutes": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The time in minutes before shutdown to send notifications."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the schedule."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type describing the configuration profile."
+      }
+    },
+    "VaultSecretGroupType": {
+      "type": "object",
+      "properties": {
+        "sourceVault": {
+          "$ref": "#/definitions/subResourceType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The relative URL of the Key Vault containing all of the certificates in VaultCertificates."
+          }
+        },
+        "vaultCertificates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "certificateStore": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. For Windows VMs, specifies the certificate store on the Virtual Machine to which the certificate should be added. The specified certificate store is implicitly in the LocalMachine account. For Linux VMs, the certificate file is placed under the /var/lib/waagent directory, with the file name <UppercaseThumbprint>.crt for the X509 certificate file and <UppercaseThumbprint>.prv for private key. Both of these files are .pem formatted."
+                }
+              },
+              "certificateUrl": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. This is the URL of a certificate that has been uploaded to Key Vault as a secret."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The list of key vault references in SourceVault which contain certificates."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type describing the set of certificates that should be installed onto the virtual machine."
+      }
+    },
+    "vmGalleryApplicationType": {
+      "type": "object",
+      "properties": {
+        "packageReferenceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Specifies the GalleryApplicationVersion resource id on the form of /subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{application}/versions/{version}."
+          }
+        },
+        "configurationReference": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the uri to an azure blob that will replace the default configuration for the package if provided."
+          }
+        },
+        "enableAutomaticUpgrade": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If set to true, when a new Gallery Application version is available in PIR/SIG, it will be automatically updated for the VM/VMSS."
+          }
+        },
+        "order": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the order in which the packages have to be installed."
+          }
+        },
+        "tags": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies a passthrough value for more generic context."
+          }
+        },
+        "treatFailureAsDeploymentFailure": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If true, any failure for any operation in the VmApplication will fail the deployment."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type describing the gallery application that should be made available to the VM/VMSS."
+      }
+    },
+    "additionalUnattendContentType": {
+      "type": "object",
+      "properties": {
+        "settingName": {
+          "type": "string",
+          "allowedValues": [
+            "AutoLogon",
+            "FirstLogonCommands"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the name of the setting to which the content applies."
+          }
+        },
+        "content": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the XML formatted content that is added to the unattend.xml file for the specified path and component. The XML must be less than 4KB and must include the root element for the setting or feature that is being inserted."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type describing additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup."
+      }
+    },
+    "winRMListenerType": {
+      "type": "object",
+      "properties": {
+        "certificateUrl": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The URL of a certificate that has been uploaded to Key Vault as a secret."
+          }
+        },
+        "protocol": {
+          "type": "string",
+          "allowedValues": [
+            "Http",
+            "Https"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the protocol of WinRM listener."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type describing a Windows Remote Management listener."
+      }
+    },
     "_1.applicationGatewayBackendAddressPoolsType": {
       "type": "object",
       "properties": {
@@ -520,7 +843,7 @@
           "type": "object",
           "properties": {
             "backendAddressPool": {
-              "$ref": "#/definitions/_1.subResourceType",
+              "$ref": "#/definitions/subResourceType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. A reference to backendAddressPool resource."
@@ -548,7 +871,7 @@
               }
             },
             "frontendIPConfiguration": {
-              "$ref": "#/definitions/_1.subResourceType",
+              "$ref": "#/definitions/subResourceType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. A reference to frontend IP addresses."
@@ -596,24 +919,6 @@
       },
       "metadata": {
         "description": "The type for the inbound NAT rule.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
-        }
-      }
-    },
-    "_1.subResourceType": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Resource ID of the sub resource."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for the sub resource.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
         }
@@ -1086,7 +1391,7 @@
           }
         },
         "gatewayLoadBalancer": {
-          "$ref": "#/definitions/_1.subResourceType",
+          "$ref": "#/definitions/subResourceType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The gateway load balancer settings."
@@ -1294,6 +1599,24 @@
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
+    },
+    "subResourceType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the sub resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the sub resource.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+        }
+      }
     }
   },
   "parameters": {
@@ -1350,14 +1673,14 @@
       }
     },
     "imageReference": {
-      "type": "object",
+      "$ref": "#/definitions/imageReferenceType",
       "metadata": {
         "description": "Required. OS image reference. In case of marketplace images, it's the combination of the publisher, offer, sku, version attributes. In case of custom images it's the resource ID of the custom image."
       }
     },
     "plan": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/planType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use."
       }
@@ -1414,7 +1737,10 @@
     },
     "certificatesToBeInstalled": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/VaultSecretGroupType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specifies set of certificates that should be installed onto the virtual machine."
       }
@@ -1531,7 +1857,10 @@
     },
     "galleryApplications": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/vmGalleryApplicationType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specifies the gallery applications that should be made available to the VM/VMSS."
       }
@@ -1579,7 +1908,7 @@
       }
     },
     "autoShutdownConfig": {
-      "type": "object",
+      "$ref": "#/definitions/autoShutDownConfigType",
       "defaultValue": {},
       "metadata": {
         "description": "Optional. The configuration for auto-shutdown."
@@ -1877,16 +2206,22 @@
     },
     "additionalUnattendContent": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/additionalUnattendContentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied."
       }
     },
-    "winRM": {
+    "winRMListeners": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/winRMListenerType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object."
+        "description": "Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell."
       }
     },
     "configurationProfile": {
@@ -1905,6 +2240,16 @@
         "input": {
           "path": "[parameters('publicKeys')[copyIndex('publicKeysFormatted')].path]",
           "keyData": "[parameters('publicKeys')[copyIndex('publicKeysFormatted')].keyData]"
+        }
+      },
+      {
+        "name": "additionalUnattendContentFormatted",
+        "count": "[length(coalesce(parameters('additionalUnattendContent'), createArray()))]",
+        "input": {
+          "settingName": "[coalesce(parameters('additionalUnattendContent'), createArray())[copyIndex('additionalUnattendContentFormatted')].settingName]",
+          "content": "[coalesce(parameters('additionalUnattendContent'), createArray())[copyIndex('additionalUnattendContentFormatted')].content]",
+          "componentName": "Microsoft-Windows-Shell-Setup",
+          "passName": "OobeSystem"
         }
       },
       {
@@ -1927,8 +2272,8 @@
       "enableAutomaticUpdates": "[parameters('enableAutomaticUpdates')]",
       "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'enableHotpatching', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), parameters('enableHotpatching'), false()), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]",
       "timeZone": "[if(empty(parameters('timeZone')), null(), parameters('timeZone'))]",
-      "additionalUnattendContent": "[if(empty(parameters('additionalUnattendContent')), null(), parameters('additionalUnattendContent'))]",
-      "winRM": "[if(not(empty(parameters('winRM'))), createObject('listeners', parameters('winRM')), null())]"
+      "additionalUnattendContent": "[variables('additionalUnattendContentFormatted')]",
+      "winRM": "[if(not(empty(parameters('winRMListeners'))), createObject('listeners', parameters('winRMListeners')), null())]"
     },
     "accountSasProperties": {
       "signedServices": "b",
@@ -2011,7 +2356,7 @@
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
       "zones": "[if(not(equals(parameters('zone'), 0)), array(string(parameters('zone'))), null())]",
-      "plan": "[if(not(empty(parameters('plan'))), parameters('plan'), null())]",
+      "plan": "[parameters('plan')]",
       "properties": {
         "hardwareProfile": {
           "vmSize": "[parameters('vmSize')]"
@@ -2151,7 +2496,7 @@
           "time": "[coalesce(tryGet(parameters('autoShutdownConfig'), 'dailyRecurrenceTime'), '19:00')]"
         },
         "timeZoneId": "[coalesce(tryGet(parameters('autoShutdownConfig'), 'timeZone'), 'UTC')]",
-        "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationStatus'), createObject('status', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationStatus'), 'Disabled'), 'emailRecipient', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationEmail'), ''), 'notificationLocale', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationLocale'), 'en'), 'webhookUrl', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationWebhookUrl'), ''), 'timeInMinutes', coalesce(tryGet(parameters('autoShutdownConfig'), 'notificationTimeInMinutes'), 30)), null())]"
+        "notificationSettings": "[if(contains(parameters('autoShutdownConfig'), 'notificationSettings'), createObject('status', coalesce(tryGet(parameters('autoShutdownConfig'), 'status'), 'Disabled'), 'emailRecipient', coalesce(tryGet(tryGet(parameters('autoShutdownConfig'), 'notificationSettings'), 'emailRecipient'), ''), 'notificationLocale', coalesce(tryGet(tryGet(parameters('autoShutdownConfig'), 'notificationSettings'), 'notificationLocale'), 'en'), 'webhookUrl', coalesce(tryGet(tryGet(parameters('autoShutdownConfig'), 'notificationSettings'), 'webhookUrl'), ''), 'timeInMinutes', coalesce(tryGet(tryGet(parameters('autoShutdownConfig'), 'notificationSettings'), 'timeInMinutes'), 30)), null())]"
       },
       "dependsOn": [
         "vm"
@@ -2286,7 +2631,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "5750436779496507035"
+              "templateHash": "5816212342950664216"
             }
           },
           "definitions": {
@@ -3310,13 +3655,13 @@
                     "value": "[coalesce(tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'name'), format('{0}{1}', parameters('virtualMachineName'), tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'publicIpNameSuffix')))]"
                   },
                   "diagnosticSettings": {
-                    "value": "[tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'diagnosticSettings')]"
+                    "value": "[tryGet(parameters('ipConfigurations')[copyIndex()], 'diagnosticSettings')]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
                   },
                   "lock": {
-                    "value": "[tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'lock')]"
+                    "value": "[parameters('lock')]"
                   },
                   "idleTimeoutInMinutes": {
                     "value": "[tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'idleTimeoutInMinutes')]"
