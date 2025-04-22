@@ -368,7 +368,7 @@ var windowsConfiguration = {
       }
     : null
   timeZone: empty(timeZone) ? null : timeZone
-  additionalUnattendContent: additionalUnattendContentFormatted
+  additionalUnattendContent: empty(additionalUnattendContent) ? null : additionalUnattendContentFormatted
   winRM: !empty(winRMListeners)
     ? {
         listeners: winRMListeners

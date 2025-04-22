@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "7277353243135389127"
+      "templateHash": "15203958021511055126"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2272,7 +2272,7 @@
       "enableAutomaticUpdates": "[parameters('enableAutomaticUpdates')]",
       "patchSettings": "[if(and(parameters('provisionVMAgent'), or(or(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), equals(toLower(parameters('patchMode')), toLower('AutomaticByOS'))), equals(toLower(parameters('patchMode')), toLower('Manual')))), createObject('patchMode', parameters('patchMode'), 'assessmentMode', parameters('patchAssessmentMode'), 'enableHotpatching', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), parameters('enableHotpatching'), false()), 'automaticByPlatformSettings', if(equals(toLower(parameters('patchMode')), toLower('AutomaticByPlatform')), createObject('bypassPlatformSafetyChecksOnUserSchedule', parameters('bypassPlatformSafetyChecksOnUserSchedule'), 'rebootSetting', parameters('rebootSetting')), null())), null())]",
       "timeZone": "[if(empty(parameters('timeZone')), null(), parameters('timeZone'))]",
-      "additionalUnattendContent": "[variables('additionalUnattendContentFormatted')]",
+      "additionalUnattendContent": "[if(empty(parameters('additionalUnattendContent')), null(), variables('additionalUnattendContentFormatted'))]",
       "winRM": "[if(not(empty(parameters('winRMListeners'))), createObject('listeners', parameters('winRMListeners')), null())]"
     },
     "accountSasProperties": {
