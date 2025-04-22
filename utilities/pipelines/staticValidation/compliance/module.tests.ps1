@@ -1413,7 +1413,7 @@ Describe 'Module tests' -Tag 'Module' {
 
             $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
             $major, $minor = $versionFileContent.version -split '\.'
-            $major | Should -Be 0 -Because 'module version must be incremented via Minor and Patch versions only for the time being.'
+            $major | Should -Be 0 -Because 'module version must be incremented via minor and patch versions only for the time being.'
         }
 
         # If the child modules version has been increased, all versioned parent modules up the chain should increase their version as well
