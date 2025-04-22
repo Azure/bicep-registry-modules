@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "18294833717581353295"
+      "templateHash": "4427483613542642631"
     },
     "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
     "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster."
@@ -20,7 +20,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the firewall rule."
+        "description": "Required. The name of the firewall rule. Must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`."
       }
     },
     "startIpAddress": {
@@ -40,7 +40,7 @@
     {
       "type": "Microsoft.DocumentDB/mongoClusters/firewallRules",
       "apiVersion": "2024-02-15-preview",
-      "name": "[format('{0}/{1}', parameters('mongoClusterName'), parameters('name'))]",
+      "name": "[format('{0}/{1}', parameters('mongoClusterName'), if(not(contains(parameters('name'), '.')), parameters('name'), fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')))]",
       "properties": {
         "startIpAddress": "[parameters('startIpAddress')]",
         "endIpAddress": "[parameters('endIpAddress')]"
@@ -60,14 +60,14 @@
       "metadata": {
         "description": "The name of the firewall rule."
       },
-      "value": "[parameters('name')]"
+      "value": "[if(not(contains(parameters('name'), '.')), parameters('name'), fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.'))]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the firewall rule."
       },
-      "value": "[resourceId('Microsoft.DocumentDB/mongoClusters/firewallRules', parameters('mongoClusterName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.DocumentDB/mongoClusters/firewallRules', parameters('mongoClusterName'), if(not(contains(parameters('name'), '.')), parameters('name'), fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')))]"
     }
   }
 }

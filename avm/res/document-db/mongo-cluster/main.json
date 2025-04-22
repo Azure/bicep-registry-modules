@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "3551552142924853661"
+      "templateHash": "17977303735857570817"
     },
     "name": "Azure Cosmos DB MongoDB vCore cluster",
     "description": "This module deploys a Azure Cosmos DB MongoDB vCore cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -109,7 +109,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The name of the custom firewall rule."
+                    "description": "Optional. The name of the custom firewall rule. Must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`."
                   }
                 },
                 "startIpAddress": {
@@ -834,10 +834,10 @@
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "firewallRules": "[union(map(coalesce(tryGet(parameters('networkAcls'), 'customRules'), createArray()), lambda('customRule', createObject('name', coalesce(tryGet(lambdaVariables('customRule'), 'firewallRuleName'), format('allow-{0}-to-{1}', replace(lambdaVariables('customRule').startIpAddress, '.', ''), replace(lambdaVariables('customRule').endIpAddress, '.', ''))), 'startIpAddress', lambdaVariables('customRule').startIpAddress, 'endIpAddress', lambdaVariables('customRule').endIpAddress))), if(coalesce(tryGet(parameters('networkAcls'), 'allowAllIPs'), false()), createArray(createObject('name', 'allow-all-IPs', 'startIpAddress', '0.0.0.0', 'endIpAddress', '255.255.255.255')), createArray()), if(coalesce(tryGet(parameters('networkAcls'), 'allowAzureIPs'), false()), createArray(createObject('name', 'allow-all-azure-internal-IPs', 'startIpAddress', '0.0.0.0', 'endIpAddress', '0.0.0.0')), createArray()))]"
+    "firewallRules": "[union(map(coalesce(tryGet(parameters('networkAcls'), 'customRules'), createArray()), lambda('customRule', createObject('name', coalesce(tryGet(lambdaVariables('customRule'), 'firewallRuleName'), format('allow-{0}-to-{1}', replace(lambdaVariables('customRule').startIpAddress, '.', '_'), replace(lambdaVariables('customRule').endIpAddress, '.', '_'))), 'startIpAddress', lambdaVariables('customRule').startIpAddress, 'endIpAddress', lambdaVariables('customRule').endIpAddress))), if(coalesce(tryGet(parameters('networkAcls'), 'allowAllIPs'), false()), createArray(createObject('name', 'allow-all-IPs', 'startIpAddress', '0.0.0.0', 'endIpAddress', '255.255.255.255')), createArray()), if(coalesce(tryGet(parameters('networkAcls'), 'allowAzureIPs'), false()), createArray(createObject('name', 'allow-all-azure-internal-IPs', 'startIpAddress', '0.0.0.0', 'endIpAddress', '0.0.0.0')), createArray()))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -978,7 +978,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "18294833717581353295"
+              "templateHash": "4427483613542642631"
             },
             "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
             "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster."
@@ -993,7 +993,7 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the firewall rule."
+                "description": "Required. The name of the firewall rule. Must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`."
               }
             },
             "startIpAddress": {
@@ -1013,7 +1013,7 @@
             {
               "type": "Microsoft.DocumentDB/mongoClusters/firewallRules",
               "apiVersion": "2024-02-15-preview",
-              "name": "[format('{0}/{1}', parameters('mongoClusterName'), parameters('name'))]",
+              "name": "[format('{0}/{1}', parameters('mongoClusterName'), if(not(contains(parameters('name'), '.')), parameters('name'), fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')))]",
               "properties": {
                 "startIpAddress": "[parameters('startIpAddress')]",
                 "endIpAddress": "[parameters('endIpAddress')]"
@@ -1033,14 +1033,14 @@
               "metadata": {
                 "description": "The name of the firewall rule."
               },
-              "value": "[parameters('name')]"
+              "value": "[if(not(contains(parameters('name'), '.')), parameters('name'), fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.'))]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the firewall rule."
               },
-              "value": "[resourceId('Microsoft.DocumentDB/mongoClusters/firewallRules', parameters('mongoClusterName'), parameters('name'))]"
+              "value": "[resourceId('Microsoft.DocumentDB/mongoClusters/firewallRules', parameters('mongoClusterName'), if(not(contains(parameters('name'), '.')), parameters('name'), fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')))]"
             }
           }
         }

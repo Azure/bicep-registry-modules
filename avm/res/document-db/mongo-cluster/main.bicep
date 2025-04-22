@@ -82,7 +82,7 @@ var builtInRoleNames = {
 
 var firewallRules = union(
   map(networkAcls.?customRules ?? [], customRule => {
-    name: customRule.?firewallRuleName ?? 'allow-${replace(customRule.startIpAddress, '.', '')}-to-${replace(customRule.endIpAddress, '.', '')}'
+    name: customRule.?firewallRuleName ?? 'allow-${replace(customRule.startIpAddress, '.', '_')}-to-${replace(customRule.endIpAddress, '.', '_')}'
     startIpAddress: customRule.startIpAddress
     endIpAddress: customRule.endIpAddress
   }),

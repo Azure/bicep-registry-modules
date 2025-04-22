@@ -93,7 +93,7 @@ module testDeployment '../../../main.bicep' = [
       networkAcls: {
         customRules: [
           {
-            firewallRuleName: 'allow-192.168.1.0-to-192.168.2.0'
+            firewallRuleName: 'allow-192_168_1_0-to-192_168_2_0'
             startIpAddress: '192.168.1.0'
             endIpAddress: '192.168.2.0'
           }

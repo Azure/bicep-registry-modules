@@ -262,7 +262,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       customRules: [
         {
           endIpAddress: '192.168.2.0'
-          firewallRuleName: 'allow-192.168.1.0-to-192.168.2.0'
+          firewallRuleName: 'allow-192_168_1_0-to-192_168_2_0'
           startIpAddress: '192.168.1.0'
         }
       ]
@@ -382,7 +382,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
         "customRules": [
           {
             "endIpAddress": "192.168.2.0",
-            "firewallRuleName": "allow-192.168.1.0-to-192.168.2.0",
+            "firewallRuleName": "allow-192_168_1_0-to-192_168_2_0",
             "startIpAddress": "192.168.1.0"
           }
         ]
@@ -486,7 +486,7 @@ param networkAcls = {
   customRules: [
     {
       endIpAddress: '192.168.2.0'
-      firewallRuleName: 'allow-192.168.1.0-to-192.168.2.0'
+      firewallRuleName: 'allow-192_168_1_0-to-192_168_2_0'
       startIpAddress: '192.168.1.0'
     }
   ]
@@ -1380,7 +1380,7 @@ Array of role assignments to create.
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
 
 **Required parameters**
