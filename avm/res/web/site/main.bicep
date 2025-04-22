@@ -71,12 +71,11 @@ param siteConfig object = {
   ftpsState: 'FtpsOnly'
 }
 
+@description('Optional. The web site config.')
+param configs configType[]?
+
 @description('Optional. The Function App configuration object.')
 param functionAppConfig object?
-
-import { siteConfigType } from 'config/main.bicep'
-@description('Optional. The web site config.')
-param configs siteConfigType[]?
 
 @description('Optional. The extensions configuration.')
 param extensions object[]?
@@ -290,7 +289,12 @@ module app_config 'config/main.bicep' = [
     params: {
       appName: app.name
       kind: kind
-      siteConfig: config.siteConfig
+      name: config.name
+      applicationInsightResourceId: config.?applicationInsightResourceId
+      storageAccountResourceId: config.?storageAccountResourceId
+      storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
+      properties: config.properties
+      // additionalProperties: config.?additionalProperties
     }
   }
 ]
@@ -564,4 +568,72 @@ type privateEndpointOutputType = {
 
   @description('The IDs of the network interfaces associated with the private endpoint.')
   networkInterfaceResourceIds: string[]
+}
+
+@export()
+@description('The type of a site config.')
+@discriminator('name')
+type configType = appSettingsType | authSettingsType | authSettingsV2Type | logsType | webType
+
+type appSettingsType = {
+  name: 'appsettings'
+  // kind: resourceInput<'Microsoft.Web/sites/config@2024-04-01'>.kind
+
+  @description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
+  storageAccountUseIdentityAuthentication: bool?
+
+  @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
+  storageAccountResourceId: string?
+
+  @description('Optional. Resource ID of the application insight to leverage for this resource.')
+  applicationInsightResourceId: string?
+
+  @description('Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
+  properties: {
+    *: string
+  }?
+}
+
+type authSettingsType = {
+  name: 'authsettings'
+
+  // additionalProperties: {
+  //   *: string
+  // }?
+
+  @description('Optional. The config settings.')
+  properties: resourceInput<'Microsoft.Web/sites/config@2024-04-01'>.properties?
+}
+
+type authSettingsV2Type = {
+  name: 'authsettingsV2'
+
+  // additionalProperties: {
+  //   *: string
+  // }?
+
+  @description('Optional. The config settings.')
+  properties: resourceInput<'Microsoft.Web/sites/config@2024-04-01'>.properties?
+}
+
+type logsType = {
+  name: 'logs'
+
+  // additionalProperties: {
+  //   *: string
+  // }?
+
+  @description('Optional. The config settings.')
+  properties: resourceInput<'Microsoft.Web/sites/config@2024-04-01'>.properties?
+}
+
+type webType = {
+  name: 'web'
+
+  // additionalProperties: {
+  //   *: string
+  // }?
+
+  @description('Optional. The config settings.')
+  properties: resourceInput<'Microsoft.Web/sites/config@2024-04-01'>.properties?
 }

@@ -81,7 +81,7 @@ module testDeployment '../../../main.bicep' = [
           applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
           storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
           storageAccountUseIdentityAuthentication: true
-          additionalProperties: {
+          properties: {
             AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
             EASYAUTH_SECRET: 'https://${namePrefix}-KeyVault${environment().suffixes.keyvaultDns}/secrets/Modules-Test-SP-Password'
             FUNCTIONS_EXTENSION_VERSION: '~4'
