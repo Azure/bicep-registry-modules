@@ -57,7 +57,7 @@ param userData string = ''
 param customData string = ''
 
 @description('Optional. Specifies set of certificates that should be installed onto the virtual machine.')
-param certificatesToBeInstalled array = []
+param certificatesToBeInstalled VaultSecretGroupType[]?
 
 @description('Optional. Specifies the priority for the virtual machine.')
 @allowed([
@@ -116,7 +116,7 @@ param virtualMachineScaleSetResourceId string = ''
 param availabilitySetResourceId string = ''
 
 @description('Optional. Specifies the gallery applications that should be made available to the VM/VMSS.')
-param galleryApplications array = []
+param galleryApplications vmGalleryApplicationType[]?
 
 @description('Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
 @allowed([
@@ -305,10 +305,10 @@ param enableHotpatching bool = false
 param timeZone string = ''
 
 @description('Optional. Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied.')
-param additionalUnattendContent array = []
+param additionalUnattendContent additionalUnattendContentType[]?
 
-@description('Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object.')
-param winRM array = []
+@description('Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell.')
+param winRMListeners winRMListenerType[]?
 
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
@@ -342,6 +342,15 @@ var linuxConfiguration = {
     : null
 }
 
+var additionalUnattendContentFormatted = [
+  for (unattendContent, index) in additionalUnattendContent ?? []: {
+    settingName: unattendContent.settingName
+    content: unattendContent.content
+    componentName: 'Microsoft-Windows-Shell-Setup'
+    passName: 'OobeSystem'
+  }
+]
+
 var windowsConfiguration = {
   provisionVMAgent: provisionVMAgent
   enableAutomaticUpdates: enableAutomaticUpdates
@@ -359,10 +368,10 @@ var windowsConfiguration = {
       }
     : null
   timeZone: empty(timeZone) ? null : timeZone
-  additionalUnattendContent: empty(additionalUnattendContent) ? null : additionalUnattendContent
-  winRM: !empty(winRM)
+  additionalUnattendContent: additionalUnattendContentFormatted
+  winRM: !empty(winRMListeners)
     ? {
-        listeners: winRM
+        listeners: winRMListeners
       }
     : null
 }
@@ -1161,6 +1170,7 @@ type publicKeyType = {
 
 import { ipConfigurationType } from 'modules/nic-configuration.bicep'
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { subResourceType } from 'br/public:avm/res/network/network-interface:0.5.0'
 
 @export()
 @description('The type for the NIC configuration.')
@@ -1275,4 +1285,62 @@ type autoShutDownConfigType = {
     @description('Optional. The time in minutes before shutdown to send notifications.')
     timeInMinutes: int?
   }?
+}
+
+@export()
+@description('The type describing the set of certificates that should be installed onto the virtual machine.')
+type VaultSecretGroupType = {
+  @description('Optional. The relative URL of the Key Vault containing all of the certificates in VaultCertificates.')
+  sourceVault: subResourceType?
+
+  @description('Optional. The list of key vault references in SourceVault which contain certificates.')
+  vaultCertificates: {
+    @description('Optional. For Windows VMs, specifies the certificate store on the Virtual Machine to which the certificate should be added. The specified certificate store is implicitly in the LocalMachine account. For Linux VMs, the certificate file is placed under the /var/lib/waagent directory, with the file name <UppercaseThumbprint>.crt for the X509 certificate file and <UppercaseThumbprint>.prv for private key. Both of these files are .pem formatted.')
+    certificateStore: string?
+
+    @description('Optional. This is the URL of a certificate that has been uploaded to Key Vault as a secret.')
+    certificateUrl: string?
+  }[]?
+}
+
+@export()
+@description('The type describing the gallery application that should be made available to the VM/VMSS.')
+type vmGalleryApplicationType = {
+  @description('Required. Specifies the GalleryApplicationVersion resource id on the form of /subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{application}/versions/{version}.')
+  packageReferenceId: string
+
+  @description('Optional. Specifies the uri to an azure blob that will replace the default configuration for the package if provided.')
+  configurationReference: string?
+
+  @description('Optional. If set to true, when a new Gallery Application version is available in PIR/SIG, it will be automatically updated for the VM/VMSS.')
+  enableAutomaticUpgrade: bool?
+
+  @description('Optional. Specifies the order in which the packages have to be installed.')
+  order: int?
+
+  @description('Optional. Specifies a passthrough value for more generic context.')
+  tags: string?
+
+  @description('Optional. If true, any failure for any operation in the VmApplication will fail the deployment.')
+  treatFailureAsDeploymentFailure: bool?
+}
+
+@export()
+@description('The type describing additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup.')
+type additionalUnattendContentType = {
+  @description('Optional. Specifies the name of the setting to which the content applies.')
+  settingName: 'FirstLogonCommands' | 'AutoLogon'?
+
+  @description('Optional. Specifies the XML formatted content that is added to the unattend.xml file for the specified path and component. The XML must be less than 4KB and must include the root element for the setting or feature that is being inserted.')
+  content: string?
+}
+
+@export()
+@description('The type describing a Windows Remote Management listener.')
+type winRMListenerType = {
+  @description('Optional. The URL of a certificate that has been uploaded to Key Vault as a secret.')
+  certificateUrl: string?
+
+  @description('Optional. Specifies the protocol of WinRM listener.')
+  protocol: 'Http' | 'Https'?
 }
