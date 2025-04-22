@@ -511,7 +511,7 @@ module databaseAccount_tables 'table/main.bicep' = [
 
 module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-databaseAccount-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-dbAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]

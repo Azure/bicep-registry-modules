@@ -129,7 +129,7 @@ resource digitalTwinsInstance 'Microsoft.DigitalTwins/digitalTwinsInstances@2023
 
 module digitalTwinsInstance_endpoints 'endpoint/main.bicep' = [
   for (endpoint, index) in (endpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-DigitalTwinsInstance-Endpoints-${index}'
+    name: '${uniqueString(deployment().name, location)}-DigitalTwins-Endpoints-${index}'
     params: {
       digitalTwinInstanceName: digitalTwinsInstance.name
       name: endpoint.?name ?? '${endpoint.properties.endpointType}Endpoint'
@@ -140,7 +140,7 @@ module digitalTwinsInstance_endpoints 'endpoint/main.bicep' = [
 
 module digitalTwinsInstance_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-digitalTwinsInstance-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-digitalTwins-PrivateEndpoint-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]

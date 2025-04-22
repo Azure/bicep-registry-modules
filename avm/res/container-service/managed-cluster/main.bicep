@@ -559,12 +559,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
   properties: {
     agentPoolProfiles: map(primaryAgentPoolProfiles, profile => {
       name: profile.name
-      count: profile.count ?? 1
+      count: profile.?count ?? 1
       availabilityZones: map(profile.?availabilityZones ?? [1, 2, 3], zone => '${zone}')
       creationData: !empty(profile.?sourceResourceId)
         ? {
             #disable-next-line use-resource-id-functions // Not possible to reference as nested
-            sourceResourceId: profile.sourceResourceId
+            sourceResourceId: profile.?sourceResourceId
           }
         : null
       enableAutoScaling: profile.?enableAutoScaling ?? false
@@ -887,7 +887,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
 
 module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = [
   for (maintenanceConfiguration, index) in (maintenanceConfigurations ?? []): {
-    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfiguration-${index}'
+    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceCfg-${index}'
     params: {
       name: maintenanceConfiguration!.name
       maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
