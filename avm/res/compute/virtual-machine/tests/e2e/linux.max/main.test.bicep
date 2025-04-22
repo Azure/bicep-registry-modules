@@ -234,6 +234,7 @@ module testDeployment '../../../main.bicep' = {
     encryptionAtHost: false
     extensionCustomScriptConfig: {
       enabled: true
+      name: 'myCustomScript'
       fileData: [
         {
           storageAccountId: nestedDependencies.outputs.storageAccountResourceId
@@ -251,6 +252,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionDependencyAgentConfig: {
       enabled: true
+      name: 'myDependencyAgent'
       enableAMA: true
       tags: {
         'hidden-title': 'This is visible in the resource name'
@@ -278,6 +280,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionAadJoinConfig: {
       enabled: true
+      name: 'myAADLogin'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -286,6 +289,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionDSCConfig: {
       enabled: false
+      name: 'myDesiredStateConfiguration'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
@@ -294,6 +298,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionMonitoringAgentConfig: {
       enabled: true
+      name: 'myMonitoringAgent'
       dataCollectionRuleAssociations: [
         {
           name: 'SendMetricsToLAW'
@@ -308,6 +313,7 @@ module testDeployment '../../../main.bicep' = {
     }
     extensionNetworkWatcherAgentConfig: {
       enabled: true
+      name: 'myNetworkWatcherAgent'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

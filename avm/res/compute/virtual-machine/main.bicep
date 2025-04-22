@@ -711,7 +711,7 @@ module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.e
   name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
   params: {
     virtualMachineName: vm.name
-    name: 'AADLogin'
+    name: extensionAadJoinConfig.?name ?? 'AADLogin'
     location: location
     publisher: 'Microsoft.Azure.ActiveDirectory'
     type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
@@ -728,7 +728,7 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
   name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
   params: {
     virtualMachineName: vm.name
-    name: 'DomainJoin'
+    name: extensionDomainJoinConfig.?name ?? 'DomainJoin'
     location: location
     publisher: 'Microsoft.Compute'
     type: 'JsonADDomainExtension'
@@ -751,7 +751,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
   name: '${uniqueString(deployment().name, location)}-VM-MicrosoftAntiMalware'
   params: {
     virtualMachineName: vm.name
-    name: 'MicrosoftAntiMalware'
+    name: extensionAntiMalwareConfig.?name ?? 'MicrosoftAntiMalware'
     location: location
     publisher: 'Microsoft.Azure.Security'
     type: 'IaaSAntimalware'
@@ -781,7 +781,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
   name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
   params: {
     virtualMachineName: vm.name
-    name: 'AzureMonitorAgent'
+    name: extensionMonitoringAgentConfig.?name ?? 'AzureMonitorAgent'
     location: location
     publisher: 'Microsoft.Azure.Monitor'
     type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
@@ -813,7 +813,7 @@ module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepende
   name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
   params: {
     virtualMachineName: vm.name
-    name: 'DependencyAgent'
+    name: extensionDependencyAgentConfig.?name ?? 'DependencyAgent'
     location: location
     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
     type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
@@ -835,7 +835,7 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNet
   name: '${uniqueString(deployment().name, location)}-VM-NetworkWatcherAgent'
   params: {
     virtualMachineName: vm.name
-    name: 'NetworkWatcherAgent'
+    name: extensionNetworkWatcherAgentConfig.?name ?? 'NetworkWatcherAgent'
     location: location
     publisher: 'Microsoft.Azure.NetworkWatcher'
     type: osType == 'Windows' ? 'NetworkWatcherAgentWindows' : 'NetworkWatcherAgentLinux'
@@ -854,7 +854,7 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extens
   name: '${uniqueString(deployment().name, location)}-VM-DesiredStateConfiguration'
   params: {
     virtualMachineName: vm.name
-    name: 'DesiredStateConfiguration'
+    name: extensionDSCConfig.?name ?? 'DesiredStateConfiguration'
     location: location
     publisher: 'Microsoft.Powershell'
     type: 'DSC'
@@ -875,7 +875,7 @@ module vm_customScriptExtension 'extension/main.bicep' = if (extensionCustomScri
   name: '${uniqueString(deployment().name, location)}-VM-CustomScriptExtension'
   params: {
     virtualMachineName: vm.name
-    name: 'CustomScriptExtension'
+    name: extensionCustomScriptConfig.?name ?? 'CustomScriptExtension'
     location: location
     publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
     type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
@@ -902,7 +902,7 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
   name: '${uniqueString(deployment().name, location)}-VM-AzureDiskEncryption'
   params: {
     virtualMachineName: vm.name
-    name: 'AzureDiskEncryption'
+    name: extensionAzureDiskEncryptionConfig.?name ?? 'AzureDiskEncryption'
     location: location
     publisher: 'Microsoft.Azure.Security'
     type: osType == 'Windows' ? 'AzureDiskEncryption' : 'AzureDiskEncryptionForLinux'
@@ -923,7 +923,7 @@ module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' = if (extension
   name: '${uniqueString(deployment().name, location)}-VM-NvidiaGpuDriverWindows'
   params: {
     virtualMachineName: vm.name
-    name: 'NvidiaGpuDriverWindows'
+    name: extensionNvidiaGpuDriverWindows.?name ?? 'NvidiaGpuDriverWindows'
     location: location
     publisher: 'Microsoft.HpcCompute'
     type: 'NvidiaGpuDriverWindows'
@@ -942,7 +942,7 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
   name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
   params: {
     virtualMachineName: vm.name
-    name: 'HostPoolRegistration'
+    name: extensionHostPoolRegistration.?name ?? 'HostPoolRegistration'
     location: location
     publisher: 'Microsoft.PowerShell'
     type: 'DSC'
@@ -970,7 +970,9 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensio
   name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
   params: {
     virtualMachineName: vm.name
-    name: osType == 'Windows' ? 'AzurePolicyforWindows' : 'AzurePolicyforLinux'
+    name: extensionGuestConfigurationExtension.?name ?? osType == 'Windows'
+      ? 'AzurePolicyforWindows'
+      : 'AzurePolicyforLinux'
     location: location
     publisher: 'Microsoft.GuestConfiguration'
     type: osType == 'Windows' ? 'ConfigurationforWindows' : 'ConfigurationForLinux'
