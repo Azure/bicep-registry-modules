@@ -3099,6 +3099,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     vmSize: 'Standard_D2s_v3'
     zone: 2
     // Non-required parameters
+    additionalUnattendContent: [
+      {
+        content: '<FirstLogonCommands><SynchronousCommand><CommandLine>cmd /c echo First logon command example > %temp%\\FirstLogonCommandOutput.txt</CommandLine><Description>Example FirstLogonCommand</Description><Order>1</Order></SynchronousCommand></FirstLogonCommands>'
+        settingName: 'FirstLogonCommands'
+      }
+    ]
     adminPassword: '<adminPassword>'
     autoShutdownConfig: {
       dailyRecurrenceTime: '19:00'
@@ -3429,6 +3435,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": 2
     },
     // Non-required parameters
+    "additionalUnattendContent": {
+      "value": [
+        {
+          "content": "<FirstLogonCommands><SynchronousCommand><CommandLine>cmd /c echo First logon command example > %temp%\\FirstLogonCommandOutput.txt</CommandLine><Description>Example FirstLogonCommand</Description><Order>1</Order></SynchronousCommand></FirstLogonCommands>",
+          "settingName": "FirstLogonCommands"
+        }
+      ]
+    },
     "adminPassword": {
       "value": "<adminPassword>"
     },
@@ -3793,6 +3807,12 @@ param osType = 'Windows'
 param vmSize = 'Standard_D2s_v3'
 param zone = 2
 // Non-required parameters
+param additionalUnattendContent = [
+  {
+    content: '<FirstLogonCommands><SynchronousCommand><CommandLine>cmd /c echo First logon command example > %temp%\\FirstLogonCommandOutput.txt</CommandLine><Description>Example FirstLogonCommand</Description><Order>1</Order></SynchronousCommand></FirstLogonCommands>'
+    settingName: 'FirstLogonCommands'
+  }
+]
 param adminPassword = '<adminPassword>'
 param autoShutdownConfig = {
   dailyRecurrenceTime: '19:00'

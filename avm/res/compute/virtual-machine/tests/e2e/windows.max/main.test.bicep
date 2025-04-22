@@ -352,6 +352,12 @@ module testDeployment '../../../main.bicep' = [
           Role: 'DeploymentValidation'
         }
       }
+      additionalUnattendContent: [
+        {
+          settingName: 'FirstLogonCommands'
+          content: '<FirstLogonCommands><SynchronousCommand><CommandLine>cmd /c echo First logon command example > %temp%\\FirstLogonCommandOutput.txt</CommandLine><Description>Example FirstLogonCommand</Description><Order>1</Order></SynchronousCommand></FirstLogonCommands>'
+        }
+      ]
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
