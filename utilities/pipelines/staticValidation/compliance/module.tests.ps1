@@ -1399,13 +1399,14 @@ Describe 'Module tests' -Tag 'Module' {
         It '[<moduleFolderName>] A [` version.json `] file must not yet contain a major version greater than 0.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
             param (
-                [string] $moduleFolderPath
+                [string] $moduleFolderPath,
+                [string] $moduleType,
+                [string] $moduleFolderName
             )
 
-            Write-Verbose "[$moduleFolderPath]" -Verbose
-            if ($moduleFolderPath -contains 'res/network/nat-gateway') {
+            if ($moduleType -eq 'res' -and $moduleFolderName -eq 'network/nat-gateway') {
                 # Using a warning and skip, since nat-gateway has already been released with version 1.x.
-                Write-Warning "[$moduleFolderPath] has already been released with version 1.x"
+                Write-Warning "[avm/$moduleType/$moduleFolderName] has already been released with version 1.x"
                 Set-ItResult -Skipped -Because 'the module has already been released with version 1.x.'
                 return
             }
