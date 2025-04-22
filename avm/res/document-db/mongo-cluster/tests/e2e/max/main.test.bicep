@@ -94,8 +94,8 @@ module testDeployment '../../../main.bicep' = [
         customRules: [
           {
             firewallRuleName: 'allow-192.168.1.0-to-192.168.2.0'
-            endIpAddress: '192.168.2.0'
             startIpAddress: '192.168.1.0'
+            endIpAddress: '192.168.2.0'
           }
         ]
         allowAzureIPs: true

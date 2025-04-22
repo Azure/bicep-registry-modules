@@ -373,7 +373,7 @@ type networkAclsType = {
   @description('Optional. List of custom firewall rules.')
   customRules: [
     {
-      @description('Optional. The name of the custom firewall rule.')
+      @description('Optional. The name of the custom firewall rule. Must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`.')
       firewallRuleName: string?
 
       @description('Required. The starting IP address for the custom firewall rule.')
