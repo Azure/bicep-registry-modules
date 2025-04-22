@@ -37,6 +37,9 @@ param name string
 ])
 param kind string
 
+param properties object = {}
+
+// Parameters only relevant for the config type 'appsettings'
 @description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
 param storageAccountUseIdentityAuthentication bool = false
 
@@ -46,14 +49,8 @@ param storageAccountResourceId string?
 @description('Optional. Resource ID of the application insight to leverage for this resource.')
 param applicationInsightResourceId string?
 
-// param additionalProperties {
-//   *: string
-// } = {}
-
-param properties object = {}
-
 @description('Optional. The current app settings.')
-param currentAppSettings object? // = !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
+param currentAppSettings object = {} // = !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
 
 var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseIdentityAuthentication
   ? {
@@ -75,7 +72,7 @@ var appInsightsValues = !empty(applicationInsightResourceId)
   : {}
 
 var expandedProperties = union(
-  currentAppSettings,
+  name == 'appsettings' ? currentAppSettings : {},
   // additionalProperties,
   properties,
   azureWebJobsValues,
