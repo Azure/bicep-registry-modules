@@ -35,9 +35,9 @@ module networkInterface_publicIPAddresses 'br/public:avm/res/network/public-ip-a
     name: '${deployment().name}-publicIP-${index}'
     params: {
       name: ipConfiguration.?pipConfiguration.?name ?? '${virtualMachineName}${ipConfiguration.?pipConfiguration.?publicIpNameSuffix}'
-      diagnosticSettings: ipConfiguration.?pipConfiguration.?diagnosticSettings
+      diagnosticSettings: ipConfiguration.?diagnosticSettings
       location: location
-      lock: ipConfiguration.?pipConfiguration.?lock
+      lock: lock
       idleTimeoutInMinutes: ipConfiguration.?pipConfiguration.?idleTimeoutInMinutes
       ddosSettings: ipConfiguration.?pipConfiguration.?ddosSettings
       dnsSettings: ipConfiguration.?pipConfiguration.?dnsSettings
