@@ -17,13 +17,10 @@ resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2024-02-15-preview' ex
   name: mongoClusterName
 }
 
-#disable-next-line no-unused-vars // Used to validate the name of the firewall rule
-var validateName = contains(name, '.')
-  ? fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')
-  : null
-
 resource firewallRule 'Microsoft.DocumentDB/mongoClusters/firewallRules@2024-02-15-preview' = {
-  name: name
+  name: !contains(name, '.') // Custom validation as documented regex is incorrect and does fail with an 'InternalServerError'
+    ? name
+    : fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')
   parent: mongoCluster
   properties: {
     startIpAddress: startIpAddress
