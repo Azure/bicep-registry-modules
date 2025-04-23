@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "15203958021511055126"
+      "templateHash": "17888900539488859315"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -1708,6 +1708,13 @@
         "description": "Optional. The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled."
       }
     },
+    "hibernationEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. The flag that enables or disables hibernation capability on the VM."
+      }
+    },
     "adminUsername": {
       "type": "securestring",
       "metadata": {
@@ -2405,7 +2412,8 @@
           }
         },
         "additionalCapabilities": {
-          "ultraSSDEnabled": "[parameters('ultraSSDEnabled')]"
+          "ultraSSDEnabled": "[parameters('ultraSSDEnabled')]",
+          "hibernationEnabled": "[parameters('hibernationEnabled')]"
         },
         "osProfile": {
           "computerName": "[parameters('computerName')]",
@@ -2631,7 +2639,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "5816212342950664216"
+              "templateHash": "16299850035526446559"
             }
           },
           "definitions": {
@@ -3655,7 +3663,7 @@
                     "value": "[coalesce(tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'name'), format('{0}{1}', parameters('virtualMachineName'), tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'publicIpNameSuffix')))]"
                   },
                   "diagnosticSettings": {
-                    "value": "[tryGet(parameters('ipConfigurations')[copyIndex()], 'diagnosticSettings')]"
+                    "value": "[coalesce(tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'diagnosticSettings'), tryGet(parameters('ipConfigurations')[copyIndex()], 'diagnosticSettings'))]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -5393,7 +5401,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "AADLogin"
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'name'), 'AADLogin')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -5597,7 +5605,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "DomainJoin"
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'name'), 'DomainJoin')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -5809,7 +5817,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "MicrosoftAntiMalware"
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'name'), 'MicrosoftAntiMalware')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6016,7 +6024,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "AzureMonitorAgent"
+            "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'name'), 'AzureMonitorAgent')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6218,7 +6226,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "DependencyAgent"
+            "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'name'), 'DependencyAgent')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6425,7 +6433,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "NetworkWatcherAgent"
+            "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'name'), 'NetworkWatcherAgent')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6627,7 +6635,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "DesiredStateConfiguration"
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'name'), 'DesiredStateConfiguration')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6837,7 +6845,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "CustomScriptExtension"
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'name'), 'CustomScriptExtension')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -7051,7 +7059,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "AzureDiskEncryption"
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'name'), 'AzureDiskEncryption')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -7259,7 +7267,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "NvidiaGpuDriverWindows"
+            "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'name'), 'NvidiaGpuDriverWindows')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -7463,7 +7471,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "HostPoolRegistration"
+            "value": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'name'), 'HostPoolRegistration')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -7675,7 +7683,7 @@
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
-          "name": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzurePolicyforWindows'), createObject('value', 'AzurePolicyforLinux'))]",
+          "name": "[if(coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'name'), equals(parameters('osType'), 'Windows')), createObject('value', 'AzurePolicyforWindows'), createObject('value', 'AzurePolicyforLinux'))]",
           "location": {
             "value": "[parameters('location')]"
           },

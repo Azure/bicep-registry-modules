@@ -529,6 +529,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             ]
             name: 'ipconfig01'
             pipConfiguration: {
+              diagnosticSettings: [
+                {
+                  workspaceResourceId: '<workspaceResourceId>'
+                }
+              ]
               publicIpNameSuffix: '-pip-01'
               roleAssignments: [
                 {
@@ -623,6 +628,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     encryptionAtHost: false
     extensionAadJoinConfig: {
       enabled: true
+      name: 'myAADLogin'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -655,6 +661,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           uri: '<uri>'
         }
       ]
+      name: 'myCustomScript'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -667,6 +674,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionDependencyAgentConfig: {
       enableAMA: true
       enabled: true
+      name: 'myDependencyAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -675,6 +683,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionDSCConfig: {
       enabled: false
+      name: 'myDesiredStateConfiguration'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -689,6 +698,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       ]
       enabled: true
+      name: 'myMonitoringAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -697,12 +707,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionNetworkWatcherAgentConfig: {
       enabled: true
+      name: 'myNetworkWatcherAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
         Role: 'DeploymentValidation'
       }
     }
+    hibernationEnabled: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -823,6 +835,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ],
               "name": "ipconfig01",
               "pipConfiguration": {
+                "diagnosticSettings": [
+                  {
+                    "workspaceResourceId": "<workspaceResourceId>"
+                  }
+                ],
                 "publicIpNameSuffix": "-pip-01",
                 "roleAssignments": [
                   {
@@ -943,6 +960,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
+        "name": "myAADLogin",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -979,6 +997,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             "uri": "<uri>"
           }
         ],
+        "name": "myCustomScript",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -995,6 +1014,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "enableAMA": true,
         "enabled": true,
+        "name": "myDependencyAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -1005,6 +1025,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionDSCConfig": {
       "value": {
         "enabled": false,
+        "name": "myDesiredStateConfiguration",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -1021,6 +1042,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         ],
         "enabled": true,
+        "name": "myMonitoringAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -1031,12 +1053,16 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionNetworkWatcherAgentConfig": {
       "value": {
         "enabled": true,
+        "name": "myNetworkWatcherAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
           "Role": "DeploymentValidation"
         }
       }
+    },
+    "hibernationEnabled": {
+      "value": true
     },
     "location": {
       "value": "<location>"
@@ -1165,6 +1191,11 @@ param nicConfigurations = [
         ]
         name: 'ipconfig01'
         pipConfiguration: {
+          diagnosticSettings: [
+            {
+              workspaceResourceId: '<workspaceResourceId>'
+            }
+          ]
           publicIpNameSuffix: '-pip-01'
           roleAssignments: [
             {
@@ -1259,6 +1290,7 @@ param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
+  name: 'myAADLogin'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -1291,6 +1323,7 @@ param extensionCustomScriptConfig = {
       uri: '<uri>'
     }
   ]
+  name: 'myCustomScript'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -1303,6 +1336,7 @@ param extensionCustomScriptProtectedSetting = {
 param extensionDependencyAgentConfig = {
   enableAMA: true
   enabled: true
+  name: 'myDependencyAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -1311,6 +1345,7 @@ param extensionDependencyAgentConfig = {
 }
 param extensionDSCConfig = {
   enabled: false
+  name: 'myDesiredStateConfiguration'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -1325,6 +1360,7 @@ param extensionMonitoringAgentConfig = {
     }
   ]
   enabled: true
+  name: 'myMonitoringAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -1333,12 +1369,14 @@ param extensionMonitoringAgentConfig = {
 }
 param extensionNetworkWatcherAgentConfig = {
   enabled: true
+  name: 'myNetworkWatcherAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
     Role: 'DeploymentValidation'
   }
 }
+param hibernationEnabled = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -3041,6 +3079,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             ]
             name: 'ipconfig01'
             pipConfiguration: {
+              diagnosticSettings: [
+                {
+                  workspaceResourceId: '<workspaceResourceId>'
+                }
+              ]
               publicIPAddressResourceId: '<publicIPAddressResourceId>'
               roleAssignments: [
                 {
@@ -3149,6 +3192,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     encryptionAtHost: false
     extensionAadJoinConfig: {
       enabled: true
+      name: 'myAADLogin'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3157,6 +3201,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionAntiMalwareConfig: {
       enabled: true
+      name: 'myMicrosoftAntiMalware'
       settings: {
         AntimalwareEnabled: 'true'
         Exclusions: {
@@ -3180,6 +3225,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionAzureDiskEncryptionConfig: {
       enabled: true
+      name: 'myAzureDiskEncryption'
       settings: {
         EncryptionOperation: 'EnableEncryption'
         KekVaultResourceId: '<KekVaultResourceId>'
@@ -3204,6 +3250,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           uri: '<uri>'
         }
       ]
+      name: 'myCustomScript'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3216,6 +3263,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionDependencyAgentConfig: {
       enableAMA: true
       enabled: true
+      name: 'myDependencyAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3224,6 +3272,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionDSCConfig: {
       enabled: true
+      name: 'myDesiredStateConfiguration'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3238,6 +3287,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       ]
       enabled: true
+      name: 'myMonitoringAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3246,12 +3296,14 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionNetworkWatcherAgentConfig: {
       enabled: true
+      name: 'myNetworkWatcherAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
         Role: 'DeploymentValidation'
       }
     }
+    hibernationEnabled: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -3368,6 +3420,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ],
               "name": "ipconfig01",
               "pipConfiguration": {
+                "diagnosticSettings": [
+                  {
+                    "workspaceResourceId": "<workspaceResourceId>"
+                  }
+                ],
                 "publicIPAddressResourceId": "<publicIPAddressResourceId>",
                 "roleAssignments": [
                   {
@@ -3506,6 +3563,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
+        "name": "myAADLogin",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3516,6 +3574,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAntiMalwareConfig": {
       "value": {
         "enabled": true,
+        "name": "myMicrosoftAntiMalware",
         "settings": {
           "AntimalwareEnabled": "true",
           "Exclusions": {
@@ -3541,6 +3600,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAzureDiskEncryptionConfig": {
       "value": {
         "enabled": true,
+        "name": "myAzureDiskEncryption",
         "settings": {
           "EncryptionOperation": "EnableEncryption",
           "KekVaultResourceId": "<KekVaultResourceId>",
@@ -3567,6 +3627,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             "uri": "<uri>"
           }
         ],
+        "name": "myCustomScript",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3583,6 +3644,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "enableAMA": true,
         "enabled": true,
+        "name": "myDependencyAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3593,6 +3655,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionDSCConfig": {
       "value": {
         "enabled": true,
+        "name": "myDesiredStateConfiguration",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3609,6 +3672,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         ],
         "enabled": true,
+        "name": "myMonitoringAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3619,12 +3683,16 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionNetworkWatcherAgentConfig": {
       "value": {
         "enabled": true,
+        "name": "myNetworkWatcherAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
           "Role": "DeploymentValidation"
         }
       }
+    },
+    "hibernationEnabled": {
+      "value": true
     },
     "location": {
       "value": "<location>"
@@ -3749,6 +3817,11 @@ param nicConfigurations = [
         ]
         name: 'ipconfig01'
         pipConfiguration: {
+          diagnosticSettings: [
+            {
+              workspaceResourceId: '<workspaceResourceId>'
+            }
+          ]
           publicIPAddressResourceId: '<publicIPAddressResourceId>'
           roleAssignments: [
             {
@@ -3857,6 +3930,7 @@ param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
+  name: 'myAADLogin'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3865,6 +3939,7 @@ param extensionAadJoinConfig = {
 }
 param extensionAntiMalwareConfig = {
   enabled: true
+  name: 'myMicrosoftAntiMalware'
   settings: {
     AntimalwareEnabled: 'true'
     Exclusions: {
@@ -3888,6 +3963,7 @@ param extensionAntiMalwareConfig = {
 }
 param extensionAzureDiskEncryptionConfig = {
   enabled: true
+  name: 'myAzureDiskEncryption'
   settings: {
     EncryptionOperation: 'EnableEncryption'
     KekVaultResourceId: '<KekVaultResourceId>'
@@ -3912,6 +3988,7 @@ param extensionCustomScriptConfig = {
       uri: '<uri>'
     }
   ]
+  name: 'myCustomScript'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3924,6 +4001,7 @@ param extensionCustomScriptProtectedSetting = {
 param extensionDependencyAgentConfig = {
   enableAMA: true
   enabled: true
+  name: 'myDependencyAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3932,6 +4010,7 @@ param extensionDependencyAgentConfig = {
 }
 param extensionDSCConfig = {
   enabled: true
+  name: 'myDesiredStateConfiguration'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3946,6 +4025,7 @@ param extensionMonitoringAgentConfig = {
     }
   ]
   enabled: true
+  name: 'myMonitoringAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3954,12 +4034,14 @@ param extensionMonitoringAgentConfig = {
 }
 param extensionNetworkWatcherAgentConfig = {
   enabled: true
+  name: 'myNetworkWatcherAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
     Role: 'DeploymentValidation'
   }
 }
+param hibernationEnabled = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -5019,6 +5101,7 @@ param location = '<location>'
 | [`extensionNvidiaGpuDriverWindows`](#parameter-extensionnvidiagpudriverwindows) | object | The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`galleryApplications`](#parameter-galleryapplications) | array | Specifies the gallery applications that should be made available to the VM/VMSS. |
 | [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled. |
+| [`hibernationEnabled`](#parameter-hibernationenabled) | bool | The flag that enables or disables hibernation capability on the VM. |
 | [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -7617,6 +7700,14 @@ The guest configuration for the virtual machine. Needs the Guest Configuration e
 - Required: No
 - Type: object
 - Default: `{}`
+
+### Parameter: `hibernationEnabled`
+
+The flag that enables or disables hibernation capability on the VM.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `licenseType`
 
