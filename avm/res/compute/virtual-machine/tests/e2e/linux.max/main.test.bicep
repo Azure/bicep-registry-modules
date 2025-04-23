@@ -237,7 +237,6 @@ module testDeployment '../../../main.bicep' = {
     rebootSetting: 'IfRequired'
     disablePasswordAuthentication: true
     encryptionAtHost: false
-    hibernationEnabled: true
     extensionCustomScriptConfig: {
       enabled: true
       name: 'myCustomScript'
