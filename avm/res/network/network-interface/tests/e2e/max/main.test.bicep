@@ -40,6 +40,7 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     loadBalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
+    publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
   }
 }
 
@@ -81,7 +82,7 @@ module testDeployment '../../../main.bicep' = [
               id: nestedDependencies.outputs.loadBalancerBackendPoolResourceId
             }
           ]
-          name: 'ipconfig01'
+          name: 'myIpconfig01'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
         {
@@ -91,6 +92,7 @@ module testDeployment '../../../main.bicep' = [
               id: nestedDependencies.outputs.applicationSecurityGroupResourceId
             }
           ]
+          publicIPAddressResourceId: nestedDependencies.outputs.publicIPResourceId
         }
       ]
       diagnosticSettings: [

@@ -13,6 +13,9 @@ param applicationSecurityGroupName string
 @description('Required. The name of the Load Balancer to create.')
 param loadBalancerName string
 
+@description('Required. The name of the Public IP to create.')
+param publicIPName string
+
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
@@ -84,6 +87,9 @@ resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2024-05
     protocol: 'Tcp'
   }
   parent: loadBalancer
+  dependsOn: [
+    loadBalancer::backendPool
+  ]
 }
 
 resource inboundNatRule2 'Microsoft.Network/loadBalancers/inboundNatRules@2024-05-01' = {
@@ -98,6 +104,26 @@ resource inboundNatRule2 'Microsoft.Network/loadBalancers/inboundNatRules@2024-0
     protocol: 'Tcp'
   }
   parent: loadBalancer
+  dependsOn: [
+    inboundNatRule
+  ]
+}
+
+resource publicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
+  name: publicIPName
+  location: location
+  sku: {
+    name: 'Standard'
+    tier: 'Regional'
+  }
+  properties: {
+    publicIPAllocationMethod: 'Static'
+  }
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
 }
 
 @description('The resource ID of the created Virtual Network Subnet.')
@@ -111,3 +137,6 @@ output applicationSecurityGroupResourceId string = applicationSecurityGroup.id
 
 @description('The resource ID of the created Load Balancer Backend Pool.')
 output loadBalancerBackendPoolResourceId string = loadBalancer::backendPool.id
+
+@description('The resource ID of the created Public IP.')
+output publicIPResourceId string = publicIP.id
