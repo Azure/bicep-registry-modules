@@ -498,7 +498,7 @@ module account_kafkaConfigurations 'kafka-configurations/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-kafka-configuration-${index}'
     params: {
       name: kafkaConfiguration.name
-      accountName: name
+      accountName: account.name
       kafkaConfig: kafkaConfiguration
     }
   }

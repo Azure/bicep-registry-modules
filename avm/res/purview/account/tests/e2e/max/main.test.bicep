@@ -191,7 +191,6 @@ module testDeployment '../../../main.bicep' = [
             ]
           }
           service: 'blob'
-          isManualConnection: true
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
           tags: {
             'hidden-title': 'This is visible in the resource name'
