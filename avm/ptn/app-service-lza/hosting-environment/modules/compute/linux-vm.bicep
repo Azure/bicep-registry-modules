@@ -47,13 +47,6 @@ var contributorRoleDefinitionId = resourceId(
 )
 
 var uami = resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', sshKeyGenName)
-// ------------------
-// VARIABLES
-// ------------------
-
-// ------------------
-// RESOURCES
-// ------------------
 
 module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.0' = {
   name: '${uniqueString(deployment().name, location)}-vm-nsg'
