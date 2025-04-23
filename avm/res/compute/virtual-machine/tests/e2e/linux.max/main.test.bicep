@@ -112,6 +112,11 @@ module testDeployment '../../../main.bicep' = {
                 2
                 3
               ]
+              diagnosticSettings: [
+                {
+                  workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+                }
+              ]
               roleAssignments: [
                 {
                   name: '696e6067-3ddc-4b71-bf97-9caebeba441a'

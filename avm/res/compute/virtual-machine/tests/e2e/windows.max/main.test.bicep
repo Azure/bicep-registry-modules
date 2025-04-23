@@ -113,6 +113,11 @@ module testDeployment '../../../main.bicep' = [
               name: 'ipconfig01'
               pipConfiguration: {
                 publicIPAddressResourceId: nestedDependencies.outputs.publicIPAddressResourceId
+                diagnosticSettings: [
+                  {
+                    workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+                  }
+                ]
                 roleAssignments: [
                   {
                     name: 'e962e7c1-261a-4afd-b5ad-17a640a0b7bc'
