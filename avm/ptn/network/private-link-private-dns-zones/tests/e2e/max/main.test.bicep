@@ -53,8 +53,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       privateLinkPrivateDnsZones: [
-        'testpdnszone1.int'
-        'testpdnszone2.local'
+        'privatelink.api.azureml.ms'
+        'privatelink.notebooks.azure.net'
       ]
       virtualNetworkResourceIdsToLinkTo: [
         nestedDependencies.outputs.vnet1ResourceId

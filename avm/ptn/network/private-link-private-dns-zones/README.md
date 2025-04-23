@@ -108,8 +108,8 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
       name: 'pdnsZonesLock'
     }
     privateLinkPrivateDnsZones: [
-      'testpdnszone1.int'
-      'testpdnszone2.local'
+      'privatelink.api.azureml.ms'
+      'privatelink.notebooks.azure.net'
     ]
     tags: {
       Environment: 'Example'
@@ -153,8 +153,8 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
     },
     "privateLinkPrivateDnsZones": {
       "value": [
-        "testpdnszone1.int",
-        "testpdnszone2.local"
+        "privatelink.api.azureml.ms",
+        "privatelink.notebooks.azure.net"
       ]
     },
     "tags": {
@@ -198,8 +198,8 @@ param lock = {
   name: 'pdnsZonesLock'
 }
 param privateLinkPrivateDnsZones = [
-  'testpdnszone1.int'
-  'testpdnszone2.local'
+  'privatelink.api.azureml.ms'
+  'privatelink.notebooks.azure.net'
 ]
 param tags = {
   Environment: 'Example'
@@ -299,6 +299,7 @@ param virtualNetworkLinks = [
 | [`location`](#parameter-location) | string | Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified. |
 | [`lock`](#parameter-lock) | object | The lock settings for the Private Link Private DNS Zones created. |
 | [`privateLinkPrivateDnsZones`](#parameter-privatelinkprivatednszones) | array | An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.<p><p>**NOTE:**<p><li>Private Link Private DNS Zones that have `{{regionCode}}` in the name will be replaced with the Geo Code of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns#:~:text=Note-,In%20the%20above%20text%2C%20%7BregionCode%7D%20refers%20to%20the%20region%20code%20(for%20example%2C%20eus%20for%20East%20US%20and%20ne%20for%20North%20Europe).%20Refer%20to%20the%20following%20lists%20for%20regions%20codes%3A,-All%20public%20clouds).<p>  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionCode}}` would be replaced with `uks` in the Private DNS Zone name.<li>Private Link Private DNS Zones that have `{{regionName}}` in the name will be replaced with the short name of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns).<p>  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionName}}` would be replaced with `uksouth` in the Private DNS Zone name.<p><p>**IMPORTANT:**<p><p>The folowing Private Link Private DNS Zones have been removed from the default value for this parameter as they require additional placeholders to be replaced that will only be known by the caller of the module at runtime and cannot be determined by the module itself. If you have a requirement to create these Private Link Private DNS Zones, you must provide the full list of Private Link Private DNS Zones to create as an array in the `privateLinkPrivateDnsZones` parameter, using the default value as a reference. The list of Private Link Private DNS Zones that have been removed are:<p><li>`{subzone}.privatelink.{regionName}.azmk8s.io`<li>`privatelink.{dnsPrefix}.database.windows.net`<li>`privatelink.{partitionId}.azurestaticapps.net`<p><p>We have also removed the following Private Link Private DNS Zones from the default value for this parameter as they should only be created and used with in specific scenarios:<p><li>`privatelink.azure.com`.<p> |
+| [`privateLinkPrivateDnsZonesToExclude`](#parameter-privatelinkprivatednszonestoexclude) | array | An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` . |
 | [`tags`](#parameter-tags) | object | Tags of the Private Link Private DNS Zones created. |
 | [`virtualNetworkLinks`](#parameter-virtualnetworklinks) | array | Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId'. The 'vnetResourceId' is a resource ID of a vNet to link. |
 | [`virtualNetworkResourceIdsToLinkTo`](#parameter-virtualnetworkresourceidstolinkto) | array | ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD AS MORE VIRTUAL NETWORK LINK PROPERTIES ARE EXPOSED. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE PROCESSED AND INPUT AND FORMATTED BY THE MODULE AND UNIOND WITH THE INPUT TO `virtualNetworkLinks`. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID. |
@@ -445,6 +446,14 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'scm.privatelink.azurewebsites.net'
   ]
   ```
+
+### Parameter: `privateLinkPrivateDnsZonesToExclude`
+
+An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` .
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `tags`
 
