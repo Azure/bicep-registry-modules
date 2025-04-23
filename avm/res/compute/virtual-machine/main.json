@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "17888900539488859315"
+      "templateHash": "5241414398238378942"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -691,6 +691,30 @@
         "description": "The type describing a Windows Remote Management listener."
       }
     },
+    "nicConfigurationOutputType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the NIC configuration."
+          }
+        },
+        "ipConfigurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkInterfaceIPConfigurationOutputType"
+          },
+          "metadata": {
+            "description": "Required. List of IP configurations of the NIC configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type describing the network interface configuration output."
+      }
+    },
     "_1.applicationGatewayBackendAddressPoolsType": {
       "type": "object",
       "properties": {
@@ -747,7 +771,7 @@
       "metadata": {
         "description": "The type for the application gateway backend address pool.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     },
@@ -786,7 +810,7 @@
       "metadata": {
         "description": "The type for the application security group.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     },
@@ -818,7 +842,7 @@
       "metadata": {
         "description": "The type for a backend address pool.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     },
@@ -920,7 +944,7 @@
       "metadata": {
         "description": "The type for the inbound NAT rule.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     },
@@ -959,7 +983,7 @@
       "metadata": {
         "description": "The type for the virtual network tap.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     },
@@ -1525,6 +1549,36 @@
         }
       }
     },
+    "networkInterfaceIPConfigurationOutputType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the IP configuration."
+          }
+        },
+        "privateIP": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The private IP address."
+          }
+        },
+        "publicIP": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The public IP address."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+        }
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -1614,7 +1668,7 @@
       "metadata": {
         "description": "The type for the sub resource.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     }
@@ -2639,7 +2693,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "16299850035526446559"
+              "templateHash": "3333482934245501039"
             }
           },
           "definitions": {
@@ -3000,7 +3054,7 @@
               "metadata": {
                 "description": "The type for the application gateway backend address pool.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3039,7 +3093,7 @@
               "metadata": {
                 "description": "The type for the application security group.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3071,7 +3125,7 @@
               "metadata": {
                 "description": "The type for a backend address pool.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3372,7 +3426,7 @@
               "metadata": {
                 "description": "The type for the inbound NAT rule.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3425,6 +3479,36 @@
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "networkInterfaceIPConfigurationOutputType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The name of the IP configuration."
+                  }
+                },
+                "privateIP": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "The private IP address."
+                  }
+                },
+                "publicIP": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "The public IP address."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3517,7 +3601,7 @@
               "metadata": {
                 "description": "The type for the sub resource.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3556,7 +3640,7 @@
               "metadata": {
                 "description": "The type for the virtual network tap.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             }
@@ -4440,7 +4524,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.34.44.8038",
-                      "templateHash": "14380338672835941099"
+                      "templateHash": "8196054567469390015"
                     },
                     "name": "Network Interface",
                     "description": "This module deploys a Network Interface."
@@ -4839,6 +4923,34 @@
                         "description": "The type for the virtual network tap."
                       }
                     },
+                    "networkInterfaceIPConfigurationOutputType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "The name of the IP configuration."
+                          }
+                        },
+                        "privateIP": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "The private IP address."
+                          }
+                        },
+                        "publicIP": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "The public IP address."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
+                    },
                     "diagnosticSettingFullType": {
                       "type": "object",
                       "properties": {
@@ -5216,11 +5328,23 @@
                     }
                   },
                   "resources": {
+                    "publicIp": {
+                      "copy": {
+                        "name": "publicIp",
+                        "count": "[length(parameters('ipConfigurations'))]"
+                      },
+                      "condition": "[and(contains(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), not(equals(tryGet(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), null())))]",
+                      "existing": true,
+                      "type": "Microsoft.Network/publicIPAddresses",
+                      "apiVersion": "2024-05-01",
+                      "resourceGroup": "[split(coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), ''), '/')[4]]",
+                      "name": "[last(split(coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), ''), '/'))]"
+                    },
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.5.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -5374,6 +5498,23 @@
                         "description": "The location the resource was deployed into."
                       },
                       "value": "[reference('networkInterface', '2024-05-01', 'full').location]"
+                    },
+                    "ipConfigurations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/networkInterfaceIPConfigurationOutputType"
+                      },
+                      "metadata": {
+                        "description": "The list of IP configurations of the network interface."
+                      },
+                      "copy": {
+                        "count": "[length(parameters('ipConfigurations'))]",
+                        "input": {
+                          "name": "[reference('networkInterface').ipConfigurations[copyIndex()].name]",
+                          "privateIP": "[coalesce(tryGet(reference('networkInterface').ipConfigurations[copyIndex()].properties, 'privateIPAddress'), '')]",
+                          "publicIP": "[if(and(contains(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), not(equals(tryGet(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), null()))), coalesce(reference(format('publicIp[{0}]', copyIndex())).ipAddress, ''), '')]"
+                        }
+                      }
                     }
                   }
                 }
@@ -5381,6 +5522,25 @@
               "dependsOn": [
                 "networkInterface_publicIPAddresses"
               ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the network interface."
+              },
+              "value": "[reference('networkInterface').outputs.name.value]"
+            },
+            "ipConfigurations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/networkInterfaceIPConfigurationOutputType"
+              },
+              "metadata": {
+                "description": "The list of IP configurations of the network interface."
+              },
+              "value": "[reference('networkInterface').outputs.ipConfigurations.value]"
             }
           }
         }
@@ -8061,6 +8221,22 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('vm', '2024-07-01', 'full').location]"
+    },
+    "nicConfigurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/nicConfigurationOutputType"
+      },
+      "metadata": {
+        "description": "The list of NIC configurations of the virtual machine."
+      },
+      "copy": {
+        "count": "[length(parameters('nicConfigurations'))]",
+        "input": {
+          "name": "[reference(format('vm_nic[{0}]', copyIndex())).outputs.name.value]",
+          "ipConfigurations": "[reference(format('vm_nic[{0}]', copyIndex())).outputs.ipConfigurations.value]"
+        }
+      }
     }
   }
 }

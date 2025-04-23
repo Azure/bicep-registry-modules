@@ -8214,6 +8214,7 @@ Do not provide a value! This date value is used to generate a registration token
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the VM. |
+| `nicConfigurations` | array | The list of NIC configurations of the virtual machine. |
 | `resourceGroupName` | string | The name of the resource group the VM was created in. |
 | `resourceId` | string | The resource ID of the VM. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -8224,7 +8225,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/network-interface:0.5.0` | Remote reference |
+| `br/public:avm/res/network/network-interface:0.5.1` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
