@@ -146,6 +146,12 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
         publicIPAddressResourceId: '<publicIPAddressResourceId>'
         subnetResourceId: '<subnetResourceId>'
       }
+      {
+        name: 'myIpV6Config'
+        privateIPAddressVersion: 'IPv6'
+        publicIPAddressResourceId: '<publicIPAddressResourceId>'
+        subnetResourceId: '<subnetResourceId>'
+      }
     ]
     name: 'nnimax001'
     // Non-required parameters
@@ -226,6 +232,12 @@ module networkInterface 'br/public:avm/res/network/network-interface:<version>' 
               "id": "<id>"
             }
           ],
+          "publicIPAddressResourceId": "<publicIPAddressResourceId>",
+          "subnetResourceId": "<subnetResourceId>"
+        },
+        {
+          "name": "myIpV6Config",
+          "privateIPAddressVersion": "IPv6",
           "publicIPAddressResourceId": "<publicIPAddressResourceId>",
           "subnetResourceId": "<subnetResourceId>"
         }
@@ -319,6 +331,12 @@ param ipConfigurations = [
         id: '<id>'
       }
     ]
+    publicIPAddressResourceId: '<publicIPAddressResourceId>'
+    subnetResourceId: '<subnetResourceId>'
+  }
+  {
+    name: 'myIpV6Config'
+    privateIPAddressVersion: 'IPv6'
     publicIPAddressResourceId: '<publicIPAddressResourceId>'
     subnetResourceId: '<subnetResourceId>'
   }
