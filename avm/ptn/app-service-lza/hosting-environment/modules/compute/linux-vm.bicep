@@ -110,15 +110,15 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
 }
 
 //TODO: Subnet deployment needs to be updated with AVM module once it is available
-resource vmSubnet 'Microsoft.Network/virtualNetworks/subnets@2023-11-01' = {
-  name: '${vmVnetName}/${vmSubnetName}'
-  properties: {
+module vmSubnet 'br/public:avm/res/network/virtual-network/subnet:0.1.1' = {
+  params: {
+    name: vmSubnetName
+    virtualNetworkName: vmVnetName
     addressPrefix: vmSubnetAddressPrefix
-    networkSecurityGroup: {
-      id: vmNetworkSecurityGroup.outputs.resourceId
-    }
+    networkSecurityGroupResourceId: vmNetworkSecurityGroup.outputs.resourceId
   }
 }
+
 resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
   name: 'linux-mc-${vmName}'
   location: location
@@ -228,7 +228,7 @@ module vm 'br/public:avm/res/compute/virtual-machine:0.12.1' = {
           {
             name: 'ipConfig01'
             privateIPAllocationMethod: 'Dynamic'
-            subnetResourceId: vmSubnet.id
+            subnetResourceId: vmSubnet.outputs.resourceId
           }
         ]
       }
