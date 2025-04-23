@@ -123,7 +123,7 @@ param privateLinkPrivateDnsZones array = [
 ]
 
 @description('Optional. An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` .')
-param privateLinkPrivateDnsZonesToExclude array = []
+param privateLinkPrivateDnsZonesToExclude string[]?
 
 @description('Optional. ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD AS MORE VIRTUAL NETWORK LINK PROPERTIES ARE EXPOSED. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE PROCESSED AND INPUT AND FORMATTED BY THE MODULE AND UNIOND WITH THE INPUT TO `virtualNetworkLinks`. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.')
 param virtualNetworkResourceIdsToLinkTo array = []
@@ -137,7 +137,7 @@ param enableTelemetry bool = true
 
 var privateLinkPrivateDnsZonesWithExclusions = filter(
   privateLinkPrivateDnsZones,
-  zone => !contains(privateLinkPrivateDnsZonesToExclude, zone)
+  zone => !contains(privateLinkPrivateDnsZonesToExclude ?? [], zone)
 )
 
 var azureRegionGeoCodeShortNameAsKey = {
