@@ -15,17 +15,8 @@ Private Link Private DNS Zones
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
-| `Microsoft.Network/privateDnsZones/A` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/A) |
-| `Microsoft.Network/privateDnsZones/AAAA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/AAAA) |
-| `Microsoft.Network/privateDnsZones/CNAME` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/CNAME) |
-| `Microsoft.Network/privateDnsZones/MX` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/MX) |
-| `Microsoft.Network/privateDnsZones/PTR` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/PTR) |
-| `Microsoft.Network/privateDnsZones/SOA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SOA) |
-| `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
-| `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
+| `Microsoft.Authorization/locks` | [2016-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2016-09-01/locks) |
+| `Microsoft.Network/privateDnsZones` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones) |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
 
 ## Usage examples
@@ -545,10 +536,9 @@ Array of custom objects describing vNet links of the DNS zone. Each object shoul
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`location`](#parameter-virtualnetworklinkslocation) | string | The Azure Region where the resource lives. |
 | [`name`](#parameter-virtualnetworklinksname) | string | The resource name. |
 | [`registrationEnabled`](#parameter-virtualnetworklinksregistrationenabled) | bool | Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?. |
-| [`resolutionPolicy`](#parameter-virtualnetworklinksresolutionpolicy) | string | The resolution type of the private-dns-zone fallback machanism. |
+| [`resolutionPolicy`](#parameter-virtualnetworklinksresolutionpolicy) | string | The resolution type of the private-dns-zone fallback mechanism. |
 | [`tags`](#parameter-virtualnetworklinkstags) | object | Resource tags. |
 
 ### Parameter: `virtualNetworkLinks.virtualNetworkResourceId`
@@ -556,13 +546,6 @@ Array of custom objects describing vNet links of the DNS zone. Each object shoul
 The resource ID of the virtual network to link.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `virtualNetworkLinks.location`
-
-The Azure Region where the resource lives.
-
-- Required: No
 - Type: string
 
 ### Parameter: `virtualNetworkLinks.name`
@@ -581,7 +564,7 @@ Is auto-registration of virtual machine records in the virtual network in the Pr
 
 ### Parameter: `virtualNetworkLinks.resolutionPolicy`
 
-The resolution type of the private-dns-zone fallback machanism.
+The resolution type of the private-dns-zone fallback mechanism.
 
 - Required: No
 - Type: string
@@ -622,8 +605,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

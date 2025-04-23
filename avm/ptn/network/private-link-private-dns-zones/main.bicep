@@ -4,7 +4,7 @@ metadata description = 'Private Link Private DNS Zones'
 @description('Optional. Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings for the Private Link Private DNS Zones created.')
 param lock lockType?
 
@@ -128,7 +128,7 @@ param privateLinkPrivateDnsZonesToExclude array = []
 @description('Optional. ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD AS MORE VIRTUAL NETWORK LINK PROPERTIES ARE EXPOSED. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE PROCESSED AND INPUT AND FORMATTED BY THE MODULE AND UNIOND WITH THE INPUT TO `virtualNetworkLinks`. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.')
 param virtualNetworkResourceIdsToLinkTo array = []
 
-import { virtualNetworkLinkType } from 'br/public:avm/res/network/private-dns-zone:0.7.1'
+import { virtualNetworkLinkType } from 'modules/virtual-network-link.bicep'
 @description('Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain properties \'virtualNetworkResourceId\'. The \'vnetResourceId\' is a resource ID of a vNet to link.')
 param virtualNetworkLinks virtualNetworkLinkType[]?
 
@@ -326,16 +326,38 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module pdnsZones 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
+resource pdnsZones 'Microsoft.Network/privateDnsZones@2024-06-01' = [
   for zone in combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink: {
-    name: '${uniqueString(deployment().name, zone.pdnsZoneName, location)}-pdns-zone-deployment'
-    params: {
-      name: zone.pdnsZoneName
-      virtualNetworkLinks: zone.virtualNetworkLinks
-      lock: lock
-      tags: tags
-      enableTelemetry: enableTelemetry
+    name: zone.pdnsZoneName
+    location: 'global'
+    tags: tags
+  }
+]
+
+resource pdnsZonesLock 'Microsoft.Authorization/locks@2016-09-01' = [
+  for (zone, i) in combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink: if (!empty(lock ?? {}) && lock.?kind != 'None') {
+    name: lock.?name ?? 'lock-${zone.pdnsZoneName}'
+    properties: {
+      level: lock.?kind ?? ''
+      notes: lock.?kind == 'CanNotDelete'
+        ? 'Cannot delete resource or child resources.'
+        : 'Cannot delete or modify the resource or child resources.'
     }
+    scope: pdnsZones[i]
+  }
+]
+
+module pdnsZoneVnetLinks 'modules/virtual-network-link.bicep' = [
+  for zone in combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink: {
+    name: '${uniqueString(deployment().name, zone.pdnsZoneName, location)}-pdns-zone-vnet-links-loop'
+    params: {
+      privateDnsZoneName: zone.pdnsZoneName
+      virtualNetworkLinks: zone.virtualNetworkLinks
+      tags: tags
+    }
+    dependsOn: [
+      pdnsZones
+    ]
   }
 ]
 
