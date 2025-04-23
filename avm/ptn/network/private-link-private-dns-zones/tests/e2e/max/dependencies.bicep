@@ -54,4 +54,4 @@ resource virtualNetwork2 'Microsoft.Network/virtualNetworks@2023-11-01' = {
 output vnet1ResourceId string = virtualNetwork1.id
 
 @description('The resource ID of the created Virtual Network 2.')
-output vnet2ResourceId string = virtualNetwork1.id
+output vnet2ResourceId string = virtualNetwork2.id
