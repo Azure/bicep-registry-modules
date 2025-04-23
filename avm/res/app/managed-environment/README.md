@@ -16,6 +16,7 @@ This module deploys an App Managed Environment (also known as a Container App En
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.App/managedEnvironments` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments) |
+| `Microsoft.App/managedEnvironments/certificates` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/certificates) |
 | `Microsoft.App/managedEnvironments/storages` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/storages) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
@@ -28,14 +29,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/app/managed-environment:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Enable public access](#example-3-enable-public-access)
-- [WAF-aligned](#example-4-waf-aligned)
+- [No App Logging](#example-1-no-app-logging)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Enable public access](#example-4-enable-public-access)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _No App Logging_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module to use Azure Monitor for logging.
 
 
 <details>
@@ -47,12 +49,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
-    name: 'amemin001'
+    name: 'ameamon001'
     // Non-required parameters
+    appLogsConfiguration: {
+      destination: 'azure-monitor'
+    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
@@ -81,21 +85,23 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "name": {
-      "value": "amemin001"
+      "value": "ameamon001"
     },
     // Non-required parameters
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "azure-monitor"
+      }
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
@@ -131,12 +137,14 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
-param name = 'amemin001'
+param name = 'ameamon001'
 // Non-required parameters
+param appLogsConfiguration = {
+  destination: 'azure-monitor'
+}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
@@ -153,7 +161,122 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
+  name: 'managedEnvironmentDeployment'
+  params: {
+    // Required parameters
+    name: 'amemin001'
+    // Non-required parameters
+    dockerBridgeCidr: '172.16.0.1/28'
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
+    internal: true
+    platformReservedCidr: '172.17.17.0/24'
+    platformReservedDnsIP: '172.17.17.17'
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "amemin001"
+    },
+    // Non-required parameters
+    "dockerBridgeCidr": {
+      "value": "172.16.0.1/28"
+    },
+    "infrastructureResourceGroupName": {
+      "value": "<infrastructureResourceGroupName>"
+    },
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
+    },
+    "internal": {
+      "value": true
+    },
+    "platformReservedCidr": {
+      "value": "172.17.17.0/24"
+    },
+    "platformReservedDnsIP": {
+      "value": "172.17.17.17"
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param name = 'amemin001'
+// Non-required parameters
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
+param internal = true
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -167,25 +290,33 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amemax001'
     // Non-required parameters
     appInsightsConnectionString: '<appInsightsConnectionString>'
-    certificateKeyVaultProperties: {
-      identityResourceId: '<identityResourceId>'
-      keyVaultUrl: '<keyVaultUrl>'
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
+    }
+    certificate: {
+      certificateKeyVaultProperties: {
+        identityResourceId: '<identityResourceId>'
+        keyVaultUrl: '<keyVaultUrl>'
+      }
+      name: 'dep-cert-amemax'
     }
     dnsSuffix: 'contoso.com'
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
-    logsDestination: 'log-analytics'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -209,7 +340,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     platformReservedDnsIP: '172.17.17.17'
     roleAssignments: [
       {
-        name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -269,9 +399,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "name": {
       "value": "amemax001"
     },
@@ -279,10 +406,22 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "appInsightsConnectionString": {
       "value": "<appInsightsConnectionString>"
     },
-    "certificateKeyVaultProperties": {
+    "appLogsConfiguration": {
       "value": {
-        "identityResourceId": "<identityResourceId>",
-        "keyVaultUrl": "<keyVaultUrl>"
+        "destination": "log-analytics",
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
+      }
+    },
+    "certificate": {
+      "value": {
+        "certificateKeyVaultProperties": {
+          "identityResourceId": "<identityResourceId>",
+          "keyVaultUrl": "<keyVaultUrl>"
+        },
+        "name": "dep-cert-amemax"
       }
     },
     "dnsSuffix": {
@@ -294,8 +433,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
@@ -308,9 +447,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
-    },
-    "logsDestination": {
-      "value": "log-analytics"
     },
     "managedIdentities": {
       "value": {
@@ -346,7 +482,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "roleAssignments": {
       "value": [
         {
-          "name": "43fc5250-f111-472b-8722-f1cb4a0e754b",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -411,25 +546,33 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amemax001'
 // Non-required parameters
 param appInsightsConnectionString = '<appInsightsConnectionString>'
-param certificateKeyVaultProperties = {
-  identityResourceId: '<identityResourceId>'
-  keyVaultUrl: '<keyVaultUrl>'
+param appLogsConfiguration = {
+  destination: 'log-analytics'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
+}
+param certificate = {
+  certificateKeyVaultProperties: {
+    identityResourceId: '<identityResourceId>'
+    keyVaultUrl: '<keyVaultUrl>'
+  }
+  name: 'dep-cert-amemax'
 }
 param dnsSuffix = 'contoso.com'
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
-param logsDestination = 'log-analytics'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -453,7 +596,6 @@ param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param roleAssignments = [
   {
-    name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -501,7 +643,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 3: _Enable public access_
+### Example 4: _Enable public access_
 
 This instance deploys the module with public access enabled.
 
@@ -515,12 +657,18 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amepa001'
     // Non-required parameters
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
+    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     location: '<location>'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
@@ -550,21 +698,27 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "name": {
       "value": "amepa001"
     },
     // Non-required parameters
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "log-analytics",
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
+      }
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "location": {
       "value": "<location>"
@@ -603,12 +757,18 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amepa001'
 // Non-required parameters
+param appLogsConfiguration = {
+  destination: 'log-analytics'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
+}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param location = '<location>'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
@@ -626,7 +786,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -640,14 +800,19 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amewaf001'
     // Non-required parameters
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
+    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
-    logsDestination: 'log-analytics'
     platformReservedCidr: '172.17.17.0/24'
     platformReservedDnsIP: '172.17.17.17'
     tags: {
@@ -679,27 +844,30 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "name": {
       "value": "amewaf001"
     },
     // Non-required parameters
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "log-analytics",
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
+      }
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
-    },
-    "logsDestination": {
-      "value": "log-analytics"
     },
     "platformReservedCidr": {
       "value": "172.17.17.0/24"
@@ -738,14 +906,19 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amewaf001'
 // Non-required parameters
+param appLogsConfiguration = {
+  destination: 'log-analytics'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
+}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
-param logsDestination = 'log-analytics'
 param platformReservedCidr = '172.17.17.0/24'
 param platformReservedDnsIP = '172.17.17.17'
 param tags = {
@@ -771,7 +944,6 @@ param workloadProfiles = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`logAnalyticsWorkspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990). |
 | [`name`](#parameter-name) | string | Name of the Container Apps Managed Environment. |
 
 **Conditional parameters**
@@ -780,7 +952,7 @@ param workloadProfiles = [
 | :-- | :-- | :-- |
 | [`dockerBridgeCidr`](#parameter-dockerbridgecidr) | string | CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`infrastructureResourceGroupName`](#parameter-infrastructureresourcegroupname) | string | Name of the infrastructure resource group. If not provided, it will be set with a default value. Required if zoneRedundant is set to true to make the resource WAF compliant. |
-| [`infrastructureSubnetId`](#parameter-infrastructuresubnetid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
+| [`infrastructureSubnetResourceId`](#parameter-infrastructuresubnetresourceid) | string | Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`internal`](#parameter-internal) | bool | Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant. |
 | [`platformReservedCidr`](#parameter-platformreservedcidr) | string | IP range in CIDR notation that can be reserved for environment infrastructure IP addresses. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true  to make the resource WAF compliant. |
 | [`platformReservedDnsIP`](#parameter-platformreserveddnsip) | string | An IP address from the IP range defined by "platformReservedCidr" that will be reserved for the internal DNS server. It must not be the first address in the range and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant. |
@@ -791,7 +963,8 @@ param workloadProfiles = [
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`appInsightsConnectionString`](#parameter-appinsightsconnectionstring) | securestring | Application Insights connection string. |
-| [`certificateKeyVaultProperties`](#parameter-certificatekeyvaultproperties) | object | A key vault reference to the certificate to use for the custom domain. |
+| [`appLogsConfiguration`](#parameter-applogsconfiguration) | object | The AppLogsConfiguration for the Managed Environment. |
+| [`certificate`](#parameter-certificate) | object | A Managed Environment Certificate. |
 | [`certificatePassword`](#parameter-certificatepassword) | securestring | Password of the certificate used by the custom domain. |
 | [`certificateValue`](#parameter-certificatevalue) | securestring | Certificate to use for the custom domain. PFX or PEM. |
 | [`daprAIConnectionString`](#parameter-dapraiconnectionstring) | securestring | Application Insights connection string used by Dapr to export Service to Service communication telemetry. |
@@ -800,7 +973,6 @@ param workloadProfiles = [
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`logsDestination`](#parameter-logsdestination) | string | Logs destination. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`openTelemetryConfiguration`](#parameter-opentelemetryconfiguration) | object | Open Telemetry configuration. |
 | [`peerTrafficEncryption`](#parameter-peertrafficencryption) | bool | Whether or not to encrypt peer traffic. |
@@ -809,13 +981,6 @@ param workloadProfiles = [
 | [`storages`](#parameter-storages) | array | The list of storages to mount on the environment. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this Managed Environment is zone-redundant. |
-
-### Parameter: `logAnalyticsWorkspaceResourceId`
-
-Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `name`
 
@@ -840,7 +1005,7 @@ Name of the infrastructure resource group. If not provided, it will be set with 
 - Type: string
 - Default: `[take(format('ME_{0}', parameters('name')), 63)]`
 
-### Parameter: `infrastructureSubnetId`
+### Parameter: `infrastructureSubnetResourceId`
 
 Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.
 
@@ -888,9 +1053,30 @@ Application Insights connection string.
 - Type: securestring
 - Default: `''`
 
-### Parameter: `certificateKeyVaultProperties`
+### Parameter: `appLogsConfiguration`
 
-A key vault reference to the certificate to use for the custom domain.
+The AppLogsConfiguration for the Managed Environment.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-applogsconfigurationdestination) | string | The destination of the logs. |
+| [`logAnalyticsConfiguration`](#parameter-applogsconfigurationloganalyticsconfiguration) | object | The configuration for Log Analytics. |
+
+### Parameter: `appLogsConfiguration.destination`
+
+The destination of the logs.
+
+- Required: No
+- Type: string
+
+### Parameter: `appLogsConfiguration.logAnalyticsConfiguration`
+
+The configuration for Log Analytics.
 
 - Required: No
 - Type: object
@@ -899,21 +1085,101 @@ A key vault reference to the certificate to use for the custom domain.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`identityResourceId`](#parameter-certificatekeyvaultpropertiesidentityresourceid) | string | The resource ID of the identity. This is the identity that will be used to access the key vault. |
-| [`keyVaultUrl`](#parameter-certificatekeyvaultpropertieskeyvaulturl) | string | A key vault URL referencing the wildcard certificate that will be used for the custom domain. |
+| [`customerId`](#parameter-applogsconfigurationloganalyticsconfigurationcustomerid) | string | The customer ID of the Log Analytics workspace. |
+| [`sharedKey`](#parameter-applogsconfigurationloganalyticsconfigurationsharedkey) | securestring | The shared key of the Log Analytics workspace. |
 
-### Parameter: `certificateKeyVaultProperties.identityResourceId`
+### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.customerId`
+
+The customer ID of the Log Analytics workspace.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.sharedKey`
+
+The shared key of the Log Analytics workspace.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `certificate`
+
+A Managed Environment Certificate.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`certificateKeyVaultProperties`](#parameter-certificatecertificatekeyvaultproperties) | object | A key vault reference. |
+| [`certificatePassword`](#parameter-certificatecertificatepassword) | string | The password of the certificate. |
+| [`certificateType`](#parameter-certificatecertificatetype) | string | The type of the certificate. |
+| [`certificateValue`](#parameter-certificatecertificatevalue) | string | The value of the certificate. PFX or PEM blob. |
+| [`name`](#parameter-certificatename) | string | The name of the certificate. |
+
+### Parameter: `certificate.certificateKeyVaultProperties`
+
+A key vault reference.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`identityResourceId`](#parameter-certificatecertificatekeyvaultpropertiesidentityresourceid) | string | The resource ID of the identity. This is the identity that will be used to access the key vault. |
+| [`keyVaultUrl`](#parameter-certificatecertificatekeyvaultpropertieskeyvaulturl) | string | A key vault URL referencing the wildcard certificate that will be used for the custom domain. |
+
+### Parameter: `certificate.certificateKeyVaultProperties.identityResourceId`
 
 The resource ID of the identity. This is the identity that will be used to access the key vault.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `certificateKeyVaultProperties.keyVaultUrl`
+### Parameter: `certificate.certificateKeyVaultProperties.keyVaultUrl`
 
 A key vault URL referencing the wildcard certificate that will be used for the custom domain.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `certificate.certificatePassword`
+
+The password of the certificate.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.certificateType`
+
+The type of the certificate.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ImagePullTrustedCA'
+    'ServerSSLCertificate'
+  ]
+  ```
+
+### Parameter: `certificate.certificateValue`
+
+The value of the certificate. PFX or PEM blob.
+
+- Required: No
+- Type: string
+
+### Parameter: `certificate.name`
+
+The name of the certificate.
+
+- Required: No
 - Type: string
 
 ### Parameter: `certificatePassword`
@@ -1007,14 +1273,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-
-### Parameter: `logsDestination`
-
-Logs destination.
-
-- Required: No
-- Type: string
-- Default: `'log-analytics'`
 
 ### Parameter: `managedIdentities`
 

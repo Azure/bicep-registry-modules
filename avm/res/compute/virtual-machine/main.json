@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "12106852997815543705"
+      "version": "0.34.44.8038",
+      "templateHash": "18183828687447608589"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -62,6 +62,26 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Specifies the caching requirements."
+          }
+        },
+        "diffDiskSettings": {
+          "type": "object",
+          "properties": {
+            "placement": {
+              "type": "string",
+              "allowedValues": [
+                "CacheDisk",
+                "NvmeDisk",
+                "ResourceDisk"
+              ],
+              "metadata": {
+                "description": "Required. Specifies the ephemeral disk placement for the operating system disk."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the ephemeral Disk Settings for the operating system disk."
           }
         },
         "managedDisk": {
@@ -214,6 +234,23 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type describing a data disk."
+      }
+    },
+    "publicKeyType": {
+      "type": "object",
+      "properties": {
+        "keyData": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Specifies the SSH public key data used to authenticate through ssh."
+          }
+        },
+        "path": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Specifies the full path on the created VM where ssh public key is stored. If the file already exists, the specified key is appended to the file."
+          }
+        }
       }
     },
     "lockType": {
@@ -485,11 +522,15 @@
         "description": "Optional. Specifies the priority for the virtual machine."
       }
     },
-    "enableEvictionPolicy": {
-      "type": "bool",
-      "defaultValue": false,
+    "evictionPolicy": {
+      "type": "string",
+      "defaultValue": "Deallocate",
+      "allowedValues": [
+        "Deallocate",
+        "Delete"
+      ],
       "metadata": {
-        "description": "Optional. Specifies the eviction policy for the low priority virtual machine. Will result in 'Deallocate' eviction policy."
+        "description": "Optional. Specifies the eviction policy for the low priority virtual machine."
       }
     },
     "maxPriceForLowPriorityVm": {
@@ -522,6 +563,9 @@
     },
     "publicKeys": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/publicKeyType"
+      },
       "defaultValue": [],
       "metadata": {
         "description": "Optional. The list of SSH public keys used to authenticate with linux based VMs."
@@ -1092,6 +1136,7 @@
             "name": "[coalesce(tryGet(parameters('osDisk'), 'name'), format('{0}-disk-os-01', parameters('name')))]",
             "createOption": "[coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage')]",
             "deleteOption": "[coalesce(tryGet(parameters('osDisk'), 'deleteOption'), 'Delete')]",
+            "diffDiskSettings": "[if(empty(coalesce(tryGet(parameters('osDisk'), 'diffDiskSettings'), createObject())), null(), createObject('option', 'Local', 'placement', parameters('osDisk').diffDiskSettings.placement))]",
             "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
             "caching": "[coalesce(tryGet(parameters('osDisk'), 'caching'), 'ReadOnly')]",
             "managedDisk": {
@@ -1141,7 +1186,7 @@
         "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupResourceId'))), createObject('id', parameters('proximityPlacementGroupResourceId')), null())]",
         "virtualMachineScaleSet": "[if(not(empty(parameters('virtualMachineScaleSetResourceId'))), createObject('id', parameters('virtualMachineScaleSetResourceId')), null())]",
         "priority": "[parameters('priority')]",
-        "evictionPolicy": "[if(parameters('enableEvictionPolicy'), 'Deallocate', null())]",
+        "evictionPolicy": "[if(not(equals('Regular', parameters('priority'))), parameters('evictionPolicy'), null())]",
         "billingProfile": "[if(and(not(empty(parameters('priority'))), not(empty(parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', json(parameters('maxPriceForLowPriorityVm'))), null())]",
         "host": "[if(not(empty(parameters('dedicatedHostId'))), createObject('id', parameters('dedicatedHostId')), null())]",
         "licenseType": "[if(not(empty(parameters('licenseType'))), parameters('licenseType'), null())]",
@@ -1328,8 +1373,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4084648003861700817"
+              "version": "0.34.44.8038",
+              "templateHash": "3622664661361767215"
             }
           },
           "definitions": {
@@ -1643,7 +1688,7 @@
                 "name": "networkInterface_publicIPAddresses",
                 "count": "[length(parameters('ipConfigurations'))]"
               },
-              "condition": "[and(contains(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), not(contains(parameters('ipConfigurations')[copyIndex()].pipConfiguration, 'publicIPAddressResourceId')))]",
+              "condition": "[and(not(empty(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'))), empty(tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'publicIPAddressResourceId')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-publicIP-{1}', deployment().name, copyIndex())]",
@@ -2340,7 +2385,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('ipConfigurations'))]",
-                        "input": "[createObject('name', if(not(empty(parameters('ipConfigurations')[copyIndex('value')].name)), parameters('ipConfigurations')[copyIndex('value')].name, null()), 'primary', equals(copyIndex('value'), 0), 'privateIPAllocationMethod', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod)), parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod, null()), null()), 'privateIPAddress', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAddress)), parameters('ipConfigurations')[copyIndex('value')].privateIPAddress, null()), null()), 'publicIPAddressResourceId', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'), if(not(contains(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'publicIPAddressResourceId')), resourceId('Microsoft.Network/publicIPAddresses', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'name'), format('{0}{1}', parameters('virtualMachineName'), tryGet(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'publicIpNameSuffix')))), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.publicIPAddressResourceId), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), null()), 'applicationSecurityGroups', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), null()), 'applicationGatewayBackendAddressPools', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), null()), 'gatewayLoadBalancer', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), null()), 'loadBalancerInboundNatRules', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), null()), 'privateIPAddressVersion', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), null()), 'virtualNetworkTaps', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'), null()))]"
+                        "input": "[createObject('name', if(not(empty(parameters('ipConfigurations')[copyIndex('value')].name)), parameters('ipConfigurations')[copyIndex('value')].name, null()), 'primary', equals(copyIndex('value'), 0), 'privateIPAllocationMethod', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAllocationMethod'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod)), parameters('ipConfigurations')[copyIndex('value')].privateIPAllocationMethod, null()), null()), 'privateIPAddress', if(contains(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddress'), if(not(empty(parameters('ipConfigurations')[copyIndex('value')].privateIPAddress)), parameters('ipConfigurations')[copyIndex('value')].privateIPAddress, null()), null()), 'publicIPAddressResourceId', if(not(empty(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'pipConfiguration'))), if(not(contains(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'publicIPAddressResourceId')), resourceId('Microsoft.Network/publicIPAddresses', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'name'), format('{0}{1}', parameters('virtualMachineName'), tryGet(parameters('ipConfigurations')[copyIndex('value')].pipConfiguration, 'publicIpNameSuffix')))), parameters('ipConfigurations')[copyIndex('value')].pipConfiguration.publicIPAddressResourceId), null()), 'subnetResourceId', parameters('ipConfigurations')[copyIndex('value')].subnetResourceId, 'loadBalancerBackendAddressPools', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerBackendAddressPools'), null()), 'applicationSecurityGroups', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationSecurityGroups'), null()), 'applicationGatewayBackendAddressPools', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'applicationGatewayBackendAddressPools'), null()), 'gatewayLoadBalancer', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'gatewayLoadBalancer'), null()), 'loadBalancerInboundNatRules', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'loadBalancerInboundNatRules'), null()), 'privateIPAddressVersion', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'privateIPAddressVersion'), null()), 'virtualNetworkTaps', coalesce(tryGet(parameters('ipConfigurations')[copyIndex('value')], 'virtualNetworkTaps'), null()))]"
                       }
                     ]
                   },
@@ -2957,8 +3002,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -3168,8 +3213,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -3375,8 +3420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -3577,8 +3622,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -3784,8 +3829,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -3986,8 +4031,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -4196,8 +4241,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -4410,8 +4455,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -4618,8 +4663,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -4822,8 +4867,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -5035,8 +5080,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -5244,8 +5289,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2171772621334669730"
+              "version": "0.34.44.8038",
+              "templateHash": "8482591295619883067"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -5439,8 +5484,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5910828956272534599"
+              "version": "0.34.44.8038",
+              "templateHash": "7743264001610407207"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."

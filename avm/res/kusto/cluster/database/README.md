@@ -13,6 +13,7 @@ This module deploys a Kusto Cluster Database.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Kusto/clusters/databases` | [2024-04-13](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases) |
+| `Microsoft.Kusto/clusters/databases/principalAssignments` | [2024-04-13](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kusto/2024-04-13/clusters/databases/principalAssignments) |
 
 ## Parameters
 
@@ -33,6 +34,7 @@ This module deploys a Kusto Cluster Database.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`databaseKind`](#parameter-databasekind) | string | The object type of the databse. |
+| [`databasePrincipalAssignments`](#parameter-databaseprincipalassignments) | array | The principal assignments for the Kusto database. |
 | [`databaseReadWriteProperties`](#parameter-databasereadwriteproperties) | object | The properties of the database if using read-write. Only used if databaseKind is ReadWrite. |
 | [`location`](#parameter-location) | string | Location for the databases. |
 
@@ -64,6 +66,74 @@ The object type of the databse.
     'ReadWrite'
   ]
   ```
+
+### Parameter: `databasePrincipalAssignments`
+
+The principal assignments for the Kusto database.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-databaseprincipalassignmentsprincipalid) | string | The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name. |
+| [`principalType`](#parameter-databaseprincipalassignmentsprincipaltype) | string | The principal type of the principal id. |
+| [`role`](#parameter-databaseprincipalassignmentsrole) | string | The Kusto Cluster database role to be assigned to the principal id. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tenantId`](#parameter-databaseprincipalassignmentstenantid) | string | The tenant id of the principal. |
+
+### Parameter: `databasePrincipalAssignments.principalId`
+
+The principal id assigned to the Kusto Cluster database principal. It can be a user email, application id, or security group name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `databasePrincipalAssignments.principalType`
+
+The principal type of the principal id.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'App'
+    'Group'
+    'User'
+  ]
+  ```
+
+### Parameter: `databasePrincipalAssignments.role`
+
+The Kusto Cluster database role to be assigned to the principal id.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Admin'
+    'Ingestor'
+    'Monitor'
+    'UnrestrictedViewer'
+    'User'
+    'Viewer'
+  ]
+  ```
+
+### Parameter: `databasePrincipalAssignments.tenantId`
+
+The tenant id of the principal.
+
+- Required: No
+- Type: string
 
 ### Parameter: `databaseReadWriteProperties`
 

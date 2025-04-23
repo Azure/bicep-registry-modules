@@ -4,9 +4,6 @@ metadata description = 'This module deploys an App Managed Environment (also kno
 @description('Required. Name of the Container Apps Managed Environment.')
 param name string
 
-@description('Required. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990).')
-param logAnalyticsWorkspaceResourceId string
-
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
@@ -20,9 +17,6 @@ param managedIdentities managedIdentityAllType?
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
-
-@description('Optional. Logs destination.')
-param logsDestination string = 'log-analytics'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -43,7 +37,7 @@ param daprAIInstrumentationKey string = ''
 param dockerBridgeCidr string = ''
 
 @description('Conditional. Resource ID of a subnet for infrastructure components. This is used to deploy the environment into a virtual network. Must not overlap with any other provided IP ranges. Required if "internal" is set to true. Required if zoneRedundant is set to true to make the resource WAF compliant.')
-param infrastructureSubnetId string = ''
+param infrastructureSubnetResourceId string = ''
 
 @description('Conditional. Boolean indicating the environment only has an internal load balancer. These environments do not have a public static IP resource. If set to true, then "infrastructureSubnetId" must be provided. Required if zoneRedundant is set to true to make the resource WAF compliant.')
 param internal bool = false
@@ -75,9 +69,6 @@ param certificatePassword string = ''
 @secure()
 param certificateValue string = ''
 
-@description('Optional. A key vault reference to the certificate to use for the custom domain.')
-param certificateKeyVaultProperties certificateKeyVaultPropertiesType?
-
 @description('Optional. DNS suffix for the environment domain.')
 param dnsSuffix string = ''
 
@@ -96,6 +87,12 @@ param infrastructureResourceGroupName string = take('ME_${name}', 63)
 
 @description('Optional. The list of storages to mount on the environment.')
 param storages storageType[]?
+
+@description('Optional. A Managed Environment Certificate.')
+param certificate certificateType?
+
+@description('Optional. The AppLogsConfiguration for the Managed Environment.')
+param appLogsConfiguration appLogsConfigurationType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -138,7 +135,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-managedenvironment.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -156,11 +153,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (!empty(logAnalyticsWorkspaceResourceId)) {
-  name: last(split(logAnalyticsWorkspaceResourceId, '/'))!
-  scope: resourceGroup(split(logAnalyticsWorkspaceResourceId, '/')[2], split(logAnalyticsWorkspaceResourceId, '/')[4])
-}
-
 resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-preview' = {
   name: name
   location: location
@@ -170,23 +162,17 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     appInsightsConfiguration: {
       connectionString: appInsightsConnectionString
     }
-    appLogsConfiguration: {
-      destination: logsDestination
-      logAnalyticsConfiguration: {
-        customerId: logAnalyticsWorkspace.properties.customerId
-        sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
-      }
-    }
+    appLogsConfiguration: appLogsConfiguration
     daprAIConnectionString: daprAIConnectionString
     daprAIInstrumentationKey: daprAIInstrumentationKey
     customDomainConfiguration: {
       certificatePassword: certificatePassword
       certificateValue: !empty(certificateValue) ? certificateValue : null
       dnsSuffix: dnsSuffix
-      certificateKeyVaultProperties: !empty(certificateKeyVaultProperties)
+      certificateKeyVaultProperties: !empty(certificate.?certificateKeyVaultProperties)
         ? {
-            identity: certificateKeyVaultProperties!.identityResourceId
-            keyVaultUrl: certificateKeyVaultProperties!.keyVaultUrl
+            identity: certificate!.?certificateKeyVaultProperties!.identityResourceId
+            keyVaultUrl: certificate!.?certificateKeyVaultProperties!.keyVaultUrl
           }
         : null
     }
@@ -199,10 +185,14 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-10-02-previe
     publicNetworkAccess: publicNetworkAccess
     vnetConfiguration: {
       internal: internal
-      infrastructureSubnetId: !empty(infrastructureSubnetId) ? infrastructureSubnetId : null
-      dockerBridgeCidr: !empty(infrastructureSubnetId) ? dockerBridgeCidr : null
-      platformReservedCidr: empty(workloadProfiles) && !empty(infrastructureSubnetId) ? platformReservedCidr : null
-      platformReservedDnsIP: empty(workloadProfiles) && !empty(infrastructureSubnetId) ? platformReservedDnsIP : null
+      infrastructureSubnetId: !empty(infrastructureSubnetResourceId) ? infrastructureSubnetResourceId : null
+      dockerBridgeCidr: !empty(infrastructureSubnetResourceId) ? dockerBridgeCidr : null
+      platformReservedCidr: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
+        ? platformReservedCidr
+        : null
+      platformReservedDnsIP: empty(workloadProfiles) && !empty(infrastructureSubnetResourceId)
+        ? platformReservedDnsIP
+        : null
     }
     workloadProfiles: !empty(workloadProfiles) ? workloadProfiles : null
     zoneRedundant: zoneRedundant
@@ -267,6 +257,18 @@ resource managedEnvironment_lock 'Microsoft.Authorization/locks@2020-05-01' = if
   scope: managedEnvironment
 }
 
+module managedEnvironment_certificate 'certificates/main.bicep' = if (!empty(certificate)) {
+  name: '${uniqueString(deployment().name)}-Managed-Environment-Certificate'
+  params: {
+    name: certificate.?name ?? 'cert-${name}'
+    managedEnvironmentName: managedEnvironment.name
+    certificateKeyVaultProperties: certificate.?certificateKeyVaultProperties
+    certificateType: certificate.?certificateType
+    certificateValue: certificate.?certificateValue
+    certificatePassword: certificate.?certificatePassword
+  }
+}
+
 @description('The name of the resource group the Managed Environment was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
@@ -295,14 +297,25 @@ output domainVerificationId string = managedEnvironment.properties.customDomainC
 //   Definitions   //
 // =============== //
 
-@export()
-@description('The type of the certificate key vault properties.')
-type certificateKeyVaultPropertiesType = {
-  @description('Required. The resource ID of the identity. This is the identity that will be used to access the key vault.')
-  identityResourceId: string
+import { certificateKeyVaultPropertiesType } from 'certificates/main.bicep'
 
-  @description('Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain.')
-  keyVaultUrl: string
+@export()
+@description('The type for a certificate.')
+type certificateType = {
+  @description('Optional. The name of the certificate.')
+  name: string?
+
+  @description('Optional. The type of the certificate.')
+  certificateType: ('ServerSSLCertificate' | 'ImagePullTrustedCA')?
+
+  @description('Optional. The value of the certificate. PFX or PEM blob.')
+  certificateValue: string?
+
+  @description('Optional. The password of the certificate.')
+  certificatePassword: string?
+
+  @description('Optional. A key vault reference.')
+  certificateKeyVaultProperties: certificateKeyVaultPropertiesType?
 }
 
 @export()
@@ -319,4 +332,21 @@ type storageType = {
 
   @description('Required. File share name.')
   shareName: string
+}
+
+@export()
+@description('The type for the App Logs Configuration.')
+type appLogsConfigurationType = {
+  @description('Optional. The destination of the logs.')
+  destination: string?
+
+  @description('Optional. The configuration for Log Analytics.')
+  logAnalyticsConfiguration: {
+    @description('Required. The customer ID of the Log Analytics workspace.')
+    customerId: string
+
+    @description('Required. The shared key of the Log Analytics workspace.')
+    @secure()
+    sharedKey: string
+  }?
 }
