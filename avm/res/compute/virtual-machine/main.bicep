@@ -574,10 +574,10 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
               option: 'Local'
               placement: osDisk.diffDiskSettings!.placement
             }
-        diskSizeGB: osDisk.diskSizeGB
+        diskSizeGB: osDisk.?diskSizeGB
         caching: osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
-          storageAccountType: osDisk.managedDisk.storageAccountType
+          storageAccountType: osDisk.managedDisk.?storageAccountType
           diskEncryptionSet: {
             id: osDisk.managedDisk.?diskEncryptionSetResourceId
           }
