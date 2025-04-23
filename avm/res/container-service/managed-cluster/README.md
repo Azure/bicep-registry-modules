@@ -1275,7 +1275,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     istioServiceMeshEnabled: true
     istioServiceMeshInternalIngressGatewayEnabled: true
     istioServiceMeshRevisions: [
-      'asm-1-22'
+      'asm-1-24'
     ]
     location: '<location>'
     managedIdentities: {
@@ -1341,7 +1341,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:<vers
     },
     "istioServiceMeshRevisions": {
       "value": [
-        "asm-1-22"
+        "asm-1-24"
       ]
     },
     "location": {
@@ -1393,7 +1393,7 @@ param istioServiceMeshCertificateAuthority = {
 param istioServiceMeshEnabled = true
 param istioServiceMeshInternalIngressGatewayEnabled = true
 param istioServiceMeshRevisions = [
-  'asm-1-22'
+  'asm-1-24'
 ]
 param location = '<location>'
 param managedIdentities = {
@@ -4870,7 +4870,7 @@ Array of role assignments to create.
   - `'Kubernetes Agentless Operator'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
 
 **Required parameters**
