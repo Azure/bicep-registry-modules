@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "17067448686868521251"
+      "templateHash": "6486312414710153460"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones"
@@ -472,7 +472,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "10311795373751147233"
+              "templateHash": "16258048003053729823"
             },
             "name": "Private DNS Zone Virtual Network Link Child Module",
             "description": "This module deploys a Private DNS Zone Virtual Network Link."
@@ -576,7 +576,7 @@
               "apiVersion": "2024-06-01",
               "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'name'), format('{0}-vnetlink', last(split(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()].virtualNetworkResourceId, '/')))))]",
               "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
+              "tags": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]",
               "properties": {
                 "registrationEnabled": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'registrationEnabled'), false())]",
                 "resolutionPolicy": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'resolutionPolicy'), 'Default')]",

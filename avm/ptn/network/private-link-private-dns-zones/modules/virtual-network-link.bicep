@@ -24,7 +24,7 @@ resource virtualNetworkLink 'Microsoft.Network/privateDnsZones/virtualNetworkLin
     name: link.?name ?? '${last(split(link.virtualNetworkResourceId, '/'))}-vnetlink'
     parent: privateDnsZone
     location: location
-    tags: tags
+    tags: link.?tags ?? tags
     properties: {
       registrationEnabled: link.?registrationEnabled ?? false
       resolutionPolicy: link.?resolutionPolicy ?? 'Default'

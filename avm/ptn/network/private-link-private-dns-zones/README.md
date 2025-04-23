@@ -165,8 +165,14 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
       name: 'pdnsZonesLock'
     }
     privateLinkPrivateDnsZones: [
+      'privatelink.{regionCode}.backup.windowsazure.com'
+      'privatelink.{regionName}.azmk8s.io'
       'privatelink.api.azureml.ms'
       'privatelink.notebooks.azure.net'
+    ]
+    privateLinkPrivateDnsZonesToExclude: [
+      'privatelink.{regionCode}.backup.windowsazure.com'
+      'privatelink.api.azureml.ms'
     ]
     tags: {
       Environment: 'Example'
@@ -175,8 +181,14 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
     }
     virtualNetworkLinks: [
       {
+        name: 'vnet2-link-custom-name'
         registrationEnabled: false
         resolutionPolicy: 'NxDomainRedirect'
+        tags: {
+          Environment: 'Example'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
         virtualNetworkResourceId: '<virtualNetworkResourceId>'
       }
     ]
@@ -210,8 +222,16 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
     },
     "privateLinkPrivateDnsZones": {
       "value": [
+        "privatelink.{regionCode}.backup.windowsazure.com",
+        "privatelink.{regionName}.azmk8s.io",
         "privatelink.api.azureml.ms",
         "privatelink.notebooks.azure.net"
+      ]
+    },
+    "privateLinkPrivateDnsZonesToExclude": {
+      "value": [
+        "privatelink.{regionCode}.backup.windowsazure.com",
+        "privatelink.api.azureml.ms"
       ]
     },
     "tags": {
@@ -224,8 +244,14 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
     "virtualNetworkLinks": {
       "value": [
         {
+          "name": "vnet2-link-custom-name",
           "registrationEnabled": false,
           "resolutionPolicy": "NxDomainRedirect",
+          "tags": {
+            "Environment": "Example",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          },
           "virtualNetworkResourceId": "<virtualNetworkResourceId>"
         }
       ]
@@ -255,8 +281,14 @@ param lock = {
   name: 'pdnsZonesLock'
 }
 param privateLinkPrivateDnsZones = [
+  'privatelink.{regionCode}.backup.windowsazure.com'
+  'privatelink.{regionName}.azmk8s.io'
   'privatelink.api.azureml.ms'
   'privatelink.notebooks.azure.net'
+]
+param privateLinkPrivateDnsZonesToExclude = [
+  'privatelink.{regionCode}.backup.windowsazure.com'
+  'privatelink.api.azureml.ms'
 ]
 param tags = {
   Environment: 'Example'
@@ -265,8 +297,14 @@ param tags = {
 }
 param virtualNetworkLinks = [
   {
+    name: 'vnet2-link-custom-name'
     registrationEnabled: false
     resolutionPolicy: 'NxDomainRedirect'
+    tags: {
+      Environment: 'Example'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
   }
 ]

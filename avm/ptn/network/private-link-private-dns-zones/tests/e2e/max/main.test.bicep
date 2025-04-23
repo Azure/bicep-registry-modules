@@ -55,15 +55,27 @@ module testDeployment '../../../main.bicep' = [
       privateLinkPrivateDnsZones: [
         'privatelink.api.azureml.ms'
         'privatelink.notebooks.azure.net'
+        'privatelink.{regionCode}.backup.windowsazure.com'
+        'privatelink.{regionName}.azmk8s.io'
+      ]
+      privateLinkPrivateDnsZonesToExclude: [
+        'privatelink.api.azureml.ms'
+        'privatelink.{regionCode}.backup.windowsazure.com'
       ]
       virtualNetworkResourceIdsToLinkTo: [
         nestedDependencies.outputs.vnet1ResourceId
       ]
       virtualNetworkLinks: [
         {
+          name: 'vnet2-link-custom-name'
           virtualNetworkResourceId: nestedDependencies.outputs.vnet2ResourceId
           resolutionPolicy: 'NxDomainRedirect'
           registrationEnabled: false
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Example'
+            Role: 'DeploymentValidation'
+          }
         }
       ]
       lock: {
