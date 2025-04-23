@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "6486312414710153460"
+      "templateHash": "248313507400838211"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones"
@@ -205,7 +205,10 @@
     },
     "privateLinkPrivateDnsZonesToExclude": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` ."
       }
@@ -255,7 +258,7 @@
         }
       }
     ],
-    "privateLinkPrivateDnsZonesWithExclusions": "[filter(parameters('privateLinkPrivateDnsZones'), lambda('zone', not(contains(parameters('privateLinkPrivateDnsZonesToExclude'), lambdaVariables('zone')))))]",
+    "privateLinkPrivateDnsZonesWithExclusions": "[filter(parameters('privateLinkPrivateDnsZones'), lambda('zone', not(contains(coalesce(parameters('privateLinkPrivateDnsZonesToExclude'), createArray()), lambdaVariables('zone')))))]",
     "azureRegionGeoCodeShortNameAsKey": {
       "uaenorth": "uan",
       "northcentralus": "ncus",

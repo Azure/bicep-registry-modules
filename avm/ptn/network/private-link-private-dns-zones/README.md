@@ -548,7 +548,6 @@ An array of Private Link Private DNS Zones to exclude from the deployment. The D
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 
