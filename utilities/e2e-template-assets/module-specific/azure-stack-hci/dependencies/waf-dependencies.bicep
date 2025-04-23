@@ -30,10 +30,6 @@ param keyVaultDiagnosticStorageAccountName string
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
-@description('Required. The service principal ID of the Azure Stack HCI Resource Provider in this tenant.')
-@secure()
-param hciResourceProviderObjectId string
-
 @description('Required. The name of the Azure Stack HCI cluster.')
 param clusterName string
 
@@ -109,14 +105,10 @@ module hciClusterPreqs '../azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
     arbDeploymentAppId: arbDeploymentAppId
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
-    arcNodeResourceIds: [
-      for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
-    ]
     clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
     keyVaultDiagnosticStorageAccountName: keyVaultDiagnosticStorageAccountName
     deploymentUsername: 'deployUser'
     deploymentUserPassword: deploymentUserPassword
-    hciResourceProviderObjectId: hciResourceProviderObjectId
     keyVaultName: keyVaultName
     localAdminPassword: localAdminPassword
     localAdminUsername: 'admin-hci'
