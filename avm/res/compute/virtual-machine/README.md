@@ -6919,10 +6919,7 @@ extensionDSCConfig: {
         "uri": "https://github.com/myProject/File3.ps1",
         "storageAccountId": ""
       }
-    ],
-    "settings": {
-      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File testscript.ps1"
-    }
+    ]
   }
 }
 ```
@@ -6952,9 +6949,6 @@ extensionCustomScriptConfig: {
         storageAccountId: ''
       }
     ]
-    settings: {
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File testscript.ps1'
-    }
 }
 ```
 
@@ -6973,7 +6967,7 @@ This is used if you are going to use secrets or other sensitive information that
 "extensionCustomScriptProtectedSetting": {
   "value": [
     {
-      "commandToExecute": "mycommandToRun -someParam MYSECRET"
+      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File testscript.ps1"
     }
   ]
 }
@@ -6988,7 +6982,7 @@ This is used if you are going to use secrets or other sensitive information that
 ```bicep
 extensionCustomScriptProtectedSetting: [
     {
-        commandToExecute: 'mycommandToRun -someParam MYSECRET'
+        commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File testscript.ps1'
     }
 ]
 ```
