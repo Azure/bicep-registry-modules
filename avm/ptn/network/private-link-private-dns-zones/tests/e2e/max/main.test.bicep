@@ -35,7 +35,8 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    virtualNetwork1Name: 'dep-${namePrefix}-vnet1-${serviceShort}'
+    virtualNetwork2Name: 'dep-${namePrefix}-vnet2-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -56,7 +57,14 @@ module testDeployment '../../../main.bicep' = [
         'testpdnszone2.local'
       ]
       virtualNetworkResourceIdsToLinkTo: [
-        nestedDependencies.outputs.vnetResourceId
+        nestedDependencies.outputs.vnet1ResourceId
+      ]
+      virtualNetworkLinks: [
+        {
+          virtualNetworkResourceId: nestedDependencies.outputs.vnet2ResourceId
+          resolutionPolicy: 'NxDomainRedirect'
+          registrationEnabled: false
+        }
       ]
       lock: {
         kind: 'CanNotDelete'

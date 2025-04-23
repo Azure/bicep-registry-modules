@@ -116,10 +116,18 @@ param privateLinkPrivateDnsZones array = [
   'scm.privatelink.azurewebsites.net'
   'privatelink.service.signalr.net'
   'privatelink.azurestaticapps.net'
+  'privatelink.azuresynapse.net'
+  'privatelink.dev.azuresynapse.net'
+  'privatelink.sql.azuresynapse.net'
+  'privatelink.webpubsub.azure.com'
 ]
 
-@description('Optional. An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.')
+@description('Optional. ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE IGNORED. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.')
 param virtualNetworkResourceIdsToLinkTo array = []
+
+import { virtualNetworkLinkType } from 'br/public:avm/res/network/private-dns-zone:0.7.1'
+@description('Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain properties \'virtualNetworkResourceId\'. The \'vnetResourceId\' is a resource ID of a vNet to link.')
+param virtualNetworkLinks virtualNetworkLinkType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -277,11 +285,32 @@ var privateLinkPrivateDnsZonesReplacedWithRegionName = [
   )
 ]
 
+var virtualNetworkResourceIdsToLinkToFromVirtualNetworkLinks = map(
+  virtualNetworkLinks ?? [],
+  vnet => vnet.virtualNetworkResourceId
+)
+
+var toDeprecateCombinedVirtualNetworkResourceIdsToLinkTo = union(
+  virtualNetworkResourceIdsToLinkTo,
+  virtualNetworkResourceIdsToLinkToFromVirtualNetworkLinks
+)
+
+var toDeprecateCombinedVirtualNetworkResourceIdsToLinkToObject = [
+  for vnet in toDeprecateCombinedVirtualNetworkResourceIdsToLinkTo: {
+    registrationEnabled: false
+    virtualNetworkResourceId: vnet
+  }
+]
+
 var combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink = map(
   range(0, length(privateLinkPrivateDnsZonesReplacedWithRegionName)),
   i => {
     pdnsZoneName: privateLinkPrivateDnsZonesReplacedWithRegionName[i]
-    virtualNetworkResourceIdsToLinkTo: virtualNetworkResourceIdsToLinkTo
+    virtualNetworkResourceIdsToLinkTo: union(
+      virtualNetworkResourceIdsToLinkTo,
+      virtualNetworkResourceIdsToLinkToFromVirtualNetworkLinks
+    )
+    virtualNetworkLinks: virtualNetworkLinks ?? []
   }
 )
 
@@ -304,17 +333,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module pdnsZones 'br/public:avm/res/network/private-dns-zone:0.6.0' = [
+module pdnsZones 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
   for zone in combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink: {
     name: '${uniqueString(deployment().name, zone.pdnsZoneName, location)}-pdns-zone-deployment'
     params: {
       name: zone.pdnsZoneName
-      virtualNetworkLinks: [
-        for vnet in zone.virtualNetworkResourceIdsToLinkTo: {
-          registrationEnabled: false
-          virtualNetworkResourceId: vnet
-        }
-      ]
+      virtualNetworkLinks: empty(zone.virtualNetworkLinks)
+        ? toDeprecateCombinedVirtualNetworkResourceIdsToLinkToObject
+        : zone.virtualNetworkLinks
       lock: lock
       tags: tags
       enableTelemetry: enableTelemetry
