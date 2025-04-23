@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "17232973123023518023"
+      "templateHash": "2245080936870280814"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones"
@@ -246,8 +246,8 @@
     "copy": [
       {
         "name": "privateLinkPrivateDnsZonesReplacedWithRegionCode",
-        "count": "[length(parameters('privateLinkPrivateDnsZones'))]",
-        "input": "[replace(parameters('privateLinkPrivateDnsZones')[copyIndex('privateLinkPrivateDnsZonesReplacedWithRegionCode')], '{regionCode}', variables('azureRegionGeoCodeShortNameAsKey')[variables('locationLoweredAndSpacesRemoved')])]"
+        "count": "[length(variables('privateLinkPrivateDnsZonesWithExclusions'))]",
+        "input": "[replace(variables('privateLinkPrivateDnsZonesWithExclusions')[copyIndex('privateLinkPrivateDnsZonesReplacedWithRegionCode')], '{regionCode}', variables('azureRegionGeoCodeShortNameAsKey')[variables('locationLoweredAndSpacesRemoved')])]"
       },
       {
         "name": "privateLinkPrivateDnsZonesReplacedWithRegionName",
@@ -262,6 +262,7 @@
         }
       }
     ],
+    "privateLinkPrivateDnsZonesWithExclusions": "[filter(parameters('privateLinkPrivateDnsZones'), lambda('zone', not(contains(parameters('privateLinkPrivateDnsZonesToExclude'), lambdaVariables('zone')))))]",
     "azureRegionGeoCodeShortNameAsKey": {
       "uaenorth": "uan",
       "northcentralus": "ncus",

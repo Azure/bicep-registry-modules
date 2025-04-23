@@ -37,8 +37,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/network/private-link-private-dns-zones:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Exclude specific zones from defaults](#example-2-exclude-specific-zones-from-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -89,7 +90,72 @@ using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Exclude specific zones from defaults_
+
+This instance deploys and excludes 3 zones from the default set of zones using the parameter `privateLinkPrivateDnsZonesToExclude`. The default set of zones is defined in the module in the parameter `privateLinkPrivateDnsZones`.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
+  name: 'privateLinkPrivateDnsZonesDeployment'
+  params: {
+    privateLinkPrivateDnsZonesToExclude: [
+      'privatelink.{regionCode}.backup.windowsazure.com'
+      'privatelink.{regionName}.azmk8s.io'
+      'privatelink.monitor.azure.com'
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "privateLinkPrivateDnsZonesToExclude": {
+      "value": [
+        "privatelink.{regionCode}.backup.windowsazure.com",
+        "privatelink.{regionName}.azmk8s.io",
+        "privatelink.monitor.azure.com"
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
+
+param privateLinkPrivateDnsZonesToExclude = [
+  'privatelink.{regionCode}.backup.windowsazure.com'
+  'privatelink.{regionName}.azmk8s.io'
+  'privatelink.monitor.azure.com'
+]
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -221,7 +287,7 @@ param virtualNetworkResourceIdsToLinkTo = [
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 

@@ -135,6 +135,11 @@ param virtualNetworkLinks virtualNetworkLinkType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var privateLinkPrivateDnsZonesWithExclusions = filter(
+  privateLinkPrivateDnsZones,
+  zone => !contains(privateLinkPrivateDnsZonesToExclude, zone)
+)
+
 var azureRegionGeoCodeShortNameAsKey = {
   uaenorth: 'uan'
   northcentralus: 'ncus'
@@ -273,7 +278,7 @@ var locationLoweredAndSpacesRemoved = contains(locationLowered, ' ')
   : locationLowered
 
 var privateLinkPrivateDnsZonesReplacedWithRegionCode = [
-  for zone in privateLinkPrivateDnsZones: replace(
+  for zone in privateLinkPrivateDnsZonesWithExclusions: replace(
     zone,
     '{regionCode}',
     azureRegionGeoCodeShortNameAsKey[locationLoweredAndSpacesRemoved]
