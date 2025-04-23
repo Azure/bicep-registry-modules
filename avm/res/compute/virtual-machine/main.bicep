@@ -28,10 +28,10 @@ param secureBootEnabled bool = false
 param vTpmEnabled bool = false
 
 @description('Required. OS image reference. In case of marketplace images, it\'s the combination of the publisher, offer, sku, version attributes. In case of custom images it\'s the resource ID of the custom image.')
-param imageReference object
+param imageReference imageReferenceType
 
 @description('Optional. Specifies information about the marketplace image used to create the virtual machine. This element is only used for marketplace images. Before you can use a marketplace image from an API, you must enable the image for programmatic use.')
-param plan object = {}
+param plan planType?
 
 @description('Required. Specifies the OS disk. For security reasons, it is recommended to specify DiskEncryptionSet into the osDisk object.  Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.')
 param osDisk osDiskType
@@ -57,7 +57,7 @@ param userData string = ''
 param customData string = ''
 
 @description('Optional. Specifies set of certificates that should be installed onto the virtual machine.')
-param certificatesToBeInstalled array = []
+param certificatesToBeInstalled VaultSecretGroupType[]?
 
 @description('Optional. Specifies the priority for the virtual machine.')
 @allowed([
@@ -116,7 +116,7 @@ param virtualMachineScaleSetResourceId string = ''
 param availabilitySetResourceId string = ''
 
 @description('Optional. Specifies the gallery applications that should be made available to the VM/VMSS.')
-param galleryApplications array = []
+param galleryApplications vmGalleryApplicationType[]?
 
 @description('Required. If set to 1, 2 or 3, the availability zone for all VMs is hardcoded to that value. If zero, then availability zones is not used. Cannot be used in combination with availability set nor scale set.')
 @allowed([
@@ -129,7 +129,7 @@ param zone int
 
 // External resources
 @description('Required. Configures NICs and PIPs.')
-param nicConfigurations array
+param nicConfigurations nicConfigurationType[]
 
 @description('Optional. Recovery service vault name to add VMs to backup.')
 param backupVaultName string = ''
@@ -141,7 +141,7 @@ param backupVaultResourceGroup string = resourceGroup().name
 param backupPolicyName string = 'DefaultPolicy'
 
 @description('Optional. The configuration for auto-shutdown.')
-param autoShutdownConfig object = {}
+param autoShutdownConfig autoShutDownConfigType = {}
 
 @description('Optional. The resource Id of a maintenance configuration for this VM.')
 param maintenanceConfigurationResourceId string = ''
@@ -305,10 +305,10 @@ param enableHotpatching bool = false
 param timeZone string = ''
 
 @description('Optional. Specifies additional XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup. Contents are defined by setting name, component name, and the pass in which the content is applied.')
-param additionalUnattendContent array = []
+param additionalUnattendContent additionalUnattendContentType[]?
 
-@description('Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell. - WinRMConfiguration object.')
-param winRM array = []
+@description('Optional. Specifies the Windows Remote Management listeners. This enables remote Windows PowerShell.')
+param winRMListeners winRMListenerType[]?
 
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
@@ -342,6 +342,15 @@ var linuxConfiguration = {
     : null
 }
 
+var additionalUnattendContentFormatted = [
+  for (unattendContent, index) in additionalUnattendContent ?? []: {
+    settingName: unattendContent.settingName
+    content: unattendContent.content
+    componentName: 'Microsoft-Windows-Shell-Setup'
+    passName: 'OobeSystem'
+  }
+]
+
 var windowsConfiguration = {
   provisionVMAgent: provisionVMAgent
   enableAutomaticUpdates: enableAutomaticUpdates
@@ -359,10 +368,10 @@ var windowsConfiguration = {
       }
     : null
   timeZone: empty(timeZone) ? null : timeZone
-  additionalUnattendContent: empty(additionalUnattendContent) ? null : additionalUnattendContent
-  winRM: !empty(winRM)
+  additionalUnattendContent: empty(additionalUnattendContent) ? null : additionalUnattendContentFormatted
+  winRM: !empty(winRMListeners)
     ? {
-        listeners: winRM
+        listeners: winRMListeners
       }
     : null
 }
@@ -497,7 +506,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
       enableIPForwarding: nicConfiguration.?enableIPForwarding ?? false
       enableAcceleratedNetworking: nicConfiguration.?enableAcceleratedNetworking ?? true
       dnsServers: contains(nicConfiguration, 'dnsServers')
-        ? (!empty(nicConfiguration.dnsServers) ? nicConfiguration.dnsServers : [])
+        ? (!empty(nicConfiguration.?dnsServers) ? nicConfiguration.?dnsServers : [])
         : []
       networkSecurityGroupResourceId: nicConfiguration.?networkSecurityGroupResourceId ?? ''
       ipConfigurations: nicConfiguration.ipConfigurations
@@ -535,7 +544,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   identity: identity
   tags: tags
   zones: zone != 0 ? array(string(zone)) : null
-  plan: !empty(plan) ? plan : null
+  plan: plan
   properties: {
     hardwareProfile: {
       vmSize: vmSize
@@ -695,13 +704,13 @@ resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15
       time: autoShutdownConfig.?dailyRecurrenceTime ?? '19:00'
     }
     timeZoneId: autoShutdownConfig.?timeZone ?? 'UTC'
-    notificationSettings: contains(autoShutdownConfig, 'notificationStatus')
+    notificationSettings: contains(autoShutdownConfig, 'notificationSettings')
       ? {
-          status: autoShutdownConfig.?notificationStatus ?? 'Disabled'
-          emailRecipient: autoShutdownConfig.?notificationEmail ?? ''
-          notificationLocale: autoShutdownConfig.?notificationLocale ?? 'en'
-          webhookUrl: autoShutdownConfig.?notificationWebhookUrl ?? ''
-          timeInMinutes: autoShutdownConfig.?notificationTimeInMinutes ?? 30
+          status: autoShutdownConfig.?status ?? 'Disabled'
+          emailRecipient: autoShutdownConfig.?notificationSettings.?emailRecipient ?? ''
+          notificationLocale: autoShutdownConfig.?notificationSettings.?notificationLocale ?? 'en'
+          webhookUrl: autoShutdownConfig.?notificationSettings.?webhookUrl ?? ''
+          timeInMinutes: autoShutdownConfig.?notificationSettings.?timeInMinutes ?? 30
         }
       : null
   }
@@ -1157,4 +1166,181 @@ type publicKeyType = {
 
   @description('Required. Specifies the full path on the created VM where ssh public key is stored. If the file already exists, the specified key is appended to the file.')
   path: string
+}
+
+import { ipConfigurationType } from 'modules/nic-configuration.bicep'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { subResourceType } from 'br/public:avm/res/network/network-interface:0.5.0'
+
+@export()
+@description('The type for the NIC configuration.')
+type nicConfigurationType = {
+  @description('Optional. The name of the NIC configuration.')
+  name: string?
+
+  @description('Optional. The suffix to append to the NIC name.')
+  nicSuffix: string?
+
+  @description('Optional. Indicates whether IP forwarding is enabled on this network interface.')
+  enableIPForwarding: bool?
+
+  @description('Optional. If the network interface is accelerated networking enabled.')
+  enableAcceleratedNetworking: bool?
+
+  @description('Optional. Specify what happens to the network interface when the VM is deleted.')
+  deleteOption: 'Delete' | 'Detach'?
+
+  @description('Optional. List of DNS servers IP addresses. Use \'AzureProvidedDNS\' to switch to azure provided DNS resolution. \'AzureProvidedDNS\' value cannot be combined with other IPs, it must be the only value in dnsServers collection.')
+  dnsServers: string[]?
+
+  @description('Optional. The network security group (NSG) to attach to the network interface.')
+  networkSecurityGroupResourceId: string?
+
+  @description('Required. The IP configurations of the network interface.')
+  ipConfigurations: ipConfigurationType[]
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. The tags of the public IP address.')
+  tags: object?
+
+  @description('Optional. Enable/Disable usage telemetry for the module.')
+  enableTelemetry: bool?
+
+  @description('Optional. The diagnostic settings of the IP configuration.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+}
+
+@export()
+@description('The type describing the image reference.')
+type imageReferenceType = {
+  @description('Optional. Specified the community gallery image unique id for vm deployment. This can be fetched from community gallery image GET call.')
+  communityGalleryImageId: string?
+
+  @description('Optional. The resource Id of the image reference.')
+  id: string?
+
+  @description('Optional. Specifies the offer of the platform image or marketplace image used to create the virtual machine.')
+  offer: string?
+
+  @description('Optional. The image publisher.')
+  publisher: string?
+
+  @description('Optional. The SKU of the image.')
+  sku: string?
+
+  @description('Optional. Specifies the version of the platform image or marketplace image used to create the virtual machine. The allowed formats are Major.Minor.Build or \'latest\'. Even if you use \'latest\', the VM image will not automatically update after deploy time even if a new version becomes available.')
+  version: string?
+
+  @description('Optional. Specified the shared gallery image unique id for vm deployment. This can be fetched from shared gallery image GET call.')
+  sharedGalleryImageId: string?
+}
+
+@export()
+@description('Specifies information about the marketplace image used to create the virtual machine.')
+type planType = {
+  @description('Optional. The name of the plan.')
+  name: string?
+
+  @description('Optional. Specifies the product of the image from the marketplace.')
+  product: string?
+
+  @description('Optional. The publisher ID.')
+  publisher: string?
+
+  @description('Optional. The promotion code.')
+  promotionCode: string?
+}
+
+@export()
+@description('The type describing the configuration profile.')
+type autoShutDownConfigType = {
+  @description('Optional. The status of the auto shutdown configuration.')
+  status: 'Enabled' | 'Disabled'?
+
+  @description('Optional. The time zone ID (e.g. China Standard Time, Greenland Standard Time, Pacific Standard time, etc.).')
+  timeZone: string?
+
+  @description('Optional. The time of day the schedule will occur.')
+  dailyRecurrenceTime: string?
+
+  @description('Optional. The resource ID of the schedule.')
+  notificationSettings: {
+    @description('Optional. The status of the notification settings.')
+    status: 'Enabled' | 'Disabled'?
+
+    @description('Optional. The email address to send notifications to (can be a list of semi-colon separated email addresses).')
+    emailRecipient: string?
+
+    @description('Optional. The locale to use when sending a notification (fallback for unsupported languages is EN).')
+    notificationLocale: string?
+
+    @description('Optional. The webhook URL to which the notification will be sent.')
+    webhookUrl: string?
+
+    @description('Optional. The time in minutes before shutdown to send notifications.')
+    timeInMinutes: int?
+  }?
+}
+
+@export()
+@description('The type describing the set of certificates that should be installed onto the virtual machine.')
+type VaultSecretGroupType = {
+  @description('Optional. The relative URL of the Key Vault containing all of the certificates in VaultCertificates.')
+  sourceVault: subResourceType?
+
+  @description('Optional. The list of key vault references in SourceVault which contain certificates.')
+  vaultCertificates: {
+    @description('Optional. For Windows VMs, specifies the certificate store on the Virtual Machine to which the certificate should be added. The specified certificate store is implicitly in the LocalMachine account. For Linux VMs, the certificate file is placed under the /var/lib/waagent directory, with the file name <UppercaseThumbprint>.crt for the X509 certificate file and <UppercaseThumbprint>.prv for private key. Both of these files are .pem formatted.')
+    certificateStore: string?
+
+    @description('Optional. This is the URL of a certificate that has been uploaded to Key Vault as a secret.')
+    certificateUrl: string?
+  }[]?
+}
+
+@export()
+@description('The type describing the gallery application that should be made available to the VM/VMSS.')
+type vmGalleryApplicationType = {
+  @description('Required. Specifies the GalleryApplicationVersion resource id on the form of /subscriptions/{SubscriptionId}/resourceGroups/{ResourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{application}/versions/{version}.')
+  packageReferenceId: string
+
+  @description('Optional. Specifies the uri to an azure blob that will replace the default configuration for the package if provided.')
+  configurationReference: string?
+
+  @description('Optional. If set to true, when a new Gallery Application version is available in PIR/SIG, it will be automatically updated for the VM/VMSS.')
+  enableAutomaticUpgrade: bool?
+
+  @description('Optional. Specifies the order in which the packages have to be installed.')
+  order: int?
+
+  @description('Optional. Specifies a passthrough value for more generic context.')
+  tags: string?
+
+  @description('Optional. If true, any failure for any operation in the VmApplication will fail the deployment.')
+  treatFailureAsDeploymentFailure: bool?
+}
+
+@export()
+@description('The type describing additional base-64 encoded XML formatted information that can be included in the Unattend.xml file, which is used by Windows Setup.')
+type additionalUnattendContentType = {
+  @description('Optional. Specifies the name of the setting to which the content applies.')
+  settingName: 'FirstLogonCommands' | 'AutoLogon'?
+
+  @description('Optional. Specifies the XML formatted content that is added to the unattend.xml file for the specified path and component. The XML must be less than 4KB and must include the root element for the setting or feature that is being inserted.')
+  content: string?
+}
+
+@export()
+@description('The type describing a Windows Remote Management listener.')
+type winRMListenerType = {
+  @description('Optional. The URL of a certificate that has been uploaded to Key Vault as a secret.')
+  certificateUrl: string?
+
+  @description('Optional. Specifies the protocol of WinRM listener.')
+  protocol: 'Http' | 'Https'?
 }
