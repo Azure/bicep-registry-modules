@@ -26,7 +26,7 @@ Private Link Private DNS Zones
 | `Microsoft.Network/privateDnsZones/SOA` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SOA) |
 | `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
 | `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
-| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/virtualNetworkLinks) |
+| `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
 
 ## Usage examples
 
@@ -116,8 +116,15 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
+    virtualNetworkLinks: [
+      {
+        registrationEnabled: false
+        resolutionPolicy: 'NxDomainRedirect'
+        virtualNetworkResourceId: '<virtualNetworkResourceId>'
+      }
+    ]
     virtualNetworkResourceIdsToLinkTo: [
-      '<vnetResourceId>'
+      '<vnet1ResourceId>'
     ]
   }
 }
@@ -157,9 +164,18 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
         "Role": "DeploymentValidation"
       }
     },
+    "virtualNetworkLinks": {
+      "value": [
+        {
+          "registrationEnabled": false,
+          "resolutionPolicy": "NxDomainRedirect",
+          "virtualNetworkResourceId": "<virtualNetworkResourceId>"
+        }
+      ]
+    },
     "virtualNetworkResourceIdsToLinkTo": {
       "value": [
-        "<vnetResourceId>"
+        "<vnet1ResourceId>"
       ]
     }
   }
@@ -190,8 +206,15 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
+param virtualNetworkLinks = [
+  {
+    registrationEnabled: false
+    resolutionPolicy: 'NxDomainRedirect'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
+]
 param virtualNetworkResourceIdsToLinkTo = [
-  '<vnetResourceId>'
+  '<vnet1ResourceId>'
 ]
 ```
 
@@ -211,8 +234,11 @@ This instance deploys the module in alignment with the best-practices of the Wel
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
   name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
-    virtualNetworkResourceIdsToLinkTo: [
-      '<vnetResourceId>'
+    virtualNetworkLinks: [
+      {
+        registrationEnabled: false
+        virtualNetworkResourceId: '<virtualNetworkResourceId>'
+      }
     ]
   }
 }
@@ -230,9 +256,12 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "virtualNetworkResourceIdsToLinkTo": {
+    "virtualNetworkLinks": {
       "value": [
-        "<vnetResourceId>"
+        {
+          "registrationEnabled": false,
+          "virtualNetworkResourceId": "<virtualNetworkResourceId>"
+        }
       ]
     }
   }
@@ -249,8 +278,11 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 ```bicep-params
 using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
 
-param virtualNetworkResourceIdsToLinkTo = [
-  '<vnetResourceId>'
+param virtualNetworkLinks = [
+  {
+    registrationEnabled: false
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+  }
 ]
 ```
 
@@ -268,7 +300,8 @@ param virtualNetworkResourceIdsToLinkTo = [
 | [`lock`](#parameter-lock) | object | The lock settings for the Private Link Private DNS Zones created. |
 | [`privateLinkPrivateDnsZones`](#parameter-privatelinkprivatednszones) | array | An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.<p><p>**NOTE:**<p><li>Private Link Private DNS Zones that have `{{regionCode}}` in the name will be replaced with the Geo Code of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns#:~:text=Note-,In%20the%20above%20text%2C%20%7BregionCode%7D%20refers%20to%20the%20region%20code%20(for%20example%2C%20eus%20for%20East%20US%20and%20ne%20for%20North%20Europe).%20Refer%20to%20the%20following%20lists%20for%20regions%20codes%3A,-All%20public%20clouds).<p>  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionCode}}` would be replaced with `uks` in the Private DNS Zone name.<li>Private Link Private DNS Zones that have `{{regionName}}` in the name will be replaced with the short name of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns).<p>  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionName}}` would be replaced with `uksouth` in the Private DNS Zone name.<p><p>**IMPORTANT:**<p><p>The folowing Private Link Private DNS Zones have been removed from the default value for this parameter as they require additional placeholders to be replaced that will only be known by the caller of the module at runtime and cannot be determined by the module itself. If you have a requirement to create these Private Link Private DNS Zones, you must provide the full list of Private Link Private DNS Zones to create as an array in the `privateLinkPrivateDnsZones` parameter, using the default value as a reference. The list of Private Link Private DNS Zones that have been removed are:<p><li>`{subzone}.privatelink.{regionName}.azmk8s.io`<li>`privatelink.{dnsPrefix}.database.windows.net`<li>`privatelink.{partitionId}.azurestaticapps.net`<p><p>We have also removed the following Private Link Private DNS Zones from the default value for this parameter as they should only be created and used with in specific scenarios:<p><li>`privatelink.azure.com`.<p> |
 | [`tags`](#parameter-tags) | object | Tags of the Private Link Private DNS Zones created. |
-| [`virtualNetworkResourceIdsToLinkTo`](#parameter-virtualnetworkresourceidstolinkto) | array | An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID. |
+| [`virtualNetworkLinks`](#parameter-virtualnetworklinks) | array | Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId'. The 'vnetResourceId' is a resource ID of a vNet to link. |
+| [`virtualNetworkResourceIdsToLinkTo`](#parameter-virtualnetworkresourceidstolinkto) | array | ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD AS MORE VIRTUAL NETWORK LINK PROPERTIES ARE EXPOSED. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE PROCESSED AND INPUT AND FORMATTED BY THE MODULE AND UNIOND WITH THE INPUT TO `virtualNetworkLinks`. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID. |
 
 ### Parameter: `enableTelemetry`
 
@@ -354,6 +387,7 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.azurehdinsight.net'
     'privatelink.azureiotcentral.com'
     'privatelink.azurestaticapps.net'
+    'privatelink.azuresynapse.net'
     'privatelink.azurewebsites.net'
     'privatelink.batch.azure.com'
     'privatelink.blob.core.windows.net'
@@ -361,6 +395,7 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.cognitiveservices.azure.com'
     'privatelink.database.windows.net'
     'privatelink.datafactory.azure.net'
+    'privatelink.dev.azuresynapse.net'
     'privatelink.dfs.core.windows.net'
     'privatelink.dicom.azurehealthcareapis.com'
     'privatelink.digitaltwins.azure.net'
@@ -397,12 +432,14 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.service.signalr.net'
     'privatelink.servicebus.windows.net'
     'privatelink.siterecovery.windowsazure.com'
+    'privatelink.sql.azuresynapse.net'
     'privatelink.table.core.windows.net'
     'privatelink.table.cosmos.azure.com'
     'privatelink.tip1.powerquery.microsoft.com'
     'privatelink.token.botframework.com'
     'privatelink.vaultcore.azure.net'
     'privatelink.web.core.windows.net'
+    'privatelink.webpubsub.azure.com'
     'privatelink.workspace.azurehealthcareapis.com'
     'privatelink.wvd.microsoft.com'
     'scm.privatelink.azurewebsites.net'
@@ -416,9 +453,81 @@ Tags of the Private Link Private DNS Zones created.
 - Required: No
 - Type: object
 
+### Parameter: `virtualNetworkLinks`
+
+Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId'. The 'vnetResourceId' is a resource ID of a vNet to link.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`virtualNetworkResourceId`](#parameter-virtualnetworklinksvirtualnetworkresourceid) | string | The resource ID of the virtual network to link. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-virtualnetworklinkslocation) | string | The Azure Region where the resource lives. |
+| [`name`](#parameter-virtualnetworklinksname) | string | The resource name. |
+| [`registrationEnabled`](#parameter-virtualnetworklinksregistrationenabled) | bool | Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?. |
+| [`resolutionPolicy`](#parameter-virtualnetworklinksresolutionpolicy) | string | The resolution type of the private-dns-zone fallback machanism. |
+| [`tags`](#parameter-virtualnetworklinkstags) | object | Resource tags. |
+
+### Parameter: `virtualNetworkLinks.virtualNetworkResourceId`
+
+The resource ID of the virtual network to link.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkLinks.location`
+
+The Azure Region where the resource lives.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkLinks.name`
+
+The resource name.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkLinks.registrationEnabled`
+
+Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualNetworkLinks.resolutionPolicy`
+
+The resolution type of the private-dns-zone fallback machanism.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Default'
+    'NxDomainRedirect'
+  ]
+  ```
+
+### Parameter: `virtualNetworkLinks.tags`
+
+Resource tags.
+
+- Required: No
+- Type: object
+
 ### Parameter: `virtualNetworkResourceIdsToLinkTo`
 
-An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.
+***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD AS MORE VIRTUAL NETWORK LINK PROPERTIES ARE EXPOSED. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE PROCESSED AND INPUT AND FORMATTED BY THE MODULE AND UNIOND WITH THE INPUT TO `virtualNetworkLinks`. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.
 
 - Required: No
 - Type: array
@@ -438,7 +547,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-dns-zone:0.6.0` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.2.1` | Remote reference |
 
 ## Data Collection

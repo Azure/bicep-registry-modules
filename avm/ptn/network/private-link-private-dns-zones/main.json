@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "9130976353138630009"
+      "version": "0.34.44.8038",
+      "templateHash": "7503237355669261877"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones"
@@ -39,6 +39,64 @@
         "description": "An AVM-aligned type for a lock.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.2.1"
+        }
+      }
+    },
+    "virtualNetworkLinkType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "minLength": 1,
+          "maxLength": 80,
+          "metadata": {
+            "description": "Optional. The resource name."
+          }
+        },
+        "virtualNetworkResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the virtual network to link."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Azure Region where the resource lives."
+          }
+        },
+        "registrationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource tags."
+          }
+        },
+        "resolutionPolicy": {
+          "type": "string",
+          "allowedValues": [
+            "Default",
+            "NxDomainRedirect"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resolution type of the private-dns-zone fallback machanism."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the virtual network link.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/private-dns-zone:0.7.1"
         }
       }
     }
@@ -142,7 +200,11 @@
         "privatelink.azurewebsites.net",
         "scm.privatelink.azurewebsites.net",
         "privatelink.service.signalr.net",
-        "privatelink.azurestaticapps.net"
+        "privatelink.azurestaticapps.net",
+        "privatelink.azuresynapse.net",
+        "privatelink.dev.azuresynapse.net",
+        "privatelink.sql.azuresynapse.net",
+        "privatelink.webpubsub.azure.com"
       ],
       "metadata": {
         "description": "Optional. An array of Private Link Private DNS Zones to create. Each item must be a valid DNS zone name.\n\n**NOTE:**\n\n- Private Link Private DNS Zones that have `{{regionCode}}` in the name will be replaced with the Geo Code of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns#:~:text=Note-,In%20the%20above%20text%2C%20%7BregionCode%7D%20refers%20to%20the%20region%20code%20(for%20example%2C%20eus%20for%20East%20US%20and%20ne%20for%20North%20Europe).%20Refer%20to%20the%20following%20lists%20for%20regions%20codes%3A,-All%20public%20clouds).\n  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionCode}}` would be replaced with `uks` in the Private DNS Zone name.\n- Private Link Private DNS Zones that have `{{regionName}}` in the name will be replaced with the short name of the Region you specified in the `location` parameter, if available, as documented [here](https://learn.microsoft.com/azure/private-link/private-endpoint-dns).\n  - e.g. If `UK South` or `uksouth` was specified as the region in the `location` parameter, `{{regionName}}` would be replaced with `uksouth` in the Private DNS Zone name.\n\n**IMPORTANT:**\n\nThe folowing Private Link Private DNS Zones have been removed from the default value for this parameter as they require additional placeholders to be replaced that will only be known by the caller of the module at runtime and cannot be determined by the module itself. If you have a requirement to create these Private Link Private DNS Zones, you must provide the full list of Private Link Private DNS Zones to create as an array in the `privateLinkPrivateDnsZones` parameter, using the default value as a reference. The list of Private Link Private DNS Zones that have been removed are:\n\n- `{subzone}.privatelink.{regionName}.azmk8s.io`\n- `privatelink.{dnsPrefix}.database.windows.net`\n- `privatelink.{partitionId}.azurestaticapps.net`\n\nWe have also removed the following Private Link Private DNS Zones from the default value for this parameter as they should only be created and used with in specific scenarios:\n\n- `privatelink.azure.com`.\n"
@@ -152,7 +214,17 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID."
+        "description": "Optional. ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD AS MORE VIRTUAL NETWORK LINK PROPERTIES ARE EXPOSED. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE PROCESSED AND INPUT AND FORMATTED BY THE MODULE AND UNIOND WITH THE INPUT TO `virtualNetworkLinks`. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID."
+      }
+    },
+    "virtualNetworkLinks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/virtualNetworkLinkType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId'. The 'vnetResourceId' is a resource ID of a vNet to link."
       }
     },
     "enableTelemetry": {
@@ -174,6 +246,13 @@
         "name": "privateLinkPrivateDnsZonesReplacedWithRegionName",
         "count": "[length(variables('privateLinkPrivateDnsZonesReplacedWithRegionCode'))]",
         "input": "[replace(variables('privateLinkPrivateDnsZonesReplacedWithRegionCode')[copyIndex('privateLinkPrivateDnsZonesReplacedWithRegionName')], '{regionName}', variables('locationLoweredAndSpacesRemoved'))]"
+      },
+      {
+        "name": "toDeprecateVirtualNetworkResourceIdsToLinkToObject",
+        "count": "[length(parameters('virtualNetworkResourceIdsToLinkTo'))]",
+        "input": {
+          "virtualNetworkResourceId": "[parameters('virtualNetworkResourceIdsToLinkTo')[copyIndex('toDeprecateVirtualNetworkResourceIdsToLinkToObject')]]"
+        }
       }
     ],
     "azureRegionGeoCodeShortNameAsKey": {
@@ -239,7 +318,7 @@
       "usgovarizona": "uga",
       "usdodeast": "ude",
       "usdodcentral": "udc",
-      "indonesiacentral"  : "idc"
+      "indonesiacentral": "idc"
     },
     "azureRegionShortNameDisplayNameAsKey": {
       "australia southeast": "australiasoutheast",
@@ -308,7 +387,7 @@
     },
     "locationLowered": "[toLower(parameters('location'))]",
     "locationLoweredAndSpacesRemoved": "[if(contains(variables('locationLowered'), ' '), variables('azureRegionShortNameDisplayNameAsKey')[variables('locationLowered')], variables('locationLowered'))]",
-    "combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink": "[map(range(0, length(variables('privateLinkPrivateDnsZonesReplacedWithRegionName'))), lambda('i', createObject('pdnsZoneName', variables('privateLinkPrivateDnsZonesReplacedWithRegionName')[lambdaVariables('i')], 'virtualNetworkResourceIdsToLinkTo', parameters('virtualNetworkResourceIdsToLinkTo'))))]"
+    "combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink": "[map(range(0, length(variables('privateLinkPrivateDnsZonesReplacedWithRegionName'))), lambda('i', createObject('pdnsZoneName', variables('privateLinkPrivateDnsZonesReplacedWithRegionName')[lambdaVariables('i')], 'virtualNetworkLinks', union(variables('toDeprecateVirtualNetworkResourceIdsToLinkToObject'), coalesce(parameters('virtualNetworkLinks'), createArray())))))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -349,13 +428,7 @@
             "value": "[variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].pdnsZoneName]"
           },
           "virtualNetworkLinks": {
-            "copy": [
-              {
-                "name": "value",
-                "count": "[length(variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].virtualNetworkResourceIdsToLinkTo)]",
-                "input": "[createObject('registrationEnabled', false(), 'virtualNetworkResourceId', variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].virtualNetworkResourceIdsToLinkTo[copyIndex('value')])]"
-              }
-            ]
+            "value": "[variables('combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink')[copyIndex()].virtualNetworkLinks]"
           },
           "lock": {
             "value": "[parameters('lock')]"
@@ -374,86 +447,581 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "5518185016108244461"
+              "version": "0.34.44.8038",
+              "templateHash": "4533956061065498344"
             },
             "name": "Private DNS Zones",
-            "description": "This module deploys a Private DNS zone.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private DNS zone."
           },
           "definitions": {
-            "roleAssignmentType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+            "aType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the record."
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The metadata of the record."
+                  }
+                },
+                "ttl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The TTL of the record."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                },
+                "aRecords": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ipv4Address": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The IPv4 address of this A record."
+                        }
+                      }
                     }
                   },
-                  "roleDefinitionIdOrName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                    }
-                  },
-                  "principalId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                    }
-                  },
-                  "principalType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Device",
-                      "ForeignGroup",
-                      "Group",
-                      "ServicePrincipal",
-                      "User"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The principal type of the assigned principal ID."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The description of the role assignment."
-                    }
-                  },
-                  "condition": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                    }
-                  },
-                  "conditionVersion": {
-                    "type": "string",
-                    "allowedValues": [
-                      "2.0"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Version of the condition."
-                    }
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                    }
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The list of A records in the record set."
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the A record."
+              }
+            },
+            "aaaaType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the record."
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The metadata of the record."
+                  }
+                },
+                "ttl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The TTL of the record."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                },
+                "aaaaRecords": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ipv6Address": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The IPv6 address of this AAAA record."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The list of AAAA records in the record set."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the AAAA record."
+              }
+            },
+            "cnameType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the record."
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The metadata of the record."
+                  }
+                },
+                "ttl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The TTL of the record."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                },
+                "cnameRecord": {
+                  "type": "object",
+                  "properties": {
+                    "cname": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The canonical name of the CNAME record."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The CNAME record in the record set."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the CNAME record."
+              }
+            },
+            "mxType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the record."
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The metadata of the record."
+                  }
+                },
+                "ttl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The TTL of the record."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                },
+                "mxRecords": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "exchange": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The domain name of the mail host for this MX record."
+                        }
+                      },
+                      "preference": {
+                        "type": "int",
+                        "metadata": {
+                          "description": "Required. The preference value for this MX record."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The list of MX records in the record set."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the MX record."
+              }
+            },
+            "ptrType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the record."
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The metadata of the record."
+                  }
+                },
+                "ttl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The TTL of the record."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                },
+                "ptrRecords": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "ptrdname": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The PTR target domain name for this PTR record."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The list of PTR records in the record set."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the PTR record."
+              }
+            },
+            "soaType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the record."
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The metadata of the record."
+                  }
+                },
+                "ttl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The TTL of the record."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                },
+                "soaRecord": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The email contact for this SOA record."
+                      }
+                    },
+                    "expireTime": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. The expire time for this SOA record."
+                      }
+                    },
+                    "host": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The domain name of the authoritative name server for this SOA record."
+                      }
+                    },
+                    "minimumTtl": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration."
+                      }
+                    },
+                    "refreshTime": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. The refresh value for this SOA record."
+                      }
+                    },
+                    "retryTime": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. The retry time for this SOA record."
+                      }
+                    },
+                    "serialNumber": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. The serial number for this SOA record."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The SOA record in the record set."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the SOA record."
+              }
+            },
+            "srvType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the record."
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The metadata of the record."
+                  }
+                },
+                "ttl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The TTL of the record."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                },
+                "srvRecords": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "priority": {
+                        "type": "int",
+                        "metadata": {
+                          "description": "Required. The priority value for this SRV record."
+                        }
+                      },
+                      "weight": {
+                        "type": "int",
+                        "metadata": {
+                          "description": "Required. The weight value for this SRV record."
+                        }
+                      },
+                      "port": {
+                        "type": "int",
+                        "metadata": {
+                          "description": "Required. The port value for this SRV record."
+                        }
+                      },
+                      "target": {
+                        "type": "string",
+                        "metadata": {
+                          "description": "Required. The target domain name for this SRV record."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The list of SRV records in the record set."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the SRV record."
+              }
+            },
+            "txtType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the record."
+                  }
+                },
+                "metadata": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The metadata of the record."
+                  }
+                },
+                "ttl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The TTL of the record."
+                  }
+                },
+                "roleAssignments": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/roleAssignmentType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Array of role assignments to create."
+                  }
+                },
+                "txtRecords": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "value": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "metadata": {
+                          "description": "Required. The text value of this TXT record."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The list of TXT records in the record set."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the TXT record."
+              }
+            },
+            "virtualNetworkLinkType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "minLength": 1,
+                  "maxLength": 80,
+                  "metadata": {
+                    "description": "Optional. The resource name."
+                  }
+                },
+                "virtualNetworkResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the virtual network to link."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Azure Region where the resource lives."
+                  }
+                },
+                "registrationEnabled": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Resource tags."
+                  }
+                },
+                "resolutionPolicy": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Default",
+                    "NxDomainRedirect"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resolution type of the private-dns-zone fallback machanism."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the virtual network link."
+              }
             },
             "lockType": {
               "type": "object",
@@ -478,533 +1046,87 @@
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
             },
-            "aType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the record."
-                    }
-                  },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
                   "metadata": {
-                    "type": "object",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The metadata of the record."
-                    }
-                  },
-                  "ttl": {
-                    "type": "int",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The TTL of the record."
-                    }
-                  },
-                  "roleAssignments": {
-                    "$ref": "#/definitions/roleAssignmentType",
-                    "metadata": {
-                      "description": "Optional. Array of role assignments to create."
-                    }
-                  },
-                  "aRecords": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "ipv4Address": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The IPv4 address of this A record."
-                          }
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The list of A records in the record set."
-                    }
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
                   }
-                }
-              },
-              "nullable": true
-            },
-            "aaaaType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the record."
-                    }
-                  },
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
                   "metadata": {
-                    "type": "object",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The metadata of the record."
-                    }
-                  },
-                  "ttl": {
-                    "type": "int",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The TTL of the record."
-                    }
-                  },
-                  "roleAssignments": {
-                    "$ref": "#/definitions/roleAssignmentType",
-                    "metadata": {
-                      "description": "Optional. Array of role assignments to create."
-                    }
-                  },
-                  "aaaaRecords": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "ipv6Address": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The IPv6 address of this AAAA record."
-                          }
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The list of AAAA records in the record set."
-                    }
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
                   }
-                }
-              },
-              "nullable": true
-            },
-            "cnameType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the record."
-                    }
-                  },
+                },
+                "principalId": {
+                  "type": "string",
                   "metadata": {
-                    "type": "object",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The metadata of the record."
-                    }
-                  },
-                  "ttl": {
-                    "type": "int",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The TTL of the record."
-                    }
-                  },
-                  "roleAssignments": {
-                    "$ref": "#/definitions/roleAssignmentType",
-                    "metadata": {
-                      "description": "Optional. Array of role assignments to create."
-                    }
-                  },
-                  "cnameRecord": {
-                    "type": "object",
-                    "properties": {
-                      "cname": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The canonical name of the CNAME record."
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The CNAME record in the record set."
-                    }
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
                   }
-                }
-              },
-              "nullable": true
-            },
-            "mxType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the record."
-                    }
-                  },
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
                   "metadata": {
-                    "type": "object",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The metadata of the record."
-                    }
-                  },
-                  "ttl": {
-                    "type": "int",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The TTL of the record."
-                    }
-                  },
-                  "roleAssignments": {
-                    "$ref": "#/definitions/roleAssignmentType",
-                    "metadata": {
-                      "description": "Optional. Array of role assignments to create."
-                    }
-                  },
-                  "mxRecords": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "exchange": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The domain name of the mail host for this MX record."
-                          }
-                        },
-                        "preference": {
-                          "type": "int",
-                          "metadata": {
-                            "description": "Required. The preference value for this MX record."
-                          }
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The list of MX records in the record set."
-                    }
+                    "description": "Optional. The principal type of the assigned principal ID."
                   }
-                }
-              },
-              "nullable": true
-            },
-            "ptrType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the record."
-                    }
-                  },
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
                   "metadata": {
-                    "type": "object",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The metadata of the record."
-                    }
-                  },
-                  "ttl": {
-                    "type": "int",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The TTL of the record."
-                    }
-                  },
-                  "roleAssignments": {
-                    "$ref": "#/definitions/roleAssignmentType",
-                    "metadata": {
-                      "description": "Optional. Array of role assignments to create."
-                    }
-                  },
-                  "ptrRecords": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "ptrdname": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The PTR target domain name for this PTR record."
-                          }
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The list of PTR records in the record set."
-                    }
+                    "description": "Optional. The description of the role assignment."
                   }
-                }
-              },
-              "nullable": true
-            },
-            "soaType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the record."
-                    }
-                  },
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
                   "metadata": {
-                    "type": "object",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The metadata of the record."
-                    }
-                  },
-                  "ttl": {
-                    "type": "int",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The TTL of the record."
-                    }
-                  },
-                  "roleAssignments": {
-                    "$ref": "#/definitions/roleAssignmentType",
-                    "metadata": {
-                      "description": "Optional. Array of role assignments to create."
-                    }
-                  },
-                  "soaRecord": {
-                    "type": "object",
-                    "properties": {
-                      "email": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The email contact for this SOA record."
-                        }
-                      },
-                      "expireTime": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The expire time for this SOA record."
-                        }
-                      },
-                      "host": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The domain name of the authoritative name server for this SOA record."
-                        }
-                      },
-                      "minimumTtl": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration."
-                        }
-                      },
-                      "refreshTime": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The refresh value for this SOA record."
-                        }
-                      },
-                      "retryTime": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The retry time for this SOA record."
-                        }
-                      },
-                      "serialNumber": {
-                        "type": "int",
-                        "metadata": {
-                          "description": "Required. The serial number for this SOA record."
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The SOA record in the record set."
-                    }
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
                   }
-                }
-              },
-              "nullable": true
-            },
-            "srvType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the record."
-                    }
-                  },
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
                   "metadata": {
-                    "type": "object",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The metadata of the record."
-                    }
-                  },
-                  "ttl": {
-                    "type": "int",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The TTL of the record."
-                    }
-                  },
-                  "roleAssignments": {
-                    "$ref": "#/definitions/roleAssignmentType",
-                    "metadata": {
-                      "description": "Optional. Array of role assignments to create."
-                    }
-                  },
-                  "srvRecords": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "priority": {
-                          "type": "int",
-                          "metadata": {
-                            "description": "Required. The priority value for this SRV record."
-                          }
-                        },
-                        "weight": {
-                          "type": "int",
-                          "metadata": {
-                            "description": "Required. The weight value for this SRV record."
-                          }
-                        },
-                        "port": {
-                          "type": "int",
-                          "metadata": {
-                            "description": "Required. The port value for this SRV record."
-                          }
-                        },
-                        "target": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The target domain name for this SRV record."
-                          }
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The list of SRV records in the record set."
-                    }
+                    "description": "Optional. Version of the condition."
                   }
-                }
-              },
-              "nullable": true
-            },
-            "txtType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the record."
-                    }
-                  },
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
                   "metadata": {
-                    "type": "object",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The metadata of the record."
-                    }
-                  },
-                  "ttl": {
-                    "type": "int",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The TTL of the record."
-                    }
-                  },
-                  "roleAssignments": {
-                    "$ref": "#/definitions/roleAssignmentType",
-                    "metadata": {
-                      "description": "Optional. Array of role assignments to create."
-                    }
-                  },
-                  "txtRecords": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "value": {
-                          "type": "array",
-                          "items": {
-                            "type": "string"
-                          },
-                          "metadata": {
-                            "description": "Required. The text value of this TXT record."
-                          }
-                        }
-                      }
-                    },
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The list of TXT records in the record set."
-                    }
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
                   }
                 }
               },
-              "nullable": true
-            },
-            "virtualNetworkLinkType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "nullable": true,
-                    "minLength": 1,
-                    "maxLength": 80,
-                    "metadata": {
-                      "description": "Optional. The resource name."
-                    }
-                  },
-                  "virtualNetworkResourceId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The resource ID of the virtual network to link."
-                    }
-                  },
-                  "location": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The Azure Region where the resource lives."
-                    }
-                  },
-                  "registrationEnabled": {
-                    "type": "bool",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Is auto-registration of virtual machine records in the virtual network in the Private DNS zone enabled?."
-                    }
-                  },
-                  "tags": {
-                    "type": "object",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Resource tags."
-                    }
-                  }
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
-              },
-              "nullable": true
+              }
             }
           },
           "parameters": {
@@ -1015,55 +1137,91 @@
               }
             },
             "a": {
-              "$ref": "#/definitions/aType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/aType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of A records."
               }
             },
             "aaaa": {
-              "$ref": "#/definitions/aaaaType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/aaaaType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of AAAA records."
               }
             },
             "cname": {
-              "$ref": "#/definitions/cnameType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/cnameType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of CNAME records."
               }
             },
             "mx": {
-              "$ref": "#/definitions/mxType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/mxType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of MX records."
               }
             },
             "ptr": {
-              "$ref": "#/definitions/ptrType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ptrType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of PTR records."
               }
             },
             "soa": {
-              "$ref": "#/definitions/soaType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/soaType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of SOA records."
               }
             },
             "srv": {
-              "$ref": "#/definitions/srvType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/srvType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of SRV records."
               }
             },
             "txt": {
-              "$ref": "#/definitions/txtType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/txtType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of TXT records."
               }
             },
             "virtualNetworkLinks": {
-              "$ref": "#/definitions/virtualNetworkLinkType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/virtualNetworkLinkType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId' and 'registrationEnabled'. The 'vnetResourceId' is a resource ID of a vNet to link, 'registrationEnabled' (bool) enables automatic DNS registration in the zone for the linked vNet."
               }
@@ -1076,7 +1234,11 @@
               }
             },
             "roleAssignments": {
-              "$ref": "#/definitions/roleAssignmentType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
@@ -1090,6 +1252,7 @@
             },
             "lock": {
               "$ref": "#/definitions/lockType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The lock settings of the service."
               }
@@ -1124,7 +1287,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privatednszone.{0}.{1}', replace('0.6.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privatednszone.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -1223,86 +1386,87 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "1641889417618452692"
+                      "version": "0.34.44.8038",
+                      "templateHash": "18243374258187942664"
                     },
                     "name": "Private DNS Zone A record",
-                    "description": "This module deploys a Private DNS Zone A record.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private DNS Zone A record."
                   },
                   "definitions": {
                     "roleAssignmentType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                            }
-                          },
-                          "roleDefinitionIdOrName": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                            }
-                          },
-                          "principalId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                            }
-                          },
-                          "principalType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Device",
-                              "ForeignGroup",
-                              "Group",
-                              "ServicePrincipal",
-                              "User"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The principal type of the assigned principal ID."
-                            }
-                          },
-                          "description": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The description of the role assignment."
-                            }
-                          },
-                          "condition": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                            }
-                          },
-                          "conditionVersion": {
-                            "type": "string",
-                            "allowedValues": [
-                              "2.0"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Version of the condition."
-                            }
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The Resource Id of the delegated managed identity resource."
-                            }
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
                           }
                         }
                       },
-                      "nullable": true
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
                     }
                   },
                   "parameters": {
@@ -1340,7 +1504,11 @@
                       }
                     },
                     "roleAssignments": {
-                      "$ref": "#/definitions/roleAssignmentType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
@@ -1379,10 +1547,7 @@
                         "aRecords": "[parameters('aRecords')]",
                         "metadata": "[parameters('metadata')]",
                         "ttl": "[parameters('ttl')]"
-                      },
-                      "dependsOn": [
-                        "privateDnsZone"
-                      ]
+                      }
                     },
                     "A_roleAssignments": {
                       "copy": {
@@ -1476,86 +1641,87 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "17163414995652446126"
+                      "version": "0.34.44.8038",
+                      "templateHash": "7322684246075092047"
                     },
                     "name": "Private DNS Zone AAAA record",
-                    "description": "This module deploys a Private DNS Zone AAAA record.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private DNS Zone AAAA record."
                   },
                   "definitions": {
                     "roleAssignmentType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                            }
-                          },
-                          "roleDefinitionIdOrName": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                            }
-                          },
-                          "principalId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                            }
-                          },
-                          "principalType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Device",
-                              "ForeignGroup",
-                              "Group",
-                              "ServicePrincipal",
-                              "User"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The principal type of the assigned principal ID."
-                            }
-                          },
-                          "description": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The description of the role assignment."
-                            }
-                          },
-                          "condition": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                            }
-                          },
-                          "conditionVersion": {
-                            "type": "string",
-                            "allowedValues": [
-                              "2.0"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Version of the condition."
-                            }
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The Resource Id of the delegated managed identity resource."
-                            }
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
                           }
                         }
                       },
-                      "nullable": true
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
                     }
                   },
                   "parameters": {
@@ -1593,7 +1759,11 @@
                       }
                     },
                     "roleAssignments": {
-                      "$ref": "#/definitions/roleAssignmentType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
@@ -1632,10 +1802,7 @@
                         "aaaaRecords": "[parameters('aaaaRecords')]",
                         "metadata": "[parameters('metadata')]",
                         "ttl": "[parameters('ttl')]"
-                      },
-                      "dependsOn": [
-                        "privateDnsZone"
-                      ]
+                      }
                     },
                     "AAAA_roleAssignments": {
                       "copy": {
@@ -1729,86 +1896,87 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "2493714129104385633"
+                      "version": "0.34.44.8038",
+                      "templateHash": "5264706240021075859"
                     },
                     "name": "Private DNS Zone CNAME record",
-                    "description": "This module deploys a Private DNS Zone CNAME record.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private DNS Zone CNAME record."
                   },
                   "definitions": {
                     "roleAssignmentType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                            }
-                          },
-                          "roleDefinitionIdOrName": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                            }
-                          },
-                          "principalId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                            }
-                          },
-                          "principalType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Device",
-                              "ForeignGroup",
-                              "Group",
-                              "ServicePrincipal",
-                              "User"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The principal type of the assigned principal ID."
-                            }
-                          },
-                          "description": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The description of the role assignment."
-                            }
-                          },
-                          "condition": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                            }
-                          },
-                          "conditionVersion": {
-                            "type": "string",
-                            "allowedValues": [
-                              "2.0"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Version of the condition."
-                            }
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The Resource Id of the delegated managed identity resource."
-                            }
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
                           }
                         }
                       },
-                      "nullable": true
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
                     }
                   },
                   "parameters": {
@@ -1846,7 +2014,11 @@
                       }
                     },
                     "roleAssignments": {
-                      "$ref": "#/definitions/roleAssignmentType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
@@ -1885,10 +2057,7 @@
                         "cnameRecord": "[parameters('cnameRecord')]",
                         "metadata": "[parameters('metadata')]",
                         "ttl": "[parameters('ttl')]"
-                      },
-                      "dependsOn": [
-                        "privateDnsZone"
-                      ]
+                      }
                     },
                     "CNAME_roleAssignments": {
                       "copy": {
@@ -1982,86 +2151,87 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "10928449924272756679"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13758189936483275969"
                     },
                     "name": "Private DNS Zone MX record",
-                    "description": "This module deploys a Private DNS Zone MX record.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private DNS Zone MX record."
                   },
                   "definitions": {
                     "roleAssignmentType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                            }
-                          },
-                          "roleDefinitionIdOrName": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                            }
-                          },
-                          "principalId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                            }
-                          },
-                          "principalType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Device",
-                              "ForeignGroup",
-                              "Group",
-                              "ServicePrincipal",
-                              "User"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The principal type of the assigned principal ID."
-                            }
-                          },
-                          "description": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The description of the role assignment."
-                            }
-                          },
-                          "condition": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                            }
-                          },
-                          "conditionVersion": {
-                            "type": "string",
-                            "allowedValues": [
-                              "2.0"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Version of the condition."
-                            }
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The Resource Id of the delegated managed identity resource."
-                            }
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
                           }
                         }
                       },
-                      "nullable": true
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
                     }
                   },
                   "parameters": {
@@ -2099,7 +2269,11 @@
                       }
                     },
                     "roleAssignments": {
-                      "$ref": "#/definitions/roleAssignmentType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
@@ -2138,10 +2312,7 @@
                         "metadata": "[parameters('metadata')]",
                         "mxRecords": "[parameters('mxRecords')]",
                         "ttl": "[parameters('ttl')]"
-                      },
-                      "dependsOn": [
-                        "privateDnsZone"
-                      ]
+                      }
                     },
                     "MX_roleAssignments": {
                       "copy": {
@@ -2235,86 +2406,87 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "13191587152357386110"
+                      "version": "0.34.44.8038",
+                      "templateHash": "11955164584650609753"
                     },
                     "name": "Private DNS Zone PTR record",
-                    "description": "This module deploys a Private DNS Zone PTR record.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private DNS Zone PTR record."
                   },
                   "definitions": {
                     "roleAssignmentType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                            }
-                          },
-                          "roleDefinitionIdOrName": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                            }
-                          },
-                          "principalId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                            }
-                          },
-                          "principalType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Device",
-                              "ForeignGroup",
-                              "Group",
-                              "ServicePrincipal",
-                              "User"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The principal type of the assigned principal ID."
-                            }
-                          },
-                          "description": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The description of the role assignment."
-                            }
-                          },
-                          "condition": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                            }
-                          },
-                          "conditionVersion": {
-                            "type": "string",
-                            "allowedValues": [
-                              "2.0"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Version of the condition."
-                            }
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The Resource Id of the delegated managed identity resource."
-                            }
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
                           }
                         }
                       },
-                      "nullable": true
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
                     }
                   },
                   "parameters": {
@@ -2352,7 +2524,11 @@
                       }
                     },
                     "roleAssignments": {
-                      "$ref": "#/definitions/roleAssignmentType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
@@ -2391,10 +2567,7 @@
                         "metadata": "[parameters('metadata')]",
                         "ptrRecords": "[parameters('ptrRecords')]",
                         "ttl": "[parameters('ttl')]"
-                      },
-                      "dependsOn": [
-                        "privateDnsZone"
-                      ]
+                      }
                     },
                     "PTR_roleAssignments": {
                       "copy": {
@@ -2488,86 +2661,87 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "12872700379964561295"
+                      "version": "0.34.44.8038",
+                      "templateHash": "14626715835033259725"
                     },
                     "name": "Private DNS Zone SOA record",
-                    "description": "This module deploys a Private DNS Zone SOA record.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private DNS Zone SOA record."
                   },
                   "definitions": {
                     "roleAssignmentType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                            }
-                          },
-                          "roleDefinitionIdOrName": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                            }
-                          },
-                          "principalId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                            }
-                          },
-                          "principalType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Device",
-                              "ForeignGroup",
-                              "Group",
-                              "ServicePrincipal",
-                              "User"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The principal type of the assigned principal ID."
-                            }
-                          },
-                          "description": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The description of the role assignment."
-                            }
-                          },
-                          "condition": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                            }
-                          },
-                          "conditionVersion": {
-                            "type": "string",
-                            "allowedValues": [
-                              "2.0"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Version of the condition."
-                            }
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The Resource Id of the delegated managed identity resource."
-                            }
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
                           }
                         }
                       },
-                      "nullable": true
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
                     }
                   },
                   "parameters": {
@@ -2605,7 +2779,11 @@
                       }
                     },
                     "roleAssignments": {
-                      "$ref": "#/definitions/roleAssignmentType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
@@ -2644,10 +2822,7 @@
                         "metadata": "[parameters('metadata')]",
                         "soaRecord": "[parameters('soaRecord')]",
                         "ttl": "[parameters('ttl')]"
-                      },
-                      "dependsOn": [
-                        "privateDnsZone"
-                      ]
+                      }
                     },
                     "SOA_roleAssignments": {
                       "copy": {
@@ -2741,86 +2916,87 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "12918383495773487180"
+                      "version": "0.34.44.8038",
+                      "templateHash": "6510442308165042737"
                     },
                     "name": "Private DNS Zone SRV record",
-                    "description": "This module deploys a Private DNS Zone SRV record.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private DNS Zone SRV record."
                   },
                   "definitions": {
                     "roleAssignmentType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                            }
-                          },
-                          "roleDefinitionIdOrName": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                            }
-                          },
-                          "principalId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                            }
-                          },
-                          "principalType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Device",
-                              "ForeignGroup",
-                              "Group",
-                              "ServicePrincipal",
-                              "User"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The principal type of the assigned principal ID."
-                            }
-                          },
-                          "description": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The description of the role assignment."
-                            }
-                          },
-                          "condition": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                            }
-                          },
-                          "conditionVersion": {
-                            "type": "string",
-                            "allowedValues": [
-                              "2.0"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Version of the condition."
-                            }
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The Resource Id of the delegated managed identity resource."
-                            }
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
                           }
                         }
                       },
-                      "nullable": true
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
                     }
                   },
                   "parameters": {
@@ -2858,7 +3034,11 @@
                       }
                     },
                     "roleAssignments": {
-                      "$ref": "#/definitions/roleAssignmentType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
@@ -2897,10 +3077,7 @@
                         "metadata": "[parameters('metadata')]",
                         "srvRecords": "[parameters('srvRecords')]",
                         "ttl": "[parameters('ttl')]"
-                      },
-                      "dependsOn": [
-                        "privateDnsZone"
-                      ]
+                      }
                     },
                     "SRV_roleAssignments": {
                       "copy": {
@@ -2994,86 +3171,87 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "128006490354221158"
+                      "version": "0.34.44.8038",
+                      "templateHash": "170623042781622569"
                     },
                     "name": "Private DNS Zone TXT record",
-                    "description": "This module deploys a Private DNS Zone TXT record.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private DNS Zone TXT record."
                   },
                   "definitions": {
                     "roleAssignmentType": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "name": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                            }
-                          },
-                          "roleDefinitionIdOrName": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                            }
-                          },
-                          "principalId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                            }
-                          },
-                          "principalType": {
-                            "type": "string",
-                            "allowedValues": [
-                              "Device",
-                              "ForeignGroup",
-                              "Group",
-                              "ServicePrincipal",
-                              "User"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The principal type of the assigned principal ID."
-                            }
-                          },
-                          "description": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The description of the role assignment."
-                            }
-                          },
-                          "condition": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                            }
-                          },
-                          "conditionVersion": {
-                            "type": "string",
-                            "allowedValues": [
-                              "2.0"
-                            ],
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. Version of the condition."
-                            }
-                          },
-                          "delegatedManagedIdentityResourceId": {
-                            "type": "string",
-                            "nullable": true,
-                            "metadata": {
-                              "description": "Optional. The Resource Id of the delegated managed identity resource."
-                            }
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
                           }
                         }
                       },
-                      "nullable": true
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
                     }
                   },
                   "parameters": {
@@ -3111,7 +3289,11 @@
                       }
                     },
                     "roleAssignments": {
-                      "$ref": "#/definitions/roleAssignmentType",
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Array of role assignments to create."
                       }
@@ -3150,10 +3332,7 @@
                         "metadata": "[parameters('metadata')]",
                         "ttl": "[parameters('ttl')]",
                         "txtRecords": "[parameters('txtRecords')]"
-                      },
-                      "dependsOn": [
-                        "privateDnsZone"
-                      ]
+                      }
                     },
                     "TXT_roleAssignments": {
                       "copy": {
@@ -3214,7 +3393,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-PrivateDnsZone-VirtualNetworkLink-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[format('{0}-PrivateDnsZone-VNetLink-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -3238,6 +3417,9 @@
                   },
                   "tags": {
                     "value": "[coalesce(tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+                  },
+                  "resolutionPolicy": {
+                    "value": "[tryGet(coalesce(parameters('virtualNetworkLinks'), createArray())[copyIndex()], 'resolutionPolicy')]"
                   }
                 },
                 "template": {
@@ -3247,12 +3429,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "1713449351614683457"
+                      "version": "0.34.44.8038",
+                      "templateHash": "725891200086243555"
                     },
                     "name": "Private DNS Zone Virtual Network Link",
-                    "description": "This module deploys a Private DNS Zone Virtual Network Link.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private DNS Zone Virtual Network Link."
                   },
                   "parameters": {
                     "privateDnsZoneName": {
@@ -3294,6 +3475,13 @@
                       "metadata": {
                         "description": "Required. Link to another virtual network resource ID."
                       }
+                    },
+                    "resolutionPolicy": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The resolution policy on the virtual network link. Only applicable for virtual network links to privatelink zones, and for A,AAAA,CNAME queries. When set to `NxDomainRedirect`, Azure DNS resolver falls back to public resolution if private dns query resolution results in non-existent domain response. `Default` is configured as the default option."
+                      }
                     }
                   },
                   "resources": {
@@ -3305,7 +3493,7 @@
                     },
                     "virtualNetworkLink": {
                       "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-                      "apiVersion": "2020-06-01",
+                      "apiVersion": "2024-06-01",
                       "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), parameters('name'))]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -3313,11 +3501,9 @@
                         "registrationEnabled": "[parameters('registrationEnabled')]",
                         "virtualNetwork": {
                           "id": "[parameters('virtualNetworkResourceId')]"
-                        }
-                      },
-                      "dependsOn": [
-                        "privateDnsZone"
-                      ]
+                        },
+                        "resolutionPolicy": "[parameters('resolutionPolicy')]"
+                      }
                     }
                   },
                   "outputs": {
@@ -3347,7 +3533,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('virtualNetworkLink', '2020-06-01', 'full').location]"
+                      "value": "[reference('virtualNetworkLink', '2024-06-01', 'full').location]"
                     }
                   }
                 }

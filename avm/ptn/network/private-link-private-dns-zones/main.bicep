@@ -122,7 +122,7 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.webpubsub.azure.com'
 ]
 
-@description('Optional. ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE IGNORED. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.')
+@description('Optional. ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD AS MORE VIRTUAL NETWORK LINK PROPERTIES ARE EXPOSED. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE PROCESSED AND INPUT AND FORMATTED BY THE MODULE AND UNIOND WITH THE INPUT TO `virtualNetworkLinks`. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.')
 param virtualNetworkResourceIdsToLinkTo array = []
 
 import { virtualNetworkLinkType } from 'br/public:avm/res/network/private-dns-zone:0.7.1'
@@ -285,19 +285,8 @@ var privateLinkPrivateDnsZonesReplacedWithRegionName = [
   )
 ]
 
-var virtualNetworkResourceIdsToLinkToFromVirtualNetworkLinks = map(
-  virtualNetworkLinks ?? [],
-  vnet => vnet.virtualNetworkResourceId
-)
-
-var toDeprecateCombinedVirtualNetworkResourceIdsToLinkTo = union(
-  virtualNetworkResourceIdsToLinkTo,
-  virtualNetworkResourceIdsToLinkToFromVirtualNetworkLinks
-)
-
-var toDeprecateCombinedVirtualNetworkResourceIdsToLinkToObject = [
-  for vnet in toDeprecateCombinedVirtualNetworkResourceIdsToLinkTo: {
-    registrationEnabled: false
+var toDeprecateVirtualNetworkResourceIdsToLinkToObject = [
+  for vnet in virtualNetworkResourceIdsToLinkTo: {
     virtualNetworkResourceId: vnet
   }
 ]
@@ -306,11 +295,7 @@ var combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink = map(
   range(0, length(privateLinkPrivateDnsZonesReplacedWithRegionName)),
   i => {
     pdnsZoneName: privateLinkPrivateDnsZonesReplacedWithRegionName[i]
-    virtualNetworkResourceIdsToLinkTo: union(
-      virtualNetworkResourceIdsToLinkTo,
-      virtualNetworkResourceIdsToLinkToFromVirtualNetworkLinks
-    )
-    virtualNetworkLinks: virtualNetworkLinks ?? []
+    virtualNetworkLinks: union(toDeprecateVirtualNetworkResourceIdsToLinkToObject, (virtualNetworkLinks ?? []))
   }
 )
 
@@ -338,9 +323,7 @@ module pdnsZones 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
     name: '${uniqueString(deployment().name, zone.pdnsZoneName, location)}-pdns-zone-deployment'
     params: {
       name: zone.pdnsZoneName
-      virtualNetworkLinks: empty(zone.virtualNetworkLinks)
-        ? toDeprecateCombinedVirtualNetworkResourceIdsToLinkToObject
-        : zone.virtualNetworkLinks
+      virtualNetworkLinks: zone.virtualNetworkLinks
       lock: lock
       tags: tags
       enableTelemetry: enableTelemetry
