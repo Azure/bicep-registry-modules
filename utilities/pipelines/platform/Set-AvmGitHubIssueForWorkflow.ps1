@@ -123,7 +123,7 @@ function Set-AvmGitHubIssueForWorkflow {
     $repo = "$RepositoryOwner/$RepositoryName"
     $bugLabel = 'Type: Bug :bug:'
     $avmLabel = 'Type: AVM :a: :v: :m:'
-    $duplicateLabel = 'Type: Duplicate :open_hands:'
+    $duplicateLabel = 'Type: Duplicate :palms_up_together:'
 
     $issuesCreated = 0
     $issuesCommented = 0
