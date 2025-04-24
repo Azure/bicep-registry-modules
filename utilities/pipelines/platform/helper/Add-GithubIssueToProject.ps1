@@ -15,12 +15,12 @@ Mandatory. The GitHub project number (see last part of project URL, for example 
 Mandatory. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .EXAMPLE
-Add-GithubIssueToProject -Repo 'Azure/bicep-registry-modules' -ProjectNumber 538 -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
+Add-GitHubIssueToProject -Repo 'Azure/bicep-registry-modules' -ProjectNumber 538 -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .NOTES
 Needs to run under a context with the permissions to read/write organization projects
 #>
-function Add-GithubIssueToProject {
+function Add-GitHubIssueToProject {
     param (
         [Parameter(Mandatory = $true)]
         [string] $Repo,

@@ -177,7 +177,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 }
 
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
-                    $null = Add-GithubIssueToProject -Repo "$RepositoryOwner/$RepositoryName" -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
+                    $null = Add-GitHubIssueToProject -Repo "$RepositoryOwner/$RepositoryName" -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
                 }
 
                 if ($PSCmdlet.ShouldProcess("Comment to issue [$issueName]", 'Add')) {

@@ -3,7 +3,7 @@
 Fetch general information about the repository, such as the number of open issues, watchers, etc.
 
 .DESCRIPTION
-Long description
+Fetch general information about the repository, such as the number of open issues, watchers, etc.
 
 .PARAMETER PersonalAccessToken
 Optional. The PAT to use to interact with either GitHub / Azure DevOps. If not provided, the script will use the GitHub CLI to authenticate.
