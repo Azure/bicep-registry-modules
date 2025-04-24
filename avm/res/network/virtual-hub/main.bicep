@@ -219,23 +219,6 @@ module virtualHub_hubVirtualNetworkConnections 'hubVirtualNetworkConnection/main
     ]
   }
 ]
-/*
-// Idempotently re-run route table deployments to add routes
-// This is a workaround to account for any routes that point to Virtual Network Connections created after the route tables
-module virtualHub_routeTables2 'hubRouteTable/main.bicep' = [
-  for (routeTable, index) in (hubRouteTables ?? []): {
-    name: '${uniqueString(deployment().name, location)}-routeTable2-${index}'
-    params: {
-      virtualHubName: virtualHub.name
-      name: routeTable.name
-      labels: routeTable.?labels
-      routes: routeTable.?routes
-    }
-    dependsOn: [
-      virtualHub_hubVirtualNetworkConnections
-    ]
-  }
-]*/
 
 @description('The resource group the virtual hub was deployed into.')
 output resourceGroupName string = resourceGroup().name
