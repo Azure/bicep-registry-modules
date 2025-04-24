@@ -80,7 +80,7 @@ function Publish-ModuleFromTagToPBR {
     $publishInput = @(
         $moduleBicepFilePath
         '--target', ('br:{0}/public/bicep/{1}:{2}' -f $plainPublicRegistryServer, $moduleRelativeFolderPath, $targetVersion)
-        '--documentationUri', $documentationUri
+        '--documentation-uri', $documentationUri
         '--with-source'
         '--force'
     )
