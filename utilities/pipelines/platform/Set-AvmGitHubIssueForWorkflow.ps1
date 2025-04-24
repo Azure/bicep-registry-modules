@@ -87,7 +87,6 @@ function Set-AvmGitHubIssueForWorkflow {
     ##########################
     #    Get all workflows   #
     ##########################
-
     Write-Verbose 'Fetching current GitHub workflows' -Verbose
     $workflows = Get-GitHubModuleWorkflowList @baseInputObject -Filter $PipelineFilter | Where-Object {
         $_.name -notin $IgnoreWorkflows
