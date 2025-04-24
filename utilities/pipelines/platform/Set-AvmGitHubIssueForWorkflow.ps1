@@ -117,6 +117,10 @@ function Set-AvmGitHubIssueForWorkflow {
     ############################
     #   Processing workflows   #
     ############################
+
+    $issueTriageProjectNumber = 538
+    $moduleIssuesProjectNumber = 566
+
     $issuesCreated = 0
     $issuesCommented = 0
     $issuesClosed = 0
@@ -124,42 +128,76 @@ function Set-AvmGitHubIssueForWorkflow {
         $issueName = '[Failed pipeline] {0}' -f $workflowRun.name
 
         if ($workflowRun.conclusion -eq 'failure') {
+            # Handle failed runs in main
+            # --------------------------
             $failedRunText = 'Failed run: {0}' -f $workflowRun.url -replace 'api\.github.com\/repos', 'github.com'
             $moduleName = $workflowRun.name.Replace('.', '/')
 
             if ($issues.title -notContains $issueName) {
-                # If no issue exists yet, create a new one
+                # Handle non-existend issues for failed runs in main
+                # --------------------------------------------------
+                # Logic ahead
+                # ----------
+                # - Create a new issue
+                # - Differentiate a failed platform workflow from a module workflow
+                #   - Platform
+                #     - Add issue to project
+                #     - Comment issue
+                #   - Module
+                #     - Add issue to project
+                #     - If module is orphaned, tag the core team in a comment
+                #     - If module is not orphaned, assign the owner & tag the owner in a comment
+                #       -  If the owner-assignment failed, add an extra comment to call this out
+
+                # Create a new issue and add it to project
+                # ----------------------------------------
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName]", 'Create')) {
                     $issueUrl = gh issue create --title $issueName --body $failedRunText --label 'Type: AVM :a: :v: :m:,Type: Bug :bug:' --repo "$RepositoryOwner/$RepositoryName"
                 }
                 Write-Warning ('⚠️   Created issue {0} ({1}) as the module''s latest run in the main branch failed.' -f $issueUrl, $issueName)
 
-                $ProjectNumber = 538 # AVM - Issue Triage
+                $workflowRun.name -notMatch 'avm.(?:res|ptn|utl)'
+                switch ($matches[0]) {
+                    'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                    'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                    'avm.utl' { $module = $knownUtilities | Where-Object { $_.ModuleName -eq $moduleName }; break }
+                    default {
+                        Write-Verbose ('Handling platform workflow [{0}]' -f $workflowRun.name)
+                    }
+                }
+
+                # CASE : Platform workflow
+                # ------------------------
+                if ($null -eq $module) {
+                    # Non resource module. Could be platform workflow
+                    if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
+                        $null = Add-GitHubIssueToProject -Repo "$RepositoryOwner/$RepositoryName" -ProjectNumber $issueTriageProjectNumber -IssueUrl $issueUrl
+                    }
+                    Write-Verbose ('📥 Added issue {0} ({1}) to [AVM - Issue Triage] project' -f $issueUrl, $issueName) -Verbose
+
+                    $platformIssueComment = @'
+> [!IMPORTANT]
+> This issue was created for a platform workflow. The maintainer team @Azure/avm-core-team-technical-bicep should investigate and mitigate the reason.
+'@
+                    if ($PSCmdlet.ShouldProcess("Comment for maintainers to issue [$issueName]", 'Add')) {
+                        $userCommentUrl = gh issue comment $issueUrl --body $platformIssueComment --repo "$RepositoryOwner/$RepositoryName"
+                    }
+                    Write-Verbose ('💬 Commented issue {0} ({1}) as the maintainer team should be notified of a failed platform workflow' -f $issueUrl, $issueName) -Verbose
+
+                    continue
+                }
+
+                # CASE : Module workflow
+                # ----------------------
+                $moduleIsOprhaned = $module.ModuleStatus -eq 'Orphaned :eyes:' -and [string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)
+
+                $ProjectNumber = $moduleIsOprhaned ? $issueTriageProjectNumber : $moduleIssuesProjectNumber
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
                     $null = Add-GitHubIssueToProject -Repo "$RepositoryOwner/$RepositoryName" -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
                 }
 
                 # Handle comments & ownership
-                if ($workflowRun.name -notMatch 'avm.(?:res|ptn|utl)') {
-                    throw ('[{0}] is not a vlid workflow name. Please investigate' -f $workflowRun.name)
-                }
-
-                switch ($matches[0]) {
-                    'avm.ptn' { $module = $knownPatterns | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                    'avm.res' { $module = $knownResources | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                    'avm.utl' { $module = $knownUtilities | Where-Object { $_.ModuleName -eq $moduleName }; break }
-                    Default {
-                        throw 'Impossible regex condition.'
-                    }
-                }
-
-                # Logic ahead
-                # ----------
-                # - If orphaned, tag the core team in a comment
-                # - If not orphaned, assign the owner & tag the owner in a comment
-                #   -  If the owner-assignment failed, add an extra comment to call this out
-                $moduleIsOprhaned = $module.ModuleStatus -eq 'Orphaned :eyes:' -and [string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)
-
+                # ----------------------------
                 $taggingComment = $moduleIsOprhaned ? @"
 > [!IMPORTANT]
 > This module is currently orphaned (has no owner), therefore expect a higher response time.
@@ -171,8 +209,7 @@ function Set-AvmGitHubIssueForWorkflow {
 
                 if (-not $moduleIsOprhaned) {
                     # If not orphaned we should assign the issue to the module owner
-                    $ProjectNumber = 566 # AVM - Module Issues
-
+                    # --------------------------------------------------------------
                     if ($PSCmdlet.ShouldProcess(('Owner [{0}] to issue [{1}]' -f $module.PrimaryModuleOwnerGHHandle, $issueName), 'Assign')) {
                         $assign = gh issue edit $issueUrl --add-assignee $module.PrimaryModuleOwnerGHHandle --repo "$RepositoryOwner/$RepositoryName"
                     }
@@ -199,6 +236,8 @@ function Set-AvmGitHubIssueForWorkflow {
 
                 $issuesCreated++
             } else {
+                # Handle existing issues for failed runs in main
+                # ----------------------------------------------
                 # If an issue does already exist, add a comment to it
                 $issueToComment = @() + ($issues | Where-Object {
                         $_.title -eq $issueName
@@ -239,6 +278,8 @@ function Set-AvmGitHubIssueForWorkflow {
                 $issuesCommented++
             }
         } else {
+            # Handle successful runs in main
+            # ------------------------------
             # Fetch and close all issues that match the issue name and match the successful run
             $issuesToClose = $issues | Where-Object {
                 $_.title -eq $issueName
