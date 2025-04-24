@@ -64,7 +64,7 @@ function Publish-ModuleFromTagToPBR {
     $templateContent = Get-Content -Path $moduleBicepFilePath
     $incorrectLines = @()
     for ($index = 0; $index -lt $templateContent.Count; $index++) {
-        if ($templateContent[$index] -match '-..--..-') {
+        if ($templateContent[$index] -match '\-\.\.-\-\.\.\-') {
             $incorrectLines += ('You have the token [{0}] in line [{1}] of file [{2}]. Please seek advice from the AVM team.' -f $matches[0], ($index + 1), $moduleBicepFilePath)
         }
     }
