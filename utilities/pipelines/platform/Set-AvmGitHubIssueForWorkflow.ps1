@@ -137,7 +137,7 @@ function Set-AvmGitHubIssueForWorkflow {
                 # Handle non-existend issues for failed runs in main
                 # --------------------------------------------------
                 # Logic ahead
-                # ----------
+                # -----------
                 # - Create a new issue
                 # - Differentiate a failed platform workflow from a module workflow
                 #   - Platform
