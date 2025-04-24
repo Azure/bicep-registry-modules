@@ -173,8 +173,6 @@ function Set-AvmGitHubIssueForWorkflow {
                     if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
                         $null = Add-GitHubIssueToProject -Repo "$RepositoryOwner/$RepositoryName" -ProjectNumber $issueTriageProjectNumber -IssueUrl $issueUrl
                     }
-                    Write-Verbose ('📥 Added issue {0} ({1}) to [AVM - Issue Triage] project' -f $issueUrl, $issueName) -Verbose
-
                     $platformIssueComment = @'
 > [!IMPORTANT]
 > This issue was created for a platform workflow. The maintainer team @Azure/avm-core-team-technical-bicep should investigate and mitigate the reason.
@@ -183,7 +181,7 @@ function Set-AvmGitHubIssueForWorkflow {
                         $userCommentUrl = gh issue comment $issueUrl --body $platformIssueComment --repo "$RepositoryOwner/$RepositoryName"
                     }
                     Write-Verbose ('💬 Commented issue {0} ({1}) as the maintainer team should be notified of a failed platform workflow' -f $issueUrl, $issueName) -Verbose
-
+                    $issuesCommented++
                     continue
                 }
 
