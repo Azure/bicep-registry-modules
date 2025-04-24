@@ -1972,7 +1972,7 @@ Array of role assignment objects that contain the 'roleDefinitionIdOrName' and '
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
   - `'User Access Administrator'`
 
 **Required parameters**
