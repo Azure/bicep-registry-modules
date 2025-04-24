@@ -22,11 +22,10 @@ on:
         type: string
         description: "Default location overwrite (e.g., eastus)"
         required: false
-        default: 'northeurope'
+        default: ''
   push:
     branches:
-      # - main
-      - users/alsehr/ibersanoMS_feature_add-app-service-lza-module
+      - main
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
