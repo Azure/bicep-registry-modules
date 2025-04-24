@@ -3,7 +3,7 @@
 Get a list of all GitHub issues for a given repository.
 
 .DESCRIPTION
-Via the function's parameters you can filter the issus to your needs.
+Via the function's parameters you can filter the issues to your needs.
 
 .PARAMETER PersonalAccessToken
 Optional. The PAT to use to interact with either GitHub. If not provided, the script will use the GitHub CLI to authenticate.
