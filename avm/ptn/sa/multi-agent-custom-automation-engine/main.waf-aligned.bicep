@@ -76,11 +76,11 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
   }
 }
 
-// ========== User assigned identity ========== //
+// ========== User assigned identity Web App ========== //
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: 'avm.ptn.sa.macae.managed-identity-assigned-identity'
   params: {
-    name: '${solutionPrefix}uaid'
+    name: '${solutionPrefix}uaidwapp'
     tags: tags
     location: solutionLocation
     enableTelemetry: enableTelemetry
@@ -133,27 +133,28 @@ module networkSecurityGroupContainers 'br/public:avm/res/network/network-securit
 }
 
 // ========== NAT Gateway ========== //
-
-module natGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = {
-  name: 'avm.ptn.sa.macae.network-nat-gateway'
-  params: {
-    name: '${solutionPrefix}natg'
-    tags: tags
-    location: solutionLocation
-    enableTelemetry: enableTelemetry
-    zone: 1
-    publicIPAddressObjects: [
-      {
-        diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-        name: '${solutionPrefix}natgip'
-        skuTier: 'Regional'
-        zones: [1, 2, 3]
-        tags: tags
-        idleTimeoutInMinutes: 30
-      }
-    ]
-  }
-}
+// Check if we need this
+//
+// module natGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = {
+//   name: 'avm.ptn.sa.macae.network-nat-gateway'
+//   params: {
+//     name: '${solutionPrefix}natg'
+//     tags: tags
+//     location: solutionLocation
+//     enableTelemetry: enableTelemetry
+//     zone: 1
+//     publicIPAddressObjects: [
+//       {
+//         diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+//         name: '${solutionPrefix}natgip'
+//         skuTier: 'Regional'
+//         zones: [1, 2, 3]
+//         tags: tags
+//         idleTimeoutInMinutes: 30
+//       }
+//     ]
+//   }
+// }
 
 // ========== Virtual Network ========== //
 
@@ -171,7 +172,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = {
         addressPrefix: '10.0.0.0/24'
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
         name: 'default'
-        networkSecurityGroupResourceId: networkSecurityGroupDefault.outputs.resourceId
+        //networkSecurityGroupResourceId: networkSecurityGroupDefault.outputs.resourceId
       }
       {
         // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
@@ -179,7 +180,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = {
         addressPrefix: '10.0.2.0/23' //subnet of size /23 is required for container app
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
         name: 'containers'
-        networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
+        //networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
       }
       {
         addressPrefix: '10.0.4.0/26'
@@ -190,8 +191,14 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = {
         addressPrefix: '10.0.4.64/26'
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
         name: 'virtual-machines'
-        natGatewayResourceId: natGateway.outputs.resourceId
-        //networkSecurityGroupResourceId: networkSecurityGroupVMs.outputs.resourceId
+        //natGatewayResourceId: natGateway.outputs.resourceId
+        //networkSecurityGroupResourceId: networkSecurityGroupVirtualMachines.outputs.resourceId
+      }
+      {
+        addressPrefix: '10.0.5.0/24'
+        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
+        name: 'application-gateway'
+        //networkSecurityGroupResourceId: networkSecurityGroupApplicationGateway.outputs.resourceId
       }
     ]
   }
@@ -202,12 +209,15 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = {
 module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = {
   name: 'avm.ptn.sa.macae.private-dns-zone-bastion-host'
   params: {
-    name: '${solutionPrefix}aisv'
+    name: '${solutionPrefix}bstn'
     location: solutionLocation
     skuName: 'Standard'
     enableTelemetry: enableTelemetry
     tags: tags
     virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+    publicIPAddressObject: {
+      name: '${solutionPrefix}pbipbstn'
+    }
     disableCopyPaste: false
     enableFileCopy: false
     enableIpConnect: true
@@ -554,6 +564,7 @@ module webServerfarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
     zoneRedundant: false //TODO: make it zone redundant for waf aligned
   }
 }
+
 // ========== Frontend web site ========== //
 var webSiteName = '${solutionPrefix}wapp'
 module webSite 'br/public:avm/res/web/site:0.15.1' = {
@@ -578,6 +589,186 @@ module webSite 'br/public:avm/res/web/site:0.15.1' = {
       WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
       BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
     }
+  }
+}
+
+// ========== SSL Self Signed Certificate ========== //
+
+module userAssignedIdentityApplicationGateway 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
+  name: 'avm.ptn.sa.macae.user-assigned-identity-application-gateway'
+  params: {
+    name: '${solutionPrefix}uaidapgw'
+    tags: tags
+    location: solutionLocation
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module keyVault 'br/public:avm/res/key-vault/vault:0.6.1' = {
+  name: 'avm.ptn.sa.macae.key-vault'
+  params: {
+    name: '${solutionPrefix}keyv'
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    enablePurgeProtection: false
+    enableSoftDelete: true
+    enableRbacAuthorization: true
+    enableVaultForDeployment: true
+    enableVaultForTemplateDeployment: true
+    roleAssignments: [
+      {
+        principalId: userAssignedIdentityApplicationGateway.outputs.principalId
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Key Vault Administrator'
+      }
+    ]
+  }
+}
+
+var applicationGatewaySslCertificateKeyVaultSecretName = 'applicationGatewaySslCertificate'
+module certificateDeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+  name: 'avm.ptn.sa.macae.resources-deployment-script'
+  params: {
+    name: '${solutionPrefix}scrpcert'
+    location: solutionLocation
+    kind: 'AzurePowerShell'
+    tags: tags
+    enableTelemetry: enableTelemetry
+    managedIdentities: { userAssignedResourceIds: [userAssignedIdentityApplicationGateway.outputs.resourceId] }
+    primaryScriptUri: 'https://raw.githubusercontent.com/Azure/bicep-registry-modules/refs/heads/main/utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1'
+    azPowerShellVersion: '8.0'
+    retentionInterval: 'P1D'
+    arguments: '-KeyVaultName "${keyVault.outputs.name}" -CertName "${applicationGatewaySslCertificateKeyVaultSecretName}"'
+  }
+}
+
+// ========== Application gateway ========== //
+module publicIp 'br/public:avm/res/network/public-ip-address:0.5.1' = {
+  name: 'avm.ptn.sa.macae.network-public-ip-address'
+  params: {
+    name: '${solutionPrefix}pbipapgw'
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    publicIPAllocationMethod: 'Static'
+  }
+}
+var applicationGatewayName = '${solutionPrefix}apgw'
+var applicationGatewayExpectedResourceId = '${resourceGroup().id}/providers/Microsoft.Network/applicationGateways/${applicationGatewayName}'
+
+module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' = {
+  name: 'avm.ptn.sa.macae.network-application-gateway'
+  params: {
+    // Required parameters
+    name: applicationGatewayName
+    // Non-required parameters
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    managedIdentities: {
+      userAssignedResourceIds: [userAssignedIdentityApplicationGateway.outputs.resourceId]
+    }
+    backendAddressPools: [
+      {
+        name: 'appServiceBackendAddressPool'
+        properties: {
+          backendAddresses: [
+            {
+              fqdn: webSite.outputs.defaultHostname
+            }
+          ]
+        }
+      }
+    ]
+    backendHttpSettingsCollection: [
+      {
+        name: 'appServiceBackendHttpsSettings'
+        properties: {
+          cookieBasedAffinity: 'Disabled'
+          pickHostNameFromBackendAddress: true
+          port: 443
+          protocol: 'Https'
+          requestTimeout: 30
+        }
+      }
+    ]
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    enableHttp2: true
+    frontendIPConfigurations: [
+      {
+        name: 'public'
+        properties: {
+          publicIPAddress: {
+            id: publicIp.outputs.resourceId
+          }
+        }
+      }
+    ]
+    frontendPorts: [
+      {
+        name: 'port443'
+        properties: {
+          port: 443
+        }
+      }
+    ]
+    gatewayIPConfigurations: [
+      {
+        name: 'subnetConfigs'
+        properties: {
+          subnet: {
+            id: virtualNetwork.outputs.subnetResourceIds[4]
+          }
+        }
+      }
+    ]
+    sslCertificates: [
+      {
+        name: 'ssl-certificate'
+        properties: {
+          keyVaultSecretId: certificateDeploymentScript.outputs.outputs.secretUrl
+        }
+      }
+    ]
+    httpListeners: [
+      {
+        name: 'public443'
+        properties: {
+          frontendIPConfiguration: {
+            id: '${applicationGatewayExpectedResourceId}/frontendIPConfigurations/public'
+          }
+          frontendPort: {
+            id: '${applicationGatewayExpectedResourceId}/frontendPorts/port443'
+          }
+          hostNames: []
+          protocol: 'https'
+          requireServerNameIndication: false
+          sslCertificate: {
+            id: '${applicationGatewayExpectedResourceId}/sslCertificates/ssl-certificate'
+          }
+        }
+      }
+    ]
+    requestRoutingRules: [
+      {
+        name: 'public443-appServiceBackendAddressPool-appServiceBackendHttpsSettings'
+        properties: {
+          backendAddressPool: {
+            id: '${applicationGatewayExpectedResourceId}/backendAddressPools/appServiceBackendAddressPool'
+          }
+          backendHttpSettings: {
+            id: '${applicationGatewayExpectedResourceId}/backendHttpSettingsCollection/appServiceBackendHttpsSettings'
+          }
+          httpListener: {
+            id: '${applicationGatewayExpectedResourceId}/httpListeners/public443'
+          }
+          priority: 200
+          ruleType: 'Basic'
+        }
+      }
+    ]
   }
 }
 

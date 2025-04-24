@@ -1,7 +1,7 @@
 module macaeContainer './macae-continer.bicep' = {
-  name: 'macae-continer.bicep'
+  name: 'test-macae-continer.bicep'
   params: {
-    prefix: 'macaesrc'
+    prefix: 'macaesrc001'
     location: 'australiaeast'
     azureOpenAILocation: 'australiaeast'
   }
