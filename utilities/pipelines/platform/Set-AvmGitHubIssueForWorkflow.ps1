@@ -203,8 +203,11 @@ function Set-AvmGitHubIssueForWorkflow {
                     # We close all older duplicated issues
                     $issuesToClose = $sortedIssues[1..$sortedIssues.Count]
                     foreach ($issueToClose in $issuesToClose) {
+                        if ($PSCmdlet.ShouldProcess(('Label [duplicate] to issue [{0}] with URL [{1}] created [{2}], as it is a duplicate issue and older than the latest issue [{3}] from [{4}].' -f $issueToClose.title, $issueToClose.html_url, $issueToClose.created_at, $issueToComment.html_url, $issueToComment.created_at), 'Add')) {
+                            $null = gh issue edit $issueToClose.html_url --add-label 'Type: Duplicate :open_hands:' --repo "$RepositoryOwner/$RepositoryName" 2>&1 # Suppressing output to show custom message
+                        }
                         if ($PSCmdlet.ShouldProcess(('Issue [{0}] with URL [{1}] created [{2}], as it is a duplicate issue and older than the latest issue [{3}] from [{4}].' -f $issueToClose.title, $issueToClose.html_url, $issueToClose.created_at, $issueToComment.html_url, $issueToComment.created_at), 'Close')) {
-                            $null = gh issue close $issueToClose.html_url --comment ('This issue is succeeded by the newer issue [{0}].' -f $issueToComment.html_url) --repo "$RepositoryOwner/$RepositoryName" 2>&1 # Suppressing output to show custom message
+                            $null = gh issue close $issueToClose.html_url --comment ('This issue is succeeded by the newer issue [{0}].' -f $issueToComment.html_url) --reason 'not planned' --repo "$RepositoryOwner/$RepositoryName" 2>&1 # Suppressing output to show custom message
                         }
                         Write-Verbose ('✅ Closed issue {0} ({1}) as it was redundant and a newer issue for the same worklow exists' -f $issueToClose.html_url, $issueToClose.title) -Verbose
                         $issuesClosed++
