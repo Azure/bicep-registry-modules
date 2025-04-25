@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploys in connectivity mode "Private Access"'
-metadata description = 'This instance deploys the module with connectivity mode "Private Access".'
+metadata name = 'Deploys in connectivity mode "Public Access" with private endpoint'
+metadata description = 'This instance deploys the module with connectivity mode "Public Access" and a private endpoint.'
 
 // ========== //
 // Parameters //
@@ -12,7 +12,7 @@ metadata description = 'This instance deploys the module with connectivity mode 
 param resourceGroupName string = 'dep-${namePrefix}-dbformysql.flexibleservers-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dfmspvt'
+param serviceShort string = 'dfmsppe'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -62,26 +62,8 @@ module testDeployment '../../../main.bicep' = [
       administratorLoginPassword: password
       skuName: 'Standard_D2ds_v4'
       tier: 'GeneralPurpose'
-      delegatedSubnetResourceId: nestedDependencies.outputs.subnetResourceId
-      privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-      firewallRules: [
-        {
-          endIpAddress: '0.0.0.0'
-          name: 'AllowAllWindowsAzureIps'
-          startIpAddress: '0.0.0.0'
-        }
-        {
-          endIpAddress: '10.10.10.10'
-          name: 'test-rule1'
-          startIpAddress: '10.10.10.1'
-        }
-        {
-          endIpAddress: '100.100.100.10'
-          name: 'test-rule2'
-          startIpAddress: '100.100.100.1'
-        }
-      ]
       storageAutoIoScaling: 'Enabled'
+      publicNetworkAccess: 'Enabled'
       storageSizeGB: 64
       storageIOPS: 400
       backupRetentionDays: 10
@@ -97,6 +79,23 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      privateEndpoints: [
+        {
+          subnetResourceId: nestedDependencies.outputs.privateEndpointSubnetResourceId
+          privateDnsZoneGroup: {
+            privateDnsZoneGroupConfigs: [
+              {
+                privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+              }
+            ]
+          }
+          tags: {
+            'hidden-title': 'This is visible in the resource name'
+            Environment: 'Non-Prod'
+            Role: 'DeploymentValidation'
+          }
+        }
+      ]
       administrators: [
         {
           identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
