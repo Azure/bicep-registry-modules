@@ -4,7 +4,7 @@ metadata description = 'This module config firewall rules for the Azure Cosmos D
 @description('Conditional. The name of the parent Azure Cosmos DB MongoDB vCore cluster. Required if the template is used in a standalone deployment.')
 param mongoClusterName string
 
-@description('Required. The name of the firewall rule.')
+@description('Required. The name of the firewall rule. Must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`.')
 param name string
 
 @description('Required. The start IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format.')
@@ -18,7 +18,9 @@ resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2024-02-15-preview' ex
 }
 
 resource firewallRule 'Microsoft.DocumentDB/mongoClusters/firewallRules@2024-02-15-preview' = {
-  name: name
+  name: !contains(name, '.') // Custom validation as documented regex is incorrect and does fail with an 'InternalServerError'
+    ? name
+    : fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')
   parent: mongoCluster
   properties: {
     startIpAddress: startIpAddress
