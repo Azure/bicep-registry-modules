@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "17172875475270738165"
+      "version": "0.34.44.8038",
+      "templateHash": "331543822092355459"
     },
     "name": "Virtual Machine Image Templates",
     "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB)."
@@ -61,7 +61,7 @@
         "sharedImageGalleryImageDefinitionResourceId": {
           "type": "string",
           "metadata": {
-            "description": "Conditional. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>."
+            "description": "Required. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>."
           }
         },
         "sharedImageGalleryImageDefinitionTargetVersion": {
@@ -101,7 +101,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a shared image distribution."
       }
     },
     "unManagedDistributionType": {
@@ -133,12 +134,13 @@
         "imageName": {
           "type": "string",
           "metadata": {
-            "description": "Conditional. Name of the managed or unmanaged image that will be created."
+            "description": "Required. Name of the managed or unmanaged image that will be created."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an unmanaged distribution."
       }
     },
     "managedImageDistributionType": {
@@ -178,18 +180,19 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group."
+            "description": "Optional. The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group."
           }
         },
         "imageName": {
           "type": "string",
           "metadata": {
-            "description": "Conditional. Name of the managed or unmanaged image that will be created."
+            "description": "Required. Name of the managed or unmanaged image that will be created."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a managed image distribution."
       }
     },
     "validationProcessType": {
@@ -303,7 +306,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a validation process."
       }
     },
     "lockType": {
@@ -664,7 +668,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
-      "properties": "[shallowMerge(createArray(createObject('buildTimeoutInMinutes', parameters('buildTimeoutInMinutes'), 'vmProfile', createObject('vmSize', parameters('vmSize'), 'osDiskSizeGB', parameters('osDiskSizeGB'), 'userAssignedIdentities', parameters('vmUserAssignedIdentities'), 'vnetConfig', if(not(empty(parameters('subnetResourceId'))), createObject('subnetId', parameters('subnetResourceId')), null())), 'source', parameters('imageSource')), if(not(empty(parameters('customizationSteps'))), createObject('customize', parameters('customizationSteps')), createObject()), createObject('stagingResourceGroup', parameters('stagingResourceGroupResourceId'), 'distribute', map(parameters('distributions'), lambda('distribution', shallowMerge(createArray(createObject('type', lambdaVariables('distribution').type, 'artifactTags', coalesce(tryGet(lambdaVariables('distribution'), 'artifactTags'), createObject('sourceType', parameters('imageSource').type, 'sourcePublisher', tryGet(parameters('imageSource'), 'publisher'), 'sourceOffer', tryGet(parameters('imageSource'), 'offer'), 'sourceSku', tryGet(parameters('imageSource'), 'sku'), 'sourceVersion', tryGet(parameters('imageSource'), 'version'), 'sourceImageId', tryGet(parameters('imageSource'), 'imageId'), 'sourceImageVersionID', tryGet(parameters('imageSource'), 'imageVersionID'), 'creationTime', parameters('baseTime')))), if(equals(lambdaVariables('distribution').type, 'ManagedImage'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), format('{0}-{1}-ManagedImage', lambdaVariables('distribution').imageName, parameters('baseTime'))), 'location', coalesce(tryGet(lambdaVariables('distribution'), 'location'), parameters('location')), 'imageId', coalesce(tryGet(lambdaVariables('distribution'), 'imageResourceId'), format('{0}/resourceGroups/{1}/providers/Microsoft.Compute/images/{2}-{3}', subscription().id, resourceGroup().name, lambdaVariables('distribution').imageName, parameters('baseTime')))), createObject()), if(equals(lambdaVariables('distribution').type, 'SharedImage'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), if(not(empty(tryGet(lambdaVariables('distribution'), 'sharedImageGalleryImageDefinitionResourceId'))), format('{0}-SharedImage', last(split(coalesce(lambdaVariables('distribution').sharedImageGalleryImageDefinitionResourceId, '/'), '/'))), 'SharedImage')), 'galleryImageId', if(not(empty(tryGet(lambdaVariables('distribution'), 'sharedImageGalleryImageDefinitionTargetVersion'))), format('{0}/versions/{1}', lambdaVariables('distribution').sharedImageGalleryImageDefinitionResourceId, lambdaVariables('distribution').sharedImageGalleryImageDefinitionTargetVersion), lambdaVariables('distribution').sharedImageGalleryImageDefinitionResourceId), 'excludeFromLatest', coalesce(tryGet(lambdaVariables('distribution'), 'excludeFromLatest'), false()), 'replicationRegions', coalesce(tryGet(lambdaVariables('distribution'), 'replicationRegions'), createArray(parameters('location'))), 'storageAccountType', coalesce(tryGet(lambdaVariables('distribution'), 'storageAccountType'), 'Standard_LRS')), createObject()), if(equals(lambdaVariables('distribution').type, 'VHD'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), format('{0}-VHD', lambdaVariables('distribution').imageName))), createObject()))))), 'validate', parameters('validationProcess'), 'optimize', if(not(equals(parameters('optimizeVmBoot'), null())), createObject('vmBoot', createObject('state', parameters('optimizeVmBoot'))), null()), 'autoRun', createObject('state', parameters('autoRunState')), 'errorHandling', createObject('onCustomizerError', parameters('errorHandlingOnCustomizerError'), 'onValidationError', parameters('errorHandlingOnValidationError')), 'managedResourceTags', parameters('managedResourceTags'))))]"
+      "properties": "[shallowMerge(createArray(createObject('buildTimeoutInMinutes', parameters('buildTimeoutInMinutes'), 'vmProfile', createObject('vmSize', parameters('vmSize'), 'osDiskSizeGB', parameters('osDiskSizeGB'), 'userAssignedIdentities', parameters('vmUserAssignedIdentities'), 'vnetConfig', if(not(empty(parameters('subnetResourceId'))), createObject('subnetId', parameters('subnetResourceId')), null())), 'source', parameters('imageSource')), if(not(empty(parameters('customizationSteps'))), createObject('customize', parameters('customizationSteps')), createObject()), createObject('stagingResourceGroup', parameters('stagingResourceGroupResourceId'), 'distribute', map(parameters('distributions'), lambda('distribution', shallowMerge(createArray(createObject('type', lambdaVariables('distribution').type, 'artifactTags', coalesce(tryGet(lambdaVariables('distribution'), 'artifactTags'), createObject('sourceType', parameters('imageSource').type, 'sourcePublisher', tryGet(parameters('imageSource'), 'publisher'), 'sourceOffer', tryGet(parameters('imageSource'), 'offer'), 'sourceSku', tryGet(parameters('imageSource'), 'sku'), 'sourceVersion', tryGet(parameters('imageSource'), 'version'), 'sourceImageId', tryGet(parameters('imageSource'), 'imageId'), 'sourceImageVersionID', tryGet(parameters('imageSource'), 'imageVersionID'), 'creationTime', parameters('baseTime')))), if(equals(lambdaVariables('distribution').type, 'ManagedImage'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), format('{0}-{1}-ManagedImage', lambdaVariables('distribution').imageName, parameters('baseTime'))), 'location', coalesce(tryGet(lambdaVariables('distribution'), 'location'), parameters('location')), 'imageId', coalesce(tryGet(lambdaVariables('distribution'), 'imageResourceId'), format('{0}/resourceGroups/{1}/providers/Microsoft.Compute/images/{2}-{3}', subscription().id, resourceGroup().name, lambdaVariables('distribution').imageName, parameters('baseTime')))), createObject()), if(equals(lambdaVariables('distribution').type, 'SharedImage'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), format('{0}-SharedImage', last(split(tryGet(lambdaVariables('distribution'), 'sharedImageGalleryImageDefinitionResourceId'), '/')))), 'galleryImageId', if(not(empty(tryGet(lambdaVariables('distribution'), 'sharedImageGalleryImageDefinitionTargetVersion'))), format('{0}/versions/{1}', lambdaVariables('distribution').sharedImageGalleryImageDefinitionResourceId, lambdaVariables('distribution').sharedImageGalleryImageDefinitionTargetVersion), lambdaVariables('distribution').sharedImageGalleryImageDefinitionResourceId), 'excludeFromLatest', coalesce(tryGet(lambdaVariables('distribution'), 'excludeFromLatest'), false()), 'replicationRegions', coalesce(tryGet(lambdaVariables('distribution'), 'replicationRegions'), createArray(parameters('location'))), 'storageAccountType', coalesce(tryGet(lambdaVariables('distribution'), 'storageAccountType'), 'Standard_LRS')), createObject()), if(equals(lambdaVariables('distribution').type, 'VHD'), createObject('runOutputName', coalesce(tryGet(lambdaVariables('distribution'), 'runOutputName'), format('{0}-VHD', lambdaVariables('distribution').imageName))), createObject()))))), 'validate', parameters('validationProcess'), 'optimize', if(not(equals(parameters('optimizeVmBoot'), null())), createObject('vmBoot', createObject('state', parameters('optimizeVmBoot'))), null()), 'autoRun', createObject('state', parameters('autoRunState')), 'errorHandling', createObject('onCustomizerError', parameters('errorHandlingOnCustomizerError'), 'onValidationError', parameters('errorHandlingOnValidationError')), 'managedResourceTags', parameters('managedResourceTags'))))]"
     },
     "imageTemplate_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",

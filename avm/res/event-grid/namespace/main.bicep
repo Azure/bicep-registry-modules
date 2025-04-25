@@ -103,6 +103,8 @@ param topicSpaces array?
 @description('Optional. All namespace Permission Bindings to create. Used only when MQTT broker is enabled (\'topicSpacesState\' is set to \'Enabled\').')
 param permissionBindings array?
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -276,8 +278,8 @@ module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
     scope: resourceGroup(
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[2],
-      split(privateEndpoint.?resourceGroupResourceId ?? privateEndpoint.?subnetResourceId, '/')[4]
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(namespace.id, '/'))}-${privateEndpoint.?service ?? 'topic'}-${index}'
@@ -309,7 +311,7 @@ module namespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -454,12 +456,12 @@ output topicResourceIds array = [
 ]
 @description('The private endpoints of the EventGrid Namespace.')
 output privateEndpoints privateEndpointOutputType[] = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: namespace_privateEndpoints[i].outputs.name
-    resourceId: namespace_privateEndpoints[i].outputs.resourceId
-    groupId: namespace_privateEndpoints[i].outputs.?groupId!
-    customDnsConfigs: namespace_privateEndpoints[i].outputs.customDnsConfigs
-    networkInterfaceResourceIds: namespace_privateEndpoints[i].outputs.networkInterfaceResourceIds
+  for (item, index) in (privateEndpoints ?? []): {
+    name: namespace_privateEndpoints[index].outputs.name
+    resourceId: namespace_privateEndpoints[index].outputs.resourceId
+    groupId: namespace_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: namespace_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: namespace_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 

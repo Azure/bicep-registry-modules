@@ -1,0 +1,73 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "12788301977890543452"
+    },
+    "name": "Redis Cache Firewall Rules",
+    "description": "This module creates a firewall rule for Redis Cache."
+  },
+  "parameters": {
+    "redisCacheName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Redis cache name."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Redis Cache Firewall Rule."
+      }
+    },
+    "startIP": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
+      }
+    },
+    "endIP": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Cache/redis/firewallRules",
+      "apiVersion": "2024-11-01",
+      "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+      "properties": {
+        "startIP": "[parameters('startIP')]",
+        "endIP": "[parameters('endIP')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed firewall rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed firewall rule."
+      },
+      "value": "[resourceId('Microsoft.Cache/redis/firewallRules', parameters('redisCacheName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed firewall rule."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

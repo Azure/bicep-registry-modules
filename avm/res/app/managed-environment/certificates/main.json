@@ -1,0 +1,141 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "3341092726138278864"
+    },
+    "name": "App ManagedEnvironments Certificates",
+    "description": "This module deploys a App Managed Environment Certificate."
+  },
+  "definitions": {
+    "certificateKeyVaultPropertiesType": {
+      "type": "object",
+      "properties": {
+        "identityResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the identity. This is the identity that will be used to access the key vault."
+          }
+        },
+        "keyVaultUrl": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. A key vault URL referencing the wildcard certificate that will be used for the custom domain."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the certificate's key vault properties."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the Container Apps Managed Environment Certificate."
+      }
+    },
+    "managedEnvironmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent app managed environment. Required if the template is used in a standalone deployment."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all Resources."
+      }
+    },
+    "certificateKeyVaultProperties": {
+      "$ref": "#/definitions/certificateKeyVaultPropertiesType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. A key vault reference to the certificate to use for the custom domain."
+      }
+    },
+    "certificateType": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "ServerSSLCertificate",
+        "ImagePullTrustedCA"
+      ],
+      "metadata": {
+        "description": "Optional. The type of the certificate."
+      }
+    },
+    "certificateValue": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The value of the certificate. PFX or PEM blob."
+      }
+    },
+    "certificatePassword": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The password of the certificate."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    }
+  },
+  "resources": {
+    "managedEnvironment": {
+      "existing": true,
+      "type": "Microsoft.App/managedEnvironments",
+      "apiVersion": "2024-10-02-preview",
+      "name": "[parameters('managedEnvironmentName')]"
+    },
+    "managedEnvironmentCertificate": {
+      "type": "Microsoft.App/managedEnvironments/certificates",
+      "apiVersion": "2024-10-02-preview",
+      "name": "[format('{0}/{1}', parameters('managedEnvironmentName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "certificateKeyVaultProperties": "[if(not(empty(parameters('certificateKeyVaultProperties'))), createObject('identity', parameters('certificateKeyVaultProperties').identityResourceId, 'keyVaultUrl', parameters('certificateKeyVaultProperties').keyVaultUrl), null())]",
+        "certificateType": "[parameters('certificateType')]",
+        "password": "[parameters('certificatePassword')]",
+        "value": "[parameters('certificateValue')]"
+      },
+      "tags": "[parameters('tags')]"
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the key values."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the key values."
+      },
+      "value": "[resourceId('Microsoft.App/managedEnvironments/certificates', parameters('managedEnvironmentName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the batch account was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -44,7 +44,7 @@ BeforeDiscovery {
         }
     }
 
-    # building paths
+    # Building paths
     $builtTestFileMap = [System.Collections.Concurrent.ConcurrentDictionary[string, object]]::new()
     $pathsToBuild | ForEach-Object -Parallel {
         $dict = $using:builtTestFileMap
@@ -55,6 +55,17 @@ BeforeDiscovery {
         $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
         $null = $dict.TryAdd($_, $templateHashTable)
     }
+
+    # Getting the list of child modules allowed for publishing
+    $childModuleAllowedList = @()
+    $childModuleAllowedListRelativePath = Join-Path 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-module-publish-allowed-list.json'
+    $childModuleAllowedListPath = Join-Path $repoRootPath $childModuleAllowedListRelativePath
+    if (Test-Path $childModuleAllowedListPath) {
+        $childModuleAllowedList = (Get-Content -Path $childModuleAllowedListPath | ConvertFrom-Json).'allowed-child-modules'
+    } else {
+        Write-Warning "The child modules allowed list file [$childModuleAllowedListPath] does not exist."
+        $childModuleAllowedList = @()
+    }
 }
 Describe 'File/folder tests' -Tag 'Modules' {
 
@@ -62,14 +73,19 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
         BeforeDiscovery {
             $moduleFolderTestCases = [System.Collections.ArrayList] @()
+
             foreach ($moduleFolderPath in $moduleFolderPaths) {
                 $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
                 $moduleFolderTestCases += @{
-                    moduleFolderName = $resourceTypeIdentifier
-                    moduleFolderPath = $moduleFolderPath
-                    isTopLevelModule = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
-                    moduleType       = $moduleType
+                    moduleFullName                     = "avm/$moduleType/$resourceTypeIdentifier"
+                    moduleType                         = $moduleType
+                    moduleFolderName                   = $resourceTypeIdentifier
+                    moduleFolderPath                   = $moduleFolderPath
+                    isTopLevelModule                   = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                    childModuleAllowedList             = $childModuleAllowedList
+                    childModuleAllowedListRelativePath = $childModuleAllowedListRelativePath
                 }
             }
         }
@@ -104,81 +120,19 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $file.Name | Should -BeExactly 'README.md'
         }
 
-        # only avm/res/network/virtual-network/subnet is allowed to have a version.json file (PoC for child module publishing)
-        It '[<moduleFolderName>] Child module should not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) -And ($_.moduleFolderName -ne 'network/virtual-network/subnet') }) {
+        # (Pilot for child module publishing) Only a subset of child modules is allowed to have a version.json file
+        It '[<moduleFolderName>] child module should not contain a [` version.json `] file unless explicitly allowed for publishing.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
 
             param (
-                [string] $moduleFolderPath
+                [string] $moduleFolderPath,
+                [string] $moduleFullName,
+                [string] $childModuleAllowedListRelativePath,
+                [string[]] $childModuleAllowedList
             )
 
             $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            $pathExisting | Should -Be $false
-        }
-
-        # if the child modules version has been increased, the main modules version should be increased as well
-        It '[<moduleFolderName>] main module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { (-Not $_.isTopLevelModule) }) {
-
-            param (
-                [string] $moduleFolderPath
-            )
-
-            $subModulePathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            if ($subModulePathExisting) {
-                $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
-                $parentFolderPath = Split-Path -Path $moduleFolderPath -Parent
-                $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
-
-                ($childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
-            }
-        }
-
-        It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
-
-            param(
-                [string] $moduleFolderPath,
-                [string] $moduleType
-            )
-
-            $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
-
-            # Use correct telemetry link based on file path
-            switch ($moduleType) {
-                'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
-                'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
-                'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
-                Default {}
-            }
-
-            # Fetch CSV
-            # =========
-            try {
-                $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-            } catch {
-                $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-                Write-Error $errorMessage
-                Set-ItResult -Skipped -Because $errorMessage
-            }
-            $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
-
-            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
-            $relevantCSVRow = $csvData | Where-Object {
-                $_.ModuleName -eq $moduleName
-            }
-
-            if (-not $relevantCSVRow) {
-                $errorMessage = "Failed to identify module [$moduleName]."
-                Write-Error $errorMessage
-                Set-ItResult -Skipped -Because $errorMessage
-            }
-            $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
-
-            $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
-            if ($isOrphaned) {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $true -Because 'The module is orphaned.'
-            } else {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
+            if ($pathExisting) {
+                $childModuleAllowedList | Should -Contain $moduleFullName -Because "only the child modules listed in the [./$childModuleAllowedListRelativePath] list may have a version.json file."
             }
         }
     }
@@ -268,6 +222,56 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $filePath = Join-Path -Path $e2eTestFolderPath 'main.test.bicep'
                 $pathExisting = Test-Path $filePath
                 $pathExisting | Should -Be $true -Because "path [$filePath] is expected to exist."
+            }
+        }
+
+        It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases $topLevelModuleTestCases {
+
+            param(
+                [string] $moduleFolderPath,
+                [string] $moduleType
+            )
+
+            $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
+
+            # Use correct telemetry link based on file path
+            switch ($moduleType) {
+                'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
+                'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
+                'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
+                Default {}
+            }
+
+            # Fetch CSV
+            # =========
+            try {
+                $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
+            } catch {
+                $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
+                Write-Error $errorMessage
+                Set-ItResult -Skipped -Because $errorMessage
+            }
+            $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
+
+            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
+            $relevantCSVRow = $csvData | Where-Object {
+                $_.ModuleName -eq $moduleName
+            }
+
+            if (-not $relevantCSVRow) {
+                $errorMessage = "Failed to identify module [$moduleName]."
+                Write-Error $errorMessage
+                Set-ItResult -Skipped -Because $errorMessage
+            }
+            $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
+
+            $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
+            if ($isOrphaned) {
+                $pathExisting = Test-Path $orphanedFilePath
+                $pathExisting | Should -Be $true -Because 'The module is orphaned.'
+            } else {
+                $pathExisting = Test-Path $orphanedFilePath
+                $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
             }
         }
     }
@@ -384,10 +388,14 @@ Describe 'Module tests' -Tag 'Module' {
             . (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'Set-ModuleReadMe.ps1')
 
             # Apply update with already compiled template content
-            Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{
-                TemplateFileContent       = $templateFileContent
-                CrossReferencedModuleList = $crossReferencedModuleList
-                TelemetryFileContent      = $telemetryFileContent
+            try {
+                Set-ModuleReadMe -TemplateFilePath $templateFilePath -PreLoadedContent @{
+                    TemplateFileContent       = $templateFileContent
+                    CrossReferencedModuleList = $crossReferencedModuleList
+                    TelemetryFileContent      = $telemetryFileContent
+                } -ErrorAction 'Stop' -ErrorVariable 'InvocationError'
+            } catch {
+                $InvocationError[-1] | Should -BeNullOrEmpty -Because "Failed to apply the `Set-ModuleReadMe` function due to an error during the function's execution. Please review the inner error(s)."
             }
 
             # Get hash after 'update'
@@ -487,6 +495,7 @@ Describe 'Module tests' -Tag 'Module' {
                     readMeFilePath         = Join-Path (Split-Path $templateFilePath) 'README.md'
                     isTopLevelModule       = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType             = $moduleType
+                    versionFileExists      = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
                 }
             }
         }
@@ -579,7 +588,7 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             # If any resources in the module are deployed, a telemetry deployment should be carried out as well
-            It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileContent.resources.count -gt 0 }) {
+            It '[<moduleFolderName>] The telemetry parameter should be present & have the expected type, default value & metadata description.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists -and $_.templateFileContent.resources.count -gt 0 }) {
 
                 param(
                     [hashtable] $templateFileParameters
@@ -672,7 +681,6 @@ Describe 'Module tests' -Tag 'Module' {
                 }
                 $incorrectParameters | Should -BeNullOrEmpty -Because ('conditional parameters in the template file should lack a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
-
 
             It '[<moduleFolderName>] All non-required parameters & UDTs in template file should not have description that start with "Required.".' -TestCases $moduleFolderTestCases {
                 param (
@@ -812,8 +820,13 @@ Describe 'Module tests' -Tag 'Module' {
                         [hashtable] $templateFileContent
                     )
 
-                    $matchingTypeKey = $templateFileContent.definitions.Keys | Where-Object { $_ -match 'managedIdentity' }
-                    if ($matchingTypeKey -and $templateFileContent.definitions.$matchingTypeKey.properties.keys -contains 'systemAssigned') {
+                    # Testing for `managedIdentit*` in type, to be not dependent on singular/plural in UDT name
+                    $hasMatchingParameter = $templateFileContent.parameters.managedIdentities.'$ref' -match 'managedIdentit'
+
+                    $matchingTypeKey = $templateFileContent.definitions.Keys | Where-Object { $_ -match 'managedIdentit' }
+                    $hasSystemAssignedInType = $templateFileContent.definitions.($matchingTypeKey ?? '').properties.keys -contains 'systemAssigned'
+
+                    if ($hasMatchingParameter -and $hasSystemAssignedInType) {
                         $templateFileContent.outputs.Keys | Should -Contain 'systemAssignedMIPrincipalId' -Because 'The AVM specs require a this output. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
 
                         $templateFileContent.outputs.systemAssignedMIPrincipalId.type | Should -Be 'string' -Because 'it should match the AVM spec for managed identities. For information please review the [AVM Specs](https://azure.github.io/Azure-Verified-Modules/specs/bcp/res/interfaces/#managed-identities).'
@@ -863,11 +876,32 @@ Describe 'Module tests' -Tag 'Module' {
                 }
                 $incorrectVariables | Should -BeNullOrEmpty
             }
+
+            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+                param(
+                    [hashtable] $templateFileContent
+                )
+
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
+                }
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
+                    return
+                }
+
+                $templateFileContent.variables.Keys | Should -Contain 'enableReferencedModulesTelemetry'
+                $templateFileContent.variables.enableReferencedModulesTelemetry | Should -Be $false
+            }
         }
 
         Context 'Resources' {
-            # If any resources in the module are deployed, a telemetry deployment should be carried out as well
-            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.templateFileContent.resources.count -gt 0 }) {
+            # If any resources in the module are deployed, a telemetry deployment should be carried out as well.
+            It '[<moduleFolderName>] Telemetry deployment should be present in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists -and $_.templateFileContent.resources.count -gt 0 }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -884,7 +918,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment | Should -Not -BeNullOrEmpty -Because 'A telemetry resource with name prefix [46d3xbcp] should be present in the template'
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have correct condition in the template.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -907,7 +941,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment.condition | Should -Be "[parameters('enableTelemetry')]"
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have expected inner output for verbosity.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have expected inner output for verbosity.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -931,7 +965,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeployment.properties.template.outputs['telemetry'].value | Should -Be 'For more information, see https://aka.ms/avm/TelemetryInfo'
             }
 
-            It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
+            It '[<moduleFolderName>] Telemetry deployment should have expected telemetry identifier.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
 
                 param(
                     [string] $templateFilePath,
@@ -991,6 +1025,68 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $telemetryDeploymentName = $telemetryDeployment.name # The AVM telemetry prefix
                 $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
+            }
+
+            It '[<moduleFolderName>] For resource modules, telemetry should be disabled for referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+                param(
+                    [hashtable] $templateFileContent,
+                    [string] $templateFilePath
+                )
+
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
+                }
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
+                    return
+                }
+
+                # telemetry should be disabled for the referenced module
+                $incorrectCrossReferences = [System.Collections.ArrayList]@()
+                foreach ($referencedModule in $referencesWithTelemetry) {
+                    if ($referencedModule.properties.parameters.Keys -notcontains 'enableTelemetry' -or
+                        $referencedModule.properties.parameters.enableTelemetry.value -ne "[variables('enableReferencedModulesTelemetry')]") {
+                        # remember the names (e.g. 'virtualNetwork_subnets') to provide a better error message
+                        $incorrectCrossReferences.Add($referencedModule.identifier)
+                    }
+                }
+
+                $incorrectCrossReferences | Should -BeNullOrEmpty -Because ('cross reference modules must be referenced with the enableTelemetry parameter set to the "enableReferencedModulesTelemetry" variable. Found incorrect items: [{0}].' -f ($incorrectCrossReferences -join ', '))
+            }
+
+            It '[<moduleFolderName>] For non-resource modules, telemetry configuration should be passed to referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -ne 'res' }) {
+
+                param(
+                    [hashtable] $templateFileContent,
+                    [string] $templateFilePath
+                )
+
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
+                }
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
+                    return
+                }
+
+                # telemetry should be disabled for the referenced module
+                $incorrectCrossReferences = [System.Collections.ArrayList]@()
+                foreach ($referencedModule in $referencesWithTelemetry) {
+                    if ($referencedModule.properties.parameters.Keys -notcontains 'enableTelemetry' -or
+                        $referencedModule.properties.parameters.enableTelemetry.value -ne "[parameters('enableTelemetry')]") {
+                        # remember the names (e.g. 'virtualNetwork_subnets') to provide a better error message
+                        $incorrectCrossReferences.Add($referencedModule.identifier)
+                    }
+                }
+
+                $incorrectCrossReferences | Should -BeNullOrEmpty -Because ('cross reference modules must be referenced with the enableTelemetry parameter set to the module''s own "enableTelemetry" parameter. Found incorrect items: [{0}].' -f ($incorrectCrossReferences -join ', '))
             }
         }
 
@@ -1190,15 +1286,7 @@ Describe 'Module tests' -Tag 'Module' {
                     }
                 }
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('No user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
-
-                    Write-Output @{
-                        Warning = $warningMessage
-                    }
-                }
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
 
             It '[<moduleFolderName>] A UDT should not be nullable, but instead the parameter that uses it. AVM-Spec-Ref: BCPNFR18.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
@@ -1220,15 +1308,7 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('No user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
-
-                    Write-Output @{
-                        Warning = $warningMessage
-                    }
-                }
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
 
             It '[<moduleFolderName>] A UDT should always be camel-cased and end with the suffix "Type". AVM-Spec-Ref: BCPNFR19.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
@@ -1256,16 +1336,93 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('Every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+            }
+        }
+    }
 
-                    Write-Output @{
-                        Warning = $warningMessage
+    Context 'Version tests' -Tag 'Versioning' {
+
+        BeforeDiscovery {
+            $moduleFolderTestCases = [System.Collections.ArrayList] @()
+
+            foreach ($moduleFolderPath in $moduleFolderPaths) {
+                $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+
+                $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
+                $moduleFolderTestCases += @{
+                    moduleFullName    = "avm/$moduleType/$resourceTypeIdentifier"
+                    moduleType        = $moduleType
+                    moduleFolderName  = $resourceTypeIdentifier
+                    moduleFolderPath  = $moduleFolderPath
+                    isTopLevelModule  = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                    versionFileExists = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+                }
+            }
+        }
+
+        It '[<moduleFolderName>] A [` version.json `] file must only have a major & minor version.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
+
+            param (
+                [string] $moduleFolderPath
+            )
+
+            $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
+            $versionFileContent.version | Should -Match '^[0-9]+\.[0-9]+$' -Because 'only the major.minor version may be specified in the version.json file.'
+        }
+
+        # Temporary test, before v1.0 release
+        It '[<moduleFolderName>] A [` version.json `] file must not yet contain a major version greater than 0.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
+
+            param (
+                [string] $moduleFolderPath,
+                [string] $moduleType,
+                [string] $moduleFolderName
+            )
+
+            if ($moduleType -eq 'res' -and $moduleFolderName -eq 'network/nat-gateway') {
+                # Using a warning and skip, since nat-gateway has already been released with version 1.x.
+                Write-Warning "[avm/$moduleType/$moduleFolderName] has already been released with version 1.x"
+                Set-ItResult -Skipped -Because 'the module has already been released with version 1.x.'
+                return
+            }
+
+            $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
+            $major, $minor = $versionFileContent.version -split '\.'
+            $major | Should -Be 0 -Because 'module version must be incremented via minor and patch (automatic) versions only for the time being.'
+        }
+
+        # If the child modules version has been increased, all versioned parent modules up the chain should increase their version as well
+        It '[<moduleFolderName>] parent module versions should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule -and $_.versionFileExists }) {
+
+            param (
+                [string] $moduleFolderPath,
+                [string] $moduleType
+            )
+
+            $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+
+            # If the child module version is not 0.1.0 and ends with .0 (i.e., if the child module version.json has been updated), check if the parent module version(s) have been updated
+            # Note: The first release of a child module does not require the parent module to be updated
+            if ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0')) {
+                $upperBoundPath = Join-Path $repoRootPath 'avm' $moduleType
+                $moduleDirectParentPath = Split-Path $moduleFolderPath -Parent
+
+                # Get the list of all versioned parent folders
+                $versionedParentFolderPaths = @()
+                $versionedParentFolderPaths = Get-ParentFolderPathList -Path $moduleDirectParentPath -UpperBoundPath $upperBoundPath -Filter 'OnlyVersionedModules'
+                $incorrectVersionedParents = @()
+
+                # Check if the parent module version(s) have been updated
+                foreach ($parentFolderPath in $versionedParentFolderPaths) {
+                    $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
+                    if (-not $moduleVersion.EndsWith('.0')) {
+                        $null, $null, $parentResourceTypeIdentifier = ($parentFolderPath -split "[\/|\\]avm[\/|\\]($moduleType)[\/|\\]") # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+                        $incorrectVersionedParents += $parentResourceTypeIdentifier
                     }
                 }
             }
+            $incorrectVersionedParents | Should -BeNullOrEmpty -Because ('The child module version [{0}] has been increased, but the parent module version(s) [{1}] have not been updated.' -f $childModuleVersion, ($incorrectVersionedParents -join ', '))
         }
     }
 }

@@ -1,0 +1,933 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.93.31351",
+      "templateHash": "12094637252334328193"
+    },
+    "name": "Redis database",
+    "description": "This module deploys a Redis database in a Redis Enterprise or Azure Managed Redis (Preview) cluster."
+  },
+  "definitions": {
+    "secretsExportConfigurationType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the key vault where to store the secrets of this module."
+          }
+        },
+        "primaryAccessKeyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primaryAccessKey secret name to create."
+          }
+        },
+        "primaryConnectionStringName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primaryConnectionString secret name to create."
+          }
+        },
+        "primaryStackExchangeRedisConnectionStringName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The primaryStackExchangeRedisConnectionString secret name to create."
+          }
+        },
+        "secondaryAccessKeyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The secondaryAccessKey secret name to create."
+          }
+        },
+        "secondaryConnectionStringName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The secondaryConnectionString secret name to create."
+          }
+        },
+        "secondaryStackExchangeRedisConnectionStringName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The secondaryStackExchangeRedisConnectionString secret name to create."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "disabledPersistenceType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "disabled"
+          ],
+          "metadata": {
+            "description": "Required. Disabled persistence type."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "aofPersistenceType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "aof"
+          ],
+          "metadata": {
+            "description": "Required. AOF persistence type."
+          }
+        },
+        "frequency": {
+          "type": "string",
+          "allowedValues": [
+            "1s"
+          ],
+          "metadata": {
+            "description": "Required. The frequency at which data is written to disk."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "rdbPersistenceType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "rdb"
+          ],
+          "metadata": {
+            "description": "Required. RDB persistence type."
+          }
+        },
+        "frequency": {
+          "type": "string",
+          "allowedValues": [
+            "12h",
+            "1h",
+            "6h"
+          ],
+          "metadata": {
+            "description": "Required. The frequency at which an RDB snapshot of the database is created."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "persistenceType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "type",
+        "mapping": {
+          "disabled": {
+            "$ref": "#/definitions/disabledPersistenceType"
+          },
+          "aof": {
+            "$ref": "#/definitions/aofPersistenceType"
+          },
+          "rdb": {
+            "$ref": "#/definitions/rdbPersistenceType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "moduleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "RediSearch",
+            "RedisBloom",
+            "RedisJSON",
+            "RedisTimeSeries"
+          ],
+          "metadata": {
+            "description": "Required. The name of the module."
+          }
+        },
+        "args": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Additional module arguments."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "geoReplicationType": {
+      "type": "object",
+      "properties": {
+        "groupNickname": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the geo-replication group."
+          }
+        },
+        "linkedDatabases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/linkedDatabaseType"
+          },
+          "metadata": {
+            "description": "Required. List of database resources to link with this database, including itself."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "linkedDatabaseType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of linked database. Should be in the form: `/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Cache/redisEnterprise/{redisName}/databases/default`."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "accessPolicyAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the access policy assignment."
+          }
+        },
+        "userObjectId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Object ID to which the access policy will be assigned."
+          }
+        },
+        "accessPolicyName": {
+          "type": "string",
+          "allowedValues": [
+            "default"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the access policy to be assigned. The current only allowed name is 'default'."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "_1.secretSetOutputType": {
+      "type": "object",
+      "properties": {
+        "secretResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resourceId of the exported secret."
+          }
+        },
+        "secretUri": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI of the exported secret."
+          }
+        },
+        "secretUriWithVersion": {
+          "type": "string",
+          "metadata": {
+            "description": "The secret URI with version of the exported secret."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "diagnosticSettingLogsOnlyType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if only logs are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "secretsOutputType": {
+      "type": "object",
+      "properties": {},
+      "additionalProperties": {
+        "$ref": "#/definitions/_1.secretSetOutputType",
+        "metadata": {
+          "description": "An exported secret's references."
+        }
+      },
+      "metadata": {
+        "description": "A map of the exported secrets",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "redisClusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Redis Enterprise or Azure Managed Redis (Preview) resource. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "default",
+      "allowedValues": [
+        "default"
+      ],
+      "metadata": {
+        "description": "Optional. Name of the database."
+      }
+    },
+    "accessKeysAuthentication": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Allow authentication via access keys. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication#disable-access-key-authentication-on-your-cache) FOR CLARIFICATION."
+      }
+    },
+    "clientProtocol": {
+      "type": "string",
+      "defaultValue": "Encrypted",
+      "allowedValues": [
+        "Encrypted",
+        "Plaintext"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies whether Redis clients can connect using TLS-encrypted or plaintext Redis protocols."
+      }
+    },
+    "clusteringPolicy": {
+      "type": "string",
+      "defaultValue": "OSSCluster",
+      "allowedValues": [
+        "EnterpriseCluster",
+        "OSSCluster"
+      ],
+      "metadata": {
+        "description": "Optional. Redis clustering policy. [Learn more](https://aka.ms/redis/enterprise/clustering)."
+      }
+    },
+    "deferUpgrade": {
+      "type": "string",
+      "defaultValue": "NotDeferred",
+      "allowedValues": [
+        "Deferred",
+        "NotDeferred"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies whether to defer future Redis major version upgrades by up to 90 days. [Learn more](https://aka.ms/redisversionupgrade#defer-upgrades)."
+      }
+    },
+    "evictionPolicy": {
+      "type": "string",
+      "defaultValue": "VolatileLRU",
+      "allowedValues": [
+        "AllKeysLFU",
+        "AllKeysLRU",
+        "AllKeysRandom",
+        "NoEviction",
+        "VolatileLFU",
+        "VolatileLRU",
+        "VolatileRandom",
+        "VolatileTTL"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies the eviction policy for the Redis resource."
+      }
+    },
+    "geoReplication": {
+      "$ref": "#/definitions/geoReplicationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The active geo-replication settings of the service. All caches within a geo-replication group must have the same configuration."
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/moduleType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Redis modules to enable. Restrictions may apply based on SKU and configuration. [Learn more](https://aka.ms/redis/enterprise/modules)."
+      }
+    },
+    "port": {
+      "type": "int",
+      "defaultValue": 10000,
+      "minValue": 10000,
+      "maxValue": 10000,
+      "metadata": {
+        "description": "Optional. TCP port of the database endpoint."
+      }
+    },
+    "persistence": {
+      "$ref": "#/definitions/persistenceType",
+      "defaultValue": {
+        "type": "disabled"
+      },
+      "metadata": {
+        "description": "Optional. The persistence settings of the service."
+      }
+    },
+    "accessPolicyAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/accessPolicyAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Access policy assignments for Microsoft Entra authentication. Only supported on Azure Managed Redis (Preview) SKUs: Balanced, ComputeOptimized, FlashOptimized, and MemoryOptimized. THIS IS A PARAMETER USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/azure-cache-for-redis/managed-redis/managed-redis-entra-for-authentication) FOR CLARIFICATION."
+      }
+    },
+    "secretsExportConfiguration": {
+      "$ref": "#/definitions/secretsExportConfigurationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Key vault reference and secret settings for the module's secrets export."
+      }
+    },
+    "diagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingLogsOnlyType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The database-level diagnostic settings of the service."
+      }
+    }
+  },
+  "resources": {
+    "redisCluster": {
+      "existing": true,
+      "type": "Microsoft.Cache/redisEnterprise",
+      "apiVersion": "2024-09-01-preview",
+      "name": "[parameters('redisClusterName')]"
+    },
+    "redisDatabase": {
+      "type": "Microsoft.Cache/redisEnterprise/databases",
+      "apiVersion": "2024-09-01-preview",
+      "name": "[format('{0}/{1}', parameters('redisClusterName'), parameters('name'))]",
+      "properties": {
+        "accessKeysAuthentication": "[if(or(or(or(startsWith(reference('redisCluster', '2024-09-01-preview', 'full').sku.name, 'Balanced'), startsWith(reference('redisCluster', '2024-09-01-preview', 'full').sku.name, 'ComputeOptimized')), startsWith(reference('redisCluster', '2024-09-01-preview', 'full').sku.name, 'FlashOptimized')), startsWith(reference('redisCluster', '2024-09-01-preview', 'full').sku.name, 'MemoryOptimized')), parameters('accessKeysAuthentication'), null())]",
+        "clientProtocol": "[parameters('clientProtocol')]",
+        "clusteringPolicy": "[parameters('clusteringPolicy')]",
+        "deferUpgrade": "[parameters('deferUpgrade')]",
+        "evictionPolicy": "[parameters('evictionPolicy')]",
+        "geoReplication": "[if(not(empty(parameters('geoReplication'))), parameters('geoReplication'), null())]",
+        "modules": "[parameters('modules')]",
+        "port": "[parameters('port')]",
+        "persistence": "[if(not(equals(parameters('persistence').type, 'disabled')), createObject('aofEnabled', equals(parameters('persistence').type, 'aof'), 'rdbEnabled', equals(parameters('persistence').type, 'rdb'), 'aofFrequency', if(equals(parameters('persistence').type, 'aof'), parameters('persistence').frequency, null()), 'rdbFrequency', if(equals(parameters('persistence').type, 'rdb'), parameters('persistence').frequency, null())), null())]"
+      },
+      "dependsOn": [
+        "redisCluster"
+      ]
+    },
+    "database_diagnosticSettings": {
+      "copy": {
+        "name": "database_diagnosticSettings",
+        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.Cache/redisEnterprise/{0}/databases/{1}', parameters('redisClusterName'), parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "redisDatabase"
+      ]
+    },
+    "database_accessPolicyAssignments": {
+      "copy": {
+        "name": "database_accessPolicyAssignments",
+        "count": "[length(coalesce(parameters('accessPolicyAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-redis-apa-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(parameters('accessPolicyAssignments'), createArray())[copyIndex()].name]"
+          },
+          "clusterName": {
+            "value": "[parameters('redisClusterName')]"
+          },
+          "databaseName": {
+            "value": "[parameters('name')]"
+          },
+          "accessPolicyName": {
+            "value": "[tryGet(coalesce(parameters('accessPolicyAssignments'), createArray())[copyIndex()], 'accessPolicyName')]"
+          },
+          "userObjectId": {
+            "value": "[coalesce(parameters('accessPolicyAssignments'), createArray())[copyIndex()].userObjectId]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "6473026260124919331"
+            },
+            "name": "Azure Managed Redis (Preview) Database Access Policy Assignment",
+            "description": "This module deploys an access policy assignment for an Azure Managed Redis (Preview) database."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the access policy assignment."
+              }
+            },
+            "userObjectId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Object ID to which the access policy will be assigned."
+              }
+            },
+            "clusterName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the grandparent Azure Managed Redis (Preview) cluster. Required if the template is used in a standalone deployment."
+              }
+            },
+            "databaseName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Azure Managed Redis (Preview) database. Required if the template is used in a standalone deployment."
+              }
+            },
+            "accessPolicyName": {
+              "type": "string",
+              "defaultValue": "default",
+              "allowedValues": [
+                "default"
+              ],
+              "metadata": {
+                "description": "Optional. Name of the access policy to be assigned."
+              }
+            }
+          },
+          "resources": {
+            "redisCluster::database": {
+              "existing": true,
+              "type": "Microsoft.Cache/redisEnterprise/databases",
+              "apiVersion": "2024-09-01-preview",
+              "name": "[format('{0}/{1}', parameters('clusterName'), parameters('databaseName'))]"
+            },
+            "redisCluster": {
+              "existing": true,
+              "type": "Microsoft.Cache/redisEnterprise",
+              "apiVersion": "2024-09-01-preview",
+              "name": "[parameters('clusterName')]"
+            },
+            "accessPolicyAssignment": {
+              "type": "Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments",
+              "apiVersion": "2024-09-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('clusterName'), parameters('databaseName'), coalesce(parameters('name'), parameters('userObjectId')))]",
+              "properties": {
+                "accessPolicyName": "[parameters('accessPolicyName')]",
+                "user": {
+                  "objectId": "[parameters('userObjectId')]"
+                }
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the access policy assignment."
+              },
+              "value": "[coalesce(parameters('name'), parameters('userObjectId'))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the access policy assignment."
+              },
+              "value": "[resourceId('Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments', parameters('clusterName'), parameters('databaseName'), coalesce(parameters('name'), parameters('userObjectId')))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the access policy assignment was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "userObjectId": {
+              "type": "string",
+              "metadata": {
+                "description": "The object ID of the user associated with the access policy."
+              },
+              "value": "[reference('accessPolicyAssignment').user.objectId]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redisDatabase"
+      ]
+    },
+    "secretsExport": {
+      "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-secrets-kv', uniqueString(deployment().name))]",
+      "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "keyVaultName": {
+            "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
+          },
+          "secretsToSet": {
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), 'value', format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').primaryKey, reference('redisCluster').hostName, reference('redisDatabase').port))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').primaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True')))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), 'value', format('{0}:{1}@{2}:{3}', if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'redis://', 'rediss://'), listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').secondaryKey, reference('redisCluster').hostName, reference('redisDatabase').port))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:{1},password={2},ssl={3},abortConnect=False', reference('redisCluster').hostName, reference('redisDatabase').port, listKeys(resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name')), '2024-09-01-preview').secondaryKey, if(equals(reference('redisDatabase').clientProtocol, 'Plaintext'), 'False', 'True')))), createArray()))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "8063348652715653257"
+            }
+          },
+          "definitions": {
+            "secretSetOutputType": {
+              "type": "object",
+              "properties": {
+                "secretResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The resourceId of the exported secret."
+                  }
+                },
+                "secretUri": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI of the exported secret."
+                  }
+                },
+                "secretUriWithVersion": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The secret URI with version of the exported secret."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "secretToSetType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the secret to set."
+                  }
+                },
+                "value": {
+                  "type": "securestring",
+                  "metadata": {
+                    "description": "Required. The value of the secret to set."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "keyVaultName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Key Vault to set the secrets in."
+              }
+            },
+            "secretsToSet": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/secretToSetType"
+              },
+              "metadata": {
+                "description": "Required. The secrets to set in the Key Vault."
+              }
+            }
+          },
+          "resources": {
+            "keyVault": {
+              "existing": true,
+              "type": "Microsoft.KeyVault/vaults",
+              "apiVersion": "2022-07-01",
+              "name": "[parameters('keyVaultName')]"
+            },
+            "secrets": {
+              "copy": {
+                "name": "secrets",
+                "count": "[length(parameters('secretsToSet'))]"
+              },
+              "type": "Microsoft.KeyVault/vaults/secrets",
+              "apiVersion": "2023-07-01",
+              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
+              "properties": {
+                "value": "[parameters('secretsToSet')[copyIndex()].value]"
+              }
+            }
+          },
+          "outputs": {
+            "secretsSet": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/secretSetOutputType"
+              },
+              "metadata": {
+                "description": "The references to the secrets exported to the provided Key Vault."
+              },
+              "copy": {
+                "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
+                "input": {
+                  "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
+                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]",
+                  "secretUriWithVersion": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUriWithVersion]"
+                }
+              }
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redisCluster",
+        "redisDatabase"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Redis database."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the database."
+      },
+      "value": "[resourceId('Microsoft.Cache/redisEnterprise/databases', parameters('redisClusterName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Redis resource was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "port": {
+      "type": "int",
+      "metadata": {
+        "description": "The Redis database port."
+      },
+      "value": "[reference('redisDatabase').port]"
+    },
+    "endpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The Redis endpoint."
+      },
+      "value": "[format('{0}:{1}', reference('redisCluster').hostName, reference('redisDatabase').port)]"
+    },
+    "exportedSecrets": {
+      "$ref": "#/definitions/secretsOutputType",
+      "metadata": {
+        "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
+      },
+      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
+    }
+  }
+}

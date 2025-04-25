@@ -14,7 +14,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools/volumes) |
 
 ## Parameters
 
@@ -23,11 +23,11 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`coolAccess`](#parameter-coolaccess) | bool | If enabled (true) the pool can contain cool Access enabled volumes. |
-| [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`encryptionKeySource`](#parameter-encryptionkeysource) | string | The source of the encryption key. |
 | [`name`](#parameter-name) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-subnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-usagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
+| [`zone`](#parameter-zone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Conditional parameters**
 
@@ -41,6 +41,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`coolAccessRetrievalPolicy`](#parameter-coolaccessretrievalpolicy) | string | Determines the data retrieval behavior from the cool tier to standard storage based on the read pattern for cool access enabled volumes (Default/Never/Read). |
+| [`coolnessPeriod`](#parameter-coolnessperiod) | int | Specifies the number of days after which data that is not accessed by clients will be tiered. |
 | [`creationToken`](#parameter-creationtoken) | string | A unique file path for the volume. This is the name of the volume export. A volume is mounted using the export path. File path must start with an alphabetical character and be unique within the subscription. |
 | [`dataProtection`](#parameter-dataprotection) | object | DataProtection type volumes include an object containing details of the replication. |
 | [`exportPolicy`](#parameter-exportpolicy) | object | The export policy rules. |
@@ -48,14 +49,15 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | [`keyVaultPrivateEndpointResourceId`](#parameter-keyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-location) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-networkfeatures) | string | Network feature for the volume. |
-| [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. |
+| [`protocolTypes`](#parameter-protocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`securityStyle`](#parameter-securitystyle) | string | Defines the security style of the Volume. |
 | [`serviceLevel`](#parameter-servicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbContinuouslyAvailable`](#parameter-smbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-smbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-smbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`unixPermissions`](#parameter-unixpermissions) | string | Unix Permissions for NFS volume. |
 | [`volumeType`](#parameter-volumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
-| [`zones`](#parameter-zones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `coolAccess`
 
@@ -63,13 +65,6 @@ If enabled (true) the pool can contain cool Access enabled volumes.
 
 - Required: Yes
 - Type: bool
-
-### Parameter: `coolnessPeriod`
-
-Specifies the number of days after which data that is not accessed by clients will be tiered.
-
-- Required: Yes
-- Type: int
 
 ### Parameter: `encryptionKeySource`
 
@@ -99,6 +94,22 @@ Maximum storage quota allowed for a file system in bytes.
 - Required: Yes
 - Type: int
 
+### Parameter: `zone`
+
+The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    0
+    1
+    2
+    3
+  ]
+  ```
+
 ### Parameter: `capacityPoolName`
 
 The name of the parent capacity pool. Required if the template is used in a standalone deployment.
@@ -119,7 +130,13 @@ Determines the data retrieval behavior from the cool tier to standard storage ba
 
 - Required: No
 - Type: string
-- Default: `'Default'`
+
+### Parameter: `coolnessPeriod`
+
+Specifies the number of days after which data that is not accessed by clients will be tiered.
+
+- Required: No
+- Type: int
 
 ### Parameter: `creationToken`
 
@@ -192,15 +209,15 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-dataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
-| [`remoteVolumeRegion`](#parameter-dataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication. |
-| [`remoteVolumeResourceId`](#parameter-dataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. |
-| [`replicationSchedule`](#parameter-dataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`remotePath`](#parameter-dataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
+| [`remoteVolumeRegion`](#parameter-dataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
+| [`remoteVolumeResourceId`](#parameter-dataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
+| [`replicationSchedule`](#parameter-dataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume (to only be set on the destination (dst)). |
 
 ### Parameter: `dataProtection.replication.endpointType`
 
@@ -213,35 +230,6 @@ Indicates whether the local volume is the source or destination for the Volume R
   [
     'dst'
     'src'
-  ]
-  ```
-
-### Parameter: `dataProtection.replication.remoteVolumeRegion`
-
-The remote region for the other end of the Volume Replication.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `dataProtection.replication.remoteVolumeResourceId`
-
-The resource ID of the remote volume.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `dataProtection.replication.replicationSchedule`
-
-The replication schedule for the volume.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '_10minutely'
-    'daily'
-    'hourly'
   ]
   ```
 
@@ -280,6 +268,35 @@ The name of a volume on the server.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `dataProtection.replication.remoteVolumeRegion`
+
+The remote region for the other end of the Volume Replication.Required for Data Protection volumes.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataProtection.replication.remoteVolumeResourceId`
+
+The resource ID of the remote volume. Required for Data Protection volumes.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataProtection.replication.replicationSchedule`
+
+The replication schedule for the volume (to only be set on the destination (dst)).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '_10minutely'
+    'daily'
+    'hourly'
+  ]
+  ```
 
 ### Parameter: `dataProtection.snapshot`
 
@@ -500,11 +517,24 @@ Network feature for the volume.
 
 ### Parameter: `protocolTypes`
 
-Set of protocol types.
+Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`.
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    'NFSv3'
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    'CIFS'
+    'NFSv3'
+    'NFSv4.1'
+  ]
+  ```
 
 ### Parameter: `roleAssignments`
 
@@ -609,6 +639,20 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `securityStyle`
+
+Defines the security style of the Volume.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ntfs'
+    'unix'
+  ]
+  ```
+
 ### Parameter: `serviceLevel`
 
 The pool service level. Must match the one of the parent capacity pool.
@@ -657,27 +701,19 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
   ]
   ```
 
+### Parameter: `unixPermissions`
+
+Unix Permissions for NFS volume.
+
+- Required: No
+- Type: string
+
 ### Parameter: `volumeType`
 
 The type of the volume. DataProtection volumes are used for replication.
 
 - Required: No
 - Type: string
-
-### Parameter: `zones`
-
-Zone where the volume will be placed.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
-    3
-  ]
-  ```
 
 ## Outputs
 
@@ -694,4 +730,4 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |

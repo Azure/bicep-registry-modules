@@ -12,7 +12,7 @@ This module deploys a Snapshot Policy for an Azure NetApp File.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-03-01/netAppAccounts/snapshotPolicies) |
+| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/snapshotPolicies) |
 
 ## Parameters
 
@@ -95,8 +95,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `hourlySchedule`
 
@@ -142,8 +140,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `location`
 
@@ -215,8 +211,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `name`
 
@@ -308,8 +302,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ## Outputs
 

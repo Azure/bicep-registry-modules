@@ -111,8 +111,7 @@ param apis array = []
 param apiVersionSets array = []
 
 @description('Optional. Authorization servers.')
-@secure()
-param authorizationServers object = {}
+param authorizationServers authorizationServerType[]?
 
 @description('Optional. Backends.')
 param backends array = []
@@ -149,8 +148,6 @@ param publicIpAddressResourceId string?
 
 @description('Optional. Enable the Developer Portal. The developer portal is not supported on the Consumption SKU.')
 param enableDeveloperPortal bool = false
-
-var authorizationServerList = !empty(authorizationServers) ? authorizationServers.secureList : []
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -282,7 +279,7 @@ module service_apis 'api/main.bicep' = [
       apiVersionDescription: api.?apiVersionDescription
       apiVersionSetId: api.?apiVersionSetId
       authenticationSettings: api.?authenticationSettings
-      format: api.?format ?? 'openapi'
+      format: api.?format
       isCurrent: api.?isCurrent
       protocols: api.?protocols
       policies: api.?policies
@@ -312,7 +309,7 @@ module service_apiVersionSets 'api-version-set/main.bicep' = [
 ]
 
 module service_authorizationServers 'authorization-server/main.bicep' = [
-  for (authorizationServer, index) in authorizationServerList: {
+  for (authorizationServer, index) in (authorizationServers ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-AuthorizationServer-${index}'
     params: {
       apiManagementServiceName: service.name
@@ -351,7 +348,7 @@ module service_backends 'backend/main.bicep' = [
       resourceId: backend.?resourceId
       serviceFabricCluster: backend.?serviceFabricCluster
       title: backend.?title
-      tls: backend.?tls
+      tls: backend.?tls ?? { validateCertificateChain: true, validateCertificateName: true }
     }
   }
 ]
@@ -580,3 +577,67 @@ output systemAssignedMIPrincipalId string? = service.?identity.?principalId
 
 @description('The location the resource was deployed into.')
 output location string = service.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+import { tokenBodyParameterType } from 'authorization-server/main.bicep'
+
+@export()
+@description('The type for an authorization server.')
+type authorizationServerType = {
+  @description('Required. Identifier of the authorization server.')
+  name: string
+
+  @description('Required. API Management Service Authorization Servers name. Must be 1 to 50 characters long.')
+  @maxLength(50)
+  displayName: string
+
+  @description('Required. OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>.')
+  authorizationEndpoint: string
+
+  @description('Optional. HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE.')
+  authorizationMethods: string[]?
+
+  @description('Optional. Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query.')
+  bearerTokenSendingMethods: string[]?
+
+  @description('Optional. Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body.')
+  clientAuthenticationMethod: string[]?
+
+  @description('Required. Client or app ID registered with this authorization server.')
+  @secure()
+  clientId: string
+
+  @description('Optional. Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced.')
+  clientRegistrationEndpoint: string?
+
+  @description('Required. Client or app secret registered with this authorization server. This property will not be filled on \'GET\' operations! Use \'/listSecrets\' POST request to get the value.')
+  @secure()
+  clientSecret: string
+
+  @description('Optional. Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values.')
+  defaultScope: string?
+
+  @description('Optional. Description of the authorization server. Can contain HTML formatting tags.')
+  serverDescription: string?
+
+  @description('Required. Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials.')
+  grantTypes: ('authorizationCode' | 'clientCredentials' | 'implicit' | 'resourceOwnerPassword')[]
+
+  @description('Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password.')
+  @secure()
+  resourceOwnerPassword: string?
+
+  @description('Optional. Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username.')
+  resourceOwnerUsername: string?
+
+  @description('Optional. If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security.')
+  supportState: bool?
+
+  @description('Optional. Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object.')
+  tokenBodyParameters: tokenBodyParameterType[]?
+
+  @description('Optional. OAuth token endpoint. Contains absolute URI to entity being referenced.')
+  tokenEndpoint: string?
+}

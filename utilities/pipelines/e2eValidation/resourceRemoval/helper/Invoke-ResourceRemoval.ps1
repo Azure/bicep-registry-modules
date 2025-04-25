@@ -105,6 +105,55 @@ function Invoke-ResourceRemoval {
             $null = $roleAssignmentsOnScope | Where-Object { $_.RoleAssignmentId -eq $ResourceId } | Remove-AzRoleAssignment
             break
         }
+        'Microsoft.Authorization/roleEligibilityScheduleRequests' {
+            $idElem = $ResourceId.Split('/')
+            $scope = $idElem[0..($idElem.Count - 5)] -join '/'
+            $pimRequestName = $idElem[-1]
+            $pimRoleAssignment = Get-AzRoleEligibilityScheduleRequest -Scope $scope -Name $pimRequestName
+            if ($pimRoleAssignment) {
+                $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
+                $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
+                $guid = New-Guid
+                # PIM role assignments cannot be removed before 5 minutes from being created. Waiting for 5 minutes
+                Write-Verbose 'Waiting for 5 minutes before removing PIM role assignment' -Verbose
+                Start-Sleep -Seconds 300
+                # The PIM ARM API doesn't support DELETE requests so the only way to delete an assignment is by creating a new assignment with `AdminRemove` type using a new GUID
+                $removalInputObject = @{
+                    Name             = $guid
+                    Scope            = $scope
+                    PrincipalId      = $pimRoleAssignmentPrinicpalId
+                    RequestType      = 'AdminRemove'
+                    RoleDefinitionId = $pimRoleAssignmentRoleDefinitionId
+                }
+                $null = New-AzRoleEligibilityScheduleRequest @removalInputObject
+
+            }
+            break
+        }
+        'Microsoft.Authorization/roleAssignmentScheduleRequests' {
+            $idElem = $ResourceId.Split('/')
+            $scope = $idElem[0..($idElem.Count - 5)] -join '/'
+            $pimRequestName = $idElem[-1]
+            $pimRoleAssignment = Get-AzRoleAssignmentScheduleRequest -Scope $scope -Name $pimRequestName
+            if ($pimRoleAssignment) {
+                $pimRoleAssignmentPrinicpalId = $pimRoleAssignment.PrincipalId
+                $pimRoleAssignmentRoleDefinitionId = $pimRoleAssignment.RoleDefinitionId
+                $guid = New-Guid
+                # PIM role assignments cannot be removed before 5 minutes from being created. Waiting for 5 minutes
+                Write-Verbose 'Waiting for 5 minutes before removing PIM role assignment' -Verbose
+                Start-Sleep -Seconds 300
+                # The PIM ARM API doesn't support DELETE requests so the only way to delete an assignment is by creating a new assignment with `AdminRemove` type using a new GUID
+                $removalInputObject = @{
+                    Name             = $guid
+                    Scope            = $scope
+                    PrincipalId      = $pimRoleAssignmentPrinicpalId
+                    RequestType      = 'AdminRemove'
+                    RoleDefinitionId = $pimRoleAssignmentRoleDefinitionId
+                }
+                $null = New-AzRoleAssignmentScheduleRequest @removalInputObject
+            }
+            break
+        }
         'Microsoft.RecoveryServices/vaults' {
             # Pre-Removal
             # -----------
@@ -134,6 +183,66 @@ function Invoke-ResourceRemoval {
             # --------------
             if ($PSCmdlet.ShouldProcess("Resource with ID [$ResourceId]", 'Remove')) {
                 $null = Remove-AzResource -ResourceId $ResourceId -Force -ErrorAction 'Stop'
+            }
+            break
+        }
+        'Microsoft.DataProtection/backupVaults' {
+            # Note: This Resource Provider does not allow deleting the vault as long as it has nested resources
+            # Pre-Removal
+            # -----------
+            $resourceGroupName = $ResourceId.Split('/')[4]
+            $resourceName = Split-Path $ResourceId -Leaf
+            $vault = Get-AzDataProtectionBackupVault -ResourceGroupName $resourceGroupName -VaultName $resourceName
+
+            # Disable vault immutability
+            if ($vault.ImmutabilityState -ne 'Disabled') {
+                Write-Verbose ('    [-] Disabling immutability on vault [{0}]' -f $resourceName) -Verbose
+                if ($PSCmdlet.ShouldProcess(('Immutability on vault [{0}]' -f $resourceName), 'Update')) {
+                    $null = Update-AzDataProtectionBackupVault -ResourceGroupName $resourceGroupName -VaultName $resourceName -ImmutabilityState Disabled
+                }
+            }
+
+            # Disable vault soft-deletion
+            if ($vault.SoftDeleteState -ne 'Off') {
+                Write-Verbose ('    [-] Disabling soft-deletion on vault [{0}]' -f $resourceName) -Verbose
+                if ($PSCmdlet.ShouldProcess(('Soft-delete on vault [{0}]' -f $resourceName), 'Update')) {
+                    $null = Update-AzDataProtectionBackupVault -ResourceGroupName $resourceGroupName -VaultName $resourceName -SoftDeleteState Off
+                }
+            }
+
+            # Undo soft-deleted backup instances
+            $softDeletedBackupInstances = Get-AzDataProtectionSoftDeletedBackupInstance -ResourceGroupName $resourceGroupName -VaultName $resourceName
+            foreach ($softDeletedBackupInstance in $softDeletedBackupInstances) {
+                Write-Verbose ('    [-] Removing Backup instance soft deletion [{0}] from vault [{1}]' -f $softDeletedBackupInstance.Name, $resourceName) -Verbose
+                if ($PSCmdlet.ShouldProcess(('Soft deletion on backup instance [{0}] from vault [{1}]' -f $softDeletedBackupInstance.Name, $resourceName), 'Undo')) {
+                    $null = Undo-AzDataProtectionBackupInstanceDeletion -ResourceGroupName $resourceGroupName -VaultName $resourceName -BackupInstanceName $softDeletedBackupInstance.name
+                }
+            }
+
+            # Actual removal
+            # --------------
+            # Remove backup instances
+            $backupInstances = Get-AzDataProtectionBackupInstance -ResourceGroupName $resourceGroupName -VaultName $resourceName
+            foreach ($backupInstance in $backupInstances) {
+                Write-Verbose ('    [-] Removing Backup instance [{0}] from vault [{1}]' -f $backupInstance.Name, $resourceName) -Verbose
+                if ($PSCmdlet.ShouldProcess(('Backup instance [{0}] from vault [{1}]' -f $backupInstance.Name, $resourceName), 'Remove')) {
+                    $null = Remove-AzDataProtectionBackupInstance -ResourceGroupName $resourceGroupName -VaultName $resourceName -Name $backupInstance.name
+                }
+            }
+
+            # Remove backup policies
+            $backupPolicies = Get-AzDataProtectionBackupPolicy -ResourceGroupName $resourceGroupName -VaultName $resourceName
+            foreach ($backupPolicy in $backupPolicies) {
+                Write-Verbose ('    [-] Removing Backup policy [{0}] from vault [{1}]' -f $backupPolicy.Name, $resourceName) -Verbose
+                if ($PSCmdlet.ShouldProcess(('Backup instance [{0}] from vault [{1}]' -f $backupPolicy.Name, $resourceName), 'Remove')) {
+                    $null = Remove-AzDataProtectionBackupPolicy -ResourceGroupName $resourceGroupName -VaultName $resourceName -Name $backupPolicy.name
+                }
+            }
+
+            # Remove backup vault
+            Write-Verbose ('    [-] Removing Backup vault [{0}]' -f $resourceName) -Verbose
+            if ($PSCmdlet.ShouldProcess("Backup vault with ID [$ResourceId]", 'Remove')) {
+                $null = Remove-AzDataProtectionBackupVault -ResourceGroupName $resourceGroupName -VaultName $resourceName
             }
             break
         }

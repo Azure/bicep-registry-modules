@@ -12,7 +12,7 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.ContainerService/managedClusters/agentPools` | [2024-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-08-01/managedClusters/agentPools) |
+| `Microsoft.ContainerService/managedClusters/agentPools` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerService/2024-09-01/managedClusters/agentPools) |
 
 ## Parameters
 
@@ -38,7 +38,9 @@ This module deploys an Azure Kubernetes Service (AKS) Managed Cluster Agent Pool
 | [`enableEncryptionAtHost`](#parameter-enableencryptionathost) | bool | This is only supported on certain VM sizes and in certain Azure regions. For more information, see: /azure/aks/enable-host-encryption. For security reasons, this setting should be enabled. |
 | [`enableFIPS`](#parameter-enablefips) | bool | See Add a FIPS-enabled node pool (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#add-a-fips-enabled-node-pool-preview) for more details. |
 | [`enableNodePublicIP`](#parameter-enablenodepublicip) | bool | Some scenarios may require nodes in a node pool to receive their own dedicated public IP addresses. A common scenario is for gaming workloads, where a console needs to make a direct connection to a cloud virtual machine to minimize hops. For more information see assigning a public IP per node (https://learn.microsoft.com/en-us/azure/aks/use-multiple-node-pools#assign-a-public-ip-per-node-for-your-node-pools). |
+| [`enableSecureBoot`](#parameter-enablesecureboot) | bool | Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch. |
 | [`enableUltraSSD`](#parameter-enableultrassd) | bool | Whether to enable UltraSSD. |
+| [`enableVTPM`](#parameter-enablevtpm) | bool | vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch. |
 | [`gpuInstanceProfile`](#parameter-gpuinstanceprofile) | string | GPUInstanceProfile to be used to specify GPU MIG instance profile for supported GPU VM SKU. |
 | [`kubeletDiskType`](#parameter-kubeletdisktype) | string | Determines the placement of emptyDir volumes, container runtime data root, and Kubelet ephemeral storage. |
 | [`maxCount`](#parameter-maxcount) | int | The maximum number of nodes for auto-scaling. |
@@ -113,8 +115,6 @@ Whether to enable auto-scaler.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `enableEncryptionAtHost`
 
@@ -123,8 +123,6 @@ This is only supported on certain VM sizes and in certain Azure regions. For mor
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `enableFIPS`
 
@@ -133,8 +131,6 @@ See Add a FIPS-enabled node pool (https://learn.microsoft.com/en-us/azure/aks/us
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `enableNodePublicIP`
 
@@ -143,8 +139,14 @@ Some scenarios may require nodes in a node pool to receive their own dedicated p
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 1000
+
+### Parameter: `enableSecureBoot`
+
+Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableUltraSSD`
 
@@ -153,8 +155,14 @@ Whether to enable UltraSSD.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 0
-- MaxValue: 1000
+
+### Parameter: `enableVTPM`
+
+vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `gpuInstanceProfile`
 
@@ -172,8 +180,6 @@ GPUInstanceProfile to be used to specify GPU MIG instance profile for supported 
     'MIG7g'
   ]
   ```
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `kubeletDiskType`
 
@@ -181,8 +187,6 @@ Determines the placement of emptyDir volumes, container runtime data root, and K
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `maxCount`
 
@@ -190,8 +194,6 @@ The maximum number of nodes for auto-scaling.
 
 - Required: No
 - Type: int
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `maxPods`
 
@@ -199,8 +201,6 @@ The maximum number of pods that can run on a node.
 
 - Required: No
 - Type: int
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `maxSurge`
 
@@ -208,8 +208,6 @@ This can either be set to an integer (e.g. "5") or a percentage (e.g. "50%"). If
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `minCount`
 
@@ -217,8 +215,6 @@ The minimum number of nodes for auto-scaling.
 
 - Required: No
 - Type: int
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `mode`
 
@@ -226,8 +222,6 @@ A cluster must have at least one "System" Agent Pool at all times. For additiona
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `nodeLabels`
 
@@ -235,8 +229,6 @@ The node labels to be persisted across all nodes in agent pool.
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `nodePublicIpPrefixResourceId`
 
@@ -244,8 +236,6 @@ ResourceId of the node PublicIPPrefix.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `nodeTaints`
 
@@ -253,8 +243,6 @@ The taints added to new nodes during node pool create and scale. For example, ke
 
 - Required: No
 - Type: array
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `orchestratorVersion`
 
@@ -262,8 +250,6 @@ As a best practice, you should upgrade all node pools in an AKS cluster to the s
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `osDiskSizeGB`
 
@@ -271,8 +257,6 @@ OS Disk Size in GB to be used to specify the disk size for every machine in the 
 
 - Required: No
 - Type: int
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `osDiskType`
 
@@ -287,8 +271,6 @@ The default is "Ephemeral" if the VM supports it and has a cache disk larger tha
     'Managed'
   ]
   ```
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `osSKU`
 
@@ -306,8 +288,6 @@ Specifies the OS SKU used by the agent pool. The default is Ubuntu if OSType is 
     'Windows2022'
   ]
   ```
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `osType`
 
@@ -323,8 +303,6 @@ The operating system type. The default is Linux.
     'Windows'
   ]
   ```
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `podSubnetResourceId`
 
@@ -332,8 +310,6 @@ Subnet resource ID for the pod IPs. If omitted, pod IPs are statically assigned 
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `proximityPlacementGroupResourceId`
 
@@ -341,8 +317,6 @@ The ID for the Proximity Placement Group.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `scaleDownMode`
 
@@ -358,8 +332,6 @@ Describes how VMs are added to or removed from Agent Pools. See [billing states]
     'Delete'
   ]
   ```
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `scaleSetEvictionPolicy`
 
@@ -375,8 +347,6 @@ The eviction policy specifies what to do with the VM when it is evicted. The def
     'Delete'
   ]
   ```
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `scaleSetPriority`
 
@@ -391,8 +361,6 @@ The Virtual Machine Scale Set priority.
     'Spot'
   ]
   ```
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `sourceResourceId`
 
@@ -400,8 +368,6 @@ This is the ARM ID of the source object to be used to create the target object.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `spotMaxPrice`
 
@@ -409,8 +375,6 @@ Possible values are any decimal value greater than zero or -1 which indicates th
 
 - Required: No
 - Type: int
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `tags`
 
@@ -418,8 +382,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `type`
 
@@ -427,8 +389,6 @@ The type of Agent Pool.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `vmSize`
 
@@ -437,8 +397,6 @@ VM size. VM size availability varies by region. If a node contains insufficient 
 - Required: No
 - Type: string
 - Default: `'Standard_D2s_v3'`
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `vnetSubnetResourceId`
 
@@ -446,8 +404,6 @@ Node Subnet ID. If this is not specified, a VNET and subnet will be generated an
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 1000
 
 ### Parameter: `workloadRuntime`
 
@@ -455,8 +411,6 @@ Determines the type of workload a node can run.
 
 - Required: No
 - Type: string
-- MinValue: 0
-- MaxValue: 1000
 
 ## Outputs
 

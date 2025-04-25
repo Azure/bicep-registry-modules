@@ -45,7 +45,7 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-03-01' = {
   location: enforcedLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
+module nestedDependencies '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/dependencies/defaults-dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
@@ -78,6 +78,13 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   params: {
     name: nestedDependencies.outputs.clusterName
+    deploymentUser: 'deployUser'
+    deploymentUserPassword: localAdminAndDeploymentUserPass
+    localAdminUser: 'admin-hci'
+    localAdminPassword: localAdminAndDeploymentUserPass
+    servicePrincipalId: arbDeploymentAppId
+    servicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    hciResourceProviderObjectId: hciResourceProviderObjectId
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
@@ -103,9 +110,9 @@ module testDeployment '../../../main.bicep' = {
           }
           overrideQosPolicy: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           overrideVirtualSwitchConfiguration: false
           virtualSwitchConfigurationOverrides: {
@@ -125,9 +132,9 @@ module testDeployment '../../../main.bicep' = {
           }
           overrideQosPolicy: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           overrideVirtualSwitchConfiguration: false
           virtualSwitchConfigurationOverrides: {
@@ -147,9 +154,9 @@ module testDeployment '../../../main.bicep' = {
           }
           overrideQosPolicy: true
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           overrideVirtualSwitchConfiguration: false
           virtualSwitchConfigurationOverrides: {
@@ -162,10 +169,12 @@ module testDeployment '../../../main.bicep' = {
       storageConnectivitySwitchless: false
       storageNetworks: [
         {
+          name: 'StorageNetwork0'
           adapterName: 'smb0'
           vlan: '711'
         }
         {
+          name: 'StorageNetwork1'
           adapterName: 'smb1'
           vlan: '712'
         }

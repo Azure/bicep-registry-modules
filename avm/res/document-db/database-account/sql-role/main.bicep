@@ -27,7 +27,7 @@ param roleName string = 'Reader Writer'
 ])
 param roleType string = 'CustomRole'
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
 }
 
@@ -56,7 +56,6 @@ module sqlRoleAssignment 'sql-role-assignments/main.bicep' = [
     }
     dependsOn: [
       databaseAccount
-      sqlRoleDefinition
     ]
   }
 ]

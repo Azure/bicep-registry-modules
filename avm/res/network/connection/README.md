@@ -8,6 +8,7 @@ This module deploys a Virtual Network Gateway Connection.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Notes](#Notes)
 - [Data Collection](#Data-Collection)
 
@@ -537,8 +538,6 @@ Value to specify if BGP is enabled or not.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `enablePrivateLinkFastPath`
 
@@ -547,8 +546,6 @@ Bypass the ExpressRoute gateway when accessing private-links. ExpressRoute FastP
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `enableTelemetry`
 
@@ -557,8 +554,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `expressRouteGatewayBypass`
 
@@ -567,8 +562,6 @@ Bypass ExpressRoute Gateway for data forwarding. Only available when connection 
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `localNetworkGateway2`
 
@@ -577,8 +570,6 @@ The local network gateway. Used for connection type [IPsec].
 - Required: No
 - Type: object
 - Default: `{}`
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `location`
 
@@ -587,8 +578,6 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `lock`
 
@@ -596,8 +585,6 @@ The lock settings of the service.
 
 - Required: No
 - Type: object
-- MinValue: 9
-- MaxValue: 3600
 
 **Optional parameters**
 
@@ -620,8 +607,6 @@ Specify the type of lock.
     'ReadOnly'
   ]
   ```
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `lock.name`
 
@@ -629,8 +614,6 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `peer`
 
@@ -639,8 +622,6 @@ The remote peer. Used for connection connectionType [ExpressRoute].
 - Required: No
 - Type: object
 - Default: `{}`
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `routingWeight`
 
@@ -648,8 +629,6 @@ The weight added to routes learned from this BGP speaker.
 
 - Required: No
 - Type: int
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `tags`
 
@@ -657,8 +636,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `trafficSelectorPolicies`
 
@@ -667,8 +644,6 @@ The traffic selector policies to be considered by this connection.
 - Required: No
 - Type: array
 - Default: `[]`
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `useLocalAzureIpAddress`
 
@@ -677,8 +652,6 @@ Use private local Azure IP for the connection. Only available for IPSec Virtual 
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `usePolicyBasedTrafficSelectors`
 
@@ -687,8 +660,6 @@ Enable policy-based traffic selectors.
 - Required: No
 - Type: bool
 - Default: `False`
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `virtualNetworkGateway2`
 
@@ -697,8 +668,6 @@ The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vne
 - Required: No
 - Type: object
 - Default: `{}`
-- MinValue: 9
-- MaxValue: 3600
 
 ### Parameter: `vpnSharedKey`
 
@@ -707,8 +676,6 @@ Specifies a VPN shared key. The same value has to be specified on both Virtual N
 - Required: No
 - Type: securestring
 - Default: `''`
-- MinValue: 9
-- MaxValue: 3600
 
 ## Outputs
 
@@ -718,6 +685,14 @@ Specifies a VPN shared key. The same value has to be specified on both Virtual N
 | `name` | string | The name of the remote connection. |
 | `resourceGroupName` | string | The resource group the remote connection was deployed into. |
 | `resourceId` | string | The resource ID of the remote connection. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes
 
