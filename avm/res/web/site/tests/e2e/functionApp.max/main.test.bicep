@@ -16,7 +16,7 @@ param resourceGroupName string = 'dep-${namePrefix}-web.sites-${serviceShort}-rg
 var resourceLocation = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'wsfamax'
+param serviceShort string = 'wsfaals'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
