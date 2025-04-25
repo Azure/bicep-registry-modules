@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "8377942864127974447"
+      "templateHash": "17392350263115841275""templateHash": "8377942864127974447"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2414,7 +2414,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "3444518233599497149"
+              "templateHash": "14924834330559679582""templateHash": "3444518233599497149"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -3094,7 +3094,7 @@
               "type": "Microsoft.Insights/diagnosticSettings",
               "apiVersion": "2021-05-01-preview",
               "scope": "[format('Microsoft.Sql/servers/{0}/databases/{1}', parameters('serverName'), parameters('name'))]",
-              "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+              "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', replace(parameters('name'), ' ', '_')))]",
               "properties": {
                 "copy": [
                   {
@@ -3131,7 +3131,7 @@
               "condition": "[not(empty(parameters('backupShortTermRetentionPolicy')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-{1}-shBakRetPol', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
+              "name": "[format('{0}-{1}-shBakRetPol', uniqueString(deployment().name, parameters('location')), replace(parameters('name'), ' ', '_'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -3235,7 +3235,7 @@
               "condition": "[not(empty(parameters('backupLongTermRetentionPolicy')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-{1}-lgBakRetPol', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
+              "name": "[format('{0}-{1}-lgBakRetPol', uniqueString(deployment().name, parameters('location')), replace(parameters('name'), ' ', '_'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"

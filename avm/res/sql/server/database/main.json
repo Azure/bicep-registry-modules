@@ -686,7 +686,7 @@
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
       "scope": "[format('Microsoft.Sql/servers/{0}/databases/{1}', parameters('serverName'), parameters('name'))]",
-      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', replace(parameters('name'), ' ', '_')))]",
       "properties": {
         "copy": [
           {
@@ -723,7 +723,7 @@
       "condition": "[not(empty(parameters('backupShortTermRetentionPolicy')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-shBakRetPol', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
+      "name": "[format('{0}-{1}-shBakRetPol', uniqueString(deployment().name, parameters('location')), replace(parameters('name'), ' ', '_'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -827,7 +827,7 @@
       "condition": "[not(empty(parameters('backupLongTermRetentionPolicy')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}-lgBakRetPol', uniqueString(deployment().name, parameters('location')), parameters('name'))]",
+      "name": "[format('{0}-{1}-lgBakRetPol', uniqueString(deployment().name, parameters('location')), replace(parameters('name'), ' ', '_'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

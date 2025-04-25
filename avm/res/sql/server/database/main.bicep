@@ -218,7 +218,7 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
 
 resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    name: diagnosticSetting.?name ?? '${replace(name, ' ', '_')}-diagnosticSettings'
     properties: {
       storageAccountId: diagnosticSetting.?storageAccountResourceId
       workspaceId: diagnosticSetting.?workspaceResourceId
@@ -246,7 +246,7 @@ resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
 ]
 
 module database_backupShortTermRetentionPolicy 'backup-short-term-retention-policy/main.bicep' = if (!empty(backupShortTermRetentionPolicy)) {
-  name: '${uniqueString(deployment().name, location)}-${name}-shBakRetPol'
+  name: '${uniqueString(deployment().name, location)}-${replace(name, ' ', '_')}-shBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name
@@ -256,7 +256,7 @@ module database_backupShortTermRetentionPolicy 'backup-short-term-retention-poli
 }
 
 module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy/main.bicep' = if (!empty(backupLongTermRetentionPolicy)) {
-  name: '${uniqueString(deployment().name, location)}-${name}-lgBakRetPol'
+  name: '${uniqueString(deployment().name, location)}-${replace(name, ' ', '_')}-lgBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name
