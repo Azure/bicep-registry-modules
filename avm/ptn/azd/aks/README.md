@@ -73,7 +73,6 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
       aadProfileEnableAzureRBAC: true
       aadProfileManaged: true
     }
-    location: '<location>'
     principalType: 'ServicePrincipal'
   }
 }
@@ -114,9 +113,6 @@ module aks 'br/public:avm/ptn/azd/aks:<version>' = {
         "aadProfileManaged": true
       }
     },
-    "location": {
-      "value": "<location>"
-    },
     "principalType": {
       "value": "ServicePrincipal"
     }
@@ -145,7 +141,6 @@ param aadProfile = {
   aadProfileEnableAzureRBAC: true
   aadProfileManaged: true
 }
-param location = '<location>'
 param principalType = 'ServicePrincipal'
 ```
 

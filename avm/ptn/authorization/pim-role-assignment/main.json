@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "18360545365410556681"
+      "version": "0.34.44.8038",
+      "templateHash": "17528569069639196015"
     },
     "name": "PIM Role Assignments (All scopes)",
     "description": "This module deploys a PIM Role Assignment at a Management Group, Subscription or Resource Group scope."
@@ -48,9 +48,9 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a ticket info."
       }
     },
     "pimRoleAssignmentTypeType": {
@@ -68,7 +68,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "Optional. The type of the PIM role assignment whether its active or eligible."
+        "description": "The type of the PIM role assignment whether its active or eligible."
       }
     },
     "pimActiveRoleAssignmentType": {
@@ -110,6 +110,9 @@
             "description": "Required. The schedule information for the role assignment."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for an active PIM role assignment."
       }
     },
     "pimEligibleRoleAssignmentType": {
@@ -144,6 +147,9 @@
             "description": "Required. The schedule information for the role assignment."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a PIM-eligible role assignment."
       }
     },
     "roleAssignmentScheduleType": {
@@ -163,7 +169,7 @@
         }
       },
       "metadata": {
-        "description": "Optional. The schedule information for the role assignment."
+        "description": "The schedule information for the role assignment."
       }
     },
     "permenantRoleAssignmentScheduleType": {
@@ -178,6 +184,9 @@
             "description": "Required. The type of the duration."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a permanent role assignment schedule."
       }
     },
     "timeBoundDurationRoleAssignmentScheduleType": {
@@ -204,6 +213,9 @@
             "description": "Required. The start time for the role assignment."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a time-bound role assignment schedule."
       }
     },
     "timeBoundDateTimeRoleAssignmentScheduleType": {
@@ -230,6 +242,9 @@
             "description": "Required. The start date and time for the role assignment."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for a date-bound role assignment schedule."
       }
     }
   },
@@ -433,8 +448,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "17408679000216503468"
+              "version": "0.34.44.8038",
+              "templateHash": "12447664435402346880"
             },
             "name": " PIM Role Assignments (Management Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Management Group scope."
@@ -881,8 +896,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "15073836979415881924"
+              "version": "0.34.44.8038",
+              "templateHash": "5454496355625652015"
             },
             "name": "PIM Role Assignments (Subscription scope)",
             "description": "This module deploys a PIM Role Assignment at a Subscription scope."
@@ -1337,8 +1352,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12905144514524239499"
+              "version": "0.34.44.8038",
+              "templateHash": "969688251715262024"
             },
             "name": "PIM Role Assignments (Resource Group scope)",
             "description": "This module deploys a PIM Role Assignment at a Resource Group scope."
