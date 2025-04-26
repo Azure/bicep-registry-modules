@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.'
+metadata name = 'Exclude specific zones from defaults'
+metadata description = 'This instance deploys and excludes 3 zones from the default set of zones using the parameter `privateLinkPrivateDnsZonesToExclude`. The default set of zones is defined in the module in the parameter `privateLinkPrivateDnsZones`.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-ptn-pl-pdns-zones-${serviceS
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'plpdnswaf'
+param serviceShort string = 'plpdnsexcl'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -31,15 +31,6 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
-  params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: resourceLocation
-  }
-}
-
 // ============== //
 // Test Execution //
 // ============== //
@@ -50,11 +41,10 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      virtualNetworkLinks: [
-        {
-          virtualNetworkResourceId: nestedDependencies.outputs.vnetResourceId
-          registrationEnabled: false
-        }
+      privateLinkPrivateDnsZonesToExclude: [
+        'privatelink.monitor.azure.com'
+        'privatelink.{regionCode}.backup.windowsazure.com'
+        'privatelink.{regionName}.azmk8s.io'
       ]
     }
   }

@@ -68,7 +68,7 @@ param certificatesToBeInstalled VaultSecretGroupType[]?
   'Low'
   'Spot'
 ])
-param priority string = 'Regular'
+param priority string?
 
 @description('Optional. Specifies the eviction policy for the low priority virtual machine.')
 @allowed([
@@ -523,11 +523,11 @@ module vm_nic 'modules/nic-configuration.bicep' = [
 ]
 
 resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
-  for (dataDisk, index) in dataDisks ?? []: {
+  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?id)) {
     location: location
     name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
     sku: {
-      name: dataDisk.managedDisk.storageAccountType
+      name: dataDisk.managedDisk.?storageAccountType
     }
     properties: {
       diskSizeGB: dataDisk.diskSizeGB
@@ -537,7 +537,8 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
     }
-    zones: zone != 0 && !contains(dataDisk.managedDisk.storageAccountType, 'ZRS') ? array(string(zone)) : null
+    zones: zone != 0 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS') ? array(string(zone)) : null
+    tags: dataDisk.?tags ?? tags
   }
 ]
 
@@ -586,17 +587,21 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       dataDisks: [
         for (dataDisk, index) in dataDisks ?? []: {
           lun: dataDisk.?lun ?? index
-          name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
-          diskSizeGB: dataDisk.diskSizeGB
-          createOption: (managedDataDisks[index].?id != null) ? 'Attach' : dataDisk.?createoption ?? 'Empty'
-          deleteOption: dataDisk.?deleteOption ?? 'Delete'
+          name: !empty(dataDisk.managedDisk.?id)
+            ? last(split(dataDisk.managedDisk.id ?? '', '/'))
+            : dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
+          createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?id))
+            ? 'Attach'
+            : dataDisk.?createoption ?? 'Empty'
+          deleteOption: !empty(dataDisk.managedDisk.?id) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
           caching: dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
-            storageAccountType: dataDisk.managedDisk.storageAccountType
-            id: managedDataDisks[index].?id
-            diskEncryptionSet: {
-              id: dataDisk.managedDisk.?diskEncryptionSetResourceId
-            }
+            id: dataDisk.managedDisk.?id ?? managedDataDisks[index].?id
+            diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSet')
+              ? {
+                  id: dataDisk.managedDisk.diskEncryptionSet.id
+                }
+              : null
           }
         }
       ]
@@ -659,7 +664,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       : null
     priority: priority
-    evictionPolicy: 'Regular' != priority ? evictionPolicy : null
+    evictionPolicy: !empty(priority) && priority != 'Regular' ? evictionPolicy : null
     #disable-next-line BCP036
     billingProfile: !empty(priority) && !empty(maxPriceForLowPriorityVm)
       ? {
@@ -1137,8 +1142,8 @@ type dataDiskType = {
   @description('Optional. Specifies the logical unit number of the data disk.')
   lun: int?
 
-  @description('Required. Specifies the size of an empty data disk in gigabytes.')
-  diskSizeGB: int
+  @description('Optional. Specifies the size of an empty data disk in gigabytes.')
+  diskSizeGB: int?
 
   @description('Optional. Specifies how the virtual machine should be created.')
   createOption: 'Attach' | 'Empty' | 'FromImage'?
@@ -1157,7 +1162,7 @@ type dataDiskType = {
 
   @description('Required. The managed disk parameters.')
   managedDisk: {
-    @description('Required. Specifies the storage account type for the managed disk.')
+    @description('Optional. Specifies the storage account type for the managed disk.')
     storageAccountType:
       | 'PremiumV2_LRS'
       | 'Premium_LRS'
@@ -1165,7 +1170,7 @@ type dataDiskType = {
       | 'StandardSSD_LRS'
       | 'StandardSSD_ZRS'
       | 'Standard_LRS'
-      | 'UltraSSD_LRS'
+      | 'UltraSSD_LRS'?
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
@@ -1173,6 +1178,9 @@ type dataDiskType = {
     @description('Optional. Specifies the customer managed disk id for the managed disk.')
     id: string?
   }
+
+  @description('Optional. The tags of the public IP address.')
+  tags: object?
 }
 
 type publicKeyType = {
