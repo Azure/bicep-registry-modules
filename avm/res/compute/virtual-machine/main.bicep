@@ -523,7 +523,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
 ]
 
 resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
-  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?id)) {
+  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?id) && (!empty(dataDisk.?diskIOPSReadWrite) || !empty(dataDisk.?diskMBpsReadWrite))) {
     location: location
     name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
     sku: {
@@ -590,13 +590,19 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
           name: !empty(dataDisk.managedDisk.?id)
             ? last(split(dataDisk.managedDisk.id ?? '', '/'))
             : dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
+          diskSizeGB: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?id))
+            ? null
+            : dataDisk.?diskSizeGB
           createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?id))
             ? 'Attach'
             : dataDisk.?createoption ?? 'Empty'
           deleteOption: !empty(dataDisk.managedDisk.?id) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
-          caching: dataDisk.?caching ?? 'ReadOnly'
+          caching: !empty(dataDisk.managedDisk.?id) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
             id: dataDisk.managedDisk.?id ?? managedDataDisks[index].?id
+            storageAccountType: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?id))
+              ? null
+              : dataDisk.managedDisk.?storageAccountType
             diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSet')
               ? {
                   id: dataDisk.managedDisk.diskEncryptionSet.id
