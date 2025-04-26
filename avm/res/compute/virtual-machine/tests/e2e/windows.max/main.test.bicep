@@ -58,6 +58,7 @@ module nestedDependencies 'dependencies.bicep' = {
     backupManagementServiceApplicationObjectId: backupManagementServiceEnterpriseApplicationObjectId
     dcrName: 'dep-${namePrefix}-dcr-${serviceShort}'
     logAnalyticsWorkspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+    preCreatedDiskName: 'dep-${namePrefix}-shared-disk-${serviceShort}'
   }
 }
 
@@ -234,6 +235,13 @@ module testDeployment '../../../main.bicep' = [
           diskSizeGB: 128
           managedDisk: {
             storageAccountType: 'Premium_LRS'
+          }
+        }
+        {
+          lun: 2
+          caching: 'None'
+          managedDisk: {
+            id: nestedDependencies.outputs.preCreatedDataDiskResourceId
           }
         }
       ]
