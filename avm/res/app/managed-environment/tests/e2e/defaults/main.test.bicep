@@ -36,7 +36,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
   }
 }
 

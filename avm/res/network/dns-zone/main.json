@@ -475,7 +475,7 @@
                 "description": "Required. The domain name of the authoritative name server for this SOA record."
               }
             },
-            "minimumTtl": {
+            "minimumTTL": {
               "type": "int",
               "metadata": {
                 "description": "Required. The minimum value for this SOA record. By convention this is used to determine the negative caching duration."

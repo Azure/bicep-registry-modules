@@ -554,7 +554,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-11-01",
       "name": "[format('46d3xbcp.res.app-managedenvironment.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -617,10 +617,7 @@
         "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), parameters('workloadProfiles'), null())]",
         "zoneRedundant": "[parameters('zoneRedundant')]",
         "infrastructureResourceGroup": "[parameters('infrastructureResourceGroupName')]"
-      },
-      "dependsOn": [
-        "logAnalyticsWorkspace"
-      ]
+      }
     },
     "managedEnvironment_roleAssignments": {
       "copy": {

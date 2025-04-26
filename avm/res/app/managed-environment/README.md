@@ -29,12 +29,139 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/app/managed-environment:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Enable public access](#example-3-enable-public-access)
-- [WAF-aligned](#example-4-waf-aligned)
+- [No App Logging](#example-1-no-app-logging)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Enable public access](#example-4-enable-public-access)
+- [WAF-aligned](#example-5-waf-aligned)
 
-### Example 1: _Using only defaults_
+### Example 1: _No App Logging_
+
+This instance deploys the module to use Azure Monitor for logging.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
+  name: 'managedEnvironmentDeployment'
+  params: {
+    // Required parameters
+    name: 'amemin001'
+    // Non-required parameters
+    appLogsConfiguration: {
+      destination: 'azure-monitor'
+    }
+    dockerBridgeCidr: '172.16.0.1/28'
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
+    internal: true
+    platformReservedCidr: '172.17.17.0/24'
+    platformReservedDnsIP: '172.17.17.17'
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ameamon001"
+    },
+    // Non-required parameters
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "azure-monitor"
+      }
+    },
+    "dockerBridgeCidr": {
+      "value": "172.16.0.1/28"
+    },
+    "infrastructureResourceGroupName": {
+      "value": "<infrastructureResourceGroupName>"
+    },
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
+    },
+    "internal": {
+      "value": true
+    },
+    "platformReservedCidr": {
+      "value": "172.17.17.0/24"
+    },
+    "platformReservedDnsIP": {
+      "value": "172.17.17.17"
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param name = 'amemin001'
+// Non-required parameters
+param appLogsConfiguration = {
+  destination: 'azure-monitor'
+}
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
+param internal = true
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 2: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -149,7 +276,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -507,7 +634,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 3: _Enable public access_
+### Example 4: _Enable public access_
 
 This instance deploys the module with public access enabled.
 
@@ -523,6 +650,13 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Required parameters
     name: 'amepa001'
     // Non-required parameters
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
+    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
@@ -559,6 +693,15 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amepa001"
     },
     // Non-required parameters
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "log-analytics",
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
+      }
+    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -607,6 +750,13 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'amepa001'
 // Non-required parameters
+param appLogsConfiguration = {
+  destination: 'log-analytics'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
+}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
@@ -627,7 +777,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
