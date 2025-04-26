@@ -82,6 +82,9 @@ Optional. The resource group to search the deployment in, if the scope is 'resou
 .PARAMETER ManagementGroupId
 Optional. Name of the management group to deploy into. Mandatory if deploying into a management group (management group level)
 
+.PARAMETER WaitForSeconds
+Optional. The number of seconds to wait between each check of the deployment status.
+
 .EXAMPLE
 Start-MonitorDeploymentForScope -DeploymentScope 'resourcegroup' -DeploymentName 'storageAccounts-20220105T0701282538Z' -ResourceGroupName 'validation-rg'
 
@@ -97,17 +100,20 @@ function Start-MonitorDeploymentForScope {
 
     [CmdletBinding()]
     param (
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [string] $DeploymentScope,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $true)]
         [string] $DeploymentName,
 
         [Parameter(Mandatory = $false)]
         [string] $ManagementGroupId,
 
         [Parameter(Mandatory = $false)]
-        [string] $ResourceGroupName = ''
+        [string] $ResourceGroupName
+
+        [Parameter(Mandatory = $false)]
+        [int] $WaitForSeconds = 30
     )
 
     $maxRetryCheckDeployment = 5
@@ -143,14 +149,12 @@ function Start-MonitorDeploymentForScope {
         } catch {
             Write-Verbose ('An error occurred while checking the state of the deployment. Error: [{0}]' -f $PSitem.Exception.Message)
             if ($PSitem.Exception.Message -eq 'An error occurred while sending the request.' -and $retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
-                Write-Warning "The error 'An error occurred while sending the request' occurred while checking the state of the deployment. Retrying in 15 seconds.."
+                Write-Warning "The error 'An error occurred while sending the request' occurred while checking the state of the deployment."
                 $retryCheckDeploymentCount++
-                Start-Sleep -Seconds 15
                 $retryCheck = $true
             } elseIf ($retryCheckDeploymentCount -lt $maxRetryCheckDeployment) {
-                Write-Warning "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. Retrying in 15 seconds.."
+                Write-Warning "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment."
                 $retryCheckDeploymentCount++
-                Start-Sleep -Seconds 15
                 $retryCheck = $true
             } elseIf ($retryCheckDeploymentCount -ge $maxRetryCheckDeployment) {
                 Write-Error "The error '$($PSitem.Exception.Message)' occurred while checking the state of the deployment. The maximum retry limit of $maxRetryCheckDeployment has been reached. Please review the Azure logs of deployment [$deploymentName] in scope [$deploymentScope] for further details."
@@ -173,7 +177,8 @@ function Start-MonitorDeploymentForScope {
             }
         }
 
-        Start-Sleep -Seconds 15
+        Write-Verbose "Checking again in $WaitForSeconds seconds"
+        Start-Sleep -Seconds $WaitForSeconds
     } while ($retryCheck -or $runningDeployment)
 
     return $deployments
@@ -466,13 +471,7 @@ function New-TemplateDeploymentInner {
                         }
                         if ($PSCmdlet.ShouldProcess('Resource group level deployment', 'Create')) {
                             Write-Verbose ('Creating deployment [{0}] on resource group [{1}]' -f $DeploymentInputs, $ResourceGroupName)
-                            $null = New-AzResourceGroupDeployment @DeploymentInputs -ResourceGroupName $ResourceGroupName -AsJob
-
-                            # wait 15 seconds for the deployment to be created
-                            Start-Sleep -Seconds 15
-
-                            Write-Verbose ('Starting monitoring of deployment [{0}] on resource group [{1}]' -f $deploymentName, $ResourceGroupName)
-                            $res = Start-MonitorDeploymentForScope @DeploymentInputs -DeploymentScope $deploymentScope -ResourceGroupName $ResourceGroupName
+                            $null = New-AzResourceGroupDeployment @DeploymentInputs -ResourceGroupName $ResourceGroupName
                         }
                         break
                     }
@@ -482,14 +481,7 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $SubscriptionId
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
-                            # TODO: Update to only use monitoring logic if the normal deployment failed (reduces GET requests)
-                            $null = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -AsJob
-
-                            # wait 15 seconds for the deployment to be created
-                            Start-Sleep -Seconds 15
-
-                            Write-Verbose ('Starting monitoring of deployment [{0}] on subscription [{1}]' -f $deploymentName, $SubscriptionId)
-                            $res = Start-MonitorDeploymentForScope -DeploymentName $deploymentName -DeploymentScope $deploymentScope
+                            $null = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation
                         }
                         break
                     }
@@ -524,7 +516,20 @@ function New-TemplateDeploymentInner {
                 }
                 $Stoploop = $true
             } catch {
-                if ($retryCount -ge $RetryLimit) {
+                if($PSitem.Exception.Message -eq 'An error occurred while sending the request.') {
+                    # API returned internal error. Deployment is likely still running. Switching to manual monitoring
+                    Write-Verbose ('Starting manual monitoring of deployment [{0}] on subscription [{1}]' -f $deploymentName, $SubscriptionId) -Verbose
+                    $monitoringInput = @{
+                        DeploymentName = $deploymentName
+                        DeploymentScope = $deploymentScope
+                    }
+                    if($deploymentScope -eq 'resourcegroup') {
+                        $monitoringInput['ResourceGroupName'] = $ResourceGroupName
+                    } elseif ($deploymentScope -eq 'managementgroup') {
+                        $monitoringInput['ManagementGroupId'] = $ManagementGroupId
+                    }
+                    $res = Start-MonitorDeploymentForScope @$monitoringInput
+                } elseif ($retryCount -ge $RetryLimit) {
                     if ($DoNotThrow) {
 
                         # In case a deployment failes but not throws an exception (i.e. the exception message is empty) we try to fetch it via the deployment name
