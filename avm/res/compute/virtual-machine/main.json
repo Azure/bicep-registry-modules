@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "15203958021511055126"
+      "templateHash": "17202172005801563546"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -140,8 +140,9 @@
         },
         "diskSizeGB": {
           "type": "int",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Specifies the size of an empty data disk in gigabytes."
+            "description": "Optional. Specifies the size of an empty data disk in gigabytes."
           }
         },
         "createOption": {
@@ -207,8 +208,9 @@
                 "Standard_LRS",
                 "UltraSSD_LRS"
               ],
+              "nullable": true,
               "metadata": {
-                "description": "Required. Specifies the storage account type for the managed disk."
+                "description": "Optional. Specifies the storage account type for the managed disk."
               }
             },
             "diskEncryptionSetResourceId": {
@@ -228,6 +230,13 @@
           },
           "metadata": {
             "description": "Required. The managed disk parameters."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags of the public IP address."
           }
         }
       },
@@ -1747,7 +1756,7 @@
     },
     "priority": {
       "type": "string",
-      "defaultValue": "Regular",
+      "nullable": true,
       "allowedValues": [
         "Regular",
         "Low",
@@ -2331,12 +2340,13 @@
         "name": "managedDataDisks",
         "count": "[length(coalesce(parameters('dataDisks'), createArray()))]"
       },
+      "condition": "[empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'id'))]",
       "type": "Microsoft.Compute/disks",
       "apiVersion": "2024-03-02",
       "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex(), 1), 2, '0')))]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "[coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk.storageAccountType]"
+        "name": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType')]"
       },
       "properties": {
         "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex()].diskSizeGB]",
@@ -2346,7 +2356,8 @@
         "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
         "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]"
       },
-      "zones": "[if(and(not(equals(parameters('zone'), 0)), not(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk.storageAccountType, 'ZRS'))), array(string(parameters('zone'))), null())]"
+      "zones": "[if(and(not(equals(parameters('zone'), 0)), not(contains(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType'), 'ZRS'))), array(string(parameters('zone'))), null())]",
+      "tags": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
     },
     "vm": {
       "type": "Microsoft.Compute/virtualMachines",
@@ -2373,17 +2384,13 @@
               "count": "[length(coalesce(parameters('dataDisks'), createArray()))]",
               "input": {
                 "lun": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'lun'), copyIndex('dataDisks'))]",
-                "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))]",
-                "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].diskSizeGB]",
-                "createOption": "[if(not(equals(resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null())), 'Attach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty'))]",
-                "deleteOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'deleteOption'), 'Delete')]",
+                "name": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), last(split(coalesce(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.id, ''), '/')), coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0'))))]",
+                "createOption": "[if(or(not(equals(resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null())), not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id')))), 'Attach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty'))]",
+                "deleteOption": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), 'Detach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'deleteOption'), 'Delete'))]",
                 "caching": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly')]",
                 "managedDisk": {
-                  "storageAccountType": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.storageAccountType]",
-                  "id": "[resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0'))))]",
-                  "diskEncryptionSet": {
-                    "id": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSetResourceId')]"
-                  }
+                  "id": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'), resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))))]",
+                  "diskEncryptionSet": "[if(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSet'), createObject('id', coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.diskEncryptionSet.id), null())]"
                 }
               }
             }
@@ -2394,10 +2401,10 @@
             "createOption": "[coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage')]",
             "deleteOption": "[coalesce(tryGet(parameters('osDisk'), 'deleteOption'), 'Delete')]",
             "diffDiskSettings": "[if(empty(coalesce(tryGet(parameters('osDisk'), 'diffDiskSettings'), createObject())), null(), createObject('option', 'Local', 'placement', parameters('osDisk').diffDiskSettings.placement))]",
-            "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
+            "diskSizeGB": "[tryGet(parameters('osDisk'), 'diskSizeGB')]",
             "caching": "[coalesce(tryGet(parameters('osDisk'), 'caching'), 'ReadOnly')]",
             "managedDisk": {
-              "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
+              "storageAccountType": "[tryGet(parameters('osDisk').managedDisk, 'storageAccountType')]",
               "diskEncryptionSet": {
                 "id": "[tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId')]"
               }
@@ -2443,7 +2450,7 @@
         "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupResourceId'))), createObject('id', parameters('proximityPlacementGroupResourceId')), null())]",
         "virtualMachineScaleSet": "[if(not(empty(parameters('virtualMachineScaleSetResourceId'))), createObject('id', parameters('virtualMachineScaleSetResourceId')), null())]",
         "priority": "[parameters('priority')]",
-        "evictionPolicy": "[if(not(equals('Regular', parameters('priority'))), parameters('evictionPolicy'), null())]",
+        "evictionPolicy": "[if(and(not(empty(parameters('priority'))), not(equals(parameters('priority'), 'Regular'))), parameters('evictionPolicy'), null())]",
         "billingProfile": "[if(and(not(empty(parameters('priority'))), not(empty(parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', json(parameters('maxPriceForLowPriorityVm'))), null())]",
         "host": "[if(not(empty(parameters('dedicatedHostId'))), createObject('id', parameters('dedicatedHostId')), null())]",
         "licenseType": "[if(not(empty(parameters('licenseType'))), parameters('licenseType'), null())]",
