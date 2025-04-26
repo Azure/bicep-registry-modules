@@ -110,7 +110,7 @@ function Start-MonitorDeploymentForScope {
         [string] $ManagementGroupId,
 
         [Parameter(Mandatory = $false)]
-        [string] $ResourceGroupName
+        [string] $ResourceGroupName,
 
         [Parameter(Mandatory = $false)]
         [int] $WaitForSeconds = 30
@@ -516,14 +516,14 @@ function New-TemplateDeploymentInner {
                 }
                 $Stoploop = $true
             } catch {
-                if($PSitem.Exception.Message -eq 'An error occurred while sending the request.') {
+                if ($PSitem.Exception.Message -eq 'An error occurred while sending the request.') {
                     # API returned internal error. Deployment is likely still running. Switching to manual monitoring
                     Write-Verbose ('Starting manual monitoring of deployment [{0}] on subscription [{1}]' -f $deploymentName, $SubscriptionId) -Verbose
                     $monitoringInput = @{
-                        DeploymentName = $deploymentName
+                        DeploymentName  = $deploymentName
                         DeploymentScope = $deploymentScope
                     }
-                    if($deploymentScope -eq 'resourcegroup') {
+                    if ($deploymentScope -eq 'resourcegroup') {
                         $monitoringInput['ResourceGroupName'] = $ResourceGroupName
                     } elseif ($deploymentScope -eq 'managementgroup') {
                         $monitoringInput['ManagementGroupId'] = $ManagementGroupId
