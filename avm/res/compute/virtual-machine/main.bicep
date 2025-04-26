@@ -60,7 +60,7 @@ param userData string = ''
 param customData string = ''
 
 @description('Optional. Specifies set of certificates that should be installed onto the virtual machine.')
-param certificatesToBeInstalled VaultSecretGroupType[]?
+param certificatesToBeInstalled vaultSecretGroupType[]?
 
 @description('Optional. Specifies the priority for the virtual machine.')
 @allowed([
@@ -1312,7 +1312,7 @@ type autoShutDownConfigType = {
 
 @export()
 @description('The type describing the set of certificates that should be installed onto the virtual machine.')
-type VaultSecretGroupType = {
+type vaultSecretGroupType = {
   @description('Optional. The relative URL of the Key Vault containing all of the certificates in VaultCertificates.')
   sourceVault: subResourceType?
 

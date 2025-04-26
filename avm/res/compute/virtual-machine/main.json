@@ -554,7 +554,7 @@
         "description": "The type describing the configuration profile."
       }
     },
-    "VaultSecretGroupType": {
+    "vaultSecretGroupType": {
       "type": "object",
       "properties": {
         "sourceVault": {
@@ -1808,7 +1808,7 @@
     "certificatesToBeInstalled": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/VaultSecretGroupType"
+        "$ref": "#/definitions/vaultSecretGroupType"
       },
       "nullable": true,
       "metadata": {
