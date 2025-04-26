@@ -67,6 +67,12 @@ param virtualRouterAsn int?
 @description('Optional. VirtualRouter IPs.')
 param virtualRouterIps array?
 
+@description('Optional. The auto scale configuration for the virtual router.')
+param virtualRouterAutoScaleConfiguration {
+  @description('Required. The minimum number of virtual routers in the scale set.')
+  minCount: int
+}?
+
 @description('Required. Resource ID of the virtual WAN to link to.')
 param virtualWanResourceId string
 
@@ -111,7 +117,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualHub 'Microsoft.Network/virtualHubs@2023-11-01' = {
+resource virtualHub 'Microsoft.Network/virtualHubs@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -150,6 +156,9 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2023-11-01' = {
     virtualHubRouteTableV2s: virtualHubRouteTableV2s
     virtualRouterAsn: virtualRouterAsn
     virtualRouterIps: virtualRouterIps
+    virtualRouterAutoScaleConfiguration: {
+      minCapacity: virtualRouterAutoScaleConfiguration.?minCount
+    }
     virtualWan: {
       id: virtualWanResourceId
     }
@@ -182,6 +191,7 @@ module virtualHub_routingIntent 'routingIntent/main.bicep' = if (!empty(azureFir
   }
 }
 
+// Initially create the route tables without routes
 module virtualHub_routeTables 'hubRouteTable/main.bicep' = [
   for (routeTable, index) in (hubRouteTables ?? []): {
     name: '${uniqueString(deployment().name, location)}-routeTable-${index}'
@@ -236,7 +246,22 @@ type hubRouteTableType = {
   labels: array?
 
   @description('Optional. List of all routes.')
-  routes: array?
+  routes: {
+    @description('Required. The address prefix for the route.')
+    destinations: string[]
+
+    @description('Required. The destination type for the route.')
+    destinationType: ('CIDR')
+
+    @description('Required. The name of the route.')
+    name: string
+
+    @description('Required. The next hop type for the route.')
+    nextHopType: ('ResourceId')
+
+    @description('Required. The next hop IP address for the route.')
+    nextHop: string
+  }[]?
 }
 
 @export()
