@@ -482,6 +482,7 @@ function New-TemplateDeploymentInner {
                             $null = Set-AzContext -Subscription $SubscriptionId
                         }
                         if ($PSCmdlet.ShouldProcess('Subscription level deployment', 'Create')) {
+                            # TODO: Update to only use monitoring logic if the normal deployment failed (reduces GET requests)
                             $null = New-AzSubscriptionDeployment @DeploymentInputs -Location $DeploymentMetadataLocation -AsJob
 
                             # wait 15 seconds for the deployment to be created
