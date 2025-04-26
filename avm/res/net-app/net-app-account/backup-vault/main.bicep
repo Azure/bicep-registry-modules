@@ -13,11 +13,11 @@ param netAppAccountName string
 @description('Optional. The list of backups to create.')
 param backups backupType[]?
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existing = {
   name: netAppAccountName
 }
 
-resource backupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2024-09-01' = {
+resource backupVault 'Microsoft.NetApp/netAppAccounts/backupVaults@2025-01-01' = {
   name: name
   parent: netAppAccount
   location: location

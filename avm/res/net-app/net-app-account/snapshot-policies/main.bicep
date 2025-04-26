@@ -25,11 +25,11 @@ param weeklySchedule weeklyScheduleType?
 @description('Optional. Indicates whether the snapshot policy is enabled.')
 param snapEnabled bool = false
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existing = {
   name: netAppAccountName
 }
 
-resource snapshotPolicies 'Microsoft.NetApp/netAppAccounts/snapshotPolicies@2024-09-01' = {
+resource snapshotPolicies 'Microsoft.NetApp/netAppAccounts/snapshotPolicies@2025-01-01' = {
   name: name
   parent: netAppAccount
   location: location

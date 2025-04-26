@@ -37,6 +37,9 @@ param diagnosticWorkspaceId string
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
 
+@description('Optional. Deploy the agent pool for the container registry. Default value is true.')
+param deployAgentPool bool = true
+
 // ------------------
 // VARIABLES
 // ------------------
@@ -138,7 +141,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.6.0' = {
   }
 }
 
-resource agentPool 'Microsoft.ContainerRegistry/registries/agentPools@2019-06-01-preview' = {
+resource agentPool 'Microsoft.ContainerRegistry/registries/agentPools@2019-06-01-preview' = if (deployAgentPool) {
   name: '${containerRegistryName}/agentpool'
   location: location
   properties: {
@@ -164,7 +167,7 @@ output containerRegistryName string = acr.outputs.name
 output containerRegistryLoginServer string = acr.outputs.loginServer
 
 @description('The name of the internal agent pool for the container registry.')
-output containerRegistryAgentPoolName string = agentPool.name
+output containerRegistryAgentPoolName string = (deployAgentPool) ? agentPool.name : ''
 
 @description('The resource ID of the user assigned managed identity for the container registry to be able to pull images from it.')
 output containerRegistryUserAssignedIdentityId string = acrUserAssignedIdentity.outputs.resourceId
