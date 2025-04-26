@@ -44,11 +44,11 @@ The following section provides usage examples for the module, which were used to
 - [Using large parameter set for Linux](#example-3-using-large-parameter-set-for-linux)
 - [WAF-aligned](#example-4-waf-aligned)
 - [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
-- [Using guest configuration for Windows](#example-6-using-guest-configuration-for-windows)
-- [Using a host pool to register the VM](#example-7-using-a-host-pool-to-register-the-vm)
-- [Using large parameter set for Windows](#example-8-using-large-parameter-set-for-windows)
-- [Deploy a VM with nVidia graphic card](#example-9-deploy-a-vm-with-nvidia-graphic-card)
-- [Deploying Windows VM with premium SSDv2 data disk](#example-10-deploying-windows-vm-with-premium-ssdv2-data-disk)
+- [Deploying Windows VM with premium SSDv2 data disk and shared disk](#example-6-deploying-windows-vm-with-premium-ssdv2-data-disk-and-shared-disk)
+- [Using guest configuration for Windows](#example-7-using-guest-configuration-for-windows)
+- [Using a host pool to register the VM](#example-8-using-a-host-pool-to-register-the-vm)
+- [Using large parameter set for Windows](#example-9-using-large-parameter-set-for-windows)
+- [Deploy a VM with nVidia graphic card](#example-10-deploy-a-vm-with-nvidia-graphic-card)
 - [Using disk encryption set for the VM.](#example-11-using-disk-encryption-set-for-the-vm)
 - [Adding the VM to a VMSS.](#example-12-adding-the-vm-to-a-vmss)
 - [Deploying Windows VM in a defined zone with a premium zrs data disk](#example-13-deploying-windows-vm-in-a-defined-zone-with-a-premium-zrs-data-disk)
@@ -714,7 +714,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         Role: 'DeploymentValidation'
       }
     }
-    hibernationEnabled: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -1061,9 +1060,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     },
-    "hibernationEnabled": {
-      "value": true
-    },
     "location": {
       "value": "<location>"
     },
@@ -1376,7 +1372,6 @@ param extensionNetworkWatcherAgentConfig = {
     Role: 'DeploymentValidation'
   }
 }
-param hibernationEnabled = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -2497,7 +2492,244 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Using guest configuration for Windows_
+### Example 6: _Deploying Windows VM with premium SSDv2 data disk and shared disk_
+
+This instance deploys the module with premium SSDv2 data disk and attachment of an existing shared disk.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwindisk'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_D2s_v3'
+    zone: 1
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    dataDisks: [
+      {
+        caching: 'None'
+        diskIOPSReadWrite: 3000
+        diskMBpsReadWrite: 125
+        diskSizeGB: 1024
+        managedDisk: {
+          storageAccountType: 'PremiumV2_LRS'
+        }
+      }
+      {
+        caching: 'None'
+        managedDisk: {
+          id: '<id>'
+        }
+      }
+    ]
+    location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwindisk"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 1
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "None",
+          "diskIOPSReadWrite": 3000,
+          "diskMBpsReadWrite": 125,
+          "diskSizeGB": 1024,
+          "managedDisk": {
+            "storageAccountType": "PremiumV2_LRS"
+          }
+        },
+        {
+          "caching": "None",
+          "managedDisk": {
+            "id": "<id>"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwindisk'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 1
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param dataDisks = [
+  {
+    caching: 'None'
+    diskIOPSReadWrite: 3000
+    diskMBpsReadWrite: 125
+    diskSizeGB: 1024
+    managedDisk: {
+      storageAccountType: 'PremiumV2_LRS'
+    }
+  }
+  {
+    caching: 'None'
+    managedDisk: {
+      id: '<id>'
+    }
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Using guest configuration for Windows_
 
 This instance deploys the module with the a guest configuration.
 
@@ -2769,7 +3001,7 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 7: _Using a host pool to register the VM_
+### Example 8: _Using a host pool to register the VM_
 
 This instance deploys the module and registers it in a host pool.
 
@@ -3011,7 +3243,7 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 8: _Using large parameter set for Windows_
+### Example 9: _Using large parameter set for Windows_
 
 This instance deploys the module with most of its features enabled.
 
@@ -3187,6 +3419,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
         name: 'datadisk02'
       }
+      {
+        caching: 'None'
+        lun: 2
+        managedDisk: {
+          id: '<id>'
+        }
+      }
     ]
     enableAutomaticUpdates: true
     encryptionAtHost: false
@@ -3303,7 +3542,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         Role: 'DeploymentValidation'
       }
     }
-    hibernationEnabled: true
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -3551,6 +3789,13 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             "storageAccountType": "Premium_LRS"
           },
           "name": "datadisk02"
+        },
+        {
+          "caching": "None",
+          "lun": 2,
+          "managedDisk": {
+            "id": "<id>"
+          }
         }
       ]
     },
@@ -3690,9 +3935,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "Role": "DeploymentValidation"
         }
       }
-    },
-    "hibernationEnabled": {
-      "value": true
     },
     "location": {
       "value": "<location>"
@@ -3925,6 +4167,13 @@ param dataDisks = [
     }
     name: 'datadisk02'
   }
+  {
+    caching: 'None'
+    lun: 2
+    managedDisk: {
+      id: '<id>'
+    }
+  }
 ]
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
@@ -4041,7 +4290,6 @@ param extensionNetworkWatcherAgentConfig = {
     Role: 'DeploymentValidation'
   }
 }
-param hibernationEnabled = true
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -4085,7 +4333,7 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _Deploy a VM with nVidia graphic card_
+### Example 10: _Deploy a VM with nVidia graphic card_
 
 This instance deploys the module for a VM with dedicated nVidia graphic card.
 
@@ -4133,6 +4381,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionNvidiaGpuDriverWindows: {
       enabled: true
     }
+    hibernationEnabled: true
     location: '<location>'
   }
 }
@@ -4205,6 +4454,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "enabled": true
       }
     },
+    "hibernationEnabled": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     }
@@ -4257,208 +4509,7 @@ param adminPassword = '<adminPassword>'
 param extensionNvidiaGpuDriverWindows = {
   enabled: true
 }
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 10: _Deploying Windows VM with premium SSDv2 data disk_
-
-This instance deploys the module with premium SSDv2 data disk.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
-  params: {
-    // Required parameters
-    adminUsername: 'localAdminUser'
-    imageReference: {
-      offer: 'WindowsServer'
-      publisher: 'MicrosoftWindowsServer'
-      sku: '2022-datacenter-azure-edition'
-      version: 'latest'
-    }
-    name: 'cvmwinssd2'
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig01'
-            subnetResourceId: '<subnetResourceId>'
-          }
-        ]
-        nicSuffix: '-nic-01'
-      }
-    ]
-    osDisk: {
-      caching: 'ReadWrite'
-      diskSizeGB: 128
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-      }
-    }
-    osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
-    zone: 1
-    // Non-required parameters
-    adminPassword: '<adminPassword>'
-    dataDisks: [
-      {
-        caching: 'None'
-        diskIOPSReadWrite: 3000
-        diskMBpsReadWrite: 125
-        diskSizeGB: 1024
-        managedDisk: {
-          storageAccountType: 'PremiumV2_LRS'
-        }
-      }
-    ]
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "adminUsername": {
-      "value": "localAdminUser"
-    },
-    "imageReference": {
-      "value": {
-        "offer": "WindowsServer",
-        "publisher": "MicrosoftWindowsServer",
-        "sku": "2022-datacenter-azure-edition",
-        "version": "latest"
-      }
-    },
-    "name": {
-      "value": "cvmwinssd2"
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig01",
-              "subnetResourceId": "<subnetResourceId>"
-            }
-          ],
-          "nicSuffix": "-nic-01"
-        }
-      ]
-    },
-    "osDisk": {
-      "value": {
-        "caching": "ReadWrite",
-        "diskSizeGB": 128,
-        "managedDisk": {
-          "storageAccountType": "Premium_LRS"
-        }
-      }
-    },
-    "osType": {
-      "value": "Windows"
-    },
-    "vmSize": {
-      "value": "Standard_D2s_v3"
-    },
-    "zone": {
-      "value": 1
-    },
-    // Non-required parameters
-    "adminPassword": {
-      "value": "<adminPassword>"
-    },
-    "dataDisks": {
-      "value": [
-        {
-          "caching": "None",
-          "diskIOPSReadWrite": 3000,
-          "diskMBpsReadWrite": 125,
-          "diskSizeGB": 1024,
-          "managedDisk": {
-            "storageAccountType": "PremiumV2_LRS"
-          }
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/compute/virtual-machine:<version>'
-
-// Required parameters
-param adminUsername = 'localAdminUser'
-param imageReference = {
-  offer: 'WindowsServer'
-  publisher: 'MicrosoftWindowsServer'
-  sku: '2022-datacenter-azure-edition'
-  version: 'latest'
-}
-param name = 'cvmwinssd2'
-param nicConfigurations = [
-  {
-    ipConfigurations: [
-      {
-        name: 'ipconfig01'
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-    nicSuffix: '-nic-01'
-  }
-]
-param osDisk = {
-  caching: 'ReadWrite'
-  diskSizeGB: 128
-  managedDisk: {
-    storageAccountType: 'Premium_LRS'
-  }
-}
-param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
-param zone = 1
-// Non-required parameters
-param adminPassword = '<adminPassword>'
-param dataDisks = [
-  {
-    caching: 'None'
-    diskIOPSReadWrite: 3000
-    diskMBpsReadWrite: 125
-    diskSizeGB: 1024
-    managedDisk: {
-      storageAccountType: 'PremiumV2_LRS'
-    }
-  }
-]
+param hibernationEnabled = true
 param location = '<location>'
 ```
 
@@ -7246,7 +7297,6 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
 | [`managedDisk`](#parameter-datadisksmanageddisk) | object | The managed disk parameters. |
 
 **Optional parameters**
@@ -7258,15 +7308,10 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 | [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
 | [`diskIOPSReadWrite`](#parameter-datadisksdiskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. |
 | [`diskMBpsReadWrite`](#parameter-datadisksdiskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. |
+| [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
 | [`lun`](#parameter-datadiskslun) | int | Specifies the logical unit number of the data disk. |
 | [`name`](#parameter-datadisksname) | string | The disk name. |
-
-### Parameter: `dataDisks.diskSizeGB`
-
-Specifies the size of an empty data disk in gigabytes.
-
-- Required: Yes
-- Type: int
+| [`tags`](#parameter-datadiskstags) | object | The tags of the public IP address. |
 
 ### Parameter: `dataDisks.managedDisk`
 
@@ -7275,37 +7320,13 @@ The managed disk parameters.
 - Required: Yes
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
 | [`id`](#parameter-datadisksmanageddiskid) | string | Specifies the customer managed disk id for the managed disk. |
-
-### Parameter: `dataDisks.managedDisk.storageAccountType`
-
-Specifies the storage account type for the managed disk.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Premium_LRS'
-    'Premium_ZRS'
-    'PremiumV2_LRS'
-    'Standard_LRS'
-    'StandardSSD_LRS'
-    'StandardSSD_ZRS'
-    'UltraSSD_LRS'
-  ]
-  ```
+| [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
 
 ### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
 
@@ -7320,6 +7341,25 @@ Specifies the customer managed disk id for the managed disk.
 
 - Required: No
 - Type: string
+
+### Parameter: `dataDisks.managedDisk.storageAccountType`
+
+Specifies the storage account type for the managed disk.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'PremiumV2_LRS'
+    'Standard_LRS'
+    'StandardSSD_LRS'
+    'StandardSSD_ZRS'
+    'UltraSSD_LRS'
+  ]
+  ```
 
 ### Parameter: `dataDisks.caching`
 
@@ -7379,6 +7419,13 @@ The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps mean
 - Required: No
 - Type: int
 
+### Parameter: `dataDisks.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes.
+
+- Required: No
+- Type: int
+
 ### Parameter: `dataDisks.lun`
 
 Specifies the logical unit number of the data disk.
@@ -7392,6 +7439,13 @@ The disk name.
 
 - Required: No
 - Type: string
+
+### Parameter: `dataDisks.tags`
+
+The tags of the public IP address.
+
+- Required: No
+- Type: object
 
 ### Parameter: `dedicatedHostId`
 
@@ -7898,7 +7952,6 @@ Specifies the priority for the virtual machine.
 
 - Required: No
 - Type: string
-- Default: `'Regular'`
 - Allowed:
   ```Bicep
   [
