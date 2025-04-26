@@ -486,7 +486,7 @@ module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-Key'
   params: {
     serverName: server.name
-    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${customerManagedKey.?keyVersion}'
+    name: '${cMKKeyVault.name}${customerManagedKey.?keyName}${!empty(customerManagedKey.?keyVersion)? '_${customerManagedKey.?keyVersion}' : ''}'
     serverKeyType: 'AzureKeyVault'
     uri: !empty(customerManagedKey.?keyVersion)
       ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'

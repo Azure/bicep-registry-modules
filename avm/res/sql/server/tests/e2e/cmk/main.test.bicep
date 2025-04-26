@@ -63,18 +63,16 @@ module testDeployment '../../../main.bicep' = [
         principalType: 'Application'
         tenantId: tenant().tenantId
       }
-
       managedIdentities: {
         systemAssigned: false
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-
       customerManagedKey: {
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
         keyName: nestedDependencies.outputs.keyVaultKeyName
-        keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
+        // keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
         autoRotationEnabled: true
       }
     }
