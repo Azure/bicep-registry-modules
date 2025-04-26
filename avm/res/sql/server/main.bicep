@@ -231,9 +231,7 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
     keyId: customerManagedKey != null
       ? !empty(customerManagedKey.?keyVersion)
           ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-          : (customerManagedKey.?autoRotationEnabled ?? true)
-              ? cMKKeyVault::cMKKey.properties.keyUri
-              : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+          : cMKKeyVault::cMKKey.properties.keyUriWithVersion
       : null
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
@@ -486,13 +484,11 @@ module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-Key'
   params: {
     serverName: server.name
-    name: '${cMKKeyVault.name}${customerManagedKey.?keyName}${!empty(customerManagedKey.?keyVersion)? '_${customerManagedKey.?keyVersion}' : ''}'
+    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${!empty(customerManagedKey.?keyVersion) ? customerManagedKey.?keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))}'
     serverKeyType: 'AzureKeyVault'
     uri: !empty(customerManagedKey.?keyVersion)
       ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-      : (customerManagedKey.?autoRotationEnabled ?? true)
-          ? cMKKeyVault::cMKKey.properties.keyUri
-          : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+      : cMKKeyVault::cMKKey.properties.keyUriWithVersion
   }
 }
 
@@ -885,18 +881,6 @@ type elasticPoolPropertyType = {
 
   @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
   zoneRedundant: bool?
-}
-
-@export()
-type encryptionProtectorType = {
-  @description('Required. The name of the server key.')
-  serverKeyName: string
-
-  @description('Optional. The encryption protector type.')
-  serverKeyType: 'ServiceManaged' | 'AzureKeyVault'?
-
-  @description('Optional. Key auto rotation opt-in flag.')
-  autoRotationEnabled: bool?
 }
 
 @export()

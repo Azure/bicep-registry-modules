@@ -72,7 +72,7 @@ module testDeployment '../../../main.bicep' = [
       customerManagedKey: {
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
         keyName: nestedDependencies.outputs.keyVaultKeyName
-        // keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
+        keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
         autoRotationEnabled: true
       }
     }
