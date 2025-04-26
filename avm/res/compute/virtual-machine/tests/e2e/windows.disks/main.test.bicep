@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying Windows VM with premium SSDv2 data disk'
-metadata description = 'This instance deploys the module with premium SSDv2 data disk.'
+metadata name = 'Deploying Windows VM with premium SSDv2 data disk and shared disk'
+metadata description = 'This instance deploys the module with premium SSDv2 data disk and attachment of an existing shared disk.'
 
 // ========== //
 // Parameters //
@@ -16,7 +16,7 @@ param resourceGroupName string = 'dep-${namePrefix}-compute.virtualMachines-${se
 var enforcedLocation = 'uksouth'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cvmwinssd2'
+param serviceShort string = 'cvmwindisk'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
@@ -42,6 +42,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: enforcedLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    sharedDiskName: 'dep-${namePrefix}-shared-disk-${serviceShort}'
   }
 }
 
@@ -92,10 +93,21 @@ module testDeployment '../../../main.bicep' = [
           diskIOPSReadWrite: 3000
           diskMBpsReadWrite: 125
         }
+        {
+          caching: 'None'
+          managedDisk: {
+            id: nestedDependencies.outputs.sharedDataDiskResourceId
+          }
+        }
       ]
       osType: 'Windows'
       vmSize: 'Standard_D2s_v3'
       adminPassword: password
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
 ]
