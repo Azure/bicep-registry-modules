@@ -23,7 +23,7 @@ resource virtualHub 'Microsoft.Network/virtualHubs@2022-11-01' existing = {
   name: virtualHubName
 }
 
-resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2023-11-01' = {
+resource routingIntent 'Microsoft.Network/virtualHubs/routingIntent@2024-05-01' = {
   name: name
   parent: virtualHub
   properties: {
