@@ -265,8 +265,9 @@ param semanticSearch string = 'disabled'
 ])
 param searchServiceSku string = 'standard'
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Conditional. The managed identity definition for this resource. Required if `assignRbacRole` is `true` and `managedIdentityName` is `null`.')
-param managedIdentities managedIdentitiesType?
+param managedIdentities managedIdentityAllType?
 
 // ============== //
 // Resources      //
@@ -479,15 +480,3 @@ output applicationInsightsInstrumentationKey string = !empty(applicationInsights
 output systemAssignedMiPrincipalId string = !empty(searchServiceName)
   ? searchService.outputs.systemAssignedMIPrincipalId
   : ''
-
-// ================ //
-// Definitions      //
-// ================ //
-
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.')
-  userAssignedResourceIds: string[]?
-}?
