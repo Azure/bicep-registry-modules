@@ -28,7 +28,7 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.logic.workflow"
+      - ".github/workflows/avm.res.logic.workflow.yml"
       - "avm/res/logic/workflow/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
