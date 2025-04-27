@@ -1009,7 +1009,7 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensio
 }
 
 resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' = if (!empty(guestConfiguration)) {
-  name: 'AzureWindowsBaseline'
+  name: guestConfiguration.?name ?? 'AzureWindowsBaseline'
   scope: vm
   dependsOn: [
     vm_azureGuestConfigurationExtension
