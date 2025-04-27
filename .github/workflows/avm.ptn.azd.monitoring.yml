@@ -28,7 +28,7 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.azd.monitoring"
+      - ".github/workflows/avm.ptn.azd.monitoring.yml"
       - "avm/ptn/azd/monitoring/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
