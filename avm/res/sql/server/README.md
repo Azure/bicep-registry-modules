@@ -1936,7 +1936,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     ]
     elasticPools: [
       {
-        availabilityZone: 1
+        availabilityZone: -1
         maintenanceConfigurationId: '<maintenanceConfigurationId>'
         name: 'sqlswaf-ep-001'
         sku: {
@@ -2077,7 +2077,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
-          "availabilityZone": 1,
+          "availabilityZone": -1,
           "maintenanceConfigurationId": "<maintenanceConfigurationId>",
           "name": "sqlswaf-ep-001",
           "sku": {
@@ -2226,7 +2226,7 @@ param databases = [
 ]
 param elasticPools = [
   {
-    availabilityZone: 1
+    availabilityZone: -1
     maintenanceConfigurationId: '<maintenanceConfigurationId>'
     name: 'sqlswaf-ep-001'
     sku: {

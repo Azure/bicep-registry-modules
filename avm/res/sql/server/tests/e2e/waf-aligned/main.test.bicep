@@ -100,7 +100,7 @@ module testDeployment '../../../main.bicep' = [
             tier: 'GeneralPurpose'
             capacity: 10
           }
-          availabilityZone: -1
+          availabilityZone: -1 // SQLDB_GP_Gen5_10 does not support availability zone 1
           maintenanceConfigurationId: '${subscription().id}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_${enforcedLocation}_DB_1'
         }
       ]
