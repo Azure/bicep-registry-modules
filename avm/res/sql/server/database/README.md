@@ -24,6 +24,7 @@ This module deploys an Azure SQL Server Database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the database. |
 
 **Conditional parameters**
@@ -37,7 +38,6 @@ This module deploys an Azure SQL Server Database.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-autopausedelay) | int | Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled. |
-| [`availabilityZone`](#parameter-availabilityzone) | string | Specifies the availability zone the database is pinned to. |
 | [`backupLongTermRetentionPolicy`](#parameter-backuplongtermretentionpolicy) | object | The long term backup retention policy to create for the database. |
 | [`backupShortTermRetentionPolicy`](#parameter-backupshorttermretentionpolicy) | object | The short term backup retention policy to create for the database. |
 | [`catalogCollation`](#parameter-catalogcollation) | string | Collation of the metadata catalog. |
@@ -77,6 +77,22 @@ This module deploys an Azure SQL Server Database.
 | [`useFreeLimit`](#parameter-usefreelimit) | bool | Whether or not the database uses free monthly limits. Allowed on one database in a subscription. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this database is zone redundant. |
 
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
+
 ### Parameter: `name`
 
 The name of the database.
@@ -98,23 +114,6 @@ Time in minutes after which database is automatically paused. A value of -1 mean
 - Required: No
 - Type: int
 - Default: `-1`
-
-### Parameter: `availabilityZone`
-
-Specifies the availability zone the database is pinned to.
-
-- Required: No
-- Type: string
-- Default: `'NoPreference'`
-- Allowed:
-  ```Bicep
-  [
-    '1'
-    '2'
-    '3'
-    'NoPreference'
-  ]
-  ```
 
 ### Parameter: `backupLongTermRetentionPolicy`
 
