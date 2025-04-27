@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "15203958021511055126"
+      "templateHash": "27759724821220232"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -545,7 +545,7 @@
         "description": "The type describing the configuration profile."
       }
     },
-    "VaultSecretGroupType": {
+    "vaultSecretGroupType": {
       "type": "object",
       "properties": {
         "sourceVault": {
@@ -1738,7 +1738,7 @@
     "certificatesToBeInstalled": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/VaultSecretGroupType"
+        "$ref": "#/definitions/vaultSecretGroupType"
       },
       "nullable": true,
       "metadata": {
@@ -2394,10 +2394,10 @@
             "createOption": "[coalesce(tryGet(parameters('osDisk'), 'createOption'), 'FromImage')]",
             "deleteOption": "[coalesce(tryGet(parameters('osDisk'), 'deleteOption'), 'Delete')]",
             "diffDiskSettings": "[if(empty(coalesce(tryGet(parameters('osDisk'), 'diffDiskSettings'), createObject())), null(), createObject('option', 'Local', 'placement', parameters('osDisk').diffDiskSettings.placement))]",
-            "diskSizeGB": "[parameters('osDisk').diskSizeGB]",
+            "diskSizeGB": "[tryGet(parameters('osDisk'), 'diskSizeGB')]",
             "caching": "[coalesce(tryGet(parameters('osDisk'), 'caching'), 'ReadOnly')]",
             "managedDisk": {
-              "storageAccountType": "[parameters('osDisk').managedDisk.storageAccountType]",
+              "storageAccountType": "[tryGet(parameters('osDisk').managedDisk, 'storageAccountType')]",
               "diskEncryptionSet": {
                 "id": "[tryGet(parameters('osDisk').managedDisk, 'diskEncryptionSetResourceId')]"
               }
