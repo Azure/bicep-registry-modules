@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "12958059023831274015"
+      "templateHash": "45619230915265432"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -2594,7 +2594,7 @@
       "type": "Microsoft.GuestConfiguration/guestConfigurationAssignments",
       "apiVersion": "2020-06-25",
       "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
-      "name": "AzureWindowsBaseline",
+      "name": "[coalesce(tryGet(parameters('guestConfiguration'), 'name'), 'AzureWindowsBaseline')]",
       "location": "[parameters('location')]",
       "properties": {
         "guestConfiguration": "[parameters('guestConfiguration')]"

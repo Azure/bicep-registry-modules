@@ -1661,10 +1661,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
     managedIdentities: {
       systemAssigned: true
@@ -1994,12 +1990,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "maintenanceConfigurationResourceId": {
       "value": "<maintenanceConfigurationResourceId>"
     },
@@ -2285,10 +2275,6 @@ param extensionNetworkWatcherAgentConfig = {
   }
 }
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
 param managedIdentities = {
   systemAssigned: true
@@ -2801,7 +2787,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           value: '75'
         }
       ]
-      name: 'AzureWindowsBaseline'
+      name: 'myAzureWindowsBaseline'
       version: '1.*'
     }
     location: '<location>'
@@ -2904,7 +2890,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             "value": "75"
           }
         ],
-        "name": "AzureWindowsBaseline",
+        "name": "myAzureWindowsBaseline",
         "version": "1.*"
       }
     },
@@ -2989,7 +2975,7 @@ param guestConfiguration = {
       value: '75'
     }
   ]
-  name: 'AzureWindowsBaseline'
+  name: 'myAzureWindowsBaseline'
   version: '1.*'
 }
 param location = '<location>'
@@ -8549,7 +8535,7 @@ Comments:
           "subnetResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>",
         }
       ],
-      "nsgId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>",
+      "networkSecurityGroupResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>",
       "roleAssignments": [
         {
           "roleDefinitionIdOrName": "Reader",
@@ -8614,7 +8600,7 @@ nicConfigurations: {
           subnetResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>'
         }
       ]
-      nsgId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>'
+      networkSecurityGroupResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>'
       roleAssignments: [
         {
           roleDefinitionIdOrName: 'Reader'
