@@ -725,23 +725,6 @@ resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15
   }
 }
 
-module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
-  params: {
-    virtualMachineName: vm.name
-    name: extensionAadJoinConfig.?name ?? 'AADLogin'
-    location: location
-    publisher: 'Microsoft.Azure.ActiveDirectory'
-    type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
-    typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
-    autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
-    enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAadJoinConfig.?settings ?? {}
-    supressFailures: extensionAadJoinConfig.?supressFailures ?? false
-    tags: extensionAadJoinConfig.?tags ?? tags
-  }
-}
-
 module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDomainJoinConfig, 'enabled') && extensionDomainJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
   params: {
@@ -760,8 +743,25 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
       Password: extensionDomainJoinPassword
     }
   }
+}
+
+module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
+  params: {
+    virtualMachineName: vm.name
+    name: extensionAadJoinConfig.?name ?? 'AADLogin'
+    location: location
+    publisher: 'Microsoft.Azure.ActiveDirectory'
+    type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
+    typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
+    autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
+    enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
+    settings: extensionAadJoinConfig.?settings ?? {}
+    supressFailures: extensionAadJoinConfig.?supressFailures ?? false
+    tags: extensionAadJoinConfig.?tags ?? tags
+  }
   dependsOn: [
-    vm_aadJoinExtension
+    vm_domainJoinExtension
   ]
 }
 
@@ -791,7 +791,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
     tags: extensionAntiMalwareConfig.?tags ?? tags
   }
   dependsOn: [
-    vm_domainJoinExtension
+    vm_aadJoinExtension
   ]
 }
 
