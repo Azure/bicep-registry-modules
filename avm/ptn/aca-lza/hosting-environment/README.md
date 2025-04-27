@@ -144,7 +144,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     }
     vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
-    workloadName: '<workloadName>'
+    workloadName: 'camin'
   }
 }
 ```
@@ -213,7 +213,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "linux"
     },
     "workloadName": {
-      "value": "<workloadName>"
+      "value": "camin"
     }
   }
 }
@@ -250,7 +250,7 @@ param tags = {
 }
 param vmAuthenticationType = 'sshPublicKey'
 param vmJumpboxOSType = 'linux'
-param workloadName = '<workloadName>'
+param workloadName = 'camin'
 ```
 
 </details>
@@ -297,7 +297,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     }
     vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
-    workloadName: '<workloadName>'
+    workloadName: 'cahub'
   }
 }
 ```
@@ -387,7 +387,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "linux"
     },
     "workloadName": {
-      "value": "<workloadName>"
+      "value": "cahub"
     }
   }
 }
@@ -431,7 +431,7 @@ param tags = {
 }
 param vmAuthenticationType = 'sshPublicKey'
 param vmJumpboxOSType = 'linux'
-param workloadName = '<workloadName>'
+param workloadName = 'cahub'
 ```
 
 </details>
@@ -476,7 +476,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
     }
     vmAuthenticationType: 'sshPublicKey'
     vmJumpboxOSType: 'linux'
-    workloadName: '<workloadName>'
+    workloadName: 'cawaf'
   }
 }
 ```
@@ -560,7 +560,7 @@ module hostingEnvironment 'br/public:avm/ptn/aca-lza/hosting-environment:<versio
       "value": "linux"
     },
     "workloadName": {
-      "value": "<workloadName>"
+      "value": "cawaf"
     }
   }
 }
@@ -602,7 +602,7 @@ param tags = {
 }
 param vmAuthenticationType = 'sshPublicKey'
 param vmJumpboxOSType = 'linux'
-param workloadName = '<workloadName>'
+param workloadName = 'cawaf'
 ```
 
 </details>
