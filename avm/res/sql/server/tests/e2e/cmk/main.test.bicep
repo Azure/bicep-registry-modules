@@ -56,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
+      primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       administrators: {
         azureADOnlyAuthentication: true
         login: 'myspn'
