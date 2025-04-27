@@ -100,7 +100,7 @@ module testDeployment '../../../main.bicep' = [
             tier: 'GeneralPurpose'
             capacity: 10
           }
-          availabilityZone: 1
+          availabilityZone: -1
           maintenanceConfigurationId: '${subscription().id}/providers/Microsoft.Maintenance/publicMaintenanceConfigurations/SQL_${enforcedLocation}_DB_1'
         }
       ]
