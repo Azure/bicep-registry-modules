@@ -191,16 +191,16 @@ function Set-AvmGitHubIssueForWorkflow {
 
                 # CASE : Module workflow
                 # ----------------------
-                $moduleIsOprhaned = $module.ModuleStatus -eq 'Orphaned :eyes:' -and [string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)
+                $moduleIsOrphaned = $module.ModuleStatus -eq 'Orphaned :eyes:' -and [string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)
 
-                $ProjectNumber = $moduleIsOprhaned ? $issueTriageProjectNumber : $moduleIssuesProjectNumber
+                $ProjectNumber = $moduleIsOrphaned ? $issueTriageProjectNumber : $moduleIssuesProjectNumber
                 if ($PSCmdlet.ShouldProcess("Issue [$issueName] to project [AVM - Issue Triage]", 'Add')) {
                     $null = Add-GitHubIssueToProject -Repo $repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
                 }
 
                 # Handle comments & ownership
                 # ----------------------------
-                $taggingComment = $moduleIsOprhaned ? @"
+                $taggingComment = $moduleIsOrphaned ? @"
 > [!IMPORTANT]
 > This module is currently orphaned (has no owner), therefore expect a higher response time.
 > @Azure/avm-core-team-technical-bicep, the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run.
@@ -209,7 +209,7 @@ function Set-AvmGitHubIssueForWorkflow {
 > @Azure/$($module.ModuleOwnersGHTeam), the workflow for the ``$moduleName`` module has failed. Please investigate the failed workflow run. If you are not able to do so, please inform the AVM core team to take over.
 "@
 
-                if (-not $moduleIsOprhaned) {
+                if (-not $moduleIsOrphaned) {
                     # If not orphaned we should assign the issue to the module owner
                     # --------------------------------------------------------------
                     if ($PSCmdlet.ShouldProcess(('Owner [{0}] to issue [{1}]' -f $module.PrimaryModuleOwnerGHHandle, $issueName), 'Assign')) {
