@@ -246,7 +246,7 @@ resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
 ]
 
 module database_backupShortTermRetentionPolicy 'backup-short-term-retention-policy/main.bicep' = if (!empty(backupShortTermRetentionPolicy)) {
-  name: '${uniqueString(deployment().name, location)}-${replace(name, ' ', '_')}-shBakRetPol'
+  name: '${uniqueString(deployment().name, location)}-shBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name
@@ -256,7 +256,7 @@ module database_backupShortTermRetentionPolicy 'backup-short-term-retention-poli
 }
 
 module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy/main.bicep' = if (!empty(backupLongTermRetentionPolicy)) {
-  name: '${uniqueString(deployment().name, location)}-${replace(name, ' ', '_')}-lgBakRetPol'
+  name: '${uniqueString(deployment().name, location)}-lgBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name
