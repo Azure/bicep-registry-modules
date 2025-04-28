@@ -321,6 +321,17 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         Test-Path $WorkflowPath | Should -Be $true -Because "path [$WorkflowPath] should exist."
     }
 
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have expected environment variables.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+
+        param(
+            [hashtable] $EnvVariables
+        )
+
+        $missingEnvironmentVariables = @('workflowPath', 'modulePath') | Where-Object { -not $EnvVariables.ContainsKey($_) }
+        $missingEnvironmentVariables.Count | Should -Be 0 -Because ('the number of missing environment variables should be 0, but got [{0}]' -f ($missingEnvironmentVariables -join ', '))
+    }
+
     It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have [workflowPath] environment variable with value [.github/workflows/<WorkflowFileName>].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
 
         param(
@@ -328,9 +339,15 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
             [hashtable] $EnvVariables
         )
 
-        $EnvVariables.Keys | Should -Contain 'workflowPath'
-        $EnvVariables['workflowPath'] | Should -Be ".github/workflows/$workflowFileName"
+        $expectedEnvironmentVariable = 'workflowPath'
+        if (-not $EnvVariables.ContainsKey($expectedEnvironmentVariable)) {
+            Set-ItResult -Skipped -Because "Skipping the test for the value of the environment variable [$expectedEnvironmentVariable] as it does not exist."
+            return
+        }
+
+        $EnvVariables[$expectedEnvironmentVariable] | Should -Be ".github/workflows/$workflowFileName"
     }
+
 
     It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have [modulePath] environment variable with value [<relativeModulePath>].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
 
@@ -339,26 +356,34 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
             [hashtable] $EnvVariables
         )
 
-        $EnvVariables.Keys | Should -Contain 'modulePath'
-        $EnvVariables['modulePath'] | Should -Be $RelativeModulePath
+        $expectedEnvironmentVariable = 'modulePath'
+        if (-not $EnvVariables.ContainsKey($expectedEnvironmentVariable)) {
+            Set-ItResult -Skipped -Because "Skipping the test for the value of the environment variable [$expectedEnvironmentVariable] as it does not exist."
+            return
+        }
+
+        $EnvVariables[$expectedEnvironmentVariable] | Should -Be $RelativeModulePath
     }
 
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have a runtime parameter [customLocation].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have expected runtime parameters.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
 
         param(
             [hashtable] $workflowDipatchTriggerDefaults
         )
 
-        $workflowDipatchTriggerDefaults.Keys | Should -Contain 'customLocation'
-    }
-
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have a runtime parameter [staticValidation].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
-
-        param(
-            [hashtable] $workflowDipatchTriggerDefaults
+        $expectedRuntimeParameters = @(
+            'customLocation',
+            'staticValidation',
+            'deploymentValidation',
+            'removeDeployment'
         )
 
-        $workflowDipatchTriggerDefaults.Keys | Should -Contain 'staticValidation'
+        $missingRuntimeParameters = $expectedRuntimeParameters | Where-Object {
+            -not $workflowDipatchTriggerDefaults.ContainsKey($_)
+        }
+
+        $missingRuntimeParameters.Count | Should -Be 0 -Because ('the number of missing runtime parameters should be 0, but got [{0}]. Please refer to other module workflows for reference.' -f ($missingRuntimeParameters -join ', '))
     }
 
     It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]''s [staticValidation] runtime parameter should have a default value of [true].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
@@ -367,16 +392,13 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
             [hashtable] $workflowDipatchTriggerDefaults
         )
 
-        $workflowDipatchTriggerDefaults.staticValidation.default | Should -Be $true
-    }
+        $expectedRuntimeParameter = 'staticValidation'
+        if (-not $workflowDipatchTriggerDefaults.ContainsKey($expectedRuntimeParameter)) {
+            Set-ItResult -Skipped -Because "Skipping the test for the default value of the runtime parameter [$expectedRuntimeParameter] as it does not exist."
+            return
+        }
 
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have a runtime parameter [deploymentValidation].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
-
-        param(
-            [hashtable] $workflowDipatchTriggerDefaults
-        )
-
-        $workflowDipatchTriggerDefaults.Keys | Should -Contain 'deploymentValidation'
+        $workflowDipatchTriggerDefaults.$expectedRuntimeParameter.default | Should -Be $true
     }
 
     It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]''s [deploymentValidation] runtime parameter should have a default value of [true].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
@@ -385,17 +407,15 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
             [hashtable] $workflowDipatchTriggerDefaults
         )
 
-        $workflowDipatchTriggerDefaults.deploymentValidation.default | Should -Be $true
+        $expectedRuntimeParameter = 'deploymentValidation'
+        if (-not $workflowDipatchTriggerDefaults.ContainsKey($expectedRuntimeParameter)) {
+            Set-ItResult -Skipped -Because "Skipping the test for the default value of the runtime parameter [$expectedRuntimeParameter] as it does not exist."
+            return
+        }
+
+        $workflowDipatchTriggerDefaults.$expectedRuntimeParameter.default | Should -Be $true
     }
 
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] should have a runtime parameter [removeDeployment].' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
-
-        param(
-            [hashtable] $workflowDipatchTriggerDefaults
-        )
-
-        $workflowDipatchTriggerDefaults.Keys | Should -Contain 'removeDeployment'
-    }
 
     It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]''s [customLocation] runtime parameter should not have a default value.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
 
@@ -403,7 +423,13 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
             [hashtable] $workflowDipatchTriggerDefaults
         )
 
-        $workflowDipatchTriggerDefaults.customLocation.Keys | Should -Not -Contain 'default' -Because 'the defaults of the workflow would apply to all test cases of the module. If you need to enforce a specific location, consider introducing a `var enforcedLocation = ''<aLocation>''` variable in the test cases to replace the `resourceLocation` parameter instead.'
+        $expectedRuntimeParameter = 'customLocation'
+        if (-not $workflowDipatchTriggerDefaults.ContainsKey($expectedRuntimeParameter)) {
+            Set-ItResult -Skipped -Because "Skipping the test for the default value of the runtime parameter [$expectedRuntimeParameter] as it does not exist."
+            return
+        }
+
+        $workflowDipatchTriggerDefaults.$expectedRuntimeParameter.Keys | Should -Not -Contain 'default' -Because 'the defaults of the workflow would apply to all test cases of the module. If you need to enforce a specific location, consider introducing a `var enforcedLocation = ''<aLocation>''` variable in the test cases to replace the `resourceLocation` parameter instead.'
     }
 
     It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>] Should have only the [main] branch as a push trigger.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
@@ -416,69 +442,50 @@ Describe 'Pipeline tests' -Tag 'Pipeline' {
         $PushTrigger.branches | Should -Contain 'main'
     }
 
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have the path [.github/actions/templates/avm-**] as a push trigger.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have the expected push trigger path filters.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
 
         param(
             [hashtable] $PushTrigger
         )
 
-        $PushTrigger.paths | Should -Contain '.github/actions/templates/avm-**'
+        $expectedPushTriggerPathFilters = @(
+            '.github/actions/templates/avm-**',
+            '.github/workflows/avm.template.module.yml',
+            ".github/workflows/$WorkflowFileName",
+            "$RelativeModulePath/**",
+            'utilities/pipelines/**',
+            '!utilities/pipelines/platform/**',
+            '!*/**/README.md'
+        )
+
+        $missingPushTriggerPathFilters = $expectedPushTriggerPathFilters | Where-Object {
+            -not $PushTrigger.Paths.Contains($_)
+        }
+
+        $missingPushTriggerPathFilters.Count | Should -Be 0 -Because ('the number of missing push trigger path filters should be 0, but got [{0}].' -f ($missingPushTriggerPathFilters -join ', '))
     }
 
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have the path [.github/workflows/avm.template.module.yml] as a push trigger.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
+    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should only have the expected push trigger path filters.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
 
         param(
             [hashtable] $PushTrigger
         )
 
-        $PushTrigger.paths | Should -Contain '.github/workflows/avm.template.module.yml'
-    }
-
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have the path [.github/workflows/<WorkflowFileName>] as a push trigger. ' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
-
-        param(
-            [string] $WorkflowFileName,
-            [hashtable] $PushTrigger
+        $expectedPushTriggerPathFilters = @(
+            '.github/actions/templates/avm-**',
+            '.github/workflows/avm.template.module.yml',
+            ".github/workflows/$WorkflowFileName",
+            "$RelativeModulePath/**",
+            'utilities/pipelines/**',
+            '!utilities/pipelines/platform/**',
+            '!*/**/README.md'
         )
 
-        $PushTrigger.paths | Should -Contain ".github/workflows/$WorkflowFileName"
-    }
+        $excessPushTriggerPathFilters = $PushTrigger.Paths | Where-Object {
+            -not $expectedPushTriggerPathFilters.Contains($_)
+        }
 
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have the path [<RelativeModulePath>/**] as a push trigger.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
-
-        param(
-            [string] $RelativeModulePath,
-            [hashtable] $PushTrigger
-        )
-
-        $PushTrigger.paths | Should -Contain "$RelativeModulePath/**"
-    }
-
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have the path [utilities/pipelines/**] as a push trigger.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
-
-        param(
-            [hashtable] $PushTrigger
-        )
-
-        $PushTrigger.paths | Should -Contain 'utilities/pipelines/**'
-    }
-
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have the path [!utilities/pipelines/platform/**] as a push trigger.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
-
-        param(
-            [hashtable] $PushTrigger
-        )
-
-        $PushTrigger.paths | Should -Contain '!utilities/pipelines/platform/**'
-    }
-
-    It '[<moduleFolderName>] GitHub workflow [<WorkflowFileName>]. Should have the path [!*/**/README.md] as a push trigger.' -TestCases ($pipelineTestCases | Where-Object { $_.workflowFileExists }) {
-
-        param(
-            [hashtable] $PushTrigger
-        )
-
-        $PushTrigger.paths | Should -Contain '!*/**/README.md'
+        $excessPushTriggerPathFilters.Count | Should -Be 0 -Because ('the number of excess push trigger path filters should be 0, but got [{0}].' -f ($excessPushTriggerPathFilters -join ', '))
     }
 }
 
