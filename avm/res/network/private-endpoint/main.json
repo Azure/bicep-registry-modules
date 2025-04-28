@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "7551972959536498344"
+      "version": "0.34.44.8038",
+      "templateHash": "17696861317540766095"
     },
     "name": "Private Endpoints",
     "description": "This module deploys a Private Endpoint."
@@ -433,7 +433,7 @@
     },
     "privateEndpoint": {
       "type": "Microsoft.Network/privateEndpoints",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -521,8 +521,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15534698908285836761"
+              "version": "0.34.44.8038",
+              "templateHash": "13997305779829540948"
             },
             "name": "Private Endpoint Private DNS Zone Groups",
             "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -594,12 +594,12 @@
             "privateEndpoint": {
               "existing": true,
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('privateEndpointName')]"
             },
             "privateDnsZoneGroup": {
               "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
               "properties": {
                 "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -663,7 +663,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+      "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
     },
     "customDnsConfigs": {
       "type": "array",

@@ -46,14 +46,15 @@ The following section provides usage examples for the module, which were used to
 
 - [With an administrator](#example-1-with-an-administrator)
 - [With audit settings](#example-2-with-audit-settings)
-- [Using only defaults](#example-3-using-only-defaults)
-- [Using elastic pool](#example-4-using-elastic-pool)
-- [Using failover groups](#example-5-using-failover-groups)
-- [Deploying with a key vault reference to save secrets](#example-6-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-7-using-large-parameter-set)
-- [With a secondary database](#example-8-with-a-secondary-database)
-- [With vulnerability assessment](#example-9-with-vulnerability-assessment)
-- [WAF-aligned](#example-10-waf-aligned)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-3-using-customer-managed-keys-with-user-assigned-identity)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using elastic pool](#example-5-using-elastic-pool)
+- [Using failover groups](#example-6-using-failover-groups)
+- [Deploying with a key vault reference to save secrets](#example-7-deploying-with-a-key-vault-reference-to-save-secrets)
+- [Using large parameter set](#example-8-using-large-parameter-set)
+- [With a secondary database](#example-9-with-a-secondary-database)
+- [With vulnerability assessment](#example-10-with-vulnerability-assessment)
+- [WAF-aligned](#example-11-waf-aligned)
 
 ### Example 1: _With an administrator_
 
@@ -241,7 +242,134 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module with Customer-Managed-Keys using a User-Assigned Identity to access the key.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module server 'br/public:avm/res/sql/server:<version>' = {
+  name: 'serverDeployment'
+  params: {
+    // Required parameters
+    name: 'sscmk001'
+    // Non-required parameters
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: 'myspn'
+      principalType: 'Application'
+      sid: '<sid>'
+      tenantId: '<tenantId>'
+    }
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "sscmk001"
+    },
+    // Non-required parameters
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "myspn",
+        "principalType": "Application",
+        "sid": "<sid>",
+        "tenantId": "<tenantId>"
+      }
+    },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": true,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/sql/server:<version>'
+
+// Required parameters
+param name = 'sscmk001'
+// Non-required parameters
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: 'myspn'
+  principalType: 'Application'
+  sid: '<sid>'
+  tenantId: '<tenantId>'
+}
+param customerManagedKey = {
+  autoRotationEnabled: true
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
+```
+
+</details>
+<p>
+
+### Example 4: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -315,7 +443,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 4: _Using elastic pool_
+### Example 5: _Using elastic pool_
 
 This instance deploys the module with an elastic pool.
 
@@ -335,10 +463,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     administratorLoginPassword: '<administratorLoginPassword>'
     elasticPools: [
       {
+        availabilityZone: -1
         name: 'ssep-ep-001'
         zoneRedundant: false
       }
       {
+        availabilityZone: -1
         name: 'ssep-ep-002'
         perDatabaseSettings: {
           maxCapacity: '4'
@@ -383,10 +513,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
+          "availabilityZone": -1,
           "name": "ssep-ep-001",
           "zoneRedundant": false
         },
         {
+          "availabilityZone": -1,
           "name": "ssep-ep-002",
           "perDatabaseSettings": {
             "maxCapacity": "4",
@@ -425,10 +557,12 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param elasticPools = [
   {
+    availabilityZone: -1
     name: 'ssep-ep-001'
     zoneRedundant: false
   }
   {
+    availabilityZone: -1
     name: 'ssep-ep-002'
     perDatabaseSettings: {
       maxCapacity: '4'
@@ -448,7 +582,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Using failover groups_
+### Example 6: _Using failover groups_
 
 This instance deploys the module with failover groups.
 
@@ -468,6 +602,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     administratorLoginPassword: '<administratorLoginPassword>'
     databases: [
       {
+        availabilityZone: -1
         maxSizeBytes: 2147483648
         name: 'ssfog-db1'
         sku: {
@@ -477,6 +612,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         zoneRedundant: false
       }
       {
+        availabilityZone: -1
         maxSizeBytes: 2147483648
         name: 'ssfog-db2'
         sku: {
@@ -487,6 +623,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         zoneRedundant: false
       }
       {
+        availabilityZone: -1
         maxSizeBytes: 2147483648
         name: 'ssfog-db3'
         sku: {
@@ -573,6 +710,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "databases": {
       "value": [
         {
+          "availabilityZone": -1,
           "maxSizeBytes": 2147483648,
           "name": "ssfog-db1",
           "sku": {
@@ -582,6 +720,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "zoneRedundant": false
         },
         {
+          "availabilityZone": -1,
           "maxSizeBytes": 2147483648,
           "name": "ssfog-db2",
           "sku": {
@@ -592,6 +731,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "zoneRedundant": false
         },
         {
+          "availabilityZone": -1,
           "maxSizeBytes": 2147483648,
           "name": "ssfog-db3",
           "sku": {
@@ -674,6 +814,7 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param databases = [
   {
+    availabilityZone: -1
     maxSizeBytes: 2147483648
     name: 'ssfog-db1'
     sku: {
@@ -683,6 +824,7 @@ param databases = [
     zoneRedundant: false
   }
   {
+    availabilityZone: -1
     maxSizeBytes: 2147483648
     name: 'ssfog-db2'
     sku: {
@@ -693,6 +835,7 @@ param databases = [
     zoneRedundant: false
   }
   {
+    availabilityZone: -1
     maxSizeBytes: 2147483648
     name: 'ssfog-db3'
     sku: {
@@ -754,7 +897,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Deploying with a key vault reference to save secrets_
+### Example 7: _Deploying with a key vault reference to save secrets_
 
 This instance deploys the module saving all its secrets in a key vault.
 
@@ -774,6 +917,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     administratorLoginPassword: '<administratorLoginPassword>'
     databases: [
       {
+        availabilityZone: -1
         name: 'myDatabase'
         zoneRedundant: false
       }
@@ -814,6 +958,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "databases": {
       "value": [
         {
+          "availabilityZone": -1,
           "name": "myDatabase",
           "zoneRedundant": false
         }
@@ -850,6 +995,7 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param databases = [
   {
+    availabilityZone: -1
     name: 'myDatabase'
     zoneRedundant: false
   }
@@ -865,7 +1011,7 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 7: _Using large parameter set_
+### Example 8: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -883,8 +1029,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     // Non-required parameters
     administratorLogin: 'adminUserName'
     administratorLoginPassword: '<administratorLoginPassword>'
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
     databases: [
       {
+        availabilityZone: -1
         backupLongTermRetentionPolicy: {
           monthlyRetention: 'P6M'
         }
@@ -903,6 +1056,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
         elasticPoolResourceId: '<elasticPoolResourceId>'
         licenseType: 'LicenseIncluded'
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<databaseIdentityResourceId>'
+          ]
+        }
         maxSizeBytes: 34359738368
         name: 'sqlsmaxdb-001'
         sku: {
@@ -914,6 +1072,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     ]
     elasticPools: [
       {
+        availabilityZone: -1
         name: 'sqlsmax-ep-001'
         sku: {
           capacity: 10
@@ -922,22 +1081,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       }
     ]
-    encryptionProtectorObj: {
-      serverKeyName: '<serverKeyName>'
-      serverKeyType: 'AzureKeyVault'
-    }
     firewallRules: [
       {
         endIpAddress: '0.0.0.0'
         name: 'AllowAllWindowsAzureIps'
         startIpAddress: '0.0.0.0'
-      }
-    ]
-    keys: [
-      {
-        name: '<name>'
-        serverKeyType: 'AzureKeyVault'
-        uri: '<uri>'
       }
     ]
     location: '<location>'
@@ -948,10 +1096,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
-        '<managedIdentityResourceId>'
+        '<serverIdentityResourceId>'
       ]
     }
-    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -1015,7 +1163,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       {
         ignoreMissingVnetServiceEndpoint: true
         name: 'newVnetRule1'
-        virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+        virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
       }
     ]
     vulnerabilityAssessmentsObj: {
@@ -1046,18 +1194,29 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "sqlsmax"
     },
+    // Non-required parameters
     "administratorLogin": {
       "value": "adminUserName"
     },
     "administratorLoginPassword": {
       "value": "<administratorLoginPassword>"
     },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": true,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    },
     "databases": {
       "value": [
         {
+          "availabilityZone": -1,
           "backupLongTermRetentionPolicy": {
             "monthlyRetention": "P6M"
           },
@@ -1076,6 +1235,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ],
           "elasticPoolResourceId": "<elasticPoolResourceId>",
           "licenseType": "LicenseIncluded",
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<databaseIdentityResourceId>"
+            ]
+          },
           "maxSizeBytes": 34359738368,
           "name": "sqlsmaxdb-001",
           "sku": {
@@ -1089,6 +1253,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
+          "availabilityZone": -1,
           "name": "sqlsmax-ep-001",
           "sku": {
             "capacity": 10,
@@ -1098,27 +1263,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       ]
     },
-    "encryptionProtectorObj": {
-      "value": {
-        "serverKeyName": "<serverKeyName>",
-        "serverKeyType": "AzureKeyVault"
-      }
-    },
     "firewallRules": {
       "value": [
         {
           "endIpAddress": "0.0.0.0",
           "name": "AllowAllWindowsAzureIps",
           "startIpAddress": "0.0.0.0"
-        }
-      ]
-    },
-    "keys": {
-      "value": [
-        {
-          "name": "<name>",
-          "serverKeyType": "AzureKeyVault",
-          "uri": "<uri>"
         }
       ]
     },
@@ -1135,12 +1285,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": {
         "systemAssigned": true,
         "userAssignedResourceIds": [
-          "<managedIdentityResourceId>"
+          "<serverIdentityResourceId>"
         ]
       }
     },
-    "primaryUserAssignedIdentityId": {
-      "value": "<primaryUserAssignedIdentityId>"
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
     },
     "privateEndpoints": {
       "value": [
@@ -1216,7 +1366,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         {
           "ignoreMissingVnetServiceEndpoint": true,
           "name": "newVnetRule1",
-          "virtualNetworkSubnetId": "<virtualNetworkSubnetId>"
+          "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
         }
       ]
     },
@@ -1253,8 +1403,15 @@ param name = 'sqlsmax'
 // Non-required parameters
 param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
+param customerManagedKey = {
+  autoRotationEnabled: true
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
 param databases = [
   {
+    availabilityZone: -1
     backupLongTermRetentionPolicy: {
       monthlyRetention: 'P6M'
     }
@@ -1273,6 +1430,11 @@ param databases = [
     ]
     elasticPoolResourceId: '<elasticPoolResourceId>'
     licenseType: 'LicenseIncluded'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<databaseIdentityResourceId>'
+      ]
+    }
     maxSizeBytes: 34359738368
     name: 'sqlsmaxdb-001'
     sku: {
@@ -1284,6 +1446,7 @@ param databases = [
 ]
 param elasticPools = [
   {
+    availabilityZone: -1
     name: 'sqlsmax-ep-001'
     sku: {
       capacity: 10
@@ -1292,22 +1455,11 @@ param elasticPools = [
     }
   }
 ]
-param encryptionProtectorObj = {
-  serverKeyName: '<serverKeyName>'
-  serverKeyType: 'AzureKeyVault'
-}
 param firewallRules = [
   {
     endIpAddress: '0.0.0.0'
     name: 'AllowAllWindowsAzureIps'
     startIpAddress: '0.0.0.0'
-  }
-]
-param keys = [
-  {
-    name: '<name>'
-    serverKeyType: 'AzureKeyVault'
-    uri: '<uri>'
   }
 ]
 param location = '<location>'
@@ -1318,10 +1470,10 @@ param lock = {
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
-    '<managedIdentityResourceId>'
+    '<serverIdentityResourceId>'
   ]
 }
-param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -1385,7 +1537,7 @@ param virtualNetworkRules = [
   {
     ignoreMissingVnetServiceEndpoint: true
     name: 'newVnetRule1'
-    virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+    virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
   }
 ]
 param vulnerabilityAssessmentsObj = {
@@ -1405,7 +1557,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 8: _With a secondary database_
+### Example 9: _With a secondary database_
 
 This instance deploys the module with a secondary database.
 
@@ -1425,6 +1577,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     administratorLoginPassword: '<administratorLoginPassword>'
     databases: [
       {
+        availabilityZone: -1
         createMode: 'Secondary'
         maxSizeBytes: 2147483648
         name: '<name>'
@@ -1472,6 +1625,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "databases": {
       "value": [
         {
+          "availabilityZone": -1,
           "createMode": "Secondary",
           "maxSizeBytes": 2147483648,
           "name": "<name>",
@@ -1515,6 +1669,7 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param databases = [
   {
+    availabilityZone: -1
     createMode: 'Secondary'
     maxSizeBytes: 2147483648
     name: '<name>'
@@ -1537,7 +1692,7 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _With vulnerability assessment_
+### Example 10: _With vulnerability assessment_
 
 This instance deploys the module with a vulnerability assessment.
 
@@ -1562,7 +1717,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     securityAlertPolicies: [
       {
         emailAccountAdmins: true
@@ -1627,8 +1782,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
       }
     },
-    "primaryUserAssignedIdentityId": {
-      "value": "<primaryUserAssignedIdentityId>"
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
     },
     "securityAlertPolicies": {
       "value": [
@@ -1688,7 +1843,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param securityAlertPolicies = [
   {
     emailAccountAdmins: true
@@ -1720,7 +1875,7 @@ param vulnerabilityAssessmentsObj = {
 </details>
 <p>
 
-### Example 10: _WAF-aligned_
+### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -1743,8 +1898,15 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       sid: '<sid>'
       tenantId: '<tenantId>'
     }
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
     databases: [
       {
+        availabilityZone: 1
         backupLongTermRetentionPolicy: {
           monthlyRetention: 'P6M'
         }
@@ -1774,6 +1936,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     ]
     elasticPools: [
       {
+        availabilityZone: -1
         maintenanceConfigurationId: '<maintenanceConfigurationId>'
         name: 'sqlswaf-ep-001'
         sku: {
@@ -1783,16 +1946,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         }
       }
     ]
-    encryptionProtectorObj: {
-      serverKeyName: '<serverKeyName>'
-      serverKeyType: 'AzureKeyVault'
-    }
-    keys: [
-      {
-        serverKeyType: 'AzureKeyVault'
-        uri: '<uri>'
-      }
-    ]
     location: '<location>'
     managedIdentities: {
       systemAssigned: true
@@ -1800,7 +1953,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -1836,7 +1989,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       {
         ignoreMissingVnetServiceEndpoint: true
         name: 'newVnetRule1'
-        virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+        virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
       }
     ]
     vulnerabilityAssessmentsObj: {
@@ -1867,9 +2020,11 @@ module server 'br/public:avm/res/sql/server:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "sqlswaf"
     },
+    // Non-required parameters
     "administrators": {
       "value": {
         "azureADOnlyAuthentication": true,
@@ -1879,9 +2034,18 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         "tenantId": "<tenantId>"
       }
     },
+    "customerManagedKey": {
+      "value": {
+        "autoRotationEnabled": true,
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "keyVersion": "<keyVersion>"
+      }
+    },
     "databases": {
       "value": [
         {
+          "availabilityZone": 1,
           "backupLongTermRetentionPolicy": {
             "monthlyRetention": "P6M"
           },
@@ -1913,6 +2077,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
+          "availabilityZone": -1,
           "maintenanceConfigurationId": "<maintenanceConfigurationId>",
           "name": "sqlswaf-ep-001",
           "sku": {
@@ -1920,20 +2085,6 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "name": "GP_Gen5",
             "tier": "GeneralPurpose"
           }
-        }
-      ]
-    },
-    "encryptionProtectorObj": {
-      "value": {
-        "serverKeyName": "<serverKeyName>",
-        "serverKeyType": "AzureKeyVault"
-      }
-    },
-    "keys": {
-      "value": [
-        {
-          "serverKeyType": "AzureKeyVault",
-          "uri": "<uri>"
         }
       ]
     },
@@ -1948,8 +2099,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
       }
     },
-    "primaryUserAssignedIdentityId": {
-      "value": "<primaryUserAssignedIdentityId>"
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
     },
     "privateEndpoints": {
       "value": [
@@ -1995,7 +2146,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         {
           "ignoreMissingVnetServiceEndpoint": true,
           "name": "newVnetRule1",
-          "virtualNetworkSubnetId": "<virtualNetworkSubnetId>"
+          "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
         }
       ]
     },
@@ -2037,8 +2188,15 @@ param administrators = {
   sid: '<sid>'
   tenantId: '<tenantId>'
 }
+param customerManagedKey = {
+  autoRotationEnabled: true
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  keyVersion: '<keyVersion>'
+}
 param databases = [
   {
+    availabilityZone: 1
     backupLongTermRetentionPolicy: {
       monthlyRetention: 'P6M'
     }
@@ -2068,6 +2226,7 @@ param databases = [
 ]
 param elasticPools = [
   {
+    availabilityZone: -1
     maintenanceConfigurationId: '<maintenanceConfigurationId>'
     name: 'sqlswaf-ep-001'
     sku: {
@@ -2077,16 +2236,6 @@ param elasticPools = [
     }
   }
 ]
-param encryptionProtectorObj = {
-  serverKeyName: '<serverKeyName>'
-  serverKeyType: 'AzureKeyVault'
-}
-param keys = [
-  {
-    serverKeyType: 'AzureKeyVault'
-    uri: '<uri>'
-  }
-]
 param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
@@ -2094,7 +2243,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -2130,7 +2279,7 @@ param virtualNetworkRules = [
   {
     ignoreMissingVnetServiceEndpoint: true
     name: 'newVnetRule1'
-    virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+    virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
   }
 ]
 param vulnerabilityAssessmentsObj = {
@@ -2165,22 +2314,21 @@ param vulnerabilityAssessmentsObj = {
 | [`administratorLogin`](#parameter-administratorlogin) | string | The administrator username for the server. Required if no `administrators` object for AAD authentication is provided. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. Required if no `administrators` object for AAD authentication is provided. |
 | [`administrators`](#parameter-administrators) | object | The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided. |
-| [`primaryUserAssignedIdentityId`](#parameter-primaryuserassignedidentityid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
+| [`primaryUserAssignedIdentityResourceId`](#parameter-primaryuserassignedidentityresourceid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition for server TDE. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`encryptionProtectorObj`](#parameter-encryptionprotectorobj) | object | The encryption protection configuration. |
 | [`failoverGroups`](#parameter-failovergroups) | array | The failover groups configuration. |
 | [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant CMK scenario. |
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the server. |
 | [`isIPv6Enabled`](#parameter-isipv6enabled) | string | Whether or not to enable IPv6 support for this server. |
-| [`keyId`](#parameter-keyid) | string | A CMK URI of the key to use for encryption. |
 | [`keys`](#parameter-keys) | array | The keys to configure. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -2209,7 +2357,6 @@ The administrator username for the server. Required if no `administrators` objec
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `administratorLoginPassword`
 
@@ -2217,7 +2364,6 @@ The administrator login password. Required if no `administrators` object for AAD
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `administrators`
 
@@ -2298,13 +2444,12 @@ Tenant ID of the administrator.
 - Required: No
 - Type: string
 
-### Parameter: `primaryUserAssignedIdentityId`
+### Parameter: `primaryUserAssignedIdentityResourceId`
 
 The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `auditSettings`
 
@@ -2411,18 +2556,75 @@ Specifies the identifier key of the auditing storage account.
 - Required: No
 - Type: string
 
+### Parameter: `customerManagedKey`
+
+The customer managed key definition for server TDE.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
+### Parameter: `customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
+
 ### Parameter: `databases`
 
 The databases to create in the server.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-databasesavailabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-databasesname) | string | The name of the Elastic Pool. |
 
 **Optional parameters**
@@ -2430,7 +2632,6 @@ The databases to create in the server.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-databasesautopausedelay) | int | Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled. |
-| [`availabilityZone`](#parameter-databasesavailabilityzone) | string | Specifies the availability zone the database is pinned to. |
 | [`backupLongTermRetentionPolicy`](#parameter-databasesbackuplongtermretentionpolicy) | object | The long term backup retention policy for the database. |
 | [`backupShortTermRetentionPolicy`](#parameter-databasesbackupshorttermretentionpolicy) | object | The short term backup retention policy for the database. |
 | [`catalogCollation`](#parameter-databasescatalogcollation) | string | Collation of the metadata catalog. |
@@ -2447,6 +2648,7 @@ The databases to create in the server.
 | [`licenseType`](#parameter-databaseslicensetype) | string | The license type to apply for this database. |
 | [`longTermRetentionBackupResourceId`](#parameter-databaseslongtermretentionbackupresourceid) | string | The resource identifier of the long term retention backup associated with create operation of this database. |
 | [`maintenanceConfigurationId`](#parameter-databasesmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the database. This configuration defines the period when the maintenance updates will occur. |
+| [`managedIdentities`](#parameter-databasesmanagedidentities) | object | The managed identities for the database. |
 | [`manualCutover`](#parameter-databasesmanualcutover) | bool | Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier. |
 | [`maxSizeBytes`](#parameter-databasesmaxsizebytes) | int | The max size of the database expressed in bytes. |
 | [`minCapacity`](#parameter-databasesmincapacity) | string | Minimal capacity that database will always have allocated, if not paused. |
@@ -2468,6 +2670,22 @@ The databases to create in the server.
 | [`useFreeLimit`](#parameter-databasesusefreelimit) | bool | Whether or not the database uses free monthly limits. Allowed on one database in a subscription. |
 | [`zoneRedundant`](#parameter-databaseszoneredundant) | bool | Whether or not this database is zone redundant, which means the replicas of this database will be spread across multiple availability zones. |
 
+### Parameter: `databases.availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
+
 ### Parameter: `databases.name`
 
 The name of the Elastic Pool.
@@ -2481,22 +2699,6 @@ Time in minutes after which database is automatically paused. A value of -1 mean
 
 - Required: No
 - Type: int
-
-### Parameter: `databases.availabilityZone`
-
-Specifies the availability zone the database is pinned to.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '1'
-    '2'
-    '3'
-    'NoPreference'
-  ]
-  ```
 
 ### Parameter: `databases.backupLongTermRetentionPolicy`
 
@@ -2859,6 +3061,26 @@ Maintenance configuration id assigned to the database. This configuration define
 - Required: No
 - Type: string
 
+### Parameter: `databases.managedIdentities`
+
+The managed identities for the database.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedResourceIds`](#parameter-databasesmanagedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `databases.managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
+
 ### Parameter: `databases.manualCutover`
 
 Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier.
@@ -3086,12 +3308,12 @@ The Elastic Pools to create in the server.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-elasticpoolsavailabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-elasticpoolsname) | string | The name of the Elastic Pool. |
 
 **Optional parameters**
@@ -3099,7 +3321,6 @@ The Elastic Pools to create in the server.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-elasticpoolsautopausedelay) | int | Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled. |
-| [`availabilityZone`](#parameter-elasticpoolsavailabilityzone) | string | Specifies the availability zone the pool's primary replica is pinned to. |
 | [`highAvailabilityReplicaCount`](#parameter-elasticpoolshighavailabilityreplicacount) | int | The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools. |
 | [`licenseType`](#parameter-elasticpoolslicensetype) | string | The license type to apply for this elastic pool. |
 | [`maintenanceConfigurationId`](#parameter-elasticpoolsmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur. |
@@ -3110,6 +3331,22 @@ The Elastic Pools to create in the server.
 | [`sku`](#parameter-elasticpoolssku) | object | The elastic pool SKU. |
 | [`tags`](#parameter-elasticpoolstags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-elasticpoolszoneredundant) | bool | Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones. |
+
+### Parameter: `elasticPools.availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `elasticPools.name`
 
@@ -3124,22 +3361,6 @@ Time in minutes after which elastic pool is automatically paused. A value of -1 
 
 - Required: No
 - Type: int
-
-### Parameter: `elasticPools.availabilityZone`
-
-Specifies the availability zone the pool's primary replica is pinned to.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '1'
-    '2'
-    '3'
-    'NoPreference'
-  ]
-  ```
 
 ### Parameter: `elasticPools.highAvailabilityReplicaCount`
 
@@ -3334,61 +3555,12 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
-### Parameter: `encryptionProtectorObj`
-
-The encryption protection configuration.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`serverKeyName`](#parameter-encryptionprotectorobjserverkeyname) | string | The name of the server key. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`autoRotationEnabled`](#parameter-encryptionprotectorobjautorotationenabled) | bool | Key auto rotation opt-in flag. |
-| [`serverKeyType`](#parameter-encryptionprotectorobjserverkeytype) | string | The encryption protector type. |
-
-### Parameter: `encryptionProtectorObj.serverKeyName`
-
-The name of the server key.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `encryptionProtectorObj.autoRotationEnabled`
-
-Key auto rotation opt-in flag.
-
-- Required: No
-- Type: bool
-
-### Parameter: `encryptionProtectorObj.serverKeyType`
-
-The encryption protector type.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'AzureKeyVault'
-    'ServiceManaged'
-  ]
-  ```
-
 ### Parameter: `failoverGroups`
 
 The failover groups configuration.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -3537,7 +3709,6 @@ The firewall rules to create in the server.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -3588,20 +3759,12 @@ Whether or not to enable IPv6 support for this server.
   ]
   ```
 
-### Parameter: `keyId`
-
-A CMK URI of the key to use for encryption.
-
-- Required: No
-- Type: string
-
 ### Parameter: `keys`
 
 The keys to configure.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Optional parameters**
 
@@ -4162,11 +4325,9 @@ Whether or not to restrict outbound network access for this server.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -4329,7 +4490,6 @@ The security alert policies to create in the server.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -4436,14 +4596,13 @@ The virtual network rules to create in the server.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-virtualnetworkrulesname) | string | The name of the Server Virtual Network Rule. |
-| [`virtualNetworkSubnetId`](#parameter-virtualnetworkrulesvirtualnetworksubnetid) | string | The resource ID of the virtual network subnet. |
+| [`virtualNetworkSubnetResourceId`](#parameter-virtualnetworkrulesvirtualnetworksubnetresourceid) | string | The resource ID of the virtual network subnet. |
 
 **Optional parameters**
 
@@ -4458,7 +4617,7 @@ The name of the Server Virtual Network Rule.
 - Required: Yes
 - Type: string
 
-### Parameter: `virtualNetworkRules.virtualNetworkSubnetId`
+### Parameter: `virtualNetworkRules.virtualNetworkSubnetResourceId`
 
 The resource ID of the virtual network subnet.
 

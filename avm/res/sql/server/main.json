@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "15781736031753199939"
+      "version": "0.34.44.8038",
+      "templateHash": "8377942864127974447"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -158,7 +158,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for audit settings."
       }
     },
     "secretsExportConfigurationType": {
@@ -186,7 +187,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a secrets export configuration."
       }
     },
     "serverExternalAdministratorType": {
@@ -240,10 +242,11 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a sever-external administrator."
       }
     },
-    "databasePropertyType": {
+    "databaseType": {
       "type": "object",
       "properties": {
         "name": {
@@ -257,6 +260,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Tags of the resource."
+          }
+        },
+        "managedIdentities": {
+          "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The managed identities for the database."
           }
         },
         "sku": {
@@ -274,16 +284,15 @@
           }
         },
         "availabilityZone": {
-          "type": "string",
+          "type": "int",
           "allowedValues": [
-            "1",
-            "2",
-            "3",
-            "NoPreference"
+            -1,
+            1,
+            2,
+            3
           ],
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies the availability zone the database is pinned to."
+            "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
           }
         },
         "catalogCollation": {
@@ -570,10 +579,11 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a database."
       }
     },
-    "elasticPoolPropertyType": {
+    "elasticPoolType": {
       "type": "object",
       "properties": {
         "name": {
@@ -590,7 +600,7 @@
           }
         },
         "sku": {
-          "$ref": "#/definitions/elasticPoolSkuType",
+          "$ref": "#/definitions/skuType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The elastic pool SKU."
@@ -604,16 +614,15 @@
           }
         },
         "availabilityZone": {
-          "type": "string",
+          "type": "int",
           "allowedValues": [
-            "1",
-            "2",
-            "3",
-            "NoPreference"
+            -1,
+            1,
+            2,
+            3
           ],
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies the availability zone the pool's primary replica is pinned to."
+            "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
           }
         },
         "highAvailabilityReplicaCount": {
@@ -656,7 +665,7 @@
           }
         },
         "perDatabaseSettings": {
-          "$ref": "#/definitions/elasticPoolPerDatabaseSettingsType",
+          "$ref": "#/definitions/perDatabaseSettingsType",
           "nullable": true,
           "metadata": {
             "description": "Optional. The per database settings for the elastic pool."
@@ -682,39 +691,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "encryptionProtectorType": {
-      "type": "object",
-      "properties": {
-        "serverKeyName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the server key."
-          }
-        },
-        "serverKeyType": {
-          "type": "string",
-          "allowedValues": [
-            "AzureKeyVault",
-            "ServiceManaged"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The encryption protector type."
-          }
-        },
-        "autoRotationEnabled": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Key auto rotation opt-in flag."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an elastic pool property."
       }
     },
     "vulnerabilityAssessmentType": {
@@ -755,7 +733,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a vulnerability assessment."
       }
     },
     "firewallRuleType": {
@@ -783,7 +762,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a firewall rule."
       }
     },
     "keyType": {
@@ -816,7 +796,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a key."
       }
     },
     "virtualNetworkRuleType": {
@@ -828,7 +809,7 @@
             "description": "Required. The name of the Server Virtual Network Rule."
           }
         },
-        "virtualNetworkSubnetId": {
+        "virtualNetworkSubnetResourceId": {
           "type": "string",
           "metadata": {
             "description": "Required. The resource ID of the virtual network subnet."
@@ -843,7 +824,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a virtual network rule."
       }
     },
     "securityAlerPolicyType": {
@@ -921,7 +903,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a security alert policy."
       }
     },
     "failoverGroupType": {
@@ -959,14 +942,14 @@
           }
         },
         "readOnlyEndpoint": {
-          "$ref": "#/definitions/failoverGroupReadOnlyEndpointType",
+          "$ref": "#/definitions/readOnlyEndpointType",
           "nullable": true,
           "metadata": {
             "description": "Optional. Read-only endpoint of the failover group instance."
           }
         },
         "readWriteEndpoint": {
-          "$ref": "#/definitions/failoverGroupReadWriteEndpointType",
+          "$ref": "#/definitions/readWriteEndpointType",
           "metadata": {
             "description": "Required. Read-write endpoint of the failover group instance."
           }
@@ -983,7 +966,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a failover group."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -1119,6 +1103,50 @@
       },
       "metadata": {
         "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
@@ -1291,148 +1319,6 @@
         }
       }
     },
-    "elasticPoolPerDatabaseSettingsType": {
-      "type": "object",
-      "properties": {
-        "autoPauseDelay": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Auto Pause Delay for per database within pool."
-          }
-        },
-        "maxCapacity": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The maximum capacity any one database can consume. Examples: '0.5', '2'."
-          }
-        },
-        "minCapacity": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The per database settings for the elastic pool.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "elastic-pool/main.bicep"
-        }
-      }
-    },
-    "elasticPoolSkuType": {
-      "type": "object",
-      "properties": {
-        "capacity": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The capacity of the particular SKU."
-          }
-        },
-        "family": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
-          }
-        },
-        "name": {
-          "type": "string",
-          "allowedValues": [
-            "BC_DC",
-            "BC_Gen5",
-            "BasicPool",
-            "GP_DC",
-            "GP_FSv2",
-            "GP_Gen5",
-            "HS_Gen5",
-            "HS_MOPRMS",
-            "HS_PRMS",
-            "PremiumPool",
-            "ServerlessPool",
-            "StandardPool"
-          ],
-          "metadata": {
-            "description": "Required. The name of the SKU, typically, a letter + Number code, e.g. P3."
-          }
-        },
-        "size": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Size of the particular SKU."
-          }
-        },
-        "tier": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The tier or edition of the particular SKU, e.g. Basic, Premium."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The elastic pool SKU.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "elastic-pool/main.bicep"
-        }
-      }
-    },
-    "failoverGroupReadOnlyEndpointType": {
-      "type": "object",
-      "properties": {
-        "failoverPolicy": {
-          "type": "string",
-          "allowedValues": [
-            "Disabled",
-            "Enabled"
-          ],
-          "metadata": {
-            "description": "Required. Failover policy of the read-only endpoint for the failover group."
-          }
-        },
-        "targetServer": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The target partner server where the read-only endpoint points to."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "failover-group/main.bicep"
-        }
-      }
-    },
-    "failoverGroupReadWriteEndpointType": {
-      "type": "object",
-      "properties": {
-        "failoverPolicy": {
-          "type": "string",
-          "allowedValues": [
-            "Automatic",
-            "Manual"
-          ],
-          "metadata": {
-            "description": "Required. Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required."
-          }
-        },
-        "failoverWithDataLossGracePeriodMinutes": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Grace period before failover with data loss is attempted for the read-write endpoint."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "failover-group/main.bicep"
-        }
-      }
-    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -1545,6 +1431,57 @@
         "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "managedIdentityOnlyUserAssignedType": {
+      "type": "object",
+      "properties": {
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "perDatabaseSettingsType": {
+      "type": "object",
+      "properties": {
+        "autoPauseDelay": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Auto Pause Delay for per database within pool."
+          }
+        },
+        "maxCapacity": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The maximum capacity any one database can consume. Examples: '0.5', '2'."
+          }
+        },
+        "minCapacity": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The minimum capacity all databases are guaranteed. Examples: '0.5', '1'."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The per database settings for the elastic pool.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "elastic-pool/main.bicep"
         }
       }
     },
@@ -1690,6 +1627,61 @@
         }
       }
     },
+    "readOnlyEndpointType": {
+      "type": "object",
+      "properties": {
+        "failoverPolicy": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "Required. Failover policy of the read-only endpoint for the failover group."
+          }
+        },
+        "targetServer": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The target partner server where the read-only endpoint points to."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a read-only endpoint.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "failover-group/main.bicep"
+        }
+      }
+    },
+    "readWriteEndpointType": {
+      "type": "object",
+      "properties": {
+        "failoverPolicy": {
+          "type": "string",
+          "allowedValues": [
+            "Automatic",
+            "Manual"
+          ],
+          "metadata": {
+            "description": "Required. Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required."
+          }
+        },
+        "failoverWithDataLossGracePeriodMinutes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Grace period before failover with data loss is attempted for the read-write endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a read-write endpoint.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "failover-group/main.bicep"
+        }
+      }
+    },
     "recurringScansType": {
       "type": "object",
       "properties": {
@@ -1718,6 +1710,7 @@
         }
       },
       "metadata": {
+        "description": "The type for recurring scans.",
         "__bicep_imported_from!": {
           "sourceTemplate": "vulnerability-assessment/main.bicep"
         }
@@ -1838,19 +1831,78 @@
           "sourceTemplate": "database/main.bicep"
         }
       }
+    },
+    "skuType": {
+      "type": "object",
+      "properties": {
+        "capacity": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The capacity of the particular SKU."
+          }
+        },
+        "family": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here."
+          }
+        },
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "BC_DC",
+            "BC_Gen5",
+            "BasicPool",
+            "GP_DC",
+            "GP_FSv2",
+            "GP_Gen5",
+            "HS_Gen5",
+            "HS_MOPRMS",
+            "HS_PRMS",
+            "PremiumPool",
+            "ServerlessPool",
+            "StandardPool"
+          ],
+          "metadata": {
+            "description": "Required. The name of the SKU, typically, a letter + Number code, e.g. P3."
+          }
+        },
+        "size": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Size of the particular SKU."
+          }
+        },
+        "tier": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tier or edition of the particular SKU, e.g. Basic, Premium."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The elastic pool SKU.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "elastic-pool/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
     "administratorLogin": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided."
       }
     },
     "administratorLoginPassword": {
       "type": "securestring",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The administrator login password. Required if no `administrators` object for AAD authentication is provided."
       }
@@ -1875,9 +1927,9 @@
         "description": "Optional. The managed identity definition for this resource."
       }
     },
-    "primaryUserAssignedIdentityId": {
+    "primaryUserAssignedIdentityResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Conditional. The resource ID of a user assigned identity to be used by default. Required if \"userAssignedIdentities\" is not empty."
       }
@@ -1916,9 +1968,9 @@
     "databases": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/databasePropertyType"
+        "$ref": "#/definitions/databaseType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The databases to create in the server."
       }
@@ -1926,9 +1978,9 @@
     "elasticPools": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/elasticPoolPropertyType"
+        "$ref": "#/definitions/elasticPoolType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The Elastic Pools to create in the server."
       }
@@ -1938,7 +1990,7 @@
       "items": {
         "$ref": "#/definitions/firewallRuleType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The firewall rules to create in the server."
       }
@@ -1948,7 +2000,7 @@
       "items": {
         "$ref": "#/definitions/virtualNetworkRuleType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The virtual network rules to create in the server."
       }
@@ -1958,7 +2010,7 @@
       "items": {
         "$ref": "#/definitions/securityAlerPolicyType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The security alert policies to create in the server."
       }
@@ -1968,9 +2020,16 @@
       "items": {
         "$ref": "#/definitions/keyType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The keys to configure."
+      }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition for server TDE."
       }
     },
     "administrators": {
@@ -1987,13 +2046,6 @@
       "maxLength": 36,
       "metadata": {
         "description": "Optional. The Client id used for cross tenant CMK scenario."
-      }
-    },
-    "keyId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. A CMK URI of the key to use for encryption."
       }
     },
     "minimalTlsVersion": {
@@ -2045,21 +2097,13 @@
     },
     "restrictOutboundNetworkAccess": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
-        "",
         "Enabled",
         "Disabled"
       ],
       "metadata": {
         "description": "Optional. Whether or not to restrict outbound network access for this server."
-      }
-    },
-    "encryptionProtectorObj": {
-      "$ref": "#/definitions/encryptionProtectorType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The encryption protection configuration."
       }
     },
     "vulnerabilityAssessmentsObj": {
@@ -2090,7 +2134,7 @@
       "items": {
         "$ref": "#/definitions/failoverGroupType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. The failover groups configuration."
       }
@@ -2123,6 +2167,24 @@
     }
   },
   "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
+    },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -2151,18 +2213,21 @@
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "properties": {
-        "administratorLogin": "[if(not(empty(parameters('administratorLogin'))), parameters('administratorLogin'), null())]",
-        "administratorLoginPassword": "[if(not(empty(parameters('administratorLoginPassword'))), parameters('administratorLoginPassword'), null())]",
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
         "administrators": "[union(createObject('administratorType', 'ActiveDirectory'), coalesce(parameters('administrators'), createObject()))]",
         "federatedClientId": "[parameters('federatedClientId')]",
         "isIPv6Enabled": "[parameters('isIPv6Enabled')]",
-        "keyId": "[parameters('keyId')]",
+        "keyId": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion), null())]",
         "version": "12.0",
         "minimalTlsVersion": "[parameters('minimalTlsVersion')]",
-        "primaryUserAssignedIdentityId": "[if(not(empty(parameters('primaryUserAssignedIdentityId'))), parameters('primaryUserAssignedIdentityId'), null())]",
+        "primaryUserAssignedIdentityId": "[parameters('primaryUserAssignedIdentityResourceId')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(and(not(empty(parameters('privateEndpoints'))), empty(parameters('firewallRules'))), empty(parameters('virtualNetworkRules'))), 'Disabled', null()))]",
-        "restrictOutboundNetworkAccess": "[if(not(empty(parameters('restrictOutboundNetworkAccess'))), parameters('restrictOutboundNetworkAccess'), null())]"
-      }
+        "restrictOutboundNetworkAccess": "[parameters('restrictOutboundNetworkAccess')]"
+      },
+      "dependsOn": [
+        "cMKKeyVault::cMKKey"
+      ]
     },
     "server_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -2203,7 +2268,7 @@
     "server_databases": {
       "copy": {
         "name": "server_databases",
-        "count": "[length(parameters('databases'))]"
+        "count": "[length(coalesce(parameters('databases'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -2221,121 +2286,124 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "name": {
-            "value": "[parameters('databases')[copyIndex()].name]"
+            "value": "[coalesce(parameters('databases'), createArray())[copyIndex()].name]"
+          },
+          "managedIdentities": {
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'managedIdentities')]"
           },
           "sku": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'sku')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'sku')]"
           },
           "autoPauseDelay": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'autoPauseDelay')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'autoPauseDelay')]"
           },
           "availabilityZone": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'availabilityZone')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'availabilityZone')]"
           },
           "catalogCollation": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'catalogCollation')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'catalogCollation')]"
           },
           "collation": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'collation')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'collation')]"
           },
           "createMode": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'createMode')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'createMode')]"
           },
           "elasticPoolResourceId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'elasticPoolResourceId')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'elasticPoolResourceId')]"
           },
           "encryptionProtector": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'encryptionProtector')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'encryptionProtector')]"
           },
           "encryptionProtectorAutoRotation": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'encryptionProtectorAutoRotation')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'encryptionProtectorAutoRotation')]"
           },
           "federatedClientId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'federatedClientId')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'federatedClientId')]"
           },
           "freeLimitExhaustionBehavior": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'freeLimitExhaustionBehavior')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'freeLimitExhaustionBehavior')]"
           },
           "highAvailabilityReplicaCount": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'highAvailabilityReplicaCount')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'highAvailabilityReplicaCount')]"
           },
           "isLedgerOn": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'isLedgerOn')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'isLedgerOn')]"
           },
           "licenseType": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'licenseType')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'licenseType')]"
           },
           "longTermRetentionBackupResourceId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'longTermRetentionBackupResourceId')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'longTermRetentionBackupResourceId')]"
           },
           "maintenanceConfigurationId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'maintenanceConfigurationId')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'maintenanceConfigurationId')]"
           },
           "manualCutover": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'manualCutover')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'manualCutover')]"
           },
           "maxSizeBytes": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'maxSizeBytes')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'maxSizeBytes')]"
           },
           "minCapacity": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'minCapacity')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'minCapacity')]"
           },
           "performCutover": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'performCutover')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'performCutover')]"
           },
           "preferredEnclaveType": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'preferredEnclaveType')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'preferredEnclaveType')]"
           },
           "readScale": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'readScale')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'readScale')]"
           },
           "recoverableDatabaseResourceId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'recoverableDatabaseResourceId')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'recoverableDatabaseResourceId')]"
           },
           "recoveryServicesRecoveryPointResourceId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'recoveryServicesRecoveryPointResourceId')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'recoveryServicesRecoveryPointResourceId')]"
           },
           "requestedBackupStorageRedundancy": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'requestedBackupStorageRedundancy')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'requestedBackupStorageRedundancy')]"
           },
           "restorableDroppedDatabaseResourceId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'restorableDroppedDatabaseResourceId')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'restorableDroppedDatabaseResourceId')]"
           },
           "restorePointInTime": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'restorePointInTime')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'restorePointInTime')]"
           },
           "sampleName": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'sampleName')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'sampleName')]"
           },
           "secondaryType": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'secondaryType')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'secondaryType')]"
           },
           "sourceDatabaseDeletionDate": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'sourceDatabaseDeletionDate')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'sourceDatabaseDeletionDate')]"
           },
           "sourceDatabaseResourceId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'sourceDatabaseResourceId')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'sourceDatabaseResourceId')]"
           },
           "sourceResourceId": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'sourceResourceId')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'sourceResourceId')]"
           },
           "useFreeLimit": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'useFreeLimit')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'useFreeLimit')]"
           },
           "zoneRedundant": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'zoneRedundant')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'zoneRedundant')]"
           },
           "diagnosticSettings": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'diagnosticSettings')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'diagnosticSettings')]"
           },
           "backupShortTermRetentionPolicy": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'backupShortTermRetentionPolicy')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'backupShortTermRetentionPolicy')]"
           },
           "backupLongTermRetentionPolicy": {
-            "value": "[tryGet(parameters('databases')[copyIndex()], 'backupLongTermRetentionPolicy')]"
+            "value": "[tryGet(coalesce(parameters('databases'), createArray())[copyIndex()], 'backupLongTermRetentionPolicy')]"
           }
         },
         "template": {
@@ -2345,8 +2413,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15990296903519132880"
+              "version": "0.34.44.8038",
+              "templateHash": "3444518233599497149"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -2594,6 +2662,27 @@
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
+            },
+            "managedIdentityOnlyUserAssignedType": {
+              "type": "object",
+              "properties": {
+                "userAssignedResourceIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
             }
           },
           "parameters": {
@@ -2627,16 +2716,15 @@
               }
             },
             "availabilityZone": {
-              "type": "string",
+              "type": "int",
               "allowedValues": [
-                "1",
-                "2",
-                "3",
-                "NoPreference"
+                -1,
+                1,
+                2,
+                3
               ],
-              "defaultValue": "NoPreference",
               "metadata": {
-                "description": "Optional. Specifies the availability zone the database is pinned to."
+                "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
               }
             },
             "catalogCollation": {
@@ -2934,7 +3022,18 @@
               "metadata": {
                 "description": "Optional. The long term backup retention policy to create for the database."
               }
+            },
+            "managedIdentities": {
+              "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The managed identity definition for this resource."
+              }
             }
+          },
+          "variables": {
+            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
           },
           "resources": {
             "server": {
@@ -2950,9 +3049,10 @@
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "sku": "[parameters('sku')]",
+              "identity": "[variables('identity')]",
               "properties": {
                 "autoPauseDelay": "[parameters('autoPauseDelay')]",
-                "availabilityZone": "[parameters('availabilityZone')]",
+                "availabilityZone": "[if(not(equals(parameters('availabilityZone'), -1)), string(parameters('availabilityZone')), 'NoPreference')]",
                 "catalogCollation": "[parameters('catalogCollation')]",
                 "collation": "[parameters('collation')]",
                 "createMode": "[parameters('createMode')]",
@@ -3057,8 +3157,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "9756378998309991315"
+                      "version": "0.34.44.8038",
+                      "templateHash": "586417749840962852"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -3174,8 +3274,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "7793476949981656377"
+                      "version": "0.34.44.8038",
+                      "templateHash": "15078686386861189890"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3337,7 +3437,7 @@
     "server_elasticPools": {
       "copy": {
         "name": "server_elasticPools",
-        "count": "[length(parameters('elasticPools'))]"
+        "count": "[length(coalesce(parameters('elasticPools'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -3355,43 +3455,43 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('elasticPools')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "name": {
-            "value": "[parameters('elasticPools')[copyIndex()].name]"
+            "value": "[coalesce(parameters('elasticPools'), createArray())[copyIndex()].name]"
           },
           "sku": {
-            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'sku')]"
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'sku')]"
           },
           "autoPauseDelay": {
-            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'autoPauseDelay')]"
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'autoPauseDelay')]"
           },
           "availabilityZone": {
-            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'availabilityZone')]"
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'availabilityZone')]"
           },
           "highAvailabilityReplicaCount": {
-            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'highAvailabilityReplicaCount')]"
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'highAvailabilityReplicaCount')]"
           },
           "licenseType": {
-            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'licenseType')]"
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'licenseType')]"
           },
           "maintenanceConfigurationId": {
-            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'maintenanceConfigurationId')]"
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'maintenanceConfigurationId')]"
           },
           "maxSizeBytes": {
-            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'maxSizeBytes')]"
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'maxSizeBytes')]"
           },
           "minCapacity": {
-            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'minCapacity')]"
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'minCapacity')]"
           },
           "perDatabaseSettings": {
-            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'perDatabaseSettings')]"
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'perDatabaseSettings')]"
           },
           "preferredEnclaveType": {
-            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'preferredEnclaveType')]"
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'preferredEnclaveType')]"
           },
           "zoneRedundant": {
-            "value": "[tryGet(parameters('elasticPools')[copyIndex()], 'zoneRedundant')]"
+            "value": "[tryGet(coalesce(parameters('elasticPools'), createArray())[copyIndex()], 'zoneRedundant')]"
           }
         },
         "template": {
@@ -3401,14 +3501,14 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13169370796754277035"
+              "version": "0.34.44.8038",
+              "templateHash": "6480963111257796466"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
           },
           "definitions": {
-            "elasticPoolPerDatabaseSettingsType": {
+            "perDatabaseSettingsType": {
               "type": "object",
               "properties": {
                 "autoPauseDelay": {
@@ -3436,7 +3536,7 @@
                 "description": "The per database settings for the elastic pool."
               }
             },
-            "elasticPoolSkuType": {
+            "skuType": {
               "type": "object",
               "properties": {
                 "capacity": {
@@ -3522,7 +3622,7 @@
               }
             },
             "sku": {
-              "$ref": "#/definitions/elasticPoolSkuType",
+              "$ref": "#/definitions/skuType",
               "defaultValue": {
                 "capacity": 2,
                 "name": "GP_Gen5",
@@ -3540,16 +3640,15 @@
               }
             },
             "availabilityZone": {
-              "type": "string",
+              "type": "int",
               "allowedValues": [
-                "1",
-                "2",
-                "3",
-                "NoPreference"
+                -1,
+                1,
+                2,
+                3
               ],
-              "defaultValue": "NoPreference",
               "metadata": {
-                "description": "Optional. Specifies the availability zone the pool's primary replica is pinned to."
+                "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
               }
             },
             "highAvailabilityReplicaCount": {
@@ -3592,7 +3691,7 @@
               }
             },
             "perDatabaseSettings": {
-              "$ref": "#/definitions/elasticPoolPerDatabaseSettingsType",
+              "$ref": "#/definitions/perDatabaseSettingsType",
               "defaultValue": {
                 "autoPauseDelay": -1,
                 "maxCapacity": "2",
@@ -3637,7 +3736,7 @@
               "sku": "[parameters('sku')]",
               "properties": {
                 "autoPauseDelay": "[parameters('autoPauseDelay')]",
-                "availabilityZone": "[parameters('availabilityZone')]",
+                "availabilityZone": "[if(not(equals(parameters('availabilityZone'), -1)), string(parameters('availabilityZone')), 'NoPreference')]",
                 "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
                 "licenseType": "[parameters('licenseType')]",
                 "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",
@@ -4445,7 +4544,7 @@
     "server_firewallRules": {
       "copy": {
         "name": "server_firewallRules",
-        "count": "[length(parameters('firewallRules'))]"
+        "count": "[length(coalesce(parameters('firewallRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -4457,16 +4556,16 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('firewallRules')[copyIndex()].name]"
+            "value": "[coalesce(parameters('firewallRules'), createArray())[copyIndex()].name]"
           },
           "serverName": {
             "value": "[parameters('name')]"
           },
           "endIpAddress": {
-            "value": "[tryGet(parameters('firewallRules')[copyIndex()], 'endIpAddress')]"
+            "value": "[tryGet(coalesce(parameters('firewallRules'), createArray())[copyIndex()], 'endIpAddress')]"
           },
           "startIpAddress": {
-            "value": "[tryGet(parameters('firewallRules')[copyIndex()], 'startIpAddress')]"
+            "value": "[tryGet(coalesce(parameters('firewallRules'), createArray())[copyIndex()], 'startIpAddress')]"
           }
         },
         "template": {
@@ -4475,8 +4574,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "5038261177858434729"
+              "version": "0.34.44.8038",
+              "templateHash": "7783790094003665329"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule."
@@ -4552,7 +4651,7 @@
     "server_virtualNetworkRules": {
       "copy": {
         "name": "server_virtualNetworkRules",
-        "count": "[length(parameters('virtualNetworkRules'))]"
+        "count": "[length(coalesce(parameters('virtualNetworkRules'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -4567,13 +4666,13 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('virtualNetworkRules')[copyIndex()].name]"
+            "value": "[coalesce(parameters('virtualNetworkRules'), createArray())[copyIndex()].name]"
           },
           "ignoreMissingVnetServiceEndpoint": {
-            "value": "[tryGet(parameters('virtualNetworkRules')[copyIndex()], 'ignoreMissingVnetServiceEndpoint')]"
+            "value": "[tryGet(coalesce(parameters('virtualNetworkRules'), createArray())[copyIndex()], 'ignoreMissingVnetServiceEndpoint')]"
           },
-          "virtualNetworkSubnetId": {
-            "value": "[parameters('virtualNetworkRules')[copyIndex()].virtualNetworkSubnetId]"
+          "virtualNetworkSubnetResourceId": {
+            "value": "[coalesce(parameters('virtualNetworkRules'), createArray())[copyIndex()].virtualNetworkSubnetResourceId]"
           }
         },
         "template": {
@@ -4582,8 +4681,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "5181261702127555829"
+              "version": "0.34.44.8038",
+              "templateHash": "5983453570514916999"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule."
@@ -4602,7 +4701,7 @@
                 "description": "Optional. Allow creating a firewall rule before the virtual network has vnet service endpoint enabled."
               }
             },
-            "virtualNetworkSubnetId": {
+            "virtualNetworkSubnetResourceId": {
               "type": "string",
               "metadata": {
                 "description": "Required. The resource ID of the virtual network subnet."
@@ -4622,7 +4721,7 @@
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "ignoreMissingVnetServiceEndpoint": "[parameters('ignoreMissingVnetServiceEndpoint')]",
-                "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetId')]"
+                "virtualNetworkSubnetId": "[parameters('virtualNetworkSubnetResourceId')]"
               }
             }
           ],
@@ -4658,7 +4757,7 @@
     "server_securityAlertPolicies": {
       "copy": {
         "name": "server_securityAlertPolicies",
-        "count": "[length(parameters('securityAlertPolicies'))]"
+        "count": "[length(coalesce(parameters('securityAlertPolicies'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -4670,31 +4769,31 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('securityAlertPolicies')[copyIndex()].name]"
+            "value": "[coalesce(parameters('securityAlertPolicies'), createArray())[copyIndex()].name]"
           },
           "serverName": {
             "value": "[parameters('name')]"
           },
           "disabledAlerts": {
-            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'disabledAlerts')]"
+            "value": "[tryGet(coalesce(parameters('securityAlertPolicies'), createArray())[copyIndex()], 'disabledAlerts')]"
           },
           "emailAccountAdmins": {
-            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'emailAccountAdmins')]"
+            "value": "[tryGet(coalesce(parameters('securityAlertPolicies'), createArray())[copyIndex()], 'emailAccountAdmins')]"
           },
           "emailAddresses": {
-            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'emailAddresses')]"
+            "value": "[tryGet(coalesce(parameters('securityAlertPolicies'), createArray())[copyIndex()], 'emailAddresses')]"
           },
           "retentionDays": {
-            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'retentionDays')]"
+            "value": "[tryGet(coalesce(parameters('securityAlertPolicies'), createArray())[copyIndex()], 'retentionDays')]"
           },
           "state": {
-            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'state')]"
+            "value": "[tryGet(coalesce(parameters('securityAlertPolicies'), createArray())[copyIndex()], 'state')]"
           },
           "storageAccountAccessKey": {
-            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'storageAccountAccessKey')]"
+            "value": "[tryGet(coalesce(parameters('securityAlertPolicies'), createArray())[copyIndex()], 'storageAccountAccessKey')]"
           },
           "storageEndpoint": {
-            "value": "[tryGet(parameters('securityAlertPolicies')[copyIndex()], 'storageEndpoint')]"
+            "value": "[tryGet(coalesce(parameters('securityAlertPolicies'), createArray())[copyIndex()], 'storageEndpoint')]"
           }
         },
         "template": {
@@ -4704,8 +4803,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14971385092253198970"
+              "version": "0.34.44.8038",
+              "templateHash": "5426873131651303318"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy."
@@ -4879,8 +4978,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13028930090028114053"
+              "version": "0.34.44.8038",
+              "templateHash": "15940284955382664780"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
@@ -4914,7 +5013,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for recurring scans."
               }
             }
           },
@@ -5006,8 +5106,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "8374589607291714415"
+                      "version": "0.34.44.8038",
+                      "templateHash": "16931034564891209519"
                     }
                   },
                   "parameters": {
@@ -5071,7 +5171,7 @@
     "server_keys": {
       "copy": {
         "name": "server_keys",
-        "count": "[length(parameters('keys'))]"
+        "count": "[length(coalesce(parameters('keys'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -5086,13 +5186,13 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[tryGet(parameters('keys')[copyIndex()], 'name')]"
+            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'name')]"
           },
           "serverKeyType": {
-            "value": "[tryGet(parameters('keys')[copyIndex()], 'serverKeyType')]"
+            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'serverKeyType')]"
           },
           "uri": {
-            "value": "[tryGet(parameters('keys')[copyIndex()], 'uri')]"
+            "value": "[tryGet(coalesce(parameters('keys'), createArray())[copyIndex()], 'uri')]"
           }
         },
         "template": {
@@ -5102,8 +5202,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10362246469517057380"
+              "version": "0.34.44.8038",
+              "templateHash": "9797257758598562244"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5191,8 +5291,127 @@
         "server"
       ]
     },
+    "cmk_key": {
+      "condition": "[not(equals(parameters('customerManagedKey'), null()))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Sql-Key', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "serverName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[format('{0}_{1}_{2}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), tryGet(parameters('customerManagedKey'), 'keyVersion'), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))]"
+          },
+          "serverKeyType": {
+            "value": "AzureKeyVault"
+          },
+          "uri": "[if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), createObject('value', format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion'))), createObject('value', reference('cMKKeyVault::cMKKey').keyUriWithVersion))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "9797257758598562244"
+            },
+            "name": "Azure SQL Server Keys",
+            "description": "This module deploys an Azure SQL Server Key."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern."
+              }
+            },
+            "serverName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent SQL server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "serverKeyType": {
+              "type": "string",
+              "defaultValue": "ServiceManaged",
+              "allowedValues": [
+                "AzureKeyVault",
+                "ServiceManaged"
+              ],
+              "metadata": {
+                "description": "Optional. The server key type."
+              }
+            },
+            "uri": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The URI of the server key. If the ServerKeyType is AzureKeyVault, then the URI is required. The AKV URI is required to be in this format: 'https://YourVaultName.azure.net/keys/YourKeyName/YourKeyVersion'."
+              }
+            }
+          },
+          "variables": {
+            "splittedKeyUri": "[split(parameters('uri'), '/')]",
+            "serverKeyName": "[if(empty(parameters('uri')), 'ServiceManaged', format('{0}_{1}_{2}', split(variables('splittedKeyUri')[2], '.')[0], variables('splittedKeyUri')[4], variables('splittedKeyUri')[5]))]"
+          },
+          "resources": {
+            "server": {
+              "existing": true,
+              "type": "Microsoft.Sql/servers",
+              "apiVersion": "2023-08-01-preview",
+              "name": "[parameters('serverName')]"
+            },
+            "key": {
+              "type": "Microsoft.Sql/servers/keys",
+              "apiVersion": "2023-08-01-preview",
+              "name": "[format('{0}/{1}', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]",
+              "properties": {
+                "serverKeyType": "[parameters('serverKeyType')]",
+                "uri": "[parameters('uri')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed server key."
+              },
+              "value": "[coalesce(parameters('name'), variables('serverKeyName'))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed server key."
+              },
+              "value": "[resourceId('Microsoft.Sql/servers/keys', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed server key."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "cMKKeyVault::cMKKey",
+        "server"
+      ]
+    },
     "server_encryptionProtector": {
-      "condition": "[not(equals(parameters('encryptionProtectorObj'), null()))]",
+      "condition": "[not(equals(parameters('customerManagedKey'), null()))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Sql-EncryProtector', uniqueString(deployment().name, parameters('location')))]",
@@ -5206,13 +5425,13 @@
             "value": "[parameters('name')]"
           },
           "serverKeyName": {
-            "value": "[parameters('encryptionProtectorObj').serverKeyName]"
+            "value": "[reference('cmk_key').outputs.name.value]"
           },
           "serverKeyType": {
-            "value": "[tryGet(parameters('encryptionProtectorObj'), 'serverKeyType')]"
+            "value": "AzureKeyVault"
           },
           "autoRotationEnabled": {
-            "value": "[tryGet(parameters('encryptionProtectorObj'), 'autoRotationEnabled')]"
+            "value": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]"
           }
         },
         "template": {
@@ -5221,8 +5440,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13396787316963181635"
+              "version": "0.34.44.8038",
+              "templateHash": "13156357596009101804"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector."
@@ -5297,8 +5516,8 @@
         }
       },
       "dependsOn": [
-        "server",
-        "server_keys"
+        "cmk_key",
+        "server"
       ]
     },
     "server_audit_settings": {
@@ -5353,8 +5572,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13147629904798099652"
+              "version": "0.34.44.8038",
+              "templateHash": "15469959027924260105"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -5494,8 +5713,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "11188920490207833313"
+                      "version": "0.34.44.8038",
+                      "templateHash": "11839727322069180104"
                     }
                   },
                   "parameters": {
@@ -5572,7 +5791,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), parameters('databases')[0].name, ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), tryGet(parameters('databases'), 0, 'name'), ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
           }
         },
         "template": {
@@ -5582,8 +5801,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14045530027687796477"
+              "version": "0.34.44.8038",
+              "templateHash": "12919538841236982879"
             }
           },
           "definitions": {
@@ -5705,7 +5924,7 @@
     "failover_groups": {
       "copy": {
         "name": "failover_groups",
-        "count": "[length(parameters('failoverGroups'))]"
+        "count": "[length(coalesce(parameters('failoverGroups'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -5717,28 +5936,28 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('failoverGroups')[copyIndex()].name]"
+            "value": "[coalesce(parameters('failoverGroups'), createArray())[copyIndex()].name]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('failoverGroups')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('failoverGroups'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "serverName": {
             "value": "[parameters('name')]"
           },
           "databases": {
-            "value": "[parameters('failoverGroups')[copyIndex()].databases]"
+            "value": "[coalesce(parameters('failoverGroups'), createArray())[copyIndex()].databases]"
           },
           "partnerServers": {
-            "value": "[parameters('failoverGroups')[copyIndex()].partnerServers]"
+            "value": "[coalesce(parameters('failoverGroups'), createArray())[copyIndex()].partnerServers]"
           },
           "readOnlyEndpoint": {
-            "value": "[tryGet(parameters('failoverGroups')[copyIndex()], 'readOnlyEndpoint')]"
+            "value": "[tryGet(coalesce(parameters('failoverGroups'), createArray())[copyIndex()], 'readOnlyEndpoint')]"
           },
           "readWriteEndpoint": {
-            "value": "[parameters('failoverGroups')[copyIndex()].readWriteEndpoint]"
+            "value": "[coalesce(parameters('failoverGroups'), createArray())[copyIndex()].readWriteEndpoint]"
           },
           "secondaryType": {
-            "value": "[parameters('failoverGroups')[copyIndex()].secondaryType]"
+            "value": "[coalesce(parameters('failoverGroups'), createArray())[copyIndex()].secondaryType]"
           }
         },
         "template": {
@@ -5748,14 +5967,14 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "16832516411852699458"
+              "version": "0.34.44.8038",
+              "templateHash": "16705539934522968897"
             },
             "name": "Azure SQL Server failover group",
             "description": "This module deploys Azure SQL Server failover group."
           },
           "definitions": {
-            "failoverGroupReadOnlyEndpointType": {
+            "readOnlyEndpointType": {
               "type": "object",
               "properties": {
                 "failoverPolicy": {
@@ -5776,10 +5995,11 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for a read-only endpoint."
               }
             },
-            "failoverGroupReadWriteEndpointType": {
+            "readWriteEndpointType": {
               "type": "object",
               "properties": {
                 "failoverPolicy": {
@@ -5801,7 +6021,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for a read-write endpoint."
               }
             }
           },
@@ -5837,14 +6058,14 @@
               }
             },
             "readOnlyEndpoint": {
-              "$ref": "#/definitions/failoverGroupReadOnlyEndpointType",
+              "$ref": "#/definitions/readOnlyEndpointType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. Read-only endpoint of the failover group instance."
               }
             },
             "readWriteEndpoint": {
-              "$ref": "#/definitions/failoverGroupReadWriteEndpointType",
+              "$ref": "#/definitions/readWriteEndpointType",
               "metadata": {
                 "description": "Required. Read-write endpoint of the failover group instance."
               }

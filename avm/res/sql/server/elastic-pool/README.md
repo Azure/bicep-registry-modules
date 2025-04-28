@@ -20,6 +20,7 @@ This module deploys an Azure SQL Server Elastic Pool.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the Elastic Pool. |
 
 **Conditional parameters**
@@ -33,7 +34,6 @@ This module deploys an Azure SQL Server Elastic Pool.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-autopausedelay) | int | Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled. |
-| [`availabilityZone`](#parameter-availabilityzone) | string | Specifies the availability zone the pool's primary replica is pinned to. |
 | [`highAvailabilityReplicaCount`](#parameter-highavailabilityreplicacount) | int | The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools. |
 | [`licenseType`](#parameter-licensetype) | string | The license type to apply for this elastic pool. |
 | [`location`](#parameter-location) | string | Location for all resources. |
@@ -45,6 +45,22 @@ This module deploys an Azure SQL Server Elastic Pool.
 | [`sku`](#parameter-sku) | object | The elastic pool SKU. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones. |
+
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -67,23 +83,6 @@ Time in minutes after which elastic pool is automatically paused. A value of -1 
 - Required: No
 - Type: int
 - Default: `-1`
-
-### Parameter: `availabilityZone`
-
-Specifies the availability zone the pool's primary replica is pinned to.
-
-- Required: No
-- Type: string
-- Default: `'NoPreference'`
-- Allowed:
-  ```Bicep
-  [
-    '1'
-    '2'
-    '3'
-    'NoPreference'
-  ]
-  ```
 
 ### Parameter: `highAvailabilityReplicaCount`
 

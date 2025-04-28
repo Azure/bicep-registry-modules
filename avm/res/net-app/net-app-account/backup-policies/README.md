@@ -12,7 +12,7 @@ This module deploys a Backup Policy for Azure NetApp File.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupPolicies) |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupPolicies) |
 
 ## Parameters
 

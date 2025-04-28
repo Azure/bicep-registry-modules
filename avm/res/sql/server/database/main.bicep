@@ -18,8 +18,14 @@ param sku databaseSkuType = {
 @description('Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled.')
 param autoPauseDelay int = -1
 
-@description('Optional. Specifies the availability zone the database is pinned to.')
-param availabilityZone '1' | '2' | '3' | 'NoPreference' = 'NoPreference'
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
+@allowed([
+  -1
+  1
+  2
+  3
+])
+param availabilityZone int
 
 @description('Optional. Collation of the metadata catalog.')
 param catalogCollation string = 'DATABASE_DEFAULT'
@@ -144,9 +150,26 @@ param backupShortTermRetentionPolicy shortTermBackupRetentionPolicyType?
 @description('Optional. The long term backup retention policy to create for the database.')
 param backupLongTermRetentionPolicy longTermBackupRetentionPolicyType?
 
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityOnlyUserAssignedType?
+
 resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
   name: serverName
 }
+
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : null
 
 resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
   name: name
@@ -154,9 +177,10 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
   location: location
   tags: tags
   sku: sku
+  identity: identity
   properties: {
     autoPauseDelay: autoPauseDelay
-    availabilityZone: availabilityZone
+    availabilityZone: availabilityZone != -1 ? string(availabilityZone) : 'NoPreference'
     catalogCollation: catalogCollation
     collation: collation
     createMode: createMode

@@ -24,6 +24,7 @@ This module deploys an Azure SQL Server Database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the database. |
 
 **Conditional parameters**
@@ -37,7 +38,6 @@ This module deploys an Azure SQL Server Database.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-autopausedelay) | int | Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled. |
-| [`availabilityZone`](#parameter-availabilityzone) | string | Specifies the availability zone the database is pinned to. |
 | [`backupLongTermRetentionPolicy`](#parameter-backuplongtermretentionpolicy) | object | The long term backup retention policy to create for the database. |
 | [`backupShortTermRetentionPolicy`](#parameter-backupshorttermretentionpolicy) | object | The short term backup retention policy to create for the database. |
 | [`catalogCollation`](#parameter-catalogcollation) | string | Collation of the metadata catalog. |
@@ -55,6 +55,7 @@ This module deploys an Azure SQL Server Database.
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`longTermRetentionBackupResourceId`](#parameter-longtermretentionbackupresourceid) | string | The resource identifier of the long term retention backup associated with create operation of this database. |
 | [`maintenanceConfigurationId`](#parameter-maintenanceconfigurationid) | string | Maintenance configuration ID assigned to the database. This configuration defines the period when the maintenance updates will occur. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`manualCutover`](#parameter-manualcutover) | bool | Whether or not customer controlled manual cutover needs to be done during Update Database operation to Hyperscale tier. |
 | [`maxSizeBytes`](#parameter-maxsizebytes) | int | The max size of the database expressed in bytes. |
 | [`minCapacity`](#parameter-mincapacity) | string | Minimal capacity that database will always have allocated. |
@@ -75,6 +76,22 @@ This module deploys an Azure SQL Server Database.
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`useFreeLimit`](#parameter-usefreelimit) | bool | Whether or not the database uses free monthly limits. Allowed on one database in a subscription. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Whether or not this database is zone redundant. |
+
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -97,23 +114,6 @@ Time in minutes after which database is automatically paused. A value of -1 mean
 - Required: No
 - Type: int
 - Default: `-1`
-
-### Parameter: `availabilityZone`
-
-Specifies the availability zone the database is pinned to.
-
-- Required: No
-- Type: string
-- Default: `'NoPreference'`
-- Allowed:
-  ```Bicep
-  [
-    '1'
-    '2'
-    '3'
-    'NoPreference'
-  ]
-  ```
 
 ### Parameter: `backupLongTermRetentionPolicy`
 
@@ -488,6 +488,26 @@ Maintenance configuration ID assigned to the database. This configuration define
 
 - Required: No
 - Type: string
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `manualCutover`
 
