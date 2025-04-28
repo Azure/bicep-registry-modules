@@ -239,7 +239,6 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           lun: 2
-          caching: 'None'
           managedDisk: {
             id: nestedDependencies.outputs.preCreatedDataDiskResourceId
           }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "6408784018827546807"
+      "templateHash": "7550018186284349950"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -128,7 +128,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The disk name."
+            "description": "Optional. The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used."
           }
         },
         "lun": {
@@ -142,7 +142,7 @@
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies the size of an empty data disk in gigabytes."
+            "description": "Optional. Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk."
           }
         },
         "createOption": {
@@ -154,7 +154,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies how the virtual machine should be created."
+            "description": "Optional. Specifies how the virtual machine should be created. This property is automatically set to 'Attach' when attaching a pre-existing disk."
           }
         },
         "deleteOption": {
@@ -165,7 +165,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies whether data disk should be deleted or detached upon VM deletion."
+            "description": "Optional. Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to 'Detach' when attaching a pre-existing disk."
           }
         },
         "caching": {
@@ -177,21 +177,21 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies the caching requirements."
+            "description": "Optional. Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk."
           }
         },
         "diskIOPSReadWrite": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes."
+            "description": "Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk."
           }
         },
         "diskMBpsReadWrite": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10."
+            "description": "Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk."
           }
         },
         "managedDisk": {
@@ -210,7 +210,7 @@
               ],
               "nullable": true,
               "metadata": {
-                "description": "Optional. Specifies the storage account type for the managed disk."
+                "description": "Optional. Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk."
               }
             },
             "diskEncryptionSetResourceId": {
@@ -224,7 +224,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Specifies the customer managed disk id for the managed disk."
+                "description": "Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty."
               }
             }
           },
@@ -236,7 +236,7 @@
           "type": "object",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The tags of the public IP address."
+            "description": "Optional. The tags of the public IP address. Valid only when creating a new managed disk."
           }
         }
       },

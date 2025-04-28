@@ -94,7 +94,6 @@ module testDeployment '../../../main.bicep' = [
           diskMBpsReadWrite: 125
         }
         {
-          caching: 'None'
           managedDisk: {
             id: nestedDependencies.outputs.sharedDataDiskResourceId
           }

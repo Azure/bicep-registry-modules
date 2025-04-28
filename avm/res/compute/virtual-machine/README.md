@@ -2525,7 +2525,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
       {
-        caching: 'None'
         managedDisk: {
           id: '<id>'
         }
@@ -2615,7 +2614,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         },
         {
-          "caching": "None",
           "managedDisk": {
             "id": "<id>"
           }
@@ -2689,7 +2687,6 @@ param dataDisks = [
     }
   }
   {
-    caching: 'None'
     managedDisk: {
       id: '<id>'
     }
@@ -3397,7 +3394,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         name: 'datadisk02'
       }
       {
-        caching: 'None'
         lun: 2
         managedDisk: {
           id: '<id>'
@@ -3768,7 +3764,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "name": "datadisk02"
         },
         {
-          "caching": "None",
           "lun": 2,
           "managedDisk": {
             "id": "<id>"
@@ -4145,7 +4140,6 @@ param dataDisks = [
     name: 'datadisk02'
   }
   {
-    caching: 'None'
     lun: 2
     managedDisk: {
       id: '<id>'
@@ -7280,15 +7274,15 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. |
-| [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machine should be created. |
-| [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
-| [`diskIOPSReadWrite`](#parameter-datadisksdiskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. |
-| [`diskMBpsReadWrite`](#parameter-datadisksdiskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. |
-| [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
+| [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk. |
+| [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machine should be created. This property is automatically set to 'Attach' when attaching a pre-existing disk. |
+| [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to 'Detach' when attaching a pre-existing disk. |
+| [`diskIOPSReadWrite`](#parameter-datadisksdiskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk. |
+| [`diskMBpsReadWrite`](#parameter-datadisksdiskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk. |
+| [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk. |
 | [`lun`](#parameter-datadiskslun) | int | Specifies the logical unit number of the data disk. |
-| [`name`](#parameter-datadisksname) | string | The disk name. |
-| [`tags`](#parameter-datadiskstags) | object | The tags of the public IP address. |
+| [`name`](#parameter-datadisksname) | string | The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used. |
+| [`tags`](#parameter-datadiskstags) | object | The tags of the public IP address. Valid only when creating a new managed disk. |
 
 ### Parameter: `dataDisks.managedDisk`
 
@@ -7302,8 +7296,8 @@ The managed disk parameters.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
-| [`id`](#parameter-datadisksmanageddiskid) | string | Specifies the customer managed disk id for the managed disk. |
-| [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
+| [`id`](#parameter-datadisksmanageddiskid) | string | Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty. |
+| [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk. |
 
 ### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
 
@@ -7314,14 +7308,14 @@ Specifies the customer managed disk encryption set resource id for the managed d
 
 ### Parameter: `dataDisks.managedDisk.id`
 
-Specifies the customer managed disk id for the managed disk.
+Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.
 
 - Required: No
 - Type: string
 
 ### Parameter: `dataDisks.managedDisk.storageAccountType`
 
-Specifies the storage account type for the managed disk.
+Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk.
 
 - Required: No
 - Type: string
@@ -7340,7 +7334,7 @@ Specifies the storage account type for the managed disk.
 
 ### Parameter: `dataDisks.caching`
 
-Specifies the caching requirements.
+Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk.
 
 - Required: No
 - Type: string
@@ -7355,7 +7349,7 @@ Specifies the caching requirements.
 
 ### Parameter: `dataDisks.createOption`
 
-Specifies how the virtual machine should be created.
+Specifies how the virtual machine should be created. This property is automatically set to 'Attach' when attaching a pre-existing disk.
 
 - Required: No
 - Type: string
@@ -7370,7 +7364,7 @@ Specifies how the virtual machine should be created.
 
 ### Parameter: `dataDisks.deleteOption`
 
-Specifies whether data disk should be deleted or detached upon VM deletion.
+Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to 'Detach' when attaching a pre-existing disk.
 
 - Required: No
 - Type: string
@@ -7384,21 +7378,21 @@ Specifies whether data disk should be deleted or detached upon VM deletion.
 
 ### Parameter: `dataDisks.diskIOPSReadWrite`
 
-The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes.
+The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk.
 
 - Required: No
 - Type: int
 
 ### Parameter: `dataDisks.diskMBpsReadWrite`
 
-The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10.
+The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk.
 
 - Required: No
 - Type: int
 
 ### Parameter: `dataDisks.diskSizeGB`
 
-Specifies the size of an empty data disk in gigabytes.
+Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk.
 
 - Required: No
 - Type: int
@@ -7412,14 +7406,14 @@ Specifies the logical unit number of the data disk.
 
 ### Parameter: `dataDisks.name`
 
-The disk name.
+The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used.
 
 - Required: No
 - Type: string
 
 ### Parameter: `dataDisks.tags`
 
-The tags of the public IP address.
+The tags of the public IP address. Valid only when creating a new managed disk.
 
 - Required: No
 - Type: object
@@ -8415,6 +8409,8 @@ osDisk: {
 
 ### Parameter Usage: `dataDisks`
 
+#### Creation during deployment
+
 <details>
 
 <summary>Parameter JSON format</summary>
@@ -8478,6 +8474,43 @@ dataDisks: [
             diskEncryptionSet: { // Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs.
                 id: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Compute/diskEncryptionSets/<desName>'
             }
+        }
+    }
+]
+```
+
+</details>
+<p>
+
+#### Pre-existing disks
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"dataDisks": {
+    "value": [
+        {
+          "managedDisk": {
+            "id": "<resourceId>"
+          }
+        }
+    ]
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+dataDisks: [
+    {
+        managedDisk: {
+            id: '<resourceId>'
         }
     }
 ]

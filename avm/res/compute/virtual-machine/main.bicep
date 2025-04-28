@@ -1136,33 +1136,33 @@ type osDiskType = {
 @export()
 @description('The type describing a data disk.')
 type dataDiskType = {
-  @description('Optional. The disk name.')
+  @description('Optional. The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used.')
   name: string?
 
   @description('Optional. Specifies the logical unit number of the data disk.')
   lun: int?
 
-  @description('Optional. Specifies the size of an empty data disk in gigabytes.')
+  @description('Optional. Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk.')
   diskSizeGB: int?
 
-  @description('Optional. Specifies how the virtual machine should be created.')
+  @description('Optional. Specifies how the virtual machine should be created. This property is automatically set to \'Attach\' when attaching a pre-existing disk.')
   createOption: 'Attach' | 'Empty' | 'FromImage'?
 
-  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion.')
+  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to \'Detach\' when attaching a pre-existing disk.')
   deleteOption: 'Delete' | 'Detach'?
 
-  @description('Optional. Specifies the caching requirements.')
+  @description('Optional. Specifies the caching requirements. This property is automatically set to \'None\' when attaching a pre-existing disk.')
   caching: 'None' | 'ReadOnly' | 'ReadWrite'?
 
-  @description('Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes.')
+  @description('Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk.')
   diskIOPSReadWrite: int?
 
-  @description('Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10.')
+  @description('Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk.')
   diskMBpsReadWrite: int?
 
   @description('Required. The managed disk parameters.')
   managedDisk: {
-    @description('Optional. Specifies the storage account type for the managed disk.')
+    @description('Optional. Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk.')
     storageAccountType:
       | 'PremiumV2_LRS'
       | 'Premium_LRS'
@@ -1175,11 +1175,11 @@ type dataDiskType = {
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
 
-    @description('Optional. Specifies the customer managed disk id for the managed disk.')
+    @description('Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.')
     id: string?
   }
 
-  @description('Optional. The tags of the public IP address.')
+  @description('Optional. The tags of the public IP address. Valid only when creating a new managed disk.')
   tags: object?
 }
 
