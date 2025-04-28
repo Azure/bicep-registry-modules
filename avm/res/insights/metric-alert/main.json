@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "5735927330543009746"
+      "version": "0.34.44.8038",
+      "templateHash": "8275020943999856118"
     },
     "name": "Metric Alerts",
     "description": "This module deploys a Metric Alert."
@@ -99,7 +99,7 @@
         "componentResourceId": {
           "type": "string",
           "metadata": {
-            "description": "Required. The Application Insights resource Id."
+            "description": "Required. The Application Insights resource ID."
           }
         },
         "failedLocationCount": {
@@ -111,12 +111,42 @@
         "webTestResourceId": {
           "type": "string",
           "metadata": {
-            "description": "Required. The Application Insights web test resource Id."
+            "description": "Required. The Application Insights web test resource ID."
           }
         }
       },
       "metadata": {
         "description": "The alert type for a web test scenario."
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "roleAssignmentType": {
@@ -311,6 +341,13 @@
         "description": "Required. Maps to the 'odata.type' field. Specifies the type of the alert criteria."
       }
     },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -400,6 +437,20 @@
         "autoMitigate": "[parameters('autoMitigate')]",
         "actions": "[variables('actionGroups')]"
       }
+    },
+    "metricAlert_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Insights/metricAlerts/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "metricAlert"
+      ]
     },
     "metricAlert_roleAssignments": {
       "copy": {
