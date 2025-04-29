@@ -634,6 +634,7 @@ param workloadName = '<workloadName>'
 | [`applicationGatewayFqdn`](#parameter-applicationgatewayfqdn) | string | The FQDN of the Application Gateway. Required and must match if the TLS Certificate is provided. Default is empty. |
 | [`base64Certificate`](#parameter-base64certificate) | securestring | The base64 encoded certificate to use for Application Gateway certificate. When not provided a self signed one will be generated, the certificate will be added to the Key Vault and assigned to the Application Gateway listener. |
 | [`bastionResourceId`](#parameter-bastionresourceid) | string | The resource ID of the bastion host. If set, the spoke virtual network will be peered with the hub virtual network and the bastion host will be allowed to connect to the jump box. Default is empty. |
+| [`deployAgentPool`](#parameter-deployagentpool) | bool | Deploy the agent pool for the container registry. Default value is true. |
 | [`deploySampleApplication`](#parameter-deploysampleapplication) | bool | Deploy sample application to the container apps environment. Default is false. |
 | [`deployZoneRedundantResources`](#parameter-deployzoneredundantresources) | bool | Default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false. Default is true. |
 | [`enableDdosProtection`](#parameter-enableddosprotection) | bool | DDoS protection mode. see https://learn.microsoft.com/azure/ddos-protection/ddos-protection-sku-comparison#skus. Default is "false". |
@@ -760,6 +761,14 @@ The resource ID of the bastion host. If set, the spoke virtual network will be p
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `deployAgentPool`
+
+Deploy the agent pool for the container registry. Default value is true.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `deploySampleApplication`
 

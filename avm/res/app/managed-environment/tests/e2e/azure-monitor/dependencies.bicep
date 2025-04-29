@@ -1,8 +1,8 @@
+@description('Optional. The location to deploy resources to.')
+param location string = resourceGroup().location
+
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
-
-@description('Optional. The location to deploy to.')
-param location string = resourceGroup().location
 
 var addressPrefix = '10.0.0.0/16'
 
@@ -20,6 +20,14 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
         name: 'defaultSubnet'
         properties: {
           addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          delegations: [
+            {
+              name: 'Microsoft.App.environments'
+              properties: {
+                serviceName: 'Microsoft.App/environments'
+              }
+            }
+          ]
         }
       }
     ]
