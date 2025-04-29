@@ -114,7 +114,9 @@ param retentionDescriptionRetentionTimeInHours int = 1
 param retentionDescriptionTombstoneRetentionTimeInHours int = 1
 
 var eventHubProperties = {
-  messageRetentionInDays: retentionDescriptionEnabled ? null : messageRetentionInDays
+  messageRetentionInDays: (retentionDescriptionEnabled && retentionDescriptionCleanupPolicy == 'Delete')
+    ? null
+    : messageRetentionInDays
   partitionCount: partitionCount
   status: status
   retentionDescription: retentionDescriptionEnabled
