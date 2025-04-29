@@ -16,10 +16,10 @@ param dataSourceInfo dataSourceInfoType
 @description('Required. Gets or sets the policy information.')
 param policyInfo policyInfoType
 
-resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' existing = {
+resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' existing = {
   name: backupVaultName
 
-  resource backupPolicy 'backupPolicies@2023-05-01' existing = {
+  resource backupPolicy 'backupPolicies@2024-04-01' existing = {
     name: policyInfo.policyName
   }
 }
@@ -30,6 +30,18 @@ module backupInstance_dataSourceResource_rbac 'modules/nested_dataSourceResource
   params: {
     resourceId: dataSourceInfo.resourceID
     principalId: backupVault.identity.principalId
+  }
+}
+
+resource backupInstance_snapshotRG_rbac 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (dataSourceInfo.resourceType == 'Microsoft.Compute/disks') {
+  name: guid('${resourceGroup().id}-${backupVault.id}-Disk-Snapshot-Contributor')
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '7efff54f-a5b4-42b5-a1c5-5411624893ce' // Disk Snapshot Contributor
+    )
+    principalId: backupVault.identity.principalId
+    principalType: 'ServicePrincipal'
   }
 }
 
@@ -47,6 +59,7 @@ resource backupInstance 'Microsoft.DataProtection/backupVaults/backupInstances@2
   }
   dependsOn: [
     backupInstance_dataSourceResource_rbac
+    backupInstance_snapshotRG_rbac
   ]
 }
 

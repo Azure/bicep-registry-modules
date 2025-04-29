@@ -12,7 +12,7 @@ This module deploys a backup of a NetApp Files Volume.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/backupVaults/backups) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupVaults/backups) |
 
 ## Parameters
 
