@@ -21,8 +21,8 @@ This module deploys a Search Service.
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Search/searchServices` | [2024-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2024-03-01-preview/searchServices) |
-| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2023-11-01/searchServices/sharedPrivateLinkResources) |
+| `Microsoft.Search/searchServices` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices) |
+| `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources) |
 
 ## Usage examples
 
@@ -227,6 +227,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       }
     }
     cmkEnforcement: 'Enabled'
+    computeType: 'confidential'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -323,6 +324,9 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     },
     "cmkEnforcement": {
       "value": "Enabled"
+    },
+    "computeType": {
+      "value": "confidential"
     },
     "diagnosticSettings": {
       "value": [
@@ -439,6 +443,7 @@ param authOptions = {
   }
 }
 param cmkEnforcement = 'Enabled'
+param computeType = 'confidential'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -773,6 +778,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       systemAssigned: true
     }
     networkRuleSet: {
+      bypass: 'AzureServices'
       ipRules: [
         {
           value: '40.74.28.0/23'
@@ -859,6 +865,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     },
     "networkRuleSet": {
       "value": {
+        "bypass": "AzureServices",
         "ipRules": [
           {
             "value": "40.74.28.0/23"
@@ -933,6 +940,7 @@ param managedIdentities = {
   systemAssigned: true
 }
 param networkRuleSet = {
+  bypass: 'AzureServices'
   ipRules: [
     {
       value: '40.74.28.0/23'
@@ -969,6 +977,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`authOptions`](#parameter-authoptions) | object | Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true. |
 | [`cmkEnforcement`](#parameter-cmkenforcement) | string | Describes a policy that determines how resources within the search service are to be encrypted with Customer Managed Keys. |
+| [`computeType`](#parameter-computetype) | string | Configure this property to support the search service using either the default compute or Azure Confidential Compute. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if 'authOptions' are defined. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1056,6 +1065,21 @@ Describes a policy that determines how resources within the search service are t
     'Disabled'
     'Enabled'
     'Unspecified'
+  ]
+  ```
+
+### Parameter: `computeType`
+
+Configure this property to support the search service using either the default compute or Azure Confidential Compute.
+
+- Required: No
+- Type: string
+- Default: `'default'`
+- Allowed:
+  ```Bicep
+  [
+    'confidential'
+    'default'
   ]
   ```
 
@@ -1332,6 +1356,7 @@ Network specific rules that determine how the Azure AI Search service may be rea
   ```Bicep
   [
     'AzurePortal'
+    'AzureServices'
     'None'
   ]
   ```
@@ -2003,6 +2028,7 @@ Tags to help categorize the resource in the Azure portal.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `endpoint` | string | The endpoint of the search service. |
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the search service. |

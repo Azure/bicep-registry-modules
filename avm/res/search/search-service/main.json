@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "13577261779754854397"
+      "version": "0.34.44.8038",
+      "templateHash": "2910883781828674564"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service."
@@ -89,6 +89,7 @@
           "type": "string",
           "allowedValues": [
             "AzurePortal",
+            "AzureServices",
             "None"
           ],
           "nullable": true,
@@ -668,6 +669,17 @@
         "description": "Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true."
       }
     },
+    "computeType": {
+      "type": "string",
+      "defaultValue": "default",
+      "allowedValues": [
+        "confidential",
+        "default"
+      ],
+      "metadata": {
+        "description": "Optional. Configure this property to support the search service using either the default compute or Azure Confidential Compute."
+      }
+    },
     "disableLocalAuth": {
       "type": "bool",
       "defaultValue": true,
@@ -887,7 +899,7 @@
     },
     "searchService": {
       "type": "Microsoft.Search/searchServices",
-      "apiVersion": "2024-03-01-preview",
+      "apiVersion": "2025-02-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "sku": {
@@ -897,6 +909,7 @@
       "identity": "[variables('identity')]",
       "properties": {
         "authOptions": "[parameters('authOptions')]",
+        "computeType": "[parameters('computeType')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
         "encryptionWithCmk": {
           "enforcement": "[parameters('cmkEnforcement')]"
@@ -1761,7 +1774,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-searchService-SharedPrivateLink-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[format('{0}-searchService-SharedPrvLink-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1794,8 +1807,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "13664767556137402121"
+              "version": "0.34.44.8038",
+              "templateHash": "17921821442902726660"
             },
             "name": "Search Services Private Link Resources",
             "description": "This module deploys a Search Service Private Link Resource."
@@ -1848,7 +1861,7 @@
             },
             "sharedPrivateLinkResource": {
               "type": "Microsoft.Search/searchServices/sharedPrivateLinkResources",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2025-02-01-preview",
               "name": "[format('{0}/{1}', parameters('searchServiceName'), parameters('name'))]",
               "properties": {
                 "privateLinkResourceId": "[parameters('privateLinkResourceId')]",
@@ -1904,7 +1917,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), 'value', listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('name')), '2024-03-01-preview').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), 'value', listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('name')), '2024-03-01-preview').secondaryKey)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), 'value', listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('name')), '2025-02-01-preview').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), 'value', listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('name')), '2025-02-01-preview').secondaryKey)), createArray()))]"
           }
         },
         "template": {
@@ -1914,8 +1927,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "5455406267618725608"
+              "version": "0.34.44.8038",
+              "templateHash": "8727860379251085593"
             }
           },
           "definitions": {
@@ -2047,14 +2060,21 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('searchService', '2024-03-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('searchService', '2025-02-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('searchService', '2024-03-01-preview', 'full').location]"
+      "value": "[reference('searchService', '2025-02-01-preview', 'full').location]"
+    },
+    "endpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "The endpoint of the search service."
+      },
+      "value": "[reference('searchService').endpoint]"
     },
     "exportedSecrets": {
       "$ref": "#/definitions/secretsOutputType",
