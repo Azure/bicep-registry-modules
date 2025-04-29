@@ -512,8 +512,8 @@ runs:
           $validateTestExecutionResult >> $env:GITHUB_STEP_SUMMARY
         } else {
           $jobOutput = Get-Content $mdPesterOutputFilePath '\n' $validateTestExecutionResult
-          Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPesterOutputFilePath) -Verbose
           $jobOutput >> $env:GITHUB_STEP_SUMMARY
+          Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPesterOutputFilePath) -Verbose
         }
 
         Write-Output '::endgroup::'
