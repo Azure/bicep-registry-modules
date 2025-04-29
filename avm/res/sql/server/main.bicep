@@ -536,10 +536,10 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSercretName')
+      contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSecretName')
         ? [
             {
-              name: secretsExportConfiguration!.?sqlAzureConnectionStringSercretName
+              name: secretsExportConfiguration!.?sqlAzureConnectionStringSecretName
               value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[?0].name : ''}; User=${administratorLogin}; Password=${administratorLoginPassword}'
             }
           ]
@@ -681,7 +681,7 @@ type secretsExportConfigurationType = {
   sqlAdminPasswordSecretName: string?
 
   @description('Optional. The sqlAzureConnectionString secret name to create.')
-  sqlAzureConnectionStringSercretName: string?
+  sqlAzureConnectionStringSecretName: string?
 }
 
 @export()
