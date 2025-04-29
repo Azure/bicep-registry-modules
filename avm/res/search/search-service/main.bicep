@@ -11,13 +11,6 @@ param name string
 @description('Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if \'disableLocalAuth\' is set to true.')
 param authOptions authOptionsType?
 
-@allowed([
-  'confidential'
-  'default'
-])
-@description('Optional. Configure this property to support the search service using either the default compute or Azure Confidential Compute.')
-param computeType string = 'default'
-
 @description('Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if \'authOptions\' are defined.')
 param disableLocalAuth bool = true
 
@@ -201,7 +194,6 @@ resource searchService 'Microsoft.Search/searchServices@2025-02-01-preview' = {
   identity: identity
   properties: {
     authOptions: authOptions
-    computeType: computeType
     disableLocalAuth: disableLocalAuth
     encryptionWithCmk: {
       enforcement: cmkEnforcement

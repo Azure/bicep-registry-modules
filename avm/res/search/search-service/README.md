@@ -227,7 +227,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       }
     }
     cmkEnforcement: 'Enabled'
-    computeType: 'confidential'
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -324,9 +323,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     },
     "cmkEnforcement": {
       "value": "Enabled"
-    },
-    "computeType": {
-      "value": "confidential"
     },
     "diagnosticSettings": {
       "value": [
@@ -443,7 +439,6 @@ param authOptions = {
   }
 }
 param cmkEnforcement = 'Enabled'
-param computeType = 'confidential'
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -977,7 +972,6 @@ param tags = {
 | :-- | :-- | :-- |
 | [`authOptions`](#parameter-authoptions) | object | Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true. |
 | [`cmkEnforcement`](#parameter-cmkenforcement) | string | Describes a policy that determines how resources within the search service are to be encrypted with Customer Managed Keys. |
-| [`computeType`](#parameter-computetype) | string | Configure this property to support the search service using either the default compute or Azure Confidential Compute. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableLocalAuth`](#parameter-disablelocalauth) | bool | When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if 'authOptions' are defined. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -1065,21 +1059,6 @@ Describes a policy that determines how resources within the search service are t
     'Disabled'
     'Enabled'
     'Unspecified'
-  ]
-  ```
-
-### Parameter: `computeType`
-
-Configure this property to support the search service using either the default compute or Azure Confidential Compute.
-
-- Required: No
-- Type: string
-- Default: `'default'`
-- Allowed:
-  ```Bicep
-  [
-    'confidential'
-    'default'
   ]
   ```
 

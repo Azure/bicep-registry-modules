@@ -74,7 +74,6 @@ module testDeployment '../../../main.bicep' = [
           aadAuthFailureMode: 'http401WithBearerChallenge'
         }
       }
-      computeType: 'confidential'
       hostingMode: 'highDensity'
       partitionCount: 2
       replicaCount: 3

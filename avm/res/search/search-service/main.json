@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "2910883781828674564"
+      "templateHash": "9481681932885497887"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service."
@@ -669,17 +669,6 @@
         "description": "Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if 'disableLocalAuth' is set to true."
       }
     },
-    "computeType": {
-      "type": "string",
-      "defaultValue": "default",
-      "allowedValues": [
-        "confidential",
-        "default"
-      ],
-      "metadata": {
-        "description": "Optional. Configure this property to support the search service using either the default compute or Azure Confidential Compute."
-      }
-    },
     "disableLocalAuth": {
       "type": "bool",
       "defaultValue": true,
@@ -909,7 +898,6 @@
       "identity": "[variables('identity')]",
       "properties": {
         "authOptions": "[parameters('authOptions')]",
-        "computeType": "[parameters('computeType')]",
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
         "encryptionWithCmk": {
           "enforcement": "[parameters('cmkEnforcement')]"
