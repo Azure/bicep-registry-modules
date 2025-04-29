@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -40,6 +40,8 @@ module nestedDependencies 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     applicationSecurityGroupName: 'dep-${namePrefix}-asg-${serviceShort}'
     loadBalancerName: 'dep-${namePrefix}-lb-${serviceShort}'
+    publicIPNameV4: 'dep-${namePrefix}-pipv4-${serviceShort}'
+    publicIPNameV6: 'dep-${namePrefix}-pipv6-${serviceShort}'
   }
 }
 
@@ -81,7 +83,7 @@ module testDeployment '../../../main.bicep' = [
               id: nestedDependencies.outputs.loadBalancerBackendPoolResourceId
             }
           ]
-          name: 'ipconfig01'
+          name: 'myIpconfig01'
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
         {
@@ -91,6 +93,13 @@ module testDeployment '../../../main.bicep' = [
               id: nestedDependencies.outputs.applicationSecurityGroupResourceId
             }
           ]
+          publicIPAddressResourceId: nestedDependencies.outputs.publicIPv4ResourceId
+        }
+        {
+          name: 'myIpV6Config'
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
+          publicIPAddressResourceId: nestedDependencies.outputs.publicIPv6ResourceId
+          privateIPAddressVersion: 'IPv6'
         }
       ]
       diagnosticSettings: [

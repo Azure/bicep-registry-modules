@@ -45,7 +45,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
     name: 'ashlnminlogicalnetwork'
-    vmSwitchName: 'ConvergedSwitch(management)'
+    vmSwitchName: '<vmSwitchName>'
     // Non-required parameters
     routeName: 'default'
     vlanId: '<vlanId>'
@@ -73,7 +73,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
       "value": "ashlnminlogicalnetwork"
     },
     "vmSwitchName": {
-      "value": "ConvergedSwitch(management)"
+      "value": "<vmSwitchName>"
     },
     // Non-required parameters
     "routeName": {
@@ -99,7 +99,7 @@ using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 // Required parameters
 param customLocationResourceId = '<customLocationResourceId>'
 param name = 'ashlnminlogicalnetwork'
-param vmSwitchName = 'ConvergedSwitch(management)'
+param vmSwitchName = '<vmSwitchName>'
 // Non-required parameters
 param routeName = 'default'
 param vlanId = '<vlanId>'
@@ -124,7 +124,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
     // Required parameters
     customLocationResourceId: '<customLocationResourceId>'
     name: 'ashlnwaflogicalnetwork'
-    vmSwitchName: 'ConvergedSwitch(management)'
+    vmSwitchName: '<vmSwitchName>'
     // Non-required parameters
     addressPrefix: '172.20.0.1/24'
     defaultGateway: '172.20.0.1'
@@ -165,7 +165,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:<versio
       "value": "ashlnwaflogicalnetwork"
     },
     "vmSwitchName": {
-      "value": "ConvergedSwitch(management)"
+      "value": "<vmSwitchName>"
     },
     // Non-required parameters
     "addressPrefix": {
@@ -218,7 +218,7 @@ using 'br/public:avm/res/azure-stack-hci/logical-network:<version>'
 // Required parameters
 param customLocationResourceId = '<customLocationResourceId>'
 param name = 'ashlnwaflogicalnetwork'
-param vmSwitchName = 'ConvergedSwitch(management)'
+param vmSwitchName = '<vmSwitchName>'
 // Non-required parameters
 param addressPrefix = '172.20.0.1/24'
 param defaultGateway = '172.20.0.1'
