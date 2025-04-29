@@ -294,6 +294,7 @@ module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
       partitionCount: eventHub.?partitionCount
       roleAssignments: eventHub.?roleAssignments
       status: eventHub.?status
+      retentionDescriptionEnabled: eventHub.?retentionDescriptionEnabled
       retentionDescriptionCleanupPolicy: eventHub.?retentionDescriptionCleanupPolicy
       retentionDescriptionRetentionTimeInHours: eventHub.?retentionDescriptionRetentionTimeInHours
       retentionDescriptionTombstoneRetentionTimeInHours: eventHub.?retentionDescriptionTombstoneRetentionTimeInHours
