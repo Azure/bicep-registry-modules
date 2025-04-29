@@ -250,7 +250,7 @@ output location string = containergroup.location
 // =============== //
 
 @export()
-type containerProbe = {
+type containerProbeType = {
   @description('Optional. The execution command to probe.')
   exec: {
     @description('Required. The commands to execute within the container.')
@@ -305,10 +305,10 @@ type containerType = {
     image: string
 
     @description('Optional. The liveness probe.')
-    livenessProbe: containerProbe?
+    livenessProbe: containerProbeType?
 
     @description('Optional. The readiness probe.')
-    readinessProbe: containerProbe?
+    readinessProbe: containerProbeType?
 
     @description('Optional. The exposed ports on the container instance.')
     ports: {

@@ -57,7 +57,7 @@ param userData string = ''
 param customData string = ''
 
 @description('Optional. Specifies set of certificates that should be installed onto the virtual machine.')
-param certificatesToBeInstalled VaultSecretGroupType[]?
+param certificatesToBeInstalled vaultSecretGroupType[]?
 
 @description('Optional. Specifies the priority for the virtual machine.')
 @allowed([
@@ -571,10 +571,10 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
               option: 'Local'
               placement: osDisk.diffDiskSettings!.placement
             }
-        diskSizeGB: osDisk.diskSizeGB
+        diskSizeGB: osDisk.?diskSizeGB
         caching: osDisk.?caching ?? 'ReadOnly'
         managedDisk: {
-          storageAccountType: osDisk.managedDisk.storageAccountType
+          storageAccountType: osDisk.managedDisk.?storageAccountType
           diskEncryptionSet: {
             id: osDisk.managedDisk.?diskEncryptionSetResourceId
           }
@@ -1289,7 +1289,7 @@ type autoShutDownConfigType = {
 
 @export()
 @description('The type describing the set of certificates that should be installed onto the virtual machine.')
-type VaultSecretGroupType = {
+type vaultSecretGroupType = {
   @description('Optional. The relative URL of the Key Vault containing all of the certificates in VaultCertificates.')
   sourceVault: subResourceType?
 
