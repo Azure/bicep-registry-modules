@@ -6,13 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "15648031842218670048"
+      "templateHash": "6480963111257796466"
     },
     "name": "SQL Server Elastic Pool",
     "description": "This module deploys an Azure SQL Server Elastic Pool."
   },
   "definitions": {
-    "elasticPoolPerDatabaseSettingsType": {
+    "perDatabaseSettingsType": {
       "type": "object",
       "properties": {
         "autoPauseDelay": {
@@ -40,7 +40,7 @@
         "description": "The per database settings for the elastic pool."
       }
     },
-    "elasticPoolSkuType": {
+    "skuType": {
       "type": "object",
       "properties": {
         "capacity": {
@@ -126,7 +126,7 @@
       }
     },
     "sku": {
-      "$ref": "#/definitions/elasticPoolSkuType",
+      "$ref": "#/definitions/skuType",
       "defaultValue": {
         "capacity": 2,
         "name": "GP_Gen5",
@@ -144,16 +144,15 @@
       }
     },
     "availabilityZone": {
-      "type": "string",
+      "type": "int",
       "allowedValues": [
-        "1",
-        "2",
-        "3",
-        "NoPreference"
+        -1,
+        1,
+        2,
+        3
       ],
-      "defaultValue": "NoPreference",
       "metadata": {
-        "description": "Optional. Specifies the availability zone the pool's primary replica is pinned to."
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
       }
     },
     "highAvailabilityReplicaCount": {
@@ -196,7 +195,7 @@
       }
     },
     "perDatabaseSettings": {
-      "$ref": "#/definitions/elasticPoolPerDatabaseSettingsType",
+      "$ref": "#/definitions/perDatabaseSettingsType",
       "defaultValue": {
         "autoPauseDelay": -1,
         "maxCapacity": "2",
@@ -241,7 +240,7 @@
       "sku": "[parameters('sku')]",
       "properties": {
         "autoPauseDelay": "[parameters('autoPauseDelay')]",
-        "availabilityZone": "[parameters('availabilityZone')]",
+        "availabilityZone": "[if(not(equals(parameters('availabilityZone'), -1)), string(parameters('availabilityZone')), 'NoPreference')]",
         "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
         "licenseType": "[parameters('licenseType')]",
         "maintenanceConfigurationId": "[parameters('maintenanceConfigurationId')]",

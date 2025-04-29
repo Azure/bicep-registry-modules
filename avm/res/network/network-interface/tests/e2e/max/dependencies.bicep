@@ -13,7 +13,14 @@ param applicationSecurityGroupName string
 @description('Required. The name of the Load Balancer to create.')
 param loadBalancerName string
 
-var addressPrefix = '10.0.0.0/16'
+@description('Required. The name of the Public IP IPv4 to create.')
+param publicIPNameV4 string
+
+@description('Required. The name of the Public IP IPv6 to create.')
+param publicIPNameV6 string
+
+var addressPrefixV4 = '10.0.0.0/16'
+var addressPrefixV6 = 'fd00:3291:d43d::/48'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   name: virtualNetworkName
@@ -21,14 +28,18 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   properties: {
     addressSpace: {
       addressPrefixes: [
-        addressPrefix
+        addressPrefixV4
+        addressPrefixV6
       ]
     }
     subnets: [
       {
         name: 'defaultSubnet'
         properties: {
-          addressPrefix: cidrSubnet(addressPrefix, 16, 0)
+          addressPrefixes: [
+            cidrSubnet(addressPrefixV4, 16, 0)
+            cidrSubnet(addressPrefixV6, 64, 0)
+          ]
         }
       }
     ]
@@ -68,36 +79,76 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-05-01' = {
   resource backendPool 'backendAddressPools@2024-05-01' = {
     name: 'default'
   }
+
+  resource inboundNatRule1 'inboundNatRules@2024-05-01' = {
+    name: 'inboundNatRule1'
+    properties: {
+      frontendPort: 443
+      backendPort: 443
+      enableFloatingIP: false
+      enableTcpReset: false
+      frontendIPConfiguration: {
+        id: loadBalancer.properties.frontendIPConfigurations[0].id
+      }
+      idleTimeoutInMinutes: 4
+      protocol: 'Tcp'
+    }
+    dependsOn: [
+      backendPool
+    ]
+  }
+
+  resource inboundNatRule2 'inboundNatRules@2024-05-01' = {
+    name: 'inboundNatRule2'
+    properties: {
+      frontendPort: 3389
+      backendPort: 3389
+      frontendIPConfiguration: {
+        id: loadBalancer.properties.frontendIPConfigurations[0].id
+      }
+      idleTimeoutInMinutes: 4
+      protocol: 'Tcp'
+    }
+    dependsOn: [
+      backendPool
+      inboundNatRule1
+    ]
+  }
 }
 
-resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2024-05-01' = {
-  name: 'inboundNatRule1'
-  properties: {
-    frontendPort: 443
-    backendPort: 443
-    enableFloatingIP: false
-    enableTcpReset: false
-    frontendIPConfiguration: {
-      id: loadBalancer.properties.frontendIPConfigurations[0].id
-    }
-    idleTimeoutInMinutes: 4
-    protocol: 'Tcp'
+resource publicIPv4 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
+  name: publicIPNameV4
+  location: location
+  sku: {
+    name: 'Standard'
+    tier: 'Regional'
   }
-  parent: loadBalancer
+  properties: {
+    publicIPAllocationMethod: 'Static'
+  }
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
 }
 
-resource inboundNatRule2 'Microsoft.Network/loadBalancers/inboundNatRules@2024-05-01' = {
-  name: 'inboundNatRule2'
-  properties: {
-    frontendPort: 3389
-    backendPort: 3389
-    frontendIPConfiguration: {
-      id: loadBalancer.properties.frontendIPConfigurations[0].id
-    }
-    idleTimeoutInMinutes: 4
-    protocol: 'Tcp'
+resource publicIPv6 'Microsoft.Network/publicIPAddresses@2024-05-01' = {
+  name: publicIPNameV6
+  location: location
+  sku: {
+    name: 'Standard'
+    tier: 'Regional'
   }
-  parent: loadBalancer
+  properties: {
+    publicIPAllocationMethod: 'Static'
+    publicIPAddressVersion: 'IPv6'
+  }
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
 }
 
 @description('The resource ID of the created Virtual Network Subnet.')
@@ -111,3 +162,9 @@ output applicationSecurityGroupResourceId string = applicationSecurityGroup.id
 
 @description('The resource ID of the created Load Balancer Backend Pool.')
 output loadBalancerBackendPoolResourceId string = loadBalancer::backendPool.id
+
+@description('The resource ID of the created Public IP IPv4.')
+output publicIPv4ResourceId string = publicIPv4.id
+
+@description('The resource ID of the created Public IP IPv6.')
+output publicIPv6ResourceId string = publicIPv6.id

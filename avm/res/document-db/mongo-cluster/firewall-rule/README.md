@@ -21,7 +21,7 @@ This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endIpAddress`](#parameter-endipaddress) | string | The end IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format. |
-| [`name`](#parameter-name) | string | The name of the firewall rule. |
+| [`name`](#parameter-name) | string | The name of the firewall rule. Must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. |
 | [`startIpAddress`](#parameter-startipaddress) | string | The start IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format. |
 
 **Conditional parameters**
@@ -39,7 +39,7 @@ The end IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. M
 
 ### Parameter: `name`
 
-The name of the firewall rule.
+The name of the firewall rule. Must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`.
 
 - Required: Yes
 - Type: string
