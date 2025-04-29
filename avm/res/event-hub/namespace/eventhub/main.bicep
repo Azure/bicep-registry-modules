@@ -99,6 +99,7 @@ param retentionDescriptionEnabled bool = false
 @allowed([
   'Compact'
   'Delete'
+  'DeleteOrCompact'
 ])
 @description('Optional. Retention cleanup policy. Enumerates the possible values for cleanup policy.')
 param retentionDescriptionCleanupPolicy string = 'Delete'

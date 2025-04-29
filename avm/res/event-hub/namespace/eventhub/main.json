@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "174911292275804786"
+      "templateHash": "1892551986117359046"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -294,7 +294,8 @@
       "defaultValue": "Delete",
       "allowedValues": [
         "Compact",
-        "Delete"
+        "Delete",
+        "DeleteOrCompact"
       ],
       "metadata": {
         "description": "Optional. Retention cleanup policy. Enumerates the possible values for cleanup policy."

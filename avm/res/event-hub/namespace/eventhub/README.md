@@ -259,6 +259,7 @@ Retention cleanup policy. Enumerates the possible values for cleanup policy.
   [
     'Compact'
     'Delete'
+    'DeleteOrCompact'
   ]
   ```
 
