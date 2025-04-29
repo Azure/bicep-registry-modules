@@ -15,7 +15,7 @@ This module deploys an Event Hub Namespace Event Hub.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.EventHub/namespaces/eventhubs` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-05-01-preview/namespaces/eventhubs) |
+| `Microsoft.EventHub/namespaces/eventhubs` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs) |
 | `Microsoft.EventHub/namespaces/eventhubs/authorizationRules` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/authorizationRules) |
 | `Microsoft.EventHub/namespaces/eventhubs/consumergroups` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/consumergroups) |
 
@@ -53,7 +53,6 @@ This module deploys an Event Hub Namespace Event Hub.
 | [`partitionCount`](#parameter-partitioncount) | int | Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions. |
 | [`retentionDescriptionCleanupPolicy`](#parameter-retentiondescriptioncleanuppolicy) | string | Retention cleanup policy. Enumerates the possible values for cleanup policy. |
 | [`retentionDescriptionEnabled`](#parameter-retentiondescriptionenabled) | bool | A value that indicates whether to enable retention description properties. If it is set to true the messageretentionInDays property is ignored. |
-| [`retentionDescriptionMinCompactionLagInMins`](#parameter-retentiondescriptionmincompactionlaginmins) | int | The minimum time a message will remain ineligible for compaction in the log. This value is used when cleanupPolicy is Compact or DeleteOrCompact. |
 | [`retentionDescriptionRetentionTimeInHours`](#parameter-retentiondescriptionretentiontimeinhours) | int | Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageretentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue. |
 | [`retentionDescriptionTombstoneRetentionTimeInHours`](#parameter-retentiondescriptiontombstoneretentiontimeinhours) | int | Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -259,7 +258,6 @@ Retention cleanup policy. Enumerates the possible values for cleanup policy.
   [
     'Compact'
     'Delete'
-    'DeleteOrCompact'
   ]
   ```
 
@@ -270,14 +268,6 @@ A value that indicates whether to enable retention description properties. If it
 - Required: No
 - Type: bool
 - Default: `False`
-
-### Parameter: `retentionDescriptionMinCompactionLagInMins`
-
-The minimum time a message will remain ineligible for compaction in the log. This value is used when cleanupPolicy is Compact or DeleteOrCompact.
-
-- Required: No
-- Type: int
-- Default: `1`
 
 ### Parameter: `retentionDescriptionRetentionTimeInHours`
 

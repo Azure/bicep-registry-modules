@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "1892551986117359046"
+      "templateHash": "10874430245736564571"
     },
     "name": "Event Hub Namespace Event Hubs",
     "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -294,8 +294,7 @@
       "defaultValue": "Delete",
       "allowedValues": [
         "Compact",
-        "Delete",
-        "DeleteOrCompact"
+        "Delete"
       ],
       "metadata": {
         "description": "Optional. Retention cleanup policy. Enumerates the possible values for cleanup policy."
@@ -318,13 +317,6 @@
       "metadata": {
         "description": "Optional. Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub."
       }
-    },
-    "retentionDescriptionMinCompactionLagInMins": {
-      "type": "int",
-      "defaultValue": 1,
-      "metadata": {
-        "description": "Optional. The minimum time a message will remain ineligible for compaction in the log. This value is used when cleanupPolicy is Compact or DeleteOrCompact."
-      }
     }
   },
   "variables": {
@@ -339,7 +331,7 @@
       "messageRetentionInDays": "[if(parameters('retentionDescriptionEnabled'), null(), parameters('messageRetentionInDays'))]",
       "partitionCount": "[parameters('partitionCount')]",
       "status": "[parameters('status')]",
-      "retentionDescription": "[if(parameters('retentionDescriptionEnabled'), createObject('cleanupPolicy', parameters('retentionDescriptionCleanupPolicy'), 'retentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null()), 'tombstoneRetentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null()), 'minCompactionLagInMins', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionMinCompactionLagInMins'), null())), null())]"
+      "retentionDescription": "[if(parameters('retentionDescriptionEnabled'), createObject('cleanupPolicy', parameters('retentionDescriptionCleanupPolicy'), 'retentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Delete'), parameters('retentionDescriptionRetentionTimeInHours'), null()), 'tombstoneRetentionTimeInHours', if(equals(parameters('retentionDescriptionCleanupPolicy'), 'Compact'), parameters('retentionDescriptionTombstoneRetentionTimeInHours'), null())), null())]"
     },
     "eventHubPropertiesCapture": {
       "captureDescription": {
@@ -378,7 +370,7 @@
     },
     "eventHub": {
       "type": "Microsoft.EventHub/namespaces/eventhubs",
-      "apiVersion": "2024-05-01-preview",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('namespaceName'), parameters('name'))]",
       "properties": "[if(parameters('captureDescriptionEnabled'), union(variables('eventHubProperties'), variables('eventHubPropertiesCapture')), variables('eventHubProperties'))]"
     },

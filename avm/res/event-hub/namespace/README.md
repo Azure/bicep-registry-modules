@@ -20,7 +20,7 @@ This module deploys an Event Hub Namespace.
 | `Microsoft.EventHub/namespaces` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces) |
 | `Microsoft.EventHub/namespaces/authorizationRules` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/authorizationRules) |
 | `Microsoft.EventHub/namespaces/disasterRecoveryConfigs` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/disasterRecoveryConfigs) |
-| `Microsoft.EventHub/namespaces/eventhubs` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-05-01-preview/namespaces/eventhubs) |
+| `Microsoft.EventHub/namespaces/eventhubs` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs) |
 | `Microsoft.EventHub/namespaces/eventhubs/authorizationRules` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/authorizationRules) |
 | `Microsoft.EventHub/namespaces/eventhubs/consumergroups` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/consumergroups) |
 | `Microsoft.EventHub/namespaces/networkRuleSets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/networkRuleSets) |
@@ -416,7 +416,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         name: 'az-evh-x-003'
         retentionDescriptionCleanupPolicy: 'Compact'
         retentionDescriptionEnabled: true
-        retentionDescriptionMinCompactionLagInMins: 5
         retentionDescriptionTombstoneRetentionTimeInHours: 24
       }
     ]
@@ -621,7 +620,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
           "name": "az-evh-x-003",
           "retentionDescriptionCleanupPolicy": "Compact",
           "retentionDescriptionEnabled": true,
-          "retentionDescriptionMinCompactionLagInMins": 5,
           "retentionDescriptionTombstoneRetentionTimeInHours": 24
         }
       ]
@@ -846,7 +844,6 @@ param eventhubs = [
     name: 'az-evh-x-003'
     retentionDescriptionCleanupPolicy: 'Compact'
     retentionDescriptionEnabled: true
-    retentionDescriptionMinCompactionLagInMins: 5
     retentionDescriptionTombstoneRetentionTimeInHours: 24
   }
 ]
