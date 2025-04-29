@@ -1,0 +1,198 @@
+2025-04-24T15:52:18.607291362Z INFO:azure.identity._credentials.environment:No environment configuration found.
+2025-04-24T15:52:18.607608672Z INFO:azure.identity._credentials.managed_identity:ManagedIdentityCredential will use App Service managed identity
+
+2025-04-24T15:52:18.613710681Z WARNING:azure.identity._credentials.chained:DefaultAzureCredential failed to retrieve a token from the included credentials.
+2025-04-24T15:52:18.613731850Z Attempted credentials:
+2025-04-24T15:52:18.613740907Z 	EnvironmentCredential: EnvironmentCredential authentication unavailable. Environment variables are not fully configured.
+2025-04-24T15:52:18.613748040Z Visit https://aka.ms/azsdk/python/identity/environmentcredential/troubleshoot to troubleshoot this issue.
+2025-04-24T15:52:18.613754772Z 	ManagedIdentityCredential: App Service managed identity configuration not found in environment. invalid_scope
+2025-04-24T15:52:18.613786361Z 	SharedTokenCacheCredential: SharedTokenCacheCredential authentication unavailable. No accounts were found in the cache.
+2025-04-24T15:52:18.613794186Z 	AzureCliCredential: Azure CLI not found on path
+2025-04-24T15:52:18.613801149Z 	AzurePowerShellCredential: PowerShell is not installed
+2025-04-24T15:52:18.613808142Z 	AzureDeveloperCliCredential: Azure Developer CLI could not be found. Please visit https://aka.ms/azure-dev for installation instructions and then,once installed, authenticate to your Azure account using 'azd auth login'.
+2025-04-24T15:52:18.613815255Z To mitigate this issue, please refer to the troubleshooting guidelines here at https://aka.ms/azsdk/python/identity/defaultazurecredential/troubleshoot.
+2025-04-24T15:52:18.615266737Z INFO:     88.26.120.102:0 - "POST /input_task HTTP/1.1" 500 Internal Server Error
+2025-04-24T15:52:18.618244333Z ERROR:    Exception in ASGI application
+2025-04-24T15:52:18.618263429Z   + Exception Group Traceback (most recent call last):
+2025-04-24T15:52:18.618271664Z   |   File "/usr/local/lib/python3.11/site-packages/starlette/_utils.py", line 76, in collapse_excgroups
+2025-04-24T15:52:18.618288445Z   |     yield
+2025-04-24T15:52:18.618295659Z   |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 174, in __call__
+2025-04-24T15:52:18.618302491Z   |     async with anyio.create_task_group() as task_group:
+2025-04-24T15:52:18.618310246Z   |   File "/usr/local/lib/python3.11/site-packages/anyio/_backends/_asyncio.py", line 772, in __aexit__
+2025-04-24T15:52:18.618318000Z   |     raise BaseExceptionGroup(
+2025-04-24T15:52:18.618325674Z   | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+2025-04-24T15:52:18.618331946Z   +-+---------------- 1 ----------------
+2025-04-24T15:52:18.618338248Z     | Traceback (most recent call last):
+2025-04-24T15:52:18.618344570Z     |   File "/usr/local/lib/python3.11/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+2025-04-24T15:52:18.618350982Z     |     result = await app(  # type: ignore[func-returns-value]
+2025-04-24T15:52:18.618357584Z     |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.618363946Z     |   File "/usr/local/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+2025-04-24T15:52:18.618370849Z     |     return await self.app(scope, receive, send)
+2025-04-24T15:52:18.618378022Z     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.618384654Z     |   File "/usr/local/lib/python3.11/site-packages/fastapi/applications.py", line 1054, in __call__
+2025-04-24T15:52:18.618391407Z     |     await super().__call__(scope, receive, send)
+2025-04-24T15:52:18.618398310Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/applications.py", line 112, in __call__
+2025-04-24T15:52:18.618405242Z     |     await self.middleware_stack(scope, receive, send)
+2025-04-24T15:52:18.618413167Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 187, in __call__
+2025-04-24T15:52:18.618420591Z     |     raise exc
+2025-04-24T15:52:18.618427494Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 165, in __call__
+2025-04-24T15:52:18.618434196Z     |     await self.app(scope, receive, _send)
+2025-04-24T15:52:18.618441049Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 173, in __call__
+2025-04-24T15:52:18.618447822Z     |     with recv_stream, send_stream, collapse_excgroups():
+2025-04-24T15:52:18.618454605Z     |   File "/usr/local/lib/python3.11/contextlib.py", line 158, in __exit__
+2025-04-24T15:52:18.618461858Z     |     self.gen.throw(typ, value, traceback)
+2025-04-24T15:52:18.618468480Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+2025-04-24T15:52:18.618475123Z     |     raise exc
+2025-04-24T15:52:18.618481524Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 175, in __call__
+2025-04-24T15:52:18.618488267Z     |     response = await self.dispatch_func(request, call_next)
+2025-04-24T15:52:18.618495110Z     |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.618502002Z     |   File "/src/backend/middleware/health_check.py", line 84, in dispatch
+2025-04-24T15:52:18.618508705Z     |     response = await call_next(request)
+2025-04-24T15:52:18.618515247Z     |                ^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.618521879Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 153, in call_next
+2025-04-24T15:52:18.618529143Z     |     raise app_exc
+2025-04-24T15:52:18.618535966Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 140, in coro
+2025-04-24T15:52:18.618550192Z     |     await self.app(scope, receive_or_disconnect, send_no_error)
+2025-04-24T15:52:18.618556935Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 93, in __call__
+2025-04-24T15:52:18.618563627Z     |     await self.simple_response(scope, receive, send, request_headers=headers)
+2025-04-24T15:52:18.618570490Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+2025-04-24T15:52:18.618577253Z     |     await self.app(scope, receive, send)
+2025-04-24T15:52:18.618584215Z     |   File "/usr/local/lib/python3.11/site-packages/opentelemetry/instrumentation/asgi/__init__.py", line 735, in __call__
+2025-04-24T15:52:18.618607489Z     |     await self.app(scope, otel_receive, otel_send)
+2025-04-24T15:52:18.618615744Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+2025-04-24T15:52:18.618623028Z     |     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+2025-04-24T15:52:18.618629570Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+2025-04-24T15:52:18.618636272Z     |     raise exc
+2025-04-24T15:52:18.618644187Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+2025-04-24T15:52:18.618651380Z     |     await app(scope, receive, sender)
+2025-04-24T15:52:18.618658604Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 714, in __call__
+2025-04-24T15:52:18.618665467Z     |     await self.middleware_stack(scope, receive, send)
+2025-04-24T15:52:18.618676106Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 734, in app
+2025-04-24T15:52:18.618683139Z     |     await route.handle(scope, receive, send)
+2025-04-24T15:52:18.618690183Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 288, in handle
+2025-04-24T15:52:18.618696775Z     |     await self.app(scope, receive, send)
+2025-04-24T15:52:18.618703387Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 76, in app
+2025-04-24T15:52:18.618710000Z     |     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+2025-04-24T15:52:18.618717133Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+2025-04-24T15:52:18.618723986Z     |     raise exc
+2025-04-24T15:52:18.618730928Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+2025-04-24T15:52:18.618737440Z     |     await app(scope, receive, sender)
+2025-04-24T15:52:18.618744083Z     |   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 73, in app
+2025-04-24T15:52:18.618751006Z     |     response = await f(request)
+2025-04-24T15:52:18.618757718Z     |                ^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.618764731Z     |   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 301, in app
+2025-04-24T15:52:18.618771444Z     |     raw_response = await run_endpoint_function(
+2025-04-24T15:52:18.618777976Z     |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.618784768Z     |   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+2025-04-24T15:52:18.618792503Z     |     return await dependant.call(**values)
+2025-04-24T15:52:18.618800308Z     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.618807641Z     |   File "/src/backend/app.py", line 128, in input_task_endpoint
+2025-04-24T15:52:18.618822198Z     |     if not rai_success(input_task.description):
+2025-04-24T15:52:18.618829231Z     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.618836044Z     |   File "/src/backend/utils.py", line 340, in rai_success
+2025-04-24T15:52:18.618844660Z     |     access_token = credential.get_token(
+2025-04-24T15:52:18.618851523Z     |                    ^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.618858345Z     |   File "/usr/local/lib/python3.11/site-packages/azure/identity/_credentials/default.py", line 227, in get_token
+2025-04-24T15:52:18.618865709Z     |     token = super().get_token(*scopes, claims=claims, tenant_id=tenant_id, **kwargs)
+2025-04-24T15:52:18.618885836Z     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.618893701Z     |   File "/usr/local/lib/python3.11/site-packages/azure/identity/_credentials/chained.py", line 153, in get_token
+2025-04-24T15:52:18.618900664Z     |     raise ClientAuthenticationError(message=message)
+2025-04-24T15:52:18.618907868Z     | azure.core.exceptions.ClientAuthenticationError: DefaultAzureCredential failed to retrieve a token from the included credentials.
+2025-04-24T15:52:18.618914630Z     | Attempted credentials:
+2025-04-24T15:52:18.618921182Z     | 	EnvironmentCredential: EnvironmentCredential authentication unavailable. Environment variables are not fully configured.
+2025-04-24T15:52:18.618928346Z     | Visit https://aka.ms/azsdk/python/identity/environmentcredential/troubleshoot to troubleshoot this issue.
+2025-04-24T15:52:18.618935329Z     | 	ManagedIdentityCredential: App Service managed identity configuration not found in environment. invalid_scope
+2025-04-24T15:52:18.618943053Z     | 	SharedTokenCacheCredential: SharedTokenCacheCredential authentication unavailable. No accounts were found in the cache.
+2025-04-24T15:52:18.618950287Z     | 	AzureCliCredential: Azure CLI not found on path
+2025-04-24T15:52:18.618956658Z     | 	AzurePowerShellCredential: PowerShell is not installed
+2025-04-24T15:52:18.618963992Z     | 	AzureDeveloperCliCredential: Azure Developer CLI could not be found. Please visit https://aka.ms/azure-dev for installation instructions and then,once installed, authenticate to your Azure account using 'azd auth login'.
+2025-04-24T15:52:18.618970725Z     | To mitigate this issue, please refer to the troubleshooting guidelines here at https://aka.ms/azsdk/python/identity/defaultazurecredential/troubleshoot.
+2025-04-24T15:52:18.618977096Z     +------------------------------------
+2025-04-24T15:52:18.618983128Z
+2025-04-24T15:52:18.618989449Z During handling of the above exception, another exception occurred:
+2025-04-24T15:52:18.618995581Z
+2025-04-24T15:52:18.619002223Z Traceback (most recent call last):
+2025-04-24T15:52:18.619009697Z   File "/usr/local/lib/python3.11/site-packages/uvicorn/protocols/http/h11_impl.py", line 403, in run_asgi
+2025-04-24T15:52:18.619017512Z     result = await app(  # type: ignore[func-returns-value]
+2025-04-24T15:52:18.619024845Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.619031668Z   File "/usr/local/lib/python3.11/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+2025-04-24T15:52:18.619038180Z     return await self.app(scope, receive, send)
+2025-04-24T15:52:18.619044682Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.619051244Z   File "/usr/local/lib/python3.11/site-packages/fastapi/applications.py", line 1054, in __call__
+2025-04-24T15:52:18.619057756Z     await super().__call__(scope, receive, send)
+2025-04-24T15:52:18.619067785Z   File "/usr/local/lib/python3.11/site-packages/starlette/applications.py", line 112, in __call__
+2025-04-24T15:52:18.619085017Z     await self.middleware_stack(scope, receive, send)
+2025-04-24T15:52:18.619091609Z   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 187, in __call__
+2025-04-24T15:52:18.619098292Z     raise exc
+2025-04-24T15:52:18.619104994Z   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/errors.py", line 165, in __call__
+2025-04-24T15:52:18.619111616Z     await self.app(scope, receive, _send)
+2025-04-24T15:52:18.619118249Z   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 173, in __call__
+2025-04-24T15:52:18.619125021Z     with recv_stream, send_stream, collapse_excgroups():
+2025-04-24T15:52:18.619131533Z   File "/usr/local/lib/python3.11/contextlib.py", line 158, in __exit__
+2025-04-24T15:52:18.619138086Z     self.gen.throw(typ, value, traceback)
+2025-04-24T15:52:18.619144558Z   File "/usr/local/lib/python3.11/site-packages/starlette/_utils.py", line 82, in collapse_excgroups
+2025-04-24T15:52:18.619151160Z     raise exc
+2025-04-24T15:52:18.619157532Z   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 175, in __call__
+2025-04-24T15:52:18.619164114Z     response = await self.dispatch_func(request, call_next)
+2025-04-24T15:52:18.619170737Z                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.619177249Z   File "/src/backend/middleware/health_check.py", line 84, in dispatch
+2025-04-24T15:52:18.619184091Z     response = await call_next(request)
+2025-04-24T15:52:18.619190824Z                ^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.619197336Z   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 153, in call_next
+2025-04-24T15:52:18.619204108Z     raise app_exc
+2025-04-24T15:52:18.619211903Z   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/base.py", line 140, in coro
+2025-04-24T15:52:18.619219067Z     await self.app(scope, receive_or_disconnect, send_no_error)
+2025-04-24T15:52:18.619226149Z   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 93, in __call__
+2025-04-24T15:52:18.619233233Z     await self.simple_response(scope, receive, send, request_headers=headers)
+2025-04-24T15:52:18.619239925Z   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/cors.py", line 144, in simple_response
+2025-04-24T15:52:18.619246387Z     await self.app(scope, receive, send)
+2025-04-24T15:52:18.619253050Z   File "/usr/local/lib/python3.11/site-packages/opentelemetry/instrumentation/asgi/__init__.py", line 735, in __call__
+2025-04-24T15:52:18.619259451Z     await self.app(scope, otel_receive, otel_send)
+2025-04-24T15:52:18.619266304Z   File "/usr/local/lib/python3.11/site-packages/starlette/middleware/exceptions.py", line 62, in __call__
+2025-04-24T15:52:18.619272916Z     await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+2025-04-24T15:52:18.619279509Z   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+2025-04-24T15:52:18.619286041Z     raise exc
+2025-04-24T15:52:18.619293575Z   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+2025-04-24T15:52:18.619300779Z     await app(scope, receive, sender)
+2025-04-24T15:52:18.619307391Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 714, in __call__
+2025-04-24T15:52:18.619313963Z     await self.middleware_stack(scope, receive, send)
+2025-04-24T15:52:18.619320535Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 734, in app
+2025-04-24T15:52:18.619327298Z     await route.handle(scope, receive, send)
+2025-04-24T15:52:18.619334080Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 288, in handle
+2025-04-24T15:52:18.619349639Z     await self.app(scope, receive, send)
+2025-04-24T15:52:18.619356262Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 76, in app
+2025-04-24T15:52:18.619362744Z     await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+2025-04-24T15:52:18.619369156Z   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+2025-04-24T15:52:18.619375948Z     raise exc
+2025-04-24T15:52:18.619382460Z   File "/usr/local/lib/python3.11/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+2025-04-24T15:52:18.619391167Z     await app(scope, receive, sender)
+2025-04-24T15:52:18.619398450Z   File "/usr/local/lib/python3.11/site-packages/starlette/routing.py", line 73, in app
+2025-04-24T15:52:18.619405333Z     response = await f(request)
+2025-04-24T15:52:18.619412176Z                ^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.619418668Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 301, in app
+2025-04-24T15:52:18.619425260Z     raw_response = await run_endpoint_function(
+2025-04-24T15:52:18.619431862Z                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.619438565Z   File "/usr/local/lib/python3.11/site-packages/fastapi/routing.py", line 212, in run_endpoint_function
+2025-04-24T15:52:18.619445337Z     return await dependant.call(**values)
+2025-04-24T15:52:18.619451860Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.619458332Z   File "/src/backend/app.py", line 128, in input_task_endpoint
+2025-04-24T15:52:18.619464954Z     if not rai_success(input_task.description):
+2025-04-24T15:52:18.619471476Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.619478419Z   File "/src/backend/utils.py", line 340, in rai_success
+2025-04-24T15:52:18.619484791Z     access_token = credential.get_token(
+2025-04-24T15:52:18.619491283Z                    ^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.619500520Z   File "/usr/local/lib/python3.11/site-packages/azure/identity/_credentials/default.py", line 227, in get_token
+2025-04-24T15:52:18.619507152Z     token = super().get_token(*scopes, claims=claims, tenant_id=tenant_id, **kwargs)
+2025-04-24T15:52:18.619513644Z             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-24T15:52:18.619520257Z   File "/usr/local/lib/python3.11/site-packages/azure/identity/_credentials/chained.py", line 153, in get_token
+2025-04-24T15:52:18.619526919Z     raise ClientAuthenticationError(message=message)
+2025-04-24T15:52:18.619533742Z azure.core.exceptions.ClientAuthenticationError: DefaultAzureCredential failed to retrieve a token from the included credentials.
+2025-04-24T15:52:18.619540294Z Attempted credentials:
+2025-04-24T15:52:18.619546876Z 	EnvironmentCredential: EnvironmentCredential authentication unavailable. Environment variables are not fully configured.
+2025-04-24T15:52:18.619554551Z Visit https://aka.ms/azsdk/python/identity/environmentcredential/troubleshoot to troubleshoot this issue.
+2025-04-24T15:52:18.619562004Z 	ManagedIdentityCredential: App Service managed identity configuration not found in environment. invalid_scope
+2025-04-24T15:52:18.619569168Z 	SharedTokenCacheCredential: SharedTokenCacheCredential authentication unavailable. No accounts were found in the cache.
+2025-04-24T15:52:18.619575830Z 	AzureCliCredential: Azure CLI not found on path
+2025-04-24T15:52:18.619582362Z 	AzurePowerShellCredential: PowerShell is not installed
+2025-04-24T15:52:18.619588935Z 	AzureDeveloperCliCredential: Azure Developer CLI could not be found. Please visit https://aka.ms/azure-dev for installation instructions and then,once installed, authenticate to your Azure account using 'azd auth login'.
+2025-04-24T15:52:18.619602480Z To mitigate this issue, please refer to the troubleshooting guidelines here at https://aka.ms/azsdk/python/identity/defaultazurecredential/troubleshoot.

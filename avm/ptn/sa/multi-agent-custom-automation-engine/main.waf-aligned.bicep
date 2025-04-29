@@ -340,6 +340,11 @@ module aiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
       }
+      {
+        principalId: containerApp.outputs.systemAssignedMIPrincipalId!
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+      }
     ]
     deployments: [
       {
@@ -370,13 +375,14 @@ module privateDnsZoneCosmosDb 'br/public:avm/res/network/private-dns-zone:0.7.0'
 }
 
 // ========== Cosmos DB ========== //
+var cosmosDbName = '${solutionPrefix}csdb'
 var cosmosDbDatabaseName = 'autogen'
 var cosmosDbDatabaseMemoryContainerName = 'autogen'
 module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
   name: 'avm.ptn.sa.macae.cosmos-db'
   params: {
     // Required parameters
-    name: '${solutionPrefix}csdb'
+    name: cosmosDbName
     tags: tags
     location: solutionLocation
     enableTelemetry: enableTelemetry
@@ -420,13 +426,30 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
     capabilitiesToAdd: [
       'EnableServerless'
     ]
-    roleAssignments: [
+    sqlRoleAssignmentsPrincipalIds: [
+      //userAssignedIdentity.outputs.principalId
+      containerApp.outputs.?systemAssignedMIPrincipalId
+    ]
+    sqlRoleDefinitions: [
       {
-        principalId: userAssignedIdentity.outputs.principalId
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Contributor'
+        // Replace this with built-in role definition Cosmos DB Built-in Data Contributor: https://docs.azure.cn/en-us/cosmos-db/nosql/security/reference-data-plane-roles#cosmos-db-built-in-data-contributor
+        roleType: 'CustomRole'
+        roleName: 'Cosmos DB SQL Data Contributor'
+        name: 'cosmos-db-sql-data-contributor'
+        dataAction: [
+          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
       }
     ]
+    // roleAssignments: [
+    //   {
+    //     principalId: userAssignedIdentity.outputs.principalId
+    //     principalType: 'ServicePrincipal'
+    //     roleDefinitionIdOrName: 'Contributor'
+    //   }
+    // ]
   }
 }
 

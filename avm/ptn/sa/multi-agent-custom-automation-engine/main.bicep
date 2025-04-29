@@ -1,3 +1,6 @@
+extension graphV1
+//extension graphBeta
+
 metadata name = '<Add module name>'
 metadata description = '<Add description>'
 
@@ -10,10 +13,18 @@ param solutionLocation string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. The UTC time deployment.')
+param deploymentTime string = utcNow()
+
 @description('Optional. The tags to apply to all deployed Azure resources.')
 param tags object = {
   app: solutionPrefix
   location: solutionLocation
+}
+
+@description('Optional. The configuration of the Entra ID Application used to authenticate the website.')
+param entraIdApplicationConfiguration macaeEntraIdApplicationFarmType = {
+  enabled: false
 }
 
 //
@@ -74,24 +85,26 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
 }
 
 // ========== User assigned identity ========== //
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
-  name: 'avm.ptn.sa.macae.managed-identity-assigned-identity'
-  params: {
-    name: '${solutionPrefix}uaid'
-    tags: tags
-    location: solutionLocation
-    enableTelemetry: enableTelemetry
-  }
-}
+//TODO: Implement the user assigned identity
+// module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
+//   name: 'avm.ptn.sa.macae.managed-identity-assigned-identity'
+//   params: {
+//     name: '${solutionPrefix}uaid'
+//     tags: tags
+//     location: solutionLocation
+//     enableTelemetry: enableTelemetry
+//   }
+// }
 
 // AI Foundry: AI Services
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' not available in AVM
+var aiServicesAccountName = '${solutionPrefix}aisv'
 var aiServicesDeploymentGptName = 'gpt-4o'
 var aiServicesDeploymentGptVersion = '2024-08-06'
 module aiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
   name: 'avm.ptn.sa.macae.cognitive-services-account'
   params: {
-    name: '${solutionPrefix}aisv'
+    name: aiServicesAccountName
     tags: tags
     location: solutionLocation
     enableTelemetry: enableTelemetry
@@ -104,12 +117,13 @@ module aiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
       staticsEnabled: false
     }
     publicNetworkAccess: 'Enabled' //TODO: block and connect to vnet
-    managedIdentities: {
-      systemAssigned: true
-    }
+    // Check if this is needed
+    // managedIdentities: {
+    //   systemAssigned: true
+    // }
     roleAssignments: [
       {
-        principalId: userAssignedIdentity.outputs.principalId
+        principalId: containerApp.outputs.systemAssignedMIPrincipalId!
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
       }
@@ -124,21 +138,22 @@ module aiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
         }
         sku: {
           name: 'GlobalStandard'
-          capacity: 10
+          capacity: 50
         }
       }
     ]
   }
 }
 
+// ========== Cosmos DB ========== ///
+var cosmosDbName = '${solutionPrefix}csdb'
 var cosmosDbDatabaseName = 'autogen'
 var cosmosDbDatabaseMemoryContainerName = 'autogen'
-// ========== Cosmos DB ========== //
 module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
   name: 'avm.ptn.sa.macae.cosmos-db'
   params: {
     // Required parameters
-    name: '${solutionPrefix}csdb'
+    name: cosmosDbName
     tags: tags
     location: solutionLocation
     enableTelemetry: enableTelemetry
@@ -172,11 +187,21 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
     capabilitiesToAdd: [
       'EnableServerless'
     ]
-    roleAssignments: [
+    sqlRoleAssignmentsPrincipalIds: [
+      //userAssignedIdentity.outputs.principalId
+      containerApp.outputs.?systemAssignedMIPrincipalId
+    ]
+    sqlRoleDefinitions: [
       {
-        principalId: userAssignedIdentity.outputs.principalId
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Contributor'
+        // Replace this with built-in role definition Cosmos DB Built-in Data Contributor: https://docs.azure.cn/en-us/cosmos-db/nosql/security/reference-data-plane-roles#cosmos-db-built-in-data-contributor
+        roleType: 'CustomRole'
+        roleName: 'Cosmos DB SQL Data Contributor'
+        name: 'cosmos-db-sql-data-contributor'
+        dataAction: [
+          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
       }
     ]
   }
@@ -203,7 +228,7 @@ resource aspireDashboard 'Microsoft.App/managedEnvironments/dotNetComponents@202
   }
   dependsOn: [containerAppEnvironment]
 }
-var test = containerApp.outputs.systemAssignedMIPrincipalId
+
 // ==========Backend Container App Service ========== //
 module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
   name: 'avm.ptn.sa.macae.container-app'
@@ -213,7 +238,10 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
     location: solutionLocation
     enableTelemetry: enableTelemetry
     environmentResourceId: containerAppEnvironment.outputs.resourceId
-    managedIdentities: { systemAssigned: true, userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId] }
+    managedIdentities: {
+      systemAssigned: true //TODO: remove this, work with user assigned identity
+      //userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
+    }
     ingressTargetPort: 8000
     ingressExternal: true
     activeRevisionsMode: 'Single'
@@ -251,7 +279,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
         env: [
           {
             name: 'COSMOSDB_ENDPOINT'
-            value: cosmosDb.outputs.endpoint
+            value: 'https://${cosmosDbName}.documents.azure.com:443/'
           }
           {
             name: 'COSMOSDB_DATABASE'
@@ -263,7 +291,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
           }
           {
             name: 'AZURE_OPENAI_ENDPOINT'
-            value: aiServices.outputs.endpoint
+            value: 'https://${aiServicesAccountName}.openai.azure.com/'
           }
           {
             name: 'AZURE_OPENAI_DEPLOYMENT_NAME'
@@ -301,8 +329,46 @@ module webServerfarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
     zoneRedundant: false //TODO: make it zone redundant for waf aligned
   }
 }
+
+// ========== Entra ID Application ========== //
+resource entraIdApplication 'Microsoft.Graph/applications@v1.0' = if (entraIdApplicationConfiguration.?enabled!) {
+  displayName: '${webSiteName}-app'
+  uniqueName: '${webSiteName}-app-${uniqueString(resourceGroup().id, webSiteName)}'
+  description: 'EntraId Application for ${webSiteName} authentication'
+  passwordCredentials: [
+    {
+      displayName: 'Credential for website ${webSiteName}'
+      endDateTime: dateTimeAdd(deploymentTime, 'P180D')
+      // keyId: 'string'
+      // startDateTime: 'string'
+    }
+  ]
+}
+
+var graphAppId = '00000003-0000-0000-c000-000000000000' //Microsoft Graph ID
+// Get the Microsoft Graph service principal so that the scope names can be looked up and mapped to a permission ID
+resource msGraphSP 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
+  appId: graphAppId
+}
+
+// ========== Entra ID Service Principal ========== //
+resource entraIdServicePrincipal 'Microsoft.Graph/servicePrincipals@v1.0' = if (entraIdApplicationConfiguration.?enabled!) {
+  appId: entraIdApplication.appId
+}
+
+// Grant the OAuth2.0 scopes (requested in parameters) to the basic app, for all users in the tenant
+resource graphScopesAssignment 'Microsoft.Graph/oauth2PermissionGrants@v1.0' = if (entraIdApplicationConfiguration.?enabled!) {
+  clientId: entraIdServicePrincipal.id
+  resourceId: msGraphSP.id
+  consentType: 'AllPrincipals'
+  scope: 'User.Read'
+}
+
 // ========== Frontend web site ========== //
 var webSiteName = '${solutionPrefix}wapp'
+var entraIdApplicationId = '721995ba-068c-4523-9cab-7438b52f92b9'
+var entraIdApplicationCredentialSecretSettingName = 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
+
 module webSite 'br/public:avm/res/web/site:0.15.1' = {
   name: 'avm.ptn.sa.macae.web-site'
   params: {
@@ -311,82 +377,89 @@ module webSite 'br/public:avm/res/web/site:0.15.1' = {
     name: webSiteName
     location: solutionLocation
     serverFarmResourceId: webServerfarm.outputs.resourceId
-    managedIdentities: { userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId] }
     appInsightResourceId: applicationInsights.outputs.resourceId
     siteConfig: {
       linuxFxVersion: 'DOCKER|biabcontainerreg.azurecr.io/macaefrontend:latest'
     }
-    appSettingsKeyValuePairs: {
-      SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
-      DOCKER_REGISTRY_SERVER_URL: 'https://biabcontainerreg.azurecr.io'
-      WEBSITES_PORT: '3000'
-      WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
-      BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
-    }
-  }
-}
-
-resource aoaiUserRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' existing = {
-  name: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' //'Cognitive Services OpenAI User'
-}
-
-resource assignAoaRole 'Microsoft.Resources/deployments@2021-04-01' = {
-  name: 'assignAoaRole'
-  dependsOn: [
-    containerApp
-    aiServices
-  ]
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: [
-        {
-          type: 'Microsoft.Authorization/roleAssignments'
-          apiVersion: '2022-04-01'
-          name: guid(
-            '${containerApp.outputs.resourceId}',
-            '${aiServices.outputs.resourceId}',
-            '${aoaiUserRoleDefinition.id}'
-          )
-          properties: {
-            principalId: '${containerApp.outputs.systemAssignedMIPrincipalId}'
-            roleDefinitionId: '${aoaiUserRoleDefinition.id}'
-            principalType: 'ServicePrincipal'
-          }
+    appSettingsKeyValuePairs: union(
+      {
+        SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
+        DOCKER_REGISTRY_SERVER_URL: 'https://biabcontainerreg.azurecr.io'
+        WEBSITES_PORT: '3000'
+        WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
+        BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
+      },
+      (entraIdApplicationConfiguration.?enabled!
+        ? { '${entraIdApplicationCredentialSecretSettingName}': entraIdApplication.passwordCredentials[0].secretText }
+        : {})
+    )
+    authSettingV2Configuration: {
+      platform: {
+        enabled: entraIdApplicationConfiguration.?enabled!
+        runtimeVersion: '~1'
+      }
+      login: {
+        cookieExpiration: {
+          convention: 'FixedTime'
+          timeToExpiration: '08:00:00'
         }
-      ]
+        nonce: {
+          nonceExpirationInterval: '00:05:00'
+          validateNonce: true
+        }
+        preserveUrlFragmentsForLogins: false
+        routes: {}
+        tokenStore: {
+          azureBlobStorage: {}
+          enabled: true
+          fileSystem: {}
+          tokenRefreshExtensionHours: 72
+        }
+      }
+      globalValidation: {
+        requireAuthentication: true
+        unauthenticatedClientAction: 'RedirectToLoginPage'
+        redirectToProvider: 'azureactivedirectory'
+      }
+      httpSettings: {
+        forwardProxy: {
+          convention: 'NoProxy'
+        }
+        requireHttps: true
+        routes: {
+          apiPrefix: '/.auth'
+        }
+      }
+      identityProviders: {
+        azureActiveDirectory: entraIdApplicationConfiguration.?enabled!
+          ? {
+              isAutoProvisioned: true
+              enabled: true
+              login: {
+                disableWWWAuthenticate: false
+              }
+              registration: {
+                clientId: entraIdApplicationId //create application in AAD
+                clientSecretSettingName: entraIdApplicationCredentialSecretSettingName
+                openIdIssuer: 'https://sts.windows.net/${tenant().tenantId}/v2.0/'
+              }
+              validation: {
+                allowedAudiences: [
+                  'api://${entraIdApplicationId}'
+                ]
+                defaultAuthorizationPolicy: {
+                  allowedPrincipals: {}
+                  allowedApplications: ['86e2d249-6832-461f-8888-cfa0394a5f8c']
+                }
+                jwtClaimChecks: {}
+              }
+            }
+          : {}
+      }
     }
   }
 }
-// ========== Cosmos DB Role Assignment ========== //
-resource contributorRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2021-06-15' existing = {
-  name: '${cosmosDb.outputs.name}/00000000-0000-0000-0000-000000000002'
-}
-var cosmosAssignCli = 'az cosmosdb sql role assignment create --resource-group "${resourceGroup().name}" --account-name "${cosmosDb.outputs.name}" --role-definition-id "${contributorRoleDefinition.id}" --scope "${cosmosDb.outputs.resourceId}" --principal-id "${containerApp.outputs.systemAssignedMIPrincipalId}"'
 
-module deploymentScriptCLI 'br/public:avm/res/resources/deployment-script:0.5.1' = {
-  name: 'deploymentScriptCLI'
-  params: {
-    kind: 'AzureCLI'
-    name: 'assignCosmosDbRole'
-    location: resourceGroup().location
-    azCliVersion: '2.69.0'
-    scriptContent: cosmosAssignCli
-    managedIdentities: {
-      userAssignedResourceIds: [
-        userAssignedIdentity.outputs.resourceId
-      ]
-    }
-  }
-  dependsOn: [
-    containerApp
-    cosmosDb
-  ]
-}
-
-output cosmosAssignCli string = cosmosAssignCli
 // ============ //
 // Outputs      //
 // ============ //
@@ -408,3 +481,10 @@ output cosmosAssignCli string = cosmosAssignCli
 //
 // Add your User-defined-types here, if any
 //
+
+@export()
+@description('The type for the Multi-Agent Custom Automation Entra ID Application resource configuration.')
+type macaeEntraIdApplicationFarmType = {
+  @description('Optional. If the Entra ID Application for website authentication should be enabled or not.')
+  enabled: bool?
+}
