@@ -161,7 +161,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: '${namePrefix}-az-evh-x-003'
-          messageRetentionInDays: 3
+          retentionDescriptionMinCompactionLagInMins: 5
           retentionDescriptionEnabled: true
           retentionDescriptionCleanupPolicy: 'Compact'
           retentionDescriptionTombstoneRetentionTimeInHours: 24

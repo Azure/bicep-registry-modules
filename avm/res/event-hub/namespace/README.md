@@ -413,10 +413,10 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         status: 'Active'
       }
       {
-        messageRetentionInDays: 3
         name: 'az-evh-x-003'
         retentionDescriptionCleanupPolicy: 'Compact'
         retentionDescriptionEnabled: true
+        retentionDescriptionMinCompactionLagInMins: 5
         retentionDescriptionTombstoneRetentionTimeInHours: 24
       }
     ]
@@ -618,10 +618,10 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
           "status": "Active"
         },
         {
-          "messageRetentionInDays": 3,
           "name": "az-evh-x-003",
           "retentionDescriptionCleanupPolicy": "Compact",
           "retentionDescriptionEnabled": true,
+          "retentionDescriptionMinCompactionLagInMins": 5,
           "retentionDescriptionTombstoneRetentionTimeInHours": 24
         }
       ]
@@ -843,10 +843,10 @@ param eventhubs = [
     status: 'Active'
   }
   {
-    messageRetentionInDays: 3
     name: 'az-evh-x-003'
     retentionDescriptionCleanupPolicy: 'Compact'
     retentionDescriptionEnabled: true
+    retentionDescriptionMinCompactionLagInMins: 5
     retentionDescriptionTombstoneRetentionTimeInHours: 24
   }
 ]
