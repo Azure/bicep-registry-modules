@@ -32,7 +32,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
 - [Enable public access](#example-3-enable-public-access)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using system identity](#example-4-using-system-identity)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -628,7 +629,347 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _Using system identity_
+
+This instance deploys the module using a system identity.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
+  name: 'managedEnvironmentDeployment'
+  params: {
+    // Required parameters
+    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
+    name: 'amesys001'
+    // Non-required parameters
+    appInsightsConnectionString: '<appInsightsConnectionString>'
+    certificate: {
+      certificateKeyVaultProperties: {
+        identityResourceId: 'system'
+        keyVaultUrl: '<keyVaultUrl>'
+      }
+      name: 'dep-cert-amesys'
+    }
+    dnsSuffix: 'contoso.com'
+    dockerBridgeCidr: '172.16.0.1/28'
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
+    infrastructureSubnetId: '<infrastructureSubnetId>'
+    internal: true
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    openTelemetryConfiguration: {
+      logsConfiguration: {
+        destinations: [
+          'appInsights'
+        ]
+      }
+      tracesConfiguration: {
+        destinations: [
+          'appInsights'
+        ]
+      }
+    }
+    peerTrafficEncryption: true
+    platformReservedCidr: '172.17.17.0/24'
+    platformReservedDnsIP: '172.17.17.17'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    storages: [
+      {
+        accessMode: 'ReadWrite'
+        kind: 'SMB'
+        shareName: 'smbfileshare'
+        storageAccountName: '<storageAccountName>'
+      }
+      {
+        accessMode: 'ReadWrite'
+        kind: 'NFS'
+        shareName: 'nfsfileshare'
+        storageAccountName: '<storageAccountName>'
+      }
+    ]
+    tags: {
+      Env: 'test'
+      'hidden-title': 'This is visible in the resource name'
+    }
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "logAnalyticsWorkspaceResourceId": {
+      "value": "<logAnalyticsWorkspaceResourceId>"
+    },
+    "name": {
+      "value": "amesys001"
+    },
+    // Non-required parameters
+    "appInsightsConnectionString": {
+      "value": "<appInsightsConnectionString>"
+    },
+    "certificate": {
+      "value": {
+        "certificateKeyVaultProperties": {
+          "identityResourceId": "system",
+          "keyVaultUrl": "<keyVaultUrl>"
+        },
+        "name": "dep-cert-amesys"
+      }
+    },
+    "dnsSuffix": {
+      "value": "contoso.com"
+    },
+    "dockerBridgeCidr": {
+      "value": "172.16.0.1/28"
+    },
+    "infrastructureResourceGroupName": {
+      "value": "<infrastructureResourceGroupName>"
+    },
+    "infrastructureSubnetId": {
+      "value": "<infrastructureSubnetId>"
+    },
+    "internal": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "openTelemetryConfiguration": {
+      "value": {
+        "logsConfiguration": {
+          "destinations": [
+            "appInsights"
+          ]
+        },
+        "tracesConfiguration": {
+          "destinations": [
+            "appInsights"
+          ]
+        }
+      }
+    },
+    "peerTrafficEncryption": {
+      "value": true
+    },
+    "platformReservedCidr": {
+      "value": "172.17.17.0/24"
+    },
+    "platformReservedDnsIP": {
+      "value": "172.17.17.17"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "storages": {
+      "value": [
+        {
+          "accessMode": "ReadWrite",
+          "kind": "SMB",
+          "shareName": "smbfileshare",
+          "storageAccountName": "<storageAccountName>"
+        },
+        {
+          "accessMode": "ReadWrite",
+          "kind": "NFS",
+          "shareName": "nfsfileshare",
+          "storageAccountName": "<storageAccountName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Env": "test",
+        "hidden-title": "This is visible in the resource name"
+      }
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
+param name = 'amesys001'
+// Non-required parameters
+param appInsightsConnectionString = '<appInsightsConnectionString>'
+param certificate = {
+  certificateKeyVaultProperties: {
+    identityResourceId: 'system'
+    keyVaultUrl: '<keyVaultUrl>'
+  }
+  name: 'dep-cert-amesys'
+}
+param dnsSuffix = 'contoso.com'
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetId = '<infrastructureSubnetId>'
+param internal = true
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
+param openTelemetryConfiguration = {
+  logsConfiguration: {
+    destinations: [
+      'appInsights'
+    ]
+  }
+  tracesConfiguration: {
+    destinations: [
+      'appInsights'
+    ]
+  }
+}
+param peerTrafficEncryption = true
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param storages = [
+  {
+    accessMode: 'ReadWrite'
+    kind: 'SMB'
+    shareName: 'smbfileshare'
+    storageAccountName: '<storageAccountName>'
+  }
+  {
+    accessMode: 'ReadWrite'
+    kind: 'NFS'
+    shareName: 'nfsfileshare'
+    storageAccountName: '<storageAccountName>'
+  }
+]
+param tags = {
+  Env: 'test'
+  'hidden-title': 'This is visible in the resource name'
+}
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
