@@ -11,6 +11,13 @@ param name string
 @description('Optional. Defines the options for how the data plane API of a Search service authenticates requests. Must remain an empty object {} if \'disableLocalAuth\' is set to true.')
 param authOptions authOptionsType?
 
+@allowed([
+  'confidential'
+  'default'
+])
+@description('Optional. Configure this property to support the search service using either the default compute or Azure Confidential Compute.')
+param computeType string = 'default'
+
 @description('Optional. When set to true, calls to the search service will not be permitted to utilize API keys for authentication. This cannot be set to true if \'authOptions\' are defined.')
 param disableLocalAuth bool = true
 
@@ -184,7 +191,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource searchService 'Microsoft.Search/searchServices@2024-03-01-preview' = {
+resource searchService 'Microsoft.Search/searchServices@2025-02-01-preview' = {
   location: location
   name: name
   sku: {
@@ -194,6 +201,7 @@ resource searchService 'Microsoft.Search/searchServices@2024-03-01-preview' = {
   identity: identity
   properties: {
     authOptions: authOptions
+    computeType: computeType
     disableLocalAuth: disableLocalAuth
     encryptionWithCmk: {
       enforcement: cmkEnforcement
@@ -321,7 +329,7 @@ module searchService_privateEndpoints 'br/public:avm/res/network/private-endpoin
 @batchSize(1)
 module searchService_sharedPrivateLinkResources 'shared-private-link-resource/main.bicep' = [
   for (sharedPrivateLinkResource, index) in sharedPrivateLinkResources: {
-    name: '${uniqueString(deployment().name, location)}-searchService-SharedPrivateLink-${index}'
+    name: '${uniqueString(deployment().name, location)}-searchService-SharedPrvLink-${index}'
     params: {
       name: sharedPrivateLinkResource.?name ?? 'spl-${last(split(searchService.id, '/'))}-${sharedPrivateLinkResource.groupId}-${index}'
       searchServiceName: searchService.name
@@ -382,6 +390,9 @@ output systemAssignedMIPrincipalId string? = searchService.?identity.?principalI
 @description('The location the resource was deployed into.')
 output location string = searchService.location
 
+@description('The endpoint of the search service.')
+output endpoint string = searchService.properties.endpoint
+
 @description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
 output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
   ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
@@ -422,7 +433,7 @@ type authOptionsType = {
 @export()
 type networkRuleSetType = {
   @description('Optional. Network specific rules that determine how the Azure AI Search service may be reached.')
-  bypass: ('AzurePortal' | 'None')?
+  bypass: ('AzurePortal' | 'AzureServices' | 'None')?
   @description('Optional. A list of IP restriction rules that defines the inbound network(s) with allowing access to the search service endpoint. At the meantime, all other public IP networks are blocked by the firewall. These restriction rules are applied only when the \'publicNetworkAccess\' of the search service is \'enabled\'; otherwise, traffic over public interface is not allowed even with any public IP rules, and private endpoint connections would be the exclusive access method.')
   ipRules: ipRuleType[]?
 }
