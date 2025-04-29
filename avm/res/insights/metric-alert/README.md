@@ -15,6 +15,7 @@ This module deploys a Metric Alert.
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/metricAlerts` | [2018-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2018-03-01/metricAlerts) |
 
@@ -178,6 +179,10 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
       '<actionGroupResourceId>'
     ]
     location: 'Global'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     roleAssignments: [
       {
         name: '3ab52119-85d9-4374-a454-2410b84f19f9'
@@ -249,6 +254,12 @@ module metricAlert 'br/public:avm/res/insights/metric-alert:<version>' = {
     },
     "location": {
       "value": "Global"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
     },
     "roleAssignments": {
       "value": [
@@ -322,6 +333,10 @@ param actions = [
   '<actionGroupResourceId>'
 ]
 param location = 'Global'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
 param roleAssignments = [
   {
     name: '3ab52119-85d9-4374-a454-2410b84f19f9'
@@ -512,6 +527,7 @@ param windowSize = 'PT5M'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`evaluationFrequency`](#parameter-evaluationfrequency) | string | how often the metric alert is evaluated represented in ISO 8601 duration format. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`scopes`](#parameter-scopes) | array | the list of resource IDs that this metric alert is scoped to. |
 | [`severity`](#parameter-severity) | int | The severity of the alert. |
@@ -732,6 +748,42 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `'global'`
+
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `roleAssignments`
 
