@@ -202,6 +202,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
         addressPrefix: '10.0.2.0/23' //subnet of size /23 is required for container app
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
         name: 'containers'
+        delegation: 'Microsoft.App/environments'
         //networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
       }
       {
@@ -477,7 +478,8 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
 module dnsZoneContainerApp 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (virtualNetworkConfiguration.?enabled!) {
   name: 'avm.ptn.sa.macae.network-private-dns-zone-containers'
   params: {
-    name: 'privatelink.${toLower(replace(containerAppEnvironment.outputs.location,' ',''))}.azurecontainerapps.io'
+    //name: 'privatelink.${toLower(replace(containerAppEnvironment.outputs.location,' ',''))}.azurecontainerapps.io'
+    name: 'privatelink.${toLower(replace(containerAppEnvironment.location,' ',''))}.azurecontainerapps.io'
     enableTelemetry: enableTelemetry
     virtualNetworkLinks: [{ virtualNetworkResourceId: virtualNetwork.outputs.resourceId }]
     tags: tags
@@ -486,46 +488,13 @@ module dnsZoneContainerApp 'br/public:avm/res/network/private-dns-zone:0.7.1' = 
 
 // ========== Backend Container App Environment ========== //
 
-// resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
-//   name: '${solutionPrefix}cenv'
-//   location: solutionLocation
-//   tags: tags
-//   properties: {
-//     daprAIConnectionString: appInsights.properties.ConnectionString
-//     daprAIConnectionString: applicationInsights.outputs.connectionString
-//     appLogsConfiguration: {
-//       destination: 'log-analytics'
-//       logAnalyticsConfiguration: {
-//         customerId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
-//         sharedKey: listKeys(
-//           '${resourceGroup().id}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}',
-//           '2023-09-01'
-//         ).primarySharedKey
-//       }
-//     }
-//     publicNetworkAccess: 'Disabled'
-//     vnetConfiguration: {
-//       internal: false
-//       infrastructureSubnetId: virtualNetwork.outputs.subnetResourceIds[1]
-//     }
-//     zoneRedundant: true
-//   }
-//   resource aspireDashboard 'dotNetComponents@2024-02-02-preview' = {
-//     name: 'aspire-dashboard'
-//     properties: {
-//       componentType: 'AspireDashboard'
-//     }
-//   }
-// }
-
-module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.0' = {
-  name: 'avm.ptn.sa.macae.container-app-environment'
-  params: {
-    name: '${solutionPrefix}cenv'
-    location: solutionLocation
-    tags: tags
-    enableTelemetry: enableTelemetry
-    //daprAIConnectionString: applicationInsights.outputs.connectionString //Troubleshoot: ContainerAppsConfiguration.DaprAIConnectionString is invalid.  DaprAIConnectionString can not be set when AppInsightsConfiguration has been set, please set DaprAIConnectionString to null. (Code:InvalidRequestParameterWithDetails
+resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
+  name: '${solutionPrefix}cenv'
+  location: solutionLocation
+  tags: tags
+  properties: {
+    //daprAIConnectionString: appInsights.properties.ConnectionString
+    //daprAIConnectionString: applicationInsights.outputs.connectionString
     appLogsConfiguration: {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {
@@ -536,23 +505,83 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.0
         ).primarySharedKey
       }
     }
-    appInsightsConnectionString: applicationInsights.outputs.connectionString
-    publicNetworkAccess: virtualNetworkConfiguration.?enabled! ? 'Disabled' : 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
-    zoneRedundant: true //TODO: make it zone redundant for waf aligned
-    infrastructureSubnetResourceId: virtualNetworkConfiguration.?enabled!
-      ? virtualNetwork.outputs.subnetResourceIds[1]
-      : null
-    internal: false
+    workloadProfiles: [
+      //THIS IS REQUIRED TO ADD PRIVATE ENDPOINTS
+      {
+        name: 'Consumption'
+        workloadProfileType: 'Consumption'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
+    vnetConfiguration: {
+      internal: false
+      infrastructureSubnetId: virtualNetwork.outputs.subnetResourceIds[1]
+    }
+    zoneRedundant: true
   }
 }
 
+var privateEndpointContainerAppEnvironmentService = 'managedEnvironments'
+module privateEndpointContainerAppEnvironment 'br/public:avm/res/network/private-endpoint:0.10.1' = if (virtualNetworkConfiguration.?enabled!) {
+  name: 'avm.ptn.sa.macae.network-pep-container-app-environment'
+  params: {
+    name: 'pep-container-app-environment'
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [{ privateDnsZoneResourceId: privateDnsZoneCosmosDb.outputs.resourceId }]
+    }
+    privateLinkServiceConnections: [
+      {
+        name: '${last(split(containerAppEnvironment.id, '/'))}-${privateEndpointContainerAppEnvironmentService}-0'
+        properties: {
+          privateLinkServiceId: containerAppEnvironment.id
+          groupIds: [
+            privateEndpointContainerAppEnvironmentService
+          ]
+        }
+      }
+    ]
+    subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+    enableTelemetry: enableTelemetry
+    location: solutionLocation
+    tags: tags
+  }
+}
+
+// module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.0' = {
+//   name: 'avm.ptn.sa.macae.container-app-environment'
+//   params: {
+//     name: '${solutionPrefix}cenv'
+//     location: solutionLocation
+//     tags: tags
+//     enableTelemetry: enableTelemetry
+//     //daprAIConnectionString: applicationInsights.outputs.connectionString //Troubleshoot: ContainerAppsConfiguration.DaprAIConnectionString is invalid.  DaprAIConnectionString can not be set when AppInsightsConfiguration has been set, please set DaprAIConnectionString to null. (Code:InvalidRequestParameterWithDetails
+//     appLogsConfiguration: {
+//       destination: 'log-analytics'
+//       logAnalyticsConfiguration: {
+//         customerId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+//         sharedKey: listKeys(
+//           '${resourceGroup().id}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}',
+//           '2023-09-01'
+//         ).primarySharedKey
+//       }
+//     }
+//     appInsightsConnectionString: applicationInsights.outputs.connectionString
+//     publicNetworkAccess: virtualNetworkConfiguration.?enabled! ? 'Disabled' : 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
+//     zoneRedundant: true //TODO: make it zone redundant for waf aligned
+//     infrastructureSubnetResourceId: virtualNetworkConfiguration.?enabled!
+//       ? virtualNetwork.outputs.subnetResourceIds[1]
+//       : null
+//     internal: false
+//   }
+// }
+
 // TODO: FIX when deployed to vnet. This needs access to Azure to work
 resource aspireDashboard 'Microsoft.App/managedEnvironments/dotNetComponents@2024-10-02-preview' = if (!virtualNetworkConfiguration.?enabled!) {
-  name: '${solutionPrefix}cenv/aspire-dashboard'
+  parent: containerAppEnvironment
+  name: 'aspire-dashboard'
   properties: {
     componentType: 'AspireDashboard'
   }
-  dependsOn: [containerAppEnvironment]
 }
 
 // ========== Backend Container App Service ========== //
@@ -563,7 +592,8 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
     tags: tags
     location: solutionLocation
     enableTelemetry: enableTelemetry
-    environmentResourceId: containerAppEnvironment.outputs.resourceId
+    //environmentResourceId: containerAppEnvironment.outputs.resourceId
+    environmentResourceId: containerAppEnvironment.id
     managedIdentities: {
       systemAssigned: true //Replace with user assigned identity
       //userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
