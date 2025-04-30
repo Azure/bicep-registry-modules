@@ -67,10 +67,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 } */
 
 // ========== Log Analytics Workspace ========== //
+var logAnalyticsWorkspaceName = '${solutionPrefix}laws'
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
   name: 'avm.ptn.sa.macae.operational-insights-workspace'
   params: {
-    name: '${solutionPrefix}laws'
+    name: logAnalyticsWorkspaceName
     tags: tags
     location: solutionLocation
     enableTelemetry: enableTelemetry
@@ -228,7 +229,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
 // ========== Bastion host ========== //
 
 module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.private-dns-zone-bastion-host'
+  name: 'avm.ptn.sa.macae.network-private-dns-zone-bastion-host'
   params: {
     name: '${solutionPrefix}bstn'
     location: solutionLocation
@@ -313,7 +314,7 @@ var openAiPrivateDnsZones = {
 
 module privateDnsZonesAiServices 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
   for zone in objectKeys(openAiPrivateDnsZones): if (virtualNetworkConfiguration.?enabled!) {
-    name: 'avm.ptn.sa.macae.private-dns-zone-${uniqueString(deployment().name, zone)}'
+    name: 'avm.ptn.sa.macae.network-private-dns-zone-${uniqueString(deployment().name, zone)}'
     params: {
       name: zone
       tags: tags
@@ -472,21 +473,76 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
   }
 }
 
+// ========== DNS zone for Container App Environment ========== //
+module dnsZoneContainerApp 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (virtualNetworkConfiguration.?enabled!) {
+  name: 'avm.ptn.sa.macae.network-private-dns-zone-containers'
+  params: {
+    name: 'privatelink.${toLower(replace(containerAppEnvironment.outputs.location,' ',''))}.azurecontainerapps.io'
+    enableTelemetry: enableTelemetry
+    virtualNetworkLinks: [{ virtualNetworkResourceId: virtualNetwork.outputs.resourceId }]
+    tags: tags
+  }
+}
+
 // ========== Backend Container App Environment ========== //
-module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.10.2' = {
+
+// resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
+//   name: '${solutionPrefix}cenv'
+//   location: solutionLocation
+//   tags: tags
+//   properties: {
+//     daprAIConnectionString: appInsights.properties.ConnectionString
+//     daprAIConnectionString: applicationInsights.outputs.connectionString
+//     appLogsConfiguration: {
+//       destination: 'log-analytics'
+//       logAnalyticsConfiguration: {
+//         customerId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+//         sharedKey: listKeys(
+//           '${resourceGroup().id}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}',
+//           '2023-09-01'
+//         ).primarySharedKey
+//       }
+//     }
+//     publicNetworkAccess: 'Disabled'
+//     vnetConfiguration: {
+//       internal: false
+//       infrastructureSubnetId: virtualNetwork.outputs.subnetResourceIds[1]
+//     }
+//     zoneRedundant: true
+//   }
+//   resource aspireDashboard 'dotNetComponents@2024-02-02-preview' = {
+//     name: 'aspire-dashboard'
+//     properties: {
+//       componentType: 'AspireDashboard'
+//     }
+//   }
+// }
+
+module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.0' = {
   name: 'avm.ptn.sa.macae.container-app-environment'
   params: {
     name: '${solutionPrefix}cenv'
     location: solutionLocation
     tags: tags
     enableTelemetry: enableTelemetry
-    logsDestination: 'log-analytics'
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    //daprAIConnectionString: applicationInsights.outputs.connectionString //Troubleshoot: ContainerAppsConfiguration.DaprAIConnectionString is invalid.  DaprAIConnectionString can not be set when AppInsightsConfiguration has been set, please set DaprAIConnectionString to null. (Code:InvalidRequestParameterWithDetails
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+        sharedKey: listKeys(
+          '${resourceGroup().id}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}',
+          '2023-09-01'
+        ).primarySharedKey
+      }
+    }
     appInsightsConnectionString: applicationInsights.outputs.connectionString
     publicNetworkAccess: virtualNetworkConfiguration.?enabled! ? 'Disabled' : 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
-    zoneRedundant: false //TODO: make it zone redundant for waf aligned
-    infrastructureSubnetId: virtualNetworkConfiguration.?enabled! ? virtualNetwork.outputs.subnetResourceIds[1] : null
-    internal: virtualNetworkConfiguration.?enabled!
+    zoneRedundant: true //TODO: make it zone redundant for waf aligned
+    infrastructureSubnetResourceId: virtualNetworkConfiguration.?enabled!
+      ? virtualNetwork.outputs.subnetResourceIds[1]
+      : null
+    internal: false
   }
 }
 
@@ -497,16 +553,6 @@ resource aspireDashboard 'Microsoft.App/managedEnvironments/dotNetComponents@202
     componentType: 'AspireDashboard'
   }
   dependsOn: [containerAppEnvironment]
-}
-
-// ========== DNS zone for Container App Environment ========== //
-module dnsZoneContainerApp 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.network-private-dns-zone-containers'
-  params: {
-    name: 'privatelink.${toLower(replace(containerAppEnvironment.outputs.location,' ',''))}.azurecontainerapps.io'
-    enableTelemetry: enableTelemetry
-    virtualNetworkLinks: [{ virtualNetworkResourceId: virtualNetwork.outputs.resourceId }]
-  }
 }
 
 // ========== Backend Container App Service ========== //
