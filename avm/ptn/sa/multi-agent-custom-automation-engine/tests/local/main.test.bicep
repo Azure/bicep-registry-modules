@@ -1,7 +1,0 @@
-module testDeployment '../../main.bicep' = {
-  name: 'test-macae'
-  params: {
-    solutionPrefix: 'macae010'
-    solutionLocation: 'australiaeast'
-  }
-}
