@@ -29,11 +29,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/app/managed-environment:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Enable public access](#example-3-enable-public-access)
-- [Using system identity](#example-4-using-system-identity)
-- [WAF-aligned](#example-5-waf-aligned)
+- [No App Logging](#example-1-no-app-logging)
+- [Using only defaults](#example-2-using-only-defaults)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Enable public access](#example-4-enable-public-access)
+- [Using system identity](#example-5-using-system-identity)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _No App Logging_
 
@@ -786,8 +787,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-<<<<<<< HEAD
-### Example 4: _Using system identity_
+### Example 5: _Using system identity_
 
 This instance deploys the module using a system identity.
 
@@ -801,10 +801,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
-    logAnalyticsWorkspaceResourceId: '<logAnalyticsWorkspaceResourceId>'
     name: 'amesys001'
     // Non-required parameters
-    appInsightsConnectionString: '<appInsightsConnectionString>'
     certificate: {
       certificateKeyVaultProperties: {
         identityResourceId: 'system'
@@ -815,7 +813,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     dnsSuffix: 'contoso.com'
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
-    infrastructureSubnetId: '<infrastructureSubnetId>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
     internal: true
     location: '<location>'
     lock: {
@@ -901,16 +899,10 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "logAnalyticsWorkspaceResourceId": {
-      "value": "<logAnalyticsWorkspaceResourceId>"
-    },
     "name": {
       "value": "amesys001"
     },
     // Non-required parameters
-    "appInsightsConnectionString": {
-      "value": "<appInsightsConnectionString>"
-    },
     "certificate": {
       "value": {
         "certificateKeyVaultProperties": {
@@ -929,8 +921,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     "infrastructureResourceGroupName": {
       "value": "<infrastructureResourceGroupName>"
     },
-    "infrastructureSubnetId": {
-      "value": "<infrastructureSubnetId>"
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
     },
     "internal": {
       "value": true
@@ -1039,10 +1031,8 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
-param logAnalyticsWorkspaceResourceId = '<logAnalyticsWorkspaceResourceId>'
 param name = 'amesys001'
 // Non-required parameters
-param appInsightsConnectionString = '<appInsightsConnectionString>'
 param certificate = {
   certificateKeyVaultProperties: {
     identityResourceId: 'system'
@@ -1053,7 +1043,7 @@ param certificate = {
 param dnsSuffix = 'contoso.com'
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
-param infrastructureSubnetId = '<infrastructureSubnetId>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
 param internal = true
 param location = '<location>'
 param lock = {
@@ -1127,9 +1117,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-=======
->>>>>>> 6ba2c534ccfee8aadc5f37ecfdb998f122b1cd93
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

@@ -1,12 +1,6 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
-@description('Required. The name of the Log Analytics Workspace to create.')
-param logAnalyticsWorkspaceName string
-
-@description('Required. The name of the Application Insights Component to create.')
-param appInsightsComponentName string
-
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
 
@@ -30,30 +24,6 @@ var certSecretName = 'pfxBase64Certificate'
 param storageAccountName string
 
 var addressPrefix = '10.0.0.0/16'
-
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
-  name: logAnalyticsWorkspaceName
-  location: location
-  properties: any({
-    retentionInDays: 30
-    features: {
-      searchVersion: 1
-    }
-    sku: {
-      name: 'PerGB2018'
-    }
-  })
-}
-
-resource appInsightsComponent 'Microsoft.Insights/components@2020-02-02' = {
-  name: appInsightsComponentName
-  location: location
-  kind: 'web'
-  properties: {
-    Application_Type: 'web'
-    WorkspaceResourceId: logAnalyticsWorkspace.id
-  }
-}
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   name: virtualNetworkName
@@ -184,9 +154,6 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   }
 }
 
-@description('The resource ID of the created Log Analytics Workspace.')
-output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
-
 @description('The resource ID of the created Virtual Network Subnet.')
 output subnetResourceId string = virtualNetwork.properties.subnets[0].id
 
@@ -210,9 +177,6 @@ output certPWSecretName string = certPWSecretName
 
 @description('The name of the certification secret.')
 output certSecretName string = certSecretName
-
-@description('The Connection String of the created Application Insights Component.')
-output appInsightsConnectionString string = appInsightsComponent.properties.ConnectionString
 
 @description('The name of the created Storage Account.')
 output storageAccountName string = storageAccount.name

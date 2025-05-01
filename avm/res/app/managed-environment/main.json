@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "5102357080794542658"
+      "templateHash": "10889332142628482379"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -662,13 +662,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              <<<<<<< HEAD
               "version": "0.34.44.8038",
-              "templateHash": "15951560263054769031"
-              =======
-              "version": "0.33.93.31351",
-              "templateHash": "3341092726138278864"
-              >>>>>>> 6ba2c534ccfee8aadc5f37ecfdb998f122b1cd93
+              "templateHash": "14812297244642020789"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
