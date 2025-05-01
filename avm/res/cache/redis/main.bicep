@@ -225,27 +225,30 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
   zones: availabilityZones
 }
 
-resource redis_accessPolicies 'Microsoft.Cache/redis/accessPolicies@2024-11-01' = [
+// Deploy access policies
+module redis_accessPolicies 'access-policy/main.bicep' = [
   for policy in accessPolicies: {
-    name: policy.name
-    parent: redis
-    properties: {
+    name: '${uniqueString(deployment().name, location)}-redis-AccessPolicy-${policy.name}'
+    params: {
+      redisCacheName: redis.name
+      name: policy.name
       permissions: policy.permissions
     }
   }
 ]
 
-resource redis_accessPolicyAssignments 'Microsoft.Cache/redis/accessPolicyAssignments@2024-11-01' = [
+// Deploy access policy assignments
+module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
   for assignment in accessPolicyAssignments: {
-    name: assignment.objectId
-    parent: redis
-    properties: {
+    name: '${uniqueString(deployment().name, location)}-redis-PolicyAssignment-${assignment.objectId}'
+    params: {
+      redisCacheName: redis.name
       objectId: assignment.objectId
       objectIdAlias: assignment.objectIdAlias
       accessPolicyName: assignment.accessPolicyName
     }
     dependsOn: [
-      redis_accessPolicies
+      redis_accessPolicies // Ensure policies exist before assigning them
     ]
   }
 ]
