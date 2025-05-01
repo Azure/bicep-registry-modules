@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "16983762500120206359"
+      "version": "0.34.44.8038",
+      "templateHash": "1198811092327281374"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -1957,8 +1957,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12788301977890543452"
+              "version": "0.34.44.8038",
+              "templateHash": "2981769507448863297"
             },
             "name": "Redis Cache Firewall Rules",
             "description": "This module creates a firewall rule for Redis Cache."
@@ -2060,8 +2060,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "322534394383651316"
+              "version": "0.34.44.8038",
+              "templateHash": "3093024614234635140"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -2186,8 +2186,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8063348652715653257"
+              "version": "0.34.44.8038",
+              "templateHash": "12919538841236982879"
             }
           },
           "definitions": {
