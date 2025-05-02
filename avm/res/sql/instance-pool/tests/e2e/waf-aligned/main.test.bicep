@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-sql.instancepool-${serviceSh
 param serviceShort string = 'sipwaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'bep'
+param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. The SKU name for the instance pool.')
 param skuName string = 'GP_Gen5'
