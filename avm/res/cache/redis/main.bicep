@@ -227,8 +227,8 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
 
 // Deploy access policies
 module redis_accessPolicies 'access-policy/main.bicep' = [
-  for policy in accessPolicies: {
-    name: '${uniqueString(deployment().name, location)}-redis-AccessPolicy-${replace(policy.name, ' ', '-')}'
+  for (policy, index) in accessPolicies: {
+    name: '${uniqueString(deployment().name, location)}-redis-AccessPolicy-${index}'
     params: {
       redisCacheName: redis.name
       name: policy.name
@@ -239,8 +239,8 @@ module redis_accessPolicies 'access-policy/main.bicep' = [
 
 // Deploy access policy assignments
 module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
-  for assignment in accessPolicyAssignments: {
-    name: '${uniqueString(deployment().name, location)}-redis-PolicyAssignment-${assignment.objectId}'
+  for (assignment, index) in accessPolicyAssignments: {
+    name: '${uniqueString(deployment().name, location)}-redis-PolicyAssignment-${index}'
     params: {
       redisCacheName: redis.name
       objectId: assignment.objectId
