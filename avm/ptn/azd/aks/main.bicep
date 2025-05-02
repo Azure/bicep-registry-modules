@@ -46,7 +46,7 @@ param principalId string
 param principalType string = 'User'
 
 @description('Optional. Kubernetes Version.')
-param kubernetesVersion string = '1.29'
+param kubernetesVersion string = '1.31'
 
 @description('Optional. Tier of a managed cluster SKU.')
 @allowed([
@@ -379,7 +379,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
     roleAssignments: [
       {
         name: containerRegistryRoleName
-        principalId: managedCluster.outputs.kubeletIdentityObjectId
+        principalId: managedCluster.outputs.?kubeletIdentityObjectId ?? ''
         roleDefinitionIdOrName: acrPullRole
       }
     ]
@@ -397,7 +397,7 @@ module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
     enablePurgeProtection: enablePurgeProtection
     accessPolicies: [
       {
-        objectId: managedCluster.outputs.kubeletIdentityObjectId
+        objectId: managedCluster.outputs.?kubeletIdentityObjectId ?? ''
         permissions: {
           secrets: ['get', 'list']
         }
@@ -417,13 +417,13 @@ output resourceGroupName string = resourceGroup().name
 output managedClusterName string = managedCluster.outputs.name
 
 @description('The Client ID of the AKS identity.')
-output managedClusterClientId string = managedCluster.outputs.kubeletIdentityClientId
+output managedClusterClientId string? = managedCluster.outputs.?kubeletIdentityClientId
 
 @description('The Object ID of the AKS identity.')
-output managedClusterObjectId string = managedCluster.outputs.kubeletIdentityObjectId
+output managedClusterObjectId string? = managedCluster.outputs.?kubeletIdentityObjectId
 
 @description('The resource ID of the AKS cluster.')
-output managedClusterResourceId string = managedCluster.outputs.kubeletIdentityResourceId
+output managedClusterResourceId string? = managedCluster.outputs.?kubeletIdentityResourceId
 
 @description('The resource name of the ACR.')
 output containerRegistryName string = containerRegistry.outputs.name
