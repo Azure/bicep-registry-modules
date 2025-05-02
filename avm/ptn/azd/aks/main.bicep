@@ -121,7 +121,7 @@ param containerRegistryRoleName string?
 @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param aksClusterRoleAssignmentName string?
 
-import { agentPoolType } from 'br/public:avm/res/container-service/managed-cluster:0.5.2'
+import { agentPoolType } from 'br/public:avm/res/container-service/managed-cluster:0.8.3'
 @description('Optional. Custom configuration of system node pool.')
 param systemPoolConfig agentPoolType[]?
 
@@ -177,7 +177,7 @@ param enableVaultForTemplateDeployment bool = false
 @description('Optional. Enable RBAC using AAD.')
 param enableAzureRbac bool = false
 
-import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.5.2'
+import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.8.3'
 @description('Optional. Enable Azure Active Directory integration.')
 param aadProfile aadProfileType?
 
@@ -279,7 +279,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.5.2' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.8.3' = {
   name: '${uniqueString(deployment().name, location)}-managed-cluster'
   params: {
     name: name
@@ -345,7 +345,7 @@ module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.5.2
   }
 }
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.5.1' = {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: '${uniqueString(deployment().name, location)}-container-registry'
   params: {
     name: containerRegistryName
@@ -386,7 +386,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.5.1' =
   }
 }
 
-module keyVault 'br/public:avm/res/key-vault/vault:0.9.0' = {
+module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
   name: '${uniqueString(deployment().name, location)}-key-vault'
   params: {
     name: keyVaultName
