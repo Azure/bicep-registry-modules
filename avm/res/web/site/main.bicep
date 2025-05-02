@@ -288,7 +288,7 @@ module app_config 'config/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Site-Config-${index}'
     params: {
       appName: app.name
-      kind: kind
+      // kind: kind
       name: config.name
       applicationInsightResourceId: config.?applicationInsightResourceId
       storageAccountResourceId: config.?storageAccountResourceId
