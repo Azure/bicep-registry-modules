@@ -25,6 +25,12 @@ This module deploys an access policy assignment for Redis Cache.
 | [`objectIdAlias`](#parameter-objectidalias) | string | Alias for the target object ID. |
 | [`redisCacheName`](#parameter-rediscachename) | string | The name of the Redis cache. |
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-name) | string | The name of the assignment. By default uses the Object ID to which the access policy will be assigned. |
+
 ### Parameter: `accessPolicyName`
 
 Name of the access policy to be assigned.
@@ -52,6 +58,14 @@ The name of the Redis cache.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `name`
+
+The name of the assignment. By default uses the Object ID to which the access policy will be assigned.
+
+- Required: No
+- Type: string
+- Default: `[parameters('objectId')]`
 
 ## Outputs
 

@@ -7,6 +7,9 @@ param redisCacheName string
 @description('Required. Object ID to which the access policy will be assigned.')
 param objectId string
 
+@description('Optional. The name of the assignment. By default uses the Object ID to which the access policy will be assigned.')
+param name string = objectId
+
 @description('Required. Alias for the target object ID.')
 param objectIdAlias string
 
@@ -18,7 +21,7 @@ resource redisCache 'Microsoft.Cache/redis@2024-11-01' existing = {
 }
 
 resource policyAssignment 'Microsoft.Cache/redis/accessPolicyAssignments@2024-11-01' = {
-  name: objectId
+  name: name
   parent: redisCache
   properties: {
     objectId: objectId

@@ -243,6 +243,7 @@ module redis_policyAssignments 'access-policy-assignment/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-redis-PolicyAssignment-${index}'
     params: {
       redisCacheName: redis.name
+      name: assignment.?name
       objectId: assignment.objectId
       objectIdAlias: assignment.objectIdAlias
       accessPolicyName: assignment.accessPolicyName
@@ -526,6 +527,8 @@ type accessPolicyType = {
 }
 
 type accessPolicyAssignmentType = {
+  @description('Optional. The name of the Access Policy Assignment.')
+  name: string?
   @description('Required. Object id to which the access policy will be assigned.')
   objectId: string
   @description('Required. Alias for the target object id.')

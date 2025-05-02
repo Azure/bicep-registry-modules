@@ -1528,6 +1528,12 @@ Array of access policy assignments.
 | [`objectId`](#parameter-accesspolicyassignmentsobjectid) | string | Object id to which the access policy will be assigned. |
 | [`objectIdAlias`](#parameter-accesspolicyassignmentsobjectidalias) | string | Alias for the target object id. |
 
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-accesspolicyassignmentsname) | string | The name of the Access Policy Assignment. |
+
 ### Parameter: `accessPolicyAssignments.accessPolicyName`
 
 Name of the access policy to be assigned.
@@ -1547,6 +1553,13 @@ Object id to which the access policy will be assigned.
 Alias for the target object id.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `accessPolicyAssignments.name`
+
+The name of the Access Policy Assignment.
+
+- Required: No
 - Type: string
 
 ### Parameter: `capacity`
