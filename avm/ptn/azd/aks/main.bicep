@@ -121,7 +121,7 @@ param containerRegistryRoleName string?
 @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
 param aksClusterRoleAssignmentName string?
 
-import { agentPoolType } from 'br/public:avm/res/container-service/managed-cluster:0.8.3'
+import { agentPoolType } from 'br/public:avm/res/container-service/managed-cluster:0.9.0'
 @description('Optional. Custom configuration of system node pool.')
 param systemPoolConfig agentPoolType[]?
 
@@ -177,7 +177,7 @@ param enableVaultForTemplateDeployment bool = false
 @description('Optional. Enable RBAC using AAD.')
 param enableAzureRbac bool = false
 
-import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.8.3'
+import { aadProfileType } from 'br/public:avm/res/container-service/managed-cluster:0.9.0'
 @description('Optional. Enable Azure Active Directory integration.')
 param aadProfile aadProfileType?
 
@@ -279,7 +279,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.8.3' = {
+module managedCluster 'br/public:avm/res/container-service/managed-cluster:0.9.0' = {
   name: '${uniqueString(deployment().name, location)}-managed-cluster'
   params: {
     name: name

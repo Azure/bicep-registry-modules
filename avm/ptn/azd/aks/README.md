@@ -1707,7 +1707,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | Reference | Type |
 | :-- | :-- |
 | `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
-| `br/public:avm/res/container-service/managed-cluster:0.8.3` | Remote reference |
+| `br/public:avm/res/container-service/managed-cluster:0.9.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.12.1` | Remote reference |
 
 ## Data Collection
