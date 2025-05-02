@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "11489949855661359424"
+      "version": "0.34.44.8038",
+      "templateHash": "3566360323055370432"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -117,7 +117,7 @@
             "customerId": {
               "type": "string",
               "metadata": {
-                "description": "Required. The customer ID of the Log Analytics workspace."
+                "description": "Required. The Log Analytics Workspace ID."
               }
             },
             "sharedKey": {
@@ -662,8 +662,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "3341092726138278864"
+              "version": "0.34.44.8038",
+              "templateHash": "14812297244642020789"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
