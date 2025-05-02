@@ -228,7 +228,7 @@ resource redis 'Microsoft.Cache/redis@2024-11-01' = {
 // Deploy access policies
 module redis_accessPolicies 'access-policy/main.bicep' = [
   for policy in accessPolicies: {
-    name: '${uniqueString(deployment().name, location)}-redis-AccessPolicy-${policy.name}'
+    name: '${uniqueString(deployment().name, location)}-redis-AccessPolicy-${replace(policy.name, ' ', '-')}'
     params: {
       redisCacheName: redis.name
       name: policy.name

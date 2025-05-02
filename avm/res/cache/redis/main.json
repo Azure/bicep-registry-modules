@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "10110323475648907688"
+      "templateHash": "5404912962577716157"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -1141,7 +1141,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-redis-AccessPolicy-{1}', uniqueString(deployment().name, parameters('location')), parameters('accessPolicies')[copyIndex()].name)]",
+      "name": "[format('{0}-redis-AccessPolicy-{1}', uniqueString(deployment().name, parameters('location')), replace(parameters('accessPolicies')[copyIndex()].name, ' ', '-'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"

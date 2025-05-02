@@ -1,4 +1,4 @@
-# Redis Cache Access Policy `[Microsoft.Cache/redis/accessPolicies]`
+# Redis Cache Access Policy `[Microsoft.cache/redis/accesspolicy]`
 
 This module deploys an access policy for Redis Cache.
 
