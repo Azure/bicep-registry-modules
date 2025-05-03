@@ -88,8 +88,8 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-// @description('Optional. Configuration for deployment slots for an app.')
-// param slots array?
+@description('Optional. Configuration for deployment slots for an app.')
+param slots array?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -233,7 +233,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
       resources: []
       outputs: {
         telemetry: {
-          type: 'String'
+          type: 'string'
           value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
         }
       }
@@ -312,54 +312,54 @@ module app_extensions 'extension/main.bicep' = [
   }
 ]
 
-// @batchSize(1)
-// module app_slots 'slot/main.bicep' = [
-//   for (slot, index) in (slots ?? []): {
-//     name: '${uniqueString(deployment().name, location)}-Slot-${slot.name}'
-//     params: {
-//       name: slot.name
-//       appName: app.name
-//       location: location
-//       kind: kind
-//       serverFarmResourceId: serverFarmResourceId
-//       httpsOnly: slot.?httpsOnly ?? httpsOnly
-//       appServiceEnvironmentResourceId: appServiceEnvironmentResourceId
-//       clientAffinityEnabled: slot.?clientAffinityEnabled ?? clientAffinityEnabled
-//       managedIdentities: slot.?managedIdentities ?? managedIdentities
-//       keyVaultAccessIdentityResourceId: slot.?keyVaultAccessIdentityResourceId ?? keyVaultAccessIdentityResourceId
-//       storageAccountRequired: slot.?storageAccountRequired ?? storageAccountRequired
-//       virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
-//       siteConfig: slot.?siteConfig ?? siteConfig
-//       functionAppConfig: slot.?functionAppConfig ?? functionAppConfig
-//       configs: slot.?configs ?? configs
-//       extensions: slot.?extensions ?? extensions
-//       diagnosticSettings: slot.?diagnosticSettings
-//       roleAssignments: slot.?roleAssignments
-//       basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
-//       lock: slot.?lock ?? lock
-//       privateEndpoints: slot.?privateEndpoints ?? []
-//       tags: slot.?tags ?? tags
-//       clientCertEnabled: slot.?clientCertEnabled
-//       clientCertExclusionPaths: slot.?clientCertExclusionPaths
-//       clientCertMode: slot.?clientCertMode
-//       cloningInfo: slot.?cloningInfo
-//       containerSize: slot.?containerSize
-//       customDomainVerificationId: slot.?customDomainVerificationId
-//       dailyMemoryTimeQuota: slot.?dailyMemoryTimeQuota
-//       enabled: slot.?enabled
-//       hostNameSslStates: slot.?hostNameSslStates
-//       hyperV: slot.?hyperV
-//       publicNetworkAccess: slot.?publicNetworkAccess ?? ((!empty(slot.?privateEndpoints) || !empty(privateEndpoints))
-//         ? 'Disabled'
-//         : 'Enabled')
-//       redundancyMode: slot.?redundancyMode
-//       vnetContentShareEnabled: slot.?vnetContentShareEnabled
-//       vnetImagePullEnabled: slot.?vnetImagePullEnabled
-//       vnetRouteAllEnabled: slot.?vnetRouteAllEnabled
-//       hybridConnectionRelays: slot.?hybridConnectionRelays
-//     }
-//   }
-// ]
+@batchSize(1)
+module app_slots 'slot/main.bicep' = [
+  for (slot, index) in (slots ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Slot-${slot.name}'
+    params: {
+      name: slot.name
+      appName: app.name
+      location: location
+      kind: kind
+      serverFarmResourceId: serverFarmResourceId
+      httpsOnly: slot.?httpsOnly ?? httpsOnly
+      appServiceEnvironmentResourceId: appServiceEnvironmentResourceId
+      clientAffinityEnabled: slot.?clientAffinityEnabled ?? clientAffinityEnabled
+      managedIdentities: slot.?managedIdentities ?? managedIdentities
+      keyVaultAccessIdentityResourceId: slot.?keyVaultAccessIdentityResourceId ?? keyVaultAccessIdentityResourceId
+      storageAccountRequired: slot.?storageAccountRequired ?? storageAccountRequired
+      virtualNetworkSubnetId: slot.?virtualNetworkSubnetId ?? virtualNetworkSubnetId
+      siteConfig: slot.?siteConfig ?? siteConfig
+      functionAppConfig: slot.?functionAppConfig ?? functionAppConfig
+      configs: slot.?configs ?? configs
+      extensions: slot.?extensions ?? extensions
+      diagnosticSettings: slot.?diagnosticSettings
+      roleAssignments: slot.?roleAssignments
+      basicPublishingCredentialsPolicies: slot.?basicPublishingCredentialsPolicies ?? basicPublishingCredentialsPolicies
+      lock: slot.?lock ?? lock
+      privateEndpoints: slot.?privateEndpoints ?? []
+      tags: slot.?tags ?? tags
+      clientCertEnabled: slot.?clientCertEnabled
+      clientCertExclusionPaths: slot.?clientCertExclusionPaths
+      clientCertMode: slot.?clientCertMode
+      cloningInfo: slot.?cloningInfo
+      containerSize: slot.?containerSize
+      customDomainVerificationId: slot.?customDomainVerificationId
+      dailyMemoryTimeQuota: slot.?dailyMemoryTimeQuota
+      enabled: slot.?enabled
+      hostNameSslStates: slot.?hostNameSslStates
+      hyperV: slot.?hyperV
+      publicNetworkAccess: slot.?publicNetworkAccess ?? ((!empty(slot.?privateEndpoints) || !empty(privateEndpoints))
+        ? 'Disabled'
+        : 'Enabled')
+      redundancyMode: slot.?redundancyMode
+      vnetContentShareEnabled: slot.?vnetContentShareEnabled
+      vnetImagePullEnabled: slot.?vnetImagePullEnabled
+      vnetRouteAllEnabled: slot.?vnetRouteAllEnabled
+      hybridConnectionRelays: slot.?hybridConnectionRelays
+    }
+  }
+]
 
 module app_basicPublishingCredentialsPolicies 'basic-publishing-credentials-policy/main.bicep' = [
   for (basicPublishingCredentialsPolicy, index) in (basicPublishingCredentialsPolicies ?? []): {
@@ -501,11 +501,11 @@ output name string = app.name
 @description('The resource ID of the site.')
 output resourceId string = app.id
 
-// @description('The list of the slots.')
-// output slots array = [for (slot, index) in (slots ?? []): app_slots[index].name]
+@description('The list of the slots.')
+output slots string[] = [for (slot, index) in (slots ?? []): app_slots[index].name]
 
-// @description('The list of the slot resource ids.')
-// output slotResourceIds array = [for (slot, index) in (slots ?? []): app_slots[index].outputs.resourceId]
+@description('The list of the slot resource ids.')
+output slotResourceIds string[] = [for (slot, index) in (slots ?? []): app_slots[index].outputs.resourceId]
 
 @description('The resource group the site was deployed into.')
 output resourceGroupName string = resourceGroup().name
@@ -513,10 +513,10 @@ output resourceGroupName string = resourceGroup().name
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = app.?identity.?principalId
 
-// @description('The principal ID of the system assigned identity of slots.')
-// output slotSystemAssignedMIPrincipalIds string[] = [
-//   for (slot, index) in (slots ?? []): app_slots[index].outputs.?systemAssignedMIPrincipalId ?? ''
-// ]
+@description('The principal ID of the system assigned identity of slots.')
+output slotSystemAssignedMIPrincipalIds string[] = [
+  for (slot, index) in (slots ?? []): app_slots[index].outputs.?systemAssignedMIPrincipalId ?? ''
+]
 
 @description('The location the resource was deployed into.')
 output location string = app.location
@@ -538,8 +538,10 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
-// @description('The private endpoints of the slots.')
-// output slotPrivateEndpoints array = [for (slot, index) in (slots ?? []): app_slots[index].outputs.privateEndpoints]
+@description('The private endpoints of the slots.')
+output slotPrivateEndpoints privateEndpointOutputType[][] = [
+  for (slot, index) in (slots ?? []): app_slots[index].outputs.privateEndpoints
+]
 
 @description('The outbound IP addresses of the app.')
 output outboundIpAddresses string = app.properties.outboundIpAddresses
@@ -571,70 +573,32 @@ type privateEndpointOutputType = {
   networkInterfaceResourceIds: string[]
 }
 
+import {
+  appSettingsConfigType
+  authSettingsConfigType
+  authSettingsV2ConfigType
+  azureStorageAccountConfigType
+  backupConfigType
+  connectionStringsConfigType
+  logsConfigType
+  metadataConfigType
+  pushSettingsConfigType
+  slotConfigNamesConfigType
+  webConfigType
+} from 'slot/main.bicep'
+
 @export()
-@description('The type of a site config.')
+@description('The type of a site configuration.')
 @discriminator('name')
-type configType = appSettingsType | authSettingsType | authSettingsV2Type | logsType | webType
-
-type appSettingsType = {
-  name: 'appsettings'
-  // kind: resourceInput<'Microsoft.Web/sites/config@2024-04-01'>.kind
-
-  @description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
-  storageAccountUseIdentityAuthentication: bool?
-
-  @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the application insight to leverage for this resource.')
-  applicationInsightResourceId: string?
-
-  @description('Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
-  properties: {
-    *: string
-  }?
-}
-
-type authSettingsType = {
-  name: 'authsettings'
-
-  // additionalProperties: {
-  //   *: string
-  // }?
-
-  @description('Optional. The config settings.')
-  properties: resourceInput<'Microsoft.Web/sites/config@2024-04-01'>.properties?
-}
-
-type authSettingsV2Type = {
-  name: 'authsettingsV2'
-
-  // additionalProperties: {
-  //   *: string
-  // }?
-
-  @description('Optional. The config settings.')
-  properties: resourceInput<'Microsoft.Web/sites/config@2024-04-01'>.properties?
-}
-
-type logsType = {
-  name: 'logs'
-
-  // additionalProperties: {
-  //   *: string
-  // }?
-
-  @description('Optional. The config settings.')
-  properties: resourceInput<'Microsoft.Web/sites/config@2024-04-01'>.properties?
-}
-
-type webType = {
-  name: 'web'
-
-  // additionalProperties: {
-  //   *: string
-  // }?
-
-  @description('Optional. The config settings.')
-  properties: resourceInput<'Microsoft.Web/sites/config@2024-04-01'>.properties?
-}
+type configType =
+  | appSettingsConfigType
+  | authSettingsConfigType
+  | authSettingsV2ConfigType
+  | azureStorageAccountConfigType
+  | backupConfigType
+  | connectionStringsConfigType
+  | logsConfigType
+  | metadataConfigType
+  | pushSettingsConfigType
+  | slotConfigNamesConfigType
+  | webConfigType
