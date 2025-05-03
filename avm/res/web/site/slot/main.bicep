@@ -275,13 +275,13 @@ module slot_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep
 
 module slot_config 'config/main.bicep' = [
   for (config, index) in (configs ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Slot-Config'
+    name: '${uniqueString(deployment().name, location)}-Slot-Config-${index}'
     params: {
       appName: app.name
+      // kind: config.kind
       name: config.name
-      kind: config.kind
-      appInsightResourceId: config.?appInsightResourceId
-      appSettingsKeyValuePairs: config.?appSettingsKeyValuePairs
+      applicationInsightResourceId: config.?applicationInsightResourceId
+      properties: config.properties
       currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
       storageAccountResourceId: config.?storageAccountResourceId
       storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication

@@ -73,7 +73,6 @@ var appInsightsValues = !empty(applicationInsightResourceId)
 
 var expandedProperties = union(
   name == 'appsettings' ? currentAppSettings : {},
-  // additionalProperties,
   properties,
   azureWebJobsValues,
   appInsightsValues
@@ -95,6 +94,7 @@ resource app 'Microsoft.Web/sites@2023-12-01' existing = {
 
 resource config 'Microsoft.Web/sites/config@2024-04-01' = {
   parent: app
+  #disable-next-line BCP225
   name: name
   // kind: kind
   properties: expandedProperties
