@@ -246,7 +246,7 @@ module testDeployment '../../../main.bicep' = [
       }
       hybridConnectionRelays: [
         {
-          resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+          hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
           sendKeyName: 'defaultSender'
         }
       ]

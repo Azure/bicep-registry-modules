@@ -153,10 +153,10 @@ param hyperV bool = false
 param redundancyMode string = 'None'
 
 @description('Optional. The site publishing credential policy names which are associated with the sites.')
-param basicPublishingCredentialsPolicies array?
+param basicPublishingCredentialsPolicies basicPublishingCredentialsPolicyType[]?
 
 @description('Optional. Names of hybrid connection relays to connect app with.')
-param hybridConnectionRelays array?
+param hybridConnectionRelays hybridConnectionRelayType[]?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
@@ -373,7 +373,7 @@ module app_hybridConnectionRelays 'hybrid-connection-namespace/relay/main.bicep'
   for (hybridConnectionRelay, index) in (hybridConnectionRelays ?? []): {
     name: '${uniqueString(deployment().name, location)}-HybridConnectionRelay-${index}'
     params: {
-      hybridConnectionResourceId: hybridConnectionRelay.resourceId
+      hybridConnectionResourceId: hybridConnectionRelay.hybridConnectionResourceId
       appName: app.name
       sendKeyName: hybridConnectionRelay.?sendKeyName
     }
@@ -702,7 +702,7 @@ type slotType = {
   redundancyMode: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.redundancyMode?
 
   @description('Optional. The site publishing credential policy names which are associated with the site slot.')
-  basicPublishingCredentialsPolicies: array?
+  basicPublishingCredentialsPolicies: basicPublishingCredentialsPolicyType[]?
 
   @description('Optional. To enable accessing content over virtual network.')
   vnetContentShareEnabled: bool?
@@ -714,10 +714,33 @@ type slotType = {
   vnetRouteAllEnabled: bool?
 
   @description('Optional. Names of hybrid connection relays to connect app with.')
-  hybridConnectionRelays: array?
+  hybridConnectionRelays: hybridConnectionRelayType[]?
 }
 
 type extensionType = {
   @description('Optional. Sets the properties.')
   properties: resourceInput<'Microsoft.Web/sites/extensions@2024-04-01'>.properties?
+}
+
+@export()
+@description('The type of a basic publishing credential policy.')
+type basicPublishingCredentialsPolicyType = {
+  @description('Required. The name of the resource.')
+  name: ('scm' | 'ftp')
+
+  @description('Optional. Set to true to enable or false to disable a publishing method.')
+  allow: bool?
+
+  @description('Optional. Location for all Resources.')
+  location: string?
+}
+
+@export()
+@description('The type of a hybrid connection relay.')
+type hybridConnectionRelayType = {
+  @description('Required. The resource ID of the relay namespace hybrid connection.')
+  hybridConnectionResourceId: string
+
+  @description('Optional. Name of the authorization rule send key to use.')
+  sendKeyName: string?
 }
