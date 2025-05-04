@@ -133,6 +133,7 @@ resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
   resource api 'apis@2024-06-01-preview' = {
     name: 'todo-api'
     properties: {
+      displayName: 'Todo API'
       path: 'todo-api'
     }
   }
