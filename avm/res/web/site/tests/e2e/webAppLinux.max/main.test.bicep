@@ -106,9 +106,13 @@ module testDeployment '../../../main.bicep' = [
           privateEndpoints: [
             {
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
-              privateDnsZoneResourceIds: [
-                nestedDependencies.outputs.privateDNSZoneResourceId
-              ]
+              privateDnsZoneGroup: {
+                privateDnsZoneGroupConfigs: [
+                  {
+                    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+                  }
+                ]
+              }
               tags: {
                 'hidden-title': 'This is visible in the resource name'
                 Environment: 'Non-Prod'
@@ -156,8 +160,13 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
           hybridConnectionRelays: [
             {
               resourceId: nestedDependencies.outputs.hybridConnectionResourceId
@@ -175,8 +184,13 @@ module testDeployment '../../../main.bicep' = [
               name: 'scm'
             }
           ]
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
         }
       ]
       privateEndpoints: [

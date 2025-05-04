@@ -75,7 +75,7 @@ param siteConfig object = {
 param configs configType[]?
 
 @description('Optional. The Function App configuration object.')
-param functionAppConfig object?
+param functionAppConfig resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.functionAppConfig?
 
 @description('Optional. The extensions configuration.')
 param extensions object[]?
@@ -89,7 +89,7 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Configuration for deployment slots for an app.')
-param slots array?
+param slots slotType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -125,7 +125,7 @@ Optional. This composes with ClientCertEnabled setting.
 param clientCertMode string = 'Optional'
 
 @description('Optional. If specified during app creation, the app is cloned from a source app.')
-param cloningInfo object?
+param cloningInfo resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.cloningInfo?
 
 @description('Optional. Size of the function container.')
 param containerSize int?
@@ -137,7 +137,7 @@ param dailyMemoryTimeQuota int?
 param enabled bool = true
 
 @description('Optional. Hostname SSL states are used to manage the SSL bindings for app\'s hostnames.')
-param hostNameSslStates array?
+param hostNameSslStates resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.hostNameSslStates?
 
 @description('Optional. Hyper-V sandbox.')
 param hyperV bool = false
@@ -600,3 +600,115 @@ type configType =
   | pushSettingsConfigType
   | slotConfigNamesConfigType
   | webConfigType
+
+@export()
+@description('The type of a slot.')
+type slotType = {
+  @description('Required. Name of the slot.')
+  name: string
+
+  @description('Optional. Location for all Resources.')
+  location: string?
+
+  @description('Optional. The resource ID of the app service plan to use for the slot.')
+  serverFarmResourceId: string?
+
+  @description('Optional. Configures a slot to accept only HTTPS requests. Issues redirect for HTTP requests.')
+  httpsOnly: bool?
+
+  @description('Optional. If client affinity is enabled.')
+  clientAffinityEnabled: bool?
+
+  @description('Optional. The resource ID of the app service environment to use for this resource.')
+  appServiceEnvironmentResourceId: string?
+
+  @description('Optional. The managed identity definition for this resource.')
+  managedIdentities: managedIdentityAllType?
+
+  @description('Optional. The resource ID of the assigned identity to be used to access a key vault with.')
+  keyVaultAccessIdentityResourceId: string?
+
+  @description('Optional. Checks if Customer provided storage account is required.')
+  storageAccountRequired: bool?
+
+  @description('Optional. Azure Resource Manager ID of the Virtual network and subnet to be joined by Regional VNET Integration. This must be of the form /subscriptions/{subscriptionName}/resourceGroups/{resourceGroupName}/providers/Microsoft.Network/virtualNetworks/{vnetName}/subnets/{subnetName}.')
+  virtualNetworkSubnetId: string?
+
+  @description('Optional. The site config object.')
+  siteConfig: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.siteConfig?
+
+  @description('Optional. The Function App config object.')
+  functionAppConfig: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.functionAppConfig?
+
+  @description('Optional. The web site config.')
+  configs: configType[]?
+
+  @description('Optional. The extensions configuration.')
+  extensions: object[]?
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. Configuration details for private endpoints.')
+  privateEndpoints: privateEndpointSingleServiceType[]?
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+
+  @description('Optional. To enable client certificate authentication (TLS mutual authentication).')
+  clientCertEnabled: bool?
+
+  @description('Optional. Client certificate authentication comma-separated exclusion paths.')
+  clientCertExclusionPaths: string?
+
+  @description('Optional. This composes with ClientCertEnabled setting.</p>- ClientCertEnabled: false means ClientCert is ignored.</p>- ClientCertEnabled: true and ClientCertMode: Required means ClientCert is required.</p>- ClientCertEnabled: true and ClientCertMode: Optional means ClientCert is optional or accepted.')
+  clientCertMode: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.clientCertMode?
+
+  @description('Optional. If specified during app creation, the app is cloned from a source app.')
+  cloningInfo: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.cloningInfo?
+
+  @description('Optional. Size of the function container.')
+  containerSize: int?
+
+  @description('Optional. Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
+  customDomainVerificationId: string?
+
+  @description('Optional. Maximum allowed daily memory-time quota (applicable on dynamic apps only).')
+  dailyMemoryTimeQuota: int?
+
+  @description('Optional. Setting this value to false disables the app (takes the app offline).')
+  enabled: bool?
+
+  @description('Optional. Hostname SSL states are used to manage the SSL bindings for app\'s hostnames.')
+  hostNameSslStates: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.hostNameSslStates?
+
+  @description('Optional. Hyper-V sandbox.')
+  hyperV: bool?
+
+  @description('Optional. Allow or block all public traffic.')
+  publicNetworkAccess: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.publicNetworkAccess?
+
+  @description('Optional. Site redundancy mode.')
+  redundancyMode: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.redundancyMode?
+
+  @description('Optional. The site publishing credential policy names which are associated with the site slot.')
+  basicPublishingCredentialsPolicies: array?
+
+  @description('Optional. To enable accessing content over virtual network.')
+  vnetContentShareEnabled: bool?
+
+  @description('Optional. To enable pulling image over Virtual Network.')
+  vnetImagePullEnabled: bool?
+
+  @description('Optional. Virtual Network Route All enabled. This causes all outbound traffic to have Virtual Network Security Groups and User Defined Routes applied.')
+  vnetRouteAllEnabled: bool?
+
+  @description('Optional. Names of hybrid connection relays to connect app with.')
+  hybridConnectionRelays: array?
+}

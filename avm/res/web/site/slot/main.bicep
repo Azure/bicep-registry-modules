@@ -53,7 +53,7 @@ param storageAccountRequired bool = false
 param virtualNetworkSubnetId string?
 
 @description('Optional. The site config object.')
-param siteConfig object = {
+param siteConfig resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.siteConfig = {
   alwaysOn: true
 }
 
@@ -61,7 +61,7 @@ param siteConfig object = {
 param functionAppConfig object?
 
 @description('Optional. The web site config.')
-param configs object[]?
+param configs configType[]?
 
 @description('Optional. The extensions configuration.')
 param extensions object[]?
@@ -356,7 +356,7 @@ resource slot_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-0
   }
 ]
 
-module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module slot_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-slot-PrivateEndpoint-${index}'
     scope: resourceGroup(
