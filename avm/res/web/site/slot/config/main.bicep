@@ -56,14 +56,11 @@ var appInsightsValues = !empty(applicationInsightResourceId)
     }
   : {}
 
-var expandedProperties = union(
-  (name == 'appsettings' && retainCurrentAppSettings)
-    ? list('${app.id}/slots/${slotName}/config/appsettings', '2023-12-01').properties ?? {}
-    : {},
-  properties,
-  azureWebJobsValues,
-  appInsightsValues
-)
+var originalAppSettings = (name == 'appsettings' && retainCurrentAppSettings)
+  ? !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {} ?? {}
+  : {}
+
+var expandedProperties = union(originalAppSettings, properties, azureWebJobsValues, appInsightsValues)
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(applicationInsightResourceId)) {
   name: last(split(applicationInsightResourceId!, '/'))
