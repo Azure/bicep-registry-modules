@@ -486,7 +486,7 @@ type appSettingsConfigType = {
   @description('Required. The type of config.')
   name: 'appsettings'
 
-  @description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
+  @description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to `true`, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
   storageAccountUseIdentityAuthentication: bool?
 
   @description('Optional. Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions.')
@@ -495,7 +495,7 @@ type appSettingsConfigType = {
   @description('Optional. Resource ID of the application insight to leverage for this resource.')
   applicationInsightResourceId: string?
 
-  @description('Optional. The retain the current app settings. Defaults to true.')
+  @description('Optional. The retain the current app settings. Defaults to `true`.')
   retainCurrentAppSettings: bool?
 
   @description('Optional. The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.')
