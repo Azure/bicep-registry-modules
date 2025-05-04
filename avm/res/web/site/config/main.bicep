@@ -55,7 +55,7 @@ var appInsightsValues = !empty(applicationInsightResourceId)
   : {}
 
 var originalAppSettings = (name == 'appsettings' && retainCurrentAppSettings)
-  ? !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {} ?? {}
+  ? !empty(app.id) ? list('${app.id}/config/${name}', '2023-12-01').properties : {} ?? {}
   : {}
 
 var expandedProperties = union(originalAppSettings, properties, azureWebJobsValues, appInsightsValues)
