@@ -32,8 +32,11 @@ param storageAccountResourceId string?
 @description('Optional. Resource ID of the application insight to leverage for this resource.')
 param applicationInsightResourceId string?
 
+@description('Optional. The retain the current app settings.')
+param retainCurrentAppSettings bool = true
+
 @description('Optional. The current app settings.')
-param currentAppSettings object = {} // = !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
+param currentAppSettings object?
 
 var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseIdentityAuthentication
   ? {
@@ -55,7 +58,7 @@ var appInsightsValues = !empty(applicationInsightResourceId)
   : {}
 
 var expandedProperties = union(
-  name == 'appsettings' ? currentAppSettings : {},
+  (name == 'appsettings' && retainCurrentAppSettings) ? currentAppSettings ?? {} : {},
   properties,
   azureWebJobsValues,
   appInsightsValues
