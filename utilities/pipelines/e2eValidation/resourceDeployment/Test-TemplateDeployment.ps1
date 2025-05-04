@@ -184,7 +184,7 @@ function Test-TemplateDeployment {
             Write-Error 'Template is not valid.'
         } else {
             Write-Verbose 'Template is valid' -Verbose
-            Write-Verbose ($res | Out-String) -Verbose
+            Write-Verbose ($res | Out-String) -Verbose # May show diagnostic warnings
         }
     }
 
