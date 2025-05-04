@@ -293,7 +293,7 @@ module app_config 'config/main.bicep' = [
       storageAccountResourceId: config.?storageAccountResourceId
       storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
       properties: config.?properties
-      currentAppSettings: config.?retainCurrentAppSettings ?? true && !empty(app.id)
+      currentAppSettings: config.?retainCurrentAppSettings ?? true && config.name == 'appsettings'
         ? list('${app.id}/config/appsettings', '2023-12-01').properties
         : {}
     }
