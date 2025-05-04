@@ -282,8 +282,8 @@ module slot_config 'config/main.bicep' = [
       slotName: slot.name
       applicationInsightResourceId: config.?applicationInsightResourceId
       properties: config.?properties
-      currentAppSettings: config.?retainCurrentAppSettings ?? true && !empty(app.id)
-        ? list('${app.id}/slots/${slot.name}/config/${name}', '2023-12-01').properties
+      currentAppSettings: config.?retainCurrentAppSettings ?? true && !empty(slot.id)
+        ? list('${slot.id}/config/${name}', '2023-12-01').properties
         : {}
       storageAccountResourceId: config.?storageAccountResourceId
       storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
