@@ -280,7 +280,7 @@ module slot_config 'config/main.bicep' = [
       appName: app.name
       name: config.name
       applicationInsightResourceId: config.?applicationInsightResourceId
-      properties: config.properties
+      properties: config.?properties
       currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
       storageAccountResourceId: config.?storageAccountResourceId
       storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
@@ -485,7 +485,6 @@ type configType =
 type appSettingsConfigType = {
   @description('Required. The type of config.')
   name: 'appsettings'
-  // kind: resourceInput<'Microsoft.Web/sites/config@2024-04-01'>.kind
 
   @description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
   storageAccountUseIdentityAuthentication: bool?

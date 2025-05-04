@@ -65,7 +65,7 @@ param vnetRouteAllEnabled bool = false
 param scmSiteAlsoStopped bool = false
 
 @description('Optional. The site config object. The defaults are set to the following values: alwaysOn: true, minTlsVersion: \'1.2\', ftpsState: \'FtpsOnly\'.')
-param siteConfig object = {
+param siteConfig resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.siteConfig = {
   alwaysOn: true
   minTlsVersion: '1.2'
   ftpsState: 'FtpsOnly'
@@ -292,7 +292,7 @@ module app_config 'config/main.bicep' = [
       applicationInsightResourceId: config.?applicationInsightResourceId
       storageAccountResourceId: config.?storageAccountResourceId
       storageAccountUseIdentityAuthentication: config.?storageAccountUseIdentityAuthentication
-      properties: config.properties
+      properties: config.?properties
       currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
     }
   }
