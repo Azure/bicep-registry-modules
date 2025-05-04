@@ -179,9 +179,8 @@ function Test-TemplateDeployment {
             }
         }
         if ($ValidationErrors -and ($res | ConvertTo-Json | ConvertFrom-Json -AsHashtable).Keys -Contains 'Code') {
-            Write-Verbose 'Errors found:' -Verbose
-            if ($res.Details) { Write-Warning ($res.Details | ConvertTo-Json -Depth 10 | Out-String) }
-            if ($res.Message) { Write-Warning $res.Message }
+            Write-Warning 'Errors found:' -Verbose
+            Write-Warning ($res | ConvertTo-Json -Depth 10 | Out-String)
             Write-Error 'Template is not valid.'
         } else {
             Write-Verbose 'Template is valid' -Verbose
