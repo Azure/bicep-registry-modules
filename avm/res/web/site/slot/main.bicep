@@ -138,7 +138,7 @@ param publicNetworkAccess string?
 param redundancyMode string = 'None'
 
 @description('Optional. The site publishing credential policy names which are associated with the site slot.')
-param basicPublishingCredentialsPolicies array?
+param basicPublishingCredentialsPolicies basicPublishingCredentialsPolicyType[]?
 
 @description('Optional. To enable accessing content over virtual network.')
 param vnetContentShareEnabled bool = false
@@ -150,7 +150,7 @@ param vnetImagePullEnabled bool = false
 param vnetRouteAllEnabled bool = false
 
 @description('Optional. Names of hybrid connection relays to connect app with.')
-param hybridConnectionRelays array?
+param hybridConnectionRelays hybridConnectionRelayType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -1811,4 +1811,27 @@ The matching logic is exact match.''')
 
   @description('Optional. (internal) Vnet traffic tag.')
   vnetTrafficTag: int?
+}
+
+@export()
+@description('The type of a basic publishing credential policy.')
+type basicPublishingCredentialsPolicyType = {
+  @description('Required. The name of the resource.')
+  name: ('scm' | 'ftp')
+
+  @description('Optional. Set to true to enable or false to disable a publishing method.')
+  allow: bool?
+
+  @description('Optional. Location for all Resources.')
+  location: string?
+}
+
+@export()
+@description('The type of a hybrid connection relay.')
+type hybridConnectionRelayType = {
+  @description('Required. The resource ID of the relay namespace hybrid connection.')
+  hybridConnectionResourceId: string
+
+  @description('Optional. Name of the authorization rule send key to use.')
+  sendKeyName: string?
 }
