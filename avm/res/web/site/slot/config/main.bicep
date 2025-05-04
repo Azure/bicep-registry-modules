@@ -37,9 +37,6 @@ param applicationInsightResourceId string?
 @description('Optional. The retain the current app settings.')
 param retainCurrentAppSettings bool = true
 
-@description('Optional. The current app settings.')
-param currentAppSettings object?
-
 var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseIdentityAuthentication
   ? {
       AzureWebJobsStorage: 'DefaultEndpointsProtocol=https;AccountName=${storageAccount.name};AccountKey=${storageAccount.listKeys().keys[0].value};EndpointSuffix=${environment().suffixes.storage}'
@@ -60,7 +57,9 @@ var appInsightsValues = !empty(applicationInsightResourceId)
   : {}
 
 var expandedProperties = union(
-  (name == 'appsettings' && retainCurrentAppSettings) ? currentAppSettings ?? {} : {},
+  (name == 'appsettings' && retainCurrentAppSettings)
+    ? list('${app.id}/slots/${slotName}/config/appsettings', '2023-12-01').properties ?? {}
+    : {},
   properties,
   azureWebJobsValues,
   appInsightsValues
