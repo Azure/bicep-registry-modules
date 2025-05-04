@@ -135,6 +135,9 @@ resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
     properties: {
       displayName: 'Todo API'
       path: 'todo-api'
+      protocols: [
+        'https'
+      ]
     }
   }
 }
