@@ -90,6 +90,7 @@ module testDeployment '../../../main.bicep' = [
         '${serviceShort}.plsfqdn01.azure.privatelinkservice'
         '${serviceShort}.plsfqdn02.azure.privatelinkservice'
       ]
+      destinationIPAddress: '10.0.0.50'
       roleAssignments: [
         {
           name: 'fec82bb5-8552-4c4b-a3f6-65bdae54d7f4'

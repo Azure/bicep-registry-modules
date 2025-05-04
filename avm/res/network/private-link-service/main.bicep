@@ -35,6 +35,9 @@ param fqdns array = []
 @description('Optional. Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions.')
 param visibility object = {}
 
+@description('Optional. The destination IP address of the private link service.')
+param destinationIPAddress string?
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -94,13 +97,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource privateLinkService 'Microsoft.Network/privateLinkServices@2023-04-01' = {
+resource privateLinkService 'Microsoft.Network/privateLinkServices@2024-05-01' = {
   name: name
   location: location
   tags: tags
   extendedLocation: !empty(extendedLocation) ? extendedLocation : null
   properties: {
     autoApproval: autoApproval
+    destinationIPAddress: destinationIPAddress
     enableProxyProtocol: enableProxyProtocol
     fqdns: fqdns
     ipConfigurations: ipConfigurations
