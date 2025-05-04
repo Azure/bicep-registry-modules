@@ -741,6 +741,7 @@ type authSettingsV2ConfigType = {
           @description('Optional. The app setting name that contains the client secret of the relying party application.')
           clientSecretSettingName: string?
 
+          #disable-next-line no-hardcoded-env-urls // Just a parameter description
           @description('Optional. The OpenID Connect Issuer URI that represents the entity which issues access tokens for this application. When using Azure Active Directory, this value is the URI of the directory tenant, e.g. https://login.microsoftonline.com/v2.0/{tenant-guid}/. This URI is a case-sensitive identifier for the token issuer. More information on [OpenID Connect Discovery](http://openid.net/specs/openid-connect-discovery-1_0.html).')
           openIdIssuer: string?
         }?
