@@ -4,6 +4,9 @@ metadata description = 'This module deploys a Site App Setting.'
 @description('Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment.')
 param appName string
 
+@description('Conditional. The name of the parent web site slot. Required if the template is used in a standalone deployment.')
+param slotName string
+
 @description('Required. The name of the config.')
 @allowed([
   'appsettings'
@@ -15,7 +18,6 @@ param appName string
   'logs'
   'metadata'
   'pushsettings'
-  'slotConfigNames'
   'web'
 ])
 param name string
@@ -76,10 +78,14 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing 
 
 resource app 'Microsoft.Web/sites@2023-12-01' existing = {
   name: appName
+
+  resource slot 'slots' existing = {
+    name: slotName
+  }
 }
 
-resource config 'Microsoft.Web/sites/config@2024-04-01' = {
-  parent: app
+resource config 'Microsoft.Web/sites/slots/config@2024-04-01' = {
+  parent: app::slot
   #disable-next-line BCP225
   name: name
   properties: expandedProperties

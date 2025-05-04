@@ -279,6 +279,7 @@ module slot_config 'config/main.bicep' = [
     params: {
       appName: app.name
       name: config.name
+      slotName: slot.name
       applicationInsightResourceId: config.?applicationInsightResourceId
       properties: config.?properties
       currentAppSettings: !empty(app.id) ? list('${app.id}/config/appsettings', '2023-12-01').properties : {}
@@ -293,6 +294,7 @@ module app_extensions 'extension/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Slot-Extension=${index}'
     params: {
       appName: app.name
+      slotName: slot.name
       name: extension.?name
       kind: extension.?kind
       properties: extension.properties
@@ -477,7 +479,6 @@ type configType =
   | logsConfigType
   | metadataConfigType
   | pushSettingsConfigType
-  | slotConfigNamesConfigType
   | webConfigType
 
 @export()
@@ -1250,25 +1251,6 @@ type pushSettingsConfigType = {
 
     @description('Optional. Gets or sets a JSON string containing a list of tags that are whitelisted for use by the push registration endpoint.')
     tagWhitelistJson: string?
-  }
-}
-
-@export()
-@description('The type of a slotConfigNames configuration.')
-type slotConfigNamesConfigType = {
-  @description('Required. The type of config.')
-  name: 'slotConfigNames'
-
-  @description('Required. The config settings.')
-  properties: {
-    @description('Optional. List of application settings names.')
-    appSettingNames: string[]?
-
-    @description('Optional. List of external Azure storage account identifiers.')
-    azureStorageConfigNames: string[]?
-
-    @description('Optional. List of connection string names.')
-    connectionStringNames: string[]?
   }
 }
 

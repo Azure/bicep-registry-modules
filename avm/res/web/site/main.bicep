@@ -585,7 +585,6 @@ import {
   logsConfigType
   metadataConfigType
   pushSettingsConfigType
-  slotConfigNamesConfigType
   webConfigType
 } from 'slot/main.bicep'
 
@@ -604,6 +603,26 @@ type configType =
   | pushSettingsConfigType
   | slotConfigNamesConfigType
   | webConfigType
+
+// Not available flor slots
+@export()
+@description('The type of a slotConfigNames configuration.')
+type slotConfigNamesConfigType = {
+  @description('Required. The type of config.')
+  name: 'slotConfigNames'
+
+  @description('Required. The config settings.')
+  properties: {
+    @description('Optional. List of application settings names.')
+    appSettingNames: string[]?
+
+    @description('Optional. List of external Azure storage account identifiers.')
+    azureStorageConfigNames: string[]?
+
+    @description('Optional. List of connection string names.')
+    connectionStringNames: string[]?
+  }
+}
 
 @export()
 @description('The type of a slot.')
