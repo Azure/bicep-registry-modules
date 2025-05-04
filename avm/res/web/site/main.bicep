@@ -78,7 +78,7 @@ param configs configType[]?
 param functionAppConfig resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.functionAppConfig?
 
 @description('Optional. The extensions configuration.')
-param extensions object[]?
+param extensions extensionType[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -303,8 +303,6 @@ module app_extensions 'extension/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Site-Extension-${index}'
     params: {
       appName: app.name
-      name: extension.?name
-      kind: extension.?kind
       properties: extension.properties
     }
   }
@@ -711,4 +709,9 @@ type slotType = {
 
   @description('Optional. Names of hybrid connection relays to connect app with.')
   hybridConnectionRelays: array?
+}
+
+type extensionType = {
+  @description('Optional. Sets the properties.')
+  properties: resourceInput<'Microsoft.Web/sites/extensions@2024-04-01'>.properties?
 }
