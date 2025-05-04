@@ -278,7 +278,6 @@ module slot_config 'config/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-Slot-Config-${index}'
     params: {
       appName: app.name
-      // kind: config.kind
       name: config.name
       applicationInsightResourceId: config.?applicationInsightResourceId
       properties: config.properties
@@ -1313,7 +1312,7 @@ type webConfigType = {
     }[]?
 
     @description('Optional. Set to `true` if Auto Heal is enabled.')
-    autoHealEnabled: bool
+    autoHealEnabled: bool?
 
     @description('Optional. Auto Heal rules.')
     autoHealRules: {
@@ -1338,7 +1337,7 @@ type webConfigType = {
       @description('Optional. Conditions that describe when to execute the auto-heal actions.')
       triggers: {
         @description('Optional. A rule based on private bytes.')
-        privateBytesInKB: int
+        privateBytesInKB: int?
 
         @description('Optional. A rule based on total requests.')
         requests: {
@@ -1398,7 +1397,7 @@ type webConfigType = {
 
     @description('Optional. List of Azure Storage Accounts.')
     azureStorageAccounts: {
-      @description('Optional. A storage account configuration.')
+      @description('Required. A storage account configuration.')
       *: {
         @description('Optional. Access key for the storage account.')
         @secure()
@@ -1419,7 +1418,7 @@ type webConfigType = {
         @description('Optional. Type of storage.')
         type: ('AzureBlob' | 'AzureFiles')?
       }
-    }
+    }?
 
     @description('Optional. Connection strings.')
     connectionStrings: {
@@ -1457,7 +1456,7 @@ type webConfigType = {
     defaultDocuments: string[]?
 
     @description('Optional. Set to `true` if detailed error logging is enabled.')
-    detailedErrorLoggingEnabled: bool
+    detailedErrorLoggingEnabled: bool?
 
     @description('Optional. Document root.')
     documentRoot: string?
@@ -1522,7 +1521,7 @@ type webConfigType = {
     healthCheckPath: string?
 
     @description('Optional. Allow clients to connect over http2.0.')
-    http20Enabled: bool
+    http20Enabled: bool?
 
     @description('Optional. Set to `true` if HTTP logging is enabled.')
     httpLoggingEnabled: bool?
@@ -1747,7 +1746,7 @@ type webConfigType = {
     vnetRouteAllEnabled: bool?
 
     @description('Optional. Sets the time zone a site uses for generating timestamps. Compatible with Linux and Windows App Service. Setting the WEBSITE_TIME_ZONE app setting takes precedence over this config. For Linux, expects tz database values https://www.iana.org/time-zones (for a quick reference see [ref](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)). For Windows, expects one of the time zones listed under HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones.')
-    websiteTimeZone: string
+    websiteTimeZone: string?
 
     @description('Optional. Set to `true` if WebSocket is enabled.')
     webSocketsEnabled: bool?
@@ -1802,7 +1801,7 @@ The matching logic is exact match.''')
   headers: {
     @description('Required. A header.')
     *: string[]
-  }
+  }?
 
   @description('Optional. IP address the security restriction is valid for. It can be in form of pure ipv4 address (required SubnetMask property) or CIDR notation such as ipv4/mask (leading bit match). For CIDR, SubnetMask property must not be specified.')
   ipAddress: string?

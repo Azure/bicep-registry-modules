@@ -235,8 +235,13 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      storageAccountUseIdentityAuthentication: true
+      configs: [
+        {
+          name: 'appsettings'
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
+        }
+      ]
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [

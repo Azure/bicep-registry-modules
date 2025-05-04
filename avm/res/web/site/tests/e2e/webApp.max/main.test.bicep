@@ -41,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
+    apiManagementName: 'dep-${namePrefix}-apim-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -238,8 +239,40 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      storageAccountUseIdentityAuthentication: true
+      configs: [
+        {
+          name: 'appsettings'
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
+        }
+        {
+          name: 'logs'
+          properties: {
+            applicationLogs: { fileSystem: { level: 'Verbose' } }
+            detailedErrorMessages: { enabled: true }
+            failedRequestsTracing: { enabled: true }
+            httpLogs: { fileSystem: { enabled: true, retentionInDays: 1, retentionInMb: 35 } }
+          }
+        }
+        {
+          name: 'web'
+          properties: {
+            ipSecurityRestrictions: [
+              {
+                action: 'Allow'
+                description: 'Test IP Restriction'
+                tag: 'ServiceTag'
+                name: 'Test Restriction'
+                priority: 200
+                ipAddress: 'ApiManagement'
+              }
+            ]
+            apiManagementConfig: {
+              id: '${nestedDependencies.outputs.apiManagementResourceId}/apis/todo-api'
+            }
+          }
+        }
+      ]
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [

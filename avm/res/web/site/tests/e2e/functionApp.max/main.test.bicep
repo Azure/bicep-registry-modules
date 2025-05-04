@@ -77,6 +77,7 @@ module testDeployment '../../../main.bicep' = [
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
       configs: [
         {
+          // Persisted on service in 'Settings/Environment variables'
           name: 'appsettings'
           applicationInsightResourceId: nestedDependencies.outputs.applicationInsightsResourceId
           storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
@@ -89,6 +90,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
+          // Persisted on service in 'Settings/Authentication'
           name: 'authsettingsV2'
           properties: {
             globalValidation: {
