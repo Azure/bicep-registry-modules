@@ -255,11 +255,13 @@ module testDeployment '../../../main.bicep' = [
       }
       configs: [
         {
+          // Persisted on service in 'Settings/Environment variables'
           name: 'appsettings'
           storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
           storageAccountUseIdentityAuthentication: true
         }
         {
+          // Persisted on service in 'Monitoring/App Service logs'
           name: 'logs'
           properties: {
             applicationLogs: { fileSystem: { level: 'Verbose' } }
@@ -269,6 +271,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
         {
+          // Persisted on service in 'API/API Management'
           name: 'web'
           properties: {
             ipSecurityRestrictions: [

@@ -129,6 +129,13 @@ resource apiManagement 'Microsoft.ApiManagement/service@2023-05-01-preview' = {
     publisherEmail: 'noreply@microsoft.com'
     publisherName: 'n/a'
   }
+
+  resource api 'apis@2024-06-01-preview' = {
+    name: 'todo-api'
+    properties: {
+      path: 'todo-api'
+    }
+  }
 }
 
 @description('The resource ID of the created Virtual Network Subnet.')
