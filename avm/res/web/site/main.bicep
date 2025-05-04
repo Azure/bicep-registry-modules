@@ -497,22 +497,11 @@ output name string = app.name
 @description('The resource ID of the site.')
 output resourceId string = app.id
 
-@description('The list of the slots.')
-output slots string[] = [for (slot, index) in (slots ?? []): app_slots[index].name]
-
-@description('The list of the slot resource ids.')
-output slotResourceIds string[] = [for (slot, index) in (slots ?? []): app_slots[index].outputs.resourceId]
-
 @description('The resource group the site was deployed into.')
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = app.?identity.?principalId
-
-@description('The principal ID of the system assigned identity of slots.')
-output slotSystemAssignedMIPrincipalIds string[] = [
-  for (slot, index) in (slots ?? []): app_slots[index].outputs.?systemAssignedMIPrincipalId ?? ''
-]
 
 @description('The location the resource was deployed into.')
 output location string = app.location
@@ -522,6 +511,9 @@ output defaultHostname string = app.properties.defaultHostName
 
 @description('Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification.')
 output customDomainVerificationId string = app.properties.customDomainVerificationId
+
+@description('The outbound IP addresses of the app.')
+output outboundIpAddresses string = app.properties.outboundIpAddresses
 
 @description('The private endpoints of the site.')
 output privateEndpoints privateEndpointOutputType[] = [
@@ -534,13 +526,27 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
-@description('The private endpoints of the slots.')
-output slotPrivateEndpoints privateEndpointOutputType[][] = [
-  for (slot, index) in (slots ?? []): app_slots[index].outputs.privateEndpoints
-]
+@description('The slots of the site.')
+output slots {
+  @description('The name of the slot.')
+  name: string
 
-@description('The outbound IP addresses of the app.')
-output outboundIpAddresses string = app.properties.outboundIpAddresses
+  @description('The resource ID of the slot.')
+  resourceId: string
+
+  @description('The principal ID of the system assigned identity of the slot.')
+  systemAssignedMIPrincipalId: string?
+
+  @description('The private endpoints of the slot.')
+  privateEndpoints: privateEndpointOutputType[]
+}[] = [
+  for (slot, index) in (slots ?? []): {
+    name: app_slots[index].name
+    resourceId: app_slots[index].outputs.resourceId
+    systemAssignedMIPrincipalId: app_slots[index].outputs.?systemAssignedMIPrincipalId ?? ''
+    privateEndpoints: app_slots[index].outputs.privateEndpoints
+  }
+]
 
 // ================ //
 // Definitions      //
