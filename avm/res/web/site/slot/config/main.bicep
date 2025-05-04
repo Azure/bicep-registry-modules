@@ -24,6 +24,9 @@ param name string
 
 param properties object = {}
 
+@description('Optional. The current app settings.')
+param currentAppSettings { *: string } = {}
+
 // Parameters only relevant for the config type 'appsettings'
 @description('Optional. If the provided storage account requires Identity based authentication (\'allowSharedKeyAccess\' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is \'Storage Blob Data Owner\'.')
 param storageAccountUseIdentityAuthentication bool = false
@@ -33,9 +36,6 @@ param storageAccountResourceId string?
 
 @description('Optional. Resource ID of the application insight to leverage for this resource.')
 param applicationInsightResourceId string?
-
-@description('Optional. The retain the current app settings.')
-param retainCurrentAppSettings bool = true
 
 var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseIdentityAuthentication
   ? {
@@ -56,11 +56,7 @@ var appInsightsValues = !empty(applicationInsightResourceId)
     }
   : {}
 
-var originalAppSettings = (name == 'appsettings' && retainCurrentAppSettings)
-  ? !empty(app.id) ? list('${app.id}/slots/${slotName}/config/${name}', '2023-12-01').properties : {} ?? {}
-  : {}
-
-var expandedProperties = union(originalAppSettings, properties, azureWebJobsValues, appInsightsValues)
+var expandedProperties = union(currentAppSettings, properties, azureWebJobsValues, appInsightsValues)
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing = if (!empty(applicationInsightResourceId)) {
   name: last(split(applicationInsightResourceId!, '/'))
