@@ -115,7 +115,7 @@ param dailyMemoryTimeQuota int?
 param enabled bool = true
 
 @description('Optional. Hostname SSL states are used to manage the SSL bindings for app\'s hostnames.')
-param hostNameSslStates array?
+param hostNameSslStates resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.hostNameSslStates?
 
 @description('Optional. Hyper-V sandbox.')
 param hyperV bool = false
