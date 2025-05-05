@@ -49,7 +49,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
   name: 'managedEnvironmentDeployment'
   params: {
     // Required parameters
-    name: 'amemin001'
+    name: 'ameamon001'
     // Non-required parameters
     appLogsConfiguration: {
       destination: 'azure-monitor'
@@ -137,7 +137,7 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
 using 'br/public:avm/res/app/managed-environment:<version>'
 
 // Required parameters
-param name = 'amemin001'
+param name = 'ameamon001'
 // Non-required parameters
 param appLogsConfiguration = {
   destination: 'azure-monitor'
@@ -650,13 +650,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
     // Required parameters
     name: 'amepa001'
     // Non-required parameters
-    appLogsConfiguration: {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: '<customerId>'
-        sharedKey: '<sharedKey>'
-      }
-    }
     dockerBridgeCidr: '172.16.0.1/28'
     infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
     infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
@@ -693,15 +686,6 @@ module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' 
       "value": "amepa001"
     },
     // Non-required parameters
-    "appLogsConfiguration": {
-      "value": {
-        "destination": "log-analytics",
-        "logAnalyticsConfiguration": {
-          "customerId": "<customerId>",
-          "sharedKey": "<sharedKey>"
-        }
-      }
-    },
     "dockerBridgeCidr": {
       "value": "172.16.0.1/28"
     },
@@ -750,13 +734,6 @@ using 'br/public:avm/res/app/managed-environment:<version>'
 // Required parameters
 param name = 'amepa001'
 // Non-required parameters
-param appLogsConfiguration = {
-  destination: 'log-analytics'
-  logAnalyticsConfiguration: {
-    customerId: '<customerId>'
-    sharedKey: '<sharedKey>'
-  }
-}
 param dockerBridgeCidr = '172.16.0.1/28'
 param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
 param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'

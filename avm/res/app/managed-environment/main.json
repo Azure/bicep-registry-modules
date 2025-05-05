@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "4005158335575378668"
+      "version": "0.35.1.17967",
+      "templateHash": "5464696243445591136"
     },
     "name": "App ManagedEnvironments",
     "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -591,7 +591,7 @@
         "appInsightsConfiguration": {
           "connectionString": "[parameters('appInsightsConnectionString')]"
         },
-        "appLogsConfiguration": "[if(not(empty(parameters('appLogsConfiguration'))), shallowMerge(createArray(createObject('destination', parameters('appLogsConfiguration').destination), if(not(empty(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'))), createObject('logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/')[2], split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'), '/'))), '2023-09-01').primarySharedKey)), createObject()))), null())]",
+        "appLogsConfiguration": "[if(not(empty(parameters('appLogsConfiguration'))), shallowMerge(createArray(createObject('destination', parameters('appLogsConfiguration').destination), if(not(empty(tryGet(parameters('appLogsConfiguration'), 'logAnalyticsWorkspaceResourceId'))), createObject('logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys('logAnalyticsWorkspace', '2023-09-01').primarySharedKey)), createObject()))), null())]",
         "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
         "daprAIInstrumentationKey": "[parameters('daprAIInstrumentationKey')]",
         "customDomainConfiguration": {
@@ -617,7 +617,10 @@
         "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), parameters('workloadProfiles'), null())]",
         "zoneRedundant": "[parameters('zoneRedundant')]",
         "infrastructureResourceGroup": "[parameters('infrastructureResourceGroupName')]"
-      }
+      },
+      "dependsOn": [
+        "logAnalyticsWorkspace"
+      ]
     },
     "managedEnvironment_roleAssignments": {
       "copy": {
@@ -692,8 +695,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14812297244642020789"
+              "version": "0.35.1.17967",
+              "templateHash": "18123249047188753287"
             },
             "name": "App ManagedEnvironments Certificates",
             "description": "This module deploys a App Managed Environment Certificate."
