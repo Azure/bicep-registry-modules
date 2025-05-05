@@ -150,7 +150,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2024-05-01' = {
       : null
     ipConfigurations: [
       for (ipConfiguration, index) in ipConfigurations: {
-        name: ipConfiguration.?name ?? 'ipconfig0${index + 1}'
+        name: ipConfiguration.?name ?? 'ipconfig${padLeft((index + 1), 2, '0')}'
         properties: {
           primary: index == 0 ? true : false
           privateIPAllocationMethod: ipConfiguration.?privateIPAllocationMethod
@@ -158,13 +158,13 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2024-05-01' = {
           publicIPAddress: contains(ipConfiguration, 'publicIPAddressResourceId')
             ? (ipConfiguration.?publicIPAddressResourceId != null
                 ? {
-                    #disable-next-line use-resource-id-functions // the resource id is prvided via a parameter
+                    #disable-next-line use-resource-id-functions // the resource id is provided via a parameter
                     id: ipConfiguration.?publicIPAddressResourceId
                   }
                 : null)
             : null
           subnet: {
-            #disable-next-line use-resource-id-functions // the resource id is prvided via a parameter
+            #disable-next-line use-resource-id-functions // the resource id is provided via a parameter
             id: ipConfiguration.subnetResourceId
           }
           loadBalancerBackendAddressPools: ipConfiguration.?loadBalancerBackendAddressPools
@@ -414,6 +414,7 @@ type virtualNetworkTapType = {
 }
 
 @export()
+@description('The type for the network interface IP configuration output.')
 type networkInterfaceIPConfigurationOutputType = {
   @description('The name of the IP configuration.')
   name: string

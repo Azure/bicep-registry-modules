@@ -8,7 +8,7 @@ param name string
 param ignoreMissingVnetServiceEndpoint bool = false
 
 @description('Required. The resource ID of the virtual network subnet.')
-param virtualNetworkSubnetId string
+param virtualNetworkSubnetResourceId string
 
 @description('Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment.')
 param serverName string
@@ -22,7 +22,7 @@ resource virtualNetworkRule 'Microsoft.Sql/servers/virtualNetworkRules@2023-08-0
   parent: server
   properties: {
     ignoreMissingVnetServiceEndpoint: ignoreMissingVnetServiceEndpoint
-    virtualNetworkSubnetId: virtualNetworkSubnetId
+    virtualNetworkSubnetId: virtualNetworkSubnetResourceId
   }
 }
 
