@@ -1104,7 +1104,7 @@ type backupConfigType = {
     }[]?
 
     @description('Optional. Set to `True` if the backup schedule is enabled (must be included in that case), `false` if the backup schedule should be disabled.')
-    enabled: bool
+    enabled: bool?
 
     @description('Optional. SAS URL to the container.')
     storageAccountUrl: string?
@@ -1208,7 +1208,7 @@ type logsConfigType = {
       @description('Optional. Http logs to file system configuration.')
       fileSystem: {
         @description('Optional. Set to `True` if configuration is enabled, false if it is disabled.')
-        enabled: bool
+        enabled: bool?
 
         @description('Optional. Retention in days. Remove files older than X days. 0 or lower means no retention.')
         retentionInDays: int?

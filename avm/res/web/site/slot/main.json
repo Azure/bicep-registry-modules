@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "13561202999314757254"
+      "templateHash": "5821516999116760993"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -1753,6 +1753,7 @@
             },
             "enabled": {
               "type": "bool",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Set to `True` if the backup schedule is enabled (must be included in that case), `false` if the backup schedule should be disabled."
               }
@@ -2017,6 +2018,7 @@
                   "properties": {
                     "enabled": {
                       "type": "bool",
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Set to `True` if configuration is enabled, false if it is disabled."
                       }

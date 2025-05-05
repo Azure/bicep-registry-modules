@@ -2083,7 +2083,7 @@ The name of the setting.
 
 Set to `True` if the backup schedule is enabled (must be included in that case), `false` if the backup schedule should be disabled.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `configs.name-backup.properties.storageAccountUrl`
@@ -2459,7 +2459,7 @@ Http logs to file system configuration.
 
 Set to `True` if configuration is enabled, false if it is disabled.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `configs.name-logs.properties.httpLogs.fileSystem.retentionInDays`
