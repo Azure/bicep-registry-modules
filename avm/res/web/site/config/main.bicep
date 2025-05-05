@@ -34,7 +34,10 @@ param storageAccountResourceId string?
 param applicationInsightResourceId string?
 
 @description('Optional. The current app settings.')
-param currentAppSettings { *: string } = {}
+param currentAppSettings {
+  @description('Required. The key-values pairs of the current app settings.')
+  *: string
+} = {}
 
 var azureWebJobsValues = !empty(storageAccountResourceId) && !storageAccountUseIdentityAuthentication
   ? {

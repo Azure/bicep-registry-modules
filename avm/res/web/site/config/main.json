@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "9812431436493442668"
+      "templateHash": "4497467794156568269"
     },
     "name": "Site App Settings",
     "description": "This module deploys a Site App Setting."
@@ -39,7 +39,10 @@
     },
     "properties": {
       "type": "object",
-      "defaultValue": {}
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name."
+      }
     },
     "storageAccountUseIdentityAuthentication": {
       "type": "bool",
@@ -66,7 +69,10 @@
       "type": "object",
       "properties": {},
       "additionalProperties": {
-        "type": "string"
+        "type": "string",
+        "metadata": {
+          "description": "Required. The key-values pairs of the current app settings."
+        }
       },
       "defaultValue": {},
       "metadata": {

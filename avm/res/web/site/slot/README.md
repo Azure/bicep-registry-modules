@@ -2216,14 +2216,14 @@ The config settings.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applicationLogs`](#parameter-configsname-logspropertiesapplicationlogs) | object |  |
+| [`applicationLogs`](#parameter-configsname-logspropertiesapplicationlogs) | object | Application Logs for Azure configuration. |
 | [`detailedErrorMessages`](#parameter-configsname-logspropertiesdetailederrormessages) | object | Detailed error messages configuration. |
 | [`failedRequestsTracing`](#parameter-configsname-logspropertiesfailedrequeststracing) | object | Failed requests tracing configuration. |
 | [`httpLogs`](#parameter-configsname-logspropertieshttplogs) | object | HTTP logs configuration. |
 
 ### Parameter: `configs.name-logs.properties.applicationLogs`
 
-
+Application Logs for Azure configuration.
 
 - Required: No
 - Type: object

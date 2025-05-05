@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "17386818166373606054"
+      "templateHash": "4687943083573743129"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -1937,7 +1937,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional. "
+                "description": "Optional. Application Logs for Azure configuration."
               }
             },
             "detailedErrorMessages": {
@@ -4788,7 +4788,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "11145874677346134271"
+              "templateHash": "11175158984109206374"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -4826,13 +4826,19 @@
             },
             "properties": {
               "type": "object",
-              "defaultValue": {}
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name."
+              }
             },
             "currentAppSettings": {
               "type": "object",
               "properties": {},
               "additionalProperties": {
-                "type": "string"
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The key-values pairs of the current app settings."
+                }
               },
               "defaultValue": {},
               "metadata": {
