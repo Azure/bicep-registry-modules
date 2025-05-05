@@ -105,7 +105,7 @@ param retentionDescriptionCleanupPolicy string = 'Delete'
 
 @minValue(1)
 @maxValue(168)
-@description('Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageretentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.')
+@description('Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.')
 param retentionDescriptionRetentionTimeInHours int = 1
 
 @minValue(1)
