@@ -22,6 +22,7 @@ param slotName string
 ])
 param name string
 
+@description('Optional. The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name.')
 param properties object = {}
 
 @description('Optional. The current app settings.')
