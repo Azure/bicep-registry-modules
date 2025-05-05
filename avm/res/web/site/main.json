@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "11311723914686151831"
+      "templateHash": "16988931632510344072"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -1594,7 +1594,7 @@
                         "clientId": {
                           "type": "string",
                           "metadata": {
-                            "description": "Required.\tThe Client ID of the app used for login."
+                            "description": "Required. The Client ID of the app used for login."
                           }
                         }
                       },
@@ -1645,7 +1645,7 @@
                         },
                         "nullable": true,
                         "metadata": {
-                          "description": "Optional. \tThe configuration settings of the login flow of the custom Open ID Connect provider."
+                          "description": "Optional. The configuration settings of the login flow of the custom Open ID Connect provider."
                         }
                       },
                       "registration": {
@@ -1785,7 +1785,7 @@
                         "appId": {
                           "type": "string",
                           "metadata": {
-                            "description": "Required.\tThe App ID of the app used for login."
+                            "description": "Required. The App ID of the app used for login."
                           }
                         },
                         "appSecretSettingName": {
@@ -5398,7 +5398,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "5821516999116760993"
+              "templateHash": "12934724015135733784"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -6296,7 +6296,7 @@
                                 "clientId": {
                                   "type": "string",
                                   "metadata": {
-                                    "description": "Required.\tThe Client ID of the app used for login."
+                                    "description": "Required. The Client ID of the app used for login."
                                   }
                                 }
                               },
@@ -6347,7 +6347,7 @@
                                 },
                                 "nullable": true,
                                 "metadata": {
-                                  "description": "Optional. \tThe configuration settings of the login flow of the custom Open ID Connect provider."
+                                  "description": "Optional. The configuration settings of the login flow of the custom Open ID Connect provider."
                                 }
                               },
                               "registration": {
@@ -6487,7 +6487,7 @@
                                 "appId": {
                                   "type": "string",
                                   "metadata": {
-                                    "description": "Required.\tThe App ID of the app used for login."
+                                    "description": "Required. The App ID of the app used for login."
                                   }
                                 },
                                 "appSecretSettingName": {

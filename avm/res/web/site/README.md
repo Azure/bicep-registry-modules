@@ -4007,6 +4007,14 @@ The configuration settings of the Azure Static Web Apps registration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`clientId`](#parameter-configsname-authsettingsv2propertiesidentityprovidersazurestaticwebappsregistrationclientid) | string | The Client ID of the app used for login. |
+
+### Parameter: `configs.name-authsettingsV2.properties.identityProviders.azureStaticWebApps.registration.clientId`
+
+The Client ID of the app used for login.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `configs.name-authsettingsV2.properties.identityProviders.customOpenIdConnectProviders`
 
@@ -4033,7 +4041,7 @@ The alias of each custom Open ID Connect provider.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-configsname-authsettingsv2propertiesidentityproviderscustomopenidconnectproviders>any_other_property<enabled) | bool | Set to `false` if the custom Open ID provider provider should not be enabled. |
-| [`login`](#parameter-configsname-authsettingsv2propertiesidentityproviderscustomopenidconnectproviders>any_other_property<login) | object | 	The configuration settings of the login flow of the custom Open ID Connect provider. |
+| [`login`](#parameter-configsname-authsettingsv2propertiesidentityproviderscustomopenidconnectproviders>any_other_property<login) | object | The configuration settings of the login flow of the custom Open ID Connect provider. |
 | [`registration`](#parameter-configsname-authsettingsv2propertiesidentityproviderscustomopenidconnectproviders>any_other_property<registration) | object | The configuration settings of the app registration for the custom Open ID Connect provider. |
 
 ### Parameter: `configs.name-authsettingsV2.properties.identityProviders.customOpenIdConnectProviders.>Any_other_property<.enabled`
@@ -4045,7 +4053,7 @@ Set to `false` if the custom Open ID provider provider should not be enabled.
 
 ### Parameter: `configs.name-authsettingsV2.properties.identityProviders.customOpenIdConnectProviders.>Any_other_property<.login`
 
-	The configuration settings of the login flow of the custom Open ID Connect provider.
+The configuration settings of the login flow of the custom Open ID Connect provider.
 
 - Required: No
 - Type: object
@@ -4240,7 +4248,15 @@ The configuration settings of the app registration for the Facebook provider.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`appId`](#parameter-configsname-authsettingsv2propertiesidentityprovidersfacebookregistrationappid) | string | The App ID of the app used for login. |
 | [`appSecretSettingName`](#parameter-configsname-authsettingsv2propertiesidentityprovidersfacebookregistrationappsecretsettingname) | string | The app setting name that contains the app secret. |
+
+### Parameter: `configs.name-authsettingsV2.properties.identityProviders.facebook.registration.appId`
+
+The App ID of the app used for login.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `configs.name-authsettingsV2.properties.identityProviders.facebook.registration.appSecretSettingName`
 
@@ -9256,6 +9272,14 @@ The configuration settings of the Azure Static Web Apps registration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`clientId`](#parameter-slotsconfigsname-authsettingsv2propertiesidentityprovidersazurestaticwebappsregistrationclientid) | string | The Client ID of the app used for login. |
+
+### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.azureStaticWebApps.registration.clientId`
+
+The Client ID of the app used for login.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.customOpenIdConnectProviders`
 
@@ -9282,7 +9306,7 @@ The alias of each custom Open ID Connect provider.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-slotsconfigsname-authsettingsv2propertiesidentityproviderscustomopenidconnectproviders>any_other_property<enabled) | bool | Set to `false` if the custom Open ID provider provider should not be enabled. |
-| [`login`](#parameter-slotsconfigsname-authsettingsv2propertiesidentityproviderscustomopenidconnectproviders>any_other_property<login) | object | 	The configuration settings of the login flow of the custom Open ID Connect provider. |
+| [`login`](#parameter-slotsconfigsname-authsettingsv2propertiesidentityproviderscustomopenidconnectproviders>any_other_property<login) | object | The configuration settings of the login flow of the custom Open ID Connect provider. |
 | [`registration`](#parameter-slotsconfigsname-authsettingsv2propertiesidentityproviderscustomopenidconnectproviders>any_other_property<registration) | object | The configuration settings of the app registration for the custom Open ID Connect provider. |
 
 ### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.customOpenIdConnectProviders.>Any_other_property<.enabled`
@@ -9294,7 +9318,7 @@ Set to `false` if the custom Open ID provider provider should not be enabled.
 
 ### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.customOpenIdConnectProviders.>Any_other_property<.login`
 
-	The configuration settings of the login flow of the custom Open ID Connect provider.
+The configuration settings of the login flow of the custom Open ID Connect provider.
 
 - Required: No
 - Type: object
@@ -9489,7 +9513,15 @@ The configuration settings of the app registration for the Facebook provider.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`appId`](#parameter-slotsconfigsname-authsettingsv2propertiesidentityprovidersfacebookregistrationappid) | string | The App ID of the app used for login. |
 | [`appSecretSettingName`](#parameter-slotsconfigsname-authsettingsv2propertiesidentityprovidersfacebookregistrationappsecretsettingname) | string | The app setting name that contains the app secret. |
+
+### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.facebook.registration.appId`
+
+The App ID of the app used for login.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.facebook.registration.appSecretSettingName`
 

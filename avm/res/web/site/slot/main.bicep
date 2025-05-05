@@ -786,7 +786,7 @@ type authSettingsV2ConfigType = {
 
         @description('Optional. The configuration settings of the Azure Static Web Apps registration.')
         registration: {
-          @description('Required.	The Client ID of the app used for login.')
+          @description('Required. The Client ID of the app used for login.')
           clientId: string
         }?
       }?
@@ -798,7 +798,7 @@ type authSettingsV2ConfigType = {
           @description('Optional. Set to `false` if the custom Open ID provider provider should not be enabled.')
           enabled: bool?
 
-          @description('Optional. 	The configuration settings of the login flow of the custom Open ID Connect provider.')
+          @description('Optional. The configuration settings of the login flow of the custom Open ID Connect provider.')
           login: {
             @description('Optional. The name of the claim that contains the users name.')
             nameClaimType: string?
@@ -858,7 +858,7 @@ type authSettingsV2ConfigType = {
 
         @description('Optional. The configuration settings of the app registration for the Facebook provider.')
         registration: {
-          @description('Required.	The App ID of the app used for login.')
+          @description('Required. The App ID of the app used for login.')
           appId: string
 
           @description('Required. The app setting name that contains the app secret.')
