@@ -93,7 +93,7 @@ param captureDescriptionSizeLimitInBytes int = 314572800
 @description('Optional. A value that indicates whether to Skip Empty Archives.')
 param captureDescriptionSkipEmptyArchives bool = false
 
-@description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageretentionInDays property is ignored.')
+@description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.')
 param retentionDescriptionEnabled bool = false
 
 @allowed([
