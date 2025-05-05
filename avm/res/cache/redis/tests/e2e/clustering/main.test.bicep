@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using clustering configuration'
+metadata description = 'This instance deploys the module with clustering enabled.'
 
 // ========== //
 // Parameters //
@@ -9,13 +9,13 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-search.searchservices-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-cache.redis-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'sssmin'
+param serviceShort string = 'crclst'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -41,8 +41,13 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}002'
+      name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      skuName: 'Premium'
+      capacity: 3
+      shardCount: 3
+      replicasPerMaster: 1
+      replicasPerPrimary: 1
     }
   }
 ]
