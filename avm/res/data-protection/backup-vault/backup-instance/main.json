@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "193224384736045923"
+      "templateHash": "10390013005713732753"
     },
     "name": "Data Protection Backup Vault Backup Instances",
     "description": "This module deploys a Data Protection Backup Vault Backup Instance."
@@ -116,14 +116,28 @@
     "backupVault::backupPolicy": {
       "existing": true,
       "type": "Microsoft.DataProtection/backupVaults/backupPolicies",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2024-04-01",
       "name": "[format('{0}/{1}', parameters('backupVaultName'), parameters('policyInfo').policyName)]"
     },
     "backupVault": {
       "existing": true,
       "type": "Microsoft.DataProtection/backupVaults",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2024-04-01",
       "name": "[parameters('backupVaultName')]"
+    },
+    "backupInstance_snapshotRG_rbac": {
+      "condition": "[equals(parameters('dataSourceInfo').resourceType, 'Microsoft.Compute/disks')]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(format('{0}-{1}-Disk-Snapshot-Contributor', resourceGroup().id, resourceId('Microsoft.DataProtection/backupVaults', parameters('backupVaultName'))))]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
+        "principalId": "[reference('backupVault', '2024-04-01', 'full').identity.principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "backupVault"
+      ]
     },
     "backupInstance": {
       "type": "Microsoft.DataProtection/backupVaults/backupInstances",
@@ -139,7 +153,8 @@
         }
       },
       "dependsOn": [
-        "backupInstance_dataSourceResource_rbac"
+        "backupInstance_dataSourceResource_rbac",
+        "backupInstance_snapshotRG_rbac"
       ]
     },
     "backupInstance_dataSourceResource_rbac": {
@@ -157,7 +172,7 @@
             "value": "[parameters('dataSourceInfo').resourceID]"
           },
           "principalId": {
-            "value": "[reference('backupVault', '2023-05-01', 'full').identity.principalId]"
+            "value": "[reference('backupVault', '2024-04-01', 'full').identity.principalId]"
           }
         },
         "template": {
@@ -167,7 +182,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "2784484236946400432"
+              "templateHash": "12922926946246637028"
             }
           },
           "parameters": {
@@ -204,26 +219,13 @@
               "condition": "[equals(variables('resourceType'), 'Microsoft.Compute/disks')]",
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Compute/disks/{0}', last(split(parameters('resourceId'), '/')))]",
               "name": "[guid(format('{0}-{1}-Disk-Backup-Reader', parameters('resourceId'), parameters('principalId')))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3e5e47e6-65f7-47ef-90b5-e5dd4d455f24')]",
                 "principalId": "[parameters('principalId')]",
                 "principalType": "ServicePrincipal"
               }
-            },
-            {
-              "condition": "[equals(variables('resourceType'), 'Microsoft.Compute/disks')]",
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "name": "[guid(format('{0}-{1}-Disk-Snapshot-Contributor', parameters('resourceId'), parameters('principalId')))]",
-              "properties": {
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7efff54f-a5b4-42b5-a1c5-5411624893ce')]",
-                "principalId": "[parameters('principalId')]",
-                "principalType": "ServicePrincipal"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Authorization/roleAssignments', guid(format('{0}-{1}-Disk-Backup-Reader', parameters('resourceId'), parameters('principalId'))))]"
-              ]
             }
           ]
         }

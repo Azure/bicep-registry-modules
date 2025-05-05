@@ -12,7 +12,8 @@ metadata description = 'This instance deploys the module with Customer-Managed-K
 param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+// param resourceLocation string = deployment().location
+var resourceLocation = 'eastasia'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'sscmk'
@@ -55,7 +56,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
+      primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
       administrators: {
         azureADOnlyAuthentication: true
         login: 'myspn'
@@ -63,14 +64,12 @@ module testDeployment '../../../main.bicep' = [
         principalType: 'Application'
         tenantId: tenant().tenantId
       }
-
       managedIdentities: {
         systemAssigned: false
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-
       customerManagedKey: {
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
         keyName: nestedDependencies.outputs.keyVaultKeyName

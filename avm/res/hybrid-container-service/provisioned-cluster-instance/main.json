@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "28036694998785260"
+      "version": "0.32.4.45862",
+      "templateHash": "3751112123649509527"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -737,8 +737,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8068610558158410834"
+              "version": "0.32.4.45862",
+              "templateHash": "11097658599960058650"
             }
           },
           "parameters": {
@@ -827,6 +827,7 @@
               "apiVersion": "2023-07-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPublicKeySecretName'))]",
               "properties": {
+                "contentType": "Secret",
                 "value": "[reference('generateSSHKey').outputs.publicKey]"
               },
               "dependsOn": [
@@ -838,6 +839,7 @@
               "apiVersion": "2023-07-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPrivateKeyPemSecretName'))]",
               "properties": {
+                "contentType": "Secret",
                 "value": "[reference('generateSSHKey').outputs.privateKey]"
               },
               "dependsOn": [

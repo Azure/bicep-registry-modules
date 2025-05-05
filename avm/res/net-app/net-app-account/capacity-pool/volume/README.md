@@ -14,7 +14,7 @@ This module deploys an Azure NetApp Files Capacity Pool Volume.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-09-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools/volumes) |
 
 ## Parameters
 
@@ -209,7 +209,6 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-dataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
-| [`replicationSchedule`](#parameter-dataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
 **Optional parameters**
 
@@ -218,6 +217,7 @@ Replication properties.
 | [`remotePath`](#parameter-dataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
 | [`remoteVolumeRegion`](#parameter-dataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
 | [`remoteVolumeResourceId`](#parameter-dataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
+| [`replicationSchedule`](#parameter-dataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume (to only be set on the destination (dst)). |
 
 ### Parameter: `dataProtection.replication.endpointType`
 
@@ -230,21 +230,6 @@ Indicates whether the local volume is the source or destination for the Volume R
   [
     'dst'
     'src'
-  ]
-  ```
-
-### Parameter: `dataProtection.replication.replicationSchedule`
-
-The replication schedule for the volume.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '_10minutely'
-    'daily'
-    'hourly'
   ]
   ```
 
@@ -297,6 +282,21 @@ The resource ID of the remote volume. Required for Data Protection volumes.
 
 - Required: No
 - Type: string
+
+### Parameter: `dataProtection.replication.replicationSchedule`
+
+The replication schedule for the volume (to only be set on the destination (dst)).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '_10minutely'
+    'daily'
+    'hourly'
+  ]
+  ```
 
 ### Parameter: `dataProtection.snapshot`
 

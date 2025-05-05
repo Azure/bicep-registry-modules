@@ -134,7 +134,7 @@ module networkManager_networkGroups 'network-group/main.bicep' = [
 
 module networkManager_connectivityConfigurations 'connectivity-configuration/main.bicep' = [
   for (connectivityConfiguration, index) in connectivityConfigurations ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-ConnectivityConfigurations-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-ConnConfig-${index}'
     params: {
       name: connectivityConfiguration.name
       networkManagerName: networkManager.name
@@ -151,7 +151,7 @@ module networkManager_connectivityConfigurations 'connectivity-configuration/mai
 
 module networkManager_scopeConnections 'scope-connection/main.bicep' = [
   for (scopeConnection, index) in scopeConnections ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-ScopeConnections-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-ScopeConn-${index}'
     params: {
       name: scopeConnection.name
       networkManagerName: networkManager.name
@@ -164,7 +164,7 @@ module networkManager_scopeConnections 'scope-connection/main.bicep' = [
 
 module networkManager_securityAdminConfigurations 'security-admin-configuration/main.bicep' = [
   for (securityAdminConfiguration, index) in securityAdminConfigurations ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-SecurityAdminConfigurations-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-SecAdmConfig-${index}'
     params: {
       name: securityAdminConfiguration.name
       networkManagerName: networkManager.name
@@ -178,7 +178,7 @@ module networkManager_securityAdminConfigurations 'security-admin-configuration/
 
 module networkManager_routingConfigurations 'routing-configuration/main.bicep' = [
   for (routingConfiguration, index) in routingConfigurations ?? []: {
-    name: '${uniqueString(deployment().name, location)}-NetworkManager-RoutingConfigurations-${index}'
+    name: '${uniqueString(deployment().name, location)}-NetworkManager-RoutingConfig-${index}'
     params: {
       name: routingConfiguration.name
       networkManagerName: networkManager.name
