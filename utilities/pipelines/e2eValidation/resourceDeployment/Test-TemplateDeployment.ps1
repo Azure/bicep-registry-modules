@@ -179,6 +179,7 @@ function Test-TemplateDeployment {
             }
         }
         if ($ValidationErrors -and ($res | ConvertTo-Json | ConvertFrom-Json -AsHashtable).Keys -Contains 'Code') {
+            # Only contains a 'code' if there is an 'error code' attached
             Write-Warning 'Errors found:' -Verbose
             Write-Warning ($res | ConvertTo-Json -Depth 10 | Out-String)
             Write-Error 'Template is not valid.'
