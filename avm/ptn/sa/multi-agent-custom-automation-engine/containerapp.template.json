@@ -26,10 +26,16 @@
         "registries": {
             "type": "array"
         },
+        "ingress": {
+            "type": "object"
+        },
         "environmentName": {
             "type": "string"
         },
-        "workspaceId": {
+        "workspaceName": {
+            "type": "string"
+        },
+        "workspaceLocation": {
             "type": "string"
         }
     },
@@ -48,13 +54,13 @@
                 "configuration": {
                     "secrets": "[parameters('secrets').arrayValue]",
                     "registries": "[parameters('registries')]",
-                    "activeRevisionsMode": "Single"
+                    "activeRevisionsMode": "Single",
+                    "ingress": "[parameters('ingress')]"
                 },
                 "template": {
                     "containers": "[parameters('containers')]",
                     "scale": {
-                        "minReplicas": 1,
-                        "maxReplicas": 1
+                        "minReplicas": 0
                     }
                 },
                 "workloadProfileName": "Consumption"
@@ -66,14 +72,15 @@
             "type": "Microsoft.App/managedEnvironments",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "Microsoft.Resources/deployments/newInfrastructureSubnetTemplate"
+                "[concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName'))]",
+                "Microsoft.Resources/deployments/updateSubnetTemplate"
             ],
             "properties": {
                 "appLogsConfiguration": {
                     "destination": "log-analytics",
                     "logAnalyticsConfiguration": {
-                        "customerId": "[reference(parameters('workspaceId'), '2020-08-01').customerId]",
-                        "sharedKey": "[listKeys(parameters('workspaceId'), '2020-08-01').primarySharedKey]"
+                        "customerId": "[reference(concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2020-08-01').customerId]",
+                        "sharedKey": "[listKeys(concat('Microsoft.OperationalInsights/workspaces/', parameters('workspaceName')), '2020-08-01').primarySharedKey]"
                     }
                 },
                 "publicNetworkAccess": "Disabled",
@@ -84,8 +91,8 @@
                     }
                 ],
                 "vnetConfiguration": {
-                    "infrastructureSubnetId": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroups/avm-dev/providers/Microsoft.Network/virtualNetworks/macaewaf010vnet/subnets/containers-reference",
-                    "internal": false
+                    "infrastructureSubnetId": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroups/rg-graphraglab/providers/Microsoft.Network/virtualNetworks/vnet-uenqauudn3coo/subnets/snet-aks",
+                    "internal": true
                 },
                 "zoneRedundant": true
             }
@@ -94,7 +101,7 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-07-01",
             "name": "['inboundSubnetDeployment']",
-            "resourceGroup": "avm-dev",
+            "resourceGroup": "rg-graphraglab",
             "subscriptionId": "ff9b5430-90ea-44c0-8a00-e488c1bf56f4",
             "properties": {
                 "mode": "Incremental",
@@ -107,189 +114,44 @@
                         {
                             "type": "Microsoft.Network/virtualNetworks/subnets",
                             "apiVersion": "2020-07-01",
-                            "name": "macaewaf010vnet/containers",
+                            "name": "vnet-uenqauudn3coo/snet-aks",
                             "properties": {
                                 "delegations": [],
-                                "serviceEndpoints": [],
+                                "serviceEndpoints": [
+                                    {
+                                        "provisioningState": "Succeeded",
+                                        "service": "Microsoft.Storage",
+                                        "locations": [
+                                            "eastus2",
+                                            "centralus"
+                                        ]
+                                    },
+                                    {
+                                        "provisioningState": "Succeeded",
+                                        "service": "Microsoft.Sql",
+                                        "locations": [
+                                            "eastus2"
+                                        ]
+                                    },
+                                    {
+                                        "provisioningState": "Succeeded",
+                                        "service": "Microsoft.EventHub",
+                                        "locations": [
+                                            "*"
+                                        ]
+                                    }
+                                ],
                                 "provisioningState": "Succeeded",
-                                "addressPrefix": "10.0.2.0/23",
+                                "addressPrefix": "10.1.0.0/16",
+                                "networkSecurityGroup": {
+                                    "id": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroups/rg-graphraglab/providers/Microsoft.Network/networkSecurityGroups/vnet-uenqauudn3coo-snet-aks-nsg-eastus2"
+                                },
+                                "routeTable": {
+                                    "id": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroups/MC_rg-graphraglab_aks-uenqauudn3coo_eastus2/providers/Microsoft.Network/routeTables/aks-agentpool-68496004-routetable"
+                                },
                                 "ipConfigurations": [
                                     {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG1"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG10"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG11"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG12"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG13"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG14"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG15"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG16"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG17"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG18"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG19"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG2"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG20"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG21"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG22"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG23"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG24"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG25"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG26"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG27"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG28"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG29"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG3"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG4"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG5"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG6"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG7"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG8"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/0/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG9"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG1"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG10"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG11"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG12"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG13"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG14"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG15"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG16"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG17"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG18"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG19"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG2"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG20"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG21"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG22"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG23"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG24"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG25"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG26"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG27"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG28"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG29"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG3"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG4"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG5"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG6"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG7"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG8"
-                                    },
-                                    {
-                                        "id": "/subscriptions/30459843-5d53-4029-89a9-59e3761bbdfa/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/PROVIDERS/MICROSOFT.COMPUTE/VIRTUALMACHINESCALESETS/AKS-SYSTEMPOOL-51487630-VMSS/VIRTUALMACHINES/1/NETWORKINTERFACES/AKS-SYSTEMPOOL-51487630-VMSS/ipConfigurations/IPCONFIG9"
-                                    },
-                                    {
-                                        "id": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroups/MC_HAPPYGLACIER-1D43995B-RG_HAPPYGLACIER-1D43995B_AUSTRALIAEAST/providers/Microsoft.Network/loadBalancers/KUBERNETES-INTERNAL/frontendIPConfigurations/AF94020F356D840338319C38A4C76BCB"
+                                        "id": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroups/MC_RG-GRAPHRAGLAB_AKS-UENQAUUDN3COO_EASTUS2/providers/Microsoft.Network/loadBalancers/KUBERNETES-INTERNAL/frontendIPConfigurations/A70809464600D41A2873EF801D3A6D23"
                                     }
                                 ],
                                 "privateEndpointNetworkPolicies": "Disabled",
@@ -311,7 +173,7 @@
             ],
             "properties": {
                 "subnet": {
-                    "id": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroups/avm-dev/providers/Microsoft.Network/virtualNetworks/macaewaf010vnet/subnets/containers"
+                    "id": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroups/rg-graphraglab/providers/Microsoft.Network/virtualNetworks/vnet-uenqauudn3coo/subnets/snet-aks"
                 },
                 "privateLinkServiceConnections": [
                     {
@@ -332,24 +194,64 @@
             "name": "[concat('private-endpoint', '/', 'default')]",
             "location": "[parameters('location')]",
             "dependsOn": [
-                "private-endpoint"
+                "private-endpoint",
+                "[resourceId('Microsoft.Network/privateDnsZones','privatelink.eastus2.azurecontainerapps.io')]"
             ],
             "properties": {
                 "privateDnsZoneConfigs": [
                     {
-                        "name": "[format('{0}-config', 'privatelink.australiaeast.azurecontainerapps.io')]",
+                        "name": "[format('{0}-config', 'privatelink.eastus2.azurecontainerapps.io')]",
                         "properties": {
-                            "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones','privatelink.australiaeast.azurecontainerapps.io')]"
+                            "privateDnsZoneId": "[resourceId('Microsoft.Network/privateDnsZones','privatelink.eastus2.azurecontainerapps.io')]"
                         }
                     }
                 ]
             }
         },
         {
+            "type": "Microsoft.Network/privateDnsZones",
+            "apiVersion": "2018-09-01",
+            "name": "['privatelink.eastus2.azurecontainerapps.io']",
+            "location": "global",
+            "dependsOn": [
+                "private-endpoint"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+            "apiVersion": "2018-09-01",
+            "name": "[format('{0}/{1}', 'privatelink.eastus2.azurecontainerapps.io', format('{0}-link', parameters('environmentName')))]",
+            "location": "global",
+            "dependsOn": [
+                "private-endpoint",
+                "[resourceId('Microsoft.Network/privateDnsZones','privatelink.eastus2.azurecontainerapps.io')]"
+            ],
+            "properties": {
+                "virtualNetwork": {
+                    "id": "[resourceId('rg-graphraglab', 'Microsoft.Network/virtualNetworks', 'vnet-uenqauudn3coo')]"
+                },
+                "registrationEnabled": false
+            }
+        },
+        {
+            "apiVersion": "2020-08-01",
+            "name": "[parameters('workspaceName')]",
+            "type": "Microsoft.OperationalInsights/workspaces",
+            "location": "[parameters('workspaceLocation')]",
+            "dependsOn": [],
+            "properties": {
+                "sku": {
+                    "name": "PerGB2018"
+                },
+                "retentionInDays": 30,
+                "workspaceCapping": {}
+            }
+        },
+        {
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-06-01",
-            "name": "newInfrastructureSubnetTemplate",
-            "resourceGroup": "avm-dev",
+            "name": "updateSubnetTemplate",
+            "resourceGroup": "rg-graphraglab",
             "subscriptionId": "ff9b5430-90ea-44c0-8a00-e488c1bf56f4",
             "properties": {
                 "mode": "Incremental",
@@ -362,12 +264,49 @@
                         {
                             "type": "Microsoft.Network/virtualNetworks/subnets",
                             "apiVersion": "2020-07-01",
-                            "name": "macaewaf010vnet/containers-reference",
+                            "name": "vnet-uenqauudn3coo/snet-aks",
                             "properties": {
+                                "provisioningState": "Succeeded",
+                                "addressPrefix": "10.1.0.0/16",
+                                "networkSecurityGroup": {
+                                    "id": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroups/rg-graphraglab/providers/Microsoft.Network/networkSecurityGroups/vnet-uenqauudn3coo-snet-aks-nsg-eastus2"
+                                },
+                                "routeTable": {
+                                    "id": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroups/MC_rg-graphraglab_aks-uenqauudn3coo_eastus2/providers/Microsoft.Network/routeTables/aks-agentpool-68496004-routetable"
+                                },
+                                "ipConfigurations": [
+                                    {
+                                        "id": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroups/MC_RG-GRAPHRAGLAB_AKS-UENQAUUDN3COO_EASTUS2/providers/Microsoft.Network/loadBalancers/KUBERNETES-INTERNAL/frontendIPConfigurations/A70809464600D41A2873EF801D3A6D23"
+                                    }
+                                ],
+                                "serviceEndpoints": [
+                                    {
+                                        "provisioningState": "Succeeded",
+                                        "service": "Microsoft.Storage",
+                                        "locations": [
+                                            "eastus2",
+                                            "centralus"
+                                        ]
+                                    },
+                                    {
+                                        "provisioningState": "Succeeded",
+                                        "service": "Microsoft.Sql",
+                                        "locations": [
+                                            "eastus2"
+                                        ]
+                                    },
+                                    {
+                                        "provisioningState": "Succeeded",
+                                        "service": "Microsoft.EventHub",
+                                        "locations": [
+                                            "*"
+                                        ]
+                                    }
+                                ],
                                 "delegations": [
                                     {
                                         "name": "Microsoft.App.environments",
-                                        "id": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroup/avm-dev/providers/Microsoft.Network/availableDelegations/Microsoft.App/environments",
+                                        "id": "/subscriptions/ff9b5430-90ea-44c0-8a00-e488c1bf56f4/resourceGroup/rg-graphraglab/providers/Microsoft.Network/availableDelegations/Microsoft.App/environments",
                                         "type": "Microsoft.Network/availableDelegations",
                                         "properties": {
                                             "serviceName": "Microsoft.App/environments",
@@ -377,8 +316,8 @@
                                         }
                                     }
                                 ],
-                                "serviceEndpoints": [],
-                                "addressPrefix": "10.0.6.0/23"
+                                "privateEndpointNetworkPolicies": "Disabled",
+                                "privateLinkServiceNetworkPolicies": "Enabled"
                             }
                         }
                     ]

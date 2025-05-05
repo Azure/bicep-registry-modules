@@ -1,11 +1,39 @@
+targetScope = 'resourceGroup'
 @description('Location for all resources.')
-param location string = 'EastUS2' //Fixed for model availability, change back to resourceGroup().location
+param location string
 
-@description('Location for OpenAI resources.')
-param azureOpenAILocation string = 'EastUS' //Fixed for model availability
+@allowed([
+  'australiaeast'
+  'brazilsouth'
+  'canadacentral'
+  'canadaeast'
+  'eastus'
+  'eastus2'
+  'francecentral'
+  'germanywestcentral'
+  'japaneast'
+  'koreacentral'
+  'northcentralus'
+  'norwayeast'
+  'polandcentral'
+  'southafricanorth'
+  'southcentralus'
+  'southindia'
+  'swedencentral'
+  'switzerlandnorth'
+  'uaenorth'
+  'uksouth'
+  'westeurope'
+  'westus'
+  'westus3'
+])
+@description('Location for all Ai services resources. This location can be different from the resource group location.')
+param azureOpenAILocation string = 'eastus2' // The location used for all deployed resources.  This location must be in the same region as the resource group.
 
-@description('A prefix to add to the start of all resource names. Note: A "unique" suffix will also be added')
-param prefix string = 'macae'
+@minLength(3)
+@maxLength(20)
+@description('Prefix for all resources created by this template.  This prefix will be used to create unique names for all resources.  The prefix must be unique within the resource group.')
+param prefix string
 
 @description('Tags to apply to all deployed resources')
 param tags object = {}
@@ -20,7 +48,7 @@ param resourceSize {
     maxReplicas: int
   }
 } = {
-  gpt4oCapacity: 50
+  gpt4oCapacity: 1
   containerAppSize: {
     cpu: '2.0'
     memory: '4.0Gi'
@@ -28,8 +56,13 @@ param resourceSize {
     maxReplicas: 1
   }
 }
+param capacity int = 140
 
-var appVersion = 'latest'
+var modelVersion = '2024-08-06'
+var aiServicesName = '${prefix}-aiservices'
+var deploymentType = 'GlobalStandard'
+var gptModelVersion = 'gpt-4o'
+var appVersion = 'fnd01'
 var resgistryName = 'biabcontainerreg'
 var dockerRegistryUrl = 'https://${resgistryName}.azurecr.io'
 
@@ -38,7 +71,7 @@ var backendDockerImageURL = '${resgistryName}.azurecr.io/macaebackend:${appVersi
 var frontendDockerImageURL = '${resgistryName}.azurecr.io/macaefrontend:${appVersion}'
 
 var uniqueNameFormat = '${prefix}-{0}-${uniqueString(resourceGroup().id, prefix)}'
-var aoaiApiVersion = '2024-08-01-preview'
+var aoaiApiVersion = '2025-01-01-preview'
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
   name: format(uniqueNameFormat, 'logs')
@@ -62,32 +95,77 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
   }
 }
 
-resource openai 'Microsoft.CognitiveServices/accounts@2023-10-01-preview' = {
-  name: format(uniqueNameFormat, 'openai')
-  location: azureOpenAILocation
-  tags: tags
-  kind: 'OpenAI'
+var aiModelDeployments = [
+  {
+    name: gptModelVersion
+    model: gptModelVersion
+    version: modelVersion
+    sku: {
+      name: deploymentType
+      capacity: capacity
+    }
+    raiPolicyName: 'Microsoft.Default'
+  }
+]
+
+resource aiServices 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' = {
+  name: aiServicesName
+  location: location
   sku: {
     name: 'S0'
   }
+  kind: 'AIServices'
   properties: {
-    customSubDomainName: format(uniqueNameFormat, 'openai')
-  }
-  resource gpt4o 'deployments' = {
-    name: 'gpt-4o'
-    sku: {
-      name: 'GlobalStandard'
-      capacity: resourceSize.gpt4oCapacity
+    customSubDomainName: aiServicesName
+    apiProperties: {
+      //statisticsEnabled: false
     }
+  }
+}
+
+resource aiServicesDeployments 'Microsoft.CognitiveServices/accounts/deployments@2023-05-01' = [
+  for aiModeldeployment in aiModelDeployments: {
+    parent: aiServices //aiServices_m
+    name: aiModeldeployment.name
     properties: {
       model: {
         format: 'OpenAI'
-        name: 'gpt-4o'
-        version: '2024-08-06'
+        name: aiModeldeployment.model
+        version: aiModeldeployment.version
       }
-      versionUpgradeOption: 'NoAutoUpgrade'
+      raiPolicyName: aiModeldeployment.raiPolicyName
+    }
+    sku: {
+      name: aiModeldeployment.sku.name
+      capacity: aiModeldeployment.sku.capacity
     }
   }
+]
+
+module kvault 'deploy_keyvault.bicep' = {
+  name: 'deploy_keyvault'
+  params: {
+    solutionName: prefix
+    solutionLocation: location
+    managedIdentityObjectId: managedIdentityModule.outputs.managedIdentityOutput.objectId
+  }
+  scope: resourceGroup(resourceGroup().name)
+}
+
+module aifoundry 'deploy_ai_foundry.bicep' = {
+  name: 'deploy_ai_foundry'
+  params: {
+    solutionName: prefix
+    solutionLocation: azureOpenAILocation
+    keyVaultName: kvault.outputs.keyvaultName
+    gptModelName: gptModelVersion
+    gptModelVersion: gptModelVersion
+    managedIdentityObjectId: managedIdentityModule.outputs.managedIdentityOutput.objectId
+    aiServicesEndpoint: aiServices.properties.endpoint
+    aiServicesKey: aiServices.listKeys().key1
+    aiServicesId: aiServices.id
+  }
+  scope: resourceGroup(resourceGroup().name)
 }
 
 resource aoaiUserRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' existing = {
@@ -95,8 +173,8 @@ resource aoaiUserRoleDefinition 'Microsoft.Authorization/roleDefinitions@2022-05
 }
 
 resource acaAoaiRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(containerApp.id, openai.id, aoaiUserRoleDefinition.id)
-  scope: openai
+  name: guid(containerApp.id, aiServices.id, aoaiUserRoleDefinition.id)
+  scope: aiServices
   properties: {
     principalId: containerApp.identity.principalId
     roleDefinitionId: aoaiUserRoleDefinition.id
@@ -254,23 +332,47 @@ resource containerApp 'Microsoft.App/containerApps@2024-03-01' = {
             }
             {
               name: 'AZURE_OPENAI_ENDPOINT'
-              value: openai.properties.endpoint
+              value: replace(aiServices.properties.endpoint, 'cognitiveservices.azure.com', 'openai.azure.com')
+            }
+            {
+              name: 'AZURE_OPENAI_MODEL_NAME'
+              value: gptModelVersion
             }
             {
               name: 'AZURE_OPENAI_DEPLOYMENT_NAME'
-              value: openai::gpt4o.name
+              value: gptModelVersion
             }
             {
               name: 'AZURE_OPENAI_API_VERSION'
               value: aoaiApiVersion
             }
             {
-              name: 'FRONTEND_SITE_NAME'
-              value: 'https://${format(uniqueNameFormat, 'frontend')}.azurewebsites.net'
+              name: 'APPLICATIONINSIGHTS_INSTRUMENTATION_KEY'
+              value: appInsights.properties.InstrumentationKey
             }
             {
               name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
               value: appInsights.properties.ConnectionString
+            }
+            {
+              name: 'AZURE_AI_AGENT_PROJECT_CONNECTION_STRING'
+              value: aifoundry.outputs.projectConnectionString
+            }
+            {
+              name: 'AZURE_AI_SUBSCRIPTION_ID'
+              value: subscription().subscriptionId
+            }
+            {
+              name: 'AZURE_AI_RESOURCE_GROUP'
+              value: resourceGroup().name
+            }
+            {
+              name: 'AZURE_AI_PROJECT_NAME'
+              value: aifoundry.outputs.aiProjectName
+            }
+            {
+              name: 'FRONTEND_SITE_NAME'
+              value: 'https://${format(uniqueNameFormat, 'frontend')}.azurewebsites.net'
             }
           ]
         }
@@ -297,7 +399,7 @@ resource frontendAppService 'Microsoft.Web/sites@2021-02-01' = {
   name: format(uniqueNameFormat, 'frontend')
   location: location
   tags: tags
-  kind: 'app,linux,container' // Add this line
+  kind: 'app,linux,container'
   properties: {
     serverFarmId: frontendAppServicePlan.id
     reserved: true
@@ -313,12 +415,16 @@ resource frontendAppService 'Microsoft.Web/sites@2021-02-01' = {
           value: '3000'
         }
         {
-          name: 'WEBSITES_CONTAINER_START_TIME_LIMIT' // Add startup time limit
-          value: '1800' // 30 minutes, adjust as needed
+          name: 'WEBSITES_CONTAINER_START_TIME_LIMIT'
+          value: '1800'
         }
         {
           name: 'BACKEND_API_URL'
           value: 'https://${containerApp.properties.configuration.ingress.fqdn}'
+        }
+        {
+          name: 'AUTH_ENABLED'
+          value: 'false'
         }
       ]
     }
@@ -332,4 +438,51 @@ resource frontendAppService 'Microsoft.Web/sites@2021-02-01' = {
   }
 }
 
-output cosmosAssignCli string = 'az cosmosdb sql role assignment create --resource-group "${resourceGroup().name}" --account-name "${cosmos.name}" --role-definition-id "${cosmos::contributorRoleDefinition.id}" --scope "${cosmos.id}" --principal-id "fill-in"'
+resource aiHubProject 'Microsoft.MachineLearningServices/workspaces@2024-01-01-preview' existing = {
+  name: '${prefix}-aiproject' // aiProjectName must be calculated - available at main start.
+}
+
+resource aiDeveloper 'Microsoft.Authorization/roleDefinitions@2022-04-01' existing = {
+  name: '64702f94-c441-49e6-a78b-ef80e0188fee'
+}
+
+resource aiDeveloperAccessProj 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(containerApp.name, aiHubProject.id, aiDeveloper.id)
+  scope: aiHubProject
+  properties: {
+    roleDefinitionId: aiDeveloper.id
+    principalId: containerApp.identity.principalId
+  }
+}
+
+var cosmosAssignCli = 'az cosmosdb sql role assignment create --resource-group "${resourceGroup().name}" --account-name "${cosmos.name}" --role-definition-id "${cosmos::contributorRoleDefinition.id}" --scope "${cosmos.id}" --principal-id "${containerApp.identity.principalId}"'
+
+module managedIdentityModule 'deploy_managed_identity.bicep' = {
+  name: 'deploy_managed_identity'
+  params: {
+    solutionName: prefix
+    //solutionLocation: location
+    managedIdentityId: pullIdentity.id
+    managedIdentityPropPrin: pullIdentity.properties.principalId
+    managedIdentityLocation: pullIdentity.location
+  }
+  scope: resourceGroup(resourceGroup().name)
+}
+
+module deploymentScriptCLI 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+  name: 'deploymentScriptCLI'
+  params: {
+    // Required parameters
+    kind: 'AzureCLI'
+    name: 'rdsmin001'
+    // Non-required parameters
+    azCliVersion: '2.69.0'
+    location: location
+    managedIdentities: {
+      userAssignedResourceIds: [
+        managedIdentityModule.outputs.managedIdentityId
+      ]
+    }
+    scriptContent: cosmosAssignCli
+  }
+}

@@ -6,6 +6,7 @@ module testDeployment '../../main.bicep' = {
     virtualMachineConfiguration: {
       adminUsername: 'adminuser'
       adminPassword: 'P@ssw0rd1234'
+      enabled: false
     }
   }
 }

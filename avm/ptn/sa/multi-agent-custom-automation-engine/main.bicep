@@ -98,16 +98,15 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
 }
 
 // ========== User assigned identity Web App ========== //
-//TODO: Implement the user assigned identity
-// module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
-//   name: 'avm.ptn.sa.macae.managed-identity-assigned-identity'
-//   params: {
-//     name: '${solutionPrefix}uaid'
-//     tags: tags
-//     location: solutionLocation
-//     enableTelemetry: enableTelemetry
-//   }
-// }
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
+  name: 'avm.ptn.sa.macae.managed-identity-assigned-identity'
+  params: {
+    name: '${solutionPrefix}uaid'
+    tags: tags
+    location: solutionLocation
+    enableTelemetry: enableTelemetry
+  }
+}
 
 // ========== Network Security Groups ========== //
 
@@ -204,6 +203,8 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
         name: 'containers'
         delegation: 'Microsoft.App/environments'
         //networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
+        privateEndpointNetworkPolicies: 'Disabled'
+        privateLinkServiceNetworkPolicies: 'Enabled'
       }
       {
         addressPrefix: '10.0.4.0/26'
@@ -252,7 +253,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualN
 
 // ========== Virtual machine ========== //
 
-module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = if (virtualNetworkConfiguration.?enabled!) {
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = if (virtualNetworkConfiguration.?enabled! && virtualMachineConfiguration.?enabled!) {
   name: 'avm.ptn.sa.macae.compute-virtual-machine'
   params: {
     name: '${solutionPrefix}vmws'
@@ -327,23 +328,32 @@ module privateDnsZonesAiServices 'br/public:avm/res/network/private-dns-zone:0.7
 
 // ========== AI Foundry: AI Services ==========
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' not available in AVM
-var aiServicesAccountName = '${solutionPrefix}aisv'
-var aiServicesDeploymentGptName = 'gpt-4o'
-var aiServicesDeploymentGptVersion = '2024-08-06'
-module aiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
+var aiServicesModelDeployment = {
+  format: 'OpenAI'
+  name: 'gpt-4o'
+  version: '2024-08-06'
+  sku: {
+    name: 'GlobalStandard'
+    capacity: 50
+  }
+  raiPolicyName: 'Microsoft.Default'
+}
+
+var aiFoundryAiServicesAccountName = '${solutionPrefix}aifdaisv'
+module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
   name: 'avm.ptn.sa.macae.cognitive-services-account'
   params: {
-    name: aiServicesAccountName
+    name: aiFoundryAiServicesAccountName
     tags: tags
     location: solutionLocation
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     sku: 'S0'
-    kind: 'OpenAI'
+    kind: 'AIServices'
     disableLocalAuth: true
-    customSubDomainName: aiServicesAccountName
+    customSubDomainName: aiFoundryAiServicesAccountName
     apiProperties: {
-      staticsEnabled: false
+      //staticsEnabled: false
     }
     publicNetworkAccess: virtualNetworkConfiguration.?enabled! ? 'Disabled' : 'Enabled'
     privateEndpoints: virtualNetworkConfiguration.?enabled!
@@ -374,18 +384,84 @@ module aiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
     ]
     deployments: [
       {
-        name: aiServicesDeploymentGptName
+        name: aiServicesModelDeployment.name
         model: {
-          format: 'OpenAI'
-          name: aiServicesDeploymentGptName
-          version: aiServicesDeploymentGptVersion
+          format: aiServicesModelDeployment.format
+          name: aiServicesModelDeployment.name
+          version: aiServicesModelDeployment.version
         }
+        raiPolicyName: aiServicesModelDeployment.raiPolicyName
         sku: {
-          name: 'GlobalStandard'
-          capacity: 50
+          name: aiServicesModelDeployment.sku.name
+          capacity: aiServicesModelDeployment.sku.capacity
         }
       }
     ]
+  }
+}
+
+// AI Foundry: storage account
+var aiFoundryStorageAccountName = '${solutionPrefix}aifdstrg'
+module aiFoundryStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
+  name: 'avm.ptn.sa.macae.storage-storage-account'
+  params: {
+    name: aiFoundryStorageAccountName
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    skuName: 'Standard_LRS'
+    allowSharedKeyAccess: false
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Allow'
+    }
+    blobServices: {
+      deleteRetentionPolicyEnabled: false
+      containerDeleteRetentionPolicyDays: 7
+      containerDeleteRetentionPolicyEnabled: false
+      diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    }
+    roleAssignments: [
+      {
+        principalId: userAssignedIdentity.outputs.principalId
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+      }
+    ]
+  }
+}
+
+// AI Foundry: AI Hub
+var aiFoundryAiHubName = '${solutionPrefix}aifdaihb'
+module aiFoundryAiHub 'modules/ai-hub.bicep' = {
+  name: 'modules-ai-hub'
+  params: {
+    name: aiFoundryAiHubName
+    location: solutionLocation
+    tags: tags
+    aiFoundryAiServicesName: aiFoundryAiServices.outputs.name
+    applicationInsightsResourceId: applicationInsights.outputs.resourceId
+    enableTelemetry: enableTelemetry
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    storageAccountResourceId: aiFoundryStorageAccount.outputs.resourceId
+  }
+}
+
+// AI Foundry: AI Project
+var aiFoundryAiProjectName = '${solutionPrefix}aifdaipj'
+
+module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace:0.10.1' = {
+  name: 'avm.ptn.sa.macae.machine-learning-services-workspace-project'
+  params: {
+    name: aiFoundryAiProjectName
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    sku: 'Basic'
+    kind: 'Project'
+    publicNetworkAccess: 'Enabled' // Not in original script, check this
+    hubResourceId: aiFoundryAiHub.outputs.resourceId
   }
 }
 
@@ -403,7 +479,7 @@ module privateDnsZoneCosmosDb 'br/public:avm/res/network/private-dns-zone:0.7.0'
 // ========== Cosmos DB ========== //
 var cosmosDbName = '${solutionPrefix}csdb'
 var cosmosDbDatabaseName = 'autogen'
-var cosmosDbDatabaseMemoryContainerName = 'autogen'
+var cosmosDbDatabaseMemoryContainerName = 'memory'
 module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
   name: 'avm.ptn.sa.macae.cosmos-db'
   params: {
@@ -479,7 +555,7 @@ module dnsZoneContainerApp 'br/public:avm/res/network/private-dns-zone:0.7.1' = 
   name: 'avm.ptn.sa.macae.network-private-dns-zone-containers'
   params: {
     //name: 'privatelink.${toLower(replace(containerAppEnvironment.outputs.location,' ',''))}.azurecontainerapps.io'
-    name: 'privatelink.${toLower(replace(containerAppEnvironment.location,' ',''))}.azurecontainerapps.io'
+    name: 'privatelink.${toLower(replace(containerAppEnvironment.outputs.location,' ',''))}.azurecontainerapps.io'
     enableTelemetry: enableTelemetry
     virtualNetworkLinks: [{ virtualNetworkResourceId: virtualNetwork.outputs.resourceId }]
     tags: tags
@@ -488,36 +564,22 @@ module dnsZoneContainerApp 'br/public:avm/res/network/private-dns-zone:0.7.1' = 
 
 // ========== Backend Container App Environment ========== //
 
-resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
-  name: '${solutionPrefix}cenv'
-  location: solutionLocation
-  tags: tags
-  properties: {
-    //daprAIConnectionString: appInsights.properties.ConnectionString
-    //daprAIConnectionString: applicationInsights.outputs.connectionString
-    appLogsConfiguration: {
-      destination: 'log-analytics'
-      logAnalyticsConfiguration: {
-        customerId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
-        sharedKey: listKeys(
-          '${resourceGroup().id}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}',
-          '2023-09-01'
-        ).primarySharedKey
-      }
-    }
-    workloadProfiles: [
-      //THIS IS REQUIRED TO ADD PRIVATE ENDPOINTS
-      {
-        name: 'Consumption'
-        workloadProfileType: 'Consumption'
-      }
-    ]
-    publicNetworkAccess: 'Disabled'
-    vnetConfiguration: {
-      internal: false
-      infrastructureSubnetId: virtualNetwork.outputs.subnetResourceIds[1]
-    }
-    zoneRedundant: true
+module containerAppEnvironment 'modules/container-app-environment.bicep' = {
+  name: 'modules-container-app-environment'
+  params: {
+    name: '${solutionPrefix}cenv'
+    tags: tags
+    location: solutionLocation
+    logAnalyticsResourceName: logAnalyticsWorkspace.outputs.name
+    virtualNetworkConfiguration: (virtualNetworkConfiguration.?enabled!)
+      ? {
+          internal: true
+          infrastructureSubnetId: virtualNetwork.outputs.subnetResourceIds[1]
+        }
+      : {}
+    publicNetworkAccess: virtualNetworkConfiguration.?enabled! ? 'Disabled' : 'Enabled'
+    zoneRedundant: (virtualNetworkConfiguration.?enabled!) ? true : false
+    aspireDashboardEnabled: !virtualNetworkConfiguration.?enabled!
   }
 }
 
@@ -531,16 +593,16 @@ module privateEndpointContainerAppEnvironment 'br/public:avm/res/network/private
     }
     privateLinkServiceConnections: [
       {
-        name: '${last(split(containerAppEnvironment.id, '/'))}-${privateEndpointContainerAppEnvironmentService}-0'
+        name: '${last(split(containerAppEnvironment.outputs.resourceId, '/'))}-${privateEndpointContainerAppEnvironmentService}-0'
         properties: {
-          privateLinkServiceId: containerAppEnvironment.id
+          privateLinkServiceId: containerAppEnvironment.outputs.resourceId
           groupIds: [
             privateEndpointContainerAppEnvironmentService
           ]
         }
       }
     ]
-    subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+    subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
     enableTelemetry: enableTelemetry
     location: solutionLocation
     tags: tags
@@ -575,15 +637,6 @@ module privateEndpointContainerAppEnvironment 'br/public:avm/res/network/private
 //   }
 // }
 
-// TODO: FIX when deployed to vnet. This needs access to Azure to work
-resource aspireDashboard 'Microsoft.App/managedEnvironments/dotNetComponents@2024-10-02-preview' = if (!virtualNetworkConfiguration.?enabled!) {
-  parent: containerAppEnvironment
-  name: 'aspire-dashboard'
-  properties: {
-    componentType: 'AspireDashboard'
-  }
-}
-
 // ========== Backend Container App Service ========== //
 module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
   name: 'avm.ptn.sa.macae.container-app'
@@ -593,10 +646,10 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
     location: solutionLocation
     enableTelemetry: enableTelemetry
     //environmentResourceId: containerAppEnvironment.outputs.resourceId
-    environmentResourceId: containerAppEnvironment.id
+    environmentResourceId: containerAppEnvironment.outputs.resourceId
     managedIdentities: {
       systemAssigned: true //Replace with user assigned identity
-      //userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
+      userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
     }
     ingressTargetPort: 8000
     ingressExternal: true
@@ -626,7 +679,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
       {
         name: 'backend'
         //TODO: Make image parameterized for the registry name and the appversion
-        image: 'biabcontainerreg.azurecr.io/macaebackend:latest'
+        image: 'biabcontainerreg.azurecr.io/macaebackend:fnd01'
         resources: {
           //TODO: Make cpu and memory parameterized
           cpu: '2.0'
@@ -647,23 +700,48 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
           }
           {
             name: 'AZURE_OPENAI_ENDPOINT'
-            value: 'https://${aiServicesAccountName}.openai.azure.com/'
+            value: 'https://${aiFoundryAiServicesAccountName}.openai.azure.com/'
+          }
+          {
+            name: 'AZURE_OPENAI_MODEL_NAME'
+            value: aiServicesModelDeployment.name
           }
           {
             name: 'AZURE_OPENAI_DEPLOYMENT_NAME'
-            value: aiServicesDeploymentGptName
+            value: aiServicesModelDeployment.name
           }
           {
             name: 'AZURE_OPENAI_API_VERSION'
-            value: '2024-08-01-preview' //TODO: try variable 'aiServicesDeploymentGptVersion'
+            value: '2025-01-01-preview' //TODO: set parameter/variable
           }
           {
-            name: 'FRONTEND_SITE_NAME'
-            value: 'https://${webSiteName}.azurewebsites.net'
+            name: 'APPLICATIONINSIGHTS_INSTRUMENTATION_KEY'
+            value: applicationInsights.outputs.instrumentationKey
           }
           {
             name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
             value: applicationInsights.outputs.connectionString
+          }
+          {
+            name: 'AZURE_AI_AGENT_PROJECT_CONNECTION_STRING'
+            value: '${toLower(replace(solutionLocation,' ',''))}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${aiFoundryAiHubName}'
+            //Location should be the AI Foundry AI Project location
+          }
+          {
+            name: 'AZURE_AI_SUBSCRIPTION_ID'
+            value: subscription().subscriptionId
+          }
+          {
+            name: 'AZURE_AI_RESOURCE_GROUP'
+            value: resourceGroup().name
+          }
+          {
+            name: 'AZURE_AI_PROJECT_NAME'
+            value: aiFoundryAiProjectName
+          }
+          {
+            name: 'FRONTEND_SITE_NAME'
+            value: 'https://${webSiteName}.azurewebsites.net'
           }
         ]
       }
@@ -733,7 +811,7 @@ module webSite 'br/public:avm/res/web/site:0.15.1' = {
     serverFarmResourceId: webServerfarm.outputs.resourceId
     appInsightResourceId: applicationInsights.outputs.resourceId
     siteConfig: {
-      linuxFxVersion: 'DOCKER|biabcontainerreg.azurecr.io/macaefrontend:latest'
+      linuxFxVersion: 'DOCKER|biabcontainerreg.azurecr.io/macaefrontend:fnd01'
     }
     publicNetworkAccess: 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
     //privateEndpoints: [{ subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0] }]
@@ -745,6 +823,7 @@ module webSite 'br/public:avm/res/web/site:0.15.1' = {
         WEBSITES_PORT: '3000'
         WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
         BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
+        AUTH_ENABLED: 'false'
       },
       (entraIdApplicationConfiguration.?enabled!
         ? { '${entraIdApplicationCredentialSecretSettingName}': entraIdApplication.passwordCredentials[0].secretText }
