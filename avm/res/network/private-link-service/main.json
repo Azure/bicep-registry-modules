@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "15526536749531982000"
+      "templateHash": "18223104159903775973"
     },
     "name": "Private Link Services",
     "description": "This module deploys a Private Link Service."
@@ -193,13 +193,6 @@
         "description": "Optional. Controls the exposure settings for your Private Link service. Service providers can choose to limit the exposure to their service to subscriptions with Azure role-based access control (Azure RBAC) permissions, a restricted set of subscriptions, or all Azure subscriptions."
       }
     },
-    "destinationIPAddress": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The destination IP address of the private link service."
-      }
-    },
     "roleAssignments": {
       "type": "array",
       "items": {
@@ -266,7 +259,6 @@
       "extendedLocation": "[if(not(empty(parameters('extendedLocation'))), parameters('extendedLocation'), null())]",
       "properties": {
         "autoApproval": "[parameters('autoApproval')]",
-        "destinationIPAddress": "[parameters('destinationIPAddress')]",
         "enableProxyProtocol": "[parameters('enableProxyProtocol')]",
         "fqdns": "[parameters('fqdns')]",
         "ipConfigurations": "[parameters('ipConfigurations')]",

@@ -174,7 +174,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
         '*'
       ]
     }
-    destinationIPAddress: '10.0.0.50'
     enableProxyProtocol: true
     fqdns: [
       'nplsmax.plsfqdn01.azure.privatelinkservice'
@@ -262,9 +261,6 @@ module privateLinkService 'br/public:avm/res/network/private-link-service:<versi
           "*"
         ]
       }
-    },
-    "destinationIPAddress": {
-      "value": "10.0.0.50"
     },
     "enableProxyProtocol": {
       "value": true
@@ -358,7 +354,6 @@ param autoApproval = {
     '*'
   ]
 }
-param destinationIPAddress = '10.0.0.50'
 param enableProxyProtocol = true
 param fqdns = [
   'nplsmax.plsfqdn01.azure.privatelinkservice'
@@ -602,7 +597,6 @@ param visibility = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoApproval`](#parameter-autoapproval) | object | The auto-approval list of the private link service. |
-| [`destinationIPAddress`](#parameter-destinationipaddress) | string | The destination IP address of the private link service. |
 | [`enableProxyProtocol`](#parameter-enableproxyprotocol) | bool | Lets the service provider use tcp proxy v2 to retrieve connection information about the service consumer. Service Provider is responsible for setting up receiver configs to be able to parse the proxy protocol v2 header. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`extendedLocation`](#parameter-extendedlocation) | object | The extended location of the load balancer. |
@@ -641,13 +635,6 @@ The auto-approval list of the private link service.
 - Required: No
 - Type: object
 - Default: `{}`
-
-### Parameter: `destinationIPAddress`
-
-The destination IP address of the private link service.
-
-- Required: No
-- Type: string
 
 ### Parameter: `enableProxyProtocol`
 
