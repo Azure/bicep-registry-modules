@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "12934724015135733784"
+      "templateHash": "1325292572088672122"
     },
     "name": "Web/Function App Deployment Slots",
     "description": "This module deploys a Web or Function App Deployment Slot."
@@ -1511,7 +1511,7 @@
               },
               "nullable": true,
               "metadata": {
-                "description": "Optional.The configuration settings of the login flow of users using App Service Authentication/Authorization."
+                "description": "Optional. The configuration settings of the login flow of users using App Service Authentication/Authorization."
               }
             },
             "platform": {

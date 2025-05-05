@@ -958,7 +958,7 @@ type authSettingsV2ConfigType = {
       }?
     }?
 
-    @description('Optional.The configuration settings of the login flow of users using App Service Authentication/Authorization.')
+    @description('Optional. The configuration settings of the login flow of users using App Service Authentication/Authorization.')
     login: {
       @description('Optional. External URLs that can be redirected to as part of logging in or logging out of the app. Note that the query string part of the URL is ignored. This is an advanced setting typically only needed by Windows Store application backends. Note that URLs within the current domain are always implicitly allowed.')
       allowedExternalRedirectUrls: string[]?

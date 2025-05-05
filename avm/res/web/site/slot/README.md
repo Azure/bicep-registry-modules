@@ -729,6 +729,7 @@ The config settings.
 | [`globalValidation`](#parameter-configsname-authsettingsv2propertiesglobalvalidation) | object | The configuration settings that determines the validation flow of users using App Service Authentication/Authorization. |
 | [`httpSettings`](#parameter-configsname-authsettingsv2propertieshttpsettings) | object | The configuration settings of the HTTP requests for authentication and authorization requests made against App Service Authentication/Authorization. |
 | [`identityProviders`](#parameter-configsname-authsettingsv2propertiesidentityproviders) | object | The configuration settings of each of the identity providers used to configure App Service Authentication/Authorization. |
+| [`login`](#parameter-configsname-authsettingsv2propertieslogin) | object | The configuration settings of the login flow of users using App Service Authentication/Authorization. |
 | [`platform`](#parameter-configsname-authsettingsv2propertiesplatform) | object | The configuration settings of the platform of App Service Authentication/Authorization. |
 
 ### Parameter: `configs.name-authsettingsV2.properties.globalValidation`
@@ -1774,6 +1775,191 @@ The app setting name that contains the OAuth 1.0a consumer secret of the Twitter
 
 - Required: No
 - Type: string
+
+### Parameter: `configs.name-authsettingsV2.properties.login`
+
+The configuration settings of the login flow of users using App Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowedExternalRedirectUrls`](#parameter-configsname-authsettingsv2propertiesloginallowedexternalredirecturls) | array | External URLs that can be redirected to as part of logging in or logging out of the app. Note that the query string part of the URL is ignored. This is an advanced setting typically only needed by Windows Store application backends. Note that URLs within the current domain are always implicitly allowed. |
+| [`cookieExpiration`](#parameter-configsname-authsettingsv2propertieslogincookieexpiration) | object | The configuration settings of the session cookie's expiration. |
+| [`nonce`](#parameter-configsname-authsettingsv2propertiesloginnonce) | object | The configuration settings of the nonce used in the login flow. |
+| [`preserveUrlFragmentsForLogins`](#parameter-configsname-authsettingsv2propertiesloginpreserveurlfragmentsforlogins) | bool | Set to `true` if the fragments from the request are preserved after the login request is made. |
+| [`routes`](#parameter-configsname-authsettingsv2propertiesloginroutes) | object | The routes that specify the endpoints used for login and logout requests. |
+| [`tokenStore`](#parameter-configsname-authsettingsv2propertieslogintokenstore) | object | The configuration settings of the token store. |
+
+### Parameter: `configs.name-authsettingsV2.properties.login.allowedExternalRedirectUrls`
+
+External URLs that can be redirected to as part of logging in or logging out of the app. Note that the query string part of the URL is ignored. This is an advanced setting typically only needed by Windows Store application backends. Note that URLs within the current domain are always implicitly allowed.
+
+- Required: No
+- Type: array
+
+### Parameter: `configs.name-authsettingsV2.properties.login.cookieExpiration`
+
+The configuration settings of the session cookie's expiration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`convention`](#parameter-configsname-authsettingsv2propertieslogincookieexpirationconvention) | string | The convention used when determining the session cookie's expiration. |
+| [`timeToExpiration`](#parameter-configsname-authsettingsv2propertieslogincookieexpirationtimetoexpiration) | string | The time after the request is made when the session cookie should expire. |
+
+### Parameter: `configs.name-authsettingsV2.properties.login.cookieExpiration.convention`
+
+The convention used when determining the session cookie's expiration.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'FixedTime'
+    'IdentityProviderDerived'
+  ]
+  ```
+
+### Parameter: `configs.name-authsettingsV2.properties.login.cookieExpiration.timeToExpiration`
+
+The time after the request is made when the session cookie should expire.
+
+- Required: No
+- Type: string
+
+### Parameter: `configs.name-authsettingsV2.properties.login.nonce`
+
+The configuration settings of the nonce used in the login flow.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`nonceExpirationInterval`](#parameter-configsname-authsettingsv2propertiesloginnoncenonceexpirationinterval) | string | The time after the request is made when the nonce should expire. |
+| [`validateNonce`](#parameter-configsname-authsettingsv2propertiesloginnoncevalidatenonce) | bool | Set to `false` if the nonce should not be validated while completing the login flow. |
+
+### Parameter: `configs.name-authsettingsV2.properties.login.nonce.nonceExpirationInterval`
+
+The time after the request is made when the nonce should expire.
+
+- Required: No
+- Type: string
+
+### Parameter: `configs.name-authsettingsV2.properties.login.nonce.validateNonce`
+
+Set to `false` if the nonce should not be validated while completing the login flow.
+
+- Required: No
+- Type: bool
+
+### Parameter: `configs.name-authsettingsV2.properties.login.preserveUrlFragmentsForLogins`
+
+Set to `true` if the fragments from the request are preserved after the login request is made.
+
+- Required: No
+- Type: bool
+
+### Parameter: `configs.name-authsettingsV2.properties.login.routes`
+
+The routes that specify the endpoints used for login and logout requests.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`logoutEndpoint`](#parameter-configsname-authsettingsv2propertiesloginrouteslogoutendpoint) | string | The endpoint at which a logout request should be made. |
+
+### Parameter: `configs.name-authsettingsV2.properties.login.routes.logoutEndpoint`
+
+The endpoint at which a logout request should be made.
+
+- Required: No
+- Type: string
+
+### Parameter: `configs.name-authsettingsV2.properties.login.tokenStore`
+
+The configuration settings of the token store.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureBlobStorage`](#parameter-configsname-authsettingsv2propertieslogintokenstoreazureblobstorage) | object | The configuration settings of the storage of the tokens if blob storage is used. |
+| [`enabled`](#parameter-configsname-authsettingsv2propertieslogintokenstoreenabled) | bool | Set to `true` to durably store platform-specific security tokens that are obtained during login flows. |
+| [`fileSystem`](#parameter-configsname-authsettingsv2propertieslogintokenstorefilesystem) | object | The configuration settings of the storage of the tokens if a file system is used. |
+| [`tokenRefreshExtensionHours`](#parameter-configsname-authsettingsv2propertieslogintokenstoretokenrefreshextensionhours) | int | The number of hours after session token expiration that a session token can be used to call the token refresh API. The default is 72 hours. |
+
+### Parameter: `configs.name-authsettingsV2.properties.login.tokenStore.azureBlobStorage`
+
+The configuration settings of the storage of the tokens if blob storage is used.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`sasUrlSettingName`](#parameter-configsname-authsettingsv2propertieslogintokenstoreazureblobstoragesasurlsettingname) | string | The name of the app setting containing the SAS URL of the blob storage containing the tokens. |
+
+### Parameter: `configs.name-authsettingsV2.properties.login.tokenStore.azureBlobStorage.sasUrlSettingName`
+
+The name of the app setting containing the SAS URL of the blob storage containing the tokens.
+
+- Required: No
+- Type: string
+
+### Parameter: `configs.name-authsettingsV2.properties.login.tokenStore.enabled`
+
+Set to `true` to durably store platform-specific security tokens that are obtained during login flows.
+
+- Required: No
+- Type: bool
+
+### Parameter: `configs.name-authsettingsV2.properties.login.tokenStore.fileSystem`
+
+The configuration settings of the storage of the tokens if a file system is used.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`directory`](#parameter-configsname-authsettingsv2propertieslogintokenstorefilesystemdirectory) | string | The directory in which the tokens will be stored. |
+
+### Parameter: `configs.name-authsettingsV2.properties.login.tokenStore.fileSystem.directory`
+
+The directory in which the tokens will be stored.
+
+- Required: No
+- Type: string
+
+### Parameter: `configs.name-authsettingsV2.properties.login.tokenStore.tokenRefreshExtensionHours`
+
+The number of hours after session token expiration that a session token can be used to call the token refresh API. The default is 72 hours.
+
+- Required: No
+- Type: int
 
 ### Parameter: `configs.name-authsettingsV2.properties.platform`
 
