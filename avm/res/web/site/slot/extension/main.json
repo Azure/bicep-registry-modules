@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "14895622660217616811"
+      "version": "0.35.1.17967",
+      "templateHash": "9136609319642165290"
     },
     "name": "Site Deployment Extension ",
     "description": "This module deploys a Site extension for MSDeploy."
@@ -15,18 +15,53 @@
     "appName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the parent site resource."
+        "description": "Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment."
       }
     },
-    "msDeployConfiguration": {
-      "type": "object",
-      "nullable": true,
+    "slotName": {
+      "type": "string",
       "metadata": {
-        "description": "Optional. Sets the MSDeployment Properties."
+        "description": "Conditional. The name of the parent web site slot. Required if the template is used in a standalone deployment."
       }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "MSDeploy",
+      "allowedValues": [
+        "MSDeploy"
+      ],
+      "metadata": {
+        "description": "Optional. The name of the extension."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "MSDeploy",
+      "allowedValues": [
+        "MSDeploy"
+      ],
+      "metadata": {
+        "description": "Optional. The kind of extension."
+      }
+    },
+    "properties": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites/extensions@2024-04-01#properties/properties"
+        },
+        "description": "Optional. Sets the properties."
+      },
+      "nullable": true
     }
   },
   "resources": {
+    "app::slot": {
+      "existing": true,
+      "type": "Microsoft.Web/sites/slots",
+      "apiVersion": "2024-04-01",
+      "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]"
+    },
     "app": {
       "existing": true,
       "type": "Microsoft.Web/sites",
@@ -34,32 +69,32 @@
       "name": "[parameters('appName')]"
     },
     "msdeploy": {
-      "type": "Microsoft.Web/sites/extensions",
+      "type": "Microsoft.Web/sites/slots/extensions",
       "apiVersion": "2024-04-01",
-      "name": "[format('{0}/{1}', parameters('appName'), 'MSDeploy')]",
-      "kind": "MSDeploy",
-      "properties": "[parameters('msDeployConfiguration')]"
+      "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
+      "kind": "[parameters('kind')]",
+      "properties": "[parameters('properties')]"
     }
   },
   "outputs": {
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the MSDeploy Package."
+        "description": "The name of the extension."
       },
-      "value": "MSDeploy"
+      "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the Site Extension."
+        "description": "The resource ID of the extension."
       },
-      "value": "[resourceId('Microsoft.Web/sites/extensions', parameters('appName'), 'MSDeploy')]"
+      "value": "[resourceId('Microsoft.Web/sites/slots/extensions', parameters('appName'), parameters('slotName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the site config was deployed into."
+        "description": "The resource group the extensino was deployed into."
       },
       "value": "[resourceGroup().name]"
     }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "4478664740433131120"
+      "templateHash": "7809978137922296358"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -118,6 +118,62 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of a site configuration."
+      }
+    },
+    "slotConfigNamesConfigType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "slotConfigNames"
+          ],
+          "metadata": {
+            "description": "Required. The type of config."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "appSettingNames": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of application settings names."
+              }
+            },
+            "azureStorageConfigNames": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of external Azure storage account identifiers."
+              }
+            },
+            "connectionStringNames": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. List of connection string names."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The config settings."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a slotConfigNames configuration."
       }
     },
     "slotType": {
@@ -3183,64 +3239,6 @@
         }
       }
     },
-    "slotConfigNamesConfigType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "allowedValues": [
-            "slotConfigNames"
-          ],
-          "metadata": {
-            "description": "Required. The type of config."
-          }
-        },
-        "properties": {
-          "type": "object",
-          "properties": {
-            "appSettingNames": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. List of application settings names."
-              }
-            },
-            "azureStorageConfigNames": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. List of external Azure storage account identifiers."
-              }
-            },
-            "connectionStringNames": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. List of connection string names."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. The config settings."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type of a slotConfigNames configuration.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "slot/main.bicep"
-        }
-      }
-    },
     "webConfigType": {
       "type": "object",
       "properties": {
@@ -4986,9 +4984,9 @@
             "value": "[tryGet(coalesce(parameters('configs'), createArray())[copyIndex()], 'storageAccountUseIdentityAuthentication')]"
           },
           "properties": {
-            "value": "[coalesce(parameters('configs'), createArray())[copyIndex()].properties]"
+            "value": "[tryGet(coalesce(parameters('configs'), createArray())[copyIndex()], 'properties')]"
           },
-          "currentAppSettings": "[if(not(empty(resourceId('Microsoft.Web/sites', parameters('name')))), createObject('value', list(format('{0}/config/appsettings', resourceId('Microsoft.Web/sites', parameters('name'))), '2023-12-01').properties), createObject('value', createObject()))]"
+          "currentAppSettings": "[if(coalesce(tryGet(coalesce(parameters('configs'), createArray())[copyIndex()], 'retainCurrentAppSettings'), and(true(), equals(coalesce(parameters('configs'), createArray())[copyIndex()].name, 'appsettings'))), createObject('value', list(format('{0}/config/appsettings', resourceId('Microsoft.Web/sites', parameters('name'))), '2023-12-01').properties), createObject('value', createObject()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -4998,7 +4996,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "1042277782960279959"
+              "templateHash": "9812431436493442668"
             },
             "name": "Site App Settings",
             "description": "This module deploys a Site App Setting."
@@ -5054,16 +5052,13 @@
                 "description": "Optional. Resource ID of the application insight to leverage for this resource."
               }
             },
-            "retainCurrentAppSettings": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. The retain the current app settings."
-              }
-            },
             "currentAppSettings": {
               "type": "object",
-              "nullable": true,
+              "properties": {},
+              "additionalProperties": {
+                "type": "string"
+              },
+              "defaultValue": {},
               "metadata": {
                 "description": "Optional. The current app settings."
               }
@@ -5098,7 +5093,7 @@
               "type": "Microsoft.Web/sites/config",
               "apiVersion": "2024-04-01",
               "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
-              "properties": "[union(if(and(equals(parameters('name'), 'appsettings'), parameters('retainCurrentAppSettings')), coalesce(parameters('currentAppSettings'), createObject()), createObject()), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+              "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
               "dependsOn": [
                 "applicationInsights",
                 "storageAccount"
@@ -5389,7 +5384,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "5807218344962194789"
+              "templateHash": "17386818166373606054"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -5489,9 +5484,6 @@
                   },
                   "pushsettings": {
                     "$ref": "#/definitions/pushSettingsConfigType"
-                  },
-                  "slotConfigNames": {
-                    "$ref": "#/definitions/slotConfigNamesConfigType"
                   },
                   "web": {
                     "$ref": "#/definitions/webConfigType"
@@ -7524,62 +7516,6 @@
                 "description": "The type of a pushSettings configuration."
               }
             },
-            "slotConfigNamesConfigType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "allowedValues": [
-                    "slotConfigNames"
-                  ],
-                  "metadata": {
-                    "description": "Required. The type of config."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "appSettingNames": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of application settings names."
-                      }
-                    },
-                    "azureStorageConfigNames": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of external Azure storage account identifiers."
-                      }
-                    },
-                    "connectionStringNames": {
-                      "type": "array",
-                      "items": {
-                        "type": "string"
-                      },
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. List of connection string names."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. The config settings."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type of a slotConfigNames configuration."
-              }
-            },
             "webConfigType": {
               "type": "object",
               "properties": {
@@ -8919,6 +8855,61 @@
                 "description": "The type of a IP security restriction."
               }
             },
+            "basicPublishingCredentialsPolicyType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "allowedValues": [
+                    "ftp",
+                    "scm"
+                  ],
+                  "metadata": {
+                    "description": "Required. The name of the resource."
+                  }
+                },
+                "allow": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Set to true to enable or false to disable a publishing method."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Location for all Resources."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a basic publishing credential policy."
+              }
+            },
+            "hybridConnectionRelayType": {
+              "type": "object",
+              "properties": {
+                "hybridConnectionResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource ID of the relay namespace hybrid connection."
+                  }
+                },
+                "sendKeyName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name of the authorization rule send key to use."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of a hybrid connection relay."
+              }
+            },
             "_1.privateEndpointCustomDnsConfigType": {
               "type": "object",
               "properties": {
@@ -9710,6 +9701,9 @@
             },
             "basicPublishingCredentialsPolicies": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/basicPublishingCredentialsPolicyType"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. The site publishing credential policy names which are associated with the site slot."
@@ -9738,6 +9732,9 @@
             },
             "hybridConnectionRelays": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/hybridConnectionRelayType"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. Names of hybrid connection relays to connect app with."
@@ -10144,13 +10141,16 @@
                   "name": {
                     "value": "[coalesce(parameters('configs'), createArray())[copyIndex()].name]"
                   },
+                  "slotName": {
+                    "value": "[parameters('name')]"
+                  },
                   "applicationInsightResourceId": {
                     "value": "[tryGet(coalesce(parameters('configs'), createArray())[copyIndex()], 'applicationInsightResourceId')]"
                   },
                   "properties": {
-                    "value": "[coalesce(parameters('configs'), createArray())[copyIndex()].properties]"
+                    "value": "[tryGet(coalesce(parameters('configs'), createArray())[copyIndex()], 'properties')]"
                   },
-                  "currentAppSettings": "[if(not(empty(resourceId('Microsoft.Web/sites', parameters('appName')))), createObject('value', list(format('{0}/config/appsettings', resourceId('Microsoft.Web/sites', parameters('appName'))), '2023-12-01').properties), createObject('value', createObject()))]",
+                  "currentAppSettings": "[if(coalesce(tryGet(coalesce(parameters('configs'), createArray())[copyIndex()], 'retainCurrentAppSettings'), and(true(), equals(coalesce(parameters('configs'), createArray())[copyIndex()].name, 'appsettings'))), createObject('value', list(format('{0}/config/appsettings', resourceId('Microsoft.Web/sites/slots', parameters('appName'), parameters('name'))), '2023-12-01').properties), createObject('value', createObject()))]",
                   "storageAccountResourceId": {
                     "value": "[tryGet(coalesce(parameters('configs'), createArray())[copyIndex()], 'storageAccountResourceId')]"
                   },
@@ -10166,7 +10166,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.35.1.17967",
-                      "templateHash": "1042277782960279959"
+                      "templateHash": "11145874677346134271"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -10176,6 +10176,12 @@
                       "type": "string",
                       "metadata": {
                         "description": "Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "slotName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent web site slot. Required if the template is used in a standalone deployment."
                       }
                     },
                     "name": {
@@ -10190,7 +10196,6 @@
                         "logs",
                         "metadata",
                         "pushsettings",
-                        "slotConfigNames",
                         "web"
                       ],
                       "metadata": {
@@ -10200,6 +10205,17 @@
                     "properties": {
                       "type": "object",
                       "defaultValue": {}
+                    },
+                    "currentAppSettings": {
+                      "type": "object",
+                      "properties": {},
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. The current app settings."
+                      }
                     },
                     "storageAccountUseIdentityAuthentication": {
                       "type": "bool",
@@ -10221,23 +10237,15 @@
                       "metadata": {
                         "description": "Optional. Resource ID of the application insight to leverage for this resource."
                       }
-                    },
-                    "retainCurrentAppSettings": {
-                      "type": "bool",
-                      "defaultValue": true,
-                      "metadata": {
-                        "description": "Optional. The retain the current app settings."
-                      }
-                    },
-                    "currentAppSettings": {
-                      "type": "object",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The current app settings."
-                      }
                     }
                   },
                   "resources": {
+                    "app::slot": {
+                      "existing": true,
+                      "type": "Microsoft.Web/sites/slots",
+                      "apiVersion": "2023-12-01",
+                      "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]"
+                    },
                     "applicationInsights": {
                       "condition": "[not(empty(parameters('applicationInsightResourceId')))]",
                       "existing": true,
@@ -10263,10 +10271,10 @@
                       "name": "[parameters('appName')]"
                     },
                     "config": {
-                      "type": "Microsoft.Web/sites/config",
+                      "type": "Microsoft.Web/sites/slots/config",
                       "apiVersion": "2024-04-01",
-                      "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
-                      "properties": "[union(if(and(equals(parameters('name'), 'appsettings'), parameters('retainCurrentAppSettings')), coalesce(parameters('currentAppSettings'), createObject()), createObject()), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+                      "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
+                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
                       "dependsOn": [
                         "applicationInsights",
                         "storageAccount"
@@ -10286,7 +10294,7 @@
                       "metadata": {
                         "description": "The resource ID of the site config."
                       },
-                      "value": "[resourceId('Microsoft.Web/sites/config', parameters('appName'), parameters('name'))]"
+                      "value": "[resourceId('Microsoft.Web/sites/slots/config', parameters('appName'), parameters('slotName'), parameters('name'))]"
                     },
                     "resourceGroupName": {
                       "type": "string",
@@ -10297,7 +10305,10 @@
                     }
                   }
                 }
-              }
+              },
+              "dependsOn": [
+                "slot"
+              ]
             },
             "app_extensions": {
               "copy": {
@@ -10315,6 +10326,9 @@
                 "parameters": {
                   "appName": {
                     "value": "[parameters('appName')]"
+                  },
+                  "slotName": {
+                    "value": "[parameters('name')]"
                   },
                   "name": {
                     "value": "[tryGet(coalesce(parameters('extensions'), createArray())[copyIndex()], 'name')]"
@@ -10334,7 +10348,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.35.1.17967",
-                      "templateHash": "10131798464335905704"
+                      "templateHash": "9136609319642165290"
                     },
                     "name": "Site Deployment Extension ",
                     "description": "This module deploys a Site extension for MSDeploy."
@@ -10344,6 +10358,12 @@
                       "type": "string",
                       "metadata": {
                         "description": "Conditional. The name of the parent site resource. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "slotName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent web site slot. Required if the template is used in a standalone deployment."
                       }
                     },
                     "name": {
@@ -10378,6 +10398,12 @@
                     }
                   },
                   "resources": {
+                    "app::slot": {
+                      "existing": true,
+                      "type": "Microsoft.Web/sites/slots",
+                      "apiVersion": "2024-04-01",
+                      "name": "[format('{0}/{1}', parameters('appName'), parameters('slotName'))]"
+                    },
                     "app": {
                       "existing": true,
                       "type": "Microsoft.Web/sites",
@@ -10385,9 +10411,9 @@
                       "name": "[parameters('appName')]"
                     },
                     "msdeploy": {
-                      "type": "Microsoft.Web/sites/extensions",
+                      "type": "Microsoft.Web/sites/slots/extensions",
                       "apiVersion": "2024-04-01",
-                      "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
+                      "name": "[format('{0}/{1}/{2}', parameters('appName'), parameters('slotName'), parameters('name'))]",
                       "kind": "[parameters('kind')]",
                       "properties": "[parameters('properties')]"
                     }
@@ -10405,7 +10431,7 @@
                       "metadata": {
                         "description": "The resource ID of the extension."
                       },
-                      "value": "[resourceId('Microsoft.Web/sites/extensions', parameters('appName'), parameters('name'))]"
+                      "value": "[resourceId('Microsoft.Web/sites/slots/extensions', parameters('appName'), parameters('slotName'), parameters('name'))]"
                     },
                     "resourceGroupName": {
                       "type": "string",
@@ -10416,7 +10442,10 @@
                     }
                   }
                 }
-              }
+              },
+              "dependsOn": [
+                "slot"
+              ]
             },
             "slot_privateEndpoints": {
               "copy": {

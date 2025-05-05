@@ -1149,7 +1149,7 @@ type logsConfigType = {
 
   @description('Required. The config settings.')
   properties: {
-    @description('Optional. ')
+    @description('Optional. Application Logs for Azure configuration.')
     applicationLogs: {
       @description('Optional. Application logs to blob storage configuration.')
       azureBlobStorage: {
