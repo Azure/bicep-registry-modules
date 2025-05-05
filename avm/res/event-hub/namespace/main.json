@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "9878452525875483018"
+      "version": "0.35.1.17967",
+      "templateHash": "4219057144876577206"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -1043,8 +1043,8 @@
         "zoneRedundant": "[parameters('zoneRedundant')]"
       },
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
-        "cMKKeyVault"
+        "cMKKeyVault",
+        "cMKKeyVault::cMKKey"
       ]
     },
     "eventHubNamespace_roleAssignments": {
@@ -1154,8 +1154,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "12932983739098297779"
+              "version": "0.35.1.17967",
+              "templateHash": "5965003583311219989"
             },
             "name": "Event Hub Namespace Authorization Rule",
             "description": "This module deploys an Event Hub Namespace Authorization Rule."
@@ -1252,8 +1252,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "7157026557302056743"
+              "version": "0.35.1.17967",
+              "templateHash": "15240522535518107770"
             },
             "name": "Event Hub Namespace Disaster Recovery Configs",
             "description": "This module deploys an Event Hub Namespace Disaster Recovery Config."
@@ -1406,8 +1406,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "10874430245736564571"
+              "version": "0.35.1.17967",
+              "templateHash": "4073135031349321088"
             },
             "name": "Event Hub Namespace Event Hubs",
             "description": "This module deploys an Event Hub Namespace Event Hub."
@@ -1687,7 +1687,7 @@
               "type": "bool",
               "defaultValue": false,
               "metadata": {
-                "description": "Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageretentionInDays property is ignored."
+                "description": "Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored."
               }
             },
             "retentionDescriptionCleanupPolicy": {
@@ -1707,7 +1707,7 @@
               "minValue": 1,
               "maxValue": 168,
               "metadata": {
-                "description": "Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageretentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue."
+                "description": "Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue."
               }
             },
             "retentionDescriptionTombstoneRetentionTimeInHours": {
@@ -1844,8 +1844,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15726313856377224651"
+                      "version": "0.35.1.17967",
+                      "templateHash": "1586939108343613276"
                     },
                     "name": "Event Hub Namespace Event Hub Consumer Groups",
                     "description": "This module deploys an Event Hub Namespace Event Hub Consumer Group."
@@ -1949,8 +1949,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.32.4.45862",
-                      "templateHash": "15938058071622087714"
+                      "version": "0.35.1.17967",
+                      "templateHash": "13832886652635004938"
                     },
                     "name": "Event Hub Namespace Event Hub Authorization Rules",
                     "description": "This module deploys an Event Hub Namespace Event Hub Authorization Rule."
@@ -2092,8 +2092,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "18355940501932134026"
+              "version": "0.35.1.17967",
+              "templateHash": "18442177264911391352"
             },
             "name": "Event Hub Namespace Network Rule Sets",
             "description": "This module deploys an Event Hub Namespace Network Rule Set."
@@ -2218,7 +2218,7 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-eventHubNamespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "name": "[take(format('{0}-eventHubNamespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex()), 64)]",
       "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2994,8 +2994,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9992767491398107530"
+              "version": "0.35.1.17967",
+              "templateHash": "1586204151956272516"
             }
           },
           "definitions": {

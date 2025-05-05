@@ -52,8 +52,8 @@ This module deploys an Event Hub Namespace Event Hub.
 | [`messageRetentionInDays`](#parameter-messageretentionindays) | int | Number of days to retain the events for this Event Hub, value should be 1 to 7 days. Will be automatically set to infinite retention if cleanup policy is set to "Compact". |
 | [`partitionCount`](#parameter-partitioncount) | int | Number of partitions created for the Event Hub, allowed values are from 1 to 32 partitions. |
 | [`retentionDescriptionCleanupPolicy`](#parameter-retentiondescriptioncleanuppolicy) | string | Retention cleanup policy. Enumerates the possible values for cleanup policy. |
-| [`retentionDescriptionEnabled`](#parameter-retentiondescriptionenabled) | bool | A value that indicates whether to enable retention description properties. If it is set to true the messageretentionInDays property is ignored. |
-| [`retentionDescriptionRetentionTimeInHours`](#parameter-retentiondescriptionretentiontimeinhours) | int | Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageretentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue. |
+| [`retentionDescriptionEnabled`](#parameter-retentiondescriptionenabled) | bool | A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored. |
+| [`retentionDescriptionRetentionTimeInHours`](#parameter-retentiondescriptionretentiontimeinhours) | int | Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue. |
 | [`retentionDescriptionTombstoneRetentionTimeInHours`](#parameter-retentiondescriptiontombstoneretentiontimeinhours) | int | Retention cleanup policy. Number of hours to retain the tombstone markers of a compacted Event Hub. This value is only used when cleanupPolicy is Compact. Consumer must complete reading the tombstone marker within this specified amount of time if consumer begins from starting offset to ensure they get a valid snapshot for the specific key described by the tombstone marker within the compacted Event Hub. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`status`](#parameter-status) | string | Enumerates the possible values for the status of the Event Hub. |
@@ -263,7 +263,7 @@ Retention cleanup policy. Enumerates the possible values for cleanup policy.
 
 ### Parameter: `retentionDescriptionEnabled`
 
-A value that indicates whether to enable retention description properties. If it is set to true the messageretentionInDays property is ignored.
+A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.
 
 - Required: No
 - Type: bool
@@ -271,7 +271,7 @@ A value that indicates whether to enable retention description properties. If it
 
 ### Parameter: `retentionDescriptionRetentionTimeInHours`
 
-Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageretentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.
+Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.
 
 - Required: No
 - Type: int
