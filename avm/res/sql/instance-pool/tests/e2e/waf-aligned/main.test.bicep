@@ -17,12 +17,6 @@ param serviceShort string = 'sipwaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The SKU name for the instance pool.')
-param skuName string = 'GP_Gen5'
-
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = false
-
 // Note, we set the location of the NetworkWatcherRG to avoid conflicts with the already existing NetworkWatcherRG
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'northeurope'
