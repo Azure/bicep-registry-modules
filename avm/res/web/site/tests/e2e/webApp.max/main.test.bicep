@@ -12,8 +12,7 @@ metadata description = 'This instance deploys the module as Web App with most of
 param resourceGroupName string = 'dep-${namePrefix}-web.sites-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-// param resourceLocation string = deployment().location
-var resourceLocation = 'UKSouth'
+param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'wswamax'
