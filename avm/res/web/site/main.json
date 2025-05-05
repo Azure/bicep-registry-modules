@@ -4841,7 +4841,7 @@
           "resources": [],
           "outputs": {
             "telemetry": {
-              "type": "string",
+              "type": "String",
               "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
             }
           }
