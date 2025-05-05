@@ -180,6 +180,9 @@ function Test-TemplateDeployment {
         }
         if ($ValidationErrors -and ($res | ConvertTo-Json | ConvertFrom-Json -AsHashtable).Keys -Contains 'Code') {
             # Only contains a 'code' if there is an 'error code' attached
+            # Note: Ideally this would even show the `-Debug` information, but there seems to be no way of getting it in an automated fashion.
+            # So. errors that are rooted in a location conflict will continue to just show 'Conflict conflict: See inner error' without actually returning it.
+            # This comment is just here for reference if anybody else wants to tag a stab
             Write-Warning 'Errors found:' -Verbose
             Write-Warning ($res | ConvertTo-Json -Depth 10 | Out-String)
             Write-Error 'Template is not valid.'
