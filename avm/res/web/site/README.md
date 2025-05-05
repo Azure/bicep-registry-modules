@@ -133,7 +133,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
   params: {
     // Required parameters
     kind: 'functionapp'
-    name: 'wsfaals001'
+    name: 'wsfamax001'
     serverFarmResourceId: '<serverFarmResourceId>'
     // Non-required parameters
     basicPublishingCredentialsPolicies: [
@@ -324,7 +324,7 @@ module site 'br/public:avm/res/web/site:<version>' = {
       "value": "functionapp"
     },
     "name": {
-      "value": "wsfaals001"
+      "value": "wsfamax001"
     },
     "serverFarmResourceId": {
       "value": "<serverFarmResourceId>"
@@ -533,7 +533,7 @@ using 'br/public:avm/res/web/site:<version>'
 
 // Required parameters
 param kind = 'functionapp'
-param name = 'wsfaals001'
+param name = 'wsfamax001'
 param serverFarmResourceId = '<serverFarmResourceId>'
 // Non-required parameters
 param basicPublishingCredentialsPolicies = [
@@ -3721,7 +3721,7 @@ The configuration settings of the login flow.
 
 A list of the scopes that should be requested while authenticating.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `configs.name-authsettingsV2.properties.identityProviders.apple.registration`
@@ -4226,7 +4226,7 @@ The configuration settings of the login flow.
 
 A list of the scopes that should be requested while authenticating.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `configs.name-authsettingsV2.properties.identityProviders.facebook.registration`
@@ -4339,7 +4339,7 @@ The configuration settings of the Google provider.
 
 Set to `false` if the Google provider should not be enabled despite the set registration.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `configs.name-authsettingsV2.properties.identityProviders.google.login`
@@ -4359,7 +4359,7 @@ The configuration settings of the login flow.
 
 A list of the scopes that should be requested while authenticating.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `configs.name-authsettingsV2.properties.identityProviders.google.registration`
@@ -4407,7 +4407,7 @@ The configuration settings of the Azure Active Directory token validation flow.
 
 The configuration settings of the allowed list of audiences from which to validate the JWT token.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `configs.name-authsettingsV2.properties.identityProviders.legacyMicrosoftAccount`
@@ -4430,7 +4430,7 @@ The configuration settings of the legacy Microsoft Account provider.
 
 Set to `false` if the legacy Microsoft Account provider should not be enabled despite the set registration.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `configs.name-authsettingsV2.properties.identityProviders.legacyMicrosoftAccount.login`
@@ -4450,7 +4450,7 @@ The configuration settings of the login flow.
 
 A list of the scopes that should be requested while authenticating.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `configs.name-authsettingsV2.properties.identityProviders.legacyMicrosoftAccount.registration`
@@ -4731,12 +4731,6 @@ The config settings.
 - Required: Yes
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`storageAccountUrl`](#parameter-configsname-backuppropertiesstorageaccounturl) | string | SAS URL to the container. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -4745,13 +4739,7 @@ The config settings.
 | [`backupSchedule`](#parameter-configsname-backuppropertiesbackupschedule) | object | Schedule for the backup if it is executed periodically. |
 | [`databases`](#parameter-configsname-backuppropertiesdatabases) | array | Databases included in the backup. |
 | [`enabled`](#parameter-configsname-backuppropertiesenabled) | bool | Set to `True` if the backup schedule is enabled (must be included in that case), `false` if the backup schedule should be disabled. |
-
-### Parameter: `configs.name-backup.properties.storageAccountUrl`
-
-SAS URL to the container.
-
-- Required: No
-- Type: string
+| [`storageAccountUrl`](#parameter-configsname-backuppropertiesstorageaccounturl) | string | SAS URL to the container. |
 
 ### Parameter: `configs.name-backup.properties.backupName`
 
@@ -4889,6 +4877,13 @@ Set to `True` if the backup schedule is enabled (must be included in that case),
 - Required: Yes
 - Type: bool
 
+### Parameter: `configs.name-backup.properties.storageAccountUrl`
+
+SAS URL to the container.
+
+- Required: No
+- Type: string
+
 ### Variant: `configs.name-connectionstrings`
 The type for a connection string configuration.
 
@@ -4938,12 +4933,12 @@ The name of the connection string setting.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`type`](#parameter-configsname-connectionstringsproperties>any_other_property<type) | string | Type of database |
+| [`type`](#parameter-configsname-connectionstringsproperties>any_other_property<type) | string | Type of database. |
 | [`value`](#parameter-configsname-connectionstringsproperties>any_other_property<value) | string | Value of pair. |
 
 ### Parameter: `configs.name-connectionstrings.properties.>Any_other_property<.type`
 
-Type of database
+Type of database.
 
 - Required: Yes
 - Type: string
@@ -5249,7 +5244,7 @@ Http logs to file system configuration.
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-configsname-logspropertieshttplogsfilesystemenabled) | bool | Set to `True` if configuration is enabled, false if it is disabled. |
 | [`retentionInDays`](#parameter-configsname-logspropertieshttplogsfilesystemretentionindays) | int | Retention in days. Remove files older than X days. 0 or lower means no retention. |
-| [`retentionInMb`](#parameter-configsname-logspropertieshttplogsfilesystemretentioninmb) | int | Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones |
+| [`retentionInMb`](#parameter-configsname-logspropertieshttplogsfilesystemretentioninmb) | int | Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones. |
 
 ### Parameter: `configs.name-logs.properties.httpLogs.fileSystem.enabled`
 
@@ -5267,7 +5262,7 @@ Retention in days. Remove files older than X days. 0 or lower means no retention
 
 ### Parameter: `configs.name-logs.properties.httpLogs.fileSystem.retentionInMb`
 
-Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones
+Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones.
 
 - Required: No
 - Type: int
@@ -5509,7 +5504,7 @@ The config settings.
 | [`elasticWebAppScaleLimit`](#parameter-configsname-webpropertieselasticwebappscalelimit) | int | Maximum number of workers that a site can scale out to. This setting only applies to apps in plans where ElasticScaleEnabled is `true`. |
 | [`experiments`](#parameter-configsname-webpropertiesexperiments) | object | This is work around for polymorphic types. |
 | [`ftpsState`](#parameter-configsname-webpropertiesftpsstate) | string | State of FTP / FTPS service. |
-| [`functionAppScaleLimit`](#parameter-configsname-webpropertiesfunctionappscalelimit) | int | Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans |
+| [`functionAppScaleLimit`](#parameter-configsname-webpropertiesfunctionappscalelimit) | int | Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans. |
 | [`functionsRuntimeScaleMonitoringEnabled`](#parameter-configsname-webpropertiesfunctionsruntimescalemonitoringenabled) | bool | Gets or sets a value indicating whether functions runtime scale monitoring is enabled. When enabled, the ScaleController will not monitor event sources directly, but will instead call to the runtime to get scale status. |
 | [`handlerMappings`](#parameter-configsname-webpropertieshandlermappings) | array | Handler mappings. |
 | [`healthCheckPath`](#parameter-configsname-webpropertieshealthcheckpath) | string | Health check path. |
@@ -5527,7 +5522,7 @@ The config settings.
 | [`localMySqlEnabled`](#parameter-configsname-webpropertieslocalmysqlenabled) | bool | Set to `true` to enable local MySQL. |
 | [`logsDirectorySizeLimit`](#parameter-configsname-webpropertieslogsdirectorysizelimit) | int | HTTP logs directory size limit. |
 | [`managedPipelineMode`](#parameter-configsname-webpropertiesmanagedpipelinemode) | string | Managed pipeline mode. |
-| [`managedServiceIdentityId`](#parameter-configsname-webpropertiesmanagedserviceidentityid) | int | Managed Service Identity Id |
+| [`managedServiceIdentityId`](#parameter-configsname-webpropertiesmanagedserviceidentityid) | int | Managed Service Identity Id. |
 | [`metadata`](#parameter-configsname-webpropertiesmetadata) | array | Application metadata. This property cannot be retrieved, since it may contain secrets. |
 | [`minimumElasticInstanceCount`](#parameter-configsname-webpropertiesminimumelasticinstancecount) | int | Number of minimum instance count for a site. This setting only applies to the Elastic Plans. |
 | [`minTlsCipherSuite`](#parameter-configsname-webpropertiesmintlsciphersuite) | string | The minimum strength TLS cipher suite allowed for an application. |
@@ -6299,7 +6294,7 @@ State of FTP / FTPS service.
 
 ### Parameter: `configs.name-web.properties.functionAppScaleLimit`
 
-Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans
+Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans.
 
 - Required: No
 - Type: int
@@ -6631,7 +6626,7 @@ Managed pipeline mode.
 
 ### Parameter: `configs.name-web.properties.managedServiceIdentityId`
 
-Managed Service Identity Id
+Managed Service Identity Id.
 
 - Required: No
 - Type: int
@@ -6648,7 +6643,7 @@ Application metadata. This property cannot be retrieved, since it may contain se
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-configsname-webpropertiesmetadataname) | string | Pair name. |
-| [`value`](#parameter-configsname-webpropertiesmetadatavalue) | string | Pair Value |
+| [`value`](#parameter-configsname-webpropertiesmetadatavalue) | string | Pair Value. |
 
 ### Parameter: `configs.name-web.properties.metadata.name`
 
@@ -6659,7 +6654,7 @@ Pair name.
 
 ### Parameter: `configs.name-web.properties.metadata.value`
 
-Pair Value
+Pair Value.
 
 - Required: Yes
 - Type: string
@@ -6822,7 +6817,7 @@ PushSettings resource specific properties.
 
 Gets or sets a flag indicating whether the Push endpoint is enabled.
 
-- Required: No
+- Required: Yes
 - Type: bool
 
 ### Parameter: `configs.name-web.properties.push.properties.dynamicTagsJson`
@@ -8975,7 +8970,7 @@ The configuration settings of the login flow.
 
 A list of the scopes that should be requested while authenticating.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.apple.registration`
@@ -9480,7 +9475,7 @@ The configuration settings of the login flow.
 
 A list of the scopes that should be requested while authenticating.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.facebook.registration`
@@ -9593,7 +9588,7 @@ The configuration settings of the Google provider.
 
 Set to `false` if the Google provider should not be enabled despite the set registration.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.google.login`
@@ -9613,7 +9608,7 @@ The configuration settings of the login flow.
 
 A list of the scopes that should be requested while authenticating.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.google.registration`
@@ -9661,7 +9656,7 @@ The configuration settings of the Azure Active Directory token validation flow.
 
 The configuration settings of the allowed list of audiences from which to validate the JWT token.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.legacyMicrosoftAccount`
@@ -9684,7 +9679,7 @@ The configuration settings of the legacy Microsoft Account provider.
 
 Set to `false` if the legacy Microsoft Account provider should not be enabled despite the set registration.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.legacyMicrosoftAccount.login`
@@ -9704,7 +9699,7 @@ The configuration settings of the login flow.
 
 A list of the scopes that should be requested while authenticating.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `slots.configs.name-authsettingsV2.properties.identityProviders.legacyMicrosoftAccount.registration`
@@ -9985,12 +9980,6 @@ The config settings.
 - Required: Yes
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`storageAccountUrl`](#parameter-slotsconfigsname-backuppropertiesstorageaccounturl) | string | SAS URL to the container. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -9999,13 +9988,7 @@ The config settings.
 | [`backupSchedule`](#parameter-slotsconfigsname-backuppropertiesbackupschedule) | object | Schedule for the backup if it is executed periodically. |
 | [`databases`](#parameter-slotsconfigsname-backuppropertiesdatabases) | array | Databases included in the backup. |
 | [`enabled`](#parameter-slotsconfigsname-backuppropertiesenabled) | bool | Set to `True` if the backup schedule is enabled (must be included in that case), `false` if the backup schedule should be disabled. |
-
-### Parameter: `slots.configs.name-backup.properties.storageAccountUrl`
-
-SAS URL to the container.
-
-- Required: No
-- Type: string
+| [`storageAccountUrl`](#parameter-slotsconfigsname-backuppropertiesstorageaccounturl) | string | SAS URL to the container. |
 
 ### Parameter: `slots.configs.name-backup.properties.backupName`
 
@@ -10143,6 +10126,13 @@ Set to `True` if the backup schedule is enabled (must be included in that case),
 - Required: Yes
 - Type: bool
 
+### Parameter: `slots.configs.name-backup.properties.storageAccountUrl`
+
+SAS URL to the container.
+
+- Required: No
+- Type: string
+
 ### Variant: `slots.configs.name-connectionstrings`
 The type for a connection string configuration.
 
@@ -10192,12 +10182,12 @@ The name of the connection string setting.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`type`](#parameter-slotsconfigsname-connectionstringsproperties>any_other_property<type) | string | Type of database |
+| [`type`](#parameter-slotsconfigsname-connectionstringsproperties>any_other_property<type) | string | Type of database. |
 | [`value`](#parameter-slotsconfigsname-connectionstringsproperties>any_other_property<value) | string | Value of pair. |
 
 ### Parameter: `slots.configs.name-connectionstrings.properties.>Any_other_property<.type`
 
-Type of database
+Type of database.
 
 - Required: Yes
 - Type: string
@@ -10503,7 +10493,7 @@ Http logs to file system configuration.
 | :-- | :-- | :-- |
 | [`enabled`](#parameter-slotsconfigsname-logspropertieshttplogsfilesystemenabled) | bool | Set to `True` if configuration is enabled, false if it is disabled. |
 | [`retentionInDays`](#parameter-slotsconfigsname-logspropertieshttplogsfilesystemretentionindays) | int | Retention in days. Remove files older than X days. 0 or lower means no retention. |
-| [`retentionInMb`](#parameter-slotsconfigsname-logspropertieshttplogsfilesystemretentioninmb) | int | Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones |
+| [`retentionInMb`](#parameter-slotsconfigsname-logspropertieshttplogsfilesystemretentioninmb) | int | Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones. |
 
 ### Parameter: `slots.configs.name-logs.properties.httpLogs.fileSystem.enabled`
 
@@ -10521,7 +10511,7 @@ Retention in days. Remove files older than X days. 0 or lower means no retention
 
 ### Parameter: `slots.configs.name-logs.properties.httpLogs.fileSystem.retentionInMb`
 
-Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones
+Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones.
 
 - Required: No
 - Type: int
@@ -10763,7 +10753,7 @@ The config settings.
 | [`elasticWebAppScaleLimit`](#parameter-slotsconfigsname-webpropertieselasticwebappscalelimit) | int | Maximum number of workers that a site can scale out to. This setting only applies to apps in plans where ElasticScaleEnabled is `true`. |
 | [`experiments`](#parameter-slotsconfigsname-webpropertiesexperiments) | object | This is work around for polymorphic types. |
 | [`ftpsState`](#parameter-slotsconfigsname-webpropertiesftpsstate) | string | State of FTP / FTPS service. |
-| [`functionAppScaleLimit`](#parameter-slotsconfigsname-webpropertiesfunctionappscalelimit) | int | Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans |
+| [`functionAppScaleLimit`](#parameter-slotsconfigsname-webpropertiesfunctionappscalelimit) | int | Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans. |
 | [`functionsRuntimeScaleMonitoringEnabled`](#parameter-slotsconfigsname-webpropertiesfunctionsruntimescalemonitoringenabled) | bool | Gets or sets a value indicating whether functions runtime scale monitoring is enabled. When enabled, the ScaleController will not monitor event sources directly, but will instead call to the runtime to get scale status. |
 | [`handlerMappings`](#parameter-slotsconfigsname-webpropertieshandlermappings) | array | Handler mappings. |
 | [`healthCheckPath`](#parameter-slotsconfigsname-webpropertieshealthcheckpath) | string | Health check path. |
@@ -10781,7 +10771,7 @@ The config settings.
 | [`localMySqlEnabled`](#parameter-slotsconfigsname-webpropertieslocalmysqlenabled) | bool | Set to `true` to enable local MySQL. |
 | [`logsDirectorySizeLimit`](#parameter-slotsconfigsname-webpropertieslogsdirectorysizelimit) | int | HTTP logs directory size limit. |
 | [`managedPipelineMode`](#parameter-slotsconfigsname-webpropertiesmanagedpipelinemode) | string | Managed pipeline mode. |
-| [`managedServiceIdentityId`](#parameter-slotsconfigsname-webpropertiesmanagedserviceidentityid) | int | Managed Service Identity Id |
+| [`managedServiceIdentityId`](#parameter-slotsconfigsname-webpropertiesmanagedserviceidentityid) | int | Managed Service Identity Id. |
 | [`metadata`](#parameter-slotsconfigsname-webpropertiesmetadata) | array | Application metadata. This property cannot be retrieved, since it may contain secrets. |
 | [`minimumElasticInstanceCount`](#parameter-slotsconfigsname-webpropertiesminimumelasticinstancecount) | int | Number of minimum instance count for a site. This setting only applies to the Elastic Plans. |
 | [`minTlsCipherSuite`](#parameter-slotsconfigsname-webpropertiesmintlsciphersuite) | string | The minimum strength TLS cipher suite allowed for an application. |
@@ -11553,7 +11543,7 @@ State of FTP / FTPS service.
 
 ### Parameter: `slots.configs.name-web.properties.functionAppScaleLimit`
 
-Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans
+Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans.
 
 - Required: No
 - Type: int
@@ -11885,7 +11875,7 @@ Managed pipeline mode.
 
 ### Parameter: `slots.configs.name-web.properties.managedServiceIdentityId`
 
-Managed Service Identity Id
+Managed Service Identity Id.
 
 - Required: No
 - Type: int
@@ -11902,7 +11892,7 @@ Application metadata. This property cannot be retrieved, since it may contain se
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-slotsconfigsname-webpropertiesmetadataname) | string | Pair name. |
-| [`value`](#parameter-slotsconfigsname-webpropertiesmetadatavalue) | string | Pair Value |
+| [`value`](#parameter-slotsconfigsname-webpropertiesmetadatavalue) | string | Pair Value. |
 
 ### Parameter: `slots.configs.name-web.properties.metadata.name`
 
@@ -11913,7 +11903,7 @@ Pair name.
 
 ### Parameter: `slots.configs.name-web.properties.metadata.value`
 
-Pair Value
+Pair Value.
 
 - Required: Yes
 - Type: string
@@ -12076,7 +12066,7 @@ PushSettings resource specific properties.
 
 Gets or sets a flag indicating whether the Push endpoint is enabled.
 
-- Required: No
+- Required: Yes
 - Type: bool
 
 ### Parameter: `slots.configs.name-web.properties.push.properties.dynamicTagsJson`

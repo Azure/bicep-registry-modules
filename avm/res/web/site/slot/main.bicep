@@ -696,7 +696,7 @@ type authSettingsV2ConfigType = {
         @description('Optional. The configuration settings of the login flow.')
         login: {
           @description('Optional. A list of the scopes that should be requested while authenticating.')
-          scopes: string[]
+          scopes: string[]?
         }?
 
         @description('Optional. The configuration settings of the Apple registration.')
@@ -853,7 +853,7 @@ type authSettingsV2ConfigType = {
         @description('Optional. The configuration settings of the login flow.')
         login: {
           @description('Optional. A list of the scopes that should be requested while authenticating.')
-          scopes: string[]
+          scopes: string[]?
         }?
 
         @description('Optional. The configuration settings of the app registration for the Facebook provider.')
@@ -890,12 +890,12 @@ type authSettingsV2ConfigType = {
       @description('Optional. The configuration settings of the Google provider.')
       google: {
         @description('Optional. Set to `false` if the Google provider should not be enabled despite the set registration.')
-        enabled: bool
+        enabled: bool?
 
         @description('Optional. The configuration settings of the login flow.')
         login: {
           @description('Optional. A list of the scopes that should be requested while authenticating.')
-          scopes: string[]
+          scopes: string[]?
         }?
 
         @description('Optional. The configuration settings of the app registration for the Google provider.')
@@ -910,19 +910,19 @@ type authSettingsV2ConfigType = {
         @description('Optional. The configuration settings of the Azure Active Directory token validation flow.')
         validation: {
           @description('Optional. The configuration settings of the allowed list of audiences from which to validate the JWT token.')
-          allowedAudiences: string[]
+          allowedAudiences: string[]?
         }?
       }?
 
       @description('Optional. The configuration settings of the legacy Microsoft Account provider.')
       legacyMicrosoftAccount: {
         @description('Optional. Set to `false` if the legacy Microsoft Account provider should not be enabled despite the set registration.')
-        enabled: bool
+        enabled: bool?
 
         @description('Optional. The configuration settings of the login flow.')
         login: {
           @description('Optional. A list of the scopes that should be requested while authenticating.')
-          scopes: string[]
+          scopes: string[]?
         }?
 
         @description('Optional. The configuration settings of the app registration for the legacy Microsoft Account provider.')
@@ -1106,7 +1106,7 @@ type backupConfigType = {
     @description('Optional. Set to `True` if the backup schedule is enabled (must be included in that case), `false` if the backup schedule should be disabled.')
     enabled: bool
 
-    @description('Required. SAS URL to the container.')
+    @description('Optional. SAS URL to the container.')
     storageAccountUrl: string?
   }
 }
@@ -1121,7 +1121,7 @@ type connectionStringsConfigType = {
   properties: {
     @description('Optional. The name of the connection string setting.')
     *: {
-      @description('Required. Type of database')
+      @description('Required. Type of database.')
       type: (
         | 'ApiHub'
         | 'Custom'
@@ -1213,7 +1213,7 @@ type logsConfigType = {
         @description('Optional. Retention in days. Remove files older than X days. 0 or lower means no retention.')
         retentionInDays: int?
 
-        @description('Optional. Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones')
+        @description('Optional. Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones.')
         @minValue(25)
         @maxValue(100)
         retentionInMb: int?
@@ -1485,7 +1485,7 @@ type webConfigType = {
     @description('Optional. State of FTP / FTPS service.')
     ftpsState: ('AllAllowed' | 'Disabled' | 'FtpsOnly')?
 
-    @description('Optional. Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans')
+    @description('Optional. Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans.')
     @minValue(0)
     functionAppScaleLimit: int?
 
@@ -1565,7 +1565,7 @@ type webConfigType = {
     @description('Optional. Managed pipeline mode.')
     managedPipelineMode: ('Classic' | 'Integrated')?
 
-    @description('Optional. Managed Service Identity Id')
+    @description('Optional. Managed Service Identity Id.')
     managedServiceIdentityId: int?
 
     @description('Optional. Application metadata. This property cannot be retrieved, since it may contain secrets.')
@@ -1573,7 +1573,7 @@ type webConfigType = {
       @description('Required. Pair name.')
       name: string
 
-      @description('Required. Pair Value')
+      @description('Required. Pair Value.')
       value: string
     }[]?
 
@@ -1642,7 +1642,7 @@ type webConfigType = {
         dynamicTagsJson: string?
 
         @description('Required. Gets or sets a flag indicating whether the Push endpoint is enabled.')
-        isPushEnabled: bool?
+        isPushEnabled: bool
 
         @description('Optional. Gets or sets a JSON string containing a list of tags that require user authentication to be used in the push registration endpoint. Tags can consist of alphanumeric characters and the following: \'_\', \'@\', \'#\', \'.\', \':\', \'-\'. Validation should be performed at the PushRequestHandler.')
         tagsRequiringAuth: string?

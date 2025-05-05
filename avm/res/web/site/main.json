@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "5587982749129781174"
+      "templateHash": "13020371627292457818"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -1345,6 +1345,7 @@
                           "items": {
                             "type": "string"
                           },
+                          "nullable": true,
                           "metadata": {
                             "description": "Optional. A list of the scopes that should be requested while authenticating."
                           }
@@ -1767,6 +1768,7 @@
                           "items": {
                             "type": "string"
                           },
+                          "nullable": true,
                           "metadata": {
                             "description": "Optional. A list of the scopes that should be requested while authenticating."
                           }
@@ -1865,6 +1867,7 @@
                   "properties": {
                     "enabled": {
                       "type": "bool",
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Set to `false` if the Google provider should not be enabled despite the set registration."
                       }
@@ -1877,6 +1880,7 @@
                           "items": {
                             "type": "string"
                           },
+                          "nullable": true,
                           "metadata": {
                             "description": "Optional. A list of the scopes that should be requested while authenticating."
                           }
@@ -1916,6 +1920,7 @@
                           "items": {
                             "type": "string"
                           },
+                          "nullable": true,
                           "metadata": {
                             "description": "Optional. The configuration settings of the allowed list of audiences from which to validate the JWT token."
                           }
@@ -1937,6 +1942,7 @@
                   "properties": {
                     "enabled": {
                       "type": "bool",
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Set to `false` if the legacy Microsoft Account provider should not be enabled despite the set registration."
                       }
@@ -1949,6 +1955,7 @@
                           "items": {
                             "type": "string"
                           },
+                          "nullable": true,
                           "metadata": {
                             "description": "Optional. A list of the scopes that should be requested while authenticating."
                           }
@@ -2448,7 +2455,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Required. SAS URL to the container."
+                "description": "Optional. SAS URL to the container."
               }
             }
           },
@@ -2498,7 +2505,7 @@
                   "ServiceBus"
                 ],
                 "metadata": {
-                  "description": "Required. Type of database"
+                  "description": "Required. Type of database."
                 }
               },
               "value": {
@@ -2877,7 +2884,7 @@
                       "minValue": 25,
                       "maxValue": 100,
                       "metadata": {
-                        "description": "Optional. Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones"
+                        "description": "Optional. Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones."
                       }
                     }
                   },
@@ -3825,7 +3832,7 @@
               "nullable": true,
               "minValue": 0,
               "metadata": {
-                "description": "Optional. Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans"
+                "description": "Optional. Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans."
               }
             },
             "functionsRuntimeScaleMonitoringEnabled": {
@@ -4020,7 +4027,7 @@
               "type": "int",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Managed Service Identity Id"
+                "description": "Optional. Managed Service Identity Id."
               }
             },
             "metadata": {
@@ -4037,7 +4044,7 @@
                   "value": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Pair Value"
+                      "description": "Required. Pair Value."
                     }
                   }
                 }
@@ -4175,7 +4182,6 @@
                     },
                     "isPushEnabled": {
                       "type": "bool",
-                      "nullable": true,
                       "metadata": {
                         "description": "Required. Gets or sets a flag indicating whether the Push endpoint is enabled."
                       }
@@ -5390,7 +5396,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "4687943083573743129"
+              "templateHash": "13561202999314757254"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -6039,6 +6045,7 @@
                                   "items": {
                                     "type": "string"
                                   },
+                                  "nullable": true,
                                   "metadata": {
                                     "description": "Optional. A list of the scopes that should be requested while authenticating."
                                   }
@@ -6461,6 +6468,7 @@
                                   "items": {
                                     "type": "string"
                                   },
+                                  "nullable": true,
                                   "metadata": {
                                     "description": "Optional. A list of the scopes that should be requested while authenticating."
                                   }
@@ -6559,6 +6567,7 @@
                           "properties": {
                             "enabled": {
                               "type": "bool",
+                              "nullable": true,
                               "metadata": {
                                 "description": "Optional. Set to `false` if the Google provider should not be enabled despite the set registration."
                               }
@@ -6571,6 +6580,7 @@
                                   "items": {
                                     "type": "string"
                                   },
+                                  "nullable": true,
                                   "metadata": {
                                     "description": "Optional. A list of the scopes that should be requested while authenticating."
                                   }
@@ -6610,6 +6620,7 @@
                                   "items": {
                                     "type": "string"
                                   },
+                                  "nullable": true,
                                   "metadata": {
                                     "description": "Optional. The configuration settings of the allowed list of audiences from which to validate the JWT token."
                                   }
@@ -6631,6 +6642,7 @@
                           "properties": {
                             "enabled": {
                               "type": "bool",
+                              "nullable": true,
                               "metadata": {
                                 "description": "Optional. Set to `false` if the legacy Microsoft Account provider should not be enabled despite the set registration."
                               }
@@ -6643,6 +6655,7 @@
                                   "items": {
                                     "type": "string"
                                   },
+                                  "nullable": true,
                                   "metadata": {
                                     "description": "Optional. A list of the scopes that should be requested while authenticating."
                                   }
@@ -7138,7 +7151,7 @@
                       "type": "string",
                       "nullable": true,
                       "metadata": {
-                        "description": "Required. SAS URL to the container."
+                        "description": "Optional. SAS URL to the container."
                       }
                     }
                   },
@@ -7186,7 +7199,7 @@
                           "ServiceBus"
                         ],
                         "metadata": {
-                          "description": "Required. Type of database"
+                          "description": "Required. Type of database."
                         }
                       },
                       "value": {
@@ -7411,7 +7424,7 @@
                               "minValue": 25,
                               "maxValue": 100,
                               "metadata": {
-                                "description": "Optional. Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones"
+                                "description": "Optional. Maximum size in megabytes that http log files can use. When reached old log files will be removed to make space for new ones."
                               }
                             }
                           },
@@ -8108,7 +8121,7 @@
                       "nullable": true,
                       "minValue": 0,
                       "metadata": {
-                        "description": "Optional. Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans"
+                        "description": "Optional. Maximum number of workers that a site can scale out to. This setting only applies to the Consumption and Elastic Premium Plans."
                       }
                     },
                     "functionsRuntimeScaleMonitoringEnabled": {
@@ -8303,7 +8316,7 @@
                       "type": "int",
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. Managed Service Identity Id"
+                        "description": "Optional. Managed Service Identity Id."
                       }
                     },
                     "metadata": {
@@ -8320,7 +8333,7 @@
                           "value": {
                             "type": "string",
                             "metadata": {
-                              "description": "Required. Pair Value"
+                              "description": "Required. Pair Value."
                             }
                           }
                         }
@@ -8458,7 +8471,6 @@
                             },
                             "isPushEnabled": {
                               "type": "bool",
-                              "nullable": true,
                               "metadata": {
                                 "description": "Required. Gets or sets a flag indicating whether the Push endpoint is enabled."
                               }
