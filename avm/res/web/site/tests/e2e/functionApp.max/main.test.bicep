@@ -180,10 +180,10 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      // lock: {
-      //   kind: 'CanNotDelete'
-      //   name: 'myCustomLockName'
-      // }
+      lock: {
+        kind: 'CanNotDelete'
+        name: 'myCustomLockName'
+      }
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId

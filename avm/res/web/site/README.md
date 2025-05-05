@@ -247,6 +247,10 @@ module site 'br/public:avm/res/web/site:<version>' = {
     ]
     keyVaultAccessIdentityResourceId: '<keyVaultAccessIdentityResourceId>'
     location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -453,6 +457,12 @@ module site 'br/public:avm/res/web/site:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -647,6 +657,10 @@ param hybridConnectionRelays = [
 ]
 param keyVaultAccessIdentityResourceId = '<keyVaultAccessIdentityResourceId>'
 param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
