@@ -1,4 +1,4 @@
-name: "avm.res.security-insights.onboarding-states"
+name: "avm.res.security-insights.onboarding-state"
 
 on:
   workflow_dispatch:
@@ -28,15 +28,15 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.res.security-insights.onboarding-states.yml"
-      - "avm/res/security-insights/onboarding-states/**"
+      - ".github/workflows/avm.res.security-insights.onboarding-state.yml"
+      - "avm/res/security-insights/onboarding-state/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/res/security-insights/onboarding-states"
-  workflowPath: ".github/workflows/avm.res.security-insights.onboarding-states.yml"
+  modulePath: "avm/res/security-insights/onboarding-state"
+  workflowPath: ".github/workflows/avm.res.security-insights.onboarding-state.yml"
 
 concurrency:
   group: ${{ github.workflow }}
