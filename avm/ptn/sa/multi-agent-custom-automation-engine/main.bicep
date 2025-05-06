@@ -328,7 +328,7 @@ module privateDnsZonesAiServices 'br/public:avm/res/network/private-dns-zone:0.7
 
 // ========== AI Foundry: AI Services ==========
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' not available in AVM
-var aiServicesModelDeployment = {
+var aiFoundryAiServicesModelDeployment = {
   format: 'OpenAI'
   name: 'gpt-4o'
   version: '2024-08-06'
@@ -350,7 +350,7 @@ module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.10.2'
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     sku: 'S0'
     kind: 'AIServices'
-    disableLocalAuth: true
+    disableLocalAuth: false //Should be set to true for WAF aligned configuration
     customSubDomainName: aiFoundryAiServicesAccountName
     apiProperties: {
       //staticsEnabled: false
@@ -384,16 +384,16 @@ module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.10.2'
     ]
     deployments: [
       {
-        name: aiServicesModelDeployment.name
+        name: aiFoundryAiServicesModelDeployment.name
         model: {
-          format: aiServicesModelDeployment.format
-          name: aiServicesModelDeployment.name
-          version: aiServicesModelDeployment.version
+          format: aiFoundryAiServicesModelDeployment.format
+          name: aiFoundryAiServicesModelDeployment.name
+          version: aiFoundryAiServicesModelDeployment.version
         }
-        raiPolicyName: aiServicesModelDeployment.raiPolicyName
+        raiPolicyName: aiFoundryAiServicesModelDeployment.raiPolicyName
         sku: {
-          name: aiServicesModelDeployment.sku.name
-          capacity: aiServicesModelDeployment.sku.capacity
+          name: aiFoundryAiServicesModelDeployment.sku.name
+          capacity: aiFoundryAiServicesModelDeployment.sku.capacity
         }
       }
     ]
@@ -450,7 +450,7 @@ module aiFoundryAiHub 'modules/ai-hub.bicep' = {
 // AI Foundry: AI Project
 var aiFoundryAiProjectName = '${solutionPrefix}aifdaipj'
 
-module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace:0.10.1' = {
+module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = {
   name: 'avm.ptn.sa.macae.machine-learning-services-workspace-project'
   params: {
     name: aiFoundryAiProjectName
@@ -462,6 +462,13 @@ module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace
     kind: 'Project'
     publicNetworkAccess: 'Enabled' // Not in original script, check this
     hubResourceId: aiFoundryAiHub.outputs.resourceId
+    roleAssignments: [
+      {
+        principalId: containerApp.outputs.?systemAssignedMIPrincipalId!
+        // Assigning the role with the role name instead of the role ID freezes the deployment at this point
+        roleDefinitionIdOrName: '64702f94-c441-49e6-a78b-ef80e0188fee' //'Azure AI Developer'
+      }
+    ]
   }
 }
 
@@ -704,11 +711,11 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
           }
           {
             name: 'AZURE_OPENAI_MODEL_NAME'
-            value: aiServicesModelDeployment.name
+            value: aiFoundryAiServicesModelDeployment.name
           }
           {
             name: 'AZURE_OPENAI_DEPLOYMENT_NAME'
-            value: aiServicesModelDeployment.name
+            value: aiFoundryAiServicesModelDeployment.name
           }
           {
             name: 'AZURE_OPENAI_API_VERSION'
@@ -724,7 +731,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
           }
           {
             name: 'AZURE_AI_AGENT_PROJECT_CONNECTION_STRING'
-            value: '${toLower(replace(solutionLocation,' ',''))}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${aiFoundryAiHubName}'
+            value: '${toLower(replace(solutionLocation,' ',''))}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${aiFoundryAiProjectName}'
             //Location should be the AI Foundry AI Project location
           }
           {

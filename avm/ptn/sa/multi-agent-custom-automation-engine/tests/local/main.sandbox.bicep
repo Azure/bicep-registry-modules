@@ -1,7 +1,7 @@
 module testDeployment '../../main.bicep' = {
   name: 'test-macae-sandbox'
   params: {
-    solutionPrefix: 'macaesbx002'
+    solutionPrefix: 'macaesbx003'
     solutionLocation: 'australiaeast'
     virtualNetworkConfiguration: {
       enabled: false
