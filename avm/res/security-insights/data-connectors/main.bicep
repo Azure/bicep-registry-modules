@@ -14,47 +14,42 @@ param workspaceResourceId string
 param location string = resourceGroup().location
 
 @description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
-param enableDefaultTelemetry bool = true
+param enableTelemetry bool = true
 
-@description('Required. Kind of the Data Connector.')
+@description('Required. The type of the Data Connector.')
 @allowed([
   'AmazonWebServicesCloudTrail'
+  'AmazonWebServicesS3'
+  'APIPolling'
   'AzureActiveDirectory'
-  'AzureActiveDirectoryIdentityProtection'
+  'AzureAdvancedThreatProtection'
   'AzureSecurityCenter'
+  'Dynamics365'
+  'GCP'
+  'GenericUI'
+  'IOT'
   'MicrosoftCloudAppSecurity'
   'MicrosoftDefenderAdvancedThreatProtection'
+  'MicrosoftPurviewInformationProtection'
   'MicrosoftThreatIntelligence'
+  'MicrosoftThreatProtection'
   'Office365'
-  'PremiumMicrosoftDefenderForThreatIntelligence'
+  'Office365Project'
+  'OfficeATP'
+  'OfficeIRM'
+  'OfficePowerBI'
+  'PurviewAudit'
   'RestApiPoller'
   'ThreatIntelligence'
+  'ThreatIntelligenceTaxii'
 ])
-param kind string
+param dataConnectorType string
 
 @description('Optional. Properties for the Data Connector based on kind.')
 param properties object = {}
 
-@description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType[]?
-
-var builtInRoleNames = {
-  'Security Administrator': subscriptionResourceId(
-    'Microsoft.Authorization/roleDefinitions',
-    'fb1c8493-542b-48eb-b624-b4c8fea62acd'
-  )
-}
-
-var formattedRoleAssignments = [
-  for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
-    roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-      ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-      : roleAssignment.roleDefinitionIdOrName
-  })
-]
-
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableDefaultTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.security-insights-dataconnectors.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -73,7 +68,7 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existin
 resource dataConnector 'Microsoft.SecurityInsights/dataConnectors@2024-10-01-preview' = {
   scope: workspace
   name: name
-  kind: kind
+  kind: dataConnectorType
   properties: properties
 }
 
@@ -88,19 +83,3 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = location
-
-resource dataConnector_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
-    name: guid(dataConnector.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
-    properties: {
-      roleDefinitionId: roleAssignment.roleDefinitionId
-      principalId: roleAssignment.principalId
-      description: roleAssignment.description
-      principalType: roleAssignment.principalType
-      condition: roleAssignment.condition
-      conditionVersion: !empty(roleAssignment.condition) ? (roleAssignment.conditionVersion ?? '2.0') : null
-      delegatedManagedIdentityResourceId: roleAssignment.delegatedManagedIdentityResourceId
-    }
-    scope: dataConnector
-  }
-]
