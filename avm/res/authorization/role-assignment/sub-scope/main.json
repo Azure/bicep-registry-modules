@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "4620206930237038050"
+      "version": "0.35.1.17967",
+      "templateHash": "4676404741105963383"
     },
     "name": "Role Assignments (Subscription scope)",
     "description": "This module deploys a Role Assignment to a Subscription scope."
@@ -106,7 +106,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.subscp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.authz-roleassignment_scopesub.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {

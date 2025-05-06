@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "5018706986756524797"
+      "version": "0.35.1.17967",
+      "templateHash": "10527994803734811010"
     },
     "name": "Role Assignments (Management Group scope)",
     "description": "This module deploys a Role Assignment to a Management Group scope."
@@ -115,7 +115,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.authorization-roleassignment.mgscp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.res.authz-roleassignment_scopemg.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
