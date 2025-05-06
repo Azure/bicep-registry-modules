@@ -214,7 +214,7 @@ body:
         - "avm/res/resources/deployment-script"
         - "avm/res/resources/resource-group"
         - "avm/res/search/search-service"
-        - "avm/res/security-insights/onboarding-states"
+        - "avm/res/security-insights/onboarding-state"
         - "avm/res/service-bus/namespace"
         - "avm/res/service-fabric/cluster"
         - "avm/res/service-networking/traffic-controller"
