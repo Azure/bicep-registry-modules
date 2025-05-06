@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "15946066273946929527"
+      "templateHash": "16183686033827304922"
     },
     "name": "Network Interface",
     "description": "This module deploys a Network Interface."
@@ -430,7 +430,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for the network interface IP configuration output."
       }
     },
     "diagnosticSettingFullType": {
@@ -854,7 +855,7 @@
             "name": "ipConfigurations",
             "count": "[length(parameters('ipConfigurations'))]",
             "input": {
-              "name": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex('ipConfigurations')], 'name'), format('ipconfig0{0}', add(copyIndex('ipConfigurations'), 1)))]",
+              "name": "[coalesce(tryGet(parameters('ipConfigurations')[copyIndex('ipConfigurations')], 'name'), format('ipconfig{0}', padLeft(add(copyIndex('ipConfigurations'), 1), 2, '0')))]",
               "properties": {
                 "primary": "[if(equals(copyIndex('ipConfigurations'), 0), true(), false())]",
                 "privateIPAllocationMethod": "[tryGet(parameters('ipConfigurations')[copyIndex('ipConfigurations')], 'privateIPAllocationMethod')]",

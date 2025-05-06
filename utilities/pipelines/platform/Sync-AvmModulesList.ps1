@@ -28,7 +28,7 @@ function Sync-AvmModulesList {
 
     # Loading helper functions
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GithubIssueToProject.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
 
     # get CSV data
     $targetModules = Get-AvmCsvData -ModuleIndex 'Bicep-Resource' | Where-Object { ($_.ModuleStatus -eq 'Available :green_circle:') -or ($_.ModuleStatus -eq 'Orphaned :eyes:') } | Select-Object -ExpandProperty 'ModuleName' | Sort-Object
@@ -202,7 +202,7 @@ $([Environment]::NewLine)
             $issueUrl = gh issue create --title $title --body $body --label $label --repo $Repo
             # add issue to project
             $ProjectNumber = 538 # AVM - Issue Triage
-            Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
+            Add-GitHubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $issueUrl
         }
     } else {
         if ($issuesFound) {
