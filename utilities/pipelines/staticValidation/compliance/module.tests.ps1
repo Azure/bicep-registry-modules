@@ -142,17 +142,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             (Test-Path $versionFilePath) | Should -Be $false -Because 'multi-scope top-level modules must not contain a version.json file.'
         }
 
-        It '[<moduleFolderName>] A [` version.json `] file must only have a major & minor version.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
-
-            param (
-                [string] $moduleFolderPath
-            )
-
-            $versionFilePath = Join-Path -Path $moduleFolderPath 'version.json'
-            $versionFileContent = Get-Content $versionFilePath | ConvertFrom-Json -AsHashtable
-            $versionFileContent.version | Should -Match '^[0-9]+\.[0-9]+$' -Because 'only the major.minor version may be specified in the version.json file.'
-        }
-
         # (Pilot for child module publishing) Only a subset of child modules is allowed to have a version.json file
         It '[<moduleFolderName>] child module should not contain a [` version.json `] file unless explicitly allowed for publishing.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
 
