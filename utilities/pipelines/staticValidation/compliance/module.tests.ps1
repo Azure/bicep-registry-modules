@@ -122,26 +122,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $file.Name | Should -BeExactly 'README.md'
         }
 
-        It '[<moduleFolderName>] Top-Level module must contain a [` version.json `] file, unless multi-scope.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and -not $_.hasMultiScopeChildModules }) {
-
-            param (
-                [string] $moduleFolderPath
-            )
-
-            $versionFilePath = Join-Path -Path $moduleFolderPath 'version.json'
-            (Test-Path $versionFilePath) | Should -Be $true -Because 'every top-level module should have a version.json file, unless it''s a multi-scope module.'
-        }
-
-        It '[<moduleFolderName>] Mutli-scope top-level module must not contain a [` version.json `] file.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.hasMultiScopeChildModules }) {
-
-            param (
-                [string] $moduleFolderPath
-            )
-
-            $versionFilePath = Join-Path -Path $moduleFolderPath 'version.json'
-            (Test-Path $versionFilePath) | Should -Be $false -Because 'multi-scope top-level modules must not contain a version.json file.'
-        }
-
         # (Pilot for child module publishing) Only a subset of child modules is allowed to have a version.json file
         It '[<moduleFolderName>] child module should not contain a [` version.json `] file unless explicitly allowed for publishing.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
 
@@ -180,17 +160,22 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` version.json `] file, unless it is a multi-scoped module.' -TestCases ($topLevelModuleTestCases | Where-Object { -not $_.hasMultiScopeChildModules }) {
+        It '[<moduleFolderName>] Top-level module must contain a [` version.json `] file, unless multi-scope.' -TestCases $topLevelModuleTestCases {
 
             param (
-                [string] $moduleFolderPath
+                [string] $moduleFolderPath,
+                [bool] $hasMultiScopeChildModules
             )
 
-            $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            $pathExisting | Should -Be $true -Because 'The module should have a version.json file.'
+            $versionFilePath = Join-Path -Path $moduleFolderPath 'version.json'
+            if ($hasMultiScopeChildModules) {
+                (Test-Path $versionFilePath) | Should -Be $false -Because 'multi-scope top-level modules must not contain a version.json file.'
+            } else {
+                (Test-Path $versionFilePath) | Should -Be $true -Because 'every top-level module should have a version.json file, unless it''s a multi-scope module.'
+            }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` tests `] folder.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests `] folder.' -TestCases $topLevelModuleTestCases {
 
             param(
                 [string] $moduleFolderPath
@@ -200,7 +185,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Module should contain a [` tests/e2e `] folder.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e `] folder.' -TestCases $topLevelModuleTestCases {
 
             param(
                 [string] $moduleFolderPath
@@ -210,7 +195,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
             param(
                 [string] $moduleFolderPath
@@ -220,7 +205,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $wafAlignedFolder | Should -Not -BeNullOrEmpty
         }
 
-        It '[<moduleFolderName>] Module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
             param(
                 [string] $moduleFolderPath
@@ -236,7 +221,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $defaultsFolder | Should -Not -BeNullOrEmpty
         }
 
-        It '[<moduleFolderName>] Module should contain one [` main.test.bicep `] file in each e2e test folder.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Top-level module should contain one [` main.test.bicep `] file in each e2e test folder.' -TestCases $topLevelModuleTestCases {
 
             param(
                 [string] $moduleFolderName,
@@ -251,7 +236,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.versionFileExists }) {
+        It '[<moduleFolderName>] Top-level module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.versionFileExists }) {
 
             param(
                 [string] $moduleFolderPath,
