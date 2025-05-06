@@ -168,61 +168,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $childModuleAllowedList | Should -Contain $moduleFullName -Because "only the child modules listed in the [./$childModuleAllowedListRelativePath] list may have a version.json file."
             }
         }
-
-        It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule -and $_.versionFileExists }) {
-
-            param(
-                [string] $moduleFolderPath,
-                [string] $moduleType,
-                [bool] $isMultiScopeModule
-            )
-
-            $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
-
-            # Use correct telemetry link based on file path
-            switch ($moduleType) {
-                'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
-                'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
-                'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
-                Default {}
-            }
-
-            # Fetch CSV
-            # =========
-            try {
-                $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-            } catch {
-                $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-                Write-Error $errorMessage
-                throw $errorMessage
-            }
-            $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
-
-            # Get correct row item & expected identifier
-            # ==========================================
-            # If it's a multi-scope module, we need to get the parent folder name as telemetry is collected under its name
-            $moduleName = Get-BRMRepositoryName -TemplateFilePath ($isMultiScopeModule ? (Split-Path $TemplateFilePath -Parent) : $TemplateFilePath)
-            $relevantCSVRow = $csvData | Where-Object {
-                $_.ModuleName -eq $moduleName
-            }
-
-            if (-not $relevantCSVRow) {
-                $errorMessage = "Failed to identify module [$moduleName] in AVM CSV."
-                throw $errorMessage
-            }
-            $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
-
-            # Validate
-            # ========
-            $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
-            if ($isOrphaned) {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $true -Because 'The module is orphaned.'
-            } else {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
-            }
-        }
     }
 
     Context 'Top level module folder tests' {
@@ -238,6 +183,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
                         moduleFolderPath          = $moduleFolderPath
                         moduleType                = $moduleType
                         hasMultiScopeChildModules = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '\/(rg|sub|mg)\-scope$' }).Count -gt 0
+                        versionFileExists         = Test-Path (Join-Path $moduleFolderPath 'version.json')
+                        isMultiScopeModule        = (Split-Path $moduleFolderPath -Leaf) -match '\/(rg|sub|mg)\-scope$'
+
                     }
                 }
             }
@@ -314,11 +262,12 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.versionFileExists }) {
 
             param(
                 [string] $moduleFolderPath,
-                [string] $moduleType
+                [string] $moduleType,
+                [bool] $isMultiScopeModule
             )
 
             $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
@@ -342,7 +291,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
             $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
 
-            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
+            $moduleName = Get-BRMRepositoryName -TemplateFilePath ($isMultiScopeModule ? (Split-Path $TemplateFilePath -Parent) : $TemplateFilePath)
             $relevantCSVRow = $csvData | Where-Object {
                 $_.ModuleName -eq $moduleName
             }
