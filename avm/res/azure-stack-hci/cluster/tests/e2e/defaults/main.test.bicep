@@ -84,6 +84,7 @@ module testDeployment '../../../main.bicep' = {
     localAdminPassword: localAdminAndDeploymentUserPass
     servicePrincipalId: arbDeploymentAppId
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    hciResourceProviderObjectId: hciResourceProviderObjectId
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames

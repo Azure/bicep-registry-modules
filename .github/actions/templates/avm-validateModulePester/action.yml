@@ -14,7 +14,7 @@
 ##   | Parameter                | Required | Default | Description                          | Example                                                            |
 ##   |--------------------------|----------|---------|--------------------------------------|--------------------------------------------------------------------|
 ##   | modulePath               | true     | ''      | The path to the module's folder      | 'modules/api-management/service'                                   |
-##   | moduleTestFilePath       | true     | ''      | The path to the module Pester tests. | 'utilities/pipelines/staticValidation/compliance/module.tests.ps1' |
+##   | moduleTestFilePath       | false    |         | The path to the module Pester tests. | 'utilities/pipelines/staticValidation/compliance/module.tests.ps1' |
 ##   |===========================================================================================================================================================|
 ##
 ##---------------------------------------------##
@@ -26,10 +26,9 @@ inputs:
   modulePath:
     description: "The path to the module's folder"
     required: true
-    default: ""
   moduleTestFilePath:
     description: "The path to the test file"
-    required: true
+    required: false
     default: "utilities/pipelines/staticValidation/compliance/module.tests.ps1"
 
 runs:

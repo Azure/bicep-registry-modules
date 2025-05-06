@@ -102,6 +102,13 @@ var formattedRoleAssignments = [
   })
 ]
 
+resource publicIp 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = [
+  for (ipConfiguration, index) in ipConfigurations: if (contains(ipConfiguration, 'publicIPAddressResourceId') && (ipConfiguration.?publicIPAddressResourceId != null)) {
+    name: last(split(ipConfiguration.?publicIPAddressResourceId ?? '', '/'))
+    scope: resourceGroup(split(ipConfiguration.?publicIPAddressResourceId ?? '', '/')[4])
+  }
+]
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-networkinterface.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -143,7 +150,7 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2024-05-01' = {
       : null
     ipConfigurations: [
       for (ipConfiguration, index) in ipConfigurations: {
-        name: ipConfiguration.?name ?? 'ipconfig0${index + 1}'
+        name: ipConfiguration.?name ?? 'ipconfig${padLeft((index + 1), 2, '0')}'
         properties: {
           primary: index == 0 ? true : false
           privateIPAllocationMethod: ipConfiguration.?privateIPAllocationMethod
@@ -151,13 +158,13 @@ resource networkInterface 'Microsoft.Network/networkInterfaces@2024-05-01' = {
           publicIPAddress: contains(ipConfiguration, 'publicIPAddressResourceId')
             ? (ipConfiguration.?publicIPAddressResourceId != null
                 ? {
-                    #disable-next-line use-resource-id-functions // the resource id is prvided via a parameter
+                    #disable-next-line use-resource-id-functions // the resource id is provided via a parameter
                     id: ipConfiguration.?publicIPAddressResourceId
                   }
                 : null)
             : null
           subnet: {
-            #disable-next-line use-resource-id-functions // the resource id is prvided via a parameter
+            #disable-next-line use-resource-id-functions // the resource id is provided via a parameter
             id: ipConfiguration.subnetResourceId
           }
           loadBalancerBackendAddressPools: ipConfiguration.?loadBalancerBackendAddressPools
@@ -236,6 +243,17 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = networkInterface.location
+
+@description('The list of IP configurations of the network interface.')
+output ipConfigurations networkInterfaceIPConfigurationOutputType[] = [
+  for (ipConfiguration, index) in ipConfigurations: {
+    name: networkInterface.properties.ipConfigurations[index].name
+    privateIP: networkInterface.properties.ipConfigurations[index].properties.?privateIPAddress ?? ''
+    publicIP: (contains(ipConfiguration, 'publicIPAddressResourceId') && (ipConfiguration.?publicIPAddressResourceId != null))
+      ? publicIp[index].properties.ipAddress ?? ''
+      : ''
+  }
+]
 
 // ================ //
 // Definitions      //
@@ -393,4 +411,17 @@ type virtualNetworkTapType = {
 
   @description('Optional. Tags of the virtual network tap.')
   tags: object?
+}
+
+@export()
+@description('The type for the network interface IP configuration output.')
+type networkInterfaceIPConfigurationOutputType = {
+  @description('The name of the IP configuration.')
+  name: string
+
+  @description('The private IP address.')
+  privateIP: string?
+
+  @description('The public IP address.')
+  publicIP: string?
 }

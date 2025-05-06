@@ -18,8 +18,14 @@ param sku databaseSkuType = {
 @description('Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled.')
 param autoPauseDelay int = -1
 
-@description('Optional. Specifies the availability zone the database is pinned to.')
-param availabilityZone '1' | '2' | '3' | 'NoPreference' = 'NoPreference'
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
+@allowed([
+  -1
+  1
+  2
+  3
+])
+param availabilityZone int
 
 @description('Optional. Collation of the metadata catalog.')
 param catalogCollation string = 'DATABASE_DEFAULT'
@@ -174,7 +180,7 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
   identity: identity
   properties: {
     autoPauseDelay: autoPauseDelay
-    availabilityZone: availabilityZone
+    availabilityZone: availabilityZone != -1 ? string(availabilityZone) : 'NoPreference'
     catalogCollation: catalogCollation
     collation: collation
     createMode: createMode
@@ -212,7 +218,7 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
 
 resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
-    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    name: diagnosticSetting.?name ?? '${replace(name, ' ', '_')}-diagnosticSettings'
     properties: {
       storageAccountId: diagnosticSetting.?storageAccountResourceId
       workspaceId: diagnosticSetting.?workspaceResourceId
@@ -240,7 +246,7 @@ resource database_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021
 ]
 
 module database_backupShortTermRetentionPolicy 'backup-short-term-retention-policy/main.bicep' = if (!empty(backupShortTermRetentionPolicy)) {
-  name: '${uniqueString(deployment().name, location)}-${name}-shBakRetPol'
+  name: '${uniqueString(deployment().name, location)}-shBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name
@@ -250,7 +256,7 @@ module database_backupShortTermRetentionPolicy 'backup-short-term-retention-poli
 }
 
 module database_backupLongTermRetentionPolicy 'backup-long-term-retention-policy/main.bicep' = if (!empty(backupLongTermRetentionPolicy)) {
-  name: '${uniqueString(deployment().name, location)}-${name}-lgBakRetPol'
+  name: '${uniqueString(deployment().name, location)}-lgBakRetPol'
   params: {
     serverName: serverName
     databaseName: database.name

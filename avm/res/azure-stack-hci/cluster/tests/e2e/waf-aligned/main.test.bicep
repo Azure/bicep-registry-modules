@@ -67,7 +67,6 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
     deploymentUserPassword: localAdminAndDeploymentUserPass
-    hciResourceProviderObjectId: hciResourceProviderObjectId
     localAdminPassword: localAdminAndDeploymentUserPass
     location: enforcedLocation
   }
@@ -84,6 +83,7 @@ module testDeployment '../../../main.bicep' = {
     localAdminPassword: localAdminAndDeploymentUserPass
     servicePrincipalId: arbDeploymentAppId
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    hciResourceProviderObjectId: hciResourceProviderObjectId
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames

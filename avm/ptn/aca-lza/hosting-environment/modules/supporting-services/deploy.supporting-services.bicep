@@ -33,6 +33,8 @@ param logAnalyticsWorkspaceId string = ''
 @description('Optional, default value is true. If true, any resources that support AZ will be deployed in all three AZ. However if the selected region is not supporting AZ, this parameter needs to be set to false.')
 param deployZoneRedundantResources bool = true
 
+@description('Optional. Deploy the agent pool for the container registry. Default value is true.')
+param deployAgentPool bool = true
 // ------------------
 // RESOURCES
 // ------------------
@@ -52,6 +54,7 @@ module containerRegistry 'modules/container-registry.module.bicep' = {
     containerRegistryUserAssignedIdentityName: resourcesNames.containerRegistryUserAssignedIdentity
     diagnosticWorkspaceId: logAnalyticsWorkspaceId
     deployZoneRedundantResources: deployZoneRedundantResources
+    deployAgentPool: deployAgentPool
   }
 }
 
