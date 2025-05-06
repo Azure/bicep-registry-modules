@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "3924872257187155355"
+      "version": "0.35.1.17967",
+      "templateHash": "9737790900108778620"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace."
@@ -1359,8 +1359,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "14024094214852981332"
+              "version": "0.35.1.17967",
+              "templateHash": "2043978404537017691"
             },
             "name": "Log Analytics Workspace Storage Insight Configs",
             "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
@@ -1436,7 +1436,7 @@
                 "tables": "[parameters('tables')]",
                 "storageAccount": {
                   "id": "[parameters('storageAccountResourceId')]",
-                  "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2022-09-01').keys[0].value]"
+                  "key": "[listKeys('storageAccount', '2022-09-01').keys[0].value]"
                 }
               }
             }
@@ -1504,8 +1504,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "15202444687633091947"
+              "version": "0.35.1.17967",
+              "templateHash": "15624488954958814427"
             },
             "name": "Log Analytics Workspace Linked Services",
             "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -1623,8 +1623,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "1489251440210164837"
+              "version": "0.35.1.17967",
+              "templateHash": "8250559094478594611"
             },
             "name": "Log Analytics Workspace Linked Storage Accounts",
             "description": "This module deploys a Log Analytics Workspace Linked Storage Account."
@@ -1756,8 +1756,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "14407663387414945082"
+              "version": "0.35.1.17967",
+              "templateHash": "5149844663841891327"
             },
             "name": "Log Analytics Workspace Saved Searches",
             "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -1919,8 +1919,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "15082251740316718256"
+              "version": "0.35.1.17967",
+              "templateHash": "1695158270142527557"
             },
             "name": "Log Analytics Workspace Data Exports",
             "description": "This module deploys a Log Analytics Workspace Data Export."
@@ -2112,8 +2112,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "3186325409788999053"
+              "version": "0.35.1.17967",
+              "templateHash": "3062149733782372246"
             },
             "name": "Log Analytics Workspace Datasources",
             "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -2339,8 +2339,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4329017759962267155"
+              "version": "0.35.1.17967",
+              "templateHash": "5855172714151847939"
             },
             "name": "Log Analytics Workspace Tables",
             "description": "This module deploys a Log Analytics Workspace Table."
@@ -2992,6 +2992,20 @@
         "description": "The principal ID of the system assigned identity."
       },
       "value": "[tryGet(tryGet(reference('logAnalyticsWorkspace', '2023-09-01', 'full'), 'identity'), 'principalId')]"
+    },
+    "primarySharedKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary shared key of the log analytics workspace."
+      },
+      "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').primarySharedKey]"
+    },
+    "secondarySharedKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary shared key of the log analytics workspace."
+      },
+      "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').secondarySharedKey]"
     }
   }
 }
