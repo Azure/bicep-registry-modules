@@ -772,7 +772,7 @@ The custom rules inside the policy.
                 'ZZ'
               ]
               matchVariable: 'RemoteAddr'
-              negateCondition: true
+              negateCondition: false
               operator: 'GeoMatch'
             }
           ]

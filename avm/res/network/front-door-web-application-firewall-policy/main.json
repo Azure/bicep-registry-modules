@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "1106804518562810530"
+      "version": "0.35.1.17967",
+      "templateHash": "306691940600181471"
     },
     "name": "Front Door Web Application Firewall (WAF) Policies",
     "description": "This module deploys a Front Door Web Application Firewall (WAF) Policy."
@@ -354,7 +354,7 @@
               {
                 "matchVariable": "RemoteAddr",
                 "operator": "GeoMatch",
-                "negateCondition": true,
+                "negateCondition": false,
                 "matchValue": [
                   "ZZ"
                 ]
