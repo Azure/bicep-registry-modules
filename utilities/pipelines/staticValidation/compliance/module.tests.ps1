@@ -146,7 +146,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $expectedFolderName = ($folderName -cReplace '([A-Z])', '-$1').ToLower()
             $folderName | Should -Be $expectedFolderName
         }
-
     }
 
     Context 'Top level module folder tests' {
