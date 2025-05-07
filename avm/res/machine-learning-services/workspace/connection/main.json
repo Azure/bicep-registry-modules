@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "5713415122054029428"
+      "version": "0.34.44.8038",
+      "templateHash": "11571995595419225315"
     },
     "name": "Machine Learning Services Workspaces Connections",
     "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -20,6 +20,9 @@
         "metadata": {
           "description": "Required. The metadata key-value pairs."
         }
+      },
+      "metadata": {
+        "description": "The tpe for the metadata."
       }
     },
     "categoryType": {
@@ -60,6 +63,7 @@
         "Dynamics",
         "DynamicsAx",
         "DynamicsCrm",
+        "Elasticsearch",
         "Eloqua",
         "FileServer",
         "FtpServer",
@@ -79,6 +83,7 @@
         "Informix",
         "Jira",
         "Magento",
+        "ManagedOnlineEndpoint",
         "MariaDb",
         "Marketo",
         "MicrosoftAccess",
@@ -95,6 +100,7 @@
         "OracleServiceCloud",
         "PayPal",
         "Phoenix",
+        "Pinecone",
         "PostgreSql",
         "Presto",
         "PythonFeed",
@@ -129,7 +135,8 @@
         "Zoho"
       ],
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the connection category."
       }
     },
     "aadAuthTypeWorkspaceConnectionPropertyType": {
@@ -144,6 +151,9 @@
             "description": "Required. The authentication type of the connection target."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type is AAD."
       }
     },
     "accessKeyAuthTypeWorkspaceConnectionPropertyType": {
@@ -164,6 +174,9 @@
             "description": "Required. The credentials for the connection."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type is AccessKey."
       }
     },
     "accountKeyAuthTypeWorkspaceConnectionPropertyType": {
@@ -179,11 +192,14 @@
           }
         },
         "credentials": {
-          "$ref": "#/definitions/workspaceConnectionAccountKey",
+          "$ref": "#/definitions/workspaceConnectionAccountKeyType",
           "metadata": {
             "description": "Required. The credentials for the connection."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type is AccountKey."
       }
     },
     "apiKeyAuthWorkspaceConnectionPropertyType": {
@@ -204,6 +220,9 @@
             "description": "Required. The credentials for the connection."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type is ApiKey."
       }
     },
     "customKeysWorkspaceConnectionPropertyType": {
@@ -224,6 +243,9 @@
             "description": "Required. The credentials for the connection."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type are CustomKeys."
       }
     },
     "managedIdentityAuthTypeWorkspaceConnectionPropertyType": {
@@ -244,6 +266,9 @@
             "description": "Required. The credentials for the connection."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type is ManagedIdentity."
       }
     },
     "noneAuthTypeWorkspaceConnectionPropertyType": {
@@ -258,6 +283,9 @@
             "description": "Required. The authentication type of the connection target."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type is None."
       }
     },
     "oauth2AuthTypeWorkspaceConnectionPropertyType": {
@@ -278,6 +306,9 @@
             "description": "Required. The credentials for the connection."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type is OAuth2."
       }
     },
     "patAuthTypeWorkspaceConnectionPropertyType": {
@@ -298,6 +329,9 @@
             "description": "Required. The credentials for the connection."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type is PAT."
       }
     },
     "sasAuthTypeWorkspaceConnectionPropertyType": {
@@ -318,6 +352,9 @@
             "description": "Required. The credentials for the connection."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type is SAS."
       }
     },
     "servicePrincipalAuthTypeWorkspaceConnectionPropertyType": {
@@ -338,6 +375,9 @@
             "description": "Required. The credentials for the connection."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type is ServicePrincipal."
       }
     },
     "usernamePasswordAuthTypeWorkspaceConnectionPropertyType": {
@@ -358,6 +398,9 @@
             "description": "Required. The credentials for the connection."
           }
         }
+      },
+      "metadata": {
+        "description": "The connection properties when the auth type is UsernamePassword."
       }
     },
     "customKeysType": {
@@ -376,6 +419,9 @@
             "description": "Required. The custom keys for the connection."
           }
         }
+      },
+      "metadata": {
+        "description": "The type fot the custom keys."
       }
     },
     "workspaceConnectionAccessKeyType": {
@@ -393,9 +439,12 @@
             "description": "Required. The connection secret access key."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the workspace connection access key."
       }
     },
-    "workspaceConnectionAccountKey": {
+    "workspaceConnectionAccountKeyType": {
       "type": "object",
       "properties": {
         "key": {
@@ -404,6 +453,9 @@
             "description": "Required. The connection key."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the workspace connection account key."
       }
     },
     "workspaceConnectionApiKeyType": {
@@ -415,6 +467,9 @@
             "description": "Required. The connection API key."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the workspace connection API key."
       }
     },
     "workspaceConnectionManagedIdentityType": {
@@ -432,6 +487,9 @@
             "description": "Required. The connection managed identity resource ID."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the workspace connection managed identity."
       }
     },
     "workspaceConnectionOAuth2Type": {
@@ -441,7 +499,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection auth URL. Required by Concur connection category."
+            "description": "Conditional. The connection auth URL. Required if connection category is Concur."
           }
         },
         "clientId": {
@@ -462,35 +520,35 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection developer token. Required by GoogleAdWords connection category."
+            "description": "Conditional. The connection developer token. Required if connection category is GoogleAdWords."
           }
         },
         "password": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection password. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'."
+            "description": "Conditional. The connection password. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'."
           }
         },
         "refreshToken": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection refresh token. Required by GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero and Zoho connection categories."
+            "description": "Conditional. The connection refresh token. Required if connection category is GoogleBigQuery, GoogleAdWords, Hubspot, QuickBooks, Square, Xero or Zoho."
           }
         },
         "tenantId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The connection tenant ID. Required by QuickBooks and Xero connection categories."
+            "description": "Conditional. The connection tenant ID. Required if connection category is QuickBooks or Xero."
           }
         },
         "username": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection username. Required by Concur and ServiceNow connection categories where AccessToken grant type is 'Password'."
+            "description": "Conditional. The connection username. Required if connection category is Concur or ServiceNow where AccessToken grant type is 'Password'."
           }
         }
       }
@@ -504,6 +562,9 @@
             "description": "Required. The connection personal access token."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the workspace connection personal access token."
       }
     },
     "workspaceConnectionSharedAccessSignatureType": {
@@ -515,6 +576,9 @@
             "description": "Required. The connection SAS token."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the workspace connection shared access signature."
       }
     },
     "workspaceConnectionServicePrincipalType": {
@@ -538,6 +602,9 @@
             "description": "Required. The connection tenant ID."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the workspace connection service principal."
       }
     },
     "workspaceConnectionUsernamePasswordType": {
@@ -553,7 +620,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The connection security token. Required by connections like SalesForce for extra security in addition to 'UsernamePassword'."
+            "description": "Conditional. The connection security token. Required if connection is like SalesForce for extra security in addition to 'UsernamePassword'."
           }
         },
         "username": {
@@ -562,6 +629,9 @@
             "description": "Required. The connection username."
           }
         }
+      },
+      "metadata": {
+        "description": "The type for the workspace connection username and password."
       }
     },
     "connectionPropertyType": {
@@ -574,6 +644,9 @@
           },
           "AccessKey": {
             "$ref": "#/definitions/accessKeyAuthTypeWorkspaceConnectionPropertyType"
+          },
+          "AccountKey": {
+            "$ref": "#/definitions/accountKeyAuthTypeWorkspaceConnectionPropertyType"
           },
           "ApiKey": {
             "$ref": "#/definitions/apiKeyAuthWorkspaceConnectionPropertyType"
@@ -605,7 +678,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of the connection properties."
       }
     }
   },
@@ -688,7 +762,7 @@
     },
     "connection": {
       "type": "Microsoft.MachineLearningServices/workspaces/connections",
-      "apiVersion": "2024-04-01",
+      "apiVersion": "2024-10-01",
       "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
       "properties": "[union(createObject('category', parameters('category'), 'expiryTime', parameters('expiryTime'), 'isSharedToAll', parameters('isSharedToAll'), 'metadata', parameters('metadata'), 'sharedUserList', parameters('sharedUserList'), 'target', parameters('target'), 'value', parameters('value')), parameters('connectionProperties'))]"
     }

@@ -117,11 +117,23 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
     // Non-required parameters
     billingType: 'MeteredData'
     encapsulation: 'Dot1Q'
-    links: []
+    links: [
+      {
+        name: 'link1'
+        properties: {
+          adminState: 'Disabled'
+        }
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     roleAssignments: [
       {
@@ -176,7 +188,14 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
       "value": "Dot1Q"
     },
     "links": {
-      "value": []
+      "value": [
+        {
+          "name": "link1",
+          "properties": {
+            "adminState": "Disabled"
+          }
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -185,6 +204,13 @@ module expressRoutePort 'br/public:avm/res/network/express-route-port:<version>'
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "roleAssignments": {
@@ -229,11 +255,23 @@ param peeringLocation = 'Airtel-Chennai2-CLS'
 // Non-required parameters
 param billingType = 'MeteredData'
 param encapsulation = 'Dot1Q'
-param links = []
+param links = [
+  {
+    name: 'link1'
+    properties: {
+      adminState: 'Disabled'
+    }
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param roleAssignments = [
   {
@@ -342,10 +380,12 @@ param peeringLocation = 'Airtel-Chennai2-CLS'
 | [`billingType`](#parameter-billingtype) | string | Chosen SKU family of ExpressRoute circuit. Choose from MeteredData or UnlimitedData SKU families. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`encapsulation`](#parameter-encapsulation) | string | Encapsulation method on physical ports. |
-| [`links`](#parameter-links) | array | Properties of the ExpressRouteLink. |
+| [`links`](#parameter-links) | array | The set of physical links of the ExpressRoutePort resource. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `bandwidthInGbps`
 
@@ -408,7 +448,7 @@ Encapsulation method on physical ports.
 
 ### Parameter: `links`
 
-Properties of the ExpressRouteLink.
+The set of physical links of the ExpressRoutePort resource.
 
 - Required: No
 - Type: array
@@ -432,12 +472,6 @@ The name of the link to be created.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'string'
-  ]
-  ```
 
 ### Parameter: `links.id`
 
@@ -445,12 +479,6 @@ Resource Id of the existing Link.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'string'
-  ]
-  ```
 
 ### Parameter: `links.properties`
 
@@ -463,7 +491,7 @@ Properties of the Link.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`adminState`](#parameter-linkspropertiesadminstate) | string | Administrative state of the physical port. |
+| [`adminState`](#parameter-linkspropertiesadminstate) | string | Administrative state of the physical port. Must be set to 'Disabled' for initial deployment. |
 
 **Optional parameters**
 
@@ -473,16 +501,10 @@ Properties of the Link.
 
 ### Parameter: `links.properties.adminState`
 
-Administrative state of the physical port.
+Administrative state of the physical port. Must be set to 'Disabled' for initial deployment.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'string'
-  ]
-  ```
 
 ### Parameter: `links.properties.macSecConfig`
 
@@ -506,12 +528,6 @@ Keyvault Secret Identifier URL containing Mac security CAK key.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'string'
-  ]
-  ```
 
 ### Parameter: `links.properties.macSecConfig.cipher`
 
@@ -535,12 +551,6 @@ Keyvault Secret Identifier URL containing Mac security CKN key.
 
 - Required: Yes
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'string'
-  ]
-  ```
 
 ### Parameter: `links.properties.macSecConfig.sciState`
 
@@ -599,6 +609,26 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `roleAssignments`
 
@@ -704,6 +734,13 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
 ## Outputs
 
 | Output | Type | Description |
@@ -719,6 +756,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

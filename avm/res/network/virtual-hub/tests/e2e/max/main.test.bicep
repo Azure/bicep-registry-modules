@@ -58,16 +58,17 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       addressPrefix: '10.1.0.0/16'
-      virtualWanId: nestedDependencies.outputs.virtualWWANResourceId
+      virtualWanResourceId: nestedDependencies.outputs.virtualWWANResourceId
       hubRouteTables: [
         {
           name: 'routeTable1'
+          routes: []
         }
       ]
       hubVirtualNetworkConnections: [
         {
           name: 'connection1'
-          remoteVirtualNetworkId: nestedDependencies.outputs.virtualNetworkResourceId
+          remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
           routingConfiguration: {
             associatedRouteTable: {
               id: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubRouteTables/routeTable1'
@@ -78,13 +79,29 @@ module testDeployment '../../../main.bicep' = [
                   id: '${resourceGroup.id}/providers/Microsoft.Network/virtualHubs/${namePrefix}-${serviceShort}/hubRouteTables/routeTable1'
                 }
               ]
-              labels: [
-                'none'
+              labels: []
+            }
+            vnetRoutes: {
+              staticRoutes: [
+                {
+                  name: 'route1'
+                  addressPrefixes: [
+                    '10.150.0.0/24'
+                  ]
+                  nextHopIpAddress: '10.150.0.5'
+                }
               ]
+              staticRoutesConfig: {
+                vnetLocalRouteOverrideCriteria: 'Contains'
+              }
             }
           }
         }
       ]
+      sku:'Standard'
+      virtualRouterAutoScaleConfiguration: {
+        minCount: 2
+      }
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'

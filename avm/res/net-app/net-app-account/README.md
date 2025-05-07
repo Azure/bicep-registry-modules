@@ -17,13 +17,13 @@ This module deploys an Azure NetApp File.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.NetApp/netAppAccounts` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts) |
-| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupPolicies) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupVaults) |
-| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/backupVaults/backups) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools) |
-| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/capacityPools/volumes) |
-| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2024-07-01/netAppAccounts/snapshotPolicies) |
+| `Microsoft.NetApp/netAppAccounts` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts) |
+| `Microsoft.NetApp/netAppAccounts/backupPolicies` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupPolicies) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupVaults) |
+| `Microsoft.NetApp/netAppAccounts/backupVaults/backups` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/backupVaults/backups) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools) |
+| `Microsoft.NetApp/netAppAccounts/capacityPools/volumes` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/capacityPools/volumes) |
+| `Microsoft.NetApp/netAppAccounts/snapshotPolicies` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.NetApp/2025-01-01/netAppAccounts/snapshotPolicies) |
 
 ## Usage examples
 
@@ -145,7 +145,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: [
           {
             dataProtection: {
@@ -191,9 +191,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zones: [
-              1
-            ]
+            zone: 1
           }
           {
             encryptionKeySource: '<encryptionKeySource>'
@@ -226,9 +224,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             smbNonBrowsable: 'Disabled'
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zones: [
-              1
-            ]
+            zone: 1
           }
         ]
       }
@@ -242,7 +238,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: []
       }
     ]
@@ -343,7 +339,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             }
           ],
           "serviceLevel": "Premium",
-          "size": 4398046511104,
+          "size": 1,
           "volumes": [
             {
               "dataProtection": {
@@ -389,9 +385,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               ],
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
-              "zones": [
-                1
-              ]
+              "zone": 1
             },
             {
               "encryptionKeySource": "<encryptionKeySource>",
@@ -424,9 +418,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               "smbNonBrowsable": "Disabled",
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
-              "zones": [
-                1
-              ]
+              "zone": 1
             }
           ]
         },
@@ -440,7 +432,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             }
           ],
           "serviceLevel": "Premium",
-          "size": 4398046511104,
+          "size": 1,
           "volumes": []
         }
       ]
@@ -543,7 +535,7 @@ param capacityPools = [
       }
     ]
     serviceLevel: 'Premium'
-    size: 4398046511104
+    size: 1
     volumes: [
       {
         dataProtection: {
@@ -589,9 +581,7 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zones: [
-          1
-        ]
+        zone: 1
       }
       {
         encryptionKeySource: '<encryptionKeySource>'
@@ -624,9 +614,7 @@ param capacityPools = [
         smbNonBrowsable: 'Disabled'
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zones: [
-          1
-        ]
+        zone: 1
       }
     ]
   }
@@ -640,7 +628,7 @@ param capacityPools = [
       }
     ]
     serviceLevel: 'Premium'
-    size: 4398046511104
+    size: 1
     volumes: []
   }
 ]
@@ -720,7 +708,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: [
           {
             encryptionKeySource: '<encryptionKeySource>'
@@ -756,9 +744,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zones: [
-              1
-            ]
+            zone: 1
           }
           {
             encryptionKeySource: '<encryptionKeySource>'
@@ -769,9 +755,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             ]
             subnetResourceId: '<subnetResourceId>'
             usageThreshold: 107374182400
-            zones: [
-              1
-            ]
+            zone: 1
           }
         ]
       }
@@ -785,7 +769,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
           }
         ]
         serviceLevel: 'Premium'
-        size: 4398046511104
+        size: 1
         volumes: []
       }
     ]
@@ -853,7 +837,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             }
           ],
           "serviceLevel": "Premium",
-          "size": 4398046511104,
+          "size": 1,
           "volumes": [
             {
               "encryptionKeySource": "<encryptionKeySource>",
@@ -889,9 +873,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               ],
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
-              "zones": [
-                1
-              ]
+              "zone": 1
             },
             {
               "encryptionKeySource": "<encryptionKeySource>",
@@ -902,9 +884,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
               ],
               "subnetResourceId": "<subnetResourceId>",
               "usageThreshold": 107374182400,
-              "zones": [
-                1
-              ]
+              "zone": 1
             }
           ]
         },
@@ -918,7 +898,7 @@ module netAppAccount 'br/public:avm/res/net-app/net-app-account:<version>' = {
             }
           ],
           "serviceLevel": "Premium",
-          "size": 4398046511104,
+          "size": 1,
           "volumes": []
         }
       ]
@@ -990,7 +970,7 @@ param capacityPools = [
       }
     ]
     serviceLevel: 'Premium'
-    size: 4398046511104
+    size: 1
     volumes: [
       {
         encryptionKeySource: '<encryptionKeySource>'
@@ -1026,9 +1006,7 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zones: [
-          1
-        ]
+        zone: 1
       }
       {
         encryptionKeySource: '<encryptionKeySource>'
@@ -1039,9 +1017,7 @@ param capacityPools = [
         ]
         subnetResourceId: '<subnetResourceId>'
         usageThreshold: 107374182400
-        zones: [
-          1
-        ]
+        zone: 1
       }
     ]
   }
@@ -1055,7 +1031,7 @@ param capacityPools = [
       }
     ]
     serviceLevel: 'Premium'
-    size: 4398046511104
+    size: 1
     volumes: []
   }
 ]
@@ -1184,6 +1160,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`adName`](#parameter-adname) | string | Name of the active directory host as part of Kerberos Realm used for Kerberos authentication. |
 | [`aesEncryption`](#parameter-aesencryption) | bool | Enable AES encryption on the SMB Server. |
+| [`allowLocalNfsUsersWithLdap`](#parameter-allowlocalnfsuserswithldap) | bool | If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes. |
 | [`backupPolicies`](#parameter-backuppolicies) | array | The backup policies to create. |
 | [`backupVault`](#parameter-backupvault) | object | The netapp backup vault to create & configure. |
 | [`capacityPools`](#parameter-capacitypools) | array | Capacity pools to create. |
@@ -1230,6 +1207,14 @@ Enable AES encryption on the SMB Server.
 - Type: bool
 - Default: `False`
 
+### Parameter: `allowLocalNfsUsersWithLdap`
+
+If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `backupPolicies`
 
 The backup policies to create.
@@ -1263,8 +1248,6 @@ Indicates whether the backup policy is enabled.
 
 - Required: No
 - Type: bool
-- MinValue: 2
-- MaxValue: 1019
 
 ### Parameter: `backupPolicies.location`
 
@@ -1272,8 +1255,6 @@ The location of the backup policy.
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 1019
 
 ### Parameter: `backupPolicies.monthlyBackupsToKeep`
 
@@ -1281,8 +1262,6 @@ The monthly backups to keep.
 
 - Required: No
 - Type: int
-- MinValue: 2
-- MaxValue: 1019
 
 ### Parameter: `backupPolicies.name`
 
@@ -1290,8 +1269,6 @@ The name of the backup policy.
 
 - Required: No
 - Type: string
-- MinValue: 2
-- MaxValue: 1019
 
 ### Parameter: `backupPolicies.weeklyBackupsToKeep`
 
@@ -1299,8 +1276,6 @@ The weekly backups to keep.
 
 - Required: No
 - Type: int
-- MinValue: 2
-- MaxValue: 1019
 
 ### Parameter: `backupVault`
 
@@ -1400,7 +1375,7 @@ Capacity pools to create.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-capacitypoolsname) | string | The name of the capacity pool. |
-| [`size`](#parameter-capacitypoolssize) | int | Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104). |
+| [`size`](#parameter-capacitypoolssize) | int | Provisioned size of the pool in Tebibytes (TiB). |
 
 **Optional parameters**
 
@@ -1424,10 +1399,12 @@ The name of the capacity pool.
 
 ### Parameter: `capacityPools.size`
 
-Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).
+Provisioned size of the pool in Tebibytes (TiB).
 
 - Required: Yes
 - Type: int
+- MinValue: 1
+- MaxValue: 2048
 
 ### Parameter: `capacityPools.coolAccess`
 
@@ -1611,6 +1588,7 @@ List of volumes to create in the capacity pool.
 | [`name`](#parameter-capacitypoolsvolumesname) | string | The name of the pool volume. |
 | [`subnetResourceId`](#parameter-capacitypoolsvolumessubnetresourceid) | string | The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes. |
 | [`usageThreshold`](#parameter-capacitypoolsvolumesusagethreshold) | int | Maximum storage quota allowed for a file system in bytes. |
+| [`zone`](#parameter-capacitypoolsvolumeszone) | int | The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set. |
 
 **Optional parameters**
 
@@ -1627,14 +1605,13 @@ List of volumes to create in the capacity pool.
 | [`keyVaultPrivateEndpointResourceId`](#parameter-capacitypoolsvolumeskeyvaultprivateendpointresourceid) | string | The resource ID of the key vault private endpoint. |
 | [`location`](#parameter-capacitypoolsvolumeslocation) | string | Location of the pool volume. |
 | [`networkFeatures`](#parameter-capacitypoolsvolumesnetworkfeatures) | string | Network feature for the volume. |
-| [`protocolTypes`](#parameter-capacitypoolsvolumesprotocoltypes) | array | Set of protocol types. |
+| [`protocolTypes`](#parameter-capacitypoolsvolumesprotocoltypes) | array | Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`. |
 | [`roleAssignments`](#parameter-capacitypoolsvolumesroleassignments) | array | Array of role assignments to create. |
 | [`serviceLevel`](#parameter-capacitypoolsvolumesservicelevel) | string | The pool service level. Must match the one of the parent capacity pool. |
 | [`smbContinuouslyAvailable`](#parameter-capacitypoolsvolumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-capacitypoolsvolumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-capacitypoolsvolumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
 | [`volumeType`](#parameter-capacitypoolsvolumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
-| [`zones`](#parameter-capacitypoolsvolumeszones) | array | Zone where the volume will be placed. |
 
 ### Parameter: `capacityPools.volumes.name`
 
@@ -1653,6 +1630,13 @@ The Azure Resource URI for a delegated subnet. Must have the delegation Microsof
 ### Parameter: `capacityPools.volumes.usageThreshold`
 
 Maximum storage quota allowed for a file system in bytes.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `capacityPools.volumes.zone`
+
+The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.
 
 - Required: Yes
 - Type: int
@@ -1748,7 +1732,6 @@ Replication properties.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`endpointType`](#parameter-capacitypoolsvolumesdataprotectionreplicationendpointtype) | string | Indicates whether the local volume is the source or destination for the Volume Replication. |
-| [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume. |
 
 **Optional parameters**
 
@@ -1757,6 +1740,7 @@ Replication properties.
 | [`remotePath`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotepath) | object | The full path to a volume that is to be migrated into ANF. Required for Migration volumes. |
 | [`remoteVolumeRegion`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeregion) | string | The remote region for the other end of the Volume Replication.Required for Data Protection volumes. |
 | [`remoteVolumeResourceId`](#parameter-capacitypoolsvolumesdataprotectionreplicationremotevolumeresourceid) | string | The resource ID of the remote volume. Required for Data Protection volumes. |
+| [`replicationSchedule`](#parameter-capacitypoolsvolumesdataprotectionreplicationreplicationschedule) | string | The replication schedule for the volume (to only be set on the destination (dst)). |
 
 ### Parameter: `capacityPools.volumes.dataProtection.replication.endpointType`
 
@@ -1769,21 +1753,6 @@ Indicates whether the local volume is the source or destination for the Volume R
   [
     'dst'
     'src'
-  ]
-  ```
-
-### Parameter: `capacityPools.volumes.dataProtection.replication.replicationSchedule`
-
-The replication schedule for the volume.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '_10minutely'
-    'daily'
-    'hourly'
   ]
   ```
 
@@ -1836,6 +1805,21 @@ The resource ID of the remote volume. Required for Data Protection volumes.
 
 - Required: No
 - Type: string
+
+### Parameter: `capacityPools.volumes.dataProtection.replication.replicationSchedule`
+
+The replication schedule for the volume (to only be set on the destination (dst)).
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '_10minutely'
+    'daily'
+    'hourly'
+  ]
+  ```
 
 ### Parameter: `capacityPools.volumes.dataProtection.snapshot`
 
@@ -2060,10 +2044,18 @@ Network feature for the volume.
 
 ### Parameter: `capacityPools.volumes.protocolTypes`
 
-Set of protocol types.
+Set of protocol types. Default value is `['NFSv3']`. If you are creating a dual-stack volume, set either `['NFSv3','CIFS']` or `['NFSv4.1','CIFS']`.
 
 - Required: No
 - Type: array
+- Allowed:
+  ```Bicep
+  [
+    'CIFS'
+    'NFSv3'
+    'NFSv4.1'
+  ]
+  ```
 
 ### Parameter: `capacityPools.volumes.roleAssignments`
 
@@ -2218,13 +2210,6 @@ The type of the volume. DataProtection volumes are used for replication.
 
 - Required: No
 - Type: string
-
-### Parameter: `capacityPools.volumes.zones`
-
-Zone where the volume will be placed.
-
-- Required: No
-- Type: array
 
 ### Parameter: `customerManagedKey`
 
@@ -2622,8 +2607,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.hourlySchedule`
 
@@ -2669,8 +2652,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.location`
 
@@ -2741,8 +2722,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `snapshotPolicies.weeklySchedule`
 
@@ -2818,8 +2797,6 @@ Resource size in bytes, current storage usage for the volume in bytes.
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 255
 
 ### Parameter: `tags`
 
@@ -2844,7 +2821,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

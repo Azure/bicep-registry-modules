@@ -422,6 +422,8 @@ param istioServiceMeshCertificateAuthority istioServiceMeshCertificateAuthorityT
 // Variables   //
 // =========== //
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -497,7 +499,7 @@ var builtInRoleNames = {
   )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -557,12 +559,12 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
   properties: {
     agentPoolProfiles: map(primaryAgentPoolProfiles, profile => {
       name: profile.name
-      count: profile.count ?? 1
+      count: profile.?count ?? 1
       availabilityZones: map(profile.?availabilityZones ?? [1, 2, 3], zone => '${zone}')
       creationData: !empty(profile.?sourceResourceId)
         ? {
             #disable-next-line use-resource-id-functions // Not possible to reference as nested
-            sourceResourceId: profile.sourceResourceId
+            sourceResourceId: profile.?sourceResourceId
           }
         : null
       enableAutoScaling: profile.?enableAutoScaling ?? false
@@ -592,6 +594,11 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
       scaleDownMode: profile.?scaleDownMode ?? 'Delete'
       scaleSetEvictionPolicy: profile.?scaleSetEvictionPolicy ?? 'Delete'
       scaleSetPriority: profile.?scaleSetPriority
+      securityProfile: {
+        enableSecureBoot: profile.?enableSecureBoot ?? false
+        enableVTPM: profile.?enableVTPM ?? false
+        sshAccess: skuName == 'Automatic' ? 'Disabled' : 'LocalUser'
+      }
       spotMaxPrice: profile.?spotMaxPrice
       tags: profile.?tags
       type: profile.?type
@@ -880,7 +887,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2024-09-02-p
 
 module managedCluster_maintenanceConfigurations 'maintenance-configurations/main.bicep' = [
   for (maintenanceConfiguration, index) in (maintenanceConfigurations ?? []): {
-    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceConfiguration-${index}'
+    name: '${uniqueString(deployment().name, location)}-ManagedCluster-MaintenanceCfg-${index}'
     params: {
       name: maintenanceConfiguration!.name
       maintenanceWindow: maintenanceConfiguration!.maintenanceWindow
@@ -939,7 +946,7 @@ module managedCluster_extension 'br/public:avm/res/kubernetes-configuration/exte
     clusterName: managedCluster.name
     configurationProtectedSettings: fluxExtension.?configurationProtectedSettings
     configurationSettings: fluxExtension.?configurationSettings
-    enableTelemetry: enableTelemetry
+    enableTelemetry: enableReferencedModulesTelemetry
     extensionType: 'microsoft.flux'
     fluxConfigurations: fluxExtension.?configurations
     location: location
@@ -1170,6 +1177,12 @@ type agentPoolType = {
 
   @description('Optional. The scale set priority of the agent pool.')
   scaleSetPriority: ('Low' | 'Regular' | 'Spot')?
+
+  @description('Optional. Secure Boot is a feature of Trusted Launch which ensures that only signed operating systems and drivers can boot. For more details, see aka.ms/aks/trustedlaunch.')
+  enableSecureBoot: bool?
+
+  @description('Optional. vTPM is a Trusted Launch feature for configuring a dedicated secure vault for keys and measurements held locally on the node. For more details, see aka.ms/aks/trustedlaunch.')
+  enableVTPM: bool?
 
   @description('Optional. The spot max price of the agent pool.')
   spotMaxPrice: int?

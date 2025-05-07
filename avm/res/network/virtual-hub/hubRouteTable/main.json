@@ -1,0 +1,82 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.34.44.8038",
+      "templateHash": "11078107057030391561"
+    },
+    "name": "Virtual Hub Route Tables",
+    "description": "This module deploys a Virtual Hub Route Table."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The route table name."
+      }
+    },
+    "virtualHubName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent virtual hub. Required if the template is used in a standalone deployment."
+      }
+    },
+    "labels": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of labels associated with this route table."
+      }
+    },
+    "routes": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. List of all routes."
+      }
+    }
+  },
+  "resources": {
+    "virtualHub": {
+      "existing": true,
+      "type": "Microsoft.Network/virtualHubs",
+      "apiVersion": "2022-11-01",
+      "name": "[parameters('virtualHubName')]"
+    },
+    "hubRouteTable": {
+      "type": "Microsoft.Network/virtualHubs/hubRouteTables",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
+      "properties": {
+        "labels": "[parameters('labels')]",
+        "routes": "[parameters('routes')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed virtual hub route table."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed virtual hub route table."
+      },
+      "value": "[resourceId('Microsoft.Network/virtualHubs/hubRouteTables', parameters('virtualHubName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the virtual hub route table was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

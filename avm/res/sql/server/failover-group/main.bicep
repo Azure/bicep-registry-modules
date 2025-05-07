@@ -14,10 +14,10 @@ param databases string[]
 param partnerServers string[]
 
 @description('Optional. Read-only endpoint of the failover group instance.')
-param readOnlyEndpoint failoverGroupReadOnlyEndpointType?
+param readOnlyEndpoint readOnlyEndpointType?
 
 @description('Required. Read-write endpoint of the failover group instance.')
-param readWriteEndpoint failoverGroupReadWriteEndpointType
+param readWriteEndpoint readWriteEndpointType
 
 @description('Required. Databases secondary type on partner server.')
 param secondaryType 'Geo' | 'Standby'
@@ -26,12 +26,16 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
   name: serverName
 }
 
+@description('Optional. Tags of the resource.')
+param tags object?
+
 // https://stackoverflow.com/questions/78337117/azure-sql-failover-group-fails-on-second-run
 // https://github.com/Azure/bicep-types-az/issues/2153
 
 resource failoverGroup 'Microsoft.Sql/servers/failoverGroups@2024-05-01-preview' = {
   name: name
   parent: server
+  tags: tags
   properties: {
     databases: [for db in databases: resourceId('Microsoft.Sql/servers/databases', serverName, db)]
     partnerServers: [
@@ -64,7 +68,8 @@ output resourceId string = failoverGroup.id
 output resourceGroupName string = resourceGroup().name
 
 @export()
-type failoverGroupReadOnlyEndpointType = {
+@description('The type for a read-only endpoint.')
+type readOnlyEndpointType = {
   @description('Required. Failover policy of the read-only endpoint for the failover group.')
   failoverPolicy: 'Disabled' | 'Enabled'
 
@@ -73,7 +78,8 @@ type failoverGroupReadOnlyEndpointType = {
 }
 
 @export()
-type failoverGroupReadWriteEndpointType = {
+@description('The type for a read-write endpoint.')
+type readWriteEndpointType = {
   @description('Required. Failover policy of the read-write endpoint for the failover group. If failoverPolicy is Automatic then failoverWithDataLossGracePeriodMinutes is required.')
   failoverPolicy: 'Automatic' | 'Manual'
 

@@ -152,16 +152,21 @@ function Set-PesterGitHubOutput {
             }
 
             $testLine = $failedTest.ErrorRecord.TargetObject.Line
-            $errorMessage = ($failedTest.ErrorRecord.TargetObject.Message.Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
+            if (-not [String]::IsNullOrEmpty($testLine)) {
+                $errorMessage = (($failedTest.ErrorRecord.TargetObject.Message ?? '').Trim() -replace '_', '\_') -replace '\n', '<br>' # Replace new lines with <br> to enable line breaks in markdown
 
-            $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
+                $testReference = '{0}:{1}' -f (Split-Path $testFile -Leaf), $testLine
 
-            if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
-                # Creating URL to test file to enable users to 'click' on it
-                $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
+                if (-not [String]::IsNullOrEmpty($GitHubRepository) -and -not [String]::IsNullOrEmpty($BranchName)) {
+                    # Creating URL to test file to enable users to 'click' on it
+                    $testReference = "[$testReference](https://github.com/$GitHubRepository/blob/$BranchName/$testFile#L$testLine)"
+                }
+
+                $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $errorMessage, $testReference
+            } else {
+                # Can happen if the test throws an exception instead of properly failing
+                $fileContent += '| {0} | {1} | |' -f $testName, ($failedTest.ErrorRecord -join '<br>')
             }
-
-            $fileContent += '| {0} | {1} | <code>{2}</code> |' -f $testName, $errorMessage, $testReference
         }
     } else {
         $fileContent += ('No tests failed.')

@@ -57,7 +57,16 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      logAnalyticsWorkspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
+      appLogsConfiguration: {
+        destination: 'log-analytics'
+        logAnalyticsConfiguration: {
+          customerId: nestedDependencies.outputs.logAnalyticsWorkspaceCustomerId
+          sharedKey: listKeys(
+            '${resourceGroup.id}/providers/Microsoft.OperationalInsights/workspaces/dep-${namePrefix}-law-${serviceShort}',
+            '2023-09-01'
+          ).primarySharedKey
+        }
+      }
       location: resourceLocation
       appInsightsConnectionString: nestedDependencies.outputs.appInsightsConnectionString
       workloadProfiles: [
@@ -70,15 +79,18 @@ module testDeployment '../../../main.bicep' = [
       ]
       internal: true
       dnsSuffix: 'contoso.com'
-      certificateKeyVaultProperties: {
-        identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
-        keyVaultUrl: '${nestedDependencies.outputs.keyVaultUri}secrets/${split(nestedDependencies.outputs.certificateSecretUrl, '/')[4]}'
+      certificate: {
+        name: 'dep-${namePrefix}-cert-${serviceShort}'
+        certificateKeyVaultProperties: {
+          identityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+          keyVaultUrl: '${nestedDependencies.outputs.keyVaultUri}secrets/${split(nestedDependencies.outputs.certificateSecretUrl, '/')[4]}'
+        }
       }
       dockerBridgeCidr: '172.16.0.1/28'
       peerTrafficEncryption: true
       platformReservedCidr: '172.17.17.0/24'
       platformReservedDnsIP: '172.17.17.17'
-      infrastructureSubnetId: nestedDependencies.outputs.subnetResourceId
+      infrastructureSubnetResourceId: nestedDependencies.outputs.subnetResourceId
       infrastructureResourceGroupName: 'me-${resourceGroupName}'
       managedIdentities: {
         systemAssigned: true
@@ -96,7 +108,6 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: '43fc5250-f111-472b-8722-f1cb4a0e754b'
           roleDefinitionIdOrName: 'Owner'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
@@ -131,7 +142,6 @@ module testDeployment '../../../main.bicep' = [
           storageAccountName: nestedDependencies.outputs.storageAccountName
         }
       ]
-
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -141,8 +151,5 @@ module testDeployment '../../../main.bicep' = [
         Env: 'test'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

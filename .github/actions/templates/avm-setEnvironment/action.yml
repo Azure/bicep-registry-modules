@@ -55,6 +55,7 @@ runs:
           $modules += @(
             @{ Name = 'Az.CognitiveServices' },
             @{ Name = 'Az.Compute' },
+            @{ Name = 'Az.DataProtection' },
             @{ Name = 'Az.KeyVault' },
             @{ Name = 'Az.MachineLearningServices' },
             @{ Name = 'Az.Monitor' },

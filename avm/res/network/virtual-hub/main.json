@@ -5,13 +5,144 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "14261669365957624019"
+      "version": "0.34.44.8038",
+      "templateHash": "2359877667721853675"
     },
     "name": "Virtual Hubs",
     "description": "This module deploys a Virtual Hub.\nIf you are planning to deploy a Secure Virtual Hub (with an Azure Firewall integrated), please refer to the Azure Firewall module."
   },
   "definitions": {
+    "hubRouteTableType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The route table name."
+          }
+        },
+        "labels": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of labels associated with this route table."
+          }
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "destinations": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "description": "Required. The address prefix for the route."
+                }
+              },
+              "destinationType": {
+                "type": "string",
+                "allowedValues": [
+                  "CIDR"
+                ],
+                "metadata": {
+                  "description": "Required. The destination type for the route."
+                }
+              },
+              "name": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The name of the route."
+                }
+              },
+              "nextHopType": {
+                "type": "string",
+                "allowedValues": [
+                  "ResourceId"
+                ],
+                "metadata": {
+                  "description": "Required. The next hop type for the route."
+                }
+              },
+              "nextHop": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The next hop IP address for the route."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. List of all routes."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a virtual hub route table."
+      }
+    },
+    "routingIntentType": {
+      "type": "object",
+      "properties": {
+        "privateToFirewall": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Configures Routing Intent to forward Private traffic to the firewall (RFC1918)."
+          }
+        },
+        "internetToFirewall": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0)."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a routing intent."
+      }
+    },
+    "hubVirtualNetworkConnectionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The connection name."
+          }
+        },
+        "enableInternetSecurity": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable internet security."
+          }
+        },
+        "remoteVirtualNetworkResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the virtual network to link to."
+          }
+        },
+        "routingConfiguration": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Routing Configuration indicating the associated and propagated route tables for this connection."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a hub virtual network connection."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -35,7 +166,12 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     }
   },
   "parameters": {
@@ -74,33 +210,32 @@
     },
     "azureFirewallResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the Azure Firewall to link to."
       }
     },
-    "expressRouteGatewayId": {
+    "expressRouteGatewayResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the Express Route Gateway to link to."
       }
     },
-    "p2SVpnGatewayId": {
+    "p2SVpnGatewayResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the Point-to-Site VPN Gateway to link to."
       }
     },
     "hubRoutingPreference": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "ASPath",
         "ExpressRoute",
-        "VpnGateway",
-        ""
+        "VpnGateway"
       ],
       "metadata": {
         "description": "Optional. The preferred routing preference for this virtual hub."
@@ -108,12 +243,11 @@
     },
     "preferredRoutingGateway": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "allowedValues": [
         "ExpressRoute",
         "None",
-        "VpnGateway",
-        ""
+        "VpnGateway"
       ],
       "metadata": {
         "description": "Optional. The preferred routing gateway types."
@@ -121,12 +255,12 @@
     },
     "routeTableRoutes": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. VirtualHub route tables."
       }
     },
-    "securityPartnerProviderId": {
+    "securityPartnerProviderResourceId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -167,54 +301,69 @@
     },
     "virtualRouterIps": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. VirtualRouter IPs."
       }
     },
-    "virtualWanId": {
+    "virtualRouterAutoScaleConfiguration": {
+      "type": "object",
+      "properties": {
+        "minCount": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The minimum number of virtual routers in the scale set."
+          }
+        }
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The auto scale configuration for the virtual router."
+      }
+    },
+    "virtualWanResourceId": {
       "type": "string",
       "metadata": {
         "description": "Required. Resource ID of the virtual WAN to link to."
       }
     },
-    "vpnGatewayId": {
+    "vpnGatewayResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Resource ID of the VPN Gateway to link to."
       }
     },
-    "internetToFirewall": {
-      "type": "bool",
-      "defaultValue": true,
+    "routingIntent": {
+      "$ref": "#/definitions/routingIntentType",
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Configures Routing Intent to forward Internet traffic (0.0.0.0/0) to Azure Firewall. Default is true."
-      }
-    },
-    "privateToFirewall": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Configures Routing Intent to forward Private traffic (RFC 1918) to Azure Firewall. Default is true."
+        "description": "Optional. The routing intent configuration to create for the virtual hub."
       }
     },
     "hubRouteTables": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/hubRouteTableType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Route tables to create for the virtual hub."
       }
     },
     "hubVirtualNetworkConnections": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/hubVirtualNetworkConnectionType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Virtual network connections to create for the virtual hub."
       }
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
@@ -250,7 +399,7 @@
     },
     "virtualHub": {
       "type": "Microsoft.Network/virtualHubs",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -258,21 +407,24 @@
         "addressPrefix": "[parameters('addressPrefix')]",
         "allowBranchToBranchTraffic": "[parameters('allowBranchToBranchTraffic')]",
         "azureFirewall": "[if(not(empty(parameters('azureFirewallResourceId'))), createObject('id', parameters('azureFirewallResourceId')), null())]",
-        "expressRouteGateway": "[if(not(empty(parameters('expressRouteGatewayId'))), createObject('id', parameters('expressRouteGatewayId')), null())]",
-        "p2SVpnGateway": "[if(not(empty(parameters('p2SVpnGatewayId'))), createObject('id', parameters('p2SVpnGatewayId')), null())]",
-        "hubRoutingPreference": "[if(not(empty(parameters('hubRoutingPreference'))), parameters('hubRoutingPreference'), null())]",
-        "preferredRoutingGateway": "[if(not(empty(parameters('preferredRoutingGateway'))), parameters('preferredRoutingGateway'), null())]",
+        "expressRouteGateway": "[if(not(empty(parameters('expressRouteGatewayResourceId'))), createObject('id', parameters('expressRouteGatewayResourceId')), null())]",
+        "p2SVpnGateway": "[if(not(empty(parameters('p2SVpnGatewayResourceId'))), createObject('id', parameters('p2SVpnGatewayResourceId')), null())]",
+        "hubRoutingPreference": "[parameters('hubRoutingPreference')]",
+        "preferredRoutingGateway": "[parameters('preferredRoutingGateway')]",
         "routeTable": "[if(not(empty(parameters('routeTableRoutes'))), createObject('routes', parameters('routeTableRoutes')), null())]",
-        "securityPartnerProvider": "[if(not(empty(parameters('securityPartnerProviderId'))), createObject('id', parameters('securityPartnerProviderId')), null())]",
+        "securityPartnerProvider": "[if(not(empty(parameters('securityPartnerProviderResourceId'))), createObject('id', parameters('securityPartnerProviderResourceId')), null())]",
         "securityProviderName": "[parameters('securityProviderName')]",
         "sku": "[parameters('sku')]",
         "virtualHubRouteTableV2s": "[parameters('virtualHubRouteTableV2s')]",
         "virtualRouterAsn": "[parameters('virtualRouterAsn')]",
-        "virtualRouterIps": "[if(not(empty(parameters('virtualRouterIps'))), parameters('virtualRouterIps'), null())]",
-        "virtualWan": {
-          "id": "[parameters('virtualWanId')]"
+        "virtualRouterIps": "[parameters('virtualRouterIps')]",
+        "virtualRouterAutoScaleConfiguration": {
+          "minCapacity": "[tryGet(parameters('virtualRouterAutoScaleConfiguration'), 'minCount')]"
         },
-        "vpnGateway": "[if(not(empty(parameters('vpnGatewayId'))), createObject('id', parameters('vpnGatewayId')), null())]"
+        "virtualWan": {
+          "id": "[parameters('virtualWanResourceId')]"
+        },
+        "vpnGateway": "[if(not(empty(parameters('vpnGatewayResourceId'))), createObject('id', parameters('vpnGatewayResourceId')), null())]"
       }
     },
     "virtualHub_lock": {
@@ -290,7 +442,7 @@
       ]
     },
     "virtualHub_routingIntent": {
-      "condition": "[and(not(empty(parameters('azureFirewallResourceId'))), or(parameters('internetToFirewall'), parameters('privateToFirewall')))]",
+      "condition": "[and(not(empty(parameters('azureFirewallResourceId'))), not(empty(parameters('routingIntent'))))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-routingIntent', uniqueString(deployment().name, parameters('location')))]",
@@ -307,10 +459,10 @@
             "value": "[parameters('azureFirewallResourceId')]"
           },
           "internetToFirewall": {
-            "value": "[parameters('internetToFirewall')]"
+            "value": "[tryGet(parameters('routingIntent'), 'internetToFirewall')]"
           },
           "privateToFirewall": {
-            "value": "[parameters('privateToFirewall')]"
+            "value": "[tryGet(parameters('routingIntent'), 'privateToFirewall')]"
           }
         },
         "template": {
@@ -319,8 +471,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15649735189663073116"
+              "version": "0.34.44.8038",
+              "templateHash": "13466688747209126073"
             },
             "name": "Virtual Hub Routing Intent",
             "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID."
@@ -332,6 +484,16 @@
                 "description": "Required. Hub firewall Resource ID."
               }
             },
+            "name": {
+              "type": "string",
+              "defaultValue": "defaultRouteTable",
+              "allowedValues": [
+                "defaultRouteTable"
+              ],
+              "metadata": {
+                "description": "Optional. The name of the routing intent configuration."
+              }
+            },
             "virtualHubName": {
               "type": "string",
               "metadata": {
@@ -340,22 +502,24 @@
             },
             "privateToFirewall": {
               "type": "bool",
+              "defaultValue": true,
               "metadata": {
-                "description": "Required. Configures Routing Intent to forward Private traffic to the firewall (RFC1918)."
+                "description": "Optional. Configures Routing Intent to forward Private traffic to the firewall (RFC1918)."
               }
             },
             "internetToFirewall": {
               "type": "bool",
+              "defaultValue": true,
               "metadata": {
-                "description": "Required. Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0)."
+                "description": "Optional. Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0)."
               }
             }
           },
           "resources": [
             {
               "type": "Microsoft.Network/virtualHubs/routingIntent",
-              "apiVersion": "2023-11-01",
-              "name": "[format('{0}/{1}', parameters('virtualHubName'), 'defaultRouteTable')]",
+              "apiVersion": "2024-05-01",
+              "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
               "properties": {
                 "routingPolicies": "[if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', '_policy_PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId')), createObject('name', '_policy_PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), false())), createArray(createObject('name', '_policy_PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), false()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', '_policy_PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), null())))]"
               }
@@ -367,14 +531,14 @@
               "metadata": {
                 "description": "The name of the Routing Intent configuration."
               },
-              "value": "defaultRouteTable"
+              "value": "[parameters('name')]"
             },
             "resourceId": {
               "type": "string",
               "metadata": {
                 "description": "The resource ID of the Routing Intent configuration."
               },
-              "value": "[resourceId('Microsoft.Network/virtualHubs/routingIntent', parameters('virtualHubName'), 'defaultRouteTable')]"
+              "value": "[resourceId('Microsoft.Network/virtualHubs/routingIntent', parameters('virtualHubName'), parameters('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -410,17 +574,22 @@
           "name": {
             "value": "[coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].name]"
           },
-          "labels": "[if(contains(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'labels'), createObject('value', coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].labels), createObject('value', createArray()))]",
-          "routes": "[if(contains(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'routes'), createObject('value', coalesce(parameters('hubRouteTables'), createArray())[copyIndex()].routes), createObject('value', createArray()))]"
+          "labels": {
+            "value": "[tryGet(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'labels')]"
+          },
+          "routes": {
+            "value": "[tryGet(coalesce(parameters('hubRouteTables'), createArray())[copyIndex()], 'routes')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "9133722157433973850"
+              "version": "0.34.44.8038",
+              "templateHash": "11078107057030391561"
             },
             "name": "Virtual Hub Route Tables",
             "description": "This module deploys a Virtual Hub Route Table."
@@ -440,30 +609,36 @@
             },
             "labels": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. List of labels associated with this route table."
               }
             },
             "routes": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. List of all routes."
               }
             }
           },
-          "resources": [
-            {
-              "type": "Microsoft.Network/virtualHubs/hubRouteTables",
+          "resources": {
+            "virtualHub": {
+              "existing": true,
+              "type": "Microsoft.Network/virtualHubs",
               "apiVersion": "2022-11-01",
+              "name": "[parameters('virtualHubName')]"
+            },
+            "hubRouteTable": {
+              "type": "Microsoft.Network/virtualHubs/hubRouteTables",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
               "properties": {
-                "labels": "[if(not(empty(parameters('labels'))), parameters('labels'), null())]",
-                "routes": "[if(not(empty(parameters('routes'))), parameters('routes'), null())]"
+                "labels": "[parameters('labels')]",
+                "routes": "[parameters('routes')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -496,7 +671,7 @@
     "virtualHub_hubVirtualNetworkConnections": {
       "copy": {
         "name": "virtualHub_hubVirtualNetworkConnections",
-        "count": "[length(parameters('hubVirtualNetworkConnections'))]"
+        "count": "[length(coalesce(parameters('hubVirtualNetworkConnections'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -511,22 +686,27 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('hubVirtualNetworkConnections')[copyIndex()].name]"
+            "value": "[coalesce(parameters('hubVirtualNetworkConnections'), createArray())[copyIndex()].name]"
           },
-          "enableInternetSecurity": "[if(contains(parameters('hubVirtualNetworkConnections')[copyIndex()], 'enableInternetSecurity'), createObject('value', parameters('hubVirtualNetworkConnections')[copyIndex()].enableInternetSecurity), createObject('value', true()))]",
-          "remoteVirtualNetworkId": {
-            "value": "[parameters('hubVirtualNetworkConnections')[copyIndex()].remoteVirtualNetworkId]"
+          "enableInternetSecurity": {
+            "value": "[tryGet(coalesce(parameters('hubVirtualNetworkConnections'), createArray())[copyIndex()], 'enableInternetSecurity')]"
           },
-          "routingConfiguration": "[if(contains(parameters('hubVirtualNetworkConnections')[copyIndex()], 'routingConfiguration'), createObject('value', parameters('hubVirtualNetworkConnections')[copyIndex()].routingConfiguration), createObject('value', createObject()))]"
+          "remoteVirtualNetworkResourceId": {
+            "value": "[coalesce(parameters('hubVirtualNetworkConnections'), createArray())[copyIndex()].remoteVirtualNetworkResourceId]"
+          },
+          "routingConfiguration": {
+            "value": "[tryGet(coalesce(parameters('hubVirtualNetworkConnections'), createArray())[copyIndex()], 'routingConfiguration')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "13762641450479393784"
+              "version": "0.34.44.8038",
+              "templateHash": "5214703706417305741"
             },
             "name": "Virtual Hub Virtual Network Connections",
             "description": "This module deploys a Virtual Hub Virtual Network Connection."
@@ -551,7 +731,7 @@
                 "description": "Optional. Enable internet security."
               }
             },
-            "remoteVirtualNetworkId": {
+            "remoteVirtualNetworkResourceId": {
               "type": "string",
               "metadata": {
                 "description": "Required. Resource ID of the virtual network to link to."
@@ -559,26 +739,32 @@
             },
             "routingConfiguration": {
               "type": "object",
-              "defaultValue": {},
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Routing Configuration indicating the associated and propagated route tables for this connection."
               }
             }
           },
-          "resources": [
-            {
-              "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
+          "resources": {
+            "virtualHub": {
+              "existing": true,
+              "type": "Microsoft.Network/virtualHubs",
               "apiVersion": "2024-01-01",
+              "name": "[parameters('virtualHubName')]"
+            },
+            "hubVirtualNetworkConnection": {
+              "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
               "properties": {
                 "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
                 "remoteVirtualNetwork": {
-                  "id": "[parameters('remoteVirtualNetworkId')]"
+                  "id": "[parameters('remoteVirtualNetworkResourceId')]"
                 },
-                "routingConfiguration": "[if(not(empty(parameters('routingConfiguration'))), parameters('routingConfiguration'), null())]"
+                "routingConfiguration": "[parameters('routingConfiguration')]"
               }
             }
-          ],
+          },
           "outputs": {
             "resourceGroupName": {
               "type": "string",
@@ -637,7 +823,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualHub', '2023-11-01', 'full').location]"
+      "value": "[reference('virtualHub', '2024-05-01', 'full').location]"
     }
   }
 }

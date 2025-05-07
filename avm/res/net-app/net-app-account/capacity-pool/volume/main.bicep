@@ -31,8 +31,14 @@ param keyVaultPrivateEndpointResourceId string?
 @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
 param volumeType string?
 
-@description('Optional. Zone where the volume will be placed.')
-param zones int[] = [1, 2, 3]
+@description('Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.')
+@allowed([
+  0
+  1
+  2
+  3
+])
+param zone int
 
 @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
 @allowed([
@@ -58,8 +64,13 @@ param creationToken string = name
 @description('Required. Maximum storage quota allowed for a file system in bytes.')
 param usageThreshold int
 
-@description('Optional. Set of protocol types.')
-param protocolTypes array = []
+@description('Optional. Set of protocol types. Default value is `[\'NFSv3\']`. If you are creating a dual-stack volume, set either `[\'NFSv3\',\'CIFS\']` or `[\'NFSv4.1\',\'CIFS\']`.')
+@allowed([
+  'NFSv3'
+  'NFSv4.1'
+  'CIFS'
+])
+param protocolTypes string[] = ['NFSv3']
 
 @description('Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes.')
 param subnetResourceId string
@@ -67,7 +78,7 @@ param subnetResourceId string
 @description('Optional. The export policy rules.')
 param exportPolicy exportPolicyType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -90,11 +101,21 @@ param smbNonBrowsable string = 'Disabled'
 @description('Optional. Define if a volume is KerberosEnabled.')
 param kerberosEnabled bool = false
 
+@allowed([
+  'ntfs'
+  'unix'
+])
+@description('Optional. Defines the security style of the Volume.')
+param securityStyle string?
+
+@description('Optional. Unix Permissions for NFS volume.')
+param unixPermissions string?
+
 var remoteCapacityPoolName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
-  ? split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[10]
+  ? split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
   : ''
 var remoteNetAppName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
-  ? split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[8]
+  ? split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[8]
   : ''
 
 var builtInRoleNames = {
@@ -122,48 +143,48 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existing = {
   name: netAppAccountName
 
   //cp-na-anfs-swc-y01
-  resource capacityPool 'capacityPools@2024-07-01' existing = {
+  resource capacityPool 'capacityPools@2025-01-01' existing = {
     name: capacityPoolName
   }
 
-  resource backupVault 'backupVaults@2024-07-01' existing = if (!empty(dataProtection.?backup)) {
+  resource backupVault 'backupVaults@2025-01-01' existing = if (!empty(dataProtection.?backup)) {
     name: dataProtection.?backup!.backupVaultName
   }
 
-  resource backupPolicy 'backupPolicies@2024-07-01' existing = if (!empty(dataProtection.?backup)) {
+  resource backupPolicy 'backupPolicies@2025-01-01' existing = if (!empty(dataProtection.?backup)) {
     name: dataProtection.?backup!.backupPolicyName
   }
 
-  resource snapshotPolicy 'snapshotPolicies@2024-07-01' existing = if (!empty(dataProtection.?snapshot)) {
+  resource snapshotPolicy 'snapshotPolicies@2025-01-01' existing = if (!empty(dataProtection.?snapshot)) {
     name: dataProtection.?snapshot!.snapshotPolicyName
   }
 }
 
 resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01' existing = if (encryptionKeySource != 'Microsoft.NetApp') {
-  name: last(split(keyVaultPrivateEndpointResourceId ?? 'dummyVault', '/'))
+  name: last(split(keyVaultPrivateEndpointResourceId!, '/'))
   scope: resourceGroup(
-    split((keyVaultPrivateEndpointResourceId ?? '//'), '/')[2],
-    split((keyVaultPrivateEndpointResourceId ?? '////'), '/')[4]
+    split(keyVaultPrivateEndpointResourceId!, '/')[2],
+    split(keyVaultPrivateEndpointResourceId!, '/')[4]
   )
 }
 
-resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteNetAppName != netAppAccountName)) {
-  name: split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[8]
+resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteNetAppName != netAppAccountName)) {
+  name: split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[8]
   scope: resourceGroup(
-    split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[2],
-    split((dataProtection.?replication.?remoteVolumeResourceId ?? '////'), '/')[4]
+    split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[2],
+    split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[4]
   )
 
   //cp-na-anfs-swc-y01
-  resource remoteCapacityPool 'capacityPools@2024-07-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteCapacityPoolName != capacityPoolName)) {
-    name: split((dataProtection.?replication.?remoteVolumeResourceId ?? '//'), '/')[10]
+  resource remoteCapacityPool 'capacityPools@2025-01-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteCapacityPoolName != capacityPoolName)) {
+    name: split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
 
-    resource remoteVolume 'volumes@2024-07-01' existing = if (!empty(dataProtection.?replication)) {
-      name: last(split(dataProtection.?replication.?remoteVolumeResourceId ?? 'dummyvolume', '/'))
+    resource remoteVolume 'volumes@2025-01-01' existing = if (!empty(dataProtection.?replication)) {
+      name: last(split(dataProtection.?replication.?remoteVolumeResourceId!, '/'))
     }
   }
 }
@@ -177,7 +198,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' existing = {
   }
 }
 
-resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-01' = {
+resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2025-01-01' = {
   name: name
   parent: netAppAccount::capacityPool
   location: location
@@ -185,6 +206,8 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-0
     coolAccess: coolAccess
     coolAccessRetrievalPolicy: coolAccessRetrievalPolicy
     coolnessPeriod: coolnessPeriod
+    securityStyle: securityStyle
+    unixPermissions: unixPermissions
     encryptionKeySource: encryptionKeySource
     ...(encryptionKeySource != 'Microsoft.NetApp'
       ? {
@@ -201,26 +224,34 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-0
           replication: !empty(dataProtection.?replication)
             ? {
                 endpointType: dataProtection.?replication!.endpointType
-                remoteVolumeRegion: !empty(dataProtection.?replication.?remoteVolumeResourceId)
-                  ? remoteNetAppAccount::remoteCapacityPool::remoteVolume.id
+                remoteVolumeRegion: !empty(dataProtection.?replication.?remoteVolumeRegion)
+                  ? dataProtection.?replication!.?remoteVolumeRegion
                   : null
                 remoteVolumeResourceId: dataProtection.?replication!.?remoteVolumeResourceId
-                replicationSchedule: dataProtection.?replication!.replicationSchedule
-                remotePath: dataProtection.?replication!.?remotePath
+                ...(dataProtection.?replication!.?endpointType == 'dst')
+                  ? {
+                      replicationSchedule: dataProtection.?replication!.?replicationSchedule
+                    }
+                  : {}
+                ...(volumeType == 'Migration')
+                  ? {
+                      remotePath: dataProtection.?replication!.?remotePath
+                    }
+                  : {}
               }
-            : {}
+            : null
           backup: !empty(dataProtection.?backup)
             ? {
                 backupPolicyId: netAppAccount::backupPolicy.id
                 policyEnforced: dataProtection.?backup.policyEnforced ?? false
                 backupVaultId: netAppAccount::backupVault.id
               }
-            : {}
+            : null
           snapshot: !empty(dataProtection.?snapshot)
             ? {
                 snapshotPolicyId: netAppAccount::snapshotPolicy.id
               }
-            : {}
+            : null
         }
       : null
     networkFeatures: networkFeatures
@@ -229,13 +260,15 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-07-0
     usageThreshold: usageThreshold
     protocolTypes: protocolTypes
     subnetId: vnet::subnet.id
-    exportPolicy: exportPolicy
+    exportPolicy: exportPolicy ?? {
+      rules: []
+    }
     smbContinuouslyAvailable: smbContinuouslyAvailable
     smbEncryption: smbEncryption
     smbNonBrowsable: smbNonBrowsable
     kerberosEnabled: kerberosEnabled
   }
-  zones: map(zones, zone => '${zone}')
+  zones: zone != 0 ? [string(zone)] : null
 }
 
 resource volume_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
@@ -293,8 +326,8 @@ type replicationType = {
   @description('Optional. The resource ID of the remote volume. Required for Data Protection volumes.')
   remoteVolumeResourceId: string?
 
-  @description('Required. The replication schedule for the volume.')
-  replicationSchedule: ('_10minutely' | 'daily' | 'hourly')
+  @description('Optional. The replication schedule for the volume (to only be set on the destination (dst)).')
+  replicationSchedule: ('_10minutely' | 'daily' | 'hourly')?
 
   @description('Optional. The full path to a volume that is to be migrated into ANF. Required for Migration volumes.')
   remotePath: {

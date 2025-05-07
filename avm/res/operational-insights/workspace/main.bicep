@@ -102,6 +102,8 @@ param tags object?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+var enableReferencedModulesTelemetry = false
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -360,7 +362,7 @@ module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/
       location: location
       logAnalyticsWorkspaceName: logAnalyticsWorkspace.name
       plan: gallerySolution.plan
-      enableTelemetry: gallerySolution.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -423,6 +425,14 @@ output location string = logAnalyticsWorkspace.location
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = logAnalyticsWorkspace.?identity.?principalId
+
+@secure()
+@description('The primary shared key of the log analytics workspace.')
+output primarySharedKey string = logAnalyticsWorkspace.listKeys().primarySharedKey
+
+@secure()
+@description('The secondary shared key of the log analytics workspace.')
+output secondarySharedKey string = logAnalyticsWorkspace.listKeys().secondarySharedKey
 
 // =============== //
 //   Definitions   //

@@ -1,0 +1,91 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.34.44.8038",
+      "templateHash": "5214703706417305741"
+    },
+    "name": "Virtual Hub Virtual Network Connections",
+    "description": "This module deploys a Virtual Hub Virtual Network Connection."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The connection name."
+      }
+    },
+    "virtualHubName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent virtual hub. Required if the template is used in a standalone deployment."
+      }
+    },
+    "enableInternetSecurity": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable internet security."
+      }
+    },
+    "remoteVirtualNetworkResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Resource ID of the virtual network to link to."
+      }
+    },
+    "routingConfiguration": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Routing Configuration indicating the associated and propagated route tables for this connection."
+      }
+    }
+  },
+  "resources": {
+    "virtualHub": {
+      "existing": true,
+      "type": "Microsoft.Network/virtualHubs",
+      "apiVersion": "2024-01-01",
+      "name": "[parameters('virtualHubName')]"
+    },
+    "hubVirtualNetworkConnection": {
+      "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
+      "properties": {
+        "enableInternetSecurity": "[parameters('enableInternetSecurity')]",
+        "remoteVirtualNetwork": {
+          "id": "[parameters('remoteVirtualNetworkResourceId')]"
+        },
+        "routingConfiguration": "[parameters('routingConfiguration')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the virtual hub connection was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the virtual hub connection."
+      },
+      "value": "[resourceId('Microsoft.Network/virtualHubs/hubVirtualNetworkConnections', parameters('virtualHubName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the virtual hub connection."
+      },
+      "value": "[parameters('name')]"
+    }
+  }
+}

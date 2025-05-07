@@ -53,6 +53,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
+      availabilityZone: -1
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
@@ -103,22 +104,28 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      ipAddressType: 'Private'
-      ipAddressPorts: [
+      ipAddress: {
+        type: 'Private'
+        ports: [
+          {
+            protocol: 'Tcp'
+            port: 80
+          }
+          {
+            protocol: 'Tcp'
+            port: 443
+          }
+          {
+            protocol: 'Tcp'
+            port: 8080
+          }
+        ]
+      }
+      subnets: [
         {
-          protocol: 'Tcp'
-          port: 80
-        }
-        {
-          protocol: 'Tcp'
-          port: 443
-        }
-        {
-          protocol: 'Tcp'
-          port: 8080
+          subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      subnetResourceId: nestedDependencies.outputs.subnetResourceId
     }
   }
 ]

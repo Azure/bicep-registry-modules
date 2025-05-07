@@ -22,7 +22,9 @@ param tags object?
 ])
 param serviceLevel string = 'Standard'
 
-@description('Required. Provisioned size of the pool (in bytes). Allowed values are in 4TiB chunks (value must be multiply of 4398046511104).')
+@description('Required. Provisioned size of the pool in Tebibytes (TiB).')
+@minValue(1)
+@maxValue(2048)
 param size int
 
 @description('Optional. The qos type of the pool.')
@@ -38,7 +40,7 @@ param volumes volumeType[]?
 @description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')
 param coolAccess bool = false
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -74,18 +76,18 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existing = {
   name: netAppAccountName
 }
 
-resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-07-01' = {
+resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01' = {
   name: name
   parent: netAppAccount
   location: location
   tags: tags
   properties: {
     serviceLevel: serviceLevel
-    size: size
+    size: tebibytesToBytes(size)
     qosType: qosType
     coolAccess: coolAccess
     encryptionType: encryptionType
@@ -104,12 +106,12 @@ module capacityPool_volumes 'volume/main.bicep' = [
       serviceLevel: serviceLevel
       creationToken: volume.?creationToken ?? volume.name
       usageThreshold: volume.usageThreshold
-      protocolTypes: volume.?protocolTypes
+      protocolTypes: volume.protocolTypes
       subnetResourceId: volume.subnetResourceId
       exportPolicy: volume.?exportPolicy
       roleAssignments: volume.?roleAssignments
       networkFeatures: volume.?networkFeatures
-      zones: volume.?zones
+      zone: volume.?zone
       coolAccess: volume.?coolAccess ?? false
       coolAccessRetrievalPolicy: volume.?coolAccessRetrievalPolicy
       coolnessPeriod: volume.?coolnessPeriod
@@ -121,6 +123,8 @@ module capacityPool_volumes 'volume/main.bicep' = [
       smbEncryption: volume.?smbEncryption
       smbNonBrowsable: volume.?smbNonBrowsable
       volumeType: volume.?volumeType
+      securityStyle: volume.?securityStyle
+      unixPermissions: volume.?unixPermissions
     }
   }
 ]
@@ -190,8 +194,14 @@ type volumeType = {
   @description('Optional. Location of the pool volume.')
   location: string?
 
-  @description('Optional. Zone where the volume will be placed.')
-  zones: int[]?
+  @description('Required. The Availability Zone to place the resource in. If set to 0, then Availability Zone is not set.')
+  @sys.allowed([
+    0
+    1
+    2
+    3
+  ])
+  zone: int
 
   @description('Optional. The pool service level. Must match the one of the parent capacity pool.')
   serviceLevel: ('Premium' | 'Standard' | 'StandardZRS' | 'Ultra')?
@@ -205,8 +215,8 @@ type volumeType = {
   @description('Required. Maximum storage quota allowed for a file system in bytes.')
   usageThreshold: int
 
-  @description('Optional. Set of protocol types.')
-  protocolTypes: string[]?
+  @description('Optional. Set of protocol types. Default value is `[\'NFSv3\']`. If you are creating a dual-stack volume, set either `[\'NFSv3\',\'CIFS\']` or `[\'NFSv4.1\',\'CIFS\']`.')
+  protocolTypes: ('NFSv3' | 'NFSv4.1' | 'CIFS')[]?
 
   @description('Required. The Azure Resource URI for a delegated subnet. Must have the delegation Microsoft.NetApp/volumes.')
   subnetResourceId: string
@@ -232,3 +242,10 @@ type volumeType = {
   @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
   volumeType: string?
 }
+
+// ================ //
+// Functions        //
+// ================ //
+
+@description('Converts from tebibytes to bytes.')
+func tebibytesToBytes(tebibytes int) int => tebibytes * 1024 * 1024 * 1024 * 1024

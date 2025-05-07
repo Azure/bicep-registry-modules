@@ -191,9 +191,7 @@ resource imageTemplate 'Microsoft.VirtualMachineImages/imageTemplates@2024-02-01
         : {})
       ...(distribution.type == 'SharedImage'
         ? {
-            runOutputName: distribution.?runOutputName ?? (!empty(distribution.?sharedImageGalleryImageDefinitionResourceId)
-              ? '${last(split((distribution.sharedImageGalleryImageDefinitionResourceId ?? '/'), '/'))}-SharedImage'
-              : 'SharedImage')
+            runOutputName: distribution.?runOutputName ?? '${last(split(distribution.?sharedImageGalleryImageDefinitionResourceId, '/'))}-SharedImage'
             galleryImageId: !empty(distribution.?sharedImageGalleryImageDefinitionTargetVersion)
               ? '${distribution.sharedImageGalleryImageDefinitionResourceId}/versions/${distribution.sharedImageGalleryImageDefinitionTargetVersion}'
               : distribution.sharedImageGalleryImageDefinitionResourceId
@@ -282,6 +280,7 @@ output location string = imageTemplate.location
 type distributionType = sharedImageDistributionType | managedImageDistributionType | unManagedDistributionType
 
 @export()
+@description('The type for a shared image distribution.')
 type sharedImageDistributionType = {
   @description('Optional. The name to be used for the associated RunOutput. If not provided, a name will be calculated.')
   runOutputName: string?
@@ -292,7 +291,7 @@ type sharedImageDistributionType = {
   @description('Required. The type of distribution.')
   type: 'SharedImage'
 
-  @description('Conditional. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.')
+  @description('Required. Resource ID of Compute Gallery Image Definition to distribute image to, e.g.: /subscriptions/<subscriptionID>/resourceGroups/<SIG resourcegroup>/providers/Microsoft.Compute/galleries/<SIG name>/images/<image definition>.')
   sharedImageGalleryImageDefinitionResourceId: string
 
   @description('Optional. Version of the Compute Gallery Image. Supports the following Version Syntax: Major.Minor.Build (i.e., \'1.1.1\' or \'10.1.2\'). If not provided, a version will be calculated.')
@@ -309,6 +308,7 @@ type sharedImageDistributionType = {
 }
 
 @export()
+@description('The type for an unmanaged distribution.')
 type unManagedDistributionType = {
   @description('Required. The type of distribution.')
   type: 'VHD'
@@ -319,11 +319,12 @@ type unManagedDistributionType = {
   @description('Optional. Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.')
   artifactTags: object?
 
-  @description('Conditional. Name of the managed or unmanaged image that will be created.')
+  @description('Required. Name of the managed or unmanaged image that will be created.')
   imageName: string
 }
 
 @export()
+@description('The type for a managed image distribution.')
 type managedImageDistributionType = {
   @description('Required. The type of distribution.')
   type: 'ManagedImage'
@@ -337,14 +338,15 @@ type managedImageDistributionType = {
   @description('Optional. Azure location for the image, should match if image already exists. Defaults to the value of the \'location\' parameter.')
   location: string?
 
-  @description('Required. The resource ID of the managed image. Defaults to a compute image with name \'imageName-baseTime\' in the current resource group.')
+  @description('Optional. The resource ID of the managed image. Defaults to a compute image with name \'imageName-baseTime\' in the current resource group.')
   imageResourceId: string?
 
-  @description('Conditional. Name of the managed or unmanaged image that will be created.')
+  @description('Required. Name of the managed or unmanaged image that will be created.')
   imageName: string
 }
 
 @export()
+@description('The type for a validation process.')
 type validationProcessType = {
   @description('Optional. If validation fails and this field is set to false, output image(s) will not be distributed. This is the default behavior. If validation fails and this field is set to true, output image(s) will still be distributed. Please use this option with caution as it may result in bad images being distributed for use. In either case (true or false), the end to end image run will be reported as having failed in case of a validation failure. [Note: This field has no effect if validation succeeds.].')
   continueDistributeOnFailure: bool?

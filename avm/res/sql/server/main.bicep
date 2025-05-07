@@ -2,11 +2,11 @@ metadata name = 'Azure SQL Servers'
 metadata description = 'This module deploys an Azure SQL Server.'
 
 @description('Conditional. The administrator username for the server. Required if no `administrators` object for AAD authentication is provided.')
-param administratorLogin string = ''
+param administratorLogin string?
 
 @description('Conditional. The administrator login password. Required if no `administrators` object for AAD authentication is provided.')
 @secure()
-param administratorLoginPassword string = ''
+param administratorLoginPassword string?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
@@ -14,12 +14,12 @@ param location string = resourceGroup().location
 @description('Required. The name of the server.')
 param name string
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+import { managedIdentityAllType, managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
 @description('Conditional. The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.')
-param primaryUserAssignedIdentityId string = ''
+param primaryUserAssignedIdentityResourceId string?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -36,22 +36,26 @@ param tags object?
 param enableTelemetry bool = true
 
 @description('Optional. The databases to create in the server.')
-param databases databasePropertyType[] = []
+param databases databaseType[]?
 
 @description('Optional. The Elastic Pools to create in the server.')
-param elasticPools elasticPoolPropertyType[] = []
+param elasticPools elasticPoolType[]?
 
 @description('Optional. The firewall rules to create in the server.')
-param firewallRules firewallRuleType[] = []
+param firewallRules firewallRuleType[]?
 
 @description('Optional. The virtual network rules to create in the server.')
-param virtualNetworkRules virtualNetworkRuleType[] = []
+param virtualNetworkRules virtualNetworkRuleType[]?
 
 @description('Optional. The security alert policies to create in the server.')
-param securityAlertPolicies securityAlerPolicyType[] = []
+param securityAlertPolicies securityAlerPolicyType[]?
 
 @description('Optional. The keys to configure.')
-param keys keyType[] = []
+param keys keyType[]?
+
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The customer managed key definition for server TDE.')
+param customerManagedKey customerManagedKeyWithAutoRotateType?
 
 @description('Conditional. The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided.')
 param administrators serverExternalAdministratorType?
@@ -60,9 +64,6 @@ param administrators serverExternalAdministratorType?
 @minLength(36)
 @maxLength(36)
 param federatedClientId string?
-
-@description('Optional. A CMK URI of the key to use for encryption.')
-param keyId string?
 
 @allowed([
   '1.0'
@@ -95,11 +96,10 @@ param publicNetworkAccess string = ''
 
 @description('Optional. Whether or not to restrict outbound network access for this server.')
 @allowed([
-  ''
   'Enabled'
   'Disabled'
 ])
-param restrictOutboundNetworkAccess string = ''
+param restrictOutboundNetworkAccess string?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -116,9 +116,6 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-@description('Optional. The encryption protection configuration.')
-param encryptionProtectorObj encryptionProtectorType?
-
 @description('Optional. The vulnerability assessment configuration.')
 param vulnerabilityAssessmentsObj vulnerabilityAssessmentType?
 
@@ -131,7 +128,9 @@ param auditSettings auditSettingsType = {
 param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. The failover groups configuration.')
-param failoverGroups failoverGroupType[] = []
+param failoverGroups failoverGroupType[]?
+
+var enableReferencedModulesTelemetry = false
 
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
@@ -186,6 +185,18 @@ var formattedRoleAssignments = [
   })
 ]
 
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.sql-server.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -211,19 +222,23 @@ resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
   tags: tags
   identity: identity
   properties: {
-    administratorLogin: !empty(administratorLogin) ? administratorLogin : null
-    administratorLoginPassword: !empty(administratorLoginPassword) ? administratorLoginPassword : null
+    administratorLogin: administratorLogin
+    administratorLoginPassword: administratorLoginPassword
     administrators: union({ administratorType: 'ActiveDirectory' }, administrators ?? {})
     federatedClientId: federatedClientId
     isIPv6Enabled: isIPv6Enabled
-    keyId: keyId
+    keyId: customerManagedKey != null
+      ? !empty(customerManagedKey.?keyVersion)
+          ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+          : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+      : null
     version: '12.0'
     minimalTlsVersion: minimalTlsVersion
-    primaryUserAssignedIdentityId: !empty(primaryUserAssignedIdentityId) ? primaryUserAssignedIdentityId : null
+    primaryUserAssignedIdentityId: primaryUserAssignedIdentityResourceId
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? publicNetworkAccess
       : (!empty(privateEndpoints) && empty(firewallRules) && empty(virtualNetworkRules) ? 'Disabled' : null)
-    restrictOutboundNetworkAccess: !empty(restrictOutboundNetworkAccess) ? restrictOutboundNetworkAccess : null
+    restrictOutboundNetworkAccess: restrictOutboundNetworkAccess
   }
 }
 
@@ -255,7 +270,7 @@ resource server_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04
 ]
 
 module server_databases 'database/main.bicep' = [
-  for (database, index) in databases: {
+  for (database, index) in (databases ?? []): {
     name: '${uniqueString(deployment().name, location)}-Sql-DB-${index}'
     params: {
       // properties derived from parent server resource, no override allowed
@@ -267,6 +282,7 @@ module server_databases 'database/main.bicep' = [
 
       // properties from the databse object. If not provided, defaults specified in the child resource will be used
       name: database.name
+      managedIdentities: database.?managedIdentities
       sku: database.?sku
       autoPauseDelay: database.?autoPauseDelay
       availabilityZone: database.?availabilityZone
@@ -313,7 +329,7 @@ module server_databases 'database/main.bicep' = [
 ]
 
 module server_elasticPools 'elastic-pool/main.bicep' = [
-  for (elasticPool, index) in elasticPools: {
+  for (elasticPool, index) in (elasticPools ?? []): {
     name: '${uniqueString(deployment().name, location)}-SQLServer-ElasticPool-${index}'
     params: {
       // properties derived from parent server resource, no override allowed
@@ -377,7 +393,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.
           ]
         : null
       subnetResourceId: privateEndpoint.subnetResourceId
-      enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
+      enableTelemetry: enableReferencedModulesTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
         '2020-06-01',
@@ -396,7 +412,7 @@ module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.
 ]
 
 module server_firewallRules 'firewall-rule/main.bicep' = [
-  for (firewallRule, index) in firewallRules: {
+  for (firewallRule, index) in (firewallRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-Sql-FirewallRules-${index}'
     params: {
       name: firewallRule.name
@@ -408,19 +424,19 @@ module server_firewallRules 'firewall-rule/main.bicep' = [
 ]
 
 module server_virtualNetworkRules 'virtual-network-rule/main.bicep' = [
-  for (virtualNetworkRule, index) in virtualNetworkRules: {
+  for (virtualNetworkRule, index) in (virtualNetworkRules ?? []): {
     name: '${uniqueString(deployment().name, location)}-Sql-VirtualNetworkRules-${index}'
     params: {
       serverName: server.name
       name: virtualNetworkRule.name
       ignoreMissingVnetServiceEndpoint: virtualNetworkRule.?ignoreMissingVnetServiceEndpoint
-      virtualNetworkSubnetId: virtualNetworkRule.virtualNetworkSubnetId
+      virtualNetworkSubnetResourceId: virtualNetworkRule.virtualNetworkSubnetResourceId
     }
   }
 ]
 
 module server_securityAlertPolicies 'security-alert-policy/main.bicep' = [
-  for (securityAlertPolicy, index) in securityAlertPolicies: {
+  for (securityAlertPolicy, index) in (securityAlertPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-Sql-SecAlertPolicy-${index}'
     params: {
       name: securityAlertPolicy.name
@@ -452,7 +468,7 @@ module server_vulnerabilityAssessment 'vulnerability-assessment/main.bicep' = if
 }
 
 module server_keys 'key/main.bicep' = [
-  for (key, index) in keys: {
+  for (key, index) in (keys ?? []): {
     name: '${uniqueString(deployment().name, location)}-Sql-Key-${index}'
     params: {
       serverName: server.name
@@ -463,17 +479,26 @@ module server_keys 'key/main.bicep' = [
   }
 ]
 
-module server_encryptionProtector 'encryption-protector/main.bicep' = if (encryptionProtectorObj != null) {
+module cmk_key 'key/main.bicep' = if (customerManagedKey != null) {
+  name: '${uniqueString(deployment().name, location)}-Sql-Key'
+  params: {
+    serverName: server.name
+    name: '${cMKKeyVault.name}_${customerManagedKey.?keyName}_${!empty(customerManagedKey.?keyVersion) ? customerManagedKey.?keyVersion : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))}'
+    serverKeyType: 'AzureKeyVault'
+    uri: !empty(customerManagedKey.?keyVersion)
+      ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+      : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+  }
+}
+
+module server_encryptionProtector 'encryption-protector/main.bicep' = if (customerManagedKey != null) {
   name: '${uniqueString(deployment().name, location)}-Sql-EncryProtector'
   params: {
     sqlServerName: server.name
-    serverKeyName: encryptionProtectorObj!.serverKeyName
-    serverKeyType: encryptionProtectorObj.?serverKeyType
-    autoRotationEnabled: encryptionProtectorObj.?autoRotationEnabled
+    serverKeyName: cmk_key.outputs.name
+    serverKeyType: 'AzureKeyVault'
+    autoRotationEnabled: customerManagedKey.?autoRotationEnabled
   }
-  dependsOn: [
-    server_keys
-  ]
 }
 
 module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSettings)) {
@@ -496,11 +521,11 @@ module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSetti
 module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
   name: '${uniqueString(deployment().name, location)}-secrets-kv'
   scope: resourceGroup(
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '//'), '/')[2],
-    split((secretsExportConfiguration.?keyVaultResourceId ?? '////'), '/')[4]
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
+    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
   )
   params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId ?? '//', '/'))
+    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
     secretsToSet: union(
       [],
       contains(secretsExportConfiguration!, 'sqlAdminPasswordSecretName')
@@ -515,7 +540,7 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
         ? [
             {
               name: secretsExportConfiguration!.?sqlAzureConnectionStringSercretName
-              value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[0].name : ''}; User=${administratorLogin}; Password=${administratorLoginPassword}'
+              value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[?0].name : ''}; User=${administratorLogin}; Password=${administratorLoginPassword}'
             }
           ]
         : []
@@ -524,10 +549,11 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
 }
 
 module failover_groups 'failover-group/main.bicep' = [
-  for (failoverGroup, index) in failoverGroups: {
+  for (failoverGroup, index) in (failoverGroups ?? []): {
     name: '${uniqueString(deployment().name, location)}-Sql-FailoverGroup-${index}'
     params: {
       name: failoverGroup.name
+      tags: failoverGroup.?tags ?? tags
       serverName: server.name
       databases: failoverGroup.databases
       partnerServers: failoverGroup.partnerServers
@@ -581,10 +607,10 @@ output privateEndpoints privateEndpointOutputType[] = [
 // =============== //
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-import { elasticPoolPerDatabaseSettingsType, elasticPoolSkuType } from 'elastic-pool/main.bicep'
+import { perDatabaseSettingsType, skuType } from 'elastic-pool/main.bicep'
 import { databaseSkuType, shortTermBackupRetentionPolicyType, longTermBackupRetentionPolicyType } from 'database/main.bicep'
 import { recurringScansType } from 'vulnerability-assessment/main.bicep'
-import { failoverGroupReadOnlyEndpointType, failoverGroupReadWriteEndpointType } from 'failover-group/main.bicep'
+import { readOnlyEndpointType, readWriteEndpointType } from 'failover-group/main.bicep'
 
 @export()
 @description('The type for a private endpoint output.')
@@ -612,6 +638,7 @@ type privateEndpointOutputType = {
 }
 
 @export()
+@description('The type for audit settings.')
 type auditSettingsType = {
   @description('Optional. Specifies the name of the audit settings.')
   name: string?
@@ -645,6 +672,7 @@ type auditSettingsType = {
 }
 
 @export()
+@description('The type for a secrets export configuration.')
 type secretsExportConfigurationType = {
   @description('Required. The resource ID of the key vault where to store the secrets of this module.')
   keyVaultResourceId: string
@@ -657,6 +685,7 @@ type secretsExportConfigurationType = {
 }
 
 @export()
+@description('The type for a sever-external administrator.')
 type serverExternalAdministratorType = {
   @description('Optional. Type of the sever administrator.')
   administratorType: 'ActiveDirectory'?
@@ -678,12 +707,16 @@ type serverExternalAdministratorType = {
 }
 
 @export()
-type databasePropertyType = {
+@description('The type for a database.')
+type databaseType = {
   @description('Required. The name of the Elastic Pool.')
   name: string
 
   @description('Optional. Tags of the resource.')
   tags: object?
+
+  @description('Optional. The managed identities for the database.')
+  managedIdentities: managedIdentityOnlyUserAssignedType?
 
   @description('Optional. The database SKU.')
   sku: databaseSkuType?
@@ -691,8 +724,8 @@ type databasePropertyType = {
   @description('Optional. Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled.')
   autoPauseDelay: int?
 
-  @description('Optional. Specifies the availability zone the database is pinned to.')
-  availabilityZone: '1' | '2' | '3' | 'NoPreference'?
+  @description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
+  availabilityZone: (-1 | 1 | 2 | 3)
 
   @description('Optional. Collation of the metadata catalog.')
   catalogCollation: string?
@@ -812,7 +845,8 @@ type databasePropertyType = {
 }
 
 @export()
-type elasticPoolPropertyType = {
+@description('The type for an elastic pool property.')
+type elasticPoolType = {
   @description('Required. The name of the Elastic Pool.')
   name: string
 
@@ -820,13 +854,13 @@ type elasticPoolPropertyType = {
   tags: object?
 
   @description('Optional. The elastic pool SKU.')
-  sku: elasticPoolSkuType?
+  sku: skuType?
 
   @description('Optional. Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled.')
   autoPauseDelay: int?
 
-  @description('Optional. Specifies the availability zone the pool\'s primary replica is pinned to.')
-  availabilityZone: '1' | '2' | '3' | 'NoPreference'?
+  @description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
+  availabilityZone: (-1 | 1 | 2 | 3)
 
   @description('Optional. The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools.')
   highAvailabilityReplicaCount: int?
@@ -844,7 +878,7 @@ type elasticPoolPropertyType = {
   minCapacity: int?
 
   @description('Optional. The per database settings for the elastic pool.')
-  perDatabaseSettings: elasticPoolPerDatabaseSettingsType?
+  perDatabaseSettings: perDatabaseSettingsType?
 
   @description('Optional. Type of enclave requested on the elastic pool.')
   preferredEnclaveType: 'Default' | 'VBS'?
@@ -854,18 +888,7 @@ type elasticPoolPropertyType = {
 }
 
 @export()
-type encryptionProtectorType = {
-  @description('Required. The name of the server key.')
-  serverKeyName: string
-
-  @description('Optional. The encryption protector type.')
-  serverKeyType: 'ServiceManaged' | 'AzureKeyVault'?
-
-  @description('Optional. Key auto rotation opt-in flag.')
-  autoRotationEnabled: bool?
-}
-
-@export()
+@description('The type for a vulnerability assessment.')
 type vulnerabilityAssessmentType = {
   @description('Required. The name of the vulnerability assessment.')
   name: string
@@ -884,6 +907,7 @@ type vulnerabilityAssessmentType = {
 }
 
 @export()
+@description('The type for a firewall rule.')
 type firewallRuleType = {
   @description('Required. The name of the firewall rule.')
   name: string
@@ -896,6 +920,7 @@ type firewallRuleType = {
 }
 
 @export()
+@description('The type for a key.')
 type keyType = {
   @description('Optional. The name of the key. Must follow the [<keyVaultName>_<keyName>_<keyVersion>] pattern.')
   name: string?
@@ -908,18 +933,20 @@ type keyType = {
 }
 
 @export()
+@description('The type for a virtual network rule.')
 type virtualNetworkRuleType = {
   @description('Required. The name of the Server Virtual Network Rule.')
   name: string
 
   @description('Required. The resource ID of the virtual network subnet.')
-  virtualNetworkSubnetId: string
+  virtualNetworkSubnetResourceId: string
 
   @description('Optional. Allow creating a firewall rule before the virtual network has vnet service endpoint enabled.')
   ignoreMissingVnetServiceEndpoint: bool?
 }
 
 @export()
+@description('The type for a security alert policy.')
 type securityAlerPolicyType = {
   @description('Required. The name of the Security Alert Policy.')
   name: string
@@ -953,9 +980,13 @@ type securityAlerPolicyType = {
 }
 
 @export()
+@description('The type for a failover group.')
 type failoverGroupType = {
   @description('Required. The name of the failover group.')
   name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
 
   @description('Required. List of databases in the failover group.')
   databases: string[]
@@ -964,10 +995,10 @@ type failoverGroupType = {
   partnerServers: string[]
 
   @description('Optional. Read-only endpoint of the failover group instance.')
-  readOnlyEndpoint: failoverGroupReadOnlyEndpointType?
+  readOnlyEndpoint: readOnlyEndpointType?
 
   @description('Required. Read-write endpoint of the failover group instance.')
-  readWriteEndpoint: failoverGroupReadWriteEndpointType
+  readWriteEndpoint: readWriteEndpointType
 
   @description('Required. Databases secondary type on partner server.')
   secondaryType: 'Geo' | 'Standby'

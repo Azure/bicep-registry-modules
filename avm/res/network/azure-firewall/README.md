@@ -18,8 +18,8 @@ This module deploys an Azure Firewall.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/azureFirewalls` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/azureFirewalls) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
+| `Microsoft.Network/azureFirewalls` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/azureFirewalls) |
+| `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
 
 ## Usage examples
 
@@ -2003,8 +2003,6 @@ Collection of rules used by a application rule collection.
 
 - Required: Yes
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 **Required parameters**
 
@@ -2029,8 +2027,6 @@ Name of the application rule.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.protocols`
 
@@ -2038,8 +2034,6 @@ Array of ApplicationRuleProtocols.
 
 - Required: Yes
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 **Required parameters**
 
@@ -2067,8 +2061,6 @@ Protocol type.
     'Mssql'
   ]
   ```
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.protocols.port`
 
@@ -2076,7 +2068,6 @@ Port number for the protocol.
 
 - Required: No
 - Type: int
-- MinValue: 100
 - MaxValue: 64000
 
 ### Parameter: `applicationRuleCollections.properties.rules.description`
@@ -2085,8 +2076,6 @@ Description of the rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.fqdnTags`
 
@@ -2094,8 +2083,6 @@ List of FQDN Tags for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.sourceAddresses`
 
@@ -2103,8 +2090,6 @@ List of source IP addresses for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.sourceIpGroups`
 
@@ -2112,8 +2097,6 @@ List of source IpGroups for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `applicationRuleCollections.properties.rules.targetFqdns`
 
@@ -2121,8 +2104,6 @@ List of FQDNs for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `azureSkuTier`
 
@@ -2157,7 +2138,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -2267,7 +2248,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -2448,8 +2429,6 @@ Collection of rules used by a NAT rule collection.
 
 - Required: Yes
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 **Required parameters**
 
@@ -2477,8 +2456,6 @@ Name of the NAT rule.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.protocols`
 
@@ -2495,8 +2472,6 @@ Array of AzureFirewallNetworkRuleProtocols applicable to this NAT rule.
     'UDP'
   ]
   ```
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.description`
 
@@ -2504,8 +2479,6 @@ Description of the rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.destinationAddresses`
 
@@ -2513,8 +2486,6 @@ List of destination IP addresses for this rule. Supports IP ranges, prefixes, an
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.destinationPorts`
 
@@ -2522,8 +2493,6 @@ List of destination ports.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.sourceAddresses`
 
@@ -2531,8 +2500,6 @@ List of source IP addresses for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.sourceIpGroups`
 
@@ -2540,8 +2507,6 @@ List of source IpGroups for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.translatedAddress`
 
@@ -2549,8 +2514,6 @@ The translated address for this NAT rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.translatedFqdn`
 
@@ -2558,8 +2521,6 @@ The translated FQDN for this NAT rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `natRuleCollections.properties.rules.translatedPort`
 
@@ -2567,8 +2528,6 @@ The translated port for this NAT rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections`
 
@@ -2648,8 +2607,6 @@ Collection of rules used by a network rule collection.
 
 - Required: Yes
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 **Required parameters**
 
@@ -2676,8 +2633,6 @@ Name of the network rule.
 
 - Required: Yes
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.protocols`
 
@@ -2694,8 +2649,6 @@ Array of AzureFirewallNetworkRuleProtocols.
     'UDP'
   ]
   ```
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.description`
 
@@ -2703,8 +2656,6 @@ Description of the rule.
 
 - Required: No
 - Type: string
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationAddresses`
 
@@ -2712,8 +2663,6 @@ List of destination IP addresses.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationFqdns`
 
@@ -2721,8 +2670,6 @@ List of destination FQDNs.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationIpGroups`
 
@@ -2730,8 +2677,6 @@ List of destination IP groups for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.destinationPorts`
 
@@ -2739,8 +2684,6 @@ List of destination ports.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.sourceAddresses`
 
@@ -2748,8 +2691,6 @@ List of source IP addresses for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `networkRuleCollections.properties.rules.sourceIpGroups`
 
@@ -2757,8 +2698,6 @@ List of source IpGroups for this rule.
 
 - Required: No
 - Type: array
-- MinValue: 100
-- MaxValue: 65000
 
 ### Parameter: `publicIPAddressObject`
 
@@ -2942,7 +2881,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.6.0` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 
