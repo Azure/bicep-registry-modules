@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "6747556351969143555"
+      "version": "0.35.1.17967",
+      "templateHash": "17648661138294840266"
     },
     "name": "Event Grid Domains",
     "description": "This module deploys an Event Grid Domain."
@@ -629,6 +629,18 @@
         "description": "Optional. This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled."
       }
     },
+    "minimumTlsVersionAllowed": {
+      "type": "string",
+      "defaultValue": "1.2",
+      "allowedValues": [
+        "1.0",
+        "1.1",
+        "1.2"
+      ],
+      "metadata": {
+        "description": "Optional. The minimum TLS version required for API requests to the domain."
+      }
+    },
     "diagnosticSettings": {
       "type": "array",
       "items": {
@@ -758,7 +770,8 @@
         "inboundIpRules": "[if(not(empty(parameters('inboundIpRules'))), parameters('inboundIpRules'), null())]",
         "autoCreateTopicWithFirstSubscription": "[parameters('autoCreateTopicWithFirstSubscription')]",
         "autoDeleteTopicWithLastSubscription": "[parameters('autoDeleteTopicWithLastSubscription')]",
-        "disableLocalAuth": "[parameters('disableLocalAuth')]"
+        "disableLocalAuth": "[parameters('disableLocalAuth')]",
+        "minimumTlsVersionAllowed": "[parameters('minimumTlsVersionAllowed')]"
       }
     },
     "domain_lock": {
@@ -865,8 +878,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14013610522827949350"
+              "version": "0.35.1.17967",
+              "templateHash": "16094528623718152651"
             },
             "name": "Event Grid Domain Topics",
             "description": "This module deploys an Event Grid Domain Topic."
