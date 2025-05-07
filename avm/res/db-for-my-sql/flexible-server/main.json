@@ -1,0 +1,2560 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.1-experimental",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+    "_EXPERIMENTAL_FEATURES_ENABLED": [
+      "Extensibility"
+    ],
+    "_generator": {
+      "name": "bicep",
+      "version": "0.34.44.8038",
+      "templateHash": "1642081039905944114"
+    },
+    "name": "DBforMySQL Flexible Servers",
+    "description": "This module deploys a DBforMySQL Flexible Server."
+  },
+  "definitions": {
+    "privateEndpointOutputType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the private endpoint."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource ID of the private endpoint."
+          }
+        },
+        "groupId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The group Id for the private endpoint Group."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fqdn": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "FQDN that resolves to private endpoint IP address."
+                }
+              },
+              "ipAddresses": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "description": "A list of private IP addresses of the private endpoint."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "The custom DNS configurations of the private endpoint."
+          }
+        },
+        "networkInterfaceResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "The IDs of the network interfaces associated with the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "_1.lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_1.privateEndpointCustomDnsConfigType": {
+      "type": "object",
+      "properties": {
+        "fqdn": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. FQDN that resolves to private endpoint IP address."
+          }
+        },
+        "ipAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of private IP addresses of the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_1.privateEndpointIpConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the resource that is unique within a resource group."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "memberName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "privateIPAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. A private IP address obtained from the private endpoint's subnet."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Properties of private endpoint IP configurations."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_1.privateEndpointPrivateDnsZoneGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Private DNS Zone Group."
+          }
+        },
+        "privateDnsZoneGroupConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name of the private DNS Zone Group config."
+                }
+              },
+              "privateDnsZoneResourceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource id of the private DNS zone."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_1.roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "customerManagedKeyType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, the deployment will use the latest version available at deployment time."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type does not support auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "managedIdentityOnlyUserAssignedType": {
+      "type": "object",
+      "properties": {
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if only user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    },
+    "privateEndpointSingleServiceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Private Endpoint."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location to deploy the Private Endpoint to."
+          }
+        },
+        "privateLinkServiceConnectionName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private link connection to create."
+          }
+        },
+        "service": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The subresource to deploy the Private Endpoint for. For example \"vault\" for a Key Vault Private Endpoint."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+          }
+        },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used."
+          }
+        },
+        "privateDnsZoneGroup": {
+          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The private DNS Zone Group to configure for the Private Endpoint."
+          }
+        },
+        "isManualConnection": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If Manual Private Link Connection is required."
+          }
+        },
+        "manualConnectionRequestMessage": {
+          "type": "string",
+          "nullable": true,
+          "maxLength": 140,
+          "metadata": {
+            "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom DNS configurations."
+          }
+        },
+        "ipConfigurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of IP configurations of the Private Endpoint. This will be used to map to the first-party Service endpoints."
+          }
+        },
+        "applicationSecurityGroupResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application security groups in which the Private Endpoint IP configuration is included."
+          }
+        },
+        "customNetworkInterfaceName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom name of the network interface attached to the Private Endpoint."
+          }
+        },
+        "lock": {
+          "$ref": "#/definitions/_1.lockType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags to be applied on all resources/Resource Groups in this deployment."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can be assumed (i.e., for services that only have one Private Endpoint type like 'vault' for key vault).",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.0"
+        }
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the MySQL flexible server."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Tags of the resource."
+      }
+    },
+    "administratorLogin": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The administrator login name of a server. Can only be specified when the MySQL server is being created."
+      }
+    },
+    "administratorLoginPassword": {
+      "type": "securestring",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The administrator login password."
+      }
+    },
+    "administrators": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The Azure AD administrators when AAD authentication enabled."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3."
+      }
+    },
+    "tier": {
+      "type": "string",
+      "allowedValues": [
+        "GeneralPurpose",
+        "Burstable",
+        "MemoryOptimized"
+      ],
+      "metadata": {
+        "description": "Required. The tier of the particular SKU. Tier must align with the \"skuName\" property. Example, tier cannot be \"Burstable\" if skuName is \"Standard_D4s_v3\"."
+      }
+    },
+    "availabilityZone": {
+      "type": "string",
+      "defaultValue": "",
+      "allowedValues": [
+        "",
+        "1",
+        "2",
+        "3"
+      ],
+      "metadata": {
+        "description": "Optional. Availability zone information of the server. Default will have no preference set."
+      }
+    },
+    "highAvailabilityZone": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Standby availability zone information of the server. Default will have no preference set."
+      }
+    },
+    "backupRetentionDays": {
+      "type": "int",
+      "defaultValue": 7,
+      "minValue": 1,
+      "maxValue": 35,
+      "metadata": {
+        "description": "Optional. Backup retention days for the server."
+      }
+    },
+    "geoRedundantBackup": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. A value indicating whether Geo-Redundant backup is enabled on the server. If \"Enabled\" and \"cMKKeyName\" is not empty, then \"geoBackupCMKKeyVaultResourceId\" and \"cMKUserAssignedIdentityResourceId\" are also required."
+      }
+    },
+    "createMode": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Default",
+        "GeoRestore",
+        "PointInTimeRestore",
+        "Replica"
+      ],
+      "metadata": {
+        "description": "Optional. The mode to create a new MySQL server."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityOnlyUserAssignedType",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The managed identity definition for this resource. Required if 'customerManagedKey' is not empty."
+      }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition to use for the managed service."
+      }
+    },
+    "customerManagedKeyGeo": {
+      "$ref": "#/definitions/customerManagedKeyType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition to use when geoRedundantBackup is \"Enabled\"."
+      }
+    },
+    "highAvailability": {
+      "type": "string",
+      "defaultValue": "ZoneRedundant",
+      "allowedValues": [
+        "Disabled",
+        "SameZone",
+        "ZoneRedundant"
+      ],
+      "metadata": {
+        "description": "Optional. The mode for High Availability (HA). It is not supported for the Burstable pricing tier and Zone redundant HA can only be set during server provisioning."
+      }
+    },
+    "maintenanceWindow": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. Properties for the maintenence window. If provided, \"customWindow\" property must exist and set to \"Enabled\"."
+      }
+    },
+    "delegatedSubnetResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is \"Private Access\" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29."
+      }
+    },
+    "privateDnsZoneResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. Private dns zone arm resource ID. Used when the desired connectivity mode is \"Private Access\". Required if \"delegatedSubnetResourceId\" is used and the Private DNS Zone name must end with mysql.database.azure.com in order to be linked to the MySQL Flexible Server."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Specifies whether public network access is allowed for this server. Set to \"Enabled\" to allow public access, or \"Disabled\" (default) when the server has VNet integration."
+      }
+    },
+    "restorePointInTime": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Conditional. Restore point creation time (ISO8601 format), specifying the time to restore from. Required if \"createMode\" is set to \"PointInTimeRestore\"."
+      }
+    },
+    "replicationRole": {
+      "type": "string",
+      "defaultValue": "None",
+      "allowedValues": [
+        "None",
+        "Replica",
+        "Source"
+      ],
+      "metadata": {
+        "description": "Optional. The replication role."
+      }
+    },
+    "sourceServerResourceId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The source MySQL server ID. Required if \"createMode\" is set to \"PointInTimeRestore\"."
+      }
+    },
+    "storageAutoGrow": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Conditional. Enable Storage Auto Grow or not. Storage auto-growth prevents a server from running out of storage and becoming read-only. Required if \"highAvailability\" is not \"Disabled\"."
+      }
+    },
+    "storageAutoIoScaling": {
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enable IO Auto Scaling or not. The server scales IOPs up or down automatically depending on your workload needs."
+      }
+    },
+    "storageIOPS": {
+      "type": "int",
+      "defaultValue": 1000,
+      "minValue": 360,
+      "maxValue": 48000,
+      "metadata": {
+        "description": "Optional. Storage IOPS for a server. Max IOPS are determined by compute size."
+      }
+    },
+    "storageSizeGB": {
+      "type": "int",
+      "defaultValue": 64,
+      "allowedValues": [
+        20,
+        32,
+        64,
+        128,
+        256,
+        512,
+        1024,
+        2048,
+        4096,
+        8192,
+        16384
+      ],
+      "metadata": {
+        "description": "Optional. Max storage allowed for a server. In all compute tiers, the minimum storage supported is 20 GiB and maximum is 16 TiB."
+      }
+    },
+    "version": {
+      "type": "string",
+      "defaultValue": "8.0.21",
+      "allowedValues": [
+        "5.7",
+        "8.0.21"
+      ],
+      "metadata": {
+        "description": "Optional. MySQL Server version."
+      }
+    },
+    "databases": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The databases to create in the server."
+      }
+    },
+    "firewallRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The firewall rules to create in the MySQL flexible server."
+      }
+    },
+    "advancedThreatProtection": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Enable/Disable Advanced Threat Protection (Microsoft Defender) for the server."
+      }
+    },
+    "roleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Array of role assignments to create."
+      }
+    },
+    "diagnosticSettings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The diagnostic settings of the service."
+      }
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointSingleServiceType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Configuration details for private endpoints. Used when the desired connectivity mode is 'Public Access' and 'delegatedSubnetResourceId' is NOT used."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    }
+  },
+  "variables": {
+    "copy": [
+      {
+        "name": "formattedRoleAssignments",
+        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      }
+    ],
+    "enableReferencedModulesTelemetry": false,
+    "standByAvailabilityZoneTable": {
+      "Disabled": null,
+      "SameZone": "[parameters('availabilityZone')]",
+      "ZoneRedundant": "[parameters('highAvailabilityZone')]"
+    },
+    "standByAvailabilityZone": "[tryGet(variables('standByAvailabilityZoneTable'), parameters('highAvailability'))]",
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "builtInRoleNames": {
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "MySQL Backup And Export Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd18ad5f3-1baf-4119-b49b-d944edb1f9d0')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    }
+  },
+  "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
+    },
+    "cMKGeoKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKeyGeo'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKeyGeo'), 'keyName'))]"
+    },
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.dbformysql-flexibleserver.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
+    },
+    "cMKUserAssignedIdentity": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
+    },
+    "cMKGeoKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKeyGeo'), 'keyVaultResourceId'), '/'))]"
+    },
+    "cMKGeoUserAssignedIdentity": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/'))]"
+    },
+    "flexibleServer": {
+      "type": "Microsoft.DBforMySQL/flexibleServers",
+      "apiVersion": "2024-10-01-preview",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('tier')]"
+      },
+      "identity": "[variables('identity')]",
+      "properties": {
+        "administratorLogin": "[parameters('administratorLogin')]",
+        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+        "availabilityZone": "[parameters('availabilityZone')]",
+        "backup": {
+          "backupRetentionDays": "[parameters('backupRetentionDays')]",
+          "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
+        },
+        "createMode": "[parameters('createMode')]",
+        "dataEncryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('type', 'AzureKeyVault', 'geoBackupKeyURI', if(equals(parameters('geoRedundantBackup'), 'Enabled'), if(not(empty(coalesce(tryGet(parameters('customerManagedKeyGeo'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKGeoKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKeyGeo'), 'keyVersion')), reference('cMKGeoKeyVault::cMKKey').keyUriWithVersion), null()), 'geoBackupUserAssignedIdentityId', if(equals(parameters('geoRedundantBackup'), 'Enabled'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/'))), null()), 'primaryKeyURI', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion), 'primaryUserAssignedIdentityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null())]",
+        "highAvailability": {
+          "mode": "[parameters('highAvailability')]",
+          "standbyAvailabilityZone": "[variables('standByAvailabilityZone')]"
+        },
+        "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
+        "network": {
+          "delegatedSubnetResourceId": "[parameters('delegatedSubnetResourceId')]",
+          "privateDnsZoneResourceId": "[parameters('privateDnsZoneResourceId')]",
+          "publicNetworkAccess": "[parameters('publicNetworkAccess')]"
+        },
+        "replicationRole": "[parameters('replicationRole')]",
+        "restorePointInTime": "[parameters('restorePointInTime')]",
+        "sourceServerResourceId": "[parameters('sourceServerResourceId')]",
+        "storage": {
+          "autoGrow": "[parameters('storageAutoGrow')]",
+          "autoIoScaling": "[parameters('storageAutoIoScaling')]",
+          "iops": "[parameters('storageIOPS')]",
+          "storageSizeGB": "[parameters('storageSizeGB')]"
+        },
+        "version": "[parameters('version')]"
+      },
+      "dependsOn": [
+        "cMKGeoKeyVault::cMKKey",
+        "cMKKeyVault::cMKKey"
+      ]
+    },
+    "flexibleServer_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.DBforMySQL/flexibleServers/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    },
+    "flexibleServer_roleAssignments": {
+      "copy": {
+        "name": "flexibleServer_roleAssignments",
+        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.DBforMySQL/flexibleServers/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+      "properties": {
+        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    },
+    "flexibleServer_diagnosticSettings": {
+      "copy": {
+        "name": "flexibleServer_diagnosticSettings",
+        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+      },
+      "type": "Microsoft.Insights/diagnosticSettings",
+      "apiVersion": "2021-05-01-preview",
+      "scope": "[format('Microsoft.DBforMySQL/flexibleServers/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "metrics",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+            "input": {
+              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+              "timeGrain": null
+            }
+          },
+          {
+            "name": "logs",
+            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+            "input": {
+              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+            }
+          }
+        ],
+        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    },
+    "flexibleServer_databases": {
+      "copy": {
+        "name": "flexibleServer_databases",
+        "count": "[length(parameters('databases'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-MySQL-DB-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('databases')[copyIndex()].name]"
+          },
+          "flexibleServerName": {
+            "value": "[parameters('name')]"
+          },
+          "collation": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'collation'), '')]"
+          },
+          "charset": {
+            "value": "[coalesce(tryGet(parameters('databases')[copyIndex()], 'charset'), '')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.1-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "15661095256291299483"
+            },
+            "name": "DBforMySQL Flexible Server Databases",
+            "description": "This module deploys a DBforMySQL Flexible Server Database."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the database."
+              }
+            },
+            "flexibleServerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent MySQL flexible server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "collation": {
+              "type": "string",
+              "defaultValue": "utf8",
+              "metadata": {
+                "description": "Optional. The collation of the database."
+              }
+            },
+            "charset": {
+              "type": "string",
+              "defaultValue": "utf8_general_ci",
+              "metadata": {
+                "description": "Optional. The charset of the database."
+              }
+            }
+          },
+          "resources": {
+            "flexibleServer": {
+              "existing": true,
+              "type": "Microsoft.DBforMySQL/flexibleServers",
+              "apiVersion": "2024-10-01-preview",
+              "name": "[parameters('flexibleServerName')]"
+            },
+            "database": {
+              "type": "Microsoft.DBforMySQL/flexibleServers/databases",
+              "apiVersion": "2023-12-30",
+              "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
+              "properties": {
+                "collation": "[if(not(empty(parameters('collation'))), parameters('collation'), null())]",
+                "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed database."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed database."
+              },
+              "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/databases', parameters('flexibleServerName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed database."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    },
+    "flexibleServer_firewallRules": {
+      "copy": {
+        "name": "flexibleServer_firewallRules",
+        "count": "[length(parameters('firewallRules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-MySQL-FirewallRules-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('firewallRules')[copyIndex()].name]"
+          },
+          "flexibleServerName": {
+            "value": "[parameters('name')]"
+          },
+          "startIpAddress": {
+            "value": "[parameters('firewallRules')[copyIndex()].startIpAddress]"
+          },
+          "endIpAddress": {
+            "value": "[parameters('firewallRules')[copyIndex()].endIpAddress]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.1-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "10791701534871605589"
+            },
+            "name": "DBforMySQL Flexible Server Firewall Rules",
+            "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the MySQL flexible server Firewall Rule."
+              }
+            },
+            "startIpAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
+              }
+            },
+            "endIpAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+              }
+            },
+            "flexibleServerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent MySQL flexible server. Required if the template is used in a standalone deployment."
+              }
+            }
+          },
+          "resources": {
+            "flexibleServer": {
+              "existing": true,
+              "type": "Microsoft.DBforMySQL/flexibleServers",
+              "apiVersion": "2024-10-01-preview",
+              "name": "[parameters('flexibleServerName')]"
+            },
+            "firewallRule": {
+              "type": "Microsoft.DBforMySQL/flexibleServers/firewallRules",
+              "apiVersion": "2023-12-30",
+              "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
+              "properties": {
+                "endIpAddress": "[parameters('endIpAddress')]",
+                "startIpAddress": "[parameters('startIpAddress')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed firewall rule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed firewall rule."
+              },
+              "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/firewallRules', parameters('flexibleServerName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed firewall rule."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    },
+    "flexibleServer_administrators": {
+      "copy": {
+        "name": "flexibleServer_administrators",
+        "count": "[length(parameters('administrators'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-MySQL-Administrators-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "flexibleServerName": {
+            "value": "[parameters('name')]"
+          },
+          "login": {
+            "value": "[parameters('administrators')[copyIndex()].login]"
+          },
+          "sid": {
+            "value": "[parameters('administrators')[copyIndex()].sid]"
+          },
+          "identityResourceId": {
+            "value": "[parameters('administrators')[copyIndex()].identityResourceId]"
+          },
+          "tenantId": {
+            "value": "[coalesce(tryGet(parameters('administrators')[copyIndex()], 'tenantId'), tenant().tenantId)]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.1-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "14009485938235832570"
+            },
+            "name": "DBforMySQL Flexible Server Administrators",
+            "description": "This module deploys a DBforMySQL Flexible Server Administrator."
+          },
+          "parameters": {
+            "flexibleServerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "sid": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. SID (object ID) of the server administrator."
+              }
+            },
+            "identityResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the identity used for AAD Authentication."
+              }
+            },
+            "login": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Login name of the server administrator."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "defaultValue": "[tenant().tenantId]",
+              "metadata": {
+                "description": "Optional. The tenantId of the Active Directory administrator."
+              }
+            }
+          },
+          "resources": {
+            "flexibleServer": {
+              "existing": true,
+              "type": "Microsoft.DBforMySQL/flexibleServers",
+              "apiVersion": "2024-10-01-preview",
+              "name": "[parameters('flexibleServerName')]"
+            },
+            "administrator": {
+              "type": "Microsoft.DBforMySQL/flexibleServers/administrators",
+              "apiVersion": "2023-12-30",
+              "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'ActiveDirectory')]",
+              "properties": {
+                "administratorType": "ActiveDirectory",
+                "identityResourceId": "[parameters('identityResourceId')]",
+                "login": "[parameters('login')]",
+                "sid": "[parameters('sid')]",
+                "tenantId": "[parameters('tenantId')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed administrator."
+              },
+              "value": "ActiveDirectory"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed administrator."
+              },
+              "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/administrators', parameters('flexibleServerName'), 'ActiveDirectory')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed administrator."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    },
+    "flexibleServer_advancedThreatProtection": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-MySQL-AdvancedThreatProtection', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "flexibleServerName": {
+            "value": "[parameters('name')]"
+          },
+          "advancedThreatProtection": {
+            "value": "[parameters('advancedThreatProtection')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.1-experimental",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "13820485544041430219"
+            },
+            "name": "DBforMySQL Flexible Server Advanced Threat Protection",
+            "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
+          },
+          "parameters": {
+            "flexibleServerName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent DBforMySQL flexible server. Required if the template is used in a standalone deployment."
+              }
+            },
+            "advancedThreatProtection": {
+              "type": "string",
+              "defaultValue": "Enabled",
+              "allowedValues": [
+                "Enabled",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Optional. The state of the advanced threat protection."
+              }
+            }
+          },
+          "resources": {
+            "flexibleServer": {
+              "existing": true,
+              "type": "Microsoft.DBforMySQL/flexibleServers",
+              "apiVersion": "2024-10-01-preview",
+              "name": "[parameters('flexibleServerName')]"
+            },
+            "advancedThreatProtectionSettings": {
+              "type": "Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings",
+              "apiVersion": "2024-10-01-preview",
+              "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
+              "properties": {
+                "state": "[parameters('advancedThreatProtection')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed threat protection."
+              },
+              "value": "Default"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed threat protection."
+              },
+              "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings', parameters('flexibleServerName'), 'Default')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed threat protection."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    },
+    "flexibleServer_privateEndpoints": {
+      "copy": {
+        "name": "flexibleServer_privateEndpoints",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
+      },
+      "condition": "[empty(parameters('delegatedSubnetResourceId'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-MySQL-Flex-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'name'), format('pep-{0}-{1}-{2}', last(split(resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'mysqlServer'), copyIndex()))]"
+          },
+          "privateLinkServiceConnections": "[if(not(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true())), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'mysqlServer'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'mysqlServer')))))), createObject('value', null()))]",
+          "manualPrivateLinkServiceConnections": "[if(equals(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'isManualConnection'), true()), createObject('value', createArray(createObject('name', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateLinkServiceConnectionName'), format('{0}-{1}-{2}', last(split(resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('name')), '/')), coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'mysqlServer'), copyIndex())), 'properties', createObject('privateLinkServiceId', resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('name')), 'groupIds', createArray(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'service'), 'mysqlServer')), 'requestMessage', coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'manualConnectionRequestMessage'), 'Manual approval required.'))))), createObject('value', null()))]",
+          "subnetResourceId": {
+            "value": "[coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId]"
+          },
+          "enableTelemetry": {
+            "value": "[variables('enableReferencedModulesTelemetry')]"
+          },
+          "location": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+          },
+          "lock": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
+          },
+          "privateDnsZoneGroup": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroup')]"
+          },
+          "roleAssignments": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'roleAssignments')]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
+          },
+          "customDnsConfigs": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customDnsConfigs')]"
+          },
+          "ipConfigurations": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'ipConfigurations')]"
+          },
+          "applicationSecurityGroupResourceIds": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'applicationSecurityGroupResourceIds')]"
+          },
+          "customNetworkInterfaceName": {
+            "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'customNetworkInterfaceName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
+            },
+            "name": "Private Endpoints",
+            "description": "This module deploys a Private Endpoint."
+          },
+          "definitions": {
+            "privateDnsZoneGroupType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the Private DNS Zone Group."
+                  }
+                },
+                "privateDnsZoneGroupConfigs": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/privateDnsZoneGroupConfigType"
+                  },
+                  "metadata": {
+                    "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "ipConfigurationType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the resource that is unique within a resource group."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
+                      }
+                    },
+                    "memberName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
+                      }
+                    },
+                    "privateIPAddress": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private endpoint IP configurations."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "privateLinkServiceConnectionType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the private link service connection."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
+                      }
+                    },
+                    "privateLinkServiceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource id of private link service."
+                      }
+                    },
+                    "requestMessage": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private link service connection."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "customDnsConfigType": {
+              "type": "object",
+              "properties": {
+                "fqdn": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
+                  }
+                },
+                "ipAddresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of private IP addresses of the private endpoint."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "privateDnsZoneGroupConfigType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the private DNS zone group config."
+                  }
+                },
+                "privateDnsZoneResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The resource id of the private DNS zone."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "private-dns-zone-group/main.bicep"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the private endpoint resource to create."
+              }
+            },
+            "subnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+              }
+            },
+            "applicationSecurityGroupResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+              }
+            },
+            "customNetworkInterfaceName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The custom name of the network interface attached to the private endpoint."
+              }
+            },
+            "ipConfigurations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ipConfigurationType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+              }
+            },
+            "privateDnsZoneGroup": {
+              "$ref": "#/definitions/privateDnsZoneGroupType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The private DNS zone group to configure for the private endpoint."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+              }
+            },
+            "customDnsConfigs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customDnsConfigType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Custom DNS configurations."
+              }
+            },
+            "manualPrivateLinkServiceConnections": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
+              }
+            },
+            "privateLinkServiceConnections": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "DNS Resolver Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0f2ebee7-ffd4-4fc0-b3b7-664099fdad5d')]",
+              "DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'befefa01-2a29-4197-83a8-272ff33ce314')]",
+              "Domain Services Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'eeaeda52-9324-47f6-8069-5d5bade478b2')]",
+              "Domain Services Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '361898ef-9ed1-48c2-849c-a832951106bb')]",
+              "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "privateEndpoint": {
+              "type": "Microsoft.Network/privateEndpoints",
+              "apiVersion": "2024-05-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "copy": [
+                  {
+                    "name": "applicationSecurityGroups",
+                    "count": "[length(coalesce(parameters('applicationSecurityGroupResourceIds'), createArray()))]",
+                    "input": {
+                      "id": "[coalesce(parameters('applicationSecurityGroupResourceIds'), createArray())[copyIndex('applicationSecurityGroups')]]"
+                    }
+                  }
+                ],
+                "customDnsConfigs": "[coalesce(parameters('customDnsConfigs'), createArray())]",
+                "customNetworkInterfaceName": "[coalesce(parameters('customNetworkInterfaceName'), '')]",
+                "ipConfigurations": "[coalesce(parameters('ipConfigurations'), createArray())]",
+                "manualPrivateLinkServiceConnections": "[coalesce(parameters('manualPrivateLinkServiceConnections'), createArray())]",
+                "privateLinkServiceConnections": "[coalesce(parameters('privateLinkServiceConnections'), createArray())]",
+                "subnet": {
+                  "id": "[parameters('subnetResourceId')]"
+                }
+              }
+            },
+            "privateEndpoint_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "privateEndpoint"
+              ]
+            },
+            "privateEndpoint_roleAssignments": {
+              "copy": {
+                "name": "privateEndpoint_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Network/privateEndpoints/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/privateEndpoints', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "privateEndpoint"
+              ]
+            },
+            "privateEndpoint_privateDnsZoneGroup": {
+              "condition": "[not(empty(parameters('privateDnsZoneGroup')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-PrivateEndpoint-PrivateDnsZoneGroup', uniqueString(deployment().name))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[tryGet(parameters('privateDnsZoneGroup'), 'name')]"
+                  },
+                  "privateEndpointName": {
+                    "value": "[parameters('name')]"
+                  },
+                  "privateDnsZoneConfigs": {
+                    "value": "[parameters('privateDnsZoneGroup').privateDnsZoneGroupConfigs]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
+                    },
+                    "name": "Private Endpoint Private DNS Zone Groups",
+                    "description": "This module deploys a Private Endpoint Private DNS Zone Group."
+                  },
+                  "definitions": {
+                    "privateDnsZoneGroupConfigType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the private DNS zone group config."
+                          }
+                        },
+                        "privateDnsZoneResourceId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The resource id of the private DNS zone."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "privateEndpointName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Conditional. The name of the parent private endpoint. Required if the template is used in a standalone deployment."
+                      }
+                    },
+                    "privateDnsZoneConfigs": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/privateDnsZoneGroupConfigType"
+                      },
+                      "minLength": 1,
+                      "maxLength": 5,
+                      "metadata": {
+                        "description": "Required. Array of private DNS zone configurations of the private DNS zone group. A DNS zone group can support up to 5 DNS zones."
+                      }
+                    },
+                    "name": {
+                      "type": "string",
+                      "defaultValue": "default",
+                      "metadata": {
+                        "description": "Optional. The name of the private DNS zone group."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "privateDnsZoneConfigsVar",
+                        "count": "[length(parameters('privateDnsZoneConfigs'))]",
+                        "input": {
+                          "name": "[coalesce(tryGet(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')], 'name'), last(split(parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId, '/')))]",
+                          "properties": {
+                            "privateDnsZoneId": "[parameters('privateDnsZoneConfigs')[copyIndex('privateDnsZoneConfigsVar')].privateDnsZoneResourceId]"
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  "resources": {
+                    "privateEndpoint": {
+                      "existing": true,
+                      "type": "Microsoft.Network/privateEndpoints",
+                      "apiVersion": "2024-05-01",
+                      "name": "[parameters('privateEndpointName')]"
+                    },
+                    "privateDnsZoneGroup": {
+                      "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+                      "apiVersion": "2024-05-01",
+                      "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
+                      "properties": {
+                        "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
+                      }
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the private endpoint DNS zone group."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the private endpoint DNS zone group."
+                      },
+                      "value": "[resourceId('Microsoft.Network/privateEndpoints/privateDnsZoneGroups', parameters('privateEndpointName'), parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the private endpoint DNS zone group was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "privateEndpoint"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the private endpoint was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the private endpoint."
+              },
+              "value": "[resourceId('Microsoft.Network/privateEndpoints', parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the private endpoint."
+              },
+              "value": "[parameters('name')]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
+            },
+            "customDnsConfigs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customDnsConfigType"
+              },
+              "metadata": {
+                "description": "The custom DNS configurations of the private endpoint."
+              },
+              "value": "[reference('privateEndpoint').customDnsConfigs]"
+            },
+            "networkInterfaceResourceIds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "The resource IDs of the network interfaces associated with the private endpoint."
+              },
+              "value": "[map(reference('privateEndpoint').networkInterfaces, lambda('nic', lambdaVariables('nic').id))]"
+            },
+            "groupId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "The group Id for the private endpoint Group."
+              },
+              "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'manualPrivateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0), tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'privateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "flexibleServer"
+      ]
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed MySQL Flexible server."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed MySQL Flexible server."
+      },
+      "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed MySQL Flexible server."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('flexibleServer', '2024-10-01-preview', 'full').location]"
+    },
+    "fqdn": {
+      "type": "string",
+      "metadata": {
+        "description": "The FQDN of the MySQL Flexible server."
+      },
+      "value": "[reference('flexibleServer').fullyQualifiedDomainName]"
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
+      "metadata": {
+        "description": "The private endpoints of the MySQL Flexible server."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "input": {
+          "name": "[reference(format('flexibleServer_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('flexibleServer_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[tryGet(tryGet(reference(format('flexibleServer_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
+          "customDnsConfigs": "[reference(format('flexibleServer_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
+          "networkInterfaceResourceIds": "[reference(format('flexibleServer_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.1-experimental",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+    "_EXPERIMENTAL_FEATURES_ENABLED": [
+      "Extensibility"
+    ],
+    "_generator": {
+      "name": "bicep",
+      "version": "0.34.44.8038",
+      "templateHash": "10791701534871605589"
+    },
+    "name": "DBforMySQL Flexible Server Firewall Rules",
+    "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the MySQL flexible server Firewall Rule."
+      }
+    },
+    "startIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
+      }
+    },
+    "endIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+      }
+    },
+    "flexibleServerName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent MySQL flexible server. Required if the template is used in a standalone deployment."
+      }
+    }
+  },
+  "resources": {
+    "flexibleServer": {
+      "existing": true,
+      "type": "Microsoft.DBforMySQL/flexibleServers",
+      "apiVersion": "2024-10-01-preview",
+      "name": "[parameters('flexibleServerName')]"
+    },
+    "firewallRule": {
+      "type": "Microsoft.DBforMySQL/flexibleServers/firewallRules",
+      "apiVersion": "2023-12-30",
+      "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
+      "properties": {
+        "endIpAddress": "[parameters('endIpAddress')]",
+        "startIpAddress": "[parameters('startIpAddress')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed firewall rule."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed firewall rule."
+      },
+      "value": "[resourceId('Microsoft.DBforMySQL/flexibleServers/firewallRules', parameters('flexibleServerName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed firewall rule."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
