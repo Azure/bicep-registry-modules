@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.1.11899",
-      "templateHash": "17701152838473898328"
+      "version": "0.35.1.17967",
+      "templateHash": "11549704470282186140"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -1282,8 +1282,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "6664761063089970451"
+              "version": "0.35.1.17967",
+              "templateHash": "16652614692219724308"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint."
@@ -1398,8 +1398,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.1.11899",
-                      "templateHash": "16716362285142179248"
+                      "version": "0.35.1.17967",
+                      "templateHash": "15429927124213216647"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin."
@@ -1643,8 +1643,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "5888833893722348732"
+              "version": "0.35.1.17967",
+              "templateHash": "6730394898920724755"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret."
@@ -1792,8 +1792,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "16176516087789568863"
+              "version": "0.35.1.17967",
+              "templateHash": "2015118801238010746"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains."
@@ -2030,9 +2030,9 @@
                 "description": "The DNS validation records."
               },
               "value": {
-                "dnsTxtRecordName": "[format('_dnsauth.{0}', reference('customDomain').hostName)]",
-                "dnsTxtRecordValue": "[reference('customDomain').validationProperties.validationToken]",
-                "dnsTxtRecordExpiry": "[reference('customDomain').validationProperties.expirationDate]"
+                "dnsTxtRecordName": "[if(not(empty(reference('customDomain').validationProperties)), format('_dnsauth.{0}', reference('customDomain').hostName), '')]",
+                "dnsTxtRecordValue": "[coalesce(tryGet(tryGet(reference('customDomain'), 'validationProperties'), 'validationToken'), '')]",
+                "dnsTxtRecordExpiry": "[coalesce(tryGet(tryGet(reference('customDomain'), 'validationProperties'), 'expirationDate'), '')]"
               }
             }
           }
@@ -2086,8 +2086,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "14114649402369146252"
+              "version": "0.35.1.17967",
+              "templateHash": "2573940917391691147"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group."
@@ -2433,8 +2433,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.1.11899",
-                      "templateHash": "3299448810125740577"
+                      "version": "0.35.1.17967",
+                      "templateHash": "10015219457323437112"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin."
@@ -2735,8 +2735,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "15877646874005216929"
+              "version": "0.35.1.17967",
+              "templateHash": "9131345244192875724"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set."
@@ -2895,8 +2895,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.1.11899",
-                      "templateHash": "9504457217668690067"
+                      "version": "0.35.1.17967",
+                      "templateHash": "7726456348704922010"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule."
@@ -3124,8 +3124,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "11569548485086414235"
+              "version": "0.35.1.17967",
+              "templateHash": "15906956770187123226"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint."
@@ -3501,8 +3501,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.1.11899",
-                      "templateHash": "1335284301571538933"
+                      "version": "0.35.1.17967",
+                      "templateHash": "17778605191940828075"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route."
@@ -3985,8 +3985,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "62661794416974930"
+              "version": "0.35.1.17967",
+              "templateHash": "3067274064094512341"
             },
             "name": "CDN Profiles Security Policy",
             "description": "This module deploys a CDN Profile Security Policy."

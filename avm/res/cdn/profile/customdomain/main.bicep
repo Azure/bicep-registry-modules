@@ -84,9 +84,9 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The DNS validation records.')
 output dnsValidation dnsValidationOutputType = {
-  dnsTxtRecordName: '_dnsauth.${customDomain.properties.hostName}'
-  dnsTxtRecordValue: customDomain.properties.validationProperties.validationToken
-  dnsTxtRecordExpiry: customDomain.properties.validationProperties.expirationDate
+  dnsTxtRecordName: !empty(customDomain.properties.validationProperties) ? '_dnsauth.${customDomain.properties.hostName}' : null
+  dnsTxtRecordValue: customDomain.properties.?validationProperties.?validationToken
+  dnsTxtRecordExpiry: customDomain.properties.?validationProperties.?expirationDate
 }
 
 // =============== //
