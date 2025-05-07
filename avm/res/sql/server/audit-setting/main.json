@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "4727925735892722326"
+      "version": "0.34.44.8038",
+      "templateHash": "15469959027924260105"
     },
     "name": "Azure SQL Server Audit Settings",
     "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -146,8 +146,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "9873493969278157067"
+              "version": "0.34.44.8038",
+              "templateHash": "11839727322069180104"
             }
           },
           "parameters": {
