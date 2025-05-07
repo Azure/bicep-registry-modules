@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "8482591295619883067"
+      "version": "0.35.1.17967",
+      "templateHash": "11010105954455348"
     },
     "name": "Virtual Machine Extensions",
     "description": "This module deploys a Virtual Machine Extension."

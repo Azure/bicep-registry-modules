@@ -2530,6 +2530,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       }
     ]
+    diskControllerType: 'SCSI'
     location: '<location>'
     tags: {
       Environment: 'Non-Prod'
@@ -2620,6 +2621,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       ]
     },
+    "diskControllerType": {
+      "value": "SCSI"
+    },
     "location": {
       "value": "<location>"
     },
@@ -2692,6 +2696,7 @@ param dataDisks = [
     }
   }
 ]
+param diskControllerType = 'SCSI'
 param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
@@ -5101,6 +5106,7 @@ param location = '<location>'
 | [`dataDisks`](#parameter-datadisks) | array | Specifies the data disks. For security reasons, it is recommended to specify DiskEncryptionSet into the dataDisk object. Restrictions: DiskEncryptionSet cannot be enabled if Azure Disk Encryption (guest-VM encryption using bitlocker/DM-Crypt) is enabled on your VMs. |
 | [`dedicatedHostId`](#parameter-dedicatedhostid) | string | Specifies resource ID about the dedicated host that the virtual machine resides in. |
 | [`disablePasswordAuthentication`](#parameter-disablepasswordauthentication) | bool | Specifies whether password authentication should be disabled. |
+| [`diskControllerType`](#parameter-diskcontrollertype) | string | Specifies the disk controller type. |
 | [`enableAutomaticUpdates`](#parameter-enableautomaticupdates) | bool | Indicates whether Automatic Updates is enabled for the Windows virtual machine. Default value is true. When patchMode is set to Manual, this parameter must be set to false. For virtual machine scale sets, this property can be updated and updates will take effect on OS reprovisioning. |
 | [`enableHotpatching`](#parameter-enablehotpatching) | bool | Enables customers to patch their Azure VMs without requiring a reboot. For enableHotpatching, the 'provisionVMAgent' must be set to true and 'patchMode' must be set to 'AutomaticByPlatform'. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -7433,6 +7439,20 @@ Specifies whether password authentication should be disabled.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `diskControllerType`
+
+Specifies the disk controller type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'NVMe'
+    'SCSI'
+  ]
+  ```
 
 ### Parameter: `enableAutomaticUpdates`
 
