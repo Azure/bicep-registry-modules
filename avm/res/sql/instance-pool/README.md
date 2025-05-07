@@ -113,9 +113,8 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
     name: '<name>'
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
-    enableTelemetry: '<enableTelemetry>'
     location: '<location>'
-    skuName: '<skuName>'
+    skuName: 'GP_Gen5'
   }
 }
 ```
@@ -140,14 +139,11 @@ module instancePool 'br/public:avm/res/sql/instance-pool:<version>' = {
       "value": "<subnetResourceId>"
     },
     // Non-required parameters
-    "enableTelemetry": {
-      "value": "<enableTelemetry>"
-    },
     "location": {
       "value": "<location>"
     },
     "skuName": {
-      "value": "<skuName>"
+      "value": "GP_Gen5"
     }
   }
 }
@@ -167,9 +163,8 @@ using 'br/public:avm/res/sql/instance-pool:<version>'
 param name = '<name>'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
-param enableTelemetry = '<enableTelemetry>'
 param location = '<location>'
-param skuName = '<skuName>'
+param skuName = 'GP_Gen5'
 ```
 
 </details>
