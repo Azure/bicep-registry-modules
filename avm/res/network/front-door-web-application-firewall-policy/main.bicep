@@ -54,7 +54,7 @@ param customRules customRulesType = {
         {
           matchVariable: 'RemoteAddr'
           operator: 'GeoMatch'
-          negateCondition: true
+          negateCondition: false
           matchValue: ['ZZ']
         }
       ]
