@@ -232,7 +232,7 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customerManagedKey`](#parameter-customermanagedkey) | bool | Status of the CMK setting |
+| [`customerManagedKeyState`](#parameter-customermanagedkeystate) | bool | Status of the CMK setting |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 
@@ -243,7 +243,7 @@ The resource ID of the Log Analytics workspace where Security Insights (Microsof
 - Required: Yes
 - Type: string
 
-### Parameter: `customerManagedKey`
+### Parameter: `customerManagedKeyState`
 
 Status of the CMK setting
 

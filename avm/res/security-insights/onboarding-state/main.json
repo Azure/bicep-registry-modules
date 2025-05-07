@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "153666784353843846"
+      "templateHash": "7607280488441822649"
     },
     "name": "Security Insights (Microsoft Sentinel)",
     "description": "This module deploys Security Insights (Microsoft Sentinel) instance and its resources.",
@@ -25,7 +25,7 @@
         "description": "Optional. Location for all resources."
       }
     },
-    "customerManagedKey": {
+    "customerManagedKeyState": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
@@ -67,7 +67,7 @@
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', last(split(parameters('workspaceResourceId'), '/')))]",
       "name": "default",
       "properties": {
-        "customerManagedKey": "[parameters('customerManagedKey')]"
+        "customerManagedKey": "[parameters('customerManagedKeyState')]"
       }
     }
   ],

@@ -9,7 +9,7 @@ param workspaceResourceId string
 param location string = resourceGroup().location
 
 @description('Optional. Status of the CMK setting')
-param customerManagedKey bool = false
+param customerManagedKeyState bool = false
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -41,7 +41,7 @@ resource securityInsights 'Microsoft.SecurityInsights/onboardingStates@2025-01-0
   scope: workspace
   name: 'default'
   properties: {
-    customerManagedKey: customerManagedKey
+    customerManagedKey: customerManagedKeyState
   }
 }
 
