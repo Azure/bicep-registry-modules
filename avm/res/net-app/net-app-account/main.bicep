@@ -232,7 +232,7 @@ resource netAppAccount_roleAssignments 'Microsoft.Authorization/roleAssignments@
   }
 ]
 
-module netAppAccount_backupPolicies 'backup-policies/main.bicep' = [
+module netAppAccount_backupPolicies 'backup-policy/main.bicep' = [
   for (backupPolicy, index) in (backupPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-ANFAccount-backupPolicy-${index}'
     params: {
@@ -247,7 +247,7 @@ module netAppAccount_backupPolicies 'backup-policies/main.bicep' = [
   }
 ]
 
-module netAppAccount_snapshotPolicies 'snapshot-policies/main.bicep' = [
+module netAppAccount_snapshotPolicies 'snapshot-policy/main.bicep' = [
   for (snapshotPolicy, index) in (snapshotPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-ANFAccount-snapshotPolicy-${index}'
     params: {
@@ -387,7 +387,7 @@ type capacityPoolType = {
   encryptionType: ('Single' | 'Double')?
 }
 
-import { dailyScheduleType, hourlyScheduleType, monthlyScheduleType, weeklyScheduleType } from 'snapshot-policies/main.bicep'
+import { dailyScheduleType, hourlyScheduleType, monthlyScheduleType, weeklyScheduleType } from 'snapshot-policy/main.bicep'
 @export()
 @description('The type for a snapshot policy.')
 type snapshotPolicyType = {

@@ -305,7 +305,7 @@ module profile_afdEndpoints 'afdEndpoint/main.bicep' = [
   }
 ]
 
-module profile_securityPolicies 'securityPolicies/main.bicep' = [
+module profile_securityPolicies 'security-policy/main.bicep' = [
   for (securityPolicy, index) in securityPolicies: {
     name: '${uniqueString(deployment().name)}-Profile-SecurityPolicy-${index}'
     dependsOn: [
@@ -366,7 +366,7 @@ import { afdEndpointType } from 'afdEndpoint/main.bicep'
 import { customDomainType } from 'customdomain/main.bicep'
 import { originGroupType } from 'origingroup/main.bicep'
 import { originType } from 'origingroup//origin/main.bicep'
-import { associationsType } from 'securityPolicies/main.bicep'
+import { associationsType } from 'security-policy/main.bicep'
 import { ruleSetType } from 'ruleset/main.bicep'
 import { ruleType } from 'ruleset/rule/main.bicep'
 import { dnsValidationOutputType } from 'customdomain/main.bicep'
