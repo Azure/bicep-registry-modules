@@ -239,7 +239,7 @@ module profile_secrets 'secret/main.bicep' = [
   }
 ]
 
-module profile_customDomains 'customdomain/main.bicep' = [
+module profile_customDomains 'custom-domain/main.bicep' = [
   for (customDomain, index) in customDomains: {
     name: '${uniqueString(deployment().name)}-CustomDomain-${index}'
     dependsOn: [
@@ -259,7 +259,7 @@ module profile_customDomains 'customdomain/main.bicep' = [
   }
 ]
 
-module profile_originGroups 'origingroup/main.bicep' = [
+module profile_originGroups 'origin-group/main.bicep' = [
   for (origingroup, index) in originGroups: {
     name: '${uniqueString(deployment().name)}-Profile-OriginGroup-${index}'
     params: {
@@ -274,7 +274,7 @@ module profile_originGroups 'origingroup/main.bicep' = [
   }
 ]
 
-module profile_ruleSets 'ruleset/main.bicep' = [
+module profile_ruleSets 'rule-set/main.bicep' = [
   for (ruleSet, index) in ruleSets: {
     name: '${uniqueString(deployment().name)}-Profile-RuleSet-${index}'
     params: {
@@ -285,7 +285,7 @@ module profile_ruleSets 'ruleset/main.bicep' = [
   }
 ]
 
-module profile_afdEndpoints 'afdEndpoint/main.bicep' = [
+module profile_afdEndpoints 'afd-endpoint/main.bicep' = [
   for (afdEndpoint, index) in afdEndpoints: {
     name: '${uniqueString(deployment().name)}-Profile-AfdEndpoint-${index}'
     dependsOn: [
@@ -362,14 +362,13 @@ output frontDoorEndpointHostNames array = [
 //   Definitions   //
 // =============== //
 
-import { afdEndpointType } from 'afdEndpoint/main.bicep'
-import { customDomainType } from 'customdomain/main.bicep'
-import { originGroupType } from 'origingroup/main.bicep'
-import { originType } from 'origingroup//origin/main.bicep'
+import { afdEndpointType } from 'afd-endpoint/main.bicep'
+import { customDomainType, dnsValidationOutputType } from 'custom-domain/main.bicep'
+import { originGroupType } from 'origin-group/main.bicep'
+import { originType } from 'origin-group/origin/main.bicep'
 import { associationsType } from 'security-policy/main.bicep'
-import { ruleSetType } from 'ruleset/main.bicep'
-import { ruleType } from 'ruleset/rule/main.bicep'
-import { dnsValidationOutputType } from 'customdomain/main.bicep'
+import { ruleSetType } from 'rule-set/main.bicep'
+import { ruleType } from 'rule-set/rule/main.bicep'
 
 @export()
 type securityPolicyType = {

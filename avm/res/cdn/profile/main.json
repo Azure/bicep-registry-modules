@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "13379817335521767297"
+      "templateHash": "15600835996316849147"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -90,7 +90,7 @@
       "metadata": {
         "description": "The type of the route cache configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "afdEndpoint/route/main.bicep"
+          "sourceTemplate": "afd-endpoint/route/main.bicep"
         }
       }
     },
@@ -206,7 +206,7 @@
       "metadata": {
         "description": "The type of the route.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "afdEndpoint/route/main.bicep"
+          "sourceTemplate": "afd-endpoint/route/main.bicep"
         }
       }
     },
@@ -255,7 +255,7 @@
       "metadata": {
         "description": "The type of the health probe settings.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "origingroup/main.bicep"
+          "sourceTemplate": "origin-group/main.bicep"
         }
       }
     },
@@ -284,7 +284,7 @@
       "metadata": {
         "description": "The type of the load balancing settings.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "origingroup/main.bicep"
+          "sourceTemplate": "origin-group/main.bicep"
         }
       }
     },
@@ -342,7 +342,7 @@
       "metadata": {
         "description": "The type of the AFD Endpoint.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "afdEndpoint/main.bicep"
+          "sourceTemplate": "afd-endpoint/main.bicep"
         }
       }
     },
@@ -452,7 +452,7 @@
       "metadata": {
         "description": "The type of the custom domain.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "customdomain/main.bicep"
+          "sourceTemplate": "custom-domain/main.bicep"
         }
       }
     },
@@ -606,7 +606,7 @@
       "metadata": {
         "description": "The type of the DNS validation.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "customdomain/main.bicep"
+          "sourceTemplate": "custom-domain/main.bicep"
         }
       }
     },
@@ -721,7 +721,7 @@
       "metadata": {
         "description": "The type of the origin group.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "origingroup/main.bicep"
+          "sourceTemplate": "origin-group/main.bicep"
         }
       }
     },
@@ -804,7 +804,7 @@
       "metadata": {
         "description": "The name of the origin type.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "origingroup/origin/main.bicep"
+          "sourceTemplate": "origin-group/origin/main.bicep"
         }
       }
     },
@@ -906,7 +906,7 @@
       "metadata": {
         "description": "The type of the rule set.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "ruleset/main.bicep"
+          "sourceTemplate": "rule-set/main.bicep"
         }
       }
     },
@@ -954,7 +954,7 @@
       "metadata": {
         "description": "The type of the rule.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "ruleset/rule/main.bicep"
+          "sourceTemplate": "rule-set/rule/main.bicep"
         }
       }
     }
