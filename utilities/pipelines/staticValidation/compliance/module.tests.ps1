@@ -135,6 +135,18 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $childModuleAllowedList | Should -Contain $moduleFullName -Because "only the child modules listed in the [./$childModuleAllowedListRelativePath] list may have a version.json file."
             }
         }
+
+        It '[<moduleFolderName>] Resource module (folder) name must be singular, use ''-'' instead of camel-case and be lower-case (e.g., ''the-cake-is-a-lie'').' -TestCases $moduleFolderTestCases {
+
+            param(
+                [string] $moduleFolderPath
+            )
+
+            $folderName = Split-Path $moduleFolderPath -Leaf
+            $expectedFolderName = ($folderName -cReplace '([A-Z])', '-$1').ToLower()
+            $folderName | Should -Be $expectedFolderName
+        }
+
     }
 
     Context 'Top level module folder tests' {
