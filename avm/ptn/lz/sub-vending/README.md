@@ -3138,8 +3138,13 @@ The network resource group to be associated with this subnet.
 | :-- | :-- | :-- |
 | [`location`](#parameter-virtualnetworksubnetsnetworksecuritygrouplocation) | string | The location of the network security group. |
 | [`name`](#parameter-virtualnetworksubnetsnetworksecuritygroupname) | string | The name of the network security group. |
-| [`securityRules`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrules) | array | The security rules of the network security group. |
 | [`tags`](#parameter-virtualnetworksubnetsnetworksecuritygrouptags) | object | The tags of the network security group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`securityRules`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrules) | array | The security rules of the network security group. |
 
 ### Parameter: `virtualNetworkSubnets.networkSecurityGroup.location`
 
@@ -3154,6 +3159,13 @@ The name of the network security group.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.tags`
+
+The tags of the network security group.
+
+- Required: No
+- Type: object
 
 ### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules`
 
@@ -3339,13 +3351,6 @@ The source port ranges.
 
 - Required: No
 - Type: array
-
-### Parameter: `virtualNetworkSubnets.networkSecurityGroup.tags`
-
-The tags of the network security group.
-
-- Required: No
-- Type: object
 
 ### Parameter: `virtualNetworkSubnets.networkSecurityGroupResourceId`
 
