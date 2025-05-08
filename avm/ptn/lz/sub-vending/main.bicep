@@ -165,11 +165,11 @@ param virtualNetworkNatGatewayConfiguration natGatewayType?
 @description('Optional. The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.')
 param virtualNetworkBastionConfiguration bastionType?
 
-@description('Optional. The name of the network security group to be created for the virtual network.')
+/*@description('Optional. The name of the network security group to be created for the virtual network.')
 param lzNetworkSecurityGroupName string = ''
 
 @description('Optional. The security rules to be created for the network security group.')
-param lznetworkSecurityGroupRules nsgSecurityRuleType[]?
+param lznetworkSecurityGroupRules nsgSecurityRuleType[]?*/
 
 @description('Optional. Whether to deploy a Bastion host to the created virtual network.')
 param virtualNetworkDeployBastion bool = false
@@ -474,8 +474,8 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     virtualNetworkNatGatewayConfiguration: virtualNetworkNatGatewayConfiguration
     virtualNetworkBastionConfiguration: virtualNetworkBastionConfiguration
     virtualNetworkDeployBastion: virtualNetworkDeployBastion
-    lzNetworkSecurityGroupName: lzNetworkSecurityGroupName
-    lznetworkSecurityGroupRules: lznetworkSecurityGroupRules
+    /*lzNetworkSecurityGroupName: lzNetworkSecurityGroupName
+    lznetworkSecurityGroupRules: lznetworkSecurityGroupRules*/
     enableTelemetry: enableTelemetry
   }
 }

@@ -76,12 +76,12 @@ param virtualNetworkDeployBastion bool = false
 @sys.description('The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.')
 param virtualNetworkBastionConfiguration bastionType?
 
-@sys.description('The name of the network security group to be created for the virtual network.')
+/*@sys.description('The name of the network security group to be created for the virtual network.')
 param lzNetworkSecurityGroupName string = 'lz-nsg-${virtualNetworkName}-${substring(guid(virtualNetworkName, virtualNetworkResourceGroupName, virtualNetworkLocation, subscriptionId), 0, 5)}'
 
 @sys.description('The security rules to be created for the network security group.')
 param lznetworkSecurityGroupRules nsgSecurityRuleType[]?
-
+*/
 @sys.description('The resource ID of the virtual network or virtual wan hub in the hub to which the created virtual network will be peered/connected to via vitrual network peering or a vitrual hub connection.')
 param hubNetworkResourceId string = ''
 
@@ -491,13 +491,16 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
         ]
       : null
     subnets: [
-      for subnet in virtualNetworkSubnets: (!empty(virtualNetworkSubnets))
+      for (subnet, i) in virtualNetworkSubnets: (!empty(virtualNetworkSubnets))
         ? {
             name: subnet.name
             addressPrefix: subnet.?addressPrefix
-            networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
+            networkSecurityGroup: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
               ? createBastionNsg.outputs.resourceId
-              : createLzNsg.outputs.resourceId
+              : resourceId('Microsoft.Network/networkSecurityGroups', '${createLzNsg[i].outputs.name}')
+            /*networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
+              ? createBastionNsg.outputs.resourceId
+              : createLzNsg[i].outputs.resourceId*/
             natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
               ? createNatGateway.outputs.resourceId
               : null
@@ -661,19 +664,21 @@ module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.1'
   }
 }
 
-module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (!empty(virtualNetworkSubnets)) {
-  scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
-  dependsOn: [
-    createResourceGroupForLzNetworking
-  ]
-  name: deploymentNames.createLzNsg
-  params: {
-    name: lzNetworkSecurityGroupName
-    location: virtualNetworkLocation
-    securityRules: lznetworkSecurityGroupRules
-    enableTelemetry: enableTelemetry
+module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
+  for (subnet, i) in virtualNetworkSubnets: if (!empty(virtualNetworkSubnets)) {
+    scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+    dependsOn: [
+      createResourceGroupForLzNetworking
+    ]
+    name: '${deploymentNames.createLzNsg}-${i}'
+    params: {
+      name: subnet.?networkSecurityGroup.name ?? 'lz-nsg-${subnet.name}-${substring(guid(virtualNetworkName, virtualNetworkResourceGroupName, subnet.name, subscriptionId), 0, 5)}'
+      location: virtualNetworkLocation
+      securityRules: subnet.?networkSecurityGroup.?securityRules ?? null
+      enableTelemetry: enableTelemetry
+    }
   }
-}
+]
 
 module createLzVirtualWanConnection 'hubVirtualNetworkConnections.bicep' = if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualWanHubResourceGroupName) && !empty(virtualWanHubSubscriptionId)) {
   dependsOn: [
@@ -1470,6 +1475,9 @@ type subnetType = {
   @description('Optional. The resource ID of the network security group to assign to the subnet.')
   networkSecurityGroupResourceId: string?
 
+  @description('Optional. The network resource group to be associated with this subnet.')
+  networkSecurityGroup: networkSecurityGroupType?
+
   @description('Optional. enable or disable apply network policies on private endpoint in the subnet.')
   privateEndpointNetworkPolicies: ('Disabled' | 'Enabled' | 'NetworkSecurityGroupEnabled' | 'RouteTableEnabled')?
 
@@ -1604,6 +1612,22 @@ type timeBoundDateTimeRoleAssignmentScheduleType = {
 
   @description('Required. The start date and time for the role assignment.')
   startTime: string
+}
+
+@export()
+@description('Network security group type.')
+type networkSecurityGroupType = {
+  @description('Required. The name of the network security group.')
+  name: string
+
+  @description('Required. The location of the network security group.')
+  location: string
+
+  @description('Required. The tags of the network security group.')
+  tags: object?
+
+  @description('Required. The security rules of the network security group.')
+  securityRules: nsgSecurityRuleType[]?
 }
 
 @export()

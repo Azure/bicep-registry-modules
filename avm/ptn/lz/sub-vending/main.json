@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "18000390145035142054"
+      "templateHash": "12740650239922837249"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -179,6 +179,46 @@
         }
       },
       "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
+    "_1.networkSecurityGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the network security group."
+          }
+        },
+        "location": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The location of the network security group."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Required. The tags of the network security group."
+          }
+        },
+        "securityRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/nsgSecurityRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Required. The security rules of the network security group."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Network security group type.",
         "__bicep_imported_from!": {
           "sourceTemplate": "modules/subResourceWrapper.bicep"
         }
@@ -858,6 +898,13 @@
             "description": "Optional. The resource ID of the network security group to assign to the subnet."
           }
         },
+        "networkSecurityGroup": {
+          "$ref": "#/definitions/_1.networkSecurityGroupType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The network resource group to be associated with this subnet."
+          }
+        },
         "privateEndpointNetworkPolicies": {
           "type": "string",
           "allowedValues": [
@@ -1134,23 +1181,6 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host."
-      }
-    },
-    "lzNetworkSecurityGroupName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional. The name of the network security group to be created for the virtual network."
-      }
-    },
-    "lznetworkSecurityGroupRules": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/nsgSecurityRuleType"
-      },
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The security rules to be created for the network security group."
       }
     },
     "virtualNetworkDeployBastion": {
@@ -1666,12 +1696,6 @@
           "virtualNetworkDeployBastion": {
             "value": "[parameters('virtualNetworkDeployBastion')]"
           },
-          "lzNetworkSecurityGroupName": {
-            "value": "[parameters('lzNetworkSecurityGroupName')]"
-          },
-          "lznetworkSecurityGroupRules": {
-            "value": "[parameters('lznetworkSecurityGroupRules')]"
-          },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           }
@@ -1684,7 +1708,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "2568677324316102904"
+              "templateHash": "18406294954873565579"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2056,6 +2080,13 @@
                     "description": "Optional. The resource ID of the network security group to assign to the subnet."
                   }
                 },
+                "networkSecurityGroup": {
+                  "$ref": "#/definitions/networkSecurityGroupType",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The network resource group to be associated with this subnet."
+                  }
+                },
                 "privateEndpointNetworkPolicies": {
                   "type": "string",
                   "allowedValues": [
@@ -2394,6 +2425,44 @@
                     "description": "Required. The start date and time for the role assignment."
                   }
                 }
+              }
+            },
+            "networkSecurityGroupType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the network security group."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The location of the network security group."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Required. The tags of the network security group."
+                  }
+                },
+                "securityRules": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/nsgSecurityRuleType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Required. The security rules of the network security group."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Network security group type."
               }
             },
             "nsgSecurityRuleType": {
@@ -2802,23 +2871,6 @@
               "nullable": true,
               "metadata": {
                 "description": "The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host."
-              }
-            },
-            "lzNetworkSecurityGroupName": {
-              "type": "string",
-              "defaultValue": "[format('lz-nsg-{0}-{1}', parameters('virtualNetworkName'), substring(guid(parameters('virtualNetworkName'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('subscriptionId')), 0, 5))]",
-              "metadata": {
-                "description": "The name of the network security group to be created for the virtual network."
-              }
-            },
-            "lznetworkSecurityGroupRules": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/nsgSecurityRuleType"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "The security rules to be created for the network security group."
               }
             },
             "hubNetworkResourceId": {
@@ -4425,7 +4477,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('virtualNetworkSubnets'))]",
-                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), reference('createBastionNsg').outputs.resourceId.value, reference('createLzNsg').outputs.resourceId.value), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), reference('createNatGateway').outputs.resourceId.value, null())), createObject())]"
+                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroup', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), reference('createBastionNsg').outputs.resourceId.value, resourceId('Microsoft.Network/networkSecurityGroups', format('{0}', reference(format('createLzNsg[{0}]', copyIndex('value'))).outputs.name.value))), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), reference('createNatGateway').outputs.resourceId.value, null())), createObject())]"
                       }
                     ]
                   },
@@ -6770,10 +6822,14 @@
               ]
             },
             "createLzNsg": {
+              "copy": {
+                "name": "createLzNsg",
+                "count": "[length(parameters('virtualNetworkSubnets'))]"
+              },
               "condition": "[not(empty(parameters('virtualNetworkSubnets')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[variables('deploymentNames').createLzNsg]",
+              "name": "[format('{0}-{1}', variables('deploymentNames').createLzNsg, copyIndex())]",
               "subscriptionId": "[parameters('subscriptionId')]",
               "resourceGroup": "[parameters('virtualNetworkResourceGroupName')]",
               "properties": {
@@ -6783,13 +6839,13 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('lzNetworkSecurityGroupName')]"
+                    "value": "[coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex()], 'networkSecurityGroup', 'name'), format('lz-nsg-{0}-{1}', parameters('virtualNetworkSubnets')[copyIndex()].name, substring(guid(parameters('virtualNetworkName'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkSubnets')[copyIndex()].name, parameters('subscriptionId')), 0, 5)))]"
                   },
                   "location": {
                     "value": "[parameters('virtualNetworkLocation')]"
                   },
                   "securityRules": {
-                    "value": "[parameters('lznetworkSecurityGroupRules')]"
+                    "value": "[coalesce(tryGet(tryGet(parameters('virtualNetworkSubnets')[copyIndex()], 'networkSecurityGroup'), 'securityRules'), null())]"
                   },
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
