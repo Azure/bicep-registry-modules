@@ -37,7 +37,8 @@ module nestedDependencies './dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-dependencies'
   params: {
     location: resourceLocation
-    name: 'dep-${namePrefix}-law-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
   }
 }
 
@@ -51,8 +52,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      workspaceResourceId: nestedDependencies.outputs.workspaceResourceId
+      workspaceResourceId: nestedDependencies.outputs.logAnalyticsWorkspaceResourceId
       location: resourceLocation
+      customerManagedKeyState: true
     }
   }
 ]

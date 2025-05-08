@@ -1,11 +1,45 @@
-@description('Required. The name of the Log Analytics Workspace.')
-param name string
+@description('Optional. The location to deploy to.')
+param location string = resourceGroup().location
 
-@description('Required. The location to deploy resources to.')
-param location string
+@description('Required. The name of the Log Analytics Workspace to create.')
+param logAnalyticsWorkspaceName string
+
+@description('Required. The name of the Key Vault to create.')
+param keyVaultName string
+
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    tenantId: tenant().tenantId
+    enableRbacAuthorization: true
+    enableSoftDelete: true
+  }
+}
+
+resource encryptionKey 'Microsoft.KeyVault/vaults/keys@2023-07-01' = {
+  parent: keyVault
+  name: 'LogAnalyticsKey'
+  properties: {
+    kty: 'RSA'
+    keySize: 2048
+    keyOps: [
+      'encrypt'
+      'decrypt'
+      'sign'
+      'verify'
+      'wrapKey'
+      'unwrapKey'
+    ]
+  }
+}
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
-  name: name
+  name: logAnalyticsWorkspaceName
   location: location
   properties: {
     sku: {
@@ -15,26 +49,16 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02
     features: {
       searchVersion: 1
     }
-  }
-}
-
-// Create Microsoft Sentinel on the Log Analytics Workspace
-resource sentinel 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = {
-  name: 'SecurityInsights(${name})'
-  location: location
-  properties: {
-    workspaceResourceId: logAnalyticsWorkspace.id
-  }
-  plan: {
-    name: 'SecurityInsights(${name})'
-    product: 'OMSGallery/SecurityInsights'
-    promotionCode: ''
-    publisher: 'Microsoft'
+    workspaceKeyEncryptionKey: {
+      keyVaultUri: keyVault.properties.vaultUri
+      keyName: encryptionKey.name
+      keyVersion: encryptionKey.properties.keyUriWithVersion
+    }
   }
 }
 
 @description('The resource ID of the created Log Analytics Workspace.')
-output workspaceResourceId string = logAnalyticsWorkspace.id
+output logAnalyticsWorkspaceResourceId string = logAnalyticsWorkspace.id
 
-@description('The name of the created Log Analytics Workspace.')
-output workspaceName string = logAnalyticsWorkspace.name
+@description('The name of the created Key Vault.')
+output keyVaultName string = keyVault.name

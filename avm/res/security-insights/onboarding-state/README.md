@@ -172,6 +172,7 @@ module onboardingState 'br/public:avm/res/security-insights/onboarding-state:<ve
     // Required parameters
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
+    customerManagedKeyState: true
     location: '<location>'
   }
 }
@@ -194,6 +195,9 @@ module onboardingState 'br/public:avm/res/security-insights/onboarding-state:<ve
       "value": "<workspaceResourceId>"
     },
     // Non-required parameters
+    "customerManagedKeyState": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     }
@@ -214,6 +218,7 @@ using 'br/public:avm/res/security-insights/onboarding-state:<version>'
 // Required parameters
 param workspaceResourceId = '<workspaceResourceId>'
 // Non-required parameters
+param customerManagedKeyState = true
 param location = '<location>'
 ```
 
