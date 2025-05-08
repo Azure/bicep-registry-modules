@@ -14,6 +14,7 @@ import { subnetType } from 'modules/subResourceWrapper.bicep'
 import { natGatewayType } from 'modules/subResourceWrapper.bicep'
 import { bastionType } from 'modules/subResourceWrapper.bicep'
 import { pimRoleAssignmentTypeType } from 'modules/subResourceWrapper.bicep'
+import { nsgSecurityRuleType } from 'modules/subResourceWrapper.bicep'
 
 // PARAMETERS
 
@@ -164,7 +165,13 @@ param virtualNetworkNatGatewayConfiguration natGatewayType?
 @description('Optional. The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.')
 param virtualNetworkBastionConfiguration bastionType?
 
-@sys.description('Optional. Whether to deploy a Bastion host to the created virtual network.')
+@description('Optional. The name of the network security group to be created for the virtual network.')
+param lzNetworkSecurityGroupName string = ''
+
+@description('Optional. The security rules to be created for the network security group.')
+param lznetworkSecurityGroupRules nsgSecurityRuleType[]?
+
+@description('Optional. Whether to deploy a Bastion host to the created virtual network.')
 param virtualNetworkDeployBastion bool = false
 
 @description('''Optional. The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.
@@ -467,6 +474,8 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     virtualNetworkNatGatewayConfiguration: virtualNetworkNatGatewayConfiguration
     virtualNetworkBastionConfiguration: virtualNetworkBastionConfiguration
     virtualNetworkDeployBastion: virtualNetworkDeployBastion
+    lzNetworkSecurityGroupName: lzNetworkSecurityGroupName
+    lznetworkSecurityGroupRules: lznetworkSecurityGroupRules
     enableTelemetry: enableTelemetry
   }
 }

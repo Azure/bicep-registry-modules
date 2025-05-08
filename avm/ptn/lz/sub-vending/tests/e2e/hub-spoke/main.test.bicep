@@ -71,6 +71,23 @@ module testDeployment '../../../main.bicep' = {
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkPeeringEnabled: true
     virtualNetworkUseRemoteGateways: false
+    lzNetworkSecurityGroupName: 'nsg-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
+    lznetworkSecurityGroupRules: [
+      {
+        name: 'Allow-HTTPS'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          priority: 100
+          protocol: 'Tcp'
+          description: 'Allow HTTPS'
+          destinationAddressPrefix: '*'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+        }
+      }
+    ]
     hubNetworkResourceId: nestedDependencies.outputs.hubNetworkResourceId
     deploymentScriptResourceGroupName: 'rsg-${resourceLocation}-ds-${namePrefix}-${serviceShort}'
     deploymentScriptManagedIdentityName: 'id-${resourceLocation}-${namePrefix}-${serviceShort}'

@@ -391,6 +391,23 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     deploymentScriptStorageAccountName: '<deploymentScriptStorageAccountName>'
     deploymentScriptVirtualNetworkName: '<deploymentScriptVirtualNetworkName>'
     hubNetworkResourceId: '<hubNetworkResourceId>'
+    lzNetworkSecurityGroupName: '<lzNetworkSecurityGroupName>'
+    lznetworkSecurityGroupRules: [
+      {
+        name: 'Allow-HTTPS'
+        properties: {
+          access: 'Allow'
+          description: 'Allow HTTPS'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '443'
+          direction: 'Inbound'
+          priority: 100
+          protocol: 'Tcp'
+          sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+        }
+      }
+    ]
     resourceProviders: {
       'Microsoft.AVS': [
         'AzureServicesVm'
@@ -475,6 +492,27 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "hubNetworkResourceId": {
       "value": "<hubNetworkResourceId>"
+    },
+    "lzNetworkSecurityGroupName": {
+      "value": "<lzNetworkSecurityGroupName>"
+    },
+    "lznetworkSecurityGroupRules": {
+      "value": [
+        {
+          "name": "Allow-HTTPS",
+          "properties": {
+            "access": "Allow",
+            "description": "Allow HTTPS",
+            "destinationAddressPrefix": "*",
+            "destinationPortRange": "443",
+            "direction": "Inbound",
+            "priority": 100,
+            "protocol": "Tcp",
+            "sourceAddressPrefix": "*",
+            "sourcePortRange": "*"
+          }
+        }
+      ]
     },
     "resourceProviders": {
       "value": {
@@ -583,6 +621,23 @@ param deploymentScriptResourceGroupName = '<deploymentScriptResourceGroupName>'
 param deploymentScriptStorageAccountName = '<deploymentScriptStorageAccountName>'
 param deploymentScriptVirtualNetworkName = '<deploymentScriptVirtualNetworkName>'
 param hubNetworkResourceId = '<hubNetworkResourceId>'
+param lzNetworkSecurityGroupName = '<lzNetworkSecurityGroupName>'
+param lznetworkSecurityGroupRules = [
+  {
+    name: 'Allow-HTTPS'
+    properties: {
+      access: 'Allow'
+      description: 'Allow HTTPS'
+      destinationAddressPrefix: '*'
+      destinationPortRange: '443'
+      direction: 'Inbound'
+      priority: 100
+      protocol: 'Tcp'
+      sourceAddressPrefix: '*'
+      sourcePortRange: '*'
+    }
+  }
+]
 param resourceProviders = {
   'Microsoft.AVS': [
     'AzureServicesVm'
@@ -1637,6 +1692,8 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`existingSubscriptionId`](#parameter-existingsubscriptionid) | string | An existing subscription ID. Use this when you do not want the module to create a new subscription. But do want to manage the management group membership. A subscription ID should be provided in the example format `xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`. |
 | [`hubNetworkResourceId`](#parameter-hubnetworkresourceid) | string | The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.<p> |
+| [`lzNetworkSecurityGroupName`](#parameter-lznetworksecuritygroupname) | string | The name of the network security group to be created for the virtual network. |
+| [`lznetworkSecurityGroupRules`](#parameter-lznetworksecuritygrouprules) | array | The security rules to be created for the network security group. |
 | [`managementGroupAssociationDelayCount`](#parameter-managementgroupassociationdelaycount) | int | The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur. |
 | [`pimRoleAssignments`](#parameter-pimroleassignments) | array | Supply an array of objects containing the details of the PIM role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
 | [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p> |
@@ -1755,6 +1812,199 @@ The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which th
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `lzNetworkSecurityGroupName`
+
+The name of the network security group to be created for the virtual network.
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `lznetworkSecurityGroupRules`
+
+The security rules to be created for the network security group.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-lznetworksecuritygrouprulesname) | string | The name of the security rule. |
+| [`properties`](#parameter-lznetworksecuritygrouprulesproperties) | object | The properties of the security rule. |
+
+### Parameter: `lznetworkSecurityGroupRules.name`
+
+The name of the security rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `lznetworkSecurityGroupRules.properties`
+
+The properties of the security rule.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`access`](#parameter-lznetworksecuritygrouprulespropertiesaccess) | string | Whether network traffic is allowed or denied. |
+| [`direction`](#parameter-lznetworksecuritygrouprulespropertiesdirection) | string | The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic. |
+| [`priority`](#parameter-lznetworksecuritygrouprulespropertiespriority) | int | Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| [`protocol`](#parameter-lznetworksecuritygrouprulespropertiesprotocol) | string | Network protocol this rule applies to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-lznetworksecuritygrouprulespropertiesdescription) | string | The description of the security rule. |
+| [`destinationAddressPrefix`](#parameter-lznetworksecuritygrouprulespropertiesdestinationaddressprefix) | string | Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
+| [`destinationAddressPrefixes`](#parameter-lznetworksecuritygrouprulespropertiesdestinationaddressprefixes) | array | The destination address prefixes. CIDR or destination IP ranges. |
+| [`destinationApplicationSecurityGroupResourceIds`](#parameter-lznetworksecuritygrouprulespropertiesdestinationapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as destination. |
+| [`destinationPortRange`](#parameter-lznetworksecuritygrouprulespropertiesdestinationportrange) | string | The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`destinationPortRanges`](#parameter-lznetworksecuritygrouprulespropertiesdestinationportranges) | array | The destination port ranges. |
+| [`sourceAddressPrefix`](#parameter-lznetworksecuritygrouprulespropertiessourceaddressprefix) | string | The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from. |
+| [`sourceAddressPrefixes`](#parameter-lznetworksecuritygrouprulespropertiessourceaddressprefixes) | array | The CIDR or source IP ranges. |
+| [`sourceApplicationSecurityGroupResourceIds`](#parameter-lznetworksecuritygrouprulespropertiessourceapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as source. |
+| [`sourcePortRange`](#parameter-lznetworksecuritygrouprulespropertiessourceportrange) | string | The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`sourcePortRanges`](#parameter-lznetworksecuritygrouprulespropertiessourceportranges) | array | The source port ranges. |
+
+### Parameter: `lznetworkSecurityGroupRules.properties.access`
+
+Whether network traffic is allowed or denied.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `lznetworkSecurityGroupRules.properties.direction`
+
+The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Inbound'
+    'Outbound'
+  ]
+  ```
+
+### Parameter: `lznetworkSecurityGroupRules.properties.priority`
+
+Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
+
+- Required: Yes
+- Type: int
+- MinValue: 100
+- MaxValue: 4096
+
+### Parameter: `lznetworkSecurityGroupRules.properties.protocol`
+
+Network protocol this rule applies to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '*'
+    'Ah'
+    'Esp'
+    'Icmp'
+    'Tcp'
+    'Udp'
+  ]
+  ```
+
+### Parameter: `lznetworkSecurityGroupRules.properties.description`
+
+The description of the security rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `lznetworkSecurityGroupRules.properties.destinationAddressPrefix`
+
+Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `lznetworkSecurityGroupRules.properties.destinationAddressPrefixes`
+
+The destination address prefixes. CIDR or destination IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `lznetworkSecurityGroupRules.properties.destinationApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as destination.
+
+- Required: No
+- Type: array
+
+### Parameter: `lznetworkSecurityGroupRules.properties.destinationPortRange`
+
+The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `lznetworkSecurityGroupRules.properties.destinationPortRanges`
+
+The destination port ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `lznetworkSecurityGroupRules.properties.sourceAddressPrefix`
+
+The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from.
+
+- Required: No
+- Type: string
+
+### Parameter: `lznetworkSecurityGroupRules.properties.sourceAddressPrefixes`
+
+The CIDR or source IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `lznetworkSecurityGroupRules.properties.sourceApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as source.
+
+- Required: No
+- Type: array
+
+### Parameter: `lznetworkSecurityGroupRules.properties.sourcePortRange`
+
+The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `lznetworkSecurityGroupRules.properties.sourcePortRanges`
+
+The source port ranges.
+
+- Required: No
+- Type: array
 
 ### Parameter: `managementGroupAssociationDelayCount`
 
@@ -3207,7 +3457,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.5.0` | Remote reference |
 | `br/public:avm/res/network/nat-gateway:1.2.1` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.7.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.5.1` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
