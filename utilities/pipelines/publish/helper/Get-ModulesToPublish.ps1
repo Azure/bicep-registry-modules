@@ -21,7 +21,7 @@ function Get-ModifiedFileList {
         Write-Verbose 'Gathering modified files from the previous head' -Verbose
         $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
     }
-    $ModifiedFiles = $Diff ? ($Diff | Get-Item -Force) : @()
+    $ModifiedFiles = $Diff | Get-Item -Force
 
     return $ModifiedFiles
 }
@@ -86,8 +86,11 @@ function Get-TemplateFileToPublish {
         [Parameter(Mandatory)]
         [string] $ModuleFolderPath,
 
-        [Parameter(Mandatory)]
-        [string[]] $PathsToInclude = @(),
+        [Parameter(Mandatory = $false)]
+        [string[]] $PathsToInclude = @(
+            'main.json',
+            'version.json'
+        ),
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipNotVersionedModules
@@ -220,11 +223,8 @@ function Get-ModulesToPublish {
         [switch] $SkipNotVersionedModules
     )
 
-    $versionFile = (Get-Content (Join-Path $ModuleFolderPath 'version.json') -Raw) | ConvertFrom-Json
-    $PathsToInclude = $versionFile.PathFilters
-
     # Check as per a `diff` with head^-1 if there was a change in any file that would justify a publish
-    $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude -SkipNotVersionedModules
+    $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -SkipNotVersionedModules
 
     # Return the remaining template file(s)
     return $TemplateFilesToPublish
