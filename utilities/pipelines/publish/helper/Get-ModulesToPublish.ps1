@@ -21,7 +21,7 @@ function Get-ModifiedFileList {
         Write-Verbose 'Gathering modified files from the previous head' -Verbose
         $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
     }
-    $ModifiedFiles = $Diff | Get-Item -Force
+    $ModifiedFiles = $Diff ? ($Diff | Get-Item -Force) : @()
 
     return $ModifiedFiles
 }
