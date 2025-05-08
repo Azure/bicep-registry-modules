@@ -103,43 +103,11 @@ function Publish-ModuleFromPathToPBR {
         ###################
         ## 8.  Publish   ##
         ###################
-        # $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
-
-        # $publishInput = @(
-        #     $moduleBicepFilePath
-        #     '--target', ('br:{0}/public/bicep/{1}:{2}' -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
-        #     '--documentation-uri', $documentationUri
-        #     '--with-source'
-        #     '--force'
-        # )
-        # # TODO move to its own task to show that as skipped if no file qualifies for new version
-        # Write-Verbose "Publish Input:`n $($publishInput | ConvertTo-Json -Depth 10)" -Verbose
-
-        # bicep publish @publishInput
-
-        # $resultSet[$moduleFolderRelativePath] = @{
-        #     version             = $targetVersion
-        #     publishedModuleName = $publishedModuleName
-        #     gitTagName          = $gitTagName
-        # }
-
-        $BicepRegistryRgName = 'publishingTest-rg'
-        $BicepRegistryRgLocation = 'WestEurope'
-        $BicepRegistryName = 'alsehrregval'
-
-        # Resource Group
-        if (-not (Get-AzResourceGroup -Name $BicepRegistryRgName -ErrorAction 'SilentlyContinue')) {
-            New-AzResourceGroup -Name $BicepRegistryRgName -Location $BicepRegistryRgLocation
-        }
-
-        # Registry
-        if (-not (Get-AzContainerRegistry -ResourceGroupName $BicepRegistryRgName -Name $BicepRegistryName -ErrorAction 'SilentlyContinue')) {
-            New-AzContainerRegistry -ResourceGroupName $BicepRegistryRgName -Name $BicepRegistryName -Sku 'Basic' -Location $BicepRegistryRgLocation
-        }
+        $plainPublicRegistryServer = ConvertFrom-SecureString $PublicRegistryServer -AsPlainText
 
         $publishInput = @(
             $moduleBicepFilePath
-            '--target', ('br:{0}.azurecr.io/{1}:{2}' -f $BicepRegistryName, $publishedModuleName, $targetVersion)
+            '--target', ('br:{0}/public/bicep/{1}:{2}' -f $plainPublicRegistryServer, $publishedModuleName, $targetVersion)
             '--documentation-uri', $documentationUri
             '--with-source'
             '--force'
