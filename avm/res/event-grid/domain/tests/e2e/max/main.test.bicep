@@ -140,6 +140,7 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
+      minimumTlsVersionAllowed: '1.2'
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
