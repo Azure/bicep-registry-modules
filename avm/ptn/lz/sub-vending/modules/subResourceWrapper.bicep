@@ -1626,7 +1626,7 @@ type networkSecurityGroupType = {
   @description('Required. The tags of the network security group.')
   tags: object?
 
-  @description('Required. The security rules of the network security group.')
+  @description('Optional. The security rules of the network security group.')
   securityRules: nsgSecurityRuleType[]?
 }
 
