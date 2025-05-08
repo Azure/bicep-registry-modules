@@ -19,11 +19,13 @@ param virtualMachineConfiguration virtualMachineConfigurationType = {
   adminUsername: 'adminuser'
   adminPassword: guid(solutionPrefix, subscription().subscriptionId)
 }
+var virtualMachineEnabled = virtualMachineConfiguration.?enabled ?? true
 
 @description('Optional. Configuration for the virtual machine.')
 param virtualNetworkConfiguration virtualNetworkConfigurationType = {
   enabled: true
 }
+var virtualNetworkEnabled = virtualNetworkConfiguration.?enabled ?? true
 
 @description('Optional. The configuration of the Entra ID Application used to authenticate the website.')
 param entraIdApplicationConfiguration macaeEntraIdApplicationFarmType = {
@@ -77,6 +79,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     enableTelemetry: enableTelemetry
     skuName: 'PerGB2018'
     dataRetention: 30
+    diagnosticSettings: [{ useThisWorkspace: true }]
   }
 }
 
@@ -110,7 +113,9 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 
 // ========== Network Security Groups ========== //
 
-module networkSecurityGroupDefault 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkConfiguration.?enabled!) {
+//TODO: Add diagnostic settings to the network security group
+
+module networkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled) {
   name: 'avm.ptn.sa.macae.network-network-security-group-default'
   params: {
     name: '${solutionPrefix}nsgrdflt'
@@ -139,47 +144,9 @@ module networkSecurityGroupDefault 'br/public:avm/res/network/network-security-g
   }
 }
 
-module networkSecurityGroupContainers 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.network-network-security-group-containers'
-  params: {
-    name: '${solutionPrefix}nsgrcntr'
-    location: solutionLocation
-    tags: tags
-    enableTelemetry: enableTelemetry
-    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    securityRules: [
-      //CONFIGURE
-    ]
-  }
-}
-
-// ========== NAT Gateway ========== //
-// Check if we need this
-//
-// module natGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = {
-//   name: 'avm.ptn.sa.macae.network-nat-gateway'
-//   params: {
-//     name: '${solutionPrefix}natg'
-//     tags: tags
-//     location: solutionLocation
-//     enableTelemetry: enableTelemetry
-//     zone: 1
-//     publicIPAddressObjects: [
-//       {
-//         diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-//         name: '${solutionPrefix}natgip'
-//         skuTier: 'Regional'
-//         zones: [1, 2, 3]
-//         tags: tags
-//         idleTimeoutInMinutes: 30
-//       }
-//     ]
-//   }
-// }
-
 // ========== Virtual Network ========== //
 
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (virtualNetworkConfiguration.?enabled!) {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (virtualNetworkEnabled) {
   name: 'avm.ptn.sa.macae.network-virtual-network'
   params: {
     name: '${solutionPrefix}vnet'
@@ -190,38 +157,38 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
     subnets: [
       // The default subnet **must** be the first in the subnets array
       {
+        name: 'default'
         addressPrefix: '10.0.0.0/24'
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        name: 'default'
-        //networkSecurityGroupResourceId: networkSecurityGroupDefault.outputs.resourceId
+        //networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
       }
       {
         // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
         // https://learn.microsoft.com/en-us/azure/container-apps/networking?tabs=workload-profiles-env%2Cazure-cli#custom-vnet-configuration
+        name: 'containers'
         addressPrefix: '10.0.2.0/23' //subnet of size /23 is required for container app
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        name: 'containers'
         delegation: 'Microsoft.App/environments'
         //networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
       }
       {
-        addressPrefix: '10.0.4.0/26'
         name: 'AzureBastionSubnet'
+        addressPrefix: '10.0.4.0/26'
         //networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
       }
       {
+        name: 'virtual-machines'
         addressPrefix: '10.0.4.64/26'
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        name: 'virtual-machines'
         //natGatewayResourceId: natGateway.outputs.resourceId
         //networkSecurityGroupResourceId: networkSecurityGroupVirtualMachines.outputs.resourceId
       }
       {
+        name: 'application-gateway'
         addressPrefix: '10.0.5.0/24'
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        name: 'application-gateway'
         //networkSecurityGroupResourceId: networkSecurityGroupApplicationGateway.outputs.resourceId
       }
     ]
@@ -230,8 +197,8 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
 
 // ========== Bastion host ========== //
 
-module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.network-private-dns-zone-bastion-host'
+module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualNetworkEnabled) {
+  name: 'network-dns-zone-bastion-host'
   params: {
     name: '${solutionPrefix}bstn'
     location: solutionLocation
@@ -253,7 +220,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualN
 
 // ========== Virtual machine ========== //
 
-module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = if (virtualNetworkConfiguration.?enabled! && virtualMachineConfiguration.?enabled!) {
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = if (virtualNetworkEnabled && virtualMachineEnabled) {
   name: 'avm.ptn.sa.macae.compute-virtual-machine'
   params: {
     name: '${solutionPrefix}vmws'
@@ -315,8 +282,8 @@ var openAiPrivateDnsZones = {
 }
 
 module privateDnsZonesAiServices 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
-  for zone in objectKeys(openAiPrivateDnsZones): if (virtualNetworkConfiguration.?enabled!) {
-    name: 'avm.ptn.sa.macae.network-private-dns-zone-${uniqueString(deployment().name, zone)}'
+  for zone in objectKeys(openAiPrivateDnsZones): if (virtualNetworkEnabled) {
+    name: 'network-dns-zone-${uniqueString(deployment().name, zone)}'
     params: {
       name: zone
       tags: tags
@@ -355,12 +322,12 @@ module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.10.2'
     apiProperties: {
       //staticsEnabled: false
     }
-    publicNetworkAccess: virtualNetworkConfiguration.?enabled! ? 'Disabled' : 'Enabled'
-    privateEndpoints: virtualNetworkConfiguration.?enabled!
+    //publicNetworkAccess: virtualNetworkEnabled ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: 'Enabled' //TODO: connection via private endpoint is not working from containers network. Change this when fixed
+    privateEndpoints: virtualNetworkEnabled
       ? ([
           {
             subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
-            service: openAiSubResource
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: map(objectKeys(openAiPrivateDnsZones), zone => {
                 name: replace(zone, '.', '-')
@@ -401,9 +368,34 @@ module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.10.2'
 }
 
 // AI Foundry: storage account
+
+var storageAccountPrivateDnsZones = {
+  'privatelink.blob.${environment().suffixes.storage}': 'blob'
+  'privatelink.file.${environment().suffixes.storage}': 'file'
+}
+
+module privateDnsZonesAiFoundryStorageAccount 'br/public:avm/res/network/private-dns-zone:0.3.1' = [
+  for zone in objectKeys(storageAccountPrivateDnsZones): if (virtualNetworkEnabled) {
+    name: 'network-dns-zone-aifd-stac-${zone}'
+    params: {
+      name: zone
+      tags: tags
+      enableTelemetry: enableTelemetry
+      virtualNetworkLinks: [
+        {
+          virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        }
+      ]
+    }
+  }
+]
+
 var aiFoundryStorageAccountName = '${solutionPrefix}aifdstrg'
 module aiFoundryStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
   name: 'avm.ptn.sa.macae.storage-storage-account'
+  dependsOn: [
+    privateDnsZonesAiFoundryStorageAccount
+  ]
   params: {
     name: aiFoundryStorageAccountName
     location: solutionLocation
@@ -422,6 +414,17 @@ module aiFoundryStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2
       containerDeleteRetentionPolicyEnabled: false
       diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     }
+    publicNetworkAccess: virtualNetworkEnabled ? 'Disabled' : 'Enabled'
+    allowBlobPublicAccess: virtualNetworkEnabled ? false : true
+    privateEndpoints: virtualNetworkEnabled
+      ? map(items(storageAccountPrivateDnsZones), zone => {
+          name: 'pep-${zone.value}-${aiFoundryStorageAccountName}'
+          customNetworkInterfaceName: 'nic-${zone.value}-${aiFoundryStorageAccountName}'
+          service: zone.value
+          subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0] ?? ''
+          privateDnsZoneResourceIds: [resourceId('Microsoft.Network/privateDnsZones', zone.key)]
+        })
+      : null
     roleAssignments: [
       {
         principalId: userAssignedIdentity.outputs.principalId
@@ -432,9 +435,32 @@ module aiFoundryStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2
 }
 
 // AI Foundry: AI Hub
+var mlTargetSubResource = 'amlworkspace'
+var mlPrivateDnsZones = {
+  'privatelink.api.azureml.ms': mlTargetSubResource
+  'privatelink.notebooks.azure.net': mlTargetSubResource
+}
+module privateDnsZonesAiFoundryWorkspaceHub 'br/public:avm/res/network/private-dns-zone:0.3.1' = [
+  for zone in objectKeys(mlPrivateDnsZones): if (virtualNetworkEnabled) {
+    name: 'network-dns-zone-${zone}'
+    params: {
+      name: zone
+      enableTelemetry: enableTelemetry
+      tags: tags
+      virtualNetworkLinks: [
+        {
+          virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        }
+      ]
+    }
+  }
+]
 var aiFoundryAiHubName = '${solutionPrefix}aifdaihb'
 module aiFoundryAiHub 'modules/ai-hub.bicep' = {
   name: 'modules-ai-hub'
+  dependsOn: [
+    privateDnsZonesAiFoundryWorkspaceHub
+  ]
   params: {
     name: aiFoundryAiHubName
     location: solutionLocation
@@ -444,6 +470,23 @@ module aiFoundryAiHub 'modules/ai-hub.bicep' = {
     enableTelemetry: enableTelemetry
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     storageAccountResourceId: aiFoundryStorageAccount.outputs.resourceId
+    virtualNetworkEnabled: virtualNetworkEnabled
+    privateEndpoints: virtualNetworkEnabled
+      ? [
+          {
+            name: 'pep-${mlTargetSubResource}-${aiFoundryAiHubName}'
+            customNetworkInterfaceName: 'nic-${mlTargetSubResource}-${aiFoundryAiHubName}'
+            service: mlTargetSubResource
+            subnetResourceId: virtualNetworkEnabled ? virtualNetwork.?outputs.?subnetResourceIds[0] : null
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: map(objectKeys(mlPrivateDnsZones), zone => {
+                name: replace(zone, '.', '-')
+                privateDnsZoneResourceId: resourceId('Microsoft.Network/privateDnsZones', zone)
+              })
+            }
+          }
+        ]
+      : []
   }
 }
 
@@ -460,7 +503,6 @@ module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     sku: 'Basic'
     kind: 'Project'
-    publicNetworkAccess: 'Enabled' // Not in original script, check this
     hubResourceId: aiFoundryAiHub.outputs.resourceId
     roleAssignments: [
       {
@@ -473,8 +515,8 @@ module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace
 }
 
 // ========== DNS Zone for Cosmos DB ========== //
-module privateDnsZoneCosmosDb 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.network-private-dns-zone-cosmos-db'
+module privateDnsZonesCosmosDb 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (virtualNetworkEnabled) {
+  name: 'network-dns-zone-cosmos-db'
   params: {
     name: 'privatelink.documents.azure.com'
     enableTelemetry: enableTelemetry
@@ -500,13 +542,13 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
     enableFreeTier: false
     networkRestrictions: {
       networkAclBypass: 'None'
-      publicNetworkAccess: virtualNetworkConfiguration.?enabled! ? 'Disabled' : 'Enabled'
+      publicNetworkAccess: virtualNetworkEnabled ? 'Disabled' : 'Enabled'
     }
-    privateEndpoints: virtualNetworkConfiguration.?enabled!
+    privateEndpoints: virtualNetworkEnabled
       ? [
           {
             privateDnsZoneGroup: {
-              privateDnsZoneGroupConfigs: [{ privateDnsZoneResourceId: privateDnsZoneCosmosDb.outputs.resourceId }]
+              privateDnsZoneGroupConfigs: [{ privateDnsZoneResourceId: privateDnsZonesCosmosDb.outputs.resourceId }]
             }
             service: 'Sql'
             subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
@@ -557,18 +599,6 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
   }
 }
 
-// ========== DNS zone for Container App Environment ========== //
-module dnsZoneContainerApp 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.network-private-dns-zone-containers'
-  params: {
-    //name: 'privatelink.${toLower(replace(containerAppEnvironment.outputs.location,' ',''))}.azurecontainerapps.io'
-    name: 'privatelink.${toLower(replace(containerAppEnvironment.outputs.location,' ',''))}.azurecontainerapps.io'
-    enableTelemetry: enableTelemetry
-    virtualNetworkLinks: [{ virtualNetworkResourceId: virtualNetwork.outputs.resourceId }]
-    tags: tags
-  }
-}
-
 // ========== Backend Container App Environment ========== //
 
 module containerAppEnvironment 'modules/container-app-environment.bicep' = {
@@ -578,41 +608,15 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = {
     tags: tags
     location: solutionLocation
     logAnalyticsResourceName: logAnalyticsWorkspace.outputs.name
-    virtualNetworkConfiguration: (virtualNetworkConfiguration.?enabled!)
+    publicNetworkAccess: 'Enabled'
+    zoneRedundant: virtualNetworkEnabled ? true : false
+    aspireDashboardEnabled: !virtualNetworkEnabled
+    vnetConfiguration: virtualNetworkEnabled
       ? {
-          internal: true
-          infrastructureSubnetId: virtualNetwork.outputs.subnetResourceIds[1]
+          internal: false
+          infrastructureSubnetId: virtualNetwork.?outputs.?subnetResourceIds[1] ?? ''
         }
       : {}
-    publicNetworkAccess: virtualNetworkConfiguration.?enabled! ? 'Disabled' : 'Enabled'
-    zoneRedundant: (virtualNetworkConfiguration.?enabled!) ? true : false
-    aspireDashboardEnabled: !virtualNetworkConfiguration.?enabled!
-  }
-}
-
-var privateEndpointContainerAppEnvironmentService = 'managedEnvironments'
-module privateEndpointContainerAppEnvironment 'br/public:avm/res/network/private-endpoint:0.10.1' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.network-pep-container-app-environment'
-  params: {
-    name: 'pep-container-app-environment'
-    privateDnsZoneGroup: {
-      privateDnsZoneGroupConfigs: [{ privateDnsZoneResourceId: privateDnsZoneCosmosDb.outputs.resourceId }]
-    }
-    privateLinkServiceConnections: [
-      {
-        name: '${last(split(containerAppEnvironment.outputs.resourceId, '/'))}-${privateEndpointContainerAppEnvironmentService}-0'
-        properties: {
-          privateLinkServiceId: containerAppEnvironment.outputs.resourceId
-          groupIds: [
-            privateEndpointContainerAppEnvironmentService
-          ]
-        }
-      }
-    ]
-    subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
-    enableTelemetry: enableTelemetry
-    location: solutionLocation
-    tags: tags
   }
 }
 
@@ -635,9 +639,9 @@ module privateEndpointContainerAppEnvironment 'br/public:avm/res/network/private
 //       }
 //     }
 //     appInsightsConnectionString: applicationInsights.outputs.connectionString
-//     publicNetworkAccess: virtualNetworkConfiguration.?enabled! ? 'Disabled' : 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
+//     publicNetworkAccess: virtualNetworkEnabled ? 'Disabled' : 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
 //     zoneRedundant: true //TODO: make it zone redundant for waf aligned
-//     infrastructureSubnetResourceId: virtualNetworkConfiguration.?enabled!
+//     infrastructureSubnetResourceId: virtualNetworkEnabled
 //       ? virtualNetwork.outputs.subnetResourceIds[1]
 //       : null
 //     internal: false
@@ -766,6 +770,7 @@ module webServerfarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
     skuName: 'P1v2'
     skuCapacity: 1
     reserved: true
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     kind: 'linux'
     zoneRedundant: false //TODO: make it zone redundant for waf aligned
   }
@@ -900,186 +905,6 @@ module webSite 'br/public:avm/res/web/site:0.15.1' = {
           : {}
       }
     }
-  }
-}
-
-// ========== SSL Self Signed Certificate ========== //
-
-module userAssignedIdentityApplicationGateway 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.user-assigned-identity-application-gateway'
-  params: {
-    name: '${solutionPrefix}uaidapgw'
-    tags: tags
-    location: solutionLocation
-    enableTelemetry: enableTelemetry
-  }
-}
-
-module keyVault 'br/public:avm/res/key-vault/vault:0.6.1' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.key-vault'
-  params: {
-    name: '${solutionPrefix}keyv'
-    location: solutionLocation
-    tags: tags
-    enableTelemetry: enableTelemetry
-    enablePurgeProtection: false
-    enableSoftDelete: true
-    enableRbacAuthorization: true
-    enableVaultForDeployment: true
-    enableVaultForTemplateDeployment: true
-    roleAssignments: [
-      {
-        principalId: userAssignedIdentityApplicationGateway.outputs.principalId
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Key Vault Administrator'
-      }
-    ]
-  }
-}
-
-var applicationGatewaySslCertificateKeyVaultSecretName = 'applicationGatewaySslCertificate'
-module certificateDeploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.resources-deployment-script'
-  params: {
-    name: '${solutionPrefix}scrpcert'
-    location: solutionLocation
-    kind: 'AzurePowerShell'
-    tags: tags
-    enableTelemetry: enableTelemetry
-    managedIdentities: { userAssignedResourceIds: [userAssignedIdentityApplicationGateway.outputs.resourceId] }
-    primaryScriptUri: 'https://raw.githubusercontent.com/Azure/bicep-registry-modules/refs/heads/main/utilities/e2e-template-assets/scripts/Set-CertificateInKeyVault.ps1'
-    azPowerShellVersion: '8.0'
-    retentionInterval: 'P1D'
-    arguments: '-KeyVaultName "${keyVault.outputs.name}" -CertName "${applicationGatewaySslCertificateKeyVaultSecretName}"'
-  }
-}
-
-// ========== Application gateway ========== //
-module publicIp 'br/public:avm/res/network/public-ip-address:0.5.1' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.network-public-ip-address'
-  params: {
-    name: '${solutionPrefix}pbipapgw'
-    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    location: solutionLocation
-    tags: tags
-    enableTelemetry: enableTelemetry
-    publicIPAllocationMethod: 'Static'
-  }
-}
-var applicationGatewayName = '${solutionPrefix}apgw'
-var applicationGatewayExpectedResourceId = '${resourceGroup().id}/providers/Microsoft.Network/applicationGateways/${applicationGatewayName}'
-
-module applicationGateway 'br/public:avm/res/network/application-gateway:0.5.1' = if (virtualNetworkConfiguration.?enabled!) {
-  name: 'avm.ptn.sa.macae.network-application-gateway'
-  params: {
-    // Required parameters
-    name: applicationGatewayName
-    // Non-required parameters
-    location: solutionLocation
-    tags: tags
-    enableTelemetry: enableTelemetry
-    managedIdentities: {
-      userAssignedResourceIds: [userAssignedIdentityApplicationGateway.outputs.resourceId]
-    }
-    backendAddressPools: [
-      {
-        name: 'appServiceBackendAddressPool'
-        properties: {
-          backendAddresses: [
-            {
-              fqdn: containerApp.outputs.fqdn
-            }
-          ]
-        }
-      }
-    ]
-    backendHttpSettingsCollection: [
-      {
-        name: 'appServiceBackendHttpsSettings'
-        properties: {
-          cookieBasedAffinity: 'Disabled'
-          pickHostNameFromBackendAddress: true
-          port: 443
-          protocol: 'Https'
-          requestTimeout: 30
-        }
-      }
-    ]
-    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    enableHttp2: true
-    frontendIPConfigurations: [
-      {
-        name: 'public'
-        properties: {
-          publicIPAddress: {
-            id: publicIp.outputs.resourceId
-          }
-        }
-      }
-    ]
-    frontendPorts: [
-      {
-        name: 'port443'
-        properties: {
-          port: 443
-        }
-      }
-    ]
-    gatewayIPConfigurations: [
-      {
-        name: 'subnetConfigs'
-        properties: {
-          subnet: {
-            id: virtualNetwork.outputs.subnetResourceIds[4]
-          }
-        }
-      }
-    ]
-    sslCertificates: [
-      {
-        name: 'ssl-certificate'
-        properties: {
-          keyVaultSecretId: certificateDeploymentScript.outputs.outputs.secretUrl
-        }
-      }
-    ]
-    httpListeners: [
-      {
-        name: 'public443'
-        properties: {
-          frontendIPConfiguration: {
-            id: '${applicationGatewayExpectedResourceId}/frontendIPConfigurations/public'
-          }
-          frontendPort: {
-            id: '${applicationGatewayExpectedResourceId}/frontendPorts/port443'
-          }
-          hostNames: []
-          protocol: 'https'
-          requireServerNameIndication: false
-          sslCertificate: {
-            id: '${applicationGatewayExpectedResourceId}/sslCertificates/ssl-certificate'
-          }
-        }
-      }
-    ]
-    requestRoutingRules: [
-      {
-        name: 'public443-appServiceBackendAddressPool-appServiceBackendHttpsSettings'
-        properties: {
-          backendAddressPool: {
-            id: '${applicationGatewayExpectedResourceId}/backendAddressPools/appServiceBackendAddressPool'
-          }
-          backendHttpSettings: {
-            id: '${applicationGatewayExpectedResourceId}/backendHttpSettingsCollection/appServiceBackendHttpsSettings'
-          }
-          httpListener: {
-            id: '${applicationGatewayExpectedResourceId}/httpListeners/public443'
-          }
-          priority: 200
-          ruleType: 'Basic'
-        }
-      }
-    ]
   }
 }
 

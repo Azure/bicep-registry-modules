@@ -6,6 +6,9 @@ param logAnalyticsWorkspaceResourceId string
 param applicationInsightsResourceId string
 param aiFoundryAiServicesName string
 param enableTelemetry bool
+param virtualNetworkEnabled bool
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+param privateEndpoints privateEndpointSingleServiceType[]
 
 resource aiServices 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
   name: aiFoundryAiServicesName
@@ -21,7 +24,6 @@ module aiFoundryAiHub 'br/public:avm/res/machine-learning-services/workspace:0.1
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
     kind: 'Hub'
     sku: 'Basic'
-    publicNetworkAccess: 'Enabled'
     description: 'AI Hub for Multi Agent Custom Automation Engine Solution Accelerator template'
     //associatedKeyVaultResourceId: keyVaultResourceId
     associatedStorageAccountResourceId: storageAccountResourceId
@@ -44,6 +46,15 @@ module aiFoundryAiHub 'br/public:avm/res/machine-learning-services/workspace:0.1
         }
       }
     ]
+    //publicNetworkAccess: virtualNetworkEnabled ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: 'Enabled' //TODO: connection via private endpoint is not working from containers network. Change this when fixed
+    managedNetworkSettings: virtualNetworkEnabled
+      ? {
+          isolationMode: 'AllowInternetOutbound'
+          outboundRules: null //TODO: Refine this
+        }
+      : null
+    privateEndpoints: privateEndpoints
   }
 }
 

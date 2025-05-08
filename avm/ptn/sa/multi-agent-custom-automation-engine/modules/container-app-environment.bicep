@@ -1,9 +1,9 @@
 param name string
 param location string
 param logAnalyticsResourceName string
-param virtualNetworkConfiguration object
 param tags object
 param publicNetworkAccess string
+param vnetConfiguration object
 param zoneRedundant bool
 param aspireDashboardEnabled bool
 
@@ -34,7 +34,7 @@ resource containerAppEnvironment 'Microsoft.App/managedEnvironments@2024-08-02-p
       }
     ]
     publicNetworkAccess: publicNetworkAccess
-    vnetConfiguration: virtualNetworkConfiguration
+    vnetConfiguration: vnetConfiguration
     zoneRedundant: zoneRedundant
   }
 }
