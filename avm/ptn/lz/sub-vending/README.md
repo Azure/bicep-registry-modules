@@ -454,6 +454,10 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           ]
         }
       }
+      {
+        addressPrefix: '10.110.2.0/24'
+        name: 'Subnet2'
+      }
     ]
     virtualNetworkUseRemoteGateways: false
   }
@@ -595,6 +599,10 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
               }
             ]
           }
+        },
+        {
+          "addressPrefix": "10.110.2.0/24",
+          "name": "Subnet2"
         }
       ]
     },
@@ -685,6 +693,10 @@ param virtualNetworkSubnets = [
         }
       ]
     }
+  }
+  {
+    addressPrefix: '10.110.2.0/24'
+    name: 'Subnet2'
   }
 ]
 param virtualNetworkUseRemoteGateways = false
@@ -965,7 +977,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         }
       }
     ]
-    resourceProviders: {}
+    resourceProviders: {
+      'Microsoft.Network': []
+    }
     roleAssignmentEnabled: true
     subscriptionAliasEnabled: true
     subscriptionAliasName: '<subscriptionAliasName>'
@@ -1020,7 +1034,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       ]
     },
     "resourceProviders": {
-      "value": {}
+      "value": {
+        "Microsoft.Network": []
+      }
     },
     "roleAssignmentEnabled": {
       "value": true
@@ -1101,7 +1117,9 @@ param pimRoleAssignments = [
     }
   }
 ]
-param resourceProviders = {}
+param resourceProviders = {
+  'Microsoft.Network': []
+}
 param roleAssignmentEnabled = true
 param subscriptionAliasEnabled = true
 param subscriptionAliasName = '<subscriptionAliasName>'
@@ -3137,12 +3155,12 @@ The network resource group to be associated with this subnet.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`location`](#parameter-virtualnetworksubnetsnetworksecuritygrouplocation) | string | The location of the network security group. |
-| [`name`](#parameter-virtualnetworksubnetsnetworksecuritygroupname) | string | The name of the network security group. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`name`](#parameter-virtualnetworksubnetsnetworksecuritygroupname) | string | The name of the network security group. |
 | [`securityRules`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrules) | array | The security rules of the network security group. |
 | [`tags`](#parameter-virtualnetworksubnetsnetworksecuritygrouptags) | object | The tags of the network security group. |
 
@@ -3157,7 +3175,7 @@ The location of the network security group.
 
 The name of the network security group.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules`

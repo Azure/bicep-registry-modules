@@ -87,6 +87,10 @@ module testDeployment '../../../main.bicep' = {
           ]
         }
       }
+      {
+        name: 'Subnet2'
+        addressPrefix: '10.110.2.0/24'
+      }
     ]
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkPeeringEnabled: true

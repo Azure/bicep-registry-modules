@@ -497,7 +497,12 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
             addressPrefix: subnet.?addressPrefix
             networkSecurityGroup: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
               ? createBastionNsg.outputs.resourceId
-              : resourceId('Microsoft.Network/networkSecurityGroups', '${createLzNsg[i].outputs.name}')
+              : resourceId(
+                  subscriptionId,
+                  virtualNetworkResourceGroupName,
+                  'Microsoft.Network/networkSecurityGroups',
+                  '${createLzNsg[i].outputs.name}'
+                )
             /*networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
               ? createBastionNsg.outputs.resourceId
               : createLzNsg[i].outputs.resourceId*/
@@ -1617,8 +1622,8 @@ type timeBoundDateTimeRoleAssignmentScheduleType = {
 @export()
 @description('Network security group type.')
 type networkSecurityGroupType = {
-  @description('Required. The name of the network security group.')
-  name: string
+  @description('Optional. The name of the network security group.')
+  name: string?
 
   @description('Required. The location of the network security group.')
   location: string

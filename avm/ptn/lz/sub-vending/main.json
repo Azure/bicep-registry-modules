@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "13199418441288051000"
+      "templateHash": "7503531448970231983"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -189,8 +189,9 @@
       "properties": {
         "name": {
           "type": "string",
+          "nullable": true,
           "metadata": {
-            "description": "Required. The name of the network security group."
+            "description": "Optional. The name of the network security group."
           }
         },
         "location": {
@@ -1708,7 +1709,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "7485238641520857363"
+              "templateHash": "9959224103558658395"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2432,8 +2433,9 @@
               "properties": {
                 "name": {
                   "type": "string",
+                  "nullable": true,
                   "metadata": {
-                    "description": "Required. The name of the network security group."
+                    "description": "Optional. The name of the network security group."
                   }
                 },
                 "location": {
@@ -4477,7 +4479,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('virtualNetworkSubnets'))]",
-                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroup', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), reference('createBastionNsg').outputs.resourceId.value, resourceId('Microsoft.Network/networkSecurityGroups', format('{0}', reference(format('createLzNsg[{0}]', copyIndex('value'))).outputs.name.value))), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), reference('createNatGateway').outputs.resourceId.value, null())), createObject())]"
+                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroup', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), reference('createBastionNsg').outputs.resourceId.value, resourceId(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', reference(format('createLzNsg[{0}]', copyIndex('value'))).outputs.name.value))), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), reference('createNatGateway').outputs.resourceId.value, null())), createObject())]"
                       }
                     ]
                   },
