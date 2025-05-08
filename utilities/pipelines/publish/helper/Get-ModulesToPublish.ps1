@@ -90,11 +90,8 @@ function Get-TemplateFileToPublish {
         [Parameter(Mandatory)]
         [string] $ModuleFolderPath,
 
-        [Parameter(Mandatory = $false)]
-        [string[]] $PathsToInclude = @(
-            'main.json',
-            'version.json'
-        ),
+        [Parameter(Mandatory)]
+        [string[]] $PathsToInclude = @(),
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipNotVersionedModules
@@ -232,8 +229,11 @@ function Get-ModulesToPublish {
         [switch] $SkipNotVersionedModules
     )
 
+    $versionFile = (Get-Content (Join-Path $ModuleFolderPath 'version.json') -Raw) | ConvertFrom-Json
+    $PathsToInclude = $versionFile.PathFilters
+
     # Check as per a `diff` with head^-1 if there was a change in any file that would justify a publish
-    $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -SkipNotVersionedModules
+    $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude -SkipNotVersionedModules
 
     # Return the remaining template file(s)
     return $TemplateFilesToPublish
