@@ -1623,7 +1623,7 @@ type networkSecurityGroupType = {
   @description('Required. The location of the network security group.')
   location: string
 
-  @description('Required. The tags of the network security group.')
+  @description('Optional. The tags of the network security group.')
   tags: object?
 
   @description('Optional. The security rules of the network security group.')

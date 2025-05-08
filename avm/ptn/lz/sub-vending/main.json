@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "8735303024482179036"
+      "templateHash": "13199418441288051000"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -203,7 +203,7 @@
           "type": "object",
           "nullable": true,
           "metadata": {
-            "description": "Required. The tags of the network security group."
+            "description": "Optional. The tags of the network security group."
           }
         },
         "securityRules": {
@@ -1708,7 +1708,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "4478858485816957633"
+              "templateHash": "7485238641520857363"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2446,7 +2446,7 @@
                   "type": "object",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. The tags of the network security group."
+                    "description": "Optional. The tags of the network security group."
                   }
                 },
                 "securityRules": {
