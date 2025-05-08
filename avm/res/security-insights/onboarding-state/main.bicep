@@ -8,7 +8,7 @@ param workspaceResourceId string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Status of the CMK setting')
+@description('Optional. Status of the Customer Managed Key setting.')
 param customerManagedKeyState bool = false
 
 @description('Optional. Enable/Disable usage telemetry for module.')

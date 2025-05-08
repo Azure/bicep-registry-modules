@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "17517120117643414698"
+      "templateHash": "5537043149798984576"
     },
     "name": "Security Insights (Microsoft Sentinel)",
     "description": "This module deploys Security Insights (Microsoft Sentinel) instance and its resources.",
@@ -29,7 +29,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Status of the CMK setting"
+        "description": "Optional. Status of the Customer Managed Key setting."
       }
     },
     "enableTelemetry": {
