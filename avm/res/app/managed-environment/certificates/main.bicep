@@ -20,8 +20,8 @@ param certificateType string?
 @description('Optional. The value of the certificate. PFX or PEM blob.')
 param certificateValue string?
 
-@secure()
 @description('Optional. The password of the certificate.')
+@secure()
 param certificatePassword string?
 
 @description('Optional. Tags of the resource.')
