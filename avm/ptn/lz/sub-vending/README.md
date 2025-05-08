@@ -433,6 +433,30 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       {
         addressPrefix: '10.110.1.0/24'
         name: 'Subnet1'
+        networkSecurityGroup: {
+          location: '<location>'
+          name: '<name>'
+          securityRules: [
+            {
+              name: 'Allow-HTTPS'
+              properties: {
+                access: 'Allow'
+                description: 'Allow HTTPS'
+                destinationAddressPrefix: '*'
+                destinationPortRange: '443'
+                direction: 'Inbound'
+                priority: 100
+                protocol: 'Tcp'
+                sourceAddressPrefix: '*'
+                sourcePortRange: '*'
+              }
+            }
+          ]
+        }
+      }
+      {
+        addressPrefix: '10.110.2.0/24'
+        name: 'Subnet2'
       }
     ]
     virtualNetworkUseRemoteGateways: false
@@ -554,7 +578,31 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "addressPrefix": "10.110.1.0/24",
-          "name": "Subnet1"
+          "name": "Subnet1",
+          "networkSecurityGroup": {
+            "location": "<location>",
+            "name": "<name>",
+            "securityRules": [
+              {
+                "name": "Allow-HTTPS",
+                "properties": {
+                  "access": "Allow",
+                  "description": "Allow HTTPS",
+                  "destinationAddressPrefix": "*",
+                  "destinationPortRange": "443",
+                  "direction": "Inbound",
+                  "priority": 100,
+                  "protocol": "Tcp",
+                  "sourceAddressPrefix": "*",
+                  "sourcePortRange": "*"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "addressPrefix": "10.110.2.0/24",
+          "name": "Subnet2"
         }
       ]
     },
@@ -625,6 +673,30 @@ param virtualNetworkSubnets = [
   {
     addressPrefix: '10.110.1.0/24'
     name: 'Subnet1'
+    networkSecurityGroup: {
+      location: '<location>'
+      name: '<name>'
+      securityRules: [
+        {
+          name: 'Allow-HTTPS'
+          properties: {
+            access: 'Allow'
+            description: 'Allow HTTPS'
+            destinationAddressPrefix: '*'
+            destinationPortRange: '443'
+            direction: 'Inbound'
+            priority: 100
+            protocol: 'Tcp'
+            sourceAddressPrefix: '*'
+            sourcePortRange: '*'
+          }
+        }
+      ]
+    }
+  }
+  {
+    addressPrefix: '10.110.2.0/24'
+    name: 'Subnet2'
   }
 ]
 param virtualNetworkUseRemoteGateways = false
@@ -905,7 +977,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         }
       }
     ]
-    resourceProviders: {}
+    resourceProviders: {
+      'Microsoft.Network': []
+    }
     roleAssignmentEnabled: true
     subscriptionAliasEnabled: true
     subscriptionAliasName: '<subscriptionAliasName>'
@@ -960,7 +1034,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       ]
     },
     "resourceProviders": {
-      "value": {}
+      "value": {
+        "Microsoft.Network": []
+      }
     },
     "roleAssignmentEnabled": {
       "value": true
@@ -1041,7 +1117,9 @@ param pimRoleAssignments = [
     }
   }
 ]
-param resourceProviders = {}
+param resourceProviders = {
+  'Microsoft.Network': []
+}
 param roleAssignmentEnabled = true
 param subscriptionAliasEnabled = true
 param subscriptionAliasName = '<subscriptionAliasName>'
@@ -3000,7 +3078,7 @@ The subnets of the Virtual Network that will be created by this module.
 | [`defaultOutboundAccess`](#parameter-virtualnetworksubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-virtualnetworksubnetsdelegation) | string | The delegation to enable on the subnet. |
 | [`natGatewayResourceId`](#parameter-virtualnetworksubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
-| [`networkSecurityGroupResourceId`](#parameter-virtualnetworksubnetsnetworksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
+| [`networkSecurityGroup`](#parameter-virtualnetworksubnetsnetworksecuritygroup) | object | The network resource group to be associated with this subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-virtualnetworksubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
 | [`privateLinkServiceNetworkPolicies`](#parameter-virtualnetworksubnetsprivatelinkservicenetworkpolicies) | string | enable or disable apply network policies on private link service in the subnet. |
 | [`routeTableResourceId`](#parameter-virtualnetworksubnetsroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
@@ -3064,12 +3142,227 @@ The resource ID of the NAT Gateway to use for the subnet.
 - Required: No
 - Type: string
 
-### Parameter: `virtualNetworkSubnets.networkSecurityGroupResourceId`
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup`
 
-The resource ID of the network security group to assign to the subnet.
+The network resource group to be associated with this subnet.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-virtualnetworksubnetsnetworksecuritygrouplocation) | string | The location of the network security group. |
+| [`name`](#parameter-virtualnetworksubnetsnetworksecuritygroupname) | string | The name of the network security group. |
+| [`securityRules`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrules) | array | The security rules of the network security group. |
+| [`tags`](#parameter-virtualnetworksubnetsnetworksecuritygrouptags) | object | The tags of the network security group. |
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.location`
+
+The location of the network security group.
 
 - Required: No
 - Type: string
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.name`
+
+The name of the network security group.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules`
+
+The security rules of the network security group.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulesname) | string | The name of the security rule. |
+| [`properties`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulesproperties) | object | The properties of the security rule. |
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.name`
+
+The name of the security rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties`
+
+The properties of the security rule.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`access`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiesaccess) | string | Whether network traffic is allowed or denied. |
+| [`direction`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiesdirection) | string | The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic. |
+| [`priority`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiespriority) | int | Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| [`protocol`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiesprotocol) | string | Network protocol this rule applies to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiesdescription) | string | The description of the security rule. |
+| [`destinationAddressPrefix`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiesdestinationaddressprefix) | string | Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. |
+| [`destinationAddressPrefixes`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiesdestinationaddressprefixes) | array | The destination address prefixes. CIDR or destination IP ranges. |
+| [`destinationApplicationSecurityGroupResourceIds`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiesdestinationapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as destination. |
+| [`destinationPortRange`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiesdestinationportrange) | string | The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`destinationPortRanges`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiesdestinationportranges) | array | The destination port ranges. |
+| [`sourceAddressPrefix`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiessourceaddressprefix) | string | The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from. |
+| [`sourceAddressPrefixes`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiessourceaddressprefixes) | array | The CIDR or source IP ranges. |
+| [`sourceApplicationSecurityGroupResourceIds`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiessourceapplicationsecuritygroupresourceids) | array | The resource IDs of the application security groups specified as source. |
+| [`sourcePortRange`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiessourceportrange) | string | The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports. |
+| [`sourcePortRanges`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrulespropertiessourceportranges) | array | The source port ranges. |
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.access`
+
+Whether network traffic is allowed or denied.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'Deny'
+  ]
+  ```
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.direction`
+
+The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Inbound'
+    'Outbound'
+  ]
+  ```
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.priority`
+
+Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.
+
+- Required: Yes
+- Type: int
+- MinValue: 100
+- MaxValue: 4096
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.protocol`
+
+Network protocol this rule applies to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '*'
+    'Ah'
+    'Esp'
+    'Icmp'
+    'Tcp'
+    'Udp'
+  ]
+  ```
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.description`
+
+The description of the security rule.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.destinationAddressPrefix`
+
+Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.destinationAddressPrefixes`
+
+The destination address prefixes. CIDR or destination IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.destinationApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as destination.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.destinationPortRange`
+
+The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.destinationPortRanges`
+
+The destination port ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.sourceAddressPrefix`
+
+The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.sourceAddressPrefixes`
+
+The CIDR or source IP ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.sourceApplicationSecurityGroupResourceIds`
+
+The resource IDs of the application security groups specified as source.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.sourcePortRange`
+
+The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.securityRules.properties.sourcePortRanges`
+
+The source port ranges.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualNetworkSubnets.networkSecurityGroup.tags`
+
+The tags of the network security group.
+
+- Required: No
+- Type: object
 
 ### Parameter: `virtualNetworkSubnets.privateEndpointNetworkPolicies`
 
@@ -3207,7 +3500,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.5.0` | Remote reference |
 | `br/public:avm/res/network/nat-gateway:1.2.1` | Remote reference |
-| `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |
+| `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.7.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.5.1` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
