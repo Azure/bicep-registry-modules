@@ -144,7 +144,12 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             $folderName = Split-Path $moduleFolderPath -Leaf
             $expectedFolderName = ($folderName -cReplace '([A-Z])', '-$1').ToLower()
-            $folderName | Should -Be $expectedFolderName
+
+            # Remove singular/plural indicators to not give the wrong impression of what is expeted
+            $reducedCurrentFolderName = Get-ReducedWordString $folderName
+            $reducedExpectedFolderName = Get-ReducedWordString $expectedFolderName
+
+            "$reducedCurrentFolderName*" | Should -Be "$reducedExpectedFolderName*" -Because 'the folder name must be a singular lower-case version of the resource type name, using hyphens instead of camel-case. The [*] is to be replaced with the singular ending.'
         }
     }
 
