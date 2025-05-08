@@ -75,7 +75,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $moduleFolderTestCases = [System.Collections.ArrayList] @()
 
             foreach ($moduleFolderPath in $moduleFolderPaths) {
-                $templateFilePath = Join-Path $moduleFolderPath 'main.bicep'
                 $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
 
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
@@ -87,7 +86,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     isTopLevelModule                   = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     childModuleAllowedList             = $childModuleAllowedList
                     childModuleAllowedListRelativePath = $childModuleAllowedListRelativePath
-                    templateFileContent                = $builtTestFileMap[$templateFilePath]
                 }
             }
         }
@@ -141,34 +139,12 @@ Describe 'File/folder tests' -Tag 'Modules' {
         It '[<moduleFolderName>] Resource module (folder) name must be singular, use ''-'' instead of camel-case and be lower-case (e.g., ''the-cake-is-a-lie'').' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
             param(
-                [string] $moduleFolderName,
-                [hashtable] $templateFileContent
+                [string] $moduleFolderPath
             )
 
-            # Current name of module
-            $folderName = Split-Path $moduleFolderName -Leaf
-
-            # Look for expected name of module
-            $formattedResourceType = Get-SpecsAlignedResourceName -ResourceIdentifier $moduleFolderName
-            $inTemplateResourceType = (Get-NestedResourceList $TemplateFileContent).type | Select-Object -Unique | Where-Object {
-                $_ -match "^$formattedResourceType$"
-            }
-
-            if ($inTemplateResourceType) {
-                $fullResourceType = $inTemplateResourceType
-            } else {
-                Write-Warning "No resource type like [$formattedResourceType] found in template. Falling back to it as identifier."
-                $fullResourceType = $formattedResourceType
-            }
-
-            $expectedFolderName = ((Split-Path $fullResourceType -Leaf) -cReplace '([A-Z])', '-$1').ToLower()
-
-            # Remove singular/pluarl indicators to allow validation
-            $reducedCurrentFolderName = Get-ReducedWordString $folderName
-            $reducedExpectedFolderName = Get-ReducedWordString $expectedFolderName
-
-            # Test against expected name
-            "$reducedCurrentFolderName*" | Should -Be "$reducedExpectedFolderName*"
+            $folderName = Split-Path $moduleFolderPath -Leaf
+            $expectedFolderName = ($folderName -cReplace '([A-Z])', '-$1').ToLower()
+            $folderName | Should -Be $expectedFolderName
         }
     }
 
