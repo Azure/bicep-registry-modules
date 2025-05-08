@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "14305249559109316657"
+      "templateHash": "12956135271347847510"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -893,13 +893,6 @@
             "description": "Optional. Option to associate the subnet with the NAT gatway deployed by this module."
           }
         },
-        "networkSecurityGroupResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID of the network security group to assign to the subnet."
-          }
-        },
         "networkSecurityGroup": {
           "$ref": "#/definitions/_1.networkSecurityGroupType",
           "nullable": true,
@@ -1710,7 +1703,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "11353275800166099587"
+              "templateHash": "18004441141806127330"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2073,13 +2066,6 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Option to associate the subnet with the NAT gatway deployed by this module."
-                  }
-                },
-                "networkSecurityGroupResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource ID of the network security group to assign to the subnet."
                   }
                 },
                 "networkSecurityGroup": {

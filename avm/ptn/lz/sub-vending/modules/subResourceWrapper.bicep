@@ -1474,9 +1474,6 @@ type subnetType = {
   @description('Optional. Option to associate the subnet with the NAT gatway deployed by this module.')
   associateWithNatGateway: bool?
 
-  @description('Optional. The resource ID of the network security group to assign to the subnet.')
-  networkSecurityGroupResourceId: string?
-
   @description('Optional. The network resource group to be associated with this subnet.')
   networkSecurityGroup: networkSecurityGroupType?
 

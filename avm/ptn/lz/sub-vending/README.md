@@ -3079,7 +3079,6 @@ The subnets of the Virtual Network that will be created by this module.
 | [`delegation`](#parameter-virtualnetworksubnetsdelegation) | string | The delegation to enable on the subnet. |
 | [`natGatewayResourceId`](#parameter-virtualnetworksubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroup`](#parameter-virtualnetworksubnetsnetworksecuritygroup) | object | The network resource group to be associated with this subnet. |
-| [`networkSecurityGroupResourceId`](#parameter-virtualnetworksubnetsnetworksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-virtualnetworksubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
 | [`privateLinkServiceNetworkPolicies`](#parameter-virtualnetworksubnetsprivatelinkservicenetworkpolicies) | string | enable or disable apply network policies on private link service in the subnet. |
 | [`routeTableResourceId`](#parameter-virtualnetworksubnetsroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
@@ -3364,13 +3363,6 @@ The tags of the network security group.
 
 - Required: No
 - Type: object
-
-### Parameter: `virtualNetworkSubnets.networkSecurityGroupResourceId`
-
-The resource ID of the network security group to assign to the subnet.
-
-- Required: No
-- Type: string
 
 ### Parameter: `virtualNetworkSubnets.privateEndpointNetworkPolicies`
 
