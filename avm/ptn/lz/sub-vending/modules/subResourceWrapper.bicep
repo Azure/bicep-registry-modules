@@ -495,7 +495,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
         ? {
             name: subnet.name
             addressPrefix: subnet.?addressPrefix
-            networkSecurityGroup: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
+            networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
               ? createBastionNsg.outputs.resourceId
               : resourceId(
                   subscriptionId,
@@ -503,9 +503,6 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
                   'Microsoft.Network/networkSecurityGroups',
                   '${createLzNsg[i].outputs.name}'
                 )
-            /*networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
-              ? createBastionNsg.outputs.resourceId
-              : createLzNsg[i].outputs.resourceId*/
             natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
               ? createNatGateway.outputs.resourceId
               : null
@@ -677,7 +674,7 @@ module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
     ]
     name: '${deploymentNames.createLzNsg}-${i}'
     params: {
-      name: subnet.?networkSecurityGroup.name ?? 'lz-nsg-${subnet.name}-${substring(guid(virtualNetworkName, virtualNetworkResourceGroupName, subnet.name, subscriptionId), 0, 5)}'
+      name: subnet.?networkSecurityGroup.name ?? 'nsg-${subnet.name}-${substring(guid(virtualNetworkName, virtualNetworkResourceGroupName, subnet.name, subscriptionId), 0, 5)}'
       location: virtualNetworkLocation
       securityRules: subnet.?networkSecurityGroup.?securityRules ?? null
       enableTelemetry: enableTelemetry
@@ -1625,8 +1622,8 @@ type networkSecurityGroupType = {
   @description('Optional. The name of the network security group.')
   name: string?
 
-  @description('Required. The location of the network security group.')
-  location: string
+  @description('Optional. The location of the network security group.')
+  location: string?
 
   @description('Optional. The tags of the network security group.')
   tags: object?

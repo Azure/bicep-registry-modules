@@ -3150,16 +3150,11 @@ The network resource group to be associated with this subnet.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`location`](#parameter-virtualnetworksubnetsnetworksecuritygrouplocation) | string | The location of the network security group. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`location`](#parameter-virtualnetworksubnetsnetworksecuritygrouplocation) | string | The location of the network security group. |
 | [`name`](#parameter-virtualnetworksubnetsnetworksecuritygroupname) | string | The name of the network security group. |
 | [`securityRules`](#parameter-virtualnetworksubnetsnetworksecuritygroupsecurityrules) | array | The security rules of the network security group. |
 | [`tags`](#parameter-virtualnetworksubnetsnetworksecuritygrouptags) | object | The tags of the network security group. |
@@ -3168,7 +3163,7 @@ The network resource group to be associated with this subnet.
 
 The location of the network security group.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `virtualNetworkSubnets.networkSecurityGroup.name`
