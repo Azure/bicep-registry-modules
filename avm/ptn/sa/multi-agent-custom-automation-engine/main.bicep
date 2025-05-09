@@ -118,14 +118,14 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 module networkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled) {
   name: 'avm.ptn.sa.macae.network-network-security-group-default'
   params: {
-    name: '${solutionPrefix}nsgrdflt'
+    name: '${solutionPrefix}nsgr'
     location: solutionLocation
     tags: tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     securityRules: [
       // {
-      //   name: 'DenySshRdpOutbound'
+      //   name: 'DenySshRdpOutbound' //Azure Bastion
       //   properties: {
       //     priority: 200
       //     access: 'Deny'
@@ -157,10 +157,10 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
     subnets: [
       // The default subnet **must** be the first in the subnets array
       {
-        name: 'default'
+        name: 'multi-agent-custom-automation-engine'
         addressPrefix: '10.0.0.0/24'
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        //networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
+        networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
       }
       {
         // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
@@ -169,27 +169,27 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
         addressPrefix: '10.0.2.0/23' //subnet of size /23 is required for container app
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
         delegation: 'Microsoft.App/environments'
-        //networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
+        networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
       }
       {
         name: 'AzureBastionSubnet'
         addressPrefix: '10.0.4.0/26'
-        //networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
+        networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
       }
       {
         name: 'virtual-machines'
         addressPrefix: '10.0.4.64/26'
+        networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
         //natGatewayResourceId: natGateway.outputs.resourceId
-        //networkSecurityGroupResourceId: networkSecurityGroupVirtualMachines.outputs.resourceId
       }
       {
         name: 'application-gateway'
         addressPrefix: '10.0.5.0/24'
+        networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        //networkSecurityGroupResourceId: networkSecurityGroupApplicationGateway.outputs.resourceId
       }
     ]
   }
