@@ -149,6 +149,34 @@ module testDeployment '../../../main.bicep' = [
       topics: [
         '${namePrefix}-topic-${serviceShort}001'
       ]
+      eventSubscriptions: [
+        {
+          name: 'sub1'
+          destination: {
+            endpointType: 'WebHook'
+            properties: {
+              endpointUrl: 'https://example.com/webhook1'
+            }
+          }
+          filter: {
+            includedEventTypes: ['All']
+          }
+        }
+        {
+          name: 'sub2'
+          destination: {
+            endpointType: 'WebHook'
+            properties: {
+              endpointUrl: 'https://example.com/webhook2'
+            }
+          }
+          labels: ['env:test']
+          retryPolicy: {
+            eventTimeToLiveInMinutes: 1440
+            maxDeliveryAttempts: 5
+          }
+        }
+      ]      
     }
     dependsOn: [
       nestedDependencies
