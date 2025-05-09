@@ -29,30 +29,13 @@ function Get-ModuleTargetVersion {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
-        [string] $ModuleFolderPath,
-
-        [Parameter(Mandatory = $false)]
-        [switch] $CompareJson
+        [string] $ModuleFolderPath
     )
 
     # Load used functions
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleVersionChange.ps1')
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleTargetPatchVersion.ps1')
     . (Join-Path (Get-Item -Path $PSScriptRoot).Parent.Parent.FullName 'SharedScripts' 'Get-PublishedModuleVersionsList.ps1')
-    . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleJsonChange.ps1')
-
-    # 0. Check if [main.json] version number changed. This overrides the logic to check the version in the version.json file
-    if ($CompareJson) {
-        $jsonChanged = Get-ModuleJsonChange -ModuleFolderPath $ModuleFolderPath
-        if ($jsonChanged -eq $false) {
-            Write-Verbose 'Version in main.json file did not change. No need to bump the version.' -Verbose
-            $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
-            $publishedVersions = Get-PublishedModuleVersionsList -TagListUrl ('https://mcr.microsoft.com/v2/bicep/avm/{0}/{1}/tags/list' -f $moduleType, ($resourceTypeIdentifier -replace '\\', '/'))
-            # the last version in the array is the latest published version
-            Write-Verbose "Latest published version is [$($publishedVersions[-1])]." -Verbose
-            return $publishedVersions[-1]
-        }
-    }
 
     # 1. Get [version.json] file path
     $versionFilePath = Join-Path $ModuleFolderPath 'version.json'
