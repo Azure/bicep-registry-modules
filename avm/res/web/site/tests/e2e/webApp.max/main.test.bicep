@@ -41,6 +41,7 @@ module nestedDependencies 'dependencies.bicep' = {
     relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
+    apiManagementName: 'dep-${namePrefix}-apim-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -106,9 +107,13 @@ module testDeployment '../../../main.bicep' = [
           privateEndpoints: [
             {
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
-              privateDnsZoneResourceIds: [
-                nestedDependencies.outputs.privateDNSZoneResourceId
-              ]
+              privateDnsZoneGroup: {
+                privateDnsZoneGroupConfigs: [
+                  {
+                    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
+                  }
+                ]
+              }
               tags: {
                 'hidden-title': 'This is visible in the resource name'
                 Environment: 'Non-Prod'
@@ -158,11 +163,16 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
           hybridConnectionRelays: [
             {
-              resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+              hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
               sendKeyName: 'defaultSender'
             }
           ]
@@ -177,8 +187,13 @@ module testDeployment '../../../main.bicep' = [
               name: 'scm'
             }
           ]
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
+          configs: [
+            {
+              name: 'appsettings'
+              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+              storageAccountUseIdentityAuthentication: true
+            }
+          ]
         }
       ]
       privateEndpoints: [
@@ -238,8 +253,43 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      storageAccountUseIdentityAuthentication: true
+      configs: [
+        {
+          // Persisted on service in 'Settings/Environment variables'
+          name: 'appsettings'
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
+        }
+        {
+          // Persisted on service in 'Monitoring/App Service logs'
+          name: 'logs'
+          properties: {
+            applicationLogs: { fileSystem: { level: 'Verbose' } }
+            detailedErrorMessages: { enabled: true }
+            failedRequestsTracing: { enabled: true }
+            httpLogs: { fileSystem: { enabled: true, retentionInDays: 1, retentionInMb: 35 } }
+          }
+        }
+        {
+          // Persisted on service in 'API/API Management'
+          name: 'web'
+          properties: {
+            ipSecurityRestrictions: [
+              {
+                action: 'Allow'
+                description: 'Test IP Restriction'
+                tag: 'ServiceTag'
+                name: 'Test Restriction'
+                priority: 200
+                ipAddress: 'ApiManagement'
+              }
+            ]
+            apiManagementConfig: {
+              id: '${nestedDependencies.outputs.apiManagementResourceId}/apis/todo-api'
+            }
+          }
+        }
+      ]
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
@@ -258,7 +308,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       hybridConnectionRelays: [
         {
-          resourceId: nestedDependencies.outputs.hybridConnectionResourceId
+          hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
           sendKeyName: 'defaultSender'
         }
       ]
