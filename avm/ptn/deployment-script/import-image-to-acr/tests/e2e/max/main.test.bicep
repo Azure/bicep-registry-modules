@@ -29,16 +29,20 @@ module dependencies 'dependencies.bicep' = {
   scope: resourceGroup
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    acrName: 'dep${namePrefix}acr${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
-    keyVaultName: 'dep${namePrefix}kv${serviceShort}'
+    acrName: uniqueString('dep${namePrefix}acr${serviceShort}', subscription().subscriptionId, resourceGroupName)
+    storageAccountName: uniqueString(
+      'dep${namePrefix}sa${serviceShort}',
+      subscription().subscriptionId,
+      resourceGroupName
+    )
+    keyVaultName: uniqueString('dep${namePrefix}kv${serviceShort}', subscription().subscriptionId, resourceGroupName)
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
   }
 }
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -47,10 +51,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 // Test Execution //
 // ============== //
 
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
-  name: last(split(dependencies.outputs.keyVaultResourceId, '/'))
-  scope: resourceGroup
-}
+// commented out, as the user is not available in the test environment
+// resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+//   name: last(split(dependencies.outputs.keyVaultResourceId, '/'))
+//   scope: resourceGroup
+// }
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [

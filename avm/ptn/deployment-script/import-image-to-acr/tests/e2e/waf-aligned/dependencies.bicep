@@ -7,7 +7,7 @@ param managedIdentityName string
 @description('Required. The name of the Azure Container Registry.')
 param acrName string
 
-module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: managedIdentityName
   params: {
     name: managedIdentityName
@@ -16,7 +16,7 @@ module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0
 }
 
 // the container registry to upload the image into
-module acr 'br/public:avm/res/container-registry/registry:0.6.0' = {
+module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: '${uniqueString(resourceGroup().name, location)}-acr'
   params: {
     name: acrName
