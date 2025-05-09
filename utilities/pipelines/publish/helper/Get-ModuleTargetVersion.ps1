@@ -11,10 +11,6 @@ Builds target version as major.minor.patch
 .PARAMETER ModuleFolderPath
 Mandatory. Path to the main/parent module folder.
 
-.PARAMETER CompareJson
-Optional. If set to true, compares the the module's main.json (instead of the version.json) with the published GitHub file to detect changes in the module's code or non-function related changes like the changelog file.
-A new version is not needed if they are the same. In this case, the function returns the last published version.
-
 .EXAMPLE
 # Note: "version" value in version.json is "0.1" and was not updated in the last commit
 # Note: The latest published release tag is "avm/res/key-vault/vault/0.1.6"
@@ -35,7 +31,6 @@ function Get-ModuleTargetVersion {
     # Load used functions
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleVersionChange.ps1')
     . (Join-Path (Get-Item -Path $PSScriptRoot).FullName 'Get-ModuleTargetPatchVersion.ps1')
-    . (Join-Path (Get-Item -Path $PSScriptRoot).Parent.Parent.FullName 'SharedScripts' 'Get-PublishedModuleVersionsList.ps1')
 
     # 1. Get [version.json] file path
     $versionFilePath = Join-Path $ModuleFolderPath 'version.json'
