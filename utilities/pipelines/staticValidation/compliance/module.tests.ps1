@@ -757,11 +757,11 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 if ($incorrectParameters.Count -gt 0) {
-                    $warningMessage = 'All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items [<br>- {0}<br>]' -f ($incorrectParameters -join ',<br>- ')
-                    Write-Warning $warningMessage
+                    $warningMessage = 'All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items '
+                    Write-Warning ("$warningMessage [`n- {0}`n]" -f ($incorrectParameters -join ",`n- "))
 
                     Write-Output @{
-                        Warning = $warningMessage
+                        Warning = ('$warningMessage [<br>- {0}<br>]' -f ($incorrectParameters -join ',<br>- '))
                     }
                 }
                 # Once we want to enforce this test, replace the above warning with the below
