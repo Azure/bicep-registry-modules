@@ -19,8 +19,8 @@ This module deploys a Virtual Network (vNet).
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 
 ## Usage examples
@@ -51,11 +51,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
+    name: 'nvnmin001'
+    // Non-required parameters
     addressPrefixes: [
       '10.0.0.0/16'
     ]
-    name: 'nvnmin001'
-    // Non-required parameters
     location: '<location>'
   }
 }
@@ -74,15 +74,15 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "nvnmin001"
+    },
+    // Non-required parameters
     "addressPrefixes": {
       "value": [
         "10.0.0.0/16"
       ]
     },
-    "name": {
-      "value": "nvnmin001"
-    },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -101,11 +101,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
+param name = 'nvnmin001'
+// Non-required parameters
 param addressPrefixes = [
   '10.0.0.0/16'
 ]
-param name = 'nvnmin001'
-// Non-required parameters
 param location = '<location>'
 ```
 
@@ -126,12 +126,12 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
+    name: 'nvnipv6001'
+    // Non-required parameters
     addressPrefixes: [
       '10.0.0.0/21'
       'fd00:592b:3014::/64'
     ]
-    name: 'nvnipv6001'
-    // Non-required parameters
     location: '<location>'
     subnets: [
       {
@@ -159,16 +159,16 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "nvnipv6001"
+    },
+    // Non-required parameters
     "addressPrefixes": {
       "value": [
         "10.0.0.0/21",
         "fd00:592b:3014::/64"
       ]
     },
-    "name": {
-      "value": "nvnipv6001"
-    },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     },
@@ -198,12 +198,12 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
+param name = 'nvnipv6001'
+// Non-required parameters
 param addressPrefixes = [
   '10.0.0.0/21'
   'fd00:592b:3014::/64'
 ]
-param name = 'nvnipv6001'
-// Non-required parameters
 param location = '<location>'
 param subnets = [
   {
@@ -233,11 +233,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
+    name: 'nvnmax001'
+    // Non-required parameters
     addressPrefixes: [
       '<addressPrefix>'
     ]
-    name: 'nvnmax001'
-    // Non-required parameters
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -365,15 +365,15 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "nvnmax001"
+    },
+    // Non-required parameters
     "addressPrefixes": {
       "value": [
         "<addressPrefix>"
       ]
     },
-    "name": {
-      "value": "nvnmax001"
-    },
-    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
@@ -515,11 +515,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
+param name = 'nvnmax001'
+// Non-required parameters
 param addressPrefixes = [
   '<addressPrefix>'
 ]
-param name = 'nvnmax001'
-// Non-required parameters
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -649,11 +649,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
+    name: 'nvnpeer001'
+    // Non-required parameters
     addressPrefixes: [
       '10.1.0.0/24'
     ]
-    name: 'nvnpeer001'
-    // Non-required parameters
     location: '<location>'
     peerings: [
       {
@@ -705,15 +705,15 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "nvnpeer001"
+    },
+    // Non-required parameters
     "addressPrefixes": {
       "value": [
         "10.1.0.0/24"
       ]
     },
-    "name": {
-      "value": "nvnpeer001"
-    },
-    // Non-required parameters
     "location": {
       "value": "<location>"
     },
@@ -771,11 +771,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
+param name = 'nvnpeer001'
+// Non-required parameters
 param addressPrefixes = [
   '10.1.0.0/24'
 ]
-param name = 'nvnpeer001'
-// Non-required parameters
 param location = '<location>'
 param peerings = [
   {
@@ -829,11 +829,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
+    name: 'nvnwaf001'
+    // Non-required parameters
     addressPrefixes: [
       '<addressPrefix>'
     ]
-    name: 'nvnwaf001'
-    // Non-required parameters
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -921,15 +921,15 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "name": {
+      "value": "nvnwaf001"
+    },
+    // Non-required parameters
     "addressPrefixes": {
       "value": [
         "<addressPrefix>"
       ]
     },
-    "name": {
-      "value": "nvnwaf001"
-    },
-    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
@@ -1027,11 +1027,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
+param name = 'nvnwaf001'
+// Non-required parameters
 param addressPrefixes = [
   '<addressPrefix>'
 ]
-param name = 'nvnwaf001'
-// Non-required parameters
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1113,19 +1113,20 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network. |
 | [`name`](#parameter-name) | string | The name of the Virtual Network (vNet). |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network. |
 | [`ddosProtectionPlanResourceId`](#parameter-ddosprotectionplanresourceid) | string | Resource ID of the DDoS protection plan to assign the VNET to. If it's left blank, DDoS protection will not be configured. If it's provided, the VNET created by this template will be attached to the referenced DDoS protection plan. The DDoS protection plan can exist in the same or in a different subscription. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsServers`](#parameter-dnsservers) | array | DNS Servers associated to the Virtual Network. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enableVmProtection`](#parameter-enablevmprotection) | bool | Indicates if VM protection is enabled for all the subnets in the virtual network. |
 | [`flowTimeoutInMinutes`](#parameter-flowtimeoutinminutes) | int | The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes. Default value 0 will set the property to null. |
+| [`ipamPoolPrefixAllocations`](#parameter-ipampoolprefixallocations) | array | This is used to allocate an IP Address Pool from the VNet Manager IPAM service. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`peerings`](#parameter-peerings) | array | Virtual Network Peering configurations. |
@@ -1136,19 +1137,19 @@ param tags = {
 | [`vnetEncryption`](#parameter-vnetencryption) | bool | Indicates if encryption is enabled on virtual network and if VM without encryption is allowed in encrypted VNet. Requires the EnableVNetEncryption feature to be registered for the subscription and a supported region to use this property. |
 | [`vnetEncryptionEnforcement`](#parameter-vnetencryptionenforcement) | string | If the encrypted VNet allows VM that does not support encryption. Can only be used when vnetEncryption is enabled. |
 
-### Parameter: `addressPrefixes`
-
-An Array of 1 or more IP Address Prefixes for the Virtual Network.
-
-- Required: Yes
-- Type: array
-
 ### Parameter: `name`
 
 The name of the Virtual Network (vNet).
 
 - Required: Yes
 - Type: string
+
+### Parameter: `addressPrefixes`
+
+An Array of 1 or more IP Address Prefixes for the Virtual Network.
+
+- Required: No
+- Type: array
 
 ### Parameter: `ddosProtectionPlanResourceId`
 
@@ -1333,6 +1334,47 @@ The flow timeout in minutes for the Virtual Network, which is used to enable con
 - Type: int
 - Default: `0`
 - MaxValue: 30
+
+### Parameter: `ipamPoolPrefixAllocations`
+
+This is used to allocate an IP Address Pool from the VNet Manager IPAM service.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`numberOfIpAddresses`](#parameter-ipampoolprefixallocationsnumberofipaddresses) | string | Number of IP addresses allocated from the pool. |
+| [`pool`](#parameter-ipampoolprefixallocationspool) | object | The Resource ID of the IPAM pool. |
+
+### Parameter: `ipamPoolPrefixAllocations.numberOfIpAddresses`
+
+Number of IP addresses allocated from the pool.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ipamPoolPrefixAllocations.pool`
+
+The Resource ID of the IPAM pool.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-ipampoolprefixallocationspoolid) | string | The Resource ID of the IPAM pool. |
+
+### Parameter: `ipamPoolPrefixAllocations.pool.id`
+
+The Resource ID of the IPAM pool.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `location`
 
@@ -1630,6 +1672,7 @@ An Array of subnets to deploy to the Virtual Network.
 | :-- | :-- | :-- |
 | [`addressPrefix`](#parameter-subnetsaddressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
 | [`addressPrefixes`](#parameter-subnetsaddressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
+| [`ipamPoolPrefixAllocations`](#parameter-subnetsipampoolprefixallocations) | array | The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` or `addressPrefix` is empty. |
 
 **Optional parameters**
 
@@ -1665,6 +1708,13 @@ The address prefix for the subnet. Required if `addressPrefixes` is empty.
 ### Parameter: `subnets.addressPrefixes`
 
 List of address prefixes for the subnet. Required if `addressPrefix` is empty.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.ipamPoolPrefixAllocations`
+
+The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` or `addressPrefix` is empty.
 
 - Required: No
 - Type: array

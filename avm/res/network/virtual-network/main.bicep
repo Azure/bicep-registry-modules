@@ -411,6 +411,7 @@ type subnetType = {
 type ipamPoolPrefixAllocationsType = {
   @description('Optional. The Resource ID of the IPAM pool.')
   pool: {
+    @description('Required. The Resource ID of the IPAM pool.')
     id: string
   }
   @description('Optional. Number of IP addresses allocated from the pool.')
