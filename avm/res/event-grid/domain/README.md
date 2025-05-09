@@ -133,32 +133,18 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
     eventSubscriptions: [
       {
         destination: {
-          endpointType: 'WebHook'
+          endpointType: 'StorageQueue'
           properties: {
-            endpointUrl: 'https://example.com/webhook1'
+            queueName: 'eventgridtestqueue'
+            resourceId: '<resourceId>'
           }
         }
         filter: {
-          includedEventTypes: '<includedEventTypes>'
+          includedEventTypes: [
+            'Microsoft.Resources.ResourceWriteSuccess'
+          ]
         }
         name: 'sub-egdmax001'
-      }
-      {
-        destination: {
-          endpointType: 'WebHook'
-          properties: {
-            endpointUrl: 'https://example.com/webhook2'
-          }
-        }
-        filter: '<filter>'
-        labels: [
-          'env:test'
-        ]
-        name: 'sub-egdmax002'
-        retryPolicy: {
-          eventTimeToLiveInMinutes: 1440
-          maxDeliveryAttempts: 5
-        }
       }
     ]
     inboundIpRules: [
@@ -171,6 +157,9 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
     }
     minimumTlsVersionAllowed: '1.2'
     privateEndpoints: [
@@ -268,32 +257,18 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
       "value": [
         {
           "destination": {
-            "endpointType": "WebHook",
+            "endpointType": "StorageQueue",
             "properties": {
-              "endpointUrl": "https://example.com/webhook1"
+              "queueName": "eventgridtestqueue",
+              "resourceId": "<resourceId>"
             }
           },
           "filter": {
-            "includedEventTypes": "<includedEventTypes>"
+            "includedEventTypes": [
+              "Microsoft.Resources.ResourceWriteSuccess"
+            ]
           },
           "name": "sub-egdmax001"
-        },
-        {
-          "destination": {
-            "endpointType": "WebHook",
-            "properties": {
-              "endpointUrl": "https://example.com/webhook2"
-            }
-          },
-          "filter": "<filter>",
-          "labels": [
-            "env:test"
-          ],
-          "name": "sub-egdmax002",
-          "retryPolicy": {
-            "eventTimeToLiveInMinutes": 1440,
-            "maxDeliveryAttempts": 5
-          }
         }
       ]
     },
@@ -312,6 +287,11 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
       }
     },
     "minimumTlsVersionAllowed": {
@@ -413,32 +393,18 @@ param diagnosticSettings = [
 param eventSubscriptions = [
   {
     destination: {
-      endpointType: 'WebHook'
+      endpointType: 'StorageQueue'
       properties: {
-        endpointUrl: 'https://example.com/webhook1'
+        queueName: 'eventgridtestqueue'
+        resourceId: '<resourceId>'
       }
     }
     filter: {
-      includedEventTypes: '<includedEventTypes>'
+      includedEventTypes: [
+        'Microsoft.Resources.ResourceWriteSuccess'
+      ]
     }
     name: 'sub-egdmax001'
-  }
-  {
-    destination: {
-      endpointType: 'WebHook'
-      properties: {
-        endpointUrl: 'https://example.com/webhook2'
-      }
-    }
-    filter: '<filter>'
-    labels: [
-      'env:test'
-    ]
-    name: 'sub-egdmax002'
-    retryPolicy: {
-      eventTimeToLiveInMinutes: 1440
-      maxDeliveryAttempts: 5
-    }
   }
 ]
 param inboundIpRules = [
@@ -451,6 +417,9 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
 }
 param minimumTlsVersionAllowed = '1.2'
 param privateEndpoints = [

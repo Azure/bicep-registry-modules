@@ -37,6 +37,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}egq'
+    storageQueueName: 'eventgridtestqueue'    
     location: resourceLocation
   }
 }
@@ -67,6 +69,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      managedIdentities: {
+        systemAssigned: true
+      }         
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -153,27 +158,19 @@ module testDeployment '../../../main.bicep' = [
         {
           name: '${namePrefix}-sub-${serviceShort}001'
           destination: {
-            endpointType: 'WebHook'
+            endpointType: 'StorageQueue'
             properties: {
-              endpointUrl: 'https://example.com/webhook1'
+              resourceId: nestedDependencies.outputs.storageAccountResourceId 
+              queueName: 'eventgridtestqueue'    
             }
           }
-        }
-        {
-          name: '${namePrefix}-sub-${serviceShort}002'
-          destination: {
-            endpointType: 'WebHook'
-            properties: {
-              endpointUrl: 'https://example.com/webhook2'
-            }
-          }
-          labels: ['env:test']
-          retryPolicy: {
-            eventTimeToLiveInMinutes: 1440
-            maxDeliveryAttempts: 5
+          filter: {
+            includedEventTypes: [
+              'Microsoft.Resources.ResourceWriteSuccess'
+            ]
           }
         }
-      ]      
+      ]       
     }
     dependsOn: [
       nestedDependencies
