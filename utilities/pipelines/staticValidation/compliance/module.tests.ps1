@@ -761,7 +761,7 @@ Describe 'Module tests' -Tag 'Module' {
                     Write-Warning ("$warningMessage [`n- {0}`n]" -f ($incorrectParameters -join ",`n- "))
 
                     Write-Output @{
-                        Warning = ("$warningMessage [<br>- `{0}`<br>]" -f ($incorrectParameters -join '`,<br>- `'))
+                        Warning = ("$warningMessage [<br>- <code>{0}</code><br>]" -f ($incorrectParameters -join '</code>,<br>- <code>'))
                     }
                 }
                 # Once we want to enforce this test, replace the above warning with the below
@@ -1844,7 +1844,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
             Write-Warning ("$warningMessage [`n- {0}`n]" -f ($approvedApiVersions -join ",`n- "))
 
             Write-Output @{
-                Warning = ("$warningMessage [<br>- `{0}`<br>]" -f ($approvedApiVersions -join '`,<br>- `'))
+                Warning = ("$warningMessage [<br>- <code>{0}</code><br>]" -f ($approvedApiVersions -join '</code>,<br>- <code>'))
             }
             # The original failed test was
             # $approvedApiVersions | Should -Contain $TargetApi
@@ -1867,7 +1867,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
                 Write-Warning ("$warningMessage [`n- {0}`n]" -f ($newerAPIVersions -join ",`n- "))
 
                 Write-Output @{
-                    Warning = ("$warningMessage [<br>- `{0}`<br>]" -f ($newerAPIVersions -join '`,<br>- `'))
+                    Warning = ("$warningMessage [<br>- <code>{0</code><br>]" -f ($newerAPIVersions -join '</code>,<br>- <code>'))
                 }
             }
         }
