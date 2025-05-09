@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "4246234368048742619"
+      "templateHash": "440826046990759240"
     },
     "name": "Site Deployment Extension ",
     "description": "This module deploys a Site extension for MSDeploy."
@@ -82,7 +82,7 @@
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the extensino was deployed into."
+        "description": "The resource group the extension was deployed into."
       },
       "value": "[resourceGroup().name]"
     }

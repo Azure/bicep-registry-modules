@@ -77,5 +77,5 @@ Sets the properties.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The name of the extension. |
-| `resourceGroupName` | string | The resource group the extensino was deployed into. |
+| `resourceGroupName` | string | The resource group the extension was deployed into. |
 | `resourceId` | string | The resource ID of the extension. |
