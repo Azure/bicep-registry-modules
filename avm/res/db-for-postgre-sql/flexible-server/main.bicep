@@ -289,7 +289,7 @@ resource flexibleServer 'Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01' =
       ? {
           primaryKeyURI: !empty(customerManagedKey.?keyVersion ?? '')
             ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
-            : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+            : ((customerManagedKey.?autoRotationEnabled ?? true)? cMKKeyVault::cMKKey.properties.keyUri: cMKKeyVault::cMKKey.properties.keyUriWithVersion)
           primaryUserAssignedIdentityId: cMKUserAssignedIdentity.id
           type: 'AzureKeyVault'
         }
