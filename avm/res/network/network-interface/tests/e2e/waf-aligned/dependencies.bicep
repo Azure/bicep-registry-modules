@@ -60,36 +60,41 @@ resource loadBalancer 'Microsoft.Network/loadBalancers@2024-05-01' = {
   resource backendPool 'backendAddressPools@2024-05-01' = {
     name: 'default'
   }
-}
 
-resource inboundNatRule 'Microsoft.Network/loadBalancers/inboundNatRules@2024-05-01' = {
-  name: 'inboundNatRule1'
-  properties: {
-    frontendPort: 443
-    backendPort: 443
-    enableFloatingIP: false
-    enableTcpReset: false
-    frontendIPConfiguration: {
-      id: loadBalancer.properties.frontendIPConfigurations[0].id
+  resource inboundNatRule1 'inboundNatRules@2024-05-01' = {
+    name: 'inboundNatRule1'
+    properties: {
+      frontendPort: 443
+      backendPort: 443
+      enableFloatingIP: false
+      enableTcpReset: false
+      frontendIPConfiguration: {
+        id: loadBalancer.properties.frontendIPConfigurations[0].id
+      }
+      idleTimeoutInMinutes: 4
+      protocol: 'Tcp'
     }
-    idleTimeoutInMinutes: 4
-    protocol: 'Tcp'
+    dependsOn: [
+      backendPool
+    ]
   }
-  parent: loadBalancer
-}
 
-resource inboundNatRule2 'Microsoft.Network/loadBalancers/inboundNatRules@2024-05-01' = {
-  name: 'inboundNatRule2'
-  properties: {
-    frontendPort: 3389
-    backendPort: 3389
-    frontendIPConfiguration: {
-      id: loadBalancer.properties.frontendIPConfigurations[0].id
+  resource inboundNatRule2 'inboundNatRules@2024-05-01' = {
+    name: 'inboundNatRule2'
+    properties: {
+      frontendPort: 3389
+      backendPort: 3389
+      frontendIPConfiguration: {
+        id: loadBalancer.properties.frontendIPConfigurations[0].id
+      }
+      idleTimeoutInMinutes: 4
+      protocol: 'Tcp'
     }
-    idleTimeoutInMinutes: 4
-    protocol: 'Tcp'
+    dependsOn: [
+      backendPool
+      inboundNatRule1
+    ]
   }
-  parent: loadBalancer
 }
 
 @description('The resource ID of the created Virtual Network Subnet.')

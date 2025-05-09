@@ -233,6 +233,7 @@ module backupVault_backupPolicies 'backup-policy/main.bicep' = [
   }
 ]
 
+@batchSize(1)
 module backupVault_backupInstances 'backup-instance/main.bicep' = [
   for (backupInstance, index) in (backupInstances ?? []): {
     name: '${uniqueString(deployment().name, location)}-BV-BackupInstance-${index}'
