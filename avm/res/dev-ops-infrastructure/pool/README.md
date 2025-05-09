@@ -254,7 +254,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: true
+      systemAssigned: false
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -405,7 +405,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": true,
+        "systemAssigned": false,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -542,7 +542,7 @@ param lock = {
   name: 'myCustomLockName'
 }
 param managedIdentities = {
-  systemAssigned: true
+  systemAssigned: false
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
