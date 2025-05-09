@@ -139,11 +139,9 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
           }
         }
         filter: {
-          includedEventTypes: [
-            'All'
-          ]
+          includedEventTypes: '<includedEventTypes>'
         }
-        name: 'sub1'
+        name: 'sub-egdmax001'
       }
       {
         destination: {
@@ -152,10 +150,11 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
             endpointUrl: 'https://example.com/webhook2'
           }
         }
+        filter: '<filter>'
         labels: [
           'env:test'
         ]
-        name: 'sub2'
+        name: 'sub-egdmax002'
         retryPolicy: {
           eventTimeToLiveInMinutes: 1440
           maxDeliveryAttempts: 5
@@ -275,11 +274,9 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
             }
           },
           "filter": {
-            "includedEventTypes": [
-              "All"
-            ]
+            "includedEventTypes": "<includedEventTypes>"
           },
-          "name": "sub1"
+          "name": "sub-egdmax001"
         },
         {
           "destination": {
@@ -288,10 +285,11 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
               "endpointUrl": "https://example.com/webhook2"
             }
           },
+          "filter": "<filter>",
           "labels": [
             "env:test"
           ],
-          "name": "sub2",
+          "name": "sub-egdmax002",
           "retryPolicy": {
             "eventTimeToLiveInMinutes": 1440,
             "maxDeliveryAttempts": 5
@@ -421,11 +419,9 @@ param eventSubscriptions = [
       }
     }
     filter: {
-      includedEventTypes: [
-        'All'
-      ]
+      includedEventTypes: '<includedEventTypes>'
     }
-    name: 'sub1'
+    name: 'sub-egdmax001'
   }
   {
     destination: {
@@ -434,10 +430,11 @@ param eventSubscriptions = [
         endpointUrl: 'https://example.com/webhook2'
       }
     }
+    filter: '<filter>'
     labels: [
       'env:test'
     ]
-    name: 'sub2'
+    name: 'sub-egdmax002'
     retryPolicy: {
       eventTimeToLiveInMinutes: 1440
       maxDeliveryAttempts: 5
