@@ -22,7 +22,7 @@ param managedIdentities managedIdentityOnlyUserAssignedType?
   'Disabled'
   'NotSpecified'
 ])
-param managedEventHubState string = 'Enabled'
+param managedEventHubState string = 'Disabled'
 
 @description('Optional. The Managed Resource Group Name. A managed Storage Account, and an Event Hubs will be created in the selected subscription for catalog ingestion scenarios. Default is \'managed-rg-<purview-account-name>\'.')
 param managedResourceGroupName string = 'managed-rg-${name}'
@@ -42,6 +42,24 @@ param managedResourcesPublicNetworkAccess string = 'NotSpecified'
   'NotSpecified'
 ])
 param publicNetworkAccess string = 'NotSpecified'
+
+@description('Optional. The state of tenant endpoint.')
+@allowed([
+  'Enabled'
+  'Disabled'
+  'NotSpecified'
+])
+param tenantEndpointState string = 'NotSpecified'
+
+@description('Optional. The SKU of the Purview Account.')
+@allowed([
+  'Standard'
+  'Free'
+])
+param accountSku string = 'Standard'
+
+@description('Optional. The capacity of the Purview Account SKU. The default value is 1.')
+param accountSkuCapacity int = 1
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -66,6 +84,9 @@ param storageQueuePrivateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Configuration details for Purview Managed Event Hub namespace private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. Make sure the service property is set to \'namespace\'.')
 param eventHubPrivateEndpoints privateEndpointSingleServiceType[]?
+
+@description('Optional. Configuration details for Kafka configurations.')
+param kafkaConfigurations kafkaConfigurationType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -135,17 +156,25 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource account 'Microsoft.Purview/accounts@2021-12-01' = {
+resource account 'Microsoft.Purview/accounts@2024-04-01-preview' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
     cloudConnectors: {}
+    ingestionStorage: {
+      publicNetworkAccess: publicNetworkAccess
+    }
     managedEventHubState: managedEventHubState
     managedResourceGroupName: managedResourceGroupName
     managedResourcesPublicNetworkAccess: managedResourcesPublicNetworkAccess
     publicNetworkAccess: publicNetworkAccess
+    tenantEndpointState: tenantEndpointState
+  }
+  sku: {
+    capacity: accountSkuCapacity
+    name: accountSku
   }
 }
 
@@ -313,7 +342,7 @@ module account_storageBlobPrivateEndpoints 'br/public:avm/res/network/private-en
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
               properties: {
-                privateLinkServiceId: account.properties.managedResources.storageAccount
+                privateLinkServiceId: account.properties.ingestionStorage.id
                 groupIds: [
                   privateEndpoint.?service ?? 'blob'
                 ]
@@ -326,7 +355,7 @@ module account_storageBlobPrivateEndpoints 'br/public:avm/res/network/private-en
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'blob'}-${index}'
               properties: {
-                privateLinkServiceId: account.properties.managedResources.storageAccount
+                privateLinkServiceId: account.properties.ingestionStorage.id
                 groupIds: [
                   privateEndpoint.?service ?? 'blob'
                 ]
@@ -368,7 +397,7 @@ module account_storageQueuePrivateEndpoints 'br/public:avm/res/network/private-e
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
               properties: {
-                privateLinkServiceId: account.properties.managedResources.storageAccount
+                privateLinkServiceId: account.properties.ingestionStorage.id
                 groupIds: [
                   privateEndpoint.?service ?? 'queue'
                 ]
@@ -381,7 +410,7 @@ module account_storageQueuePrivateEndpoints 'br/public:avm/res/network/private-e
             {
               name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(account.id, '/'))}-${privateEndpoint.?service ?? 'queue'}-${index}'
               properties: {
-                privateLinkServiceId: account.properties.managedResources.storageAccount
+                privateLinkServiceId: account.properties.ingestionStorage.id
                 groupIds: [
                   privateEndpoint.?service ?? 'queue'
                 ]
@@ -464,6 +493,17 @@ module account_eventHubPrivateEndpoints 'br/public:avm/res/network/private-endpo
   }
 ]
 
+module account_kafkaConfigurations 'kafka-configurations/main.bicep' = [
+  for (kafkaConfiguration, index) in (kafkaConfigurations ?? []): {
+    name: '${uniqueString(deployment().name, location)}-kafka-configuration-${index}'
+    params: {
+      name: kafkaConfiguration.name
+      accountName: account.name
+      kafkaConfig: kafkaConfiguration
+    }
+  }
+]
+
 resource account_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(account.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
@@ -493,16 +533,16 @@ output resourceId string = account.id
 output location string = account.location
 
 @description('The name of the managed resource group.')
-output managedResourceGroupName string = account.properties.managedResourceGroupName
+output managedResourceGroupName string? = account.properties.?managedResourceGroupName
 
 @description('The resource ID of the managed resource group.')
-output managedResourceGroupId string = account.properties.managedResources.resourceGroup
+output managedResourceGroupId string? = account.properties.?managedResources.?resourceGroup
 
 @description('The resource ID of the managed storage account.')
-output managedStorageAccountId string = account.properties.managedResources.storageAccount
+output managedStorageAccountId string? = account.properties.?managedResources.?storageAccount
 
 @description('The resource ID of the managed Event Hub Namespace.')
-output managedEventHubId string = account.properties.managedResources.eventHubNamespace
+output managedEventHubId string? = account.properties.?managedResources.?eventHubNamespace
 
 @description('The principal ID of the system assigned identity.')
 output systemAssignedMIPrincipalId string? = account.?identity.?principalId
@@ -565,6 +605,8 @@ output eventHubPrivateEndpoints privateEndpointOutputType[] = [
 // =============== //
 //   Definitions   //
 // =============== //
+
+import { kafkaConfigurationType } from 'kafka-configurations/main.bicep'
 
 @export()
 type privateEndpointOutputType = {

@@ -46,7 +46,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
-      managedResourcesPublicNetworkAccess: 'Disabled'
+      publicNetworkAccess: 'Enabled'
     }
   }
 ]
