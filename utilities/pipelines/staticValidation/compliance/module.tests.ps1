@@ -740,17 +740,17 @@ Describe 'Module tests' -Tag 'Module' {
                     if ($isArrayOfObjects) {
                         ## Array of objects
                         # Note: We don't need to check for `$parameter.items.keys -contains '$ref'` because if a UDT is implemented, 'items' only contains '$ref' and hence the `isArrayOfObjects` variable is already `false`.
-                        $hasRdtDefintion = $parameter.items.metadata.Keys -contains '__bicep_resource_derived_type!'
                         $hasProperties = $parameter.items.keys -contains 'properties'
+                        $hasRdtDefintion = $parameter.items.metadata.Keys -contains '__bicep_resource_derived_type!'
                         if (-not ($hasProperties -or $hasRdtDefintion)) {
                             $incorrectParameters += $parameterName
                         }
                     } elseif ($isObject) {
                         # Object
-                        $hasUdtDefinition = $parameter.keys -contains '$ref'
-                        $hasRdtDefintion = $parameter.metadata.Keys -contains '__bicep_resource_derived_type!'
                         $hasProperties = $parameter.keys -contains 'properties'
-                        if (-not ($hasProperties -or $hasUdtDefinition -or $hasRdtDefintion)) {
+                        $hasRdtDefintion = $parameter.metadata.Keys -contains '__bicep_resource_derived_type!'
+                        $hasUdtDefinition = $parameter.keys -contains '$ref'
+                        if (-not ($hasProperties -or $hasRdtDefintion -or $hasUdtDefinition)) {
                             $incorrectParameters += $parameterName
                         }
                     }
