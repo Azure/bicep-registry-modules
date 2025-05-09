@@ -761,7 +761,7 @@ Describe 'Module tests' -Tag 'Module' {
                     Write-Warning ("$warningMessage [`n- {0}`n]" -f ($incorrectParameters -join ",`n- "))
 
                     Write-Output @{
-                        Warning = ('$warningMessage [<br>- {0}<br>]' -f ($incorrectParameters -join ',<br>- '))
+                        Warning = ("$warningMessage [<br>- {0}<br>]" -f ($incorrectParameters -join ',<br>- '))
                     }
                 }
                 # Once we want to enforce this test, replace the above warning with the below
