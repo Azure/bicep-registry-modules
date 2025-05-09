@@ -35,10 +35,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/db-for-my-sql/flexible-server:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [Deploys in connectivity mode "Private Access"](#example-3-deploys-in-connectivity-mode-private-access)
-- [Deploys in connectivity mode "Public Access" with private endpoint](#example-4-deploys-in-connectivity-mode-public-access-with-private-endpoint)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using EntraID authentication](#example-2-using-entraid-authentication)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [Deploys in connectivity mode "Private Access"](#example-4-deploys-in-connectivity-mode-private-access)
+- [Deploys in connectivity mode "Public Access" with private endpoint](#example-5-deploys-in-connectivity-mode-public-access-with-private-endpoint)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -129,7 +130,141 @@ param storageAutoGrow = 'Enabled'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using EntraID authentication_
+
+This instance deploys the module with EntraID authentication.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module flexibleServer 'br/public:avm/res/db-for-my-sql/flexible-server:<version>' = {
+  name: 'flexibleServerDeployment'
+  params: {
+    // Required parameters
+    name: 'dfmsfsentid001'
+    skuName: 'Standard_D2ds_v4'
+    tier: 'GeneralPurpose'
+    // Non-required parameters
+    administratorLogin: 'adminUserName'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    administrators: [
+      {
+        identityResourceId: '<identityResourceId>'
+        login: 'adminUserName'
+        sid: '<sid>'
+      }
+    ]
+    advancedThreatProtection: 'Enabled'
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    storageAutoGrow: 'Enabled'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "dfmsfsentid001"
+    },
+    "skuName": {
+      "value": "Standard_D2ds_v4"
+    },
+    "tier": {
+      "value": "GeneralPurpose"
+    },
+    // Non-required parameters
+    "administratorLogin": {
+      "value": "adminUserName"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "administrators": {
+      "value": [
+        {
+          "identityResourceId": "<identityResourceId>",
+          "login": "adminUserName",
+          "sid": "<sid>"
+        }
+      ]
+    },
+    "advancedThreatProtection": {
+      "value": "Enabled"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "storageAutoGrow": {
+      "value": "Enabled"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/db-for-my-sql/flexible-server:<version>'
+
+// Required parameters
+param name = 'dfmsfsentid001'
+param skuName = 'Standard_D2ds_v4'
+param tier = 'GeneralPurpose'
+// Non-required parameters
+param administratorLogin = 'adminUserName'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param administrators = [
+  {
+    identityResourceId: '<identityResourceId>'
+    login: 'adminUserName'
+    sid: '<sid>'
+  }
+]
+param advancedThreatProtection = 'Enabled'
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param storageAutoGrow = 'Enabled'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -541,7 +676,7 @@ param version = '8.0.21'
 </details>
 <p>
 
-### Example 3: _Deploys in connectivity mode "Private Access"_
+### Example 4: _Deploys in connectivity mode "Private Access"_
 
 This instance deploys the module with connectivity mode "Private Access".
 
@@ -775,7 +910,7 @@ param storageSizeGB = 64
 </details>
 <p>
 
-### Example 4: _Deploys in connectivity mode "Public Access" with private endpoint_
+### Example 5: _Deploys in connectivity mode "Public Access" with private endpoint_
 
 This instance deploys the module with connectivity mode "Public Access" and a private endpoint.
 
@@ -1004,7 +1139,7 @@ param storageSizeGB = 64
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

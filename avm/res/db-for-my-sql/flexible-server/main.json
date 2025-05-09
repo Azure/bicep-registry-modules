@@ -1,12 +1,16 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "languageVersion": "2.0",
+  "languageVersion": "2.1-experimental",
   "contentVersion": "1.0.0.0",
   "metadata": {
+    "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+    "_EXPERIMENTAL_FEATURES_ENABLED": [
+      "Extensibility"
+    ],
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "2595521532676644868"
+      "version": "0.34.44.8038",
+      "templateHash": "1642081039905944114"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -1196,8 +1200,8 @@
         "version": "[parameters('version')]"
       },
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
-        "cMKGeoKeyVault::cMKKey"
+        "cMKGeoKeyVault::cMKKey",
+        "cMKKeyVault::cMKKey"
       ]
     },
     "flexibleServer_lock": {
@@ -1306,12 +1310,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "9536567922805877221"
+              "version": "0.34.44.8038",
+              "templateHash": "15661095256291299483"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -1344,8 +1353,14 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "flexibleServer": {
+              "existing": true,
+              "type": "Microsoft.DBforMySQL/flexibleServers",
+              "apiVersion": "2024-10-01-preview",
+              "name": "[parameters('flexibleServerName')]"
+            },
+            "database": {
               "type": "Microsoft.DBforMySQL/flexibleServers/databases",
               "apiVersion": "2023-12-30",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
@@ -1354,7 +1369,7 @@
                 "charset": "[if(not(empty(parameters('charset'))), parameters('charset'), null())]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1413,12 +1428,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "1593085125129323509"
+              "version": "0.34.44.8038",
+              "templateHash": "10791701534871605589"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -1449,8 +1469,14 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "flexibleServer": {
+              "existing": true,
+              "type": "Microsoft.DBforMySQL/flexibleServers",
+              "apiVersion": "2024-10-01-preview",
+              "name": "[parameters('flexibleServerName')]"
+            },
+            "firewallRule": {
               "type": "Microsoft.DBforMySQL/flexibleServers/firewallRules",
               "apiVersion": "2023-12-30",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), parameters('name'))]",
@@ -1459,7 +1485,7 @@
                 "startIpAddress": "[parameters('startIpAddress')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1521,12 +1547,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5657261123972518257"
+              "version": "0.34.44.8038",
+              "templateHash": "14009485938235832570"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator."
@@ -1564,8 +1595,14 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "flexibleServer": {
+              "existing": true,
+              "type": "Microsoft.DBforMySQL/flexibleServers",
+              "apiVersion": "2024-10-01-preview",
+              "name": "[parameters('flexibleServerName')]"
+            },
+            "administrator": {
               "type": "Microsoft.DBforMySQL/flexibleServers/administrators",
               "apiVersion": "2023-12-30",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'ActiveDirectory')]",
@@ -1577,7 +1614,7 @@
                 "tenantId": "[parameters('tenantId')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -1626,12 +1663,17 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.1-experimental",
           "contentVersion": "1.0.0.0",
           "metadata": {
+            "_EXPERIMENTAL_WARNING": "This template uses ARM features that are experimental. Experimental features should be enabled for testing purposes only, as there are no guarantees about the quality or stability of these features. Do not enable these settings for any production usage, or your production environment may be subject to breaking.",
+            "_EXPERIMENTAL_FEATURES_ENABLED": [
+              "Extensibility"
+            ],
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "11040576945573033575"
+              "version": "0.34.44.8038",
+              "templateHash": "13820485544041430219"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
@@ -1655,8 +1697,14 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "flexibleServer": {
+              "existing": true,
+              "type": "Microsoft.DBforMySQL/flexibleServers",
+              "apiVersion": "2024-10-01-preview",
+              "name": "[parameters('flexibleServerName')]"
+            },
+            "advancedThreatProtectionSettings": {
               "type": "Microsoft.DBforMySQL/flexibleServers/advancedThreatProtectionSettings",
               "apiVersion": "2024-10-01-preview",
               "name": "[format('{0}/{1}', parameters('flexibleServerName'), 'Default')]",
@@ -1664,7 +1712,7 @@
                 "state": "[parameters('advancedThreatProtection')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
