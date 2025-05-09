@@ -724,6 +724,48 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectParameters | Should -BeNullOrEmpty -Because ('required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
+            It '[<moduleFolderName>] All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type.' -TestCases $moduleFolderTestCases {
+                param (
+                    [hashtable] $templateFileContent,
+                    [hashtable] $templateFileParameters
+                )
+
+                $incorrectParameters = @()
+                foreach ($parameterName in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
+                    $parameter = $templateFileParameters.$parameterName
+
+                    $isArrayOfObjects = $parameter.type -eq 'array' -and $parameter.keys -contains 'items' -and $parameter.items.type -eq 'object'
+                    $isObject = $parameter.type -eq 'object'
+
+                    if ($isArrayOfObjects) {
+                        ## Array of objects
+                        # Note: We don't need to check for `$parameter.items.keys -contains '$ref'` because if a UDT is implemented, 'items' only contains '$ref' and hence the `isArrayOfObjects` variable is already `false`.
+                        $hasRdtDefintion = $parameter.items.metadata.Keys -contains '__bicep_resource_derived_type!'
+                        if (-not ($hasUdtDefinition -or $hasRdtDefintion)) {
+                            $incorrectParameters += $parameterName
+                        }
+                    } elseif ($isObject) {
+                        # Object
+                        $hasUdtDefinition = $parameter.keys -contains '$ref'
+                        $hasRdtDefintion = $parameter.metadata.Keys -contains '__bicep_resource_derived_type!'
+                        if (-not ($hasUdtDefinition -or $hasRdtDefintion)) {
+                            $incorrectParameters += $parameterName
+                        }
+                    }
+                }
+
+                if ($incorrectParameters.Count -gt 0) {}
+                $warningMessage = 'All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items' -f ($incorrectParameters -join ', ')
+                Write-Warning $warningMessage
+
+                Write-Output @{
+                    Warning = $warningMessage
+                }
+
+                # Once we want to enforce this test, replace the above warning with the below
+                # $incorrectParameters | Should -BeNullOrEmpty -Because ('all parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+            }
+
             Context 'Schema-based User-defined-types tests' -Tag 'UDT' {
 
                 BeforeDiscovery {
