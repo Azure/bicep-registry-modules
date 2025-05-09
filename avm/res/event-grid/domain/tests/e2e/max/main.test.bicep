@@ -151,7 +151,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       eventSubscriptions: [
         {
-          name: 'sub1'
+          name: '${namePrefix}-sub-${serviceShort}001'
           destination: {
             endpointType: 'WebHook'
             properties: {
@@ -159,17 +159,18 @@ module testDeployment '../../../main.bicep' = [
             }
           }
           filter: {
-            includedEventTypes: ['All']
+            includedEventTypes: null
           }
         }
         {
-          name: 'sub2'
+          name: '${namePrefix}-sub-${serviceShort}002'
           destination: {
             endpointType: 'WebHook'
             properties: {
               endpointUrl: 'https://example.com/webhook2'
             }
           }
+          filter: null
           labels: ['env:test']
           retryPolicy: {
             eventTimeToLiveInMinutes: 1440
