@@ -158,9 +158,6 @@ module testDeployment '../../../main.bicep' = [
               endpointUrl: 'https://example.com/webhook1'
             }
           }
-          filter: {
-            includedEventTypes: null
-          }
         }
         {
           name: '${namePrefix}-sub-${serviceShort}002'
@@ -170,7 +167,6 @@ module testDeployment '../../../main.bicep' = [
               endpointUrl: 'https://example.com/webhook2'
             }
           }
-          filter: null
           labels: ['env:test']
           retryPolicy: {
             eventTimeToLiveInMinutes: 1440
