@@ -35,5 +35,5 @@ output name string = msdeploy.name
 @description('The resource ID of the extension.')
 output resourceId string = msdeploy.id
 
-@description('The resource group the extensino was deployed into.')
+@description('The resource group the extension was deployed into.')
 output resourceGroupName string = resourceGroup().name
