@@ -1867,7 +1867,7 @@ Describe 'API version tests' -Tag 'ApiCheck' {
                 Write-Warning ("$warningMessage [`n- {0}`n]" -f ($newerAPIVersions -join ",`n- "))
 
                 Write-Output @{
-                    Warning = ("$warningMessage [<br>- <code>{0</code><br>]" -f ($newerAPIVersions -join '</code>,<br>- <code>'))
+                    Warning = ("$warningMessage [<br>- <code>{0}</code><br>]" -f ($newerAPIVersions -join '</code>,<br>- <code>'))
                 }
             }
         }
