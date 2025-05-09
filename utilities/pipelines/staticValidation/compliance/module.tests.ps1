@@ -761,7 +761,7 @@ Describe 'Module tests' -Tag 'Module' {
                     Write-Warning ("$warningMessage [`n- {0}`n]" -f ($incorrectParameters -join ",`n- "))
 
                     Write-Output @{
-                        Warning = ("$warningMessage [<br>- {0}<br>]" -f ($incorrectParameters -join ',<br>- '))
+                        Warning = ("$warningMessage [<br>- `{0}`<br>]" -f ($incorrectParameters -join '`,<br>- `'))
                     }
                 }
                 # Once we want to enforce this test, replace the above warning with the below
@@ -1840,11 +1840,11 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
         if ($approvedApiVersions -notcontains $TargetApi) {
             # Using a warning now instead of an error, as we don't want to block PRs for this.
-            $warningMessage = "The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following: {0}" -f ($approvedApiVersions -join ', ')
-            Write-Warning $warningMessage
+            $warningMessage = "The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following "
+            Write-Warning ("$warningMessage [`n- {0}`n]" -f ($approvedApiVersions -join ",`n- "))
 
             Write-Output @{
-                Warning = $warningMessage
+                Warning = ("$warningMessage [<br>- `{0}`<br>]" -f ($approvedApiVersions -join '`,<br>- `'))
             }
             # The original failed test was
             # $approvedApiVersions | Should -Contain $TargetApi
@@ -1863,11 +1863,11 @@ Describe 'API version tests' -Tag 'ApiCheck' {
             if ($indexOfVersion -gt ($approvedApiVersions.Count - 2)) {
                 $newerAPIVersions = $approvedApiVersions[0..($indexOfVersion - 1)]
 
-                $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions [{0}]" -f ($newerAPIVersions -join ', ')
-                Write-Warning $warningMessage
+                $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions "
+                Write-Warning ("$warningMessage [`n- {0}`n]" -f ($newerAPIVersions -join ",`n- "))
 
                 Write-Output @{
-                    Warning = $warningMessage
+                    Warning = ("$warningMessage [<br>- `{0}`<br>]" -f ($newerAPIVersions -join '`,<br>- `'))
                 }
             }
         }
