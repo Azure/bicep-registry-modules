@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "7018877195963250534"
+      "templateHash": "17997624304508008650"
     },
     "name": "Security Insights Settings",
     "description": "This module deploys a Security Insights Setting.",
@@ -113,7 +113,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "settingsType": {

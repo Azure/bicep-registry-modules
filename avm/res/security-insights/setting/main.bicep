@@ -13,7 +13,7 @@ param workspaceResourceId string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Enable telemetry via a Globally Unique Identifier (GUID).')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Required. Kind of the setting. Must be one of: [Anomalies, EntityAnalytics, EyesOn, Ueba].')
