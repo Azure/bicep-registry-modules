@@ -1,0 +1,151 @@
+name: "avm/res/security-insights/setting"
+
+on:
+  workflow_dispatch:
+    inputs:
+      staticValidation:
+        type: boolean
+        description: "Execute static validation"
+        required: false
+        default: true
+      deploymentValidation:
+        type: boolean
+        description: "Execute deployment validation"
+        required: false
+        default: true
+      removeDeployment:
+        type: boolean
+        description: "Remove deployed module"
+        required: false
+        default: true
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "avm/res/security-insights/setting/**"
+      - ".github/actions/templates/**"
+      - ".github/workflows/avm.res.security-insights.setting.yml"
+      - ".github/workflows/ms.security.azuresecuritycenter.yml"
+      - "utilities/pipelines/**"
+
+env:
+  modulePath: "avm/res/security-insights/setting"
+  workflowPath: ".github/workflows/avm.res.security-insights.setting.yml"
+
+concurrency:
+  group: ${{ github.workflow }}
+
+jobs:
+  ###########################
+  #   Initialize pipeline   #
+  ###########################
+  job_initialize_pipeline:
+    runs-on: ubuntu-latest
+    name: "Initialize pipeline"
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set source pipeline scripts path
+        id: pipeline-path
+        shell: pwsh
+        run: |
+          $pipelinePath = Join-Path $env:GITHUB_WORKSPACE "utilities" "pipelines"
+          echo "path=$pipelinePath" >> $env:GITHUB_OUTPUT
+
+      - name: Initialize pipeline
+        uses: ./.github/actions/templates/validateModulePipeline
+        with:
+          modulePath: ${{ env.modulePath }}
+          workflowPath: ${{ env.workflowPath }}
+
+  #########################
+  #   Static validation   #
+  #########################
+  job_static_validation:
+    runs-on: ubuntu-latest
+    name: "Static validation"
+    needs:
+      - job_initialize_pipeline
+    if: needs.job_initialize_pipeline.outputs.staticValidation == 'true'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set source pipeline scripts path
+        id: pipeline-path
+        shell: pwsh
+        run: |
+          $pipelinePath = Join-Path $env:GITHUB_WORKSPACE "utilities" "pipelines"
+          echo "path=$pipelinePath" >> $env:GITHUB_OUTPUT
+
+      # Task: Static code analysis
+      - name: Static code analysis
+        uses: ./.github/actions/templates/validateModuleStatic
+        with:
+          modulePath: ${{ env.modulePath }}
+          workflowPath: ${{ env.workflowPath }}
+          staticValidation: true
+
+  #############################
+  #   Deployment validation   #
+  #############################
+  job_deploy_validation:
+    runs-on: ubuntu-latest
+    name: "Deployment validation"
+    needs:
+      - job_initialize_pipeline
+      - job_static_validation
+    if: needs.job_initialize_pipeline.outputs.deploymentValidation == 'true'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set source pipeline scripts path
+        id: pipeline-path
+        shell: pwsh
+        run: |
+          $pipelinePath = Join-Path $env:GITHUB_WORKSPACE "utilities" "pipelines"
+          echo "path=$pipelinePath" >> $env:GITHUB_OUTPUT
+
+      # Task: Module deployment validation
+      - name: Module deployment validation
+        uses: ./.github/actions/templates/validateModuleDeployment
+        with:
+          modulePath: ${{ env.modulePath }}
+          workflowPath: ${{ env.workflowPath }}
+
+  ##################
+  #   Publishing   #
+  ##################
+  job_publish:
+    name: "Publishing"
+    if: contains(fromJson('["refs/heads/main", "refs/heads/master"]'), github.ref)
+    runs-on: ubuntu-latest
+    needs:
+      - job_deploy_validation
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set source pipeline scripts path
+        id: pipeline-path
+        shell: pwsh
+        run: |
+          $pipelinePath = Join-Path $env:GITHUB_WORKSPACE "utilities" "pipelines"
+          echo "path=$pipelinePath" >> $env:GITHUB_OUTPUT
+
+      # Task: Publishing module
+      - name: Publishing module
+        uses: ./.github/actions/templates/publishModule
+        with:
+          modulePath: ${{ env.modulePath }}
+          workflowPath: ${{ env.workflowPath }}
