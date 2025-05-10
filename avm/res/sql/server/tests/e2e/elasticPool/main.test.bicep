@@ -54,6 +54,7 @@ module testDeployment '../../../main.bicep' = [
         {
           name: '${namePrefix}-${serviceShort}-ep-001'
           zoneRedundant: false
+          availabilityZone: -1
         }
         // more complex elastic pool with non-default SKU and per database settings
         {
@@ -68,6 +69,7 @@ module testDeployment '../../../main.bicep' = [
             maxCapacity: '4'
           }
           zoneRedundant: false
+          availabilityZone: -1
         }
       ]
     }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "10318004586526838056"
+      "templateHash": "12989261925612624422"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1045,7 +1045,7 @@
       "defaultValue": [],
       "metadata": {
         "example": "  [\n    {\n      // Contributor role assignment at subscription scope\n      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'\n      definition: '/Contributor'\n      relativeScope: ''\n    }\n    {\n      // Owner role assignment at resource group scope\n      principalId: 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'\n      definition: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'\n      relativeScope: '/resourceGroups/{resourceGroupName}'\n    }\n  ]\n  ",
-        "description": "Optional. Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator (Preview), and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.\n"
+        "description": "Optional. Supply an array of objects containing the details of the role assignments to create.\n\nEach object must contain the following `keys`:\n- `principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.\n- `definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:\n  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator, and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.\n  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition\n    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`\n- `relativeScope` = 2 options can be provided for input value:\n    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope\n    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.\n"
       }
     },
     "pimRoleAssignments": {
@@ -1499,7 +1499,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.34.44.8038",
-              "templateHash": "874881940488545006"
+              "templateHash": "9801746893947569882"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2805,7 +2805,8 @@
                 }
               },
               "dependsOn": [
-                "moveSubscriptionToManagementGroupDelay"
+                "moveSubscriptionToManagementGroupDelay",
+                "registerResourceProviders"
               ]
             },
             "tagSubscription": {
