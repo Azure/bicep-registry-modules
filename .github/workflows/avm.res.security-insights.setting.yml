@@ -22,8 +22,8 @@ on:
     branches:
       - main
     paths:
-      - "avm/res/security-insights/setting/**"
-      - ".github/actions/templates/**"
+      - ".github/actions/templates/avm-**"
+      - ".github/workflows/avm.template.module.yml"
       - ".github/workflows/avm.res.security-insights.setting.yml"
       - "avm/res/security-insights/setting/**"
       - "utilities/pipelines/**"
