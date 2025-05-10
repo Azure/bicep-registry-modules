@@ -118,7 +118,7 @@ module setting 'br/public:avm/res/security-insights/setting:<version>' = {
   name: 'settingDeployment'
   params: {
     // Required parameters
-    name: 'Ueba'
+    name: 'Anomalies'
     settingsType: 'Anomalies'
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
@@ -141,7 +141,7 @@ module setting 'br/public:avm/res/security-insights/setting:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "Ueba"
+      "value": "Anomalies"
     },
     "settingsType": {
       "value": "Anomalies"
@@ -168,7 +168,7 @@ module setting 'br/public:avm/res/security-insights/setting:<version>' = {
 using 'br/public:avm/res/security-insights/setting:<version>'
 
 // Required parameters
-param name = 'Ueba'
+param name = 'Anomalies'
 param settingsType = 'Anomalies'
 param workspaceResourceId = '<workspaceResourceId>'
 // Non-required parameters
@@ -192,7 +192,7 @@ module setting 'br/public:avm/res/security-insights/setting:<version>' = {
   name: 'settingDeployment'
   params: {
     // Required parameters
-    name: 'Ueba'
+    name: 'Anomalies'
     settingsType: 'Anomalies'
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
@@ -215,7 +215,7 @@ module setting 'br/public:avm/res/security-insights/setting:<version>' = {
   "parameters": {
     // Required parameters
     "name": {
-      "value": "Ueba"
+      "value": "Anomalies"
     },
     "settingsType": {
       "value": "Anomalies"
@@ -242,7 +242,7 @@ module setting 'br/public:avm/res/security-insights/setting:<version>' = {
 using 'br/public:avm/res/security-insights/setting:<version>'
 
 // Required parameters
-param name = 'Ueba'
+param name = 'Anomalies'
 param settingsType = 'Anomalies'
 param workspaceResourceId = '<workspaceResourceId>'
 // Non-required parameters

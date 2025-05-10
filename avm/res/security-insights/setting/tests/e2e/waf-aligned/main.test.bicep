@@ -52,7 +52,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'Ueba'
+      name: 'Anomalies'
       workspaceResourceId: nestedDependencies.outputs.workspaceResourceId
       settingsType: 'Anomalies'
       properties: {}
