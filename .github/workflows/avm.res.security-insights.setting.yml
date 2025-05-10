@@ -18,7 +18,11 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
-  pull_request:
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
+  push:
     branches:
       - main
     paths:
@@ -45,109 +49,40 @@ jobs:
     runs-on: ubuntu-latest
     name: "Initialize pipeline"
     steps:
-      - name: Checkout Repository
+      - name: "Checkout"
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Set source pipeline scripts path
-        id: pipeline-path
-        shell: pwsh
-        run: |
-          $pipelinePath = Join-Path $env:GITHUB_WORKSPACE "utilities" "pipelines"
-          echo "path=$pipelinePath" >> $env:GITHUB_OUTPUT
-
-      - name: Initialize pipeline
-        uses: ./.github/actions/templates/validateModulePipeline
+      - name: "Set input parameters to output variables"
+        id: get-workflow-param
+        uses: ./.github/actions/templates/avm-getWorkflowInput
         with:
-          modulePath: ${{ env.modulePath }}
-          workflowPath: ${{ env.workflowPath }}
+          workflowPath: "${{ env.workflowPath}}"
+      - name: "Get parameter file paths"
+        id: get-module-test-file-paths
+        uses: ./.github/actions/templates/avm-getModuleTestFiles
+        with:
+          modulePath: "${{ env.modulePath }}"
+    outputs:
+      workflowInput: ${{ steps.get-workflow-param.outputs.workflowInput }}
+      moduleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.moduleTestFilePaths }}
+      psRuleModuleTestFilePaths: ${{ steps.get-module-test-file-paths.outputs.psRuleModuleTestFilePaths }}
+      modulePath: "${{ env.modulePath }}"
 
-  #########################
-  #   Static validation   #
-  #########################
-  job_static_validation:
-    runs-on: ubuntu-latest
-    name: "Static validation"
+  ##############################
+  #   Call reusable workflow   #
+  ##############################
+  call-workflow-passing-data:
+    name: "Run"
+    permissions:
+      id-token: write # For OIDC
+      contents: write # For release tags
     needs:
       - job_initialize_pipeline
-    if: needs.job_initialize_pipeline.outputs.staticValidation == 'true'
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set source pipeline scripts path
-        id: pipeline-path
-        shell: pwsh
-        run: |
-          $pipelinePath = Join-Path $env:GITHUB_WORKSPACE "utilities" "pipelines"
-          echo "path=$pipelinePath" >> $env:GITHUB_OUTPUT
-
-      # Task: Static code analysis
-      - name: Static code analysis
-        uses: ./.github/actions/templates/validateModuleStatic
-        with:
-          modulePath: ${{ env.modulePath }}
-          workflowPath: ${{ env.workflowPath }}
-          staticValidation: true
-
-  #############################
-  #   Deployment validation   #
-  #############################
-  job_deploy_validation:
-    runs-on: ubuntu-latest
-    name: "Deployment validation"
-    needs:
-      - job_initialize_pipeline
-      - job_static_validation
-    if: needs.job_initialize_pipeline.outputs.deploymentValidation == 'true'
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set source pipeline scripts path
-        id: pipeline-path
-        shell: pwsh
-        run: |
-          $pipelinePath = Join-Path $env:GITHUB_WORKSPACE "utilities" "pipelines"
-          echo "path=$pipelinePath" >> $env:GITHUB_OUTPUT
-
-      # Task: Module deployment validation
-      - name: Module deployment validation
-        uses: ./.github/actions/templates/validateModuleDeployment
-        with:
-          modulePath: ${{ env.modulePath }}
-          workflowPath: ${{ env.workflowPath }}
-
-  ##################
-  #   Publishing   #
-  ##################
-  job_publish:
-    name: "Publishing"
-    if: contains(fromJson('["refs/heads/main", "refs/heads/master"]'), github.ref)
-    runs-on: ubuntu-latest
-    needs:
-      - job_deploy_validation
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set source pipeline scripts path
-        id: pipeline-path
-        shell: pwsh
-        run: |
-          $pipelinePath = Join-Path $env:GITHUB_WORKSPACE "utilities" "pipelines"
-          echo "path=$pipelinePath" >> $env:GITHUB_OUTPUT
-
-      # Task: Publishing module
-      - name: Publishing module
-        uses: ./.github/actions/templates/publishModule
-        with:
-          modulePath: ${{ env.modulePath }}
-          workflowPath: ${{ env.workflowPath }}
+    uses: ./.github/workflows/avm.template.module.yml
+    with:
+      workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
+      moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
+      psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
+      modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
+    secrets: inherit
