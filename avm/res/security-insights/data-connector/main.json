@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "1976841121106426269"
+      "templateHash": "17375871322934534366"
     },
     "name": "Security Insights Data Connectors",
     "description": "This module deploys a Security Insights Data Connector.",
@@ -113,7 +113,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable telemetry via a Globally Unique Identifier (GUID)."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "dataConnectorType": {
