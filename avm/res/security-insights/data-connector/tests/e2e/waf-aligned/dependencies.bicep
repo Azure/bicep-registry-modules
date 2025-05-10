@@ -41,16 +41,6 @@ resource workspace_securityInsights 'Microsoft.SecurityInsights/onboardingStates
   ]
 }
 
-// Assign necessary roles to the managed identity
-resource workspace_SecurityInsights_roleAssignment_aadReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(logAnalyticsWorkspace.id, managedIdentity.id, 'DirectoryReaderRole')
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/88d8e3e3-8f55-4a1e-953a-9b9898b8876b' // Directory Reader
-    principalType: 'ServicePrincipal'
-  }
-}
-
 resource workspace_SecurityInsights_roleAssignment_securityReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(logAnalyticsWorkspace.id, managedIdentity.id, 'SecurityReaderRole')
   properties: {
