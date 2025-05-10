@@ -19,8 +19,8 @@ This module deploys a Batch Account.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Batch/batchAccounts` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Batch/2022-06-01/batchAccounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -50,9 +50,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   params: {
     // Required parameters
     name: 'bbamin001'
-    storageAccountId: '<storageAccountId>'
-    // Non-required parameters
-    location: '<location>'
+    storageAccountResourceId: '<storageAccountResourceId>'
   }
 }
 ```
@@ -73,12 +71,8 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "name": {
       "value": "bbamin001"
     },
-    "storageAccountId": {
-      "value": "<storageAccountId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
     }
   }
 }
@@ -96,9 +90,7 @@ using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
 param name = 'bbamin001'
-param storageAccountId = '<storageAccountId>'
-// Non-required parameters
-param location = '<location>'
+param storageAccountResourceId = '<storageAccountResourceId>'
 ```
 
 </details>
@@ -119,13 +111,12 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   params: {
     // Required parameters
     name: 'bbaencr001'
-    storageAccountId: '<storageAccountId>'
+    storageAccountResourceId: '<storageAccountResourceId>'
     // Non-required parameters
     customerManagedKey: {
       keyName: '<keyName>'
       keyVaultResourceId: '<keyVaultResourceId>'
     }
-    location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
@@ -133,9 +124,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     }
     poolAllocationMode: 'BatchService'
     storageAuthenticationMode: 'BatchAccountManagedIdentity'
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-    }
   }
 }
 ```
@@ -156,8 +144,8 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "name": {
       "value": "bbaencr001"
     },
-    "storageAccountId": {
-      "value": "<storageAccountId>"
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
     },
     // Non-required parameters
     "customerManagedKey": {
@@ -165,9 +153,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         "keyName": "<keyName>",
         "keyVaultResourceId": "<keyVaultResourceId>"
       }
-    },
-    "location": {
-      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -181,11 +166,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     },
     "storageAuthenticationMode": {
       "value": "BatchAccountManagedIdentity"
-    },
-    "tags": {
-      "value": {
-        "hidden-title": "This is visible in the resource name"
-      }
     }
   }
 }
@@ -203,13 +183,12 @@ using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
 param name = 'bbaencr001'
-param storageAccountId = '<storageAccountId>'
+param storageAccountResourceId = '<storageAccountResourceId>'
 // Non-required parameters
 param customerManagedKey = {
   keyName: '<keyName>'
   keyVaultResourceId: '<keyVaultResourceId>'
 }
-param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
@@ -217,9 +196,6 @@ param managedIdentities = {
 }
 param poolAllocationMode = 'BatchService'
 param storageAuthenticationMode = 'BatchAccountManagedIdentity'
-param tags = {
-  'hidden-title': 'This is visible in the resource name'
-}
 ```
 
 </details>
@@ -240,7 +216,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   params: {
     // Required parameters
     name: 'bbamax001'
-    storageAccountId: '<storageAccountId>'
+    storageAccountResourceId: '<storageAccountResourceId>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -405,8 +381,8 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "name": {
       "value": "bbamax001"
     },
-    "storageAccountId": {
-      "value": "<storageAccountId>"
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -590,7 +566,7 @@ using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
 param name = 'bbamax001'
-param storageAccountId = '<storageAccountId>'
+param storageAccountResourceId = '<storageAccountResourceId>'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -755,7 +731,7 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
   params: {
     // Required parameters
     name: 'bbawaf001'
-    storageAccountId: '<storageAccountId>'
+    storageAccountResourceId: '<storageAccountResourceId>'
     // Non-required parameters
     diagnosticSettings: [
       {
@@ -765,11 +741,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
     }
@@ -814,8 +785,8 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
     "name": {
       "value": "bbawaf001"
     },
-    "storageAccountId": {
-      "value": "<storageAccountId>"
+    "storageAccountResourceId": {
+      "value": "<storageAccountResourceId>"
     },
     // Non-required parameters
     "diagnosticSettings": {
@@ -827,15 +798,6 @@ module batchAccount 'br/public:avm/res/batch/batch-account:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
     },
     "managedIdentities": {
       "value": {
@@ -889,7 +851,7 @@ using 'br/public:avm/res/batch/batch-account:<version>'
 
 // Required parameters
 param name = 'bbawaf001'
-param storageAccountId = '<storageAccountId>'
+param storageAccountResourceId = '<storageAccountResourceId>'
 // Non-required parameters
 param diagnosticSettings = [
   {
@@ -899,11 +861,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedIdentities = {
   systemAssigned: true
 }
@@ -940,7 +897,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | Name of the Azure Batch. |
-| [`storageAccountId`](#parameter-storageaccountid) | string | The resource ID of the storage account to be used for auto-storage account. |
+| [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | The resource ID of the storage account to be used for auto-storage account. |
 
 **Conditional parameters**
 
@@ -975,7 +932,7 @@ Name of the Azure Batch.
 - Required: Yes
 - Type: string
 
-### Parameter: `storageAccountId`
+### Parameter: `storageAccountResourceId`
 
 The resource ID of the storage account to be used for auto-storage account.
 
@@ -1416,7 +1373,7 @@ Configuration details for private endpoints. For security reasons, it is recomme
 | [`name`](#parameter-privateendpointsname) | string | The name of the private endpoint. |
 | [`privateDnsZoneGroup`](#parameter-privateendpointsprivatednszonegroup) | object | The private DNS zone group to configure for the private endpoint. |
 | [`privateLinkServiceConnectionName`](#parameter-privateendpointsprivatelinkserviceconnectionname) | string | The name of the private link connection to create. |
-| [`resourceGroupName`](#parameter-privateendpointsresourcegroupname) | string | Specify if you want to deploy the Private Endpoint into a different resource group than the main resource. |
+| [`resourceGroupResourceId`](#parameter-privateendpointsresourcegroupresourceid) | string | The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used. |
 | [`roleAssignments`](#parameter-privateendpointsroleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-privateendpointstags) | object | Tags to be applied on all resources/resource groups in this deployment. |
 
@@ -1675,9 +1632,9 @@ The name of the private link connection to create.
 - Required: No
 - Type: string
 
-### Parameter: `privateEndpoints.resourceGroupName`
+### Parameter: `privateEndpoints.resourceGroupResourceId`
 
-Specify if you want to deploy the Private Endpoint into a different resource group than the main resource.
+The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used.
 
 - Required: No
 - Type: string
@@ -1698,7 +1655,7 @@ Array of role assignments to create.
   - `'Owner'`
   - `'Private DNS Zone Contributor'`
   - `'Reader'`
-  - `'Role Based Access Control Administrator (Preview)'`
+  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -1962,8 +1919,8 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.7.1` | Remote reference |
-| `br/public:avm/utl/types/avm-common-types:0.4.0` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

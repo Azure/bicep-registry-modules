@@ -68,7 +68,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      storageAccountId: nestedDependencies.outputs.storageAccountResourceId
+      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -218,9 +218,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]

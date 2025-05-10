@@ -58,8 +58,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
-      storageAccountId: nestedDependencies.outputs.storageAccountResourceId
+      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
       customerManagedKey: {
         keyName: nestedDependencies.outputs.keyVaultEncryptionKeyName
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
@@ -71,12 +70,6 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-      }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Required. The resource ID of the storage account to be used for auto-storage account.')
-param storageAccountId string
+param storageAccountResourceId string
 
 @allowed([
   'BatchAccountManagedIdentity'
@@ -30,7 +30,7 @@ param poolAllocationMode string = 'BatchService'
 @description('Conditional. The key vault to associate with the Batch account. Required if the \'poolAllocationMode\' is set to \'UserSubscription\' and requires the service principal \'Microsoft Azure Batch\' to be granted contributor permissions on this key vault.')
 param keyVaultReferenceResourceId string?
 
-import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
@@ -45,11 +45,11 @@ param publicNetworkAccess string = ''
 @description('Optional. Network access profile. It is only applicable when publicNetworkAccess is not explicitly disabled.')
 param networkProfile networkProfileType?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -67,15 +67,15 @@ param allowedAuthenticationModes array?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
-import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -184,14 +184,14 @@ resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
             resourceId: storageAccessIdentityResourceId
           }
         : null
-      storageAccountId: storageAccountId
+      storageAccountId: storageAccountResourceId
     }
     encryption: !empty(customerManagedKey)
       ? {
           keySource: 'Microsoft.KeyVault'
           keyVaultProperties: {
             keyIdentifier: !empty(customerManagedKey.?keyVersion)
-              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion}'
+              ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.keyVersion!}'
               : (customerManagedKey.?autoRotationEnabled ?? true)
                   ? cMKKeyVault::cMKKey.properties.keyUri
                   : cMKKeyVault::cMKKey.properties.keyUriWithVersion
@@ -267,10 +267,13 @@ resource batchAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@
   }
 ]
 
-module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.7.1' = [
+module batchAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-batchAccount-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(batchAccount.id, '/'))}-${privateEndpoint.service}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -351,19 +354,42 @@ output location string = batchAccount.location
 output systemAssignedMIPrincipalId string? = batchAccount.?identity.?principalId
 
 @description('The private endpoints of the batch account.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: batchAccount_privateEndpoints[i].outputs.name
-    resourceId: batchAccount_privateEndpoints[i].outputs.resourceId
-    groupId: batchAccount_privateEndpoints[i].outputs.groupId
-    customDnsConfig: batchAccount_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: batchAccount_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: batchAccount_privateEndpoints[index].outputs.name
+    resourceId: batchAccount_privateEndpoints[index].outputs.resourceId
+    groupId: batchAccount_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: batchAccount_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: batchAccount_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
 
 // ================ //
 // Definitions      //
 // ================ //
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
 
 @export()
 type networkProfileType = {
