@@ -1,4 +1,4 @@
-name: "avm/res/security-insights/setting"
+name: "avm.res.security-insights.setting"
 
 on:
   workflow_dispatch:
@@ -25,8 +25,10 @@ on:
       - "avm/res/security-insights/setting/**"
       - ".github/actions/templates/**"
       - ".github/workflows/avm.res.security-insights.setting.yml"
-      - ".github/workflows/ms.security.azuresecuritycenter.yml"
+      - "avm/res/security-insights/setting/**"
       - "utilities/pipelines/**"
+      - "!utilities/pipelines/platform/**"
+      - "!*/**/README.md"
 
 env:
   modulePath: "avm/res/security-insights/setting"
