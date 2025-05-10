@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "1572717358283020198"
+      "templateHash": "7018877195963250534"
     },
     "name": "Security Insights Settings",
     "description": "This module deploys a Security Insights Setting.",
@@ -162,7 +162,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.res.securityinsights-setting.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",

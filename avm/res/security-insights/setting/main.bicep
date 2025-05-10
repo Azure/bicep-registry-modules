@@ -50,7 +50,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.securityinsights-setting.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -79,18 +79,6 @@ resource setting 'Microsoft.SecurityInsights/settings@2024-10-01-preview' = {
   properties: properties
 }
 
-@description('The name of the Security Insights Setting.')
-output name string = setting.name
-
-@description('The resource ID of the Security Insights Setting.')
-output resourceId string = setting.id
-
-@description('The resource group where the Security Insights Setting is deployed.')
-output resourceGroupName string = resourceGroup().name
-
-@description('The location the resource was deployed into.')
-output location string = location
-
 resource settings_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: guid(setting.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
@@ -106,3 +94,15 @@ resource settings_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
     scope: setting
   }
 ]
+
+@description('The name of the Security Insights Setting.')
+output name string = setting.name
+
+@description('The resource ID of the Security Insights Setting.')
+output resourceId string = setting.id
+
+@description('The resource group where the Security Insights Setting is deployed.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The location the resource was deployed into.')
+output location string = location
