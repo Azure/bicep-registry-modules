@@ -51,10 +51,7 @@ This instance deploys the module with the minimum set of required parameters.
 module searchService 'br/public:avm/res/search/search-service:<version>' = {
   name: 'searchServiceDeployment'
   params: {
-    // Required parameters
     name: 'sssmin002'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -71,13 +68,8 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "sssmin002"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -93,10 +85,7 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/search/search-service:<version>'
 
-// Required parameters
 param name = 'sssmin002'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -124,7 +113,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
       }
     }
     disableLocalAuth: false
-    location: '<location>'
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
       primaryAdminKeyName: 'Primary-Admin-Key'
@@ -161,9 +149,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     "disableLocalAuth": {
       "value": false
     },
-    "location": {
-      "value": "<location>"
-    },
     "secretsExportConfiguration": {
       "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
@@ -194,7 +179,6 @@ param authOptions = {
   }
 }
 param disableLocalAuth = false
-param location = '<location>'
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
   primaryAdminKeyName: 'Primary-Admin-Key'
@@ -764,11 +748,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     ]
     disableLocalAuth: false
     hostingMode: 'highDensity'
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     managedIdentities: {
       systemAssigned: true
     }
@@ -844,15 +823,6 @@ module searchService 'br/public:avm/res/search/search-service:<version>' = {
     "hostingMode": {
       "value": "highDensity"
     },
-    "location": {
-      "value": "<location>"
-    },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true
@@ -926,11 +896,6 @@ param diagnosticSettings = [
 ]
 param disableLocalAuth = false
 param hostingMode = 'highDensity'
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param managedIdentities = {
   systemAssigned: true
 }
@@ -2011,8 +1976,11 @@ Tags to help categorize the resource in the Azure portal.
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the search service. |
+| `primaryKey` | securestring | The primary admin API key of the search service. |
+| `privateEndpoints` | array | The private endpoints of the search service. |
 | `resourceGroupName` | string | The name of the resource group the search service was created in. |
 | `resourceId` | string | The resource ID of the search service. |
+| `secondaryKey` | securestring | The secondaryKey admin API key of the search service. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules

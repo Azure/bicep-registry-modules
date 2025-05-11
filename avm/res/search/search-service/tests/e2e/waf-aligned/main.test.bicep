@@ -64,7 +64,6 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       sku: 'standard3'
       cmkEnforcement: 'Enabled'
@@ -79,10 +78,6 @@ module testDeployment '../../../main.bicep' = [
       replicaCount: 3
       managedIdentities: {
         systemAssigned: true
-      }
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
       }
       networkRuleSet: {
         bypass: 'AzureServices'

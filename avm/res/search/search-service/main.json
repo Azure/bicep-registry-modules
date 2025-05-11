@@ -5,13 +5,76 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "9464901564902955899"
+      "version": "0.35.1.17967",
+      "templateHash": "11228798698107474507"
     },
     "name": "Search Services",
     "description": "This module deploys a Search Service."
   },
   "definitions": {
+    "privateEndpointOutputType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the private endpoint."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource ID of the private endpoint."
+          }
+        },
+        "groupId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The group Id for the private endpoint Group."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fqdn": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "FQDN that resolves to private endpoint IP address."
+                }
+              },
+              "ipAddresses": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "description": "A list of private IP addresses of the private endpoint."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "The custom DNS configurations of the private endpoint."
+          }
+        },
+        "networkInterfaceResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "The IDs of the network interfaces associated with the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "secretsExportConfigurationType": {
       "type": "object",
       "properties": {
@@ -995,7 +1058,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-searchService-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1785,8 +1849,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "17921821442902726660"
+              "version": "0.35.1.17967",
+              "templateHash": "17210915942533110810"
             },
             "name": "Search Services Private Link Resources",
             "description": "This module deploys a Search Service Private Link Resource."
@@ -1895,7 +1959,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), 'value', listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('name')), '2025-02-01-preview').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), 'value', listAdminKeys(resourceId('Microsoft.Search/searchServices', parameters('name')), '2025-02-01-preview').secondaryKey)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAdminKeyName'), 'value', listAdminKeys('searchService', '2025-02-01-preview').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAdminKeyName'), 'value', listAdminKeys('searchService', '2025-02-01-preview').secondaryKey)), createArray()))]"
           }
         },
         "template": {
@@ -1905,8 +1969,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8727860379251085593"
+              "version": "0.35.1.17967",
+              "templateHash": "15239114698089434749"
             }
           },
           "definitions": {
@@ -2054,12 +2118,45 @@
       },
       "value": "[reference('searchService').endpoint]"
     },
+    "privateEndpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
+      "metadata": {
+        "description": "The private endpoints of the search service."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "input": {
+          "name": "[reference(format('searchService_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('searchService_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[tryGet(tryGet(reference(format('searchService_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
+          "customDnsConfigs": "[reference(format('searchService_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
+          "networkInterfaceResourceIds": "[reference(format('searchService_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
+        }
+      }
+    },
     "exportedSecrets": {
       "$ref": "#/definitions/secretsOutputType",
       "metadata": {
         "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
       },
       "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
+    },
+    "primaryKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary admin API key of the search service."
+      },
+      "value": "[listAdminKeys('searchService', '2025-02-01-preview').primaryKey]"
+    },
+    "secondaryKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondaryKey admin API key of the search service."
+      },
+      "value": "[listAdminKeys('searchService', '2025-02-01-preview').secondaryKey]"
     }
   }
 }
