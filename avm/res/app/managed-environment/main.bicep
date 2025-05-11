@@ -342,7 +342,7 @@ type appLogsConfigurationType = {
 
   @description('Optional. The configuration for Log Analytics.')
   logAnalyticsConfiguration: {
-    @description('Required. The customer ID of the Log Analytics workspace.')
+    @description('Required. The Log Analytics Workspace ID.')
     customerId: string
 
     @description('Required. The shared key of the Log Analytics workspace.')

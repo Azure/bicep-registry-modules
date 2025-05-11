@@ -15,12 +15,12 @@ Mandatory. The GitHub project number (see last part of project URL, for example 
 Mandatory. The URL of the GitHub issue, like 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .EXAMPLE
-Add-GithubIssueToProject -Repo 'Azure/bicep-registry-modules' -ProjectNumber 538 -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
+Add-GitHubIssueToProject -Repo 'Azure/bicep-registry-modules' -ProjectNumber 538 -IssueUrl 'https://github.com/Azure/bicep-registry-modules/issues/757'
 
 .NOTES
 Needs to run under a context with the permissions to read/write organization projects
 #>
-function Add-GithubIssueToProject {
+function Add-GitHubIssueToProject {
     param (
         [Parameter(Mandatory = $true)]
         [string] $Repo,
@@ -46,7 +46,7 @@ function Add-GithubIssueToProject {
     $ProjectId = $Project.data.organization.projectV2.id
     $IssueId = (gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --repo $Repo --json 'id' | ConvertFrom-Json -Depth 100).id
 
-    gh api graphql -f query='
+    $null = gh api graphql -f query='
   mutation($project:ID!, $issue:ID!) {
     addProjectV2ItemById(input: {projectId: $project, contentId: $issue}) {
       item {

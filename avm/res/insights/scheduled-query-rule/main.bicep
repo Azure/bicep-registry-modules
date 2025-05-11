@@ -35,6 +35,10 @@ param skipQueryValidation bool = false
 @description('Optional. List of resource type of the target resource(s) on which the alert is created/updated. For example if the scope is a resource group and targetResourceTypes is Microsoft.Compute/virtualMachines, then a different alert will be fired for each virtual machine in the resource group which meet the alert criteria. Relevant only for rules of the kind LogAlert.')
 param targetResourceTypes array = []
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
+
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
@@ -90,7 +94,7 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(managedIdentities.?userAssignedResourceIds)
-            ? 'UserAssigned' // fail('You can only configure either a system-assigned or user-assigned identities, not both.') // Not supported by PSRule: https://github.com/microsoft/PSRule/issues/2840
+            ? fail('You can only configure either a system-assigned or user-assigned identities, not both.')
             : 'SystemAssigned')
         : (!empty(managedIdentities.?userAssignedResourceIds) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
@@ -172,6 +176,17 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' =
     windowSize: (kind == 'LogAlert') ? windowSize : null
     scopes: scopes
   }
+}
+
+resource queryRule_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: queryRule
 }
 
 resource queryRule_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [

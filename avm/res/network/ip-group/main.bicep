@@ -73,7 +73,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource ipGroup 'Microsoft.Network/ipGroups@2023-04-01' = {
+resource ipGroup 'Microsoft.Network/ipGroups@2024-05-01' = {
   name: name
   location: location
   tags: tags
