@@ -1,6 +1,6 @@
-# DocumentDB Database Account SQL Role. `[Microsoft.DocumentDB/databaseAccounts]`
+# DocumentDB Database Account SQL Role Definitions. `[Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions]`
 
-This module deploys SQL Role Definision and Assignment in a CosmosDB Account.
+This module deploys a SQL Role Definision in a CosmosDB Account.
 
 ## Navigation
 
@@ -12,7 +12,6 @@ This module deploys SQL Role Definision and Assignment in a CosmosDB Account.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleAssignments) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions) |
 
 ## Parameters
@@ -21,7 +20,7 @@ This module deploys SQL Role Definision and Assignment in a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the SQL Role. |
+| [`roleName`](#parameter-rolename) | string | A user-friendly name for the Role Definition. Must be unique for the database account. |
 
 **Conditional parameters**
 
@@ -34,13 +33,12 @@ This module deploys SQL Role Definision and Assignment in a CosmosDB Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`dataActions`](#parameter-dataactions) | array | An array of data actions that are allowed. |
-| [`principalIds`](#parameter-principalids) | array | Ids needs to be granted. |
-| [`roleName`](#parameter-rolename) | string | A user-friendly name for the Role Definition. Must be unique for the database account. |
+| [`name`](#parameter-name) | string | The unique identifier of the Role Definition. |
 | [`roleType`](#parameter-roletype) | string | Indicates whether the Role Definition was built-in or user created. |
 
-### Parameter: `name`
+### Parameter: `roleName`
 
-Name of the SQL Role.
+A user-friendly name for the Role Definition. Must be unique for the database account.
 
 - Required: Yes
 - Type: string
@@ -67,21 +65,12 @@ An array of data actions that are allowed.
   ]
   ```
 
-### Parameter: `principalIds`
+### Parameter: `name`
 
-Ids needs to be granted.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-### Parameter: `roleName`
-
-A user-friendly name for the Role Definition. Must be unique for the database account.
+The unique identifier of the Role Definition.
 
 - Required: No
 - Type: string
-- Default: `'Reader Writer'`
 
 ### Parameter: `roleType`
 
@@ -102,4 +91,6 @@ Indicates whether the Role Definition was built-in or user created.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `resourceGroupName` | string | The name of the resource group the SQL Role Definition and Assignment were created in. |
+| `name` | string | The name of the SQL Role Definition. |
+| `resourceGroupName` | string | The name of the resource group the SQL Role Definition was created in. |
+| `resourceId` | string | The resource ID of the SQL Role Definition. |

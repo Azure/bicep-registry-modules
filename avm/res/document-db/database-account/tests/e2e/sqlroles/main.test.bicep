@@ -47,13 +47,15 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-role-${serviceShort}'
   params: {
-    location: enforcedLocation
     name: '${namePrefix}-role-ref'
-    sqlRoleAssignmentsPrincipalIds: [
-      nestedDependencies.outputs.identityPrincipalId
-    ]
     sqlRoleDefinitions: [
-      { name: 'cosmos-sql-role-test' }
+      { roleName: 'cosmos-sql-role-test' }
+    ]
+    sqlRoleAssignments: [
+      {
+        principalId: nestedDependencies.outputs.identityPrincipalId
+        sqlRoleDefinitionIdOrName: 'cosmos-sql-role-test'
+      }
     ]
   }
 }
