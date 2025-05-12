@@ -13,7 +13,7 @@ param serviceShort string = 'ashcwaf'
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password of the LCM deployment user and local administrator accounts.')
+@description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
 param arbLocalAdminAndDeploymentUserPass string = ''
 
