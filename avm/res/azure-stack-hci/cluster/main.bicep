@@ -516,7 +516,7 @@ type deploymentSettingsType = {
 
 @export()
 @description('Key vault secret names interface')
-type KeyVaultSecretNames = {
+type keyVaultSecretNamesType = {
   @description('Required. The name of the Azure Stack HCI LCM user credential secret.')
   azureStackLCMUserCredential: string
   @description('Required. The name of the Azure Stack HCI local admin credential secret.')
