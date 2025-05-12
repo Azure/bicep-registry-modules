@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "7763851277351085889"
+      "templateHash": "5108126869588736121"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -1178,7 +1178,7 @@
         },
         "description": "Optional. Tags of the resource."
       },
-      "defaultValue": {}
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
