@@ -22,7 +22,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing 
   name: storageAccountName
 }
 
-resource queueServices 'Microsoft.Storage/storageAccounts/queueServices@2023-04-01' = {
+resource queueServices 'Microsoft.Storage/storageAccounts/queueServices@2024-01-01' = {
   name: name
   parent: storageAccount
   properties: {
