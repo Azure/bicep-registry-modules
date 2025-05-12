@@ -10,9 +10,6 @@ param managedIdentityName string
 @description('Optional. Name of the storage account to create for Event Grid Domain Event Subscription.')
 param storageAccountName string
 
-@description('Optional. Name of the storage queue to create for Event Grid Domain Event Subscription.')
-param storageQueueName string
-
 var addressPrefix = '10.0.0.0/16'
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
