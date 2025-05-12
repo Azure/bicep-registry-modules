@@ -76,11 +76,11 @@ param serverVersion string = '4.2'
 @description('Optional. SQL Databases configurations.')
 param sqlDatabases sqlDatabaseType[]?
 
-@description('Optional. SQL Role Definitions configurations.')
-param sqlRoleDefinitions sqlRoleDefinitionType[]?
+@description('Optional. SQL Role Definitions configurations. Also allows the assignment of custom roles.')
+param sqlRoleDefinitions customSqlRoleDefinitionType[]?
 
-@description('Optional. SQL Role Assignment configurations.')
-param sqlRoleAssignments sqlRoleAssignmentType[]?
+@description('Optional. SQL Role Assignments of built-in roles.')
+param builtInSqlRoleAssignments builtInSqlRoleAssignmentType[]?
 
 @description('Optional. MongoDB Databases configurations.')
 param mongodbDatabases array?
@@ -430,23 +430,21 @@ module databaseAccount_sqlRoleDefinitions 'sql-role-definition/main.bicep' = [
       name: sqlRoleDefinition.?name
       dataActions: sqlRoleDefinition.?dataActions
       roleName: sqlRoleDefinition.roleName
-      roleType: sqlRoleDefinition.?roleType
+      assignableScopes: sqlRoleDefinition.?assignableScopes
+      sqlRoleAssignments: sqlRoleDefinition.?sqlRoleAssignments
     }
   }
 ]
 
 module databaseAccount_sqlRoleAssignments 'sql-role-assignment/main.bicep' = [
-  for (sqlRoleAssignment, index) in (sqlRoleAssignments ?? []): {
-    name: '${uniqueString(deployment().name, location)}-sqlra-${index}'
+  for (sqlRoleAssignment, index) in (builtInSqlRoleAssignments ?? []): {
+    name: '${uniqueString(deployment().name)}-sqlra-${index}'
     params: {
       databaseAccountName: databaseAccount.name
-      sqlRoleDefinitionIdOrName: sqlRoleAssignment.sqlRoleDefinitionIdOrName
+      roleDefinitionId: sqlRoleAssignment.roleDefinitionId
       principalId: sqlRoleAssignment.principalId
       name: sqlRoleAssignment.?name
     }
-    dependsOn: [
-      databaseAccount_sqlRoleDefinitions
-    ]
   }
 ]
 
@@ -732,8 +730,23 @@ type failoverLocationType = {
 }
 
 @export()
-@description('The type for the SQL Role Definitions.')
-type sqlRoleDefinitionType = {
+@description('The type of a Built-In SQL Role Definition.')
+type builtInSqlRoleAssignmentType = {
+  @description('Optional. The unique name of the role assignment.')
+  name: string?
+
+  @description('Required. The unique identifier of the SQL Role Definition.')
+  roleDefinitionId: string
+
+  @description('Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.')
+  principalId: string
+}
+
+import { sqlRoleAssignmentType } from 'sql-role-definition/main.bicep'
+
+@export()
+@description('The type of a custom SQL Role Definition.')
+type customSqlRoleDefinitionType = {
   @description('Optional. The unique identifier of the Role Definition.')
   name: string?
 
@@ -743,21 +756,15 @@ type sqlRoleDefinitionType = {
   @description('Optional. An array of data actions that are allowed.')
   dataActions: string[]?
 
-  @description('Optional. Indicates whether the Role Definition was built-in or user created.')
-  roleType: ('CustomRole' | 'BuiltInRole')?
-}
+  // While a property, currently NOT supported by the Resource Provider. (2025-05-12)
+  // @description('Optional. An array of data actions that are denied.')
+  // notDataActions: string[]?
 
-@export()
-@description('The type for the SQL Role Assignments.')
-type sqlRoleAssignmentType = {
-  @description('Optional. Name unique identifier of the SQL Role Assignment.')
-  name: string?
+  @description('Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account.')
+  assignableScopes: string[]?
 
-  @description('Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.')
-  principalId: string
-
-  @description('Required. The unique identifier or name for the associated SQL Role Definition.')
-  sqlRoleDefinitionIdOrName: string
+  @description('Optional. An array of SQL Role Assignments to be created for the SQL Role Definition.')
+  sqlRoleAssignments: sqlRoleAssignmentType[]?
 }
 
 @export()

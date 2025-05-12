@@ -49,12 +49,27 @@ module testDeployment '../../../main.bicep' = {
   params: {
     name: '${namePrefix}-role-ref'
     sqlRoleDefinitions: [
-      { roleName: 'cosmos-sql-role-test' }
+      {
+        roleName: 'cosmos-sql-role-test'
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        assignableScopes: [
+          '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref'
+        ]
+        sqlRoleAssignments: [
+          {
+            principalId: nestedDependencies.outputs.identityPrincipalId
+          }
+        ]
+      }
     ]
-    sqlRoleAssignments: [
+    builtInSqlRoleAssignments: [
       {
         principalId: nestedDependencies.outputs.identityPrincipalId
-        sqlRoleDefinitionIdOrName: 'cosmos-sql-role-test'
+        roleDefinitionId: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
       }
     ]
   }

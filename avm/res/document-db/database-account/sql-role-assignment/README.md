@@ -21,7 +21,7 @@ This module deploys a SQL Role Assignment in a CosmosDB Account.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`principalId`](#parameter-principalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
-| [`sqlRoleDefinitionIdOrName`](#parameter-sqlroledefinitionidorname) | string | The unique identifier or name for the associated SQL Role Definition. |
+| [`roleDefinitionId`](#parameter-roledefinitionid) | string | The unique identifier of the associated SQL Role Definition. |
 
 **Conditional parameters**
 
@@ -42,9 +42,9 @@ The unique identifier for the associated AAD principal in the AAD graph to which
 - Required: Yes
 - Type: string
 
-### Parameter: `sqlRoleDefinitionIdOrName`
+### Parameter: `roleDefinitionId`
 
-The unique identifier or name for the associated SQL Role Definition.
+The unique identifier of the associated SQL Role Definition.
 
 - Required: Yes
 - Type: string

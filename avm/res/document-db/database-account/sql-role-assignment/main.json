@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "7875904026318222775"
+      "templateHash": "11941443499827753966"
     },
     "name": "DocumentDB Database Account SQL Role Assignments.",
     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -31,24 +31,14 @@
         "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
       }
     },
-    "sqlRoleDefinitionIdOrName": {
+    "roleDefinitionId": {
       "type": "string",
       "metadata": {
-        "description": "Required. The unique identifier or name for the associated SQL Role Definition."
+        "description": "Required. The unique identifier of the associated SQL Role Definition."
       }
     }
   },
-  "variables": {
-    "formattedRoleDefinition": "[if(contains(parameters('sqlRoleDefinitionIdOrName'), '/sqlRoleDefinitions/'), parameters('sqlRoleDefinitionIdOrName'), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), parameters('sqlRoleDefinitionIdOrName')))]"
-  },
   "resources": {
-    "sqlRoleDefinition": {
-      "condition": "[not(contains(parameters('sqlRoleDefinitionIdOrName'), 'sqlRoleDefinitions'))]",
-      "existing": true,
-      "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
-      "apiVersion": "2024-11-15",
-      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlRoleDefinitionIdOrName'))]"
-    },
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
@@ -58,10 +48,10 @@
     "sqlRoleAssignment": {
       "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
       "apiVersion": "2024-11-15",
-      "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]",
+      "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]",
       "properties": {
         "principalId": "[parameters('principalId')]",
-        "roleDefinitionId": "[variables('formattedRoleDefinition')]",
+        "roleDefinitionId": "[parameters('roleDefinitionId')]",
         "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))]"
       }
     }
@@ -72,14 +62,14 @@
       "metadata": {
         "description": "The name of the SQL Role Assignment."
       },
-      "value": "[coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]"
+      "value": "[coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the SQL Role Assignment."
       },
-      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments', parameters('databaseAccountName'), coalesce(parameters('name'), guid(variables('formattedRoleDefinition'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]"
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]"
     },
     "resourceGroupName": {
       "type": "string",

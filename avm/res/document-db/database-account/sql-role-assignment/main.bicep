@@ -10,20 +10,8 @@ param name string?
 @description('Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.')
 param principalId string
 
-@description('Required. The unique identifier or name for the associated SQL Role Definition.')
-param sqlRoleDefinitionIdOrName string
-
-var formattedRoleDefinition = contains(sqlRoleDefinitionIdOrName, '/sqlRoleDefinitions/')
-  ? sqlRoleDefinitionIdOrName
-  : sqlRoleDefinition.id
-
-resource sqlRoleDefinition 'Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions@2024-11-15' existing = if (!contains(
-  sqlRoleDefinitionIdOrName,
-  'sqlRoleDefinitions'
-)) {
-  parent: databaseAccount
-  name: sqlRoleDefinitionIdOrName
-}
+@description('Required. The unique identifier of the associated SQL Role Definition.')
+param roleDefinitionId string
 
 resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
@@ -31,10 +19,10 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' exis
 
 resource sqlRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-11-15' = {
   parent: databaseAccount
-  name: name ?? guid(formattedRoleDefinition, principalId, databaseAccount.id)
+  name: name ?? guid(roleDefinitionId, principalId, databaseAccount.id)
   properties: {
     principalId: principalId
-    roleDefinitionId: formattedRoleDefinition
+    roleDefinitionId: roleDefinitionId
     scope: databaseAccount.id
   }
 }

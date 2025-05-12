@@ -2560,15 +2560,28 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'role-ref'
     // Non-required parameters
-    sqlRoleAssignments: [
+    builtInSqlRoleAssignments: [
       {
         principalId: '<principalId>'
-        sqlRoleDefinitionIdOrName: 'cosmos-sql-role-test'
+        roleDefinitionId: '<roleDefinitionId>'
       }
     ]
     sqlRoleDefinitions: [
       {
+        assignableScopes: [
+          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+        ]
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
         roleName: 'cosmos-sql-role-test'
+        sqlRoleAssignments: [
+          {
+            principalId: '<principalId>'
+          }
+        ]
       }
     ]
   }
@@ -2592,18 +2605,31 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "role-ref"
     },
     // Non-required parameters
-    "sqlRoleAssignments": {
+    "builtInSqlRoleAssignments": {
       "value": [
         {
           "principalId": "<principalId>",
-          "sqlRoleDefinitionIdOrName": "cosmos-sql-role-test"
+          "roleDefinitionId": "<roleDefinitionId>"
         }
       ]
     },
     "sqlRoleDefinitions": {
       "value": [
         {
-          "roleName": "cosmos-sql-role-test"
+          "assignableScopes": [
+            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref"
+          ],
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
+          "roleName": "cosmos-sql-role-test",
+          "sqlRoleAssignments": [
+            {
+              "principalId": "<principalId>"
+            }
+          ]
         }
       ]
     }
@@ -2624,15 +2650,28 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'role-ref'
 // Non-required parameters
-param sqlRoleAssignments = [
+param builtInSqlRoleAssignments = [
   {
     principalId: '<principalId>'
-    sqlRoleDefinitionIdOrName: 'cosmos-sql-role-test'
+    roleDefinitionId: '<roleDefinitionId>'
   }
 ]
 param sqlRoleDefinitions = [
   {
+    assignableScopes: [
+      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+    ]
+    dataActions: [
+      'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+    ]
     roleName: 'cosmos-sql-role-test'
+    sqlRoleAssignments: [
+      {
+        principalId: '<principalId>'
+      }
+    ]
   }
 ]
 ```
@@ -2937,6 +2976,7 @@ param sqlDatabases = [
 | [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used. |
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type. |
+| [`builtInSqlRoleAssignments`](#parameter-builtinsqlroleassignments) | array | SQL Role Assignments of built-in roles. |
 | [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. |
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | Default to Standard. The offer type for the Azure Cosmos DB database account. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | Default to Session. The default consistency level of the Cosmos DB account. |
@@ -2962,8 +3002,7 @@ param sqlDatabases = [
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`serverVersion`](#parameter-serverversion) | string | Default to 4.2. Specifies the MongoDB server version to use. |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
-| [`sqlRoleAssignments`](#parameter-sqlroleassignments) | array | SQL Role Assignment configurations. |
-| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. |
+| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. Also allows the assignment of custom roles. |
 | [`tables`](#parameter-tables) | array | Table configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
 | [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s). |
@@ -3048,6 +3087,47 @@ Default to Local. Enum to indicate type of backup residency. Only applies to per
     'Zone'
   ]
   ```
+
+### Parameter: `builtInSqlRoleAssignments`
+
+SQL Role Assignments of built-in roles.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-builtinsqlroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
+| [`roleDefinitionId`](#parameter-builtinsqlroleassignmentsroledefinitionid) | string | The unique identifier of the SQL Role Definition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-builtinsqlroleassignmentsname) | string | The unique name of the role assignment. |
+
+### Parameter: `builtInSqlRoleAssignments.principalId`
+
+The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `builtInSqlRoleAssignments.roleDefinitionId`
+
+The unique identifier of the SQL Role Definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `builtInSqlRoleAssignments.name`
+
+The unique name of the role assignment.
+
+- Required: No
+- Type: string
 
 ### Parameter: `capabilitiesToAdd`
 
@@ -4383,50 +4463,9 @@ Default to 400. Request units per second. Will be ignored if autoscaleSettingsMa
 - Required: No
 - Type: int
 
-### Parameter: `sqlRoleAssignments`
-
-SQL Role Assignment configurations.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-sqlroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
-| [`sqlRoleDefinitionIdOrName`](#parameter-sqlroleassignmentssqlroledefinitionidorname) | string | The unique identifier or name for the associated SQL Role Definition. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-sqlroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
-
-### Parameter: `sqlRoleAssignments.principalId`
-
-The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `sqlRoleAssignments.sqlRoleDefinitionIdOrName`
-
-The unique identifier or name for the associated SQL Role Definition.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `sqlRoleAssignments.name`
-
-Name unique identifier of the SQL Role Assignment.
-
-- Required: No
-- Type: string
-
 ### Parameter: `sqlRoleDefinitions`
 
-SQL Role Definitions configurations.
+SQL Role Definitions configurations. Also allows the assignment of custom roles.
 
 - Required: No
 - Type: array
@@ -4441,9 +4480,10 @@ SQL Role Definitions configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`assignableScopes`](#parameter-sqlroledefinitionsassignablescopes) | array | A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account. |
 | [`dataActions`](#parameter-sqlroledefinitionsdataactions) | array | An array of data actions that are allowed. |
 | [`name`](#parameter-sqlroledefinitionsname) | string | The unique identifier of the Role Definition. |
-| [`roleType`](#parameter-sqlroledefinitionsroletype) | string | Indicates whether the Role Definition was built-in or user created. |
+| [`sqlRoleAssignments`](#parameter-sqlroledefinitionssqlroleassignments) | array | An array of SQL Role Assignments to be created for the SQL Role Definition. |
 
 ### Parameter: `sqlRoleDefinitions.roleName`
 
@@ -4451,6 +4491,13 @@ A user-friendly name for the Role Definition. Must be unique for the database ac
 
 - Required: Yes
 - Type: string
+
+### Parameter: `sqlRoleDefinitions.assignableScopes`
+
+A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account.
+
+- Required: No
+- Type: array
 
 ### Parameter: `sqlRoleDefinitions.dataActions`
 
@@ -4466,19 +4513,38 @@ The unique identifier of the Role Definition.
 - Required: No
 - Type: string
 
-### Parameter: `sqlRoleDefinitions.roleType`
+### Parameter: `sqlRoleDefinitions.sqlRoleAssignments`
 
-Indicates whether the Role Definition was built-in or user created.
+An array of SQL Role Assignments to be created for the SQL Role Definition.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-sqlroledefinitionssqlroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqlroledefinitionssqlroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+
+### Parameter: `sqlRoleDefinitions.sqlRoleAssignments.principalId`
+
+The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.sqlRoleAssignments.name`
+
+Name unique identifier of the SQL Role Assignment.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'BuiltInRole'
-    'CustomRole'
-  ]
-  ```
 
 ### Parameter: `tables`
 
