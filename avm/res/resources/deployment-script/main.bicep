@@ -139,7 +139,7 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(storageAccountResourceId)) {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = if (!empty(storageAccountResourceId)) {
   name: last(split((!empty(storageAccountResourceId) ? storageAccountResourceId : 'dummyAccount'), '/'))!
   scope: resourceGroup(
     split((!empty(storageAccountResourceId) ? storageAccountResourceId : '//'), '/')[2],

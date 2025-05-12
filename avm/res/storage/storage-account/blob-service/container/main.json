@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "18323658180545633760"
+      "version": "0.35.1.17967",
+      "templateHash": "16608863835956278253"
     },
     "name": "Storage Account Blob Containers",
     "description": "This module deploys a Storage Account Blob Container."
@@ -111,7 +111,7 @@
     },
     "defaultEncryptionScope": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Default the container to use specified encryption scope for all writes."
       }
@@ -160,10 +160,13 @@
     },
     "metadata": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. A name-value pair to associate with the container as metadata."
-      }
+      },
+      "defaultValue": {}
     },
     "publicAccess": {
       "type": "string",
@@ -216,21 +219,21 @@
     "storageAccount::blobServices": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts/blobServices",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]"
     },
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('storageAccountName')]"
     },
     "container": {
       "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), parameters('blobServiceName'), parameters('name'))]",
       "properties": {
-        "defaultEncryptionScope": "[if(not(empty(parameters('defaultEncryptionScope'))), parameters('defaultEncryptionScope'), null())]",
+        "defaultEncryptionScope": "[parameters('defaultEncryptionScope')]",
         "denyEncryptionScopeOverride": "[parameters('denyEncryptionScopeOverride')]",
         "enableNfsV3AllSquash": "[if(equals(parameters('enableNfsV3AllSquash'), true()), parameters('enableNfsV3AllSquash'), null())]",
         "enableNfsV3RootSquash": "[if(equals(parameters('enableNfsV3RootSquash'), true()), parameters('enableNfsV3RootSquash'), null())]",
@@ -294,8 +297,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "17697427281813403944"
+              "version": "0.35.1.17967",
+              "templateHash": "16507112099495773673"
             },
             "name": "Storage Account Blob Container Immutability Policies",
             "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -339,7 +342,7 @@
           "resources": [
             {
               "type": "Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/{1}/{2}/{3}', parameters('storageAccountName'), 'default', parameters('containerName'), 'default')]",
               "properties": {
                 "immutabilityPeriodSinceCreationInDays": "[parameters('immutabilityPeriodSinceCreationInDays')]",

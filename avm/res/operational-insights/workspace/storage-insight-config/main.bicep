@@ -19,7 +19,7 @@ param tables string[]?
 @description('Optional. Tags to configure in the resource.')
 param tags object?
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: last(split(storageAccountResourceId, '/'))!
 }
 
