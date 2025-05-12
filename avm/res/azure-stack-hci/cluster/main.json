@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "17410613655364857514"
+      "templateHash": "16978206902562336432"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -497,39 +497,6 @@
             "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster."
           }
         }
-      }
-    },
-    "keyVaultSecretNamesType": {
-      "type": "object",
-      "properties": {
-        "azureStackLCMUserCredential": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the Azure Stack HCI LCM user credential secret."
-          }
-        },
-        "localAdminCredential": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the Azure Stack HCI local admin credential secret."
-          }
-        },
-        "defaultARBApplication": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the Azure Stack HCI default ARB application secret."
-          }
-        },
-        "witnessStorageKey": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the Azure Stack HCI witness storage key secret."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Key vault secret names interface"
       }
     },
     "roleAssignmentType": {
