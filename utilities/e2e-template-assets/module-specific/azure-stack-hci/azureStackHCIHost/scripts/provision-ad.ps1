@@ -1,0 +1,51 @@
+﻿# idempotent: TBD
+# TODO: no try, try outside
+
+param(
+    [Parameter(Mandatory = $true)]
+    [string]$IP, # or name
+    [Parameter(Mandatory = $false)]
+    [int]$Port = 5985,
+    [Parameter(Mandatory = $false)]
+    [string]$Authentication = 'Default',
+    [Parameter(Mandatory = $true)]
+    [string]$DomainFQDN,
+    [Parameter(Mandatory = $true)]
+    [string]$AdministratorAccount,
+    [Parameter(Mandatory = $true)]
+    [string]$AdministratorPassword,
+    [Parameter(Mandatory = $true)]
+    [string]$ADOUPath,
+    [Parameter(Mandatory = $true)]
+    [string]$deploymentUserAccount,
+    [Parameter(Mandatory = $true)]
+    [string]$deploymentUserPassword
+)
+
+$script:ErrorActionPreference = 'Stop'
+
+Start-Sleep -Seconds 180 # sleep for 3 minutes
+
+try {
+    $username = "$($DomainFQDN.Split('.')[0])\$AdministratorAccount"
+    $securePassword = ConvertTo-SecureString $AdministratorPassword -AsPlainText -Force
+    $credential = New-Object System.Management.Automation.PSCredential -ArgumentList $username, $securePassword
+    $session = New-PSSession -ComputerName $IP -Port $Port -Authentication $Authentication -Credential $credential
+
+    Invoke-Command -Session $session -ScriptBlock {
+        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:$false -Verbose
+        Install-Module AsHciADArtifactsPreCreationTool -Repository PSGallery -Force -Confirm:$false -Verbose
+        Add-KdsRootKey -EffectiveTime ((Get-Date).addhours(-10)) -Verbose # TODO: is this idempotent?
+
+        $deploymentSecurePassword = ConvertTo-SecureString $Using:deploymentUserPassword -AsPlainText -Force
+        $lcmCredential = New-Object System.Management.Automation.PSCredential -ArgumentList $Using:deploymentUserAccount, $deploymentSecurePassword
+        New-HciAdObjectsPreCreation -AzureStackLCMUserCredential $lcmCredential -AsHciOUName $Using:ADOUPath -Verbose
+        # automatically skipped if it exists
+    }
+} catch {
+    Write-Error $_
+} finally {
+    if ($session) {
+        Remove-PSSession -Session $session
+    }
+}

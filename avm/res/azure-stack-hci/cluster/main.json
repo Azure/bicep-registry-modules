@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "956420421248843753"
+      "version": "0.35.1.17967",
+      "templateHash": "102143170251546544"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -973,8 +973,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "13439816736266620515"
+              "version": "0.35.1.17967",
+              "templateHash": "17734334454941239273"
             }
           },
           "parameters": {
@@ -1192,7 +1192,7 @@
               "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-WitnessStorageKey-{1}', parameters('clusterName'), parameters('cloudId')))]",
               "properties": {
                 "contentType": "[parameters('witnessStoragekeyContentType')]",
-                "value": "[base64(listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('witnessStorageAccountSubscriptionId'), parameters('witnessStorageAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value)]",
+                "value": "[base64(listKeys('witnessStorageAccount', '2023-01-01').keys[0].value)]",
                 "attributes": {
                   "enabled": true
                 }
@@ -1350,8 +1350,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12398547587936092834"
+              "version": "0.35.1.17967",
+              "templateHash": "15018461677267759264"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
