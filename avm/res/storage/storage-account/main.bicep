@@ -145,7 +145,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.tags = {}
+param tags resourceInput<'Microsoft.Storage/storageAccounts@2024-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
