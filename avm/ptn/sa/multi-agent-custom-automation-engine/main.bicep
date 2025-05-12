@@ -4,7 +4,8 @@ extension graphV1
 metadata name = '<Add module name>'
 metadata description = '<Add description>'
 
-@description('Required. Name of the resource to create.')
+@description('Required. The prefix to add in the default names given to all deployed Azure resources.')
+@maxLength(19)
 param solutionPrefix string
 
 @description('Optional. Location for all Resources.')
@@ -12,6 +13,143 @@ param solutionLocation string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The tags to apply to all deployed Azure resources.')
+param tags object = {
+  app: solutionPrefix
+  location: solutionLocation
+}
+
+@description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Log Analytics Workspace resource.')
+param logAnalyticsWorkspaceConfiguration logAnalyticsWorkspaceConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}laws'
+  location: solutionLocation
+  sku: 'PerGB2018'
+  tags: tags
+  dataRetentionInDays: 30
+}
+
+@description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Application Insights resource.')
+param applicationInsightsConfiguration applicationInsightsConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}appi'
+  location: solutionLocation
+  tags: tags
+  retentionInDays: 30
+}
+
+@description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Managed Identity resource.')
+param userAssignedManagedIdentityConfiguration userAssignedManagedIdentityType = {
+  enabled: true
+  name: '${solutionPrefix}mgid'
+  location: solutionLocation
+  tags: tags
+}
+
+@description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the backend subnet.')
+param networkSecurityGroupBackendConfiguration networkSecurityGroupConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}nsgr-backend'
+  location: solutionLocation
+  tags: tags
+  securityRules: [
+    // {
+    //   name: 'DenySshRdpOutbound' //Azure Bastion
+    //   properties: {
+    //     priority: 200
+    //     access: 'Deny'
+    //     protocol: '*'
+    //     direction: 'Outbound'
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     sourcePortRange: '*'
+    //     destinationAddressPrefix: '*'
+    //     destinationPortRanges: [
+    //       '3389'
+    //       '22'
+    //     ]
+    //   }
+    // }
+  ]
+}
+
+@description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the containers subnet.')
+param networkSecurityGroupContainersConfiguration networkSecurityGroupConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}nsgr-containers'
+  location: solutionLocation
+  tags: tags
+  securityRules: [
+    // {
+    //   name: 'DenySshRdpOutbound' //Azure Bastion
+    //   properties: {
+    //     priority: 200
+    //     access: 'Deny'
+    //     protocol: '*'
+    //     direction: 'Outbound'
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     sourcePortRange: '*'
+    //     destinationAddressPrefix: '*'
+    //     destinationPortRanges: [
+    //       '3389'
+    //       '22'
+    //     ]
+    //   }
+    // }
+  ]
+}
+
+@description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the Bastion subnet.')
+param networkSecurityGroupBastionConfiguration networkSecurityGroupConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}nsgr-bastion'
+  location: solutionLocation
+  tags: tags
+  securityRules: [
+    // {
+    //   name: 'DenySshRdpOutbound' //Azure Bastion
+    //   properties: {
+    //     priority: 200
+    //     access: 'Deny'
+    //     protocol: '*'
+    //     direction: 'Outbound'
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     sourcePortRange: '*'
+    //     destinationAddressPrefix: '*'
+    //     destinationPortRanges: [
+    //       '3389'
+    //       '22'
+    //     ]
+    //   }
+    // }
+  ]
+}
+
+@description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the administration subnet.')
+param networkSecurityGroupAdministrationConfiguration networkSecurityGroupConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}nsgr-administration'
+  location: solutionLocation
+  tags: tags
+  securityRules: [
+    // {
+    //   name: 'DenySshRdpOutbound' //Azure Bastion
+    //   properties: {
+    //     priority: 200
+    //     access: 'Deny'
+    //     protocol: '*'
+    //     direction: 'Outbound'
+    //     sourceAddressPrefix: 'VirtualNetwork'
+    //     sourcePortRange: '*'
+    //     destinationAddressPrefix: '*'
+    //     destinationPortRanges: [
+    //       '3389'
+    //       '22'
+    //     ]
+    //   }
+    // }
+  ]
+}
 
 @description('Optional. Configuration for the virtual machine.')
 param virtualMachineConfiguration virtualMachineConfigurationType = {
@@ -28,14 +166,8 @@ param virtualNetworkConfiguration virtualNetworkConfigurationType = {
 var virtualNetworkEnabled = virtualNetworkConfiguration.?enabled ?? true
 
 @description('Optional. The configuration of the Entra ID Application used to authenticate the website.')
-param entraIdApplicationConfiguration macaeEntraIdApplicationFarmType = {
+param entraIdApplicationConfiguration entraIdApplicationConfigurationType = {
   enabled: false
-}
-
-@description('Optional. The tags to apply to all deployed Azure resources.')
-param tags object = {
-  app: solutionPrefix
-  location: solutionLocation
 }
 
 @description('Optional. The UTC time deployment.')
@@ -69,85 +201,205 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 } */
 
 // ========== Log Analytics Workspace ========== //
-var logAnalyticsWorkspaceName = '${solutionPrefix}laws'
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
-  name: 'avm.ptn.sa.macae.operational-insights-workspace'
+// Log Analytics configuration defaults
+var logAnalyticsWorkspaceEnabled = logAnalyticsWorkspaceConfiguration.?enabled ?? true
+var logAnalyticsWorkspaceResourceName = logAnalyticsWorkspaceConfiguration.?name ?? '${solutionPrefix}-laws'
+var logAnalyticsWorkspaceTags = logAnalyticsWorkspaceConfiguration.?tags ?? tags
+var logAnalyticsWorkspaceLocation = logAnalyticsWorkspaceConfiguration.?location ?? solutionLocation
+var logAnalyticsWorkspaceSkuName = logAnalyticsWorkspaceConfiguration.?sku ?? 'PerGB2018'
+var logAnalyticsWorkspaceDataRetentionInDays = logAnalyticsWorkspaceConfiguration.?dataRetentionInDays ?? 30
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (logAnalyticsWorkspaceEnabled) {
+  name: substring('operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 0, 64)
   params: {
-    name: logAnalyticsWorkspaceName
-    tags: tags
-    location: solutionLocation
+    name: logAnalyticsWorkspaceResourceName
+    tags: logAnalyticsWorkspaceTags
+    location: logAnalyticsWorkspaceLocation
     enableTelemetry: enableTelemetry
-    skuName: 'PerGB2018'
-    dataRetention: 30
+    skuName: logAnalyticsWorkspaceSkuName
+    dataRetention: logAnalyticsWorkspaceDataRetentionInDays
     diagnosticSettings: [{ useThisWorkspace: true }]
   }
 }
 
 // ========== Application Insights ========== //
-module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
-  name: 'avm.ptn.sa.macae.insights-component'
+// Application Insights configuration defaults
+var applicationInsightsEnabled = applicationInsightsConfiguration.?enabled ?? true
+var applicationInsightsResourceName = applicationInsightsConfiguration.?name ?? '${solutionPrefix}appi'
+var applicationInsightsTags = applicationInsightsConfiguration.?tags ?? tags
+var applicationInsightsLocation = applicationInsightsConfiguration.?location ?? solutionLocation
+var applicationInsightsRetentionInDays = applicationInsightsConfiguration.?retentionInDays ?? 365
+module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (applicationInsightsEnabled) {
+  name: substring('insights.component.${applicationInsightsResourceName}', 0, 64)
   params: {
-    name: '${solutionPrefix}appi'
+    name: applicationInsightsResourceName
     workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-    tags: tags
-    location: solutionLocation
+    location: applicationInsightsLocation
     enableTelemetry: enableTelemetry
+    tags: applicationInsightsTags
+    retentionInDays: applicationInsightsRetentionInDays
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     kind: 'web'
     disableIpMasking: false
     flowType: 'Bluefield'
-    requestSource: 'rest'
   }
 }
 
 // ========== User assigned identity Web App ========== //
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
-  name: 'avm.ptn.sa.macae.managed-identity-assigned-identity'
+var userAssignedManagedIdentityEnabled = userAssignedManagedIdentityConfiguration.?enabled ?? true
+var userAssignedManagedIdentityResourceName = userAssignedManagedIdentityConfiguration.?name ?? '${solutionPrefix}uaid'
+var userAssignedManagedIdentityTags = userAssignedManagedIdentityConfiguration.?tags ?? tags
+var userAssignedManagedIdentityLocation = userAssignedManagedIdentityConfiguration.?location ?? solutionLocation
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (userAssignedManagedIdentityEnabled) {
+  name: substring('managed-identity.user-assigned-identity.${userAssignedManagedIdentityResourceName}', 0, 64)
   params: {
-    name: '${solutionPrefix}uaid'
-    tags: tags
-    location: solutionLocation
+    name: userAssignedManagedIdentityResourceName
+    tags: userAssignedManagedIdentityTags
+    location: userAssignedManagedIdentityLocation
     enableTelemetry: enableTelemetry
   }
 }
 
 // ========== Network Security Groups ========== //
-
-//TODO: Add diagnostic settings to the network security group
-
-module networkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled) {
-  name: 'avm.ptn.sa.macae.network-network-security-group-default'
+var networkSecurityGroupBackendEnabled = networkSecurityGroupBackendConfiguration.?enabled ?? true
+var networkSecurityGroupBackendResourceName = networkSecurityGroupBackendConfiguration.?name ?? '${solutionPrefix}nsgr-backend'
+var networkSecurityGroupBackendTags = networkSecurityGroupBackendConfiguration.?tags ?? tags
+var networkSecurityGroupBackendLocation = networkSecurityGroupBackendConfiguration.?location ?? solutionLocation
+var networkSecurityGroupBackendSecurityRules = networkSecurityGroupBackendConfiguration.?securityRules ?? [
+  // {
+  //   name: 'DenySshRdpOutbound' //Azure Bastion
+  //   properties: {
+  //     priority: 200
+  //     access: 'Deny'
+  //     protocol: '*'
+  //     direction: 'Outbound'
+  //     sourceAddressPrefix: 'VirtualNetwork'
+  //     sourcePortRange: '*'
+  //     destinationAddressPrefix: '*'
+  //     destinationPortRanges: [
+  //       '3389'
+  //       '22'
+  //     ]
+  //   }
+  // }
+]
+module networkSecurityGroupBackend 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupBackendEnabled) {
+  name: substring('network.network-security-group.${networkSecurityGroupBackendResourceName}', 0, 64)
   params: {
-    name: '${solutionPrefix}nsgr'
-    location: solutionLocation
-    tags: tags
+    name: networkSecurityGroupBackendResourceName
+    location: networkSecurityGroupBackendLocation
+    tags: networkSecurityGroupBackendTags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    securityRules: [
-      // {
-      //   name: 'DenySshRdpOutbound' //Azure Bastion
-      //   properties: {
-      //     priority: 200
-      //     access: 'Deny'
-      //     protocol: '*'
-      //     direction: 'Outbound'
-      //     sourceAddressPrefix: 'VirtualNetwork'
-      //     sourcePortRange: '*'
-      //     destinationAddressPrefix: '*'
-      //     destinationPortRanges: [
-      //       '3389'
-      //       '22'
-      //     ]
-      //   }
-      // }
-    ]
+    securityRules: networkSecurityGroupBackendSecurityRules
+  }
+}
+
+var networkSecurityGroupContainersEnabled = networkSecurityGroupContainersConfiguration.?enabled ?? true
+var networkSecurityGroupContainersResourceName = networkSecurityGroupContainersConfiguration.?name ?? '${solutionPrefix}nsgr-containers'
+var networkSecurityGroupContainersTags = networkSecurityGroupContainersConfiguration.?tags ?? tags
+var networkSecurityGroupContainersLocation = networkSecurityGroupContainersConfiguration.?location ?? solutionLocation
+var networkSecurityGroupContainersSecurityRules = networkSecurityGroupContainersConfiguration.?securityRules ?? [
+  // {
+  //   name: 'DenySshRdpOutbound' //Azure Bastion
+  //   properties: {
+  //     priority: 200
+  //     access: 'Deny'
+  //     protocol: '*'
+  //     direction: 'Outbound'
+  //     sourceAddressPrefix: 'VirtualNetwork'
+  //     sourcePortRange: '*'
+  //     destinationAddressPrefix: '*'
+  //     destinationPortRanges: [
+  //       '3389'
+  //       '22'
+  //     ]
+  //   }
+  // }
+]
+module networkSecurityGroupContainers 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupContainersEnabled) {
+  name: substring('network.network-security-group.${networkSecurityGroupContainersResourceName}', 0, 64)
+  params: {
+    name: networkSecurityGroupContainersResourceName
+    location: networkSecurityGroupContainersLocation
+    tags: networkSecurityGroupContainersTags
+    enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    securityRules: networkSecurityGroupContainersSecurityRules
+  }
+}
+
+var networkSecurityGroupBastionEnabled = networkSecurityGroupBastionConfiguration.?enabled ?? true
+var networkSecurityGroupBastionResourceName = networkSecurityGroupBastionConfiguration.?name ?? '${solutionPrefix}nsgr-bastion'
+var networkSecurityGroupBastionTags = networkSecurityGroupBastionConfiguration.?tags ?? tags
+var networkSecurityGroupBastionLocation = networkSecurityGroupBastionConfiguration.?location ?? solutionLocation
+var networkSecurityGroupBastionSecurityRules = networkSecurityGroupBastionConfiguration.?securityRules ?? [
+  // {
+  //   name: 'DenySshRdpOutbound' //Azure Bastion
+  //   properties: {
+  //     priority: 200
+  //     access: 'Deny'
+  //     protocol: '*'
+  //     direction: 'Outbound'
+  //     sourceAddressPrefix: 'VirtualNetwork'
+  //     sourcePortRange: '*'
+  //     destinationAddressPrefix: '*'
+  //     destinationPortRanges: [
+  //       '3389'
+  //       '22'
+  //     ]
+  //   }
+  // }
+]
+module networkSecurityGroupBastion 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupBastionEnabled) {
+  name: substring('network.network-security-group.${networkSecurityGroupBastionResourceName}', 0, 64)
+  params: {
+    name: networkSecurityGroupBastionResourceName
+    location: networkSecurityGroupBastionLocation
+    tags: networkSecurityGroupBastionTags
+    enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    securityRules: networkSecurityGroupBastionSecurityRules
+  }
+}
+
+var networkSecurityGroupAdministrationEnabled = networkSecurityGroupAdministrationConfiguration.?enabled ?? true
+var networkSecurityGroupAdministrationResourceName = networkSecurityGroupAdministrationConfiguration.?name ?? '${solutionPrefix}nsgr-administration'
+var networkSecurityGroupAdministrationTags = networkSecurityGroupAdministrationConfiguration.?tags ?? tags
+var networkSecurityGroupAdministrationLocation = networkSecurityGroupAdministrationConfiguration.?location ?? solutionLocation
+var networkSecurityGroupAdministrationSecurityRules = networkSecurityGroupAdministrationConfiguration.?securityRules ?? [
+  // {
+  //   name: 'DenySshRdpOutbound' //Azure Bastion
+  //   properties: {
+  //     priority: 200
+  //     access: 'Deny'
+  //     protocol: '*'
+  //     direction: 'Outbound'
+  //     sourceAddressPrefix: 'VirtualNetwork'
+  //     sourcePortRange: '*'
+  //     destinationAddressPrefix: '*'
+  //     destinationPortRanges: [
+  //       '3389'
+  //       '22'
+  //     ]
+  //   }
+  // }
+]
+module networkSecurityGroupAdministration 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupAdministrationEnabled) {
+  name: substring('network.network-security-group.${networkSecurityGroupAdministrationResourceName}', 0, 64)
+  params: {
+    name: networkSecurityGroupAdministrationResourceName
+    location: networkSecurityGroupAdministrationLocation
+    tags: networkSecurityGroupAdministrationTags
+    enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    securityRules: networkSecurityGroupAdministrationSecurityRules
   }
 }
 
 // ========== Virtual Network ========== //
 
 module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (virtualNetworkEnabled) {
-  name: 'avm.ptn.sa.macae.network-virtual-network'
+  name: 'network-virtual-network'
   params: {
     name: '${solutionPrefix}vnet'
     location: solutionLocation
@@ -157,10 +409,10 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
     subnets: [
       // The default subnet **must** be the first in the subnets array
       {
-        name: 'multi-agent-custom-automation-engine'
-        addressPrefix: '10.0.0.0/24'
+        name: 'backend'
+        addressPrefix: '10.0.0.0/27'
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
+        networkSecurityGroupResourceId: networkSecurityGroupBackend.outputs.resourceId
       }
       {
         // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
@@ -169,27 +421,21 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
         addressPrefix: '10.0.2.0/23' //subnet of size /23 is required for container app
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
         delegation: 'Microsoft.App/environments'
-        networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
+        networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
       }
       {
-        name: 'AzureBastionSubnet'
+        name: 'AzureBastionSubnet' //This exact name is required for Azure Bastion
         addressPrefix: '10.0.4.0/26'
-        networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
+        networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
       }
       {
-        name: 'virtual-machines'
+        name: 'administration'
         addressPrefix: '10.0.4.64/26'
-        networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
+        networkSecurityGroupResourceId: networkSecurityGroupAdministration.outputs.resourceId
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
         //natGatewayResourceId: natGateway.outputs.resourceId
-      }
-      {
-        name: 'application-gateway'
-        addressPrefix: '10.0.5.0/24'
-        networkSecurityGroupResourceId: networkSecurityGroup.outputs.resourceId
-        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
       }
     ]
   }
@@ -221,7 +467,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualN
 // ========== Virtual machine ========== //
 
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = if (virtualNetworkEnabled && virtualMachineEnabled) {
-  name: 'avm.ptn.sa.macae.compute-virtual-machine'
+  name: 'compute-virtual-machine'
   params: {
     name: '${solutionPrefix}vmws'
     computerName: take('${solutionPrefix}vmws', 15)
@@ -308,7 +554,7 @@ var aiFoundryAiServicesModelDeployment = {
 
 var aiFoundryAiServicesAccountName = '${solutionPrefix}aifdaisv'
 module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
-  name: 'avm.ptn.sa.macae.cognitive-services-account'
+  name: 'cognitive-services-account'
   params: {
     name: aiFoundryAiServicesAccountName
     tags: tags
@@ -392,7 +638,7 @@ module privateDnsZonesAiFoundryStorageAccount 'br/public:avm/res/network/private
 
 var aiFoundryStorageAccountName = '${solutionPrefix}aifdstrg'
 module aiFoundryStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
-  name: 'avm.ptn.sa.macae.storage-storage-account'
+  name: 'storage-storage-account'
   dependsOn: [
     privateDnsZonesAiFoundryStorageAccount
   ]
@@ -494,7 +740,7 @@ module aiFoundryAiHub 'modules/ai-hub.bicep' = {
 var aiFoundryAiProjectName = '${solutionPrefix}aifdaipj'
 
 module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = {
-  name: 'avm.ptn.sa.macae.machine-learning-services-workspace-project'
+  name: 'machine-learning-services-workspace-project'
   params: {
     name: aiFoundryAiProjectName
     location: solutionLocation
@@ -530,7 +776,7 @@ var cosmosDbName = '${solutionPrefix}csdb'
 var cosmosDbDatabaseName = 'autogen'
 var cosmosDbDatabaseMemoryContainerName = 'memory'
 module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
-  name: 'avm.ptn.sa.macae.cosmos-db'
+  name: 'cosmos-db'
   params: {
     // Required parameters
     name: cosmosDbName
@@ -621,7 +867,7 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = {
 }
 
 // module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.0' = {
-//   name: 'avm.ptn.sa.macae.container-app-environment'
+//   name: 'container-app-environment'
 //   params: {
 //     name: '${solutionPrefix}cenv'
 //     location: solutionLocation
@@ -650,7 +896,7 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = {
 
 // ========== Backend Container App Service ========== //
 module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
-  name: 'avm.ptn.sa.macae.container-app'
+  name: 'container-app'
   params: {
     name: '${solutionPrefix}capp'
     tags: tags
@@ -762,7 +1008,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
 
 // ========== Frontend server farm ========== //
 module webServerfarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
-  name: 'avm.ptn.sa.macae.web-server-farm'
+  name: 'web-server-farm'
   params: {
     tags: tags
     location: solutionLocation
@@ -814,7 +1060,7 @@ resource graphScopesAssignment 'Microsoft.Graph/oauth2PermissionGrants@v1.0' = i
 var webSiteName = '${solutionPrefix}wapp'
 var entraIdApplicationCredentialSecretSettingName = 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
 module webSite 'br/public:avm/res/web/site:0.15.1' = {
-  name: 'avm.ptn.sa.macae.web-site'
+  name: 'web-site'
   params: {
     tags: tags
     kind: 'app,linux,container'
@@ -931,6 +1177,92 @@ module webSite 'br/public:avm/res/web/site:0.15.1' = {
 //
 
 @export()
+@description('The type for the Multi-Agent Custom Automation Engine Log Analytics Workspace resource configuration.')
+type logAnalyticsWorkspaceConfigurationType = {
+  @description('Optional. If the Log Analytics Workspace resource should be enabled or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the Log Analytics Workspace resource.')
+  @maxLength(63)
+  name: string?
+
+  @description('Optional. Location for the Log Analytics Workspace resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to for the Log Analytics Workspace resource.')
+  tags: object?
+
+  @description('Optional. The SKU for the Log Analytics Workspace resource.')
+  sku: ('CapacityReservation' | 'Free' | 'LACluster' | 'PerGB2018' | 'PerNode' | 'Premium' | 'Standalone' | 'Standard')?
+
+  @description('Optional. The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days.')
+  @maxValue(730)
+  dataRetentionInDays: int?
+}
+
+@export()
+@description('The type for the Multi-Agent Custom Automation Engine Application Insights resource configuration.')
+type applicationInsightsConfigurationType = {
+  @description('Optional. If the Application Insights resource should be enabled or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the Application Insights resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the Application Insights resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the Application Insights resource.')
+  tags: object?
+
+  @description('Optional. The retention of Application Insights data in days. If empty, Standard will be used.')
+  retentionInDays: (120 | 180 | 270 | 30 | 365 | 550 | 60 | 730 | 90)?
+}
+
+@export()
+@description('The type for the Multi-Agent Custom Automation Engine Application User Assigned Managed Identity resource configuration.')
+type userAssignedManagedIdentityType = {
+  @description('Optional. If the User Assigned Managed Identity resource should be enabled or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the User Assigned Managed Identity resource.')
+  @maxLength(128)
+  name: string?
+
+  @description('Optional. Location for the User Assigned Managed Identity resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the User Assigned Managed Identity resource.')
+  tags: object?
+}
+
+@export()
+import { securityRuleType } from 'br/public:avm/res/network/network-security-group:0.5.1'
+@description('The type for the Multi-Agent Custom Automation Engine Network Security Group resource configuration.')
+type networkSecurityGroupConfigurationType = {
+  @description('Optional. If the Network Security Group resource should be enabled or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the Network Security Group resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the Network Security Group resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the Network Security Group resource.')
+  tags: object?
+
+  @description('Optional. The security rules to set for the Network Security Group resource.')
+  securityRules: securityRuleType[]?
+}
+
+@export()
 @description('The type for the Multi-Agent Custom Automation virtual machine resource configuration.')
 type virtualMachineConfigurationType = {
   @description('Optional. If the Virtual Machine resource should be enabled or not.')
@@ -952,8 +1284,8 @@ type virtualNetworkConfigurationType = {
 }
 
 @export()
-@description('The type for the Multi-Agent Custom Automation Entra ID Application resource configuration.')
-type macaeEntraIdApplicationFarmType = {
+@description('The type for the Multi-Agent Custom Automation Engine Entra ID Application resource configuration.')
+type entraIdApplicationConfigurationType = {
   @description('Optional. If the Entra ID Application for website authentication should be enabled or not.')
   enabled: bool?
 }
