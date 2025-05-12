@@ -415,27 +415,29 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
         networkSecurityGroupResourceId: networkSecurityGroupBackend.outputs.resourceId
       }
       {
+        name: 'administration'
+        addressPrefix: '10.0.0.32/27'
+        networkSecurityGroupResourceId: networkSecurityGroupAdministration.outputs.resourceId
+        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
+        //natGatewayResourceId: natGateway.outputs.resourceId
+      }
+      {
+        // For Azure Bastion resources deployed on or after November 2, 2021, the minimum AzureBastionSubnet size is /26 or larger (/25, /24, etc.).
+        // https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#subnet
+        name: 'AzureBastionSubnet' //This exact name is required for Azure Bastion
+        addressPrefix: '10.0.0.64/26'
+        networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
+      }
+      {
         // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
         // https://learn.microsoft.com/en-us/azure/container-apps/networking?tabs=workload-profiles-env%2Cazure-cli#custom-vnet-configuration
         name: 'containers'
-        addressPrefix: '10.0.2.0/23' //subnet of size /23 is required for container app
+        addressPrefix: '10.0.1.0/23' //subnet of size /23 is required for container app
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
         delegation: 'Microsoft.App/environments'
         networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Enabled'
-      }
-      {
-        name: 'AzureBastionSubnet' //This exact name is required for Azure Bastion
-        addressPrefix: '10.0.4.0/26'
-        networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
-      }
-      {
-        name: 'administration'
-        addressPrefix: '10.0.4.64/26'
-        networkSecurityGroupResourceId: networkSecurityGroupAdministration.outputs.resourceId
-        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        //natGatewayResourceId: natGateway.outputs.resourceId
       }
     ]
   }
@@ -484,7 +486,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = if (v
         ipConfigurations: [
           {
             name: 'ipconfig01'
-            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[3]
+            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
             diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
           }
         ]
@@ -860,7 +862,7 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = {
     vnetConfiguration: virtualNetworkEnabled
       ? {
           internal: false
-          infrastructureSubnetId: virtualNetwork.?outputs.?subnetResourceIds[1] ?? ''
+          infrastructureSubnetId: virtualNetwork.?outputs.?subnetResourceIds[2] ?? ''
         }
       : {}
   }
