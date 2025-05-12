@@ -4,7 +4,7 @@ metadata description = 'This module deploys an Event Grid Domain Event Subscript
 @description('Required. The name of the Event Subscription.')
 param name string
 
-@description('Required. Name of the Event Grid Domain.')
+@description('Conditional. The name of the parent event grid domain. Required if the template is used in a standalone deployment.')
 param domainName string
 
 @description('Optional. Dead Letter Destination. See DeadLetterDestination objects for full shape.')
