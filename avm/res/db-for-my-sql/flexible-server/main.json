@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "2595521532676644868"
+      "version": "0.35.1.17967",
+      "templateHash": "12406605707398321934"
     },
     "name": "DBforMySQL Flexible Servers",
     "description": "This module deploys a DBforMySQL Flexible Server."
@@ -740,10 +740,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "administratorLogin": {
       "type": "string",
@@ -784,23 +787,28 @@
       }
     },
     "availabilityZone": {
-      "type": "string",
-      "defaultValue": "",
+      "type": "int",
       "allowedValues": [
-        "",
-        "1",
-        "2",
-        "3"
+        -1,
+        1,
+        2,
+        3
       ],
       "metadata": {
-        "description": "Optional. Availability zone information of the server. Default will have no preference set."
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
       }
     },
     "highAvailabilityZone": {
-      "type": "string",
-      "defaultValue": "",
+      "type": "int",
+      "defaultValue": -1,
+      "allowedValues": [
+        -1,
+        1,
+        2,
+        3
+      ],
       "metadata": {
-        "description": "Optional. Standby availability zone information of the server. Default will have no preference set."
+        "description": "Optional. Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set."
       }
     },
     "backupRetentionDays": {
@@ -871,10 +879,13 @@
     },
     "maintenanceWindow": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview#properties/properties/properties/maintenanceWindow"
+        },
         "description": "Optional. Properties for the maintenence window. If provided, \"customWindow\" property must exist and set to \"Enabled\"."
-      }
+      },
+      "defaultValue": {}
     },
     "delegatedSubnetResourceId": {
       "type": "string",
@@ -1167,7 +1178,7 @@
       "properties": {
         "administratorLogin": "[parameters('administratorLogin')]",
         "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
-        "availabilityZone": "[parameters('availabilityZone')]",
+        "availabilityZone": "[if(not(equals(parameters('availabilityZone'), -1)), string(parameters('availabilityZone')), null())]",
         "backup": {
           "backupRetentionDays": "[parameters('backupRetentionDays')]",
           "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
@@ -1176,7 +1187,7 @@
         "dataEncryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('type', 'AzureKeyVault', 'geoBackupKeyURI', if(equals(parameters('geoRedundantBackup'), 'Enabled'), if(not(empty(coalesce(tryGet(parameters('customerManagedKeyGeo'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKGeoKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKeyGeo'), 'keyVersion')), reference('cMKGeoKeyVault::cMKKey').keyUriWithVersion), null()), 'geoBackupUserAssignedIdentityId', if(equals(parameters('geoRedundantBackup'), 'Enabled'), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKeyGeo'), 'userAssignedIdentityResourceId'), '/'))), null()), 'primaryKeyURI', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion), 'primaryUserAssignedIdentityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')))), null())]",
         "highAvailability": {
           "mode": "[parameters('highAvailability')]",
-          "standbyAvailabilityZone": "[variables('standByAvailabilityZone')]"
+          "standbyAvailabilityZone": "[string(variables('standByAvailabilityZone'))]"
         },
         "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
         "network": {
@@ -1196,8 +1207,8 @@
         "version": "[parameters('version')]"
       },
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
-        "cMKGeoKeyVault::cMKKey"
+        "cMKGeoKeyVault::cMKKey",
+        "cMKKeyVault::cMKKey"
       ]
     },
     "flexibleServer_lock": {
@@ -1310,8 +1321,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "9536567922805877221"
+              "version": "0.35.1.17967",
+              "templateHash": "2955956350764800573"
             },
             "name": "DBforMySQL Flexible Server Databases",
             "description": "This module deploys a DBforMySQL Flexible Server Database."
@@ -1417,8 +1428,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "1593085125129323509"
+              "version": "0.35.1.17967",
+              "templateHash": "13205111229653853203"
             },
             "name": "DBforMySQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforMySQL Flexible Server Firewall Rule."
@@ -1525,8 +1536,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5657261123972518257"
+              "version": "0.35.1.17967",
+              "templateHash": "13376891899605729407"
             },
             "name": "DBforMySQL Flexible Server Administrators",
             "description": "This module deploys a DBforMySQL Flexible Server Administrator."
@@ -1630,8 +1641,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "11040576945573033575"
+              "version": "0.35.1.17967",
+              "templateHash": "11570396191515565787"
             },
             "name": "DBforMySQL Flexible Server Advanced Threat Protection",
             "description": "This module enables Advanced Threat Protection for DBforMySQL Flexible Server."
