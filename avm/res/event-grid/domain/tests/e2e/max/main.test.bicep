@@ -160,7 +160,7 @@ module testDeployment '../../../main.bicep' = [
             endpointType: 'StorageQueue'
             properties: {
               resourceId: nestedDependencies.outputs.storageAccountResourceId 
-              queueName: 'eventgridtestqueue'    
+              queueName: nestedDependencies.outputs.storageQueueName
             }
           }
           filter: {
