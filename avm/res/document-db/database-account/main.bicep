@@ -440,7 +440,7 @@ module databaseAccount_sqlRoleAssignments 'sql-role-assignment/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-sqlra-${index}'
     params: {
       databaseAccountName: databaseAccount.name
-      sqlRoleDefinitionIdOrName: sqlRoleAssignment.roleDefinitionId
+      sqlRoleDefinitionIdOrName: sqlRoleAssignment.sqlRoleDefinitionIdOrName
       principalId: sqlRoleAssignment.principalId
       name: sqlRoleAssignment.?name
     }

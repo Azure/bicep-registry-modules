@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "8583431698331563455"
+      "templateHash": "6219593852624215631"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account."
@@ -2042,7 +2042,7 @@
             "value": "[parameters('name')]"
           },
           "sqlRoleDefinitionIdOrName": {
-            "value": "[coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
+            "value": "[coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()].sqlRoleDefinitionIdOrName]"
           },
           "principalId": {
             "value": "[coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()].principalId]"
@@ -2059,7 +2059,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "2623212319644208056"
+              "templateHash": "7875904026318222775"
             },
             "name": "DocumentDB Database Account SQL Role Assignments.",
             "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -2092,7 +2092,7 @@
             }
           },
           "variables": {
-            "formattedRoleDefinition": "[if(contains(parameters('sqlRoleDefinitionIdOrName'), 'sqlRoleDefinitions'), parameters('sqlRoleDefinitionIdOrName'), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), parameters('sqlRoleDefinitionIdOrName')))]"
+            "formattedRoleDefinition": "[if(contains(parameters('sqlRoleDefinitionIdOrName'), '/sqlRoleDefinitions/'), parameters('sqlRoleDefinitionIdOrName'), resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), parameters('sqlRoleDefinitionIdOrName')))]"
           },
           "resources": {
             "sqlRoleDefinition": {

@@ -13,7 +13,7 @@ param principalId string
 @description('Required. The unique identifier or name for the associated SQL Role Definition.')
 param sqlRoleDefinitionIdOrName string
 
-var formattedRoleDefinition = contains(sqlRoleDefinitionIdOrName, 'sqlRoleDefinitions')
+var formattedRoleDefinition = contains(sqlRoleDefinitionIdOrName, '/sqlRoleDefinitions/')
   ? sqlRoleDefinitionIdOrName
   : sqlRoleDefinition.id
 
