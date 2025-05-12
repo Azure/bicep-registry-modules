@@ -56,6 +56,7 @@ param enableTelemetry bool = true
 
 @description('Optional. The topic names which are associated with the domain.')
 param topics array?
+
 @description('Optional. Event subscriptions to deploy.')
 param eventSubscriptions array?
 
