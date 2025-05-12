@@ -56,23 +56,21 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-resource StorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: storageAccountName
   location: location
   sku: {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
-}
 
-resource queueService 'Microsoft.Storage/storageAccounts/queueServices@2023-01-01' = {
-  name: 'default' 
-  parent: StorageAccount
-}
+  resource queueService 'queueServices@2023-01-01' = {
+    name: 'default'
 
-resource StorageQueue 'Microsoft.Storage/storageAccounts/queueServices/queues@2023-01-01' = {
-  name: storageQueueName
-  parent: queueService 
+    resource queue 'queues@2023-01-01' = {
+      name: 'eventgridtestqueue'
+    }
+  }
 }
 
 // --- OUTPUTS ---
