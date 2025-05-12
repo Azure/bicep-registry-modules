@@ -340,7 +340,7 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview
       : null
     highAvailability: {
       mode: highAvailability
-      standbyAvailabilityZone: string(standByAvailabilityZone)
+      standbyAvailabilityZone: standByAvailabilityZone != -1 ? string(standByAvailabilityZone) : null
     }
     maintenanceWindow: !empty(maintenanceWindow)
       ? {
