@@ -209,7 +209,7 @@ var logAnalyticsWorkspaceLocation = logAnalyticsWorkspaceConfiguration.?location
 var logAnalyticsWorkspaceSkuName = logAnalyticsWorkspaceConfiguration.?sku ?? 'PerGB2018'
 var logAnalyticsWorkspaceDataRetentionInDays = logAnalyticsWorkspaceConfiguration.?dataRetentionInDays ?? 30
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (logAnalyticsWorkspaceEnabled) {
-  name: substring('operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 0, 64)
+  name: take('operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
     tags: logAnalyticsWorkspaceTags
@@ -229,7 +229,7 @@ var applicationInsightsTags = applicationInsightsConfiguration.?tags ?? tags
 var applicationInsightsLocation = applicationInsightsConfiguration.?location ?? solutionLocation
 var applicationInsightsRetentionInDays = applicationInsightsConfiguration.?retentionInDays ?? 365
 module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (applicationInsightsEnabled) {
-  name: substring('insights.component.${applicationInsightsResourceName}', 0, 64)
+  name: take('insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName
     workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
@@ -250,7 +250,7 @@ var userAssignedManagedIdentityResourceName = userAssignedManagedIdentityConfigu
 var userAssignedManagedIdentityTags = userAssignedManagedIdentityConfiguration.?tags ?? tags
 var userAssignedManagedIdentityLocation = userAssignedManagedIdentityConfiguration.?location ?? solutionLocation
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (userAssignedManagedIdentityEnabled) {
-  name: substring('managed-identity.user-assigned-identity.${userAssignedManagedIdentityResourceName}', 0, 64)
+  name: take('managed-identity.user-assigned-identity.${userAssignedManagedIdentityResourceName}', 64)
   params: {
     name: userAssignedManagedIdentityResourceName
     tags: userAssignedManagedIdentityTags
@@ -283,7 +283,7 @@ var networkSecurityGroupBackendSecurityRules = networkSecurityGroupBackendConfig
   // }
 ]
 module networkSecurityGroupBackend 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupBackendEnabled) {
-  name: substring('network.network-security-group.${networkSecurityGroupBackendResourceName}', 0, 64)
+  name: take('network.network-security-group.${networkSecurityGroupBackendResourceName}', 64)
   params: {
     name: networkSecurityGroupBackendResourceName
     location: networkSecurityGroupBackendLocation
@@ -317,7 +317,7 @@ var networkSecurityGroupContainersSecurityRules = networkSecurityGroupContainers
   // }
 ]
 module networkSecurityGroupContainers 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupContainersEnabled) {
-  name: substring('network.network-security-group.${networkSecurityGroupContainersResourceName}', 0, 64)
+  name: take('network.network-security-group.${networkSecurityGroupContainersResourceName}', 64)
   params: {
     name: networkSecurityGroupContainersResourceName
     location: networkSecurityGroupContainersLocation
@@ -351,7 +351,7 @@ var networkSecurityGroupBastionSecurityRules = networkSecurityGroupBastionConfig
   // }
 ]
 module networkSecurityGroupBastion 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupBastionEnabled) {
-  name: substring('network.network-security-group.${networkSecurityGroupBastionResourceName}', 0, 64)
+  name: take('network.network-security-group.${networkSecurityGroupBastionResourceName}', 64)
   params: {
     name: networkSecurityGroupBastionResourceName
     location: networkSecurityGroupBastionLocation
@@ -385,7 +385,7 @@ var networkSecurityGroupAdministrationSecurityRules = networkSecurityGroupAdmini
   // }
 ]
 module networkSecurityGroupAdministration 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupAdministrationEnabled) {
-  name: substring('network.network-security-group.${networkSecurityGroupAdministrationResourceName}', 0, 64)
+  name: take('network.network-security-group.${networkSecurityGroupAdministrationResourceName}', 64)
   params: {
     name: networkSecurityGroupAdministrationResourceName
     location: networkSecurityGroupAdministrationLocation
