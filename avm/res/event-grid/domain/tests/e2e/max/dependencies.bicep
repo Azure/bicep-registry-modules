@@ -85,10 +85,10 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 output privateDNSZoneResourceId string = privateDNSZone.id
 
 @description('The resource ID of the created Storage Account for Event Grid testing.')
-output storageAccountResourceId string = StorageAccount.id
+output storageAccountResourceId string = storageAccount.id
 
 @description('The name of the created Storage Account.')
-output storageAccountNameOutput string = StorageAccount.name
+output storageAccountName string = storageAccount.name
 
 @description('The name of the created Storage Queue for Event Grid testing.')
-output storageQueueNameOutput string = StorageQueue.name
+output storageQueueName string = storageAccount::queueService::queue.name
