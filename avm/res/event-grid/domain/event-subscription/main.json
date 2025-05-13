@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "10054328288107963088"
+      "templateHash": "17945301790696727841"
     },
     "name": "Event Grid Domain Event Subscriptions",
     "description": "This module deploys an Event Grid Domain Event Subscription."
@@ -21,7 +21,7 @@
     "domainName": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Event Grid Domain."
+        "description": "Conditional. The name of the parent event grid domain. Required if the template is used in a standalone deployment."
       }
     },
     "deadLetterDestination": {

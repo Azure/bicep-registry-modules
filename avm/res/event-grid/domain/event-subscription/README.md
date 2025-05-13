@@ -21,8 +21,13 @@ This module deploys an Event Grid Domain Event Subscription.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`destination`](#parameter-destination) | object | The destination for the event subscription. See EventSubscriptionDestination objects for full shape. |
-| [`domainName`](#parameter-domainname) | string | Name of the Event Grid Domain. |
 | [`name`](#parameter-name) | string | The name of the Event Subscription. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`domainName`](#parameter-domainname) | string | The name of the parent event grid domain. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -44,16 +49,16 @@ The destination for the event subscription. See EventSubscriptionDestination obj
 - Required: Yes
 - Type: object
 
-### Parameter: `domainName`
+### Parameter: `name`
 
-Name of the Event Grid Domain.
+The name of the Event Subscription.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `name`
+### Parameter: `domainName`
 
-The name of the Event Subscription.
+The name of the parent event grid domain. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
