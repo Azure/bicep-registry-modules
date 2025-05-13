@@ -53,7 +53,7 @@ param networkSecurityGroupBackendConfiguration networkSecurityGroupConfiguration
   name: '${solutionPrefix}nsgr-backend'
   location: solutionLocation
   tags: tags
-  securityRules: null //Default value set on module variables
+  securityRules: null //Default value set on module configuration
 }
 
 @description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the containers subnet.')
@@ -62,7 +62,7 @@ param networkSecurityGroupContainersConfiguration networkSecurityGroupConfigurat
   name: '${solutionPrefix}nsgr-containers'
   location: solutionLocation
   tags: tags
-  securityRules: null //Default value set on module variables
+  securityRules: null //Default value set on module configuration
 }
 
 @description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the Bastion subnet.')
@@ -71,7 +71,7 @@ param networkSecurityGroupBastionConfiguration networkSecurityGroupConfiguration
   name: '${solutionPrefix}nsgr-bastion'
   location: solutionLocation
   tags: tags
-  securityRules: null //Default value set on module variables
+  securityRules: null //Default value set on module configuration
 }
 
 @description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the administration subnet.')
@@ -80,7 +80,7 @@ param networkSecurityGroupAdministrationConfiguration networkSecurityGroupConfig
   name: '${solutionPrefix}nsgr-administration'
   location: solutionLocation
   tags: tags
-  securityRules: null //Default value set on module variables
+  securityRules: null //Default value set on module configuration
 }
 
 @description('Optional. Configuration for the virtual machine.')
@@ -89,8 +89,8 @@ param virtualNetworkConfiguration virtualNetworkConfigurationType = {
   name: '${solutionPrefix}vnet'
   location: solutionLocation
   tags: tags
-  addressPrefixes: null //Default value set on module variables
-  subnets: null //Default value set on module variables
+  addressPrefixes: null //Default value set on module configuration
+  subnets: null //Default value set on module configuration
 }
 
 @description('Optional. Configuration for the virtual machine.')
@@ -140,19 +140,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // Log Analytics configuration defaults
 var logAnalyticsWorkspaceEnabled = logAnalyticsWorkspaceConfiguration.?enabled ?? true
 var logAnalyticsWorkspaceResourceName = logAnalyticsWorkspaceConfiguration.?name ?? '${solutionPrefix}-laws'
-var logAnalyticsWorkspaceTags = logAnalyticsWorkspaceConfiguration.?tags ?? tags
-var logAnalyticsWorkspaceLocation = logAnalyticsWorkspaceConfiguration.?location ?? solutionLocation
-var logAnalyticsWorkspaceSkuName = logAnalyticsWorkspaceConfiguration.?sku ?? 'PerGB2018'
-var logAnalyticsWorkspaceDataRetentionInDays = logAnalyticsWorkspaceConfiguration.?dataRetentionInDays ?? 30
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (logAnalyticsWorkspaceEnabled) {
   name: take('operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
-    tags: logAnalyticsWorkspaceTags
-    location: logAnalyticsWorkspaceLocation
+    tags: logAnalyticsWorkspaceConfiguration.?tags ?? tags
+    location: logAnalyticsWorkspaceConfiguration.?location ?? solutionLocation
     enableTelemetry: enableTelemetry
-    skuName: logAnalyticsWorkspaceSkuName
-    dataRetention: logAnalyticsWorkspaceDataRetentionInDays
+    skuName: logAnalyticsWorkspaceConfiguration.?sku ?? 'PerGB2018'
+    dataRetention: logAnalyticsWorkspaceConfiguration.?dataRetentionInDays ?? 30
     diagnosticSettings: [{ useThisWorkspace: true }]
   }
 }
@@ -161,18 +157,15 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 // Application Insights configuration defaults
 var applicationInsightsEnabled = applicationInsightsConfiguration.?enabled ?? true
 var applicationInsightsResourceName = applicationInsightsConfiguration.?name ?? '${solutionPrefix}appi'
-var applicationInsightsTags = applicationInsightsConfiguration.?tags ?? tags
-var applicationInsightsLocation = applicationInsightsConfiguration.?location ?? solutionLocation
-var applicationInsightsRetentionInDays = applicationInsightsConfiguration.?retentionInDays ?? 365
 module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (applicationInsightsEnabled) {
   name: take('insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName
     workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-    location: applicationInsightsLocation
+    location: applicationInsightsConfiguration.?location ?? solutionLocation
     enableTelemetry: enableTelemetry
-    tags: applicationInsightsTags
-    retentionInDays: applicationInsightsRetentionInDays
+    tags: applicationInsightsConfiguration.?tags ?? tags
+    retentionInDays: applicationInsightsConfiguration.?retentionInDays ?? 365
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     kind: 'web'
     disableIpMasking: false
@@ -183,14 +176,12 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (ap
 // ========== User assigned identity Web App ========== //
 var userAssignedManagedIdentityEnabled = userAssignedManagedIdentityConfiguration.?enabled ?? true
 var userAssignedManagedIdentityResourceName = userAssignedManagedIdentityConfiguration.?name ?? '${solutionPrefix}uaid'
-var userAssignedManagedIdentityTags = userAssignedManagedIdentityConfiguration.?tags ?? tags
-var userAssignedManagedIdentityLocation = userAssignedManagedIdentityConfiguration.?location ?? solutionLocation
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (userAssignedManagedIdentityEnabled) {
   name: take('managed-identity.user-assigned-identity.${userAssignedManagedIdentityResourceName}', 64)
   params: {
     name: userAssignedManagedIdentityResourceName
-    tags: userAssignedManagedIdentityTags
-    location: userAssignedManagedIdentityLocation
+    tags: userAssignedManagedIdentityConfiguration.?tags ?? tags
+    location: userAssignedManagedIdentityConfiguration.?location ?? solutionLocation
     enableTelemetry: enableTelemetry
   }
 }
@@ -198,188 +189,172 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 // ========== Network Security Groups ========== //
 var networkSecurityGroupBackendEnabled = networkSecurityGroupBackendConfiguration.?enabled ?? true
 var networkSecurityGroupBackendResourceName = networkSecurityGroupBackendConfiguration.?name ?? '${solutionPrefix}nsgr-backend'
-var networkSecurityGroupBackendTags = networkSecurityGroupBackendConfiguration.?tags ?? tags
-var networkSecurityGroupBackendLocation = networkSecurityGroupBackendConfiguration.?location ?? solutionLocation
-var networkSecurityGroupBackendSecurityRules = networkSecurityGroupBackendConfiguration.?securityRules ?? [
-  // {
-  //   name: 'DenySshRdpOutbound' //Azure Bastion
-  //   properties: {
-  //     priority: 200
-  //     access: 'Deny'
-  //     protocol: '*'
-  //     direction: 'Outbound'
-  //     sourceAddressPrefix: 'VirtualNetwork'
-  //     sourcePortRange: '*'
-  //     destinationAddressPrefix: '*'
-  //     destinationPortRanges: [
-  //       '3389'
-  //       '22'
-  //     ]
-  //   }
-  // }
-]
 module networkSecurityGroupBackend 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupBackendEnabled) {
   name: take('network.network-security-group.${networkSecurityGroupBackendResourceName}', 64)
   params: {
     name: networkSecurityGroupBackendResourceName
-    location: networkSecurityGroupBackendLocation
-    tags: networkSecurityGroupBackendTags
+    location: networkSecurityGroupBackendConfiguration.?location ?? solutionLocation
+    tags: networkSecurityGroupBackendConfiguration.?tags ?? tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    securityRules: networkSecurityGroupBackendSecurityRules
+    securityRules: networkSecurityGroupBackendConfiguration.?securityRules ?? [
+      // {
+      //   name: 'DenySshRdpOutbound' //Azure Bastion
+      //   properties: {
+      //     priority: 200
+      //     access: 'Deny'
+      //     protocol: '*'
+      //     direction: 'Outbound'
+      //     sourceAddressPrefix: 'VirtualNetwork'
+      //     sourcePortRange: '*'
+      //     destinationAddressPrefix: '*'
+      //     destinationPortRanges: [
+      //       '3389'
+      //       '22'
+      //     ]
+      //   }
+      // }
+    ]
   }
 }
 
 var networkSecurityGroupContainersEnabled = networkSecurityGroupContainersConfiguration.?enabled ?? true
 var networkSecurityGroupContainersResourceName = networkSecurityGroupContainersConfiguration.?name ?? '${solutionPrefix}nsgr-containers'
-var networkSecurityGroupContainersTags = networkSecurityGroupContainersConfiguration.?tags ?? tags
-var networkSecurityGroupContainersLocation = networkSecurityGroupContainersConfiguration.?location ?? solutionLocation
-var networkSecurityGroupContainersSecurityRules = networkSecurityGroupContainersConfiguration.?securityRules ?? [
-  // {
-  //   name: 'DenySshRdpOutbound' //Azure Bastion
-  //   properties: {
-  //     priority: 200
-  //     access: 'Deny'
-  //     protocol: '*'
-  //     direction: 'Outbound'
-  //     sourceAddressPrefix: 'VirtualNetwork'
-  //     sourcePortRange: '*'
-  //     destinationAddressPrefix: '*'
-  //     destinationPortRanges: [
-  //       '3389'
-  //       '22'
-  //     ]
-  //   }
-  // }
-]
 module networkSecurityGroupContainers 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupContainersEnabled) {
   name: take('network.network-security-group.${networkSecurityGroupContainersResourceName}', 64)
   params: {
     name: networkSecurityGroupContainersResourceName
-    location: networkSecurityGroupContainersLocation
-    tags: networkSecurityGroupContainersTags
+    location: networkSecurityGroupContainersConfiguration.?location ?? solutionLocation
+    tags: networkSecurityGroupContainersConfiguration.?tags ?? tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    securityRules: networkSecurityGroupContainersSecurityRules
+    securityRules: networkSecurityGroupContainersConfiguration.?securityRules ?? [
+      // {
+      //   name: 'DenySshRdpOutbound' //Azure Bastion
+      //   properties: {
+      //     priority: 200
+      //     access: 'Deny'
+      //     protocol: '*'
+      //     direction: 'Outbound'
+      //     sourceAddressPrefix: 'VirtualNetwork'
+      //     sourcePortRange: '*'
+      //     destinationAddressPrefix: '*'
+      //     destinationPortRanges: [
+      //       '3389'
+      //       '22'
+      //     ]
+      //   }
+      // }
+    ]
   }
 }
 
 var networkSecurityGroupBastionEnabled = networkSecurityGroupBastionConfiguration.?enabled ?? true
 var networkSecurityGroupBastionResourceName = networkSecurityGroupBastionConfiguration.?name ?? '${solutionPrefix}nsgr-bastion'
-var networkSecurityGroupBastionTags = networkSecurityGroupBastionConfiguration.?tags ?? tags
-var networkSecurityGroupBastionLocation = networkSecurityGroupBastionConfiguration.?location ?? solutionLocation
-var networkSecurityGroupBastionSecurityRules = networkSecurityGroupBastionConfiguration.?securityRules ?? [
-  // {
-  //   name: 'DenySshRdpOutbound' //Azure Bastion
-  //   properties: {
-  //     priority: 200
-  //     access: 'Deny'
-  //     protocol: '*'
-  //     direction: 'Outbound'
-  //     sourceAddressPrefix: 'VirtualNetwork'
-  //     sourcePortRange: '*'
-  //     destinationAddressPrefix: '*'
-  //     destinationPortRanges: [
-  //       '3389'
-  //       '22'
-  //     ]
-  //   }
-  // }
-]
 module networkSecurityGroupBastion 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupBastionEnabled) {
   name: take('network.network-security-group.${networkSecurityGroupBastionResourceName}', 64)
   params: {
     name: networkSecurityGroupBastionResourceName
-    location: networkSecurityGroupBastionLocation
-    tags: networkSecurityGroupBastionTags
+    location: networkSecurityGroupBastionConfiguration.?location ?? solutionLocation
+    tags: networkSecurityGroupBastionConfiguration.?tags ?? tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    securityRules: networkSecurityGroupBastionSecurityRules
+    securityRules: networkSecurityGroupBastionConfiguration.?securityRules ?? [
+      // {
+      //   name: 'DenySshRdpOutbound' //Azure Bastion
+      //   properties: {
+      //     priority: 200
+      //     access: 'Deny'
+      //     protocol: '*'
+      //     direction: 'Outbound'
+      //     sourceAddressPrefix: 'VirtualNetwork'
+      //     sourcePortRange: '*'
+      //     destinationAddressPrefix: '*'
+      //     destinationPortRanges: [
+      //       '3389'
+      //       '22'
+      //     ]
+      //   }
+      // }
+    ]
   }
 }
 
 var networkSecurityGroupAdministrationEnabled = networkSecurityGroupAdministrationConfiguration.?enabled ?? true
 var networkSecurityGroupAdministrationResourceName = networkSecurityGroupAdministrationConfiguration.?name ?? '${solutionPrefix}nsgr-administration'
-var networkSecurityGroupAdministrationTags = networkSecurityGroupAdministrationConfiguration.?tags ?? tags
-var networkSecurityGroupAdministrationLocation = networkSecurityGroupAdministrationConfiguration.?location ?? solutionLocation
-var networkSecurityGroupAdministrationSecurityRules = networkSecurityGroupAdministrationConfiguration.?securityRules ?? [
-  // {
-  //   name: 'DenySshRdpOutbound' //Azure Bastion
-  //   properties: {
-  //     priority: 200
-  //     access: 'Deny'
-  //     protocol: '*'
-  //     direction: 'Outbound'
-  //     sourceAddressPrefix: 'VirtualNetwork'
-  //     sourcePortRange: '*'
-  //     destinationAddressPrefix: '*'
-  //     destinationPortRanges: [
-  //       '3389'
-  //       '22'
-  //     ]
-  //   }
-  // }
-]
 module networkSecurityGroupAdministration 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupAdministrationEnabled) {
   name: take('network.network-security-group.${networkSecurityGroupAdministrationResourceName}', 64)
   params: {
     name: networkSecurityGroupAdministrationResourceName
-    location: networkSecurityGroupAdministrationLocation
-    tags: networkSecurityGroupAdministrationTags
+    location: networkSecurityGroupAdministrationConfiguration.?location ?? solutionLocation
+    tags: networkSecurityGroupAdministrationConfiguration.?tags ?? tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    securityRules: networkSecurityGroupAdministrationSecurityRules
+    securityRules: networkSecurityGroupAdministrationConfiguration.?securityRules ?? [
+      // {
+      //   name: 'DenySshRdpOutbound' //Azure Bastion
+      //   properties: {
+      //     priority: 200
+      //     access: 'Deny'
+      //     protocol: '*'
+      //     direction: 'Outbound'
+      //     sourceAddressPrefix: 'VirtualNetwork'
+      //     sourcePortRange: '*'
+      //     destinationAddressPrefix: '*'
+      //     destinationPortRanges: [
+      //       '3389'
+      //       '22'
+      //     ]
+      //   }
+      // }
+    ]
   }
 }
 
 // ========== Virtual Network ========== //
 var virtualNetworkEnabled = virtualNetworkConfiguration.?enabled ?? true
 var virtualNetworkResourceName = virtualNetworkConfiguration.?name ?? '${solutionPrefix}vnet'
-var virtualNetworkLocation = virtualNetworkConfiguration.?location ?? solutionLocation
-var virtualNetworkTags = virtualNetworkConfiguration.?tags ?? tags
-var virtualNetworkAddressPrefixes = virtualNetworkConfiguration.?addressPrefixes ?? ['10.0.0.0/8']
-var virtualNetworkSubnets = virtualNetworkConfiguration.?subnets ?? [
-  {
-    name: 'backend'
-    addressPrefix: '10.0.0.0/27'
-    //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-    networkSecurityGroupResourceId: networkSecurityGroupBackend.outputs.resourceId
-  }
-  {
-    name: 'administration'
-    addressPrefix: '10.0.0.32/27'
-    networkSecurityGroupResourceId: networkSecurityGroupAdministration.outputs.resourceId
-    //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-    //natGatewayResourceId: natGateway.outputs.resourceId
-  }
-  {
-    // For Azure Bastion resources deployed on or after November 2, 2021, the minimum AzureBastionSubnet size is /26 or larger (/25, /24, etc.).
-    // https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#subnet
-    name: 'AzureBastionSubnet' //This exact name is required for Azure Bastion
-    addressPrefix: '10.0.0.64/26'
-    networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
-  }
-  {
-    // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
-    // https://learn.microsoft.com/en-us/azure/container-apps/networking?tabs=workload-profiles-env%2Cazure-cli#custom-vnet-configuration
-    name: 'containers'
-    addressPrefix: '10.0.1.0/23' //subnet of size /23 is required for container app
-    //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-    delegation: 'Microsoft.App/environments'
-    networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
-    privateEndpointNetworkPolicies: 'Disabled'
-    privateLinkServiceNetworkPolicies: 'Enabled'
-  }
-]
 module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (virtualNetworkEnabled) {
   name: take('network.virtual-network.${virtualNetworkResourceName}', 64)
   params: {
     name: virtualNetworkResourceName
-    location: virtualNetworkLocation
-    tags: virtualNetworkTags
+    location: virtualNetworkConfiguration.?location ?? solutionLocation
+    tags: virtualNetworkConfiguration.?tags ?? tags
     enableTelemetry: enableTelemetry
-    addressPrefixes: virtualNetworkAddressPrefixes
-    subnets: virtualNetworkSubnets
+    addressPrefixes: virtualNetworkConfiguration.?addressPrefixes ?? ['10.0.0.0/8']
+    subnets: virtualNetworkConfiguration.?subnets ?? [
+      {
+        name: 'backend'
+        addressPrefix: '10.0.0.0/27'
+        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
+        networkSecurityGroupResourceId: networkSecurityGroupBackend.outputs.resourceId
+      }
+      {
+        name: 'administration'
+        addressPrefix: '10.0.0.32/27'
+        networkSecurityGroupResourceId: networkSecurityGroupAdministration.outputs.resourceId
+        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
+        //natGatewayResourceId: natGateway.outputs.resourceId
+      }
+      {
+        // For Azure Bastion resources deployed on or after November 2, 2021, the minimum AzureBastionSubnet size is /26 or larger (/25, /24, etc.).
+        // https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#subnet
+        name: 'AzureBastionSubnet' //This exact name is required for Azure Bastion
+        addressPrefix: '10.0.0.64/26'
+        networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
+      }
+      {
+        // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
+        // https://learn.microsoft.com/en-us/azure/container-apps/networking?tabs=workload-profiles-env%2Cazure-cli#custom-vnet-configuration
+        name: 'containers'
+        addressPrefix: '10.0.1.0/23' //subnet of size /23 is required for container app
+        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
+        delegation: 'Microsoft.App/environments'
+        networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
+        privateEndpointNetworkPolicies: 'Disabled'
+        privateLinkServiceNetworkPolicies: 'Enabled'
+      }
+    ]
   }
 }
 
