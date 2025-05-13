@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Deploying with a sql role definision and assignment'
-metadata description = 'This instance deploys the module with sql role definision and assignment'
+metadata name = 'Deploying with a sql role definition and assignment'
+metadata description = 'This instance deploys the module with sql role definition and assignment'
 
 // ========== //
 // Parameters //
@@ -47,13 +47,30 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-role-${serviceShort}'
   params: {
-    location: enforcedLocation
     name: '${namePrefix}-role-ref'
-    sqlRoleAssignmentsPrincipalIds: [
-      nestedDependencies.outputs.identityPrincipalId
-    ]
     sqlRoleDefinitions: [
-      { name: 'cosmos-sql-role-test' }
+      {
+        roleName: 'cosmos-sql-role-test'
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        assignableScopes: [
+          '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref'
+        ]
+        sqlRoleAssignments: [
+          {
+            principalId: nestedDependencies.outputs.identityPrincipalId
+          }
+        ]
+      }
+    ]
+    builtInSqlRoleAssignments: [
+      {
+        principalId: nestedDependencies.outputs.identityPrincipalId
+        roleDefinitionId: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
+      }
     ]
   }
 }

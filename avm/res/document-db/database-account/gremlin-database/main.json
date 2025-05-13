@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "2305698409425699794"
+      "version": "0.35.1.17967",
+      "templateHash": "4743052544503629108"
     },
     "name": "DocumentDB Database Account Gremlin Databases",
     "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -57,12 +57,12 @@
     "databaseAccount": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[parameters('databaseAccountName')]"
     },
     "gremlinDatabase": {
       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
@@ -110,8 +110,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "3717641655060686556"
+              "version": "0.35.1.17967",
+              "templateHash": "9587717186996793648"
             },
             "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
             "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -161,18 +161,18 @@
             "databaseAccount::gremlinDatabase": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'))]"
             },
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "gremlinGraph": {
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {

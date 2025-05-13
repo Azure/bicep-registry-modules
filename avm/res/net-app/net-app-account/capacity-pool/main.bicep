@@ -40,7 +40,7 @@ param volumes volumeType[]?
 @description('Optional. If enabled (true) the pool can contain cool Access enabled volumes.')
 param coolAccess bool = false
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -76,11 +76,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existing = {
   name: netAppAccountName
 }
 
-resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2024-07-01' = {
+resource capacityPool 'Microsoft.NetApp/netAppAccounts/capacityPools@2025-01-01' = {
   name: name
   parent: netAppAccount
   location: location
@@ -123,6 +123,8 @@ module capacityPool_volumes 'volume/main.bicep' = [
       smbEncryption: volume.?smbEncryption
       smbNonBrowsable: volume.?smbNonBrowsable
       volumeType: volume.?volumeType
+      securityStyle: volume.?securityStyle
+      unixPermissions: volume.?unixPermissions
     }
   }
 ]

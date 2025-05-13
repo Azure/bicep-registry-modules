@@ -11,16 +11,16 @@ param name string
 param throughput int = 400
 
 @description('Optional. Collections in the mongodb database.')
-param collections array = []
+param collections array?
 
 @description('Optional. Tags of the resource.')
 param tags object?
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
 }
 
-resource mongodbDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2023-04-15' = {
+resource mongodbDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2024-11-15' = {
   name: name
   parent: databaseAccount
   tags: tags
@@ -37,7 +37,7 @@ resource mongodbDatabase 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases
 }
 
 module mongodbDatabase_collections 'collection/main.bicep' = [
-  for collection in collections: {
+  for collection in (collections ?? []): {
     name: '${uniqueString(deployment().name, mongodbDatabase.name)}-collection-${collection.name}'
     params: {
       databaseAccountName: databaseAccountName

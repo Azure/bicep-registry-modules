@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "7160551208293569842"
+      "version": "0.34.44.8038",
+      "templateHash": "5664914029485680979"
     },
     "name": "Redis Cache",
     "description": "This module deploys a Redis Cache."
@@ -95,6 +95,13 @@
     "accessPolicyAssignmentType": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Access Policy Assignment."
+          }
+        },
         "objectId": {
           "type": "string",
           "metadata": {
@@ -972,6 +979,13 @@
         "description": "Optional. Array of access policy assignments."
       }
     },
+    "firewallRules": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The firewall rules to create in the PostgreSQL flexible server."
+      }
+    },
     "secretsExportConfiguration": {
       "$ref": "#/definitions/secretsExportConfigurationType",
       "nullable": true,
@@ -1050,39 +1064,6 @@
       },
       "zones": "[variables('availabilityZones')]"
     },
-    "redis_accessPolicies": {
-      "copy": {
-        "name": "redis_accessPolicies",
-        "count": "[length(parameters('accessPolicies'))]"
-      },
-      "type": "Microsoft.Cache/redis/accessPolicies",
-      "apiVersion": "2024-11-01",
-      "name": "[format('{0}/{1}', parameters('name'), parameters('accessPolicies')[copyIndex()].name)]",
-      "properties": {
-        "permissions": "[parameters('accessPolicies')[copyIndex()].permissions]"
-      },
-      "dependsOn": [
-        "redis"
-      ]
-    },
-    "redis_accessPolicyAssignments": {
-      "copy": {
-        "name": "redis_accessPolicyAssignments",
-        "count": "[length(parameters('accessPolicyAssignments'))]"
-      },
-      "type": "Microsoft.Cache/redis/accessPolicyAssignments",
-      "apiVersion": "2024-11-01",
-      "name": "[format('{0}/{1}', parameters('name'), parameters('accessPolicyAssignments')[copyIndex()].objectId)]",
-      "properties": {
-        "objectId": "[parameters('accessPolicyAssignments')[copyIndex()].objectId]",
-        "objectIdAlias": "[parameters('accessPolicyAssignments')[copyIndex()].objectIdAlias]",
-        "accessPolicyName": "[parameters('accessPolicyAssignments')[copyIndex()].accessPolicyName]"
-      },
-      "dependsOn": [
-        "redis",
-        "redis_accessPolicies"
-      ]
-    },
     "redis_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
@@ -1158,6 +1139,218 @@
       },
       "dependsOn": [
         "redis"
+      ]
+    },
+    "redis_accessPolicies": {
+      "copy": {
+        "name": "redis_accessPolicies",
+        "count": "[length(parameters('accessPolicies'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-redis-AccessPolicy-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "redisCacheName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('accessPolicies')[copyIndex()].name]"
+          },
+          "permissions": {
+            "value": "[parameters('accessPolicies')[copyIndex()].permissions]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "3748357335525726872"
+            },
+            "name": "Redis Cache Access Policy",
+            "description": "This module deploys an access policy for Redis Cache."
+          },
+          "parameters": {
+            "redisCacheName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Redis cache."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the access policy."
+              }
+            },
+            "permissions": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Permissions associated with the access policy."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cache/redis/accessPolicies",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+              "properties": {
+                "permissions": "[parameters('permissions')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the access policy."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the access policy."
+              },
+              "value": "[resourceId('Microsoft.Cache/redis/accessPolicies', parameters('redisCacheName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the access policy was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redis"
+      ]
+    },
+    "redis_policyAssignments": {
+      "copy": {
+        "name": "redis_policyAssignments",
+        "count": "[length(parameters('accessPolicyAssignments'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-redis-PolicyAssignment-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "redisCacheName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(parameters('accessPolicyAssignments')[copyIndex()], 'name')]"
+          },
+          "objectId": {
+            "value": "[parameters('accessPolicyAssignments')[copyIndex()].objectId]"
+          },
+          "objectIdAlias": {
+            "value": "[parameters('accessPolicyAssignments')[copyIndex()].objectIdAlias]"
+          },
+          "accessPolicyName": {
+            "value": "[parameters('accessPolicyAssignments')[copyIndex()].accessPolicyName]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "9900728480246932111"
+            },
+            "name": "Redis Cache Access Policy Assignment",
+            "description": "This module deploys an access policy assignment for Redis Cache."
+          },
+          "parameters": {
+            "redisCacheName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Redis cache."
+              }
+            },
+            "objectId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Object ID to which the access policy will be assigned."
+              }
+            },
+            "name": {
+              "type": "string",
+              "defaultValue": "[parameters('objectId')]",
+              "metadata": {
+                "description": "Optional. The name of the assignment. By default uses the Object ID to which the access policy will be assigned."
+              }
+            },
+            "objectIdAlias": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Alias for the target object ID."
+              }
+            },
+            "accessPolicyName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the access policy to be assigned."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cache/redis/accessPolicyAssignments",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+              "properties": {
+                "objectId": "[parameters('objectId')]",
+                "objectIdAlias": "[parameters('objectIdAlias')]",
+                "accessPolicyName": "[parameters('accessPolicyName')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the access policy assignment."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the access policy assignment."
+              },
+              "value": "[resourceId('Microsoft.Cache/redis/accessPolicyAssignments', parameters('redisCacheName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the access policy assignment was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redis",
+        "redis_accessPolicies"
       ]
     },
     "redis_privateEndpoints": {
@@ -1917,6 +2110,111 @@
         "redis"
       ]
     },
+    "redis_firewallRules": {
+      "copy": {
+        "name": "redis_firewallRules",
+        "count": "[length(parameters('firewallRules'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-redis-FirewallRules-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[parameters('firewallRules')[copyIndex()].name]"
+          },
+          "redisCacheName": {
+            "value": "[parameters('name')]"
+          },
+          "startIP": {
+            "value": "[parameters('firewallRules')[copyIndex()].startIP]"
+          },
+          "endIP": {
+            "value": "[parameters('firewallRules')[copyIndex()].endIP]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "2981769507448863297"
+            },
+            "name": "Redis Cache Firewall Rules",
+            "description": "This module creates a firewall rule for Redis Cache."
+          },
+          "parameters": {
+            "redisCacheName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Redis cache name."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the Redis Cache Firewall Rule."
+              }
+            },
+            "startIP": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The start IP address of the firewall rule. Must be IPv4 format. Use value '0.0.0.0' for all Azure-internal IP addresses."
+              }
+            },
+            "endIP": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress. Use value '0.0.0.0' for all Azure-internal IP addresses."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Cache/redis/firewallRules",
+              "apiVersion": "2024-11-01",
+              "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+              "properties": {
+                "startIP": "[parameters('startIP')]",
+                "endIP": "[parameters('endIP')]"
+              }
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed firewall rule."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed firewall rule."
+              },
+              "value": "[resourceId('Microsoft.Cache/redis/firewallRules', parameters('redisCacheName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group of the deployed firewall rule."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "redis"
+      ]
+    },
     "redis_geoReplication": {
       "condition": "[not(empty(parameters('geoReplicationObject')))]",
       "type": "Microsoft.Resources/deployments",
@@ -1948,8 +2246,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "322534394383651316"
+              "version": "0.34.44.8038",
+              "templateHash": "3093024614234635140"
             },
             "name": "Redis Cache Linked Servers",
             "description": "This module connects a primary and secondary Redis Cache together for geo-replication."
@@ -2052,8 +2350,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2061,7 +2359,7 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
+            "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
             "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').primaryKey))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryAccessKeyName'), 'value', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryConnectionStringName'), 'value', format('rediss://:{0}@{1}:6380', listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey, reference('redis').hostName))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryStackExchangeRedisConnectionStringName'), 'value', format('{0}:6380,password={1},ssl=True,abortConnect=False', reference('redis').hostName, listKeys(resourceId('Microsoft.Cache/redis', parameters('name')), '2024-11-01').secondaryKey))), createArray()))]"
@@ -2074,8 +2372,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8063348652715653257"
+              "version": "0.34.44.8038",
+              "templateHash": "12919538841236982879"
             }
           },
           "definitions": {

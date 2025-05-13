@@ -5,474 +5,78 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "2521834011950520180"
+      "version": "0.35.1.17967",
+      "templateHash": "11612753914354478474"
     },
     "name": "DocumentDB Database Accounts",
     "description": "This module deploys a DocumentDB Database Account."
   },
   "definitions": {
-    "managedIdentitiesType": {
-      "type": "object",
-      "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
-          }
-        },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource."
-          }
-        }
-      },
-      "nullable": true
-    },
-    "lockType": {
+    "privateEndpointOutputType": {
       "type": "object",
       "properties": {
         "name": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Optional. Specify the name of lock."
+            "description": "The name of the private endpoint."
           }
         },
-        "kind": {
+        "resourceId": {
           "type": "string",
-          "allowedValues": [
-            "CanNotDelete",
-            "None",
-            "ReadOnly"
-          ],
+          "metadata": {
+            "description": "The resource ID of the private endpoint."
+          }
+        },
+        "groupId": {
+          "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specify the type of lock."
+            "description": "The group Id for the private endpoint Group."
           }
-        }
-      },
-      "nullable": true
-    },
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "privateEndpointType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private endpoint."
-            }
-          },
-          "location": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The location to deploy the private endpoint to."
-            }
-          },
-          "privateLinkServiceConnectionName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the private link connection to create."
-            }
-          },
-          "service": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The subresource to deploy the private endpoint for. For example \"blob\", \"table\", \"queue\" or \"file\"."
-            }
-          },
-          "subnetResourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
-            }
-          },
-          "privateDnsZoneGroup": {
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
             "type": "object",
             "properties": {
-              "name": {
+              "fqdn": {
                 "type": "string",
                 "nullable": true,
                 "metadata": {
-                  "description": "Optional. The name of the Private DNS Zone Group."
+                  "description": "FQDN that resolves to private endpoint IP address."
                 }
               },
-              "privateDnsZoneGroupConfigs": {
+              "ipAddresses": {
                 "type": "array",
                 "items": {
-                  "type": "object",
-                  "properties": {
-                    "name": {
-                      "type": "string",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The name of the private DNS zone group config."
-                      }
-                    },
-                    "privateDnsZoneResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The resource id of the private DNS zone."
-                      }
-                    }
-                  }
+                  "type": "string"
                 },
                 "metadata": {
-                  "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
+                  "description": "A list of private IP addresses of the private endpoint."
                 }
               }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The private DNS zone group to configure for the private endpoint."
             }
           },
-          "isManualConnection": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. If Manual Private Link Connection is required."
-            }
+          "metadata": {
+            "description": "The custom DNS configurations of the private endpoint."
+          }
+        },
+        "networkInterfaceResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
           },
-          "manualConnectionRequestMessage": {
-            "type": "string",
-            "nullable": true,
-            "maxLength": 140,
-            "metadata": {
-              "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
-            }
-          },
-          "customDnsConfigs": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "fqdn": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. FQDN that resolves to private endpoint IP address."
-                  }
-                },
-                "ipAddresses": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "Required. A list of private ip addresses of the private endpoint."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Custom DNS configurations."
-            }
-          },
-          "ipConfigurations": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the resource that is unique within a resource group."
-                  }
-                },
-                "properties": {
-                  "type": "object",
-                  "properties": {
-                    "groupId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
-                      }
-                    },
-                    "memberName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
-                      }
-                    },
-                    "privateIPAddress": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. A private ip address obtained from the private endpoint's subnet."
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "Required. Properties of private endpoint IP configurations."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
-            }
-          },
-          "applicationSecurityGroupResourceIds": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
-            }
-          },
-          "customNetworkInterfaceName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The custom name of the network interface attached to the private endpoint."
-            }
-          },
-          "lock": {
-            "$ref": "#/definitions/lockType",
-            "metadata": {
-              "description": "Optional. Specify the type of lock."
-            }
-          },
-          "roleAssignments": {
-            "$ref": "#/definitions/roleAssignmentType",
-            "metadata": {
-              "description": "Optional. Array of role assignments to create."
-            }
-          },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
-            }
-          },
-          "enableTelemetry": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Enable/Disable usage telemetry for module."
-            }
-          },
-          "resourceGroupName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Specify if you want to deploy the Private Endpoint into a different resource group than the main resource."
-            }
+          "metadata": {
+            "description": "The IDs of the network interfaces associated with the private endpoint."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the private endpoint output."
+      }
     },
-    "diagnosticSettingType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of diagnostic setting."
-            }
-          },
-          "logCategoriesAndGroups": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
-                  }
-                },
-                "categoryGroup": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
-            }
-          },
-          "metricCategories": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "category": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
-                  }
-                },
-                "enabled": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Enable or disable the category explicitly. Default is `true`."
-                  }
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
-            }
-          },
-          "logAnalyticsDestinationType": {
-            "type": "string",
-            "allowedValues": [
-              "AzureDiagnostics",
-              "Dedicated"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
-            }
-          },
-          "workspaceResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "storageAccountResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "eventHubAuthorizationRuleResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
-            }
-          },
-          "eventHubName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
-            }
-          },
-          "marketplacePartnerResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "failoverLocationsType": {
+    "failoverLocationType": {
       "type": "object",
       "properties": {
         "failoverPriority": {
@@ -494,47 +98,91 @@
             "description": "Required. The name of the region."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the failover location."
       }
     },
-    "sqlRoleDefinitionsType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. Name of the SQL Role Definition."
-            }
-          },
-          "dataAction": {
-            "type": "array",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. An array of data actions that are allowed."
-            }
-          },
-          "roleName": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. A user-friendly name for the Role Definition. Must be unique for the database account."
-            }
-          },
-          "roleType": {
-            "type": "string",
-            "allowedValues": [
-              "BuiltInRole",
-              "CustomRole"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Indicates whether the Role Definition was built-in or user created."
-            }
+    "builtInSqlRoleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The unique name of the role assignment."
+          }
+        },
+        "roleDefinitionId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique identifier of the SQL Role Definition."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a Built-In SQL Role Definition."
+      }
+    },
+    "customSqlRoleDefinitionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The unique identifier of the Role Definition."
+          }
+        },
+        "roleName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. A user-friendly name for the Role Definition. Must be unique for the database account."
+          }
+        },
+        "dataActions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An array of data actions that are allowed."
+          }
+        },
+        "assignableScopes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account."
+          }
+        },
+        "sqlRoleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/sqlRoleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An array of SQL Role Assignments to be created for the SQL Role Definition."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a custom SQL Role Definition."
+      }
     },
     "sqlDatabaseType": {
       "type": "object",
@@ -702,6 +350,10 @@
             "description": "Optional. Array of containers to deploy in the SQL database."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the SQL database."
       }
     },
     "secretsExportConfigurationType": {
@@ -769,6 +421,10 @@
             "description": "Optional. The primary readonly connection string secret name to create."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the secrets export configuration."
       }
     },
     "secretsOutputType": {
@@ -779,9 +435,13 @@
         "metadata": {
           "description": "An exported secret's references."
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the secrets output."
       }
     },
-    "networkRestrictionsType": {
+    "networkRestrictionType": {
       "type": "object",
       "properties": {
         "ipRules": {
@@ -834,6 +494,515 @@
             "description": "Optional. List of Virtual Network ACL rules configured for the Cosmos DB account.."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the network restriction."
+      }
+    },
+    "_1.privateEndpointCustomDnsConfigType": {
+      "type": "object",
+      "properties": {
+        "fqdn": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. FQDN that resolves to private endpoint IP address."
+          }
+        },
+        "ipAddresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. A list of private IP addresses of the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_1.privateEndpointIpConfigurationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the resource that is unique within a resource group."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "groupId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "memberName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to."
+              }
+            },
+            "privateIPAddress": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. A private IP address obtained from the private endpoint's subnet."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Properties of private endpoint IP configurations."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "_1.privateEndpointPrivateDnsZoneGroupType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the Private DNS Zone Group."
+          }
+        },
+        "privateDnsZoneGroupConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The name of the private DNS Zone Group config."
+                }
+              },
+              "privateDnsZoneResourceId": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource id of the private DNS zone."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The private DNS Zone Groups to associate the Private Endpoint. A DNS Zone Group can support up to 5 DNS zones."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "diagnosticSettingFullType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the diagnostic setting."
+          }
+        },
+        "logCategoriesAndGroups": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                }
+              },
+              "categoryGroup": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+          }
+        },
+        "metricCategories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                }
+              },
+              "enabled": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+          }
+        },
+        "logAnalyticsDestinationType": {
+          "type": "string",
+          "allowedValues": [
+            "AzureDiagnostics",
+            "Dedicated"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "storageAccountResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "eventHubAuthorizationRuleResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+          }
+        },
+        "eventHubName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+          }
+        },
+        "marketplacePartnerResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "privateEndpointMultiServiceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private endpoint."
+          }
+        },
+        "location": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The location to deploy the private endpoint to."
+          }
+        },
+        "privateLinkServiceConnectionName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the private link connection to create."
+          }
+        },
+        "service": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The subresource to deploy the private endpoint for. For example \"blob\", \"table\", \"queue\" or \"file\" for a Storage Account's Private Endpoints."
+          }
+        },
+        "subnetResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Resource ID of the subnet where the endpoint needs to be created."
+          }
+        },
+        "resourceGroupResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID of the Resource Group the Private Endpoint will be created in. If not specified, the Resource Group of the provided Virtual Network Subnet is used."
+          }
+        },
+        "privateDnsZoneGroup": {
+          "$ref": "#/definitions/_1.privateEndpointPrivateDnsZoneGroupType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The private DNS zone group to configure for the private endpoint."
+          }
+        },
+        "isManualConnection": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. If Manual Private Link Connection is required."
+          }
+        },
+        "manualConnectionRequestMessage": {
+          "type": "string",
+          "nullable": true,
+          "maxLength": 140,
+          "metadata": {
+            "description": "Optional. A message passed to the owner of the remote resource with the manual connection request."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointCustomDnsConfigType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Custom DNS configurations."
+          }
+        },
+        "ipConfigurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.privateEndpointIpConfigurationType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
+          }
+        },
+        "applicationSecurityGroupResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
+          }
+        },
+        "customNetworkInterfaceName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom name of the network interface attached to the private endpoint."
+          }
+        },
+        "lock": {
+          "$ref": "#/definitions/lockType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        },
+        "roleAssignments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Array of role assignments to create."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags to be applied on all resources/resource groups in this deployment."
+          }
+        },
+        "enableTelemetry": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable/Disable usage telemetry for module."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a private endpoint. To be used if the private endpoint's default service / groupId can NOT be assumed (i.e., for services that have more than one subresource, like Storage Account with Blob (blob, table, queue, file, ...).",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "secretSetType": {
@@ -853,8 +1022,33 @@
         }
       },
       "metadata": {
+        "description": "The type for the secret set.",
         "__bicep_imported_from!": {
           "sourceTemplate": "modules/keyVaultExport.bicep"
+        }
+      }
+    },
+    "sqlRoleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name unique identifier of the SQL Role Assignment."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for the SQL Role Assignments.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "sql-role-definition/main.bicep"
         }
       }
     }
@@ -875,13 +1069,17 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts@2024-11-15#properties/tags"
+        },
         "description": "Optional. Tags of the Database Account resource."
-      }
+      },
+      "nullable": true
     },
     "managedIdentities": {
-      "$ref": "#/definitions/managedIdentitiesType",
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
@@ -896,12 +1094,12 @@
         "description": "Optional. Default to Standard. The offer type for the Azure Cosmos DB database account."
       }
     },
-    "locations": {
+    "failoverLocations": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/failoverLocationsType"
+        "$ref": "#/definitions/failoverLocationType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Default to the location where the account is deployed. Locations enabled for the Cosmos DB account."
       }
@@ -1001,41 +1199,48 @@
       "items": {
         "$ref": "#/definitions/sqlDatabaseType"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. SQL Databases configurations."
       }
     },
-    "sqlRoleAssignmentsPrincipalIds": {
+    "sqlRoleDefinitions": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/customSqlRoleDefinitionType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. SQL Role Definitions configurations."
+        "description": "Optional. SQL Role Definitions configurations. Also allows the assignment of custom roles."
       }
     },
-    "sqlRoleDefinitions": {
-      "$ref": "#/definitions/sqlRoleDefinitionsType",
+    "builtInSqlRoleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/builtInSqlRoleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. SQL Role Definitions configurations."
+        "description": "Optional. SQL Role Assignments of built-in roles."
       }
     },
     "mongodbDatabases": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. MongoDB Databases configurations."
       }
     },
     "gremlinDatabases": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Gremlin Databases configurations."
       }
     },
     "tables": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Table configurations."
       }
@@ -1056,18 +1261,27 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Array of role assignment objects that contain the 'roleDefinitionIdOrName' and 'principalIds' to define RBAC role assignments on this resource. In the roleDefinitionIdOrName attribute, you can provide either the display name of the role definition, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+        "description": "Optional. Array of role assignments to create."
       }
     },
     "diagnosticSettings": {
-      "$ref": "#/definitions/diagnosticSettingType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/diagnosticSettingFullType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. The diagnostic settings of the service."
       }
@@ -1077,7 +1291,7 @@
       "items": {
         "type": "string"
       },
-      "defaultValue": [],
+      "nullable": true,
       "allowedValues": [
         "EnableCassandra",
         "EnableTable",
@@ -1087,10 +1301,11 @@
         "EnableServerless",
         "EnableNoSQLVectorSearch",
         "EnableNoSQLFullTextSearch",
-        "EnableMaterializedViews"
+        "EnableMaterializedViews",
+        "DeleteAllItemsByPartitionKey"
       ],
       "metadata": {
-        "description": "Optional. List of Cosmos DB capabilities for the account."
+        "description": "Optional. List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION."
       }
     },
     "backupPolicyType": {
@@ -1146,7 +1361,11 @@
       }
     },
     "privateEndpoints": {
-      "$ref": "#/definitions/privateEndpointType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointMultiServiceType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible."
       }
@@ -1159,7 +1378,7 @@
       }
     },
     "networkRestrictions": {
-      "$ref": "#/definitions/networkRestrictionsType",
+      "$ref": "#/definitions/networkRestrictionType",
       "defaultValue": {
         "ipRules": [],
         "virtualNetworkRules": [],
@@ -1183,37 +1402,6 @@
   "variables": {
     "copy": [
       {
-        "name": "databaseAccount_locations",
-        "count": "[length(parameters('locations'))]",
-        "input": {
-          "failoverPriority": "[parameters('locations')[copyIndex('databaseAccount_locations')].failoverPriority]",
-          "locationName": "[parameters('locations')[copyIndex('databaseAccount_locations')].locationName]",
-          "isZoneRedundant": "[coalesce(tryGet(parameters('locations')[copyIndex('databaseAccount_locations')], 'isZoneRedundant'), true())]"
-        }
-      },
-      {
-        "name": "capabilities",
-        "count": "[length(parameters('capabilitiesToAdd'))]",
-        "input": {
-          "name": "[parameters('capabilitiesToAdd')[copyIndex('capabilities')]]"
-        }
-      },
-      {
-        "name": "ipRules",
-        "count": "[length(coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray()))]",
-        "input": {
-          "ipAddressOrRange": "[coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray())[copyIndex('ipRules')]]"
-        }
-      },
-      {
-        "name": "virtualNetworkRules",
-        "count": "[length(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()))]",
-        "input": {
-          "id": "[coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray())[copyIndex('virtualNetworkRules')].subnetResourceId]",
-          "ignoreMissingVnetServiceEndpoint": false
-        }
-      },
-      {
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
@@ -1222,35 +1410,6 @@
     "enableReferencedModulesTelemetry": false,
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "consistencyPolicy": {
-      "Eventual": {
-        "defaultConsistencyLevel": "Eventual"
-      },
-      "ConsistentPrefix": {
-        "defaultConsistencyLevel": "ConsistentPrefix"
-      },
-      "Session": {
-        "defaultConsistencyLevel": "Session"
-      },
-      "BoundedStaleness": {
-        "defaultConsistencyLevel": "BoundedStaleness",
-        "maxStalenessPrefix": "[parameters('maxStalenessPrefix')]",
-        "maxIntervalInSeconds": "[parameters('maxIntervalInSeconds')]"
-      },
-      "Strong": {
-        "defaultConsistencyLevel": "Strong"
-      }
-    },
-    "defaultFailoverLocation": [
-      {
-        "failoverPriority": 0,
-        "locationName": "[parameters('location')]",
-        "isZoneRedundant": true
-      }
-    ],
-    "kind": "[if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('gremlinDatabases')))), 'GlobalDocumentDB', if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB'))]",
-    "backupPolicy": "[if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('type', parameters('backupPolicyType'), 'continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject('type', parameters('backupPolicyType'), 'periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))))]",
-    "databaseAccountProperties": "[union(createObject('databaseAccountOfferType', parameters('databaseAccountOfferType'), 'backupPolicy', variables('backupPolicy'), 'capabilities', variables('capabilities'), 'minimalTlsVersion', parameters('minimumTlsVersion'), 'capacity', createObject('totalThroughputLimit', parameters('totalThroughputLimit'))), if(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), createObject('consistencyPolicy', variables('consistencyPolicy')[parameters('defaultConsistencyLevel')], 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(empty(variables('databaseAccount_locations')), variables('defaultFailoverLocation'), variables('databaseAccount_locations')), 'ipRules', variables('ipRules'), 'virtualNetworkRules', variables('virtualNetworkRules'), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'None'), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Disabled'), 'isVirtualNetworkFilterEnabled', or(not(empty(variables('ipRules'))), not(empty(variables('virtualNetworkRules')))), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('automaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('tables')))), createObject('disableLocalAuth', parameters('disableLocalAuth'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess')), createObject()), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject()))]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Cosmos DB Account Reader Role": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'fbdf93bf-df7d-467e-a4d2-9458aa1360c8')]",
@@ -1260,7 +1419,7 @@
       "DocumentDB Account Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '5bd9cd88-fe45-4216-938b-f97437e15450')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     }
   },
@@ -1268,7 +1427,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2024-07-01",
       "name": "[format('46d3xbcp.res.documentdb-databaseaccount.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1287,13 +1446,13 @@
     },
     "databaseAccount": {
       "type": "Microsoft.DocumentDB/databaseAccounts",
-      "apiVersion": "2023-04-15",
+      "apiVersion": "2024-11-15",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
-      "kind": "[variables('kind')]",
-      "properties": "[variables('databaseAccountProperties')]"
+      "kind": "[if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('gremlinDatabases')))), 'GlobalDocumentDB', if(not(empty(parameters('mongodbDatabases'))), 'MongoDB', 'GlobalDocumentDB'))]",
+      "properties": "[shallowMerge(createArray(createObject('databaseAccountOfferType', parameters('databaseAccountOfferType'), 'backupPolicy', shallowMerge(createArray(createObject('type', parameters('backupPolicyType')), if(equals(parameters('backupPolicyType'), 'Continuous'), createObject('continuousModeProperties', createObject('tier', parameters('backupPolicyContinuousTier'))), createObject()), if(equals(parameters('backupPolicyType'), 'Periodic'), createObject('periodicModeProperties', createObject('backupIntervalInMinutes', parameters('backupIntervalInMinutes'), 'backupRetentionIntervalInHours', parameters('backupRetentionIntervalInHours'), 'backupStorageRedundancy', parameters('backupStorageRedundancy'))), createObject()))), 'capabilities', map(coalesce(parameters('capabilitiesToAdd'), createArray()), lambda('capability', createObject('name', lambdaVariables('capability')))), 'minimalTlsVersion', parameters('minimumTlsVersion'), 'capacity', createObject('totalThroughputLimit', parameters('totalThroughputLimit')), 'publicNetworkAccess', coalesce(tryGet(parameters('networkRestrictions'), 'publicNetworkAccess'), 'Disabled')), if(or(or(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('mongodbDatabases')))), not(empty(parameters('gremlinDatabases')))), not(empty(parameters('tables')))), createObject('consistencyPolicy', shallowMerge(createArray(createObject('defaultConsistencyLevel', parameters('defaultConsistencyLevel')), if(equals(parameters('defaultConsistencyLevel'), 'BoundedStaleness'), createObject('maxStalenessPrefix', parameters('maxStalenessPrefix'), 'maxIntervalInSeconds', parameters('maxIntervalInSeconds')), createObject()))), 'enableMultipleWriteLocations', parameters('enableMultipleWriteLocations'), 'locations', if(not(empty(parameters('failoverLocations'))), map(parameters('failoverLocations'), lambda('failoverLocation', createObject('failoverPriority', lambdaVariables('failoverLocation').failoverPriority, 'locationName', lambdaVariables('failoverLocation').locationName, 'isZoneRedundant', coalesce(tryGet(lambdaVariables('failoverLocation'), 'isZoneRedundant'), true())))), createArray(createObject('failoverPriority', 0, 'locationName', parameters('location'), 'isZoneRedundant', true()))), 'ipRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'ipRules'), createArray()), lambda('ipRule', createObject('ipAddressOrRange', lambdaVariables('ipRule')))), 'virtualNetworkRules', map(coalesce(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules'), createArray()), lambda('rule', createObject('id', lambdaVariables('rule').subnetResourceId, 'ignoreMissingVNetServiceEndpoint', false()))), 'networkAclBypass', coalesce(tryGet(parameters('networkRestrictions'), 'networkAclBypass'), 'None'), 'isVirtualNetworkFilterEnabled', or(not(empty(tryGet(parameters('networkRestrictions'), 'ipRules'))), not(empty(tryGet(parameters('networkRestrictions'), 'virtualNetworkRules')))), 'enableFreeTier', parameters('enableFreeTier'), 'enableAutomaticFailover', parameters('automaticFailover'), 'enableAnalyticalStorage', parameters('enableAnalyticalStorage')), createObject()), if(or(not(empty(parameters('sqlDatabases'))), not(empty(parameters('tables')))), createObject('disableLocalAuth', parameters('disableLocalAuth'), 'disableKeyBasedMetadataWriteAccess', parameters('disableKeyBasedMetadataWriteAccess')), createObject()), if(not(empty(parameters('mongodbDatabases'))), createObject('apiProperties', createObject('serverVersion', parameters('serverVersion'))), createObject())))]"
     },
     "databaseAccount_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
@@ -1375,11 +1534,11 @@
     "databaseAccount_sqlDatabases": {
       "copy": {
         "name": "databaseAccount_sqlDatabases",
-        "count": "[length(parameters('sqlDatabases'))]"
+        "count": "[length(coalesce(parameters('sqlDatabases'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('location')), parameters('sqlDatabases')[copyIndex()].name)]",
+      "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('sqlDatabases'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1387,19 +1546,19 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[parameters('sqlDatabases')[copyIndex()].name]"
+            "value": "[coalesce(parameters('sqlDatabases'), createArray())[copyIndex()].name]"
           },
           "containers": {
-            "value": "[tryGet(parameters('sqlDatabases')[copyIndex()], 'containers')]"
+            "value": "[tryGet(coalesce(parameters('sqlDatabases'), createArray())[copyIndex()], 'containers')]"
           },
           "throughput": {
-            "value": "[tryGet(parameters('sqlDatabases')[copyIndex()], 'throughput')]"
+            "value": "[tryGet(coalesce(parameters('sqlDatabases'), createArray())[copyIndex()], 'throughput')]"
           },
           "databaseAccountName": {
             "value": "[parameters('name')]"
           },
           "autoscaleSettingsMaxThroughput": {
-            "value": "[tryGet(parameters('sqlDatabases')[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+            "value": "[tryGet(coalesce(parameters('sqlDatabases'), createArray())[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
           }
         },
         "template": {
@@ -1409,8 +1568,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "1989869202015976298"
+              "version": "0.35.1.17967",
+              "templateHash": "6801379641184405078"
             },
             "name": "DocumentDB Database Account SQL Databases",
             "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -1433,7 +1592,7 @@
               "items": {
                 "type": "object"
               },
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of containers to deploy in the SQL database."
               }
@@ -1464,12 +1623,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "sqlDatabase": {
               "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -1485,11 +1644,11 @@
             "container": {
               "copy": {
                 "name": "container",
-                "count": "[length(parameters('containers'))]"
+                "count": "[length(coalesce(parameters('containers'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('name')), parameters('containers')[copyIndex()].name)]",
+              "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('name')), coalesce(parameters('containers'), createArray())[copyIndex()].name)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -1503,35 +1662,35 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[parameters('containers')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('containers'), createArray())[copyIndex()].name]"
                   },
                   "analyticalStorageTtl": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'analyticalStorageTtl')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'analyticalStorageTtl')]"
                   },
                   "autoscaleSettingsMaxThroughput": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
                   },
                   "conflictResolutionPolicy": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'conflictResolutionPolicy')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'conflictResolutionPolicy')]"
                   },
                   "defaultTtl": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'defaultTtl')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'defaultTtl')]"
                   },
                   "indexingPolicy": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'indexingPolicy')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'indexingPolicy')]"
                   },
                   "kind": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'kind')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'kind')]"
                   },
                   "version": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'version')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'version')]"
                   },
                   "paths": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'paths')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'paths')]"
                   },
-                  "throughput": "[if(and(or(not(equals(parameters('throughput'), null())), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), equals(tryGet(parameters('containers')[copyIndex()], 'throughput'), null())), createObject('value', -1), createObject('value', tryGet(parameters('containers')[copyIndex()], 'throughput')))]",
+                  "throughput": "[if(and(or(not(equals(parameters('throughput'), null())), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), equals(tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'throughput'), null())), createObject('value', -1), createObject('value', tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'throughput')))]",
                   "uniqueKeyPolicyKeys": {
-                    "value": "[tryGet(parameters('containers')[copyIndex()], 'uniqueKeyPolicyKeys')]"
+                    "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'uniqueKeyPolicyKeys')]"
                   }
                 },
                 "template": {
@@ -1541,8 +1700,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "12023419088114367985"
+                      "version": "0.35.1.17967",
+                      "templateHash": "5467755913632158534"
                     },
                     "name": "DocumentDB Database Account SQL Database Containers",
                     "description": "This module deploys a SQL Database Container in a CosmosDB Account."
@@ -1673,18 +1832,18 @@
                     "databaseAccount::sqlDatabase": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('sqlDatabaseName'))]"
                     },
                     "databaseAccount": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[parameters('databaseAccountName')]"
                     },
                     "container": {
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('sqlDatabaseName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -1762,43 +1921,68 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-sqlrd-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].name)]",
+      "name": "[format('{0}-sqlrd-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "name": {
-            "value": "[coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].name]"
-          },
           "databaseAccountName": {
             "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'name')]"
           },
           "dataActions": {
             "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'dataActions')]"
           },
           "roleName": {
-            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'roleName')]"
+            "value": "[coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()].roleName]"
           },
-          "roleType": {
-            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'roleType')]"
+          "assignableScopes": {
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'assignableScopes')]"
           },
-          "principalIds": {
-            "value": "[parameters('sqlRoleAssignmentsPrincipalIds')]"
+          "sqlRoleAssignments": {
+            "value": "[tryGet(coalesce(parameters('sqlRoleDefinitions'), createArray())[copyIndex()], 'sqlRoleAssignments')]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "10702362485253818591"
+              "version": "0.35.1.17967",
+              "templateHash": "12119240119487993734"
             },
-            "name": "DocumentDB Database Account SQL Role.",
-            "description": "This module deploys SQL Role Definision and Assignment in a CosmosDB Account."
+            "name": "DocumentDB Database Account SQL Role Definitions.",
+            "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
+          },
+          "definitions": {
+            "sqlRoleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Name unique identifier of the SQL Role Assignment."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the SQL Role Assignments."
+              }
+            }
           },
           "parameters": {
             "databaseAccountName": {
@@ -1809,199 +1993,106 @@
             },
             "name": {
               "type": "string",
+              "nullable": true,
               "metadata": {
-                "description": "Required. Name of the SQL Role."
-              }
-            },
-            "dataActions": {
-              "type": "array",
-              "defaultValue": [
-                "Microsoft.DocumentDB/databaseAccounts/readMetadata",
-                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*",
-                "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*"
-              ],
-              "metadata": {
-                "description": "Optional. An array of data actions that are allowed."
-              }
-            },
-            "principalIds": {
-              "type": "array",
-              "defaultValue": [],
-              "metadata": {
-                "description": "Optional. Ids needs to be granted."
+                "description": "Optional. The unique identifier of the Role Definition."
               }
             },
             "roleName": {
               "type": "string",
-              "defaultValue": "Reader Writer",
               "metadata": {
-                "description": "Optional. A user-friendly name for the Role Definition. Must be unique for the database account."
+                "description": "Required. A user-friendly name for the Role Definition. Must be unique for the database account."
               }
             },
-            "roleType": {
-              "type": "string",
-              "defaultValue": "CustomRole",
-              "allowedValues": [
-                "CustomRole",
-                "BuiltInRole"
-              ],
+            "dataActions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "defaultValue": [],
               "metadata": {
-                "description": "Optional. Indicates whether the Role Definition was built-in or user created."
+                "description": "Optional. An array of data actions that are allowed."
+              }
+            },
+            "assignableScopes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account."
+              }
+            },
+            "sqlRoleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/sqlRoleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. An array of SQL Role Assignments to be created for the SQL Role Definition."
               }
             }
           },
-          "resources": [
-            {
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('sql-role-definition-{0}', uniqueString(parameters('name')))]",
+          "resources": {
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "sqlRoleDefinition": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+              "apiVersion": "2024-11-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]",
               "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "databaseAccountName": {
-                    "value": "[parameters('databaseAccountName')]"
-                  },
-                  "dataActions": {
-                    "value": "[parameters('dataActions')]"
-                  },
-                  "roleName": {
-                    "value": "[parameters('roleName')]"
-                  },
-                  "roleType": {
-                    "value": "[parameters('roleType')]"
+                "assignableScopes": "[coalesce(parameters('assignableScopes'), createArray(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]",
+                "permissions": [
+                  {
+                    "dataActions": "[parameters('dataActions')]"
                   }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "226082505863315224"
-                    },
-                    "name": "DocumentDB Database Account SQL Role Definitions.",
-                    "description": "This module deploys a SQL Role Definision in a CosmosDB Account."
-                  },
-                  "parameters": {
-                    "databaseAccountName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
-                      }
-                    },
-                    "dataActions": {
-                      "type": "array",
-                      "defaultValue": [],
-                      "metadata": {
-                        "description": "Optional. An array of data actions that are allowed."
-                      }
-                    },
-                    "roleName": {
-                      "type": "string",
-                      "defaultValue": "Reader Writer",
-                      "metadata": {
-                        "description": "Optional. A user-friendly name for the Role Definition. Must be unique for the database account."
-                      }
-                    },
-                    "roleType": {
-                      "type": "string",
-                      "defaultValue": "CustomRole",
-                      "allowedValues": [
-                        "CustomRole",
-                        "BuiltInRole"
-                      ],
-                      "metadata": {
-                        "description": "Optional. Indicates whether the Role Definition was built-in or user created."
-                      }
-                    }
-                  },
-                  "resources": [
-                    {
-                      "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
-                      "apiVersion": "2023-04-15",
-                      "name": "[format('{0}/{1}', parameters('databaseAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]",
-                      "properties": {
-                        "assignableScopes": [
-                          "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))]"
-                        ],
-                        "permissions": [
-                          {
-                            "dataActions": "[parameters('dataActions')]"
-                          }
-                        ],
-                        "roleName": "[parameters('roleName')]",
-                        "type": "[parameters('roleType')]"
-                      }
-                    }
-                  ],
-                  "outputs": {
-                    "name": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the SQL database."
-                      },
-                      "value": "[guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')]"
-                    },
-                    "resourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The resource ID of the SQL database."
-                      },
-                      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]"
-                    },
-                    "resourceGroupName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "The name of the resource group the SQL database was created in."
-                      },
-                      "value": "[resourceGroup().name]"
-                    }
-                  }
-                }
+                ],
+                "roleName": "[parameters('roleName')]",
+                "type": "CustomRole"
               }
             },
-            {
+            "databaseAccount_sqlRoleAssignments": {
               "copy": {
-                "name": "sqlRoleAssignment",
-                "count": "[length(parameters('principalIds'))]",
-                "mode": "serial",
-                "batchSize": 1
+                "name": "databaseAccount_sqlRoleAssignments",
+                "count": "[length(coalesce(parameters('sqlRoleAssignments'), createArray()))]"
               },
-              "condition": "[not(empty(parameters('principalIds')[copyIndex()]))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('sql-role-assign-{0}', uniqueString(parameters('principalIds')[copyIndex()]))]",
+              "name": "[format('{0}-sqlra-{1}', uniqueString(deployment().name), copyIndex())]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "name": {
-                    "value": "[guid(reference(resourceId('Microsoft.Resources/deployments', format('sql-role-definition-{0}', uniqueString(parameters('name')))), '2022-09-01').outputs.resourceId.value, parameters('principalIds')[copyIndex()], resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))]"
-                  },
                   "databaseAccountName": {
                     "value": "[parameters('databaseAccountName')]"
                   },
                   "roleDefinitionId": {
-                    "value": "[reference(resourceId('Microsoft.Resources/deployments', format('sql-role-definition-{0}', uniqueString(parameters('name')))), '2022-09-01').outputs.resourceId.value]"
+                    "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]"
                   },
                   "principalId": {
-                    "value": "[parameters('principalIds')[copyIndex()]]"
+                    "value": "[coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()].principalId]"
+                  },
+                  "name": {
+                    "value": "[tryGet(coalesce(parameters('sqlRoleAssignments'), createArray())[copyIndex()], 'name')]"
                   }
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
                   "contentVersion": "1.0.0.0",
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "4459562534723287578"
+                      "version": "0.35.1.17967",
+                      "templateHash": "11941443499827753966"
                     },
                     "name": "DocumentDB Database Account SQL Role Assignments.",
                     "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
@@ -2015,41 +2106,61 @@
                     },
                     "name": {
                       "type": "string",
+                      "nullable": true,
                       "metadata": {
-                        "description": "Required. Name of the SQL Role Assignment."
+                        "description": "Optional. Name unique identifier of the SQL Role Assignment."
                       }
                     },
                     "principalId": {
                       "type": "string",
-                      "defaultValue": "",
                       "metadata": {
-                        "description": "Optional. Id needs to be granted."
+                        "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
                       }
                     },
                     "roleDefinitionId": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Id of the SQL Role Definition."
+                        "description": "Required. The unique identifier of the associated SQL Role Definition."
                       }
                     }
                   },
-                  "resources": [
-                    {
+                  "resources": {
+                    "databaseAccount": {
+                      "existing": true,
+                      "type": "Microsoft.DocumentDB/databaseAccounts",
+                      "apiVersion": "2024-11-15",
+                      "name": "[parameters('databaseAccountName')]"
+                    },
+                    "sqlRoleAssignment": {
                       "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
-                      "apiVersion": "2023-04-15",
-                      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+                      "apiVersion": "2024-11-15",
+                      "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]",
                       "properties": {
                         "principalId": "[parameters('principalId')]",
                         "roleDefinitionId": "[parameters('roleDefinitionId')]",
                         "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))]"
                       }
                     }
-                  ],
+                  },
                   "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the SQL Role Assignment."
+                      },
+                      "value": "[coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the SQL Role Assignment."
+                      },
+                      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]"
+                    },
                     "resourceGroupName": {
                       "type": "string",
                       "metadata": {
-                        "description": "The name of the resource group the SQL Role Assignment was created in."
+                        "description": "The name of the resource group the SQL Role Definition was created in."
                       },
                       "value": "[resourceGroup().name]"
                     }
@@ -2057,15 +2168,150 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', format('sql-role-definition-{0}', uniqueString(parameters('name'))))]"
+                "sqlRoleDefinition"
               ]
             }
-          ],
+          },
           "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the SQL Role Definition."
+              },
+              "value": "[coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role'))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the SQL Role Definition."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions', parameters('databaseAccountName'), coalesce(parameters('name'), guid(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), parameters('databaseAccountName'), 'sql-role')))]"
+            },
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the resource group the SQL Role Definition and Assignment were created in."
+                "description": "The name of the resource group the SQL Role Definition was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "roleName": {
+              "type": "string",
+              "metadata": {
+                "description": "The role name of the SQL Role Definition."
+              },
+              "value": "[reference('sqlRoleDefinition').roleName]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "databaseAccount"
+      ]
+    },
+    "databaseAccount_sqlRoleAssignments": {
+      "copy": {
+        "name": "databaseAccount_sqlRoleAssignments",
+        "count": "[length(coalesce(parameters('builtInSqlRoleAssignments'), createArray()))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-sqlra-{1}', uniqueString(deployment().name), copyIndex())]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "databaseAccountName": {
+            "value": "[parameters('name')]"
+          },
+          "roleDefinitionId": {
+            "value": "[coalesce(parameters('builtInSqlRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
+          },
+          "principalId": {
+            "value": "[coalesce(parameters('builtInSqlRoleAssignments'), createArray())[copyIndex()].principalId]"
+          },
+          "name": {
+            "value": "[tryGet(coalesce(parameters('builtInSqlRoleAssignments'), createArray())[copyIndex()], 'name')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.35.1.17967",
+              "templateHash": "11941443499827753966"
+            },
+            "name": "DocumentDB Database Account SQL Role Assignments.",
+            "description": "This module deploys a SQL Role Assignment in a CosmosDB Account."
+          },
+          "parameters": {
+            "databaseAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Database Account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name unique identifier of the SQL Role Assignment."
+              }
+            },
+            "principalId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription."
+              }
+            },
+            "roleDefinitionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The unique identifier of the associated SQL Role Definition."
+              }
+            }
+          },
+          "resources": {
+            "databaseAccount": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('databaseAccountName')]"
+            },
+            "sqlRoleAssignment": {
+              "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments",
+              "apiVersion": "2024-11-15",
+              "name": "[format('{0}/{1}', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]",
+              "properties": {
+                "principalId": "[parameters('principalId')]",
+                "roleDefinitionId": "[parameters('roleDefinitionId')]",
+                "scope": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the SQL Role Assignment."
+              },
+              "value": "[coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName'))))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the SQL Role Assignment."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments', parameters('databaseAccountName'), coalesce(parameters('name'), guid(parameters('roleDefinitionId'), parameters('principalId'), resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')))))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the SQL Role Definition was created in."
               },
               "value": "[resourceGroup().name]"
             }
@@ -2079,11 +2325,11 @@
     "databaseAccount_mongodbDatabases": {
       "copy": {
         "name": "databaseAccount_mongodbDatabases",
-        "count": "[length(parameters('mongodbDatabases'))]"
+        "count": "[length(coalesce(parameters('mongodbDatabases'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-mongodb-{1}', uniqueString(deployment().name, parameters('location')), parameters('mongodbDatabases')[copyIndex()].name)]",
+      "name": "[format('{0}-mongodb-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2094,16 +2340,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('mongodbDatabases')[copyIndex()].name]"
+            "value": "[coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()].name]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('mongodbDatabases')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "collections": {
-            "value": "[tryGet(parameters('mongodbDatabases')[copyIndex()], 'collections')]"
+            "value": "[tryGet(coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()], 'collections')]"
           },
           "throughput": {
-            "value": "[tryGet(parameters('mongodbDatabases')[copyIndex()], 'throughput')]"
+            "value": "[tryGet(coalesce(parameters('mongodbDatabases'), createArray())[copyIndex()], 'throughput')]"
           }
         },
         "template": {
@@ -2113,8 +2359,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8920471273670088909"
+              "version": "0.35.1.17967",
+              "templateHash": "16911349070369924403"
             },
             "name": "DocumentDB Database Account MongoDB Databases",
             "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -2141,7 +2387,7 @@
             },
             "collections": {
               "type": "array",
-              "defaultValue": [],
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Collections in the mongodb database."
               }
@@ -2158,12 +2404,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "mongodbDatabase": {
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -2179,11 +2425,11 @@
             "mongodbDatabase_collections": {
               "copy": {
                 "name": "mongodbDatabase_collections",
-                "count": "[length(parameters('collections'))]"
+                "count": "[length(coalesce(parameters('collections'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-collection-{1}', uniqueString(deployment().name, parameters('name')), parameters('collections')[copyIndex()].name)]",
+              "name": "[format('{0}-collection-{1}', uniqueString(deployment().name, parameters('name')), coalesce(parameters('collections'), createArray())[copyIndex()].name)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -2197,16 +2443,16 @@
                     "value": "[parameters('name')]"
                   },
                   "name": {
-                    "value": "[parameters('collections')[copyIndex()].name]"
+                    "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].name]"
                   },
                   "indexes": {
-                    "value": "[parameters('collections')[copyIndex()].indexes]"
+                    "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].indexes]"
                   },
                   "shardKey": {
-                    "value": "[parameters('collections')[copyIndex()].shardKey]"
+                    "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].shardKey]"
                   },
                   "throughput": {
-                    "value": "[tryGet(parameters('collections')[copyIndex()], 'throughput')]"
+                    "value": "[tryGet(coalesce(parameters('collections'), createArray())[copyIndex()], 'throughput')]"
                   }
                 },
                 "template": {
@@ -2215,8 +2461,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "7171237014304841298"
+                      "version": "0.35.1.17967",
+                      "templateHash": "7802955893269337475"
                     },
                     "name": "DocumentDB Database Account MongoDB Database Collections",
                     "description": "This module deploys a MongoDB Database Collection."
@@ -2263,10 +2509,10 @@
                   "resources": [
                     {
                       "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]",
                       "properties": {
-                        "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2023-04-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
+                        "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2024-11-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
                         "resource": {
                           "id": "[parameters('name')]",
                           "indexes": "[parameters('indexes')]",
@@ -2337,11 +2583,11 @@
     "databaseAccount_gremlinDatabases": {
       "copy": {
         "name": "databaseAccount_gremlinDatabases",
-        "count": "[length(parameters('gremlinDatabases'))]"
+        "count": "[length(coalesce(parameters('gremlinDatabases'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-gremlin-{1}', uniqueString(deployment().name, parameters('location')), parameters('gremlinDatabases')[copyIndex()].name)]",
+      "name": "[format('{0}-gremlin-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2352,19 +2598,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('gremlinDatabases')[copyIndex()].name]"
+            "value": "[coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()].name]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('gremlinDatabases')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "graphs": {
-            "value": "[tryGet(parameters('gremlinDatabases')[copyIndex()], 'graphs')]"
+            "value": "[tryGet(coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()], 'graphs')]"
           },
           "maxThroughput": {
-            "value": "[tryGet(parameters('gremlinDatabases')[copyIndex()], 'maxThroughput')]"
+            "value": "[tryGet(coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()], 'maxThroughput')]"
           },
           "throughput": {
-            "value": "[tryGet(parameters('gremlinDatabases')[copyIndex()], 'throughput')]"
+            "value": "[tryGet(coalesce(parameters('gremlinDatabases'), createArray())[copyIndex()], 'throughput')]"
           }
         },
         "template": {
@@ -2374,8 +2620,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2305698409425699794"
+              "version": "0.35.1.17967",
+              "templateHash": "4743052544503629108"
             },
             "name": "DocumentDB Database Account Gremlin Databases",
             "description": "This module deploys a Gremlin Database within a CosmosDB Account."
@@ -2426,12 +2672,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "gremlinDatabase": {
               "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -2479,8 +2725,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "3717641655060686556"
+                      "version": "0.35.1.17967",
+                      "templateHash": "9587717186996793648"
                     },
                     "name": "DocumentDB Database Accounts Gremlin Databases Graphs",
                     "description": "This module deploys a DocumentDB Database Accounts Gremlin Database Graph."
@@ -2530,18 +2776,18 @@
                     "databaseAccount::gremlinDatabase": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'))]"
                     },
                     "databaseAccount": {
                       "existing": true,
                       "type": "Microsoft.DocumentDB/databaseAccounts",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[parameters('databaseAccountName')]"
                     },
                     "gremlinGraph": {
                       "type": "Microsoft.DocumentDB/databaseAccounts/gremlinDatabases/graphs",
-                      "apiVersion": "2023-04-15",
+                      "apiVersion": "2024-11-15",
                       "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('gremlinDatabaseName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -2617,11 +2863,11 @@
     "databaseAccount_tables": {
       "copy": {
         "name": "databaseAccount_tables",
-        "count": "[length(parameters('tables'))]"
+        "count": "[length(coalesce(parameters('tables'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-table-{1}', uniqueString(deployment().name, parameters('location')), parameters('tables')[copyIndex()].name)]",
+      "name": "[format('{0}-table-{1}', uniqueString(deployment().name, parameters('location')), coalesce(parameters('tables'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2632,16 +2878,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('tables')[copyIndex()].name]"
+            "value": "[coalesce(parameters('tables'), createArray())[copyIndex()].name]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('tables')[copyIndex()], 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "maxThroughput": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'maxThroughput')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'maxThroughput')]"
           },
           "throughput": {
-            "value": "[tryGet(parameters('tables')[copyIndex()], 'throughput')]"
+            "value": "[tryGet(coalesce(parameters('tables'), createArray())[copyIndex()], 'throughput')]"
           }
         },
         "template": {
@@ -2651,8 +2897,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8861672171630913677"
+              "version": "0.35.1.17967",
+              "templateHash": "14106261468136691896"
             },
             "name": "Azure Cosmos DB account tables",
             "description": "This module deploys a table within an Azure Cosmos DB Account."
@@ -2696,12 +2942,12 @@
             "databaseAccount": {
               "existing": true,
               "type": "Microsoft.DocumentDB/databaseAccounts",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[parameters('databaseAccountName')]"
             },
             "table": {
               "type": "Microsoft.DocumentDB/databaseAccounts/tables",
-              "apiVersion": "2023-04-15",
+              "apiVersion": "2024-11-15",
               "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -2751,8 +2997,9 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-databaseAccount-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
+      "name": "[format('{0}-dbAccount-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2805,12 +3052,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1277254088602407590"
+              "version": "0.33.13.18514",
+              "templateHash": "15954548978129725136"
             },
             "name": "Private Endpoints",
-            "description": "This module deploys a Private Endpoint.",
-            "owner": "Azure/module-maintainers"
+            "description": "This module deploys a Private Endpoint."
           },
           "definitions": {
             "privateDnsZoneGroupType": {
@@ -2832,80 +3078,118 @@
                     "description": "Required. The private DNS zone groups to associate the private endpoint. A DNS zone group can support up to 5 DNS zones."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true
               }
             },
-            "roleAssignmentType": {
-              "type": "array",
-              "items": {
-                "type": "object",
+            "ipConfigurationType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the resource that is unique within a resource group."
+                  }
+                },
                 "properties": {
-                  "name": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  "type": "object",
+                  "properties": {
+                    "groupId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
+                      }
+                    },
+                    "memberName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
+                      }
+                    },
+                    "privateIPAddress": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. A private IP address obtained from the private endpoint's subnet."
+                      }
                     }
                   },
-                  "roleDefinitionIdOrName": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                    }
-                  },
-                  "principalId": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                    }
-                  },
-                  "principalType": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Device",
-                      "ForeignGroup",
-                      "Group",
-                      "ServicePrincipal",
-                      "User"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The principal type of the assigned principal ID."
-                    }
-                  },
-                  "description": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The description of the role assignment."
-                    }
-                  },
-                  "condition": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                    }
-                  },
-                  "conditionVersion": {
-                    "type": "string",
-                    "allowedValues": [
-                      "2.0"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. Version of the condition."
-                    }
-                  },
-                  "delegatedManagedIdentityResourceId": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The Resource Id of the delegated managed identity resource."
-                    }
+                  "metadata": {
+                    "description": "Required. Properties of private endpoint IP configurations."
                   }
                 }
               },
-              "nullable": true
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "privateLinkServiceConnectionType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the private link service connection."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "groupIds": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "metadata": {
+                        "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
+                      }
+                    },
+                    "privateLinkServiceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource id of private link service."
+                      }
+                    },
+                    "requestMessage": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of private link service connection."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
+            },
+            "customDnsConfigType": {
+              "type": "object",
+              "properties": {
+                "fqdn": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. FQDN that resolves to private endpoint IP address."
+                  }
+                },
+                "ipAddresses": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. A list of private IP addresses of the private endpoint."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true
+              }
             },
             "lockType": {
               "type": "object",
@@ -2930,161 +3214,12 @@
                   }
                 }
               },
-              "nullable": true
-            },
-            "ipConfigurationsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the resource that is unique within a resource group."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                        }
-                      },
-                      "memberName": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The member name of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string."
-                        }
-                      },
-                      "privateIPAddress": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. A private IP address obtained from the private endpoint's subnet."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private endpoint IP configurations."
-                    }
-                  }
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
-              },
-              "nullable": true
-            },
-            "manualPrivateLinkServiceConnectionsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the private link service connection."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupIds": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                        }
-                      },
-                      "privateLinkServiceId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The resource id of private link service."
-                        }
-                      },
-                      "requestMessage": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private link service connection."
-                    }
-                  }
-                }
-              },
-              "nullable": true
-            },
-            "privateLinkServiceConnectionsType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. The name of the private link service connection."
-                    }
-                  },
-                  "properties": {
-                    "type": "object",
-                    "properties": {
-                      "groupIds": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "metadata": {
-                          "description": "Required. The ID of a group obtained from the remote resource that this private endpoint should connect to. If used with private link service connection, this property must be defined as empty string array `[]`."
-                        }
-                      },
-                      "privateLinkServiceId": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. The resource id of private link service."
-                        }
-                      },
-                      "requestMessage": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "Optional. A message passed to the owner of the remote resource with this connection request. Restricted to 140 chars."
-                        }
-                      }
-                    },
-                    "metadata": {
-                      "description": "Required. Properties of private link service connection."
-                    }
-                  }
-                }
-              },
-              "nullable": true
-            },
-            "customDnsConfigType": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "properties": {
-                  "fqdn": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. Fqdn that resolves to private endpoint IP address."
-                    }
-                  },
-                  "ipAddresses": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "metadata": {
-                      "description": "Required. A list of private IP addresses of the private endpoint."
-                    }
-                  }
-                }
-              },
-              "nullable": true
+              }
             },
             "privateDnsZoneGroupConfigType": {
               "type": "object",
@@ -3108,6 +3243,81 @@
                   "sourceTemplate": "private-dns-zone-group/main.bicep"
                 }
               }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
             }
           },
           "parameters": {
@@ -3125,6 +3335,9 @@
             },
             "applicationSecurityGroupResourceIds": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "nullable": true,
               "metadata": {
                 "description": "Optional. Application security groups in which the private endpoint IP configuration is included."
@@ -3138,7 +3351,11 @@
               }
             },
             "ipConfigurations": {
-              "$ref": "#/definitions/ipConfigurationsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ipConfigurationType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. A list of IP configurations of the private endpoint. This will be used to map to the First Party Service endpoints."
               }
@@ -3159,12 +3376,17 @@
             },
             "lock": {
               "$ref": "#/definitions/lockType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. The lock settings of the service."
               }
             },
             "roleAssignments": {
-              "$ref": "#/definitions/roleAssignmentType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
@@ -3177,21 +3399,33 @@
               }
             },
             "customDnsConfigs": {
-              "$ref": "#/definitions/customDnsConfigType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customDnsConfigType"
+              },
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Custom DNS configurations."
               }
             },
             "manualPrivateLinkServiceConnections": {
-              "$ref": "#/definitions/manualPrivateLinkServiceConnectionsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Used when the network admin does not have access to approve connections to the remote resource. Required if `privateLinkServiceConnections` is empty."
               }
             },
             "privateLinkServiceConnections": {
-              "$ref": "#/definitions/privateLinkServiceConnectionsType",
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/privateLinkServiceConnectionType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Optional. A grouping of information about the connection to the remote resource."
+                "description": "Conditional. A grouping of information about the connection to the remote resource. Required if `manualPrivateLinkServiceConnections` is empty."
               }
             },
             "enableTelemetry": {
@@ -3220,7 +3454,7 @@
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Private DNS Zone Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b12aa53e-6015-4669-85d0-8515ebb3ae7f')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]"
             }
           },
           "resources": {
@@ -3228,7 +3462,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.7.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -3334,12 +3568,11 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "5805178546717255803"
+                      "version": "0.33.13.18514",
+                      "templateHash": "5440815542537978381"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
-                    "description": "This module deploys a Private Endpoint Private DNS Zone Group.",
-                    "owner": "Azure/module-maintainers"
+                    "description": "This module deploys a Private Endpoint Private DNS Zone Group."
                   },
                   "definitions": {
                     "privateDnsZoneGroupConfigType": {
@@ -3417,10 +3650,7 @@
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
-                      },
-                      "dependsOn": [
-                        "privateEndpoint"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -3482,26 +3712,33 @@
               },
               "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
             },
-            "customDnsConfig": {
-              "$ref": "#/definitions/customDnsConfigType",
+            "customDnsConfigs": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/customDnsConfigType"
+              },
               "metadata": {
                 "description": "The custom DNS configurations of the private endpoint."
               },
               "value": "[reference('privateEndpoint').customDnsConfigs]"
             },
-            "networkInterfaceIds": {
+            "networkInterfaceResourceIds": {
               "type": "array",
-              "metadata": {
-                "description": "The IDs of the network interfaces associated with the private endpoint."
+              "items": {
+                "type": "string"
               },
-              "value": "[reference('privateEndpoint').networkInterfaces]"
+              "metadata": {
+                "description": "The resource IDs of the network interfaces associated with the private endpoint."
+              },
+              "value": "[map(reference('privateEndpoint').networkInterfaces, lambda('nic', lambdaVariables('nic').id))]"
             },
             "groupId": {
               "type": "string",
+              "nullable": true,
               "metadata": {
                 "description": "The group Id for the private endpoint Group."
               },
-              "value": "[if(and(not(empty(reference('privateEndpoint').manualPrivateLinkServiceConnections)), greater(length(tryGet(reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties, 'groupIds')), 0)), coalesce(tryGet(reference('privateEndpoint').manualPrivateLinkServiceConnections[0].properties, 'groupIds', 0), ''), if(and(not(empty(reference('privateEndpoint').privateLinkServiceConnections)), greater(length(tryGet(reference('privateEndpoint').privateLinkServiceConnections[0].properties, 'groupIds')), 0)), coalesce(tryGet(reference('privateEndpoint').privateLinkServiceConnections[0].properties, 'groupIds', 0), ''), ''))]"
+              "value": "[coalesce(tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'manualPrivateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0), tryGet(tryGet(tryGet(tryGet(reference('privateEndpoint'), 'privateLinkServiceConnections'), 0, 'properties'), 'groupIds'), 0))]"
             }
           }
         }
@@ -3515,8 +3752,8 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/')[2]]",
-      "resourceGroup": "[split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '////'), '/')[4]]",
+      "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3524,10 +3761,10 @@
         "mode": "Incremental",
         "parameters": {
           "keyVaultName": {
-            "value": "[last(split(coalesce(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '//'), '/'))]"
+            "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryWriteKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryReadOnlyKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').primaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryWriteConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[0].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadonlyConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').primaryReadonlyConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[2].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryWriteKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyKeySecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryReadonlyKeySecretName, 'value', listKeys(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').secondaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryWriteConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[1].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyConnectionStringSecretName'), createArray(createObject('name', parameters('secretsExportConfiguration').secondaryReadonlyConnectionStringSecretName, 'value', listConnectionStrings(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('name')), '2023-04-15').connectionStrings[3].connectionString)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), 'value', listKeys('databaseAccount', '2024-11-15').primaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), 'value', listKeys('databaseAccount', '2024-11-15').primaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryWriteConnectionStringSecretName'), 'value', listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[0].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadonlyConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryReadonlyConnectionStringSecretName'), 'value', listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[2].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryWriteKeySecretName'), 'value', listKeys('databaseAccount', '2024-11-15').secondaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryReadonlyKeySecretName'), 'value', listKeys('databaseAccount', '2024-11-15').secondaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryWriteConnectionStringSecretName'), 'value', listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[1].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryReadonlyConnectionStringSecretName'), 'value', listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[3].connectionString)), createArray()))]"
           }
         },
         "template": {
@@ -3537,8 +3774,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "8130113748408624333"
+              "version": "0.35.1.17967",
+              "templateHash": "2474274848311423258"
             }
           },
           "definitions": {
@@ -3559,7 +3796,8 @@
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "The type for the secret set."
               }
             },
             "secretToSetType": {
@@ -3577,6 +3815,10 @@
                     "description": "Required. The value of the secret to set."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the secrets to set."
               }
             }
           },
@@ -3601,7 +3843,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2023-07-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
@@ -3677,14 +3919,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('databaseAccount', '2023-04-15', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('databaseAccount', '2024-11-15', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('databaseAccount', '2023-04-15', 'full').location]"
+      "value": "[reference('databaseAccount', '2024-11-15', 'full').location]"
     },
     "endpoint": {
       "type": "string",
@@ -3695,19 +3937,78 @@
     },
     "privateEndpoints": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
       "metadata": {
         "description": "The private endpoints of the database account."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
-          "groupId": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.groupId.value]",
-          "customDnsConfig": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfig.value]",
-          "networkInterfaceIds": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceIds.value]"
+          "groupId": "[tryGet(tryGet(reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
+          "customDnsConfigs": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
+          "networkInterfaceResourceIds": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }
+    },
+    "primaryWriteKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The base-64-encoded value of the primary read-write key."
+      },
+      "value": "[listKeys('databaseAccount', '2024-11-15').primaryMasterKey]"
+    },
+    "primaryReadOnlyKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The base-64-encoded value of the primary read-only key."
+      },
+      "value": "[listKeys('databaseAccount', '2024-11-15').primaryReadonlyMasterKey]"
+    },
+    "primaryWriteConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary write connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[0].connectionString]"
+    },
+    "primaryReadOnlyConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary read-only connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[2].connectionString]"
+    },
+    "secondaryWriteKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The base-64-encoded value of the secondary read-write key."
+      },
+      "value": "[listKeys('databaseAccount', '2024-11-15').secondaryMasterKey]"
+    },
+    "secondaryReadOnlyKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The base-64-encoded value of the secondary read-only key."
+      },
+      "value": "[listKeys('databaseAccount', '2024-11-15').secondaryReadonlyMasterKey]"
+    },
+    "secondaryWriteConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary write connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[1].connectionString]"
+    },
+    "secondaryReadOnlyConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary read-only connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[3].connectionString]"
     }
   }
 }

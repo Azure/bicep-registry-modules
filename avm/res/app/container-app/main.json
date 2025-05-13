@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "7075159430454310469"
+      "version": "0.34.44.8038",
+      "templateHash": "7838799775971203202"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -407,6 +407,92 @@
         "description": "The type for a container app probe TCP socket."
       }
     },
+    "scaleType": {
+      "type": "object",
+      "properties": {
+        "maxReplicas": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The maximum number of replicas."
+          }
+        },
+        "minReplicas": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The minimum number of replicas."
+          }
+        },
+        "cooldownPeriod": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The cooldown period in seconds."
+          }
+        },
+        "pollingInterval": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The polling interval in seconds."
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/scaleRuleType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The scaling rules."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The scale settings for the Container App."
+      }
+    },
+    "scaleRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the scaling rule."
+          }
+        },
+        "custom": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The custom scaling rule."
+          }
+        },
+        "azureQueue": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Azure Queue based scaling rule."
+          }
+        },
+        "http": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The HTTP requests based scaling rule."
+          }
+        },
+        "tcp": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The TCP based scaling rule."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The scaling rules for the Container App."
+      }
+    },
     "volumeMountType": {
       "type": "object",
       "properties": {
@@ -506,7 +592,6 @@
           }
         }
       },
-      "nullable": true,
       "metadata": {
         "__bicep_export!": true,
         "description": "Optional. App runtime configuration for the Container App."
@@ -526,27 +611,96 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null."
+            "description": "Conditional. The URL of the Azure Key Vault secret referenced by the Container App. Required if `value` is null."
           }
         },
         "name": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name of the secret."
+            "description": "Optional. The name of the container app secret."
           }
         },
         "value": {
           "type": "securestring",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null."
+            "description": "Conditional. The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a secret."
+      }
+    },
+    "authConfigType": {
+      "type": "object",
+      "properties": {
+        "encryptionSettings": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/encryptionSettings"
+            },
+            "description": "Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization."
+          },
+          "nullable": true
+        },
+        "globalValidation": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/globalValidation"
+            },
+            "description": "Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization."
+          },
+          "nullable": true
+        },
+        "httpSettings": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/httpSettings"
+            },
+            "description": "Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization."
+          },
+          "nullable": true
+        },
+        "identityProviders": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/identityProviders"
+            },
+            "description": "Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization."
+          },
+          "nullable": true
+        },
+        "login": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/login"
+            },
+            "description": "Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization."
+          },
+          "nullable": true
+        },
+        "platform": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/platform"
+            },
+            "description": "Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization."
+          },
+          "nullable": true
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the container app's authentication configuration."
       }
     },
     "lockType": {
@@ -792,25 +946,14 @@
         "description": "Optional. Target Port in containers for traffic from ingress."
       }
     },
-    "scaleMaxReplicas": {
-      "type": "int",
-      "defaultValue": 10,
+    "scaleSettings": {
+      "$ref": "#/definitions/scaleType",
+      "defaultValue": {
+        "maxReplicas": 10,
+        "minReplicas": 3
+      },
       "metadata": {
-        "description": "Optional. Maximum number of container replicas. Defaults to 10 if not set."
-      }
-    },
-    "scaleMinReplicas": {
-      "type": "int",
-      "defaultValue": 3,
-      "metadata": {
-        "description": "Optional. Minimum number of container replicas. Defaults to 3 if not set."
-      }
-    },
-    "scaleRules": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. Scaling rules."
+        "description": "Optional. The scaling settings of the service."
       }
     },
     "serviceBinds": {
@@ -941,6 +1084,16 @@
         "description": "Optional. Dapr configuration for the Container App."
       }
     },
+    "identitySettings": {
+      "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/containerApps@2024-10-02-preview#properties/properties/properties/configuration/properties/identitySettings"
+        },
+        "description": "Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used."
+      },
+      "nullable": true
+    },
     "maxInactiveRevisions": {
       "type": "int",
       "defaultValue": 0,
@@ -950,6 +1103,7 @@
     },
     "runtime": {
       "$ref": "#/definitions/runtimeType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Runtime configuration for the Container App."
       }
@@ -999,6 +1153,13 @@
       "defaultValue": "",
       "metadata": {
         "description": "Optional. Workload profile name to pin for container app execution."
+      }
+    },
+    "authConfig": {
+      "$ref": "#/definitions/authConfigType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The name of the Container App Auth configs."
       }
     }
   },
@@ -1054,6 +1215,7 @@
         "configuration": {
           "activeRevisionsMode": "[parameters('activeRevisionsMode')]",
           "dapr": "[if(not(empty(parameters('dapr'))), parameters('dapr'), null())]",
+          "identitySettings": "[if(not(empty(parameters('identitySettings'))), parameters('identitySettings'), null())]",
           "ingress": "[if(parameters('disableIngress'), null(), createObject('additionalPortMappings', parameters('additionalPortMappings'), 'allowInsecure', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('ingressAllowInsecure'), false()), 'customDomains', if(not(empty(parameters('customDomains'))), parameters('customDomains'), null()), 'corsPolicy', if(and(not(equals(parameters('corsPolicy'), null())), not(equals(parameters('ingressTransport'), 'tcp'))), createObject('allowCredentials', coalesce(tryGet(parameters('corsPolicy'), 'allowCredentials'), false()), 'allowedHeaders', coalesce(tryGet(parameters('corsPolicy'), 'allowedHeaders'), createArray()), 'allowedMethods', coalesce(tryGet(parameters('corsPolicy'), 'allowedMethods'), createArray()), 'allowedOrigins', coalesce(tryGet(parameters('corsPolicy'), 'allowedOrigins'), createArray()), 'exposeHeaders', coalesce(tryGet(parameters('corsPolicy'), 'exposeHeaders'), createArray()), 'maxAge', tryGet(parameters('corsPolicy'), 'maxAge')), null()), 'clientCertificateMode', if(not(equals(parameters('ingressTransport'), 'tcp')), parameters('clientCertificateMode'), null()), 'exposedPort', parameters('exposedPort'), 'external', parameters('ingressExternal'), 'ipSecurityRestrictions', if(not(empty(parameters('ipSecurityRestrictions'))), parameters('ipSecurityRestrictions'), null()), 'targetPort', parameters('ingressTargetPort'), 'stickySessions', createObject('affinity', parameters('stickySessionsAffinity')), 'traffic', if(not(equals(parameters('ingressTransport'), 'tcp')), createArray(createObject('label', parameters('trafficLabel'), 'latestRevision', parameters('trafficLatestRevision'), 'revisionName', parameters('trafficRevisionName'), 'weight', parameters('trafficWeight'))), null()), 'transport', parameters('ingressTransport')))]",
           "service": "[if(and(parameters('includeAddOns'), not(empty(parameters('service')))), parameters('service'), null())]",
           "maxInactiveRevisions": "[parameters('maxInactiveRevisions')]",
@@ -1068,11 +1230,7 @@
           "containers": "[parameters('containers')]",
           "initContainers": "[if(not(empty(parameters('initContainersTemplate'))), parameters('initContainersTemplate'), null())]",
           "revisionSuffix": "[parameters('revisionSuffix')]",
-          "scale": {
-            "maxReplicas": "[parameters('scaleMaxReplicas')]",
-            "minReplicas": "[parameters('scaleMinReplicas')]",
-            "rules": "[if(not(empty(parameters('scaleRules'))), parameters('scaleRules'), null())]"
-          },
+          "scale": "[parameters('scaleSettings')]",
           "serviceBinds": "[if(and(parameters('includeAddOns'), not(empty(parameters('serviceBinds')))), parameters('serviceBinds'), null())]",
           "volumes": "[if(not(empty(parameters('volumes'))), parameters('volumes'), null())]"
         },
@@ -1110,6 +1268,170 @@
         "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
         "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+      },
+      "dependsOn": [
+        "containerApp"
+      ]
+    },
+    "containerAppAuthConfigs": {
+      "condition": "[not(empty(parameters('authConfig')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-auth-config', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "containerAppName": {
+            "value": "[parameters('name')]"
+          },
+          "encryptionSettings": {
+            "value": "[tryGet(parameters('authConfig'), 'encryptionSettings')]"
+          },
+          "globalValidation": {
+            "value": "[tryGet(parameters('authConfig'), 'globalValidation')]"
+          },
+          "httpSettings": {
+            "value": "[tryGet(parameters('authConfig'), 'httpSettings')]"
+          },
+          "identityProviders": {
+            "value": "[tryGet(parameters('authConfig'), 'identityProviders')]"
+          },
+          "login": {
+            "value": "[tryGet(parameters('authConfig'), 'login')]"
+          },
+          "platform": {
+            "value": "[tryGet(parameters('authConfig'), 'platform')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "1521483894843552371"
+            },
+            "name": "Container App Auth Configs",
+            "description": "This module deploys Container App Auth Configs."
+          },
+          "parameters": {
+            "containerAppName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent Container App. Required if the template is used in a standalone deployment."
+              }
+            },
+            "encryptionSettings": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/encryptionSettings"
+                },
+                "description": "Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization."
+              },
+              "nullable": true
+            },
+            "globalValidation": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/globalValidation"
+                },
+                "description": "Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization."
+              },
+              "nullable": true
+            },
+            "httpSettings": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/httpSettings"
+                },
+                "description": "Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization."
+              },
+              "nullable": true
+            },
+            "identityProviders": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/identityProviders"
+                },
+                "description": "Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization."
+              },
+              "nullable": true
+            },
+            "login": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/login"
+                },
+                "description": "Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization."
+              },
+              "nullable": true
+            },
+            "platform": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.App/containerApps/authConfigs@2024-10-02-preview#properties/properties/properties/platform"
+                },
+                "description": "Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization."
+              },
+              "nullable": true
+            }
+          },
+          "resources": {
+            "containerApp": {
+              "existing": true,
+              "type": "Microsoft.App/containerApps",
+              "apiVersion": "2024-10-02-preview",
+              "name": "[parameters('containerAppName')]"
+            },
+            "containerAppAuthConfigs": {
+              "type": "Microsoft.App/containerApps/authConfigs",
+              "apiVersion": "2024-10-02-preview",
+              "name": "[format('{0}/{1}', parameters('containerAppName'), 'current')]",
+              "properties": {
+                "encryptionSettings": "[parameters('encryptionSettings')]",
+                "globalValidation": "[parameters('globalValidation')]",
+                "httpSettings": "[parameters('httpSettings')]",
+                "identityProviders": "[parameters('identityProviders')]",
+                "login": "[parameters('login')]",
+                "platform": "[parameters('platform')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the set of Container App Auth configs."
+              },
+              "value": "current"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the set of Container App Auth configs."
+              },
+              "value": "[resourceId('Microsoft.App/containerApps/authConfigs', parameters('containerAppName'), 'current')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group containing the set of Container App Auth configs."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
       },
       "dependsOn": [
         "containerApp"

@@ -10,7 +10,7 @@ param adName string = ''
 @description('Optional. Enable AES encryption on the SMB Server.')
 param aesEncryption bool = false
 
-import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { customerManagedKeyType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The customer managed key definition.')
 param customerManagedKey customerManagedKeyType?
 
@@ -33,17 +33,20 @@ param dnsServers string = ''
 @description('Optional. Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only.')
 param encryptDCConnections bool = false
 
+@description('Optional. If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes.')
+param allowLocalNfsUsersWithLdap bool = false
+
 @description('Optional. Required if domainName is specified. NetBIOS name of the SMB server. A computer account with this prefix will be registered in the AD and used to mount volumes.')
 param smbServerNamePrefix string = ''
 
 @description('Optional. Capacity pools to create.')
 param capacityPools capacityPoolType[]?
 
-import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -59,7 +62,7 @@ param ldapSigning bool = false
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
@@ -96,6 +99,7 @@ var activeDirectoryConnectionProperties = [
     serverRootCACertificate: !empty(domainName) ? serverRootCACertificate : null
     smbServerName: !empty(domainName) ? smbServerNamePrefix : null
     organizationalUnit: !empty(domainJoinOU) ? domainJoinOU : null
+    allowLocalNfsUsersWithLdap: !empty(domainName) ? allowLocalNfsUsersWithLdap : false
   }
 ]
 
@@ -156,27 +160,27 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
-  name: last(split((customerManagedKey.?keyVaultResourceId ?? 'dummyVault'), '/'))
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId!)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?keyVaultResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?keyVaultResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
   resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
-    name: customerManagedKey.?keyName ?? 'dummyKey'
+    name: customerManagedKey.?keyName!
   }
 }
 
 resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
-  name: last(split(customerManagedKey.?userAssignedIdentityResourceId ?? 'dummyMsi', '/'))
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '//'), '/')[2],
-    split((customerManagedKey.?userAssignedIdentityResourceId ?? '////'), '/')[4]
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' = {
   name: name
   tags: tags
   identity: identity

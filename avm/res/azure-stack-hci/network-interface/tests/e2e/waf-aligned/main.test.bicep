@@ -67,17 +67,22 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
     deploymentUserPassword: localAdminAndDeploymentUserPass
-    hciResourceProviderObjectId: hciResourceProviderObjectId
     localAdminPassword: localAdminAndDeploymentUserPass
     location: enforcedLocation
   }
 }
 
-module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.0' = {
+module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {
     name: nestedDependencies.outputs.clusterName
+    deploymentUser: 'deployUser'
+    deploymentUserPassword: localAdminAndDeploymentUserPass
+    localAdminUser: 'admin-hci'
+    localAdminPassword: localAdminAndDeploymentUserPass
+    servicePrincipalId: arbDeploymentAppId
+    servicePrincipalSecret: arbDeploymentServicePrincipalSecret
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
@@ -103,9 +108,9 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.0' = {
           }
           overrideQosPolicy: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           overrideVirtualSwitchConfiguration: false
           virtualSwitchConfigurationOverrides: {
@@ -125,9 +130,9 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.0' = {
           }
           overrideQosPolicy: false
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           overrideVirtualSwitchConfiguration: false
           virtualSwitchConfigurationOverrides: {
@@ -147,9 +152,9 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.0' = {
           }
           overrideQosPolicy: true
           qosPolicyOverrides: {
-            bandwidthPercentage_SMB: '50'
-            priorityValue8021Action_Cluster: '7'
-            priorityValue8021Action_SMB: '3'
+            bandwidthPercentageSMB: '50'
+            priorityValue8021ActionCluster: '7'
+            priorityValue8021ActionSMB: '3'
           }
           overrideVirtualSwitchConfiguration: false
           virtualSwitchConfigurationOverrides: {
@@ -162,10 +167,12 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.0' = {
       storageConnectivitySwitchless: false
       storageNetworks: [
         {
+          name: 'smb0'
           adapterName: 'smb0'
           vlan: '711'
         }
         {
+          name: 'smb1'
           adapterName: 'smb1'
           vlan: '712'
         }
@@ -183,6 +190,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.0' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    hciResourceProviderObjectId: hciResourceProviderObjectId
   }
 }
 

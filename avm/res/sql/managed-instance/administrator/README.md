@@ -12,7 +12,7 @@ This module deploys a SQL Managed Instance Administrator.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/managedInstances/administrators` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/managedInstances/administrators) |
+| `Microsoft.Sql/managedInstances/administrators` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/managedInstances/administrators) |
 
 ## Parameters
 
@@ -62,7 +62,6 @@ Tenant ID of the managed instance administrator.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 

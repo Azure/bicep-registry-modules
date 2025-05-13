@@ -17,9 +17,6 @@ param softDeleteRetentionDays int = 30
 param logsRetentionInDays int = 30
 
 param tenantId string
-@secure()
-param hciResourceProviderObjectId string
-param arcNodeResourceIds array
 param deploymentUsername string = 'deployUser'
 @secure()
 param deploymentUserPassword string
@@ -35,18 +32,7 @@ param arbDeploymentServicePrincipalSecret string
 param vnetSubnetResourceId string?
 param allowIPtoStorageAndKeyVault string?
 param usingArcGW bool = false
-param clusterName string?
-param cloudId string?
-
-// secret names for the Azure Key Vault - these cannot be changed.
-var localAdminSecretName = (empty(cloudId)) ? 'LocalAdminCredential' : '${clusterName}-LocalAdminCredential-${cloudId}'
-var domainAdminSecretName = (empty(cloudId))
-  ? 'AzureStackLCMUserCredential'
-  : '${clusterName}-AzureStackLCMUserCredential-${cloudId}'
-var arbDeploymentServicePrincipalName = (empty(cloudId))
-  ? 'DefaultARBApplication'
-  : '${clusterName}-DefaultARBApplication-${cloudId}'
-var storageWitnessName = (empty(cloudId)) ? 'WitnessStorageKey' : '${clusterName}-WitnessStorageKey-${cloudId}'
+param useSharedKeyVault bool = true
 
 // create base64 encoded secret values to be stored in the Azure Key Vault
 var deploymentUserSecretValue = base64('${deploymentUsername}:${deploymentUserPassword}')
@@ -54,23 +40,6 @@ var localAdminSecretValue = base64('${localAdminUsername}:${localAdminPassword}'
 var arbDeploymentServicePrincipalValue = base64('${arbDeploymentAppId}:${arbDeploymentServicePrincipalSecret}')
 
 var storageAccountType = 'Standard_ZRS'
-
-var azureConnectedMachineResourceManagerRoleID = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  'f5819b54-e033-4d82-ac66-4fec3cbf3f4c'
-)
-var readerRoleID = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  'acdd72a7-3385-48ef-bd42-f606fba81ae7'
-)
-var azureStackHCIDeviceManagementRole = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '865ae368-6a45-4bd1-8fbf-0d5151f56fc1'
-)
-var keyVaultSecretUserRoleID = subscriptionResourceId(
-  'Microsoft.Authorization/roleDefinitions',
-  '4633458b-17de-408a-b874-0445c86b69e6'
-)
 
 module ARBDeploymentSPNSubscriptionRoleAssignmnent 'ashciARBSPRoleAssignment.bicep' = {
   name: '${uniqueString(deployment().name, location)}-test-arbroleassignment'
@@ -198,8 +167,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     diagnosticStorageAccount
   ]
 
-  resource keyVaultName_domainAdminSecret 'secrets@2023-07-01' = {
-    name: domainAdminSecretName
+  resource keyVaultName_domainAdminSecret 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+    name: 'AzureStackLCMUserCredential'
     properties: {
       contentType: 'Secret'
       value: deploymentUserSecretValue
@@ -209,8 +178,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource keyVaultName_localAdminSecret 'secrets@2023-07-01' = {
-    name: localAdminSecretName
+  resource keyVaultName_localAdminSecret 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+    name: 'LocalAdminCredential'
     properties: {
       contentType: 'Secret'
       value: localAdminSecretValue
@@ -220,8 +189,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource keyVaultName_arbDeploymentServicePrincipal 'secrets@2023-07-01' = {
-    name: arbDeploymentServicePrincipalName
+  resource keyVaultName_arbDeploymentServicePrincipal 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+    name: 'DefaultARBApplication'
     properties: {
       contentType: 'Secret'
       value: arbDeploymentServicePrincipalValue
@@ -231,8 +200,8 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     }
   }
 
-  resource keyVaultName_storageWitness 'secrets@2023-07-01' = {
-    name: storageWitnessName
+  resource keyVaultName_storageWitness 'secrets@2023-07-01' = if (!useSharedKeyVault) {
+    name: 'WitnessStorageKey'
     properties: {
       contentType: 'Secret'
       value: base64(witnessStorageAccount.listKeys().keys[0].value)
@@ -261,86 +230,3 @@ resource keyVaultName_Microsoft_Insights_service 'microsoft.insights/diagnosticS
     ]
   }
 }
-
-resource SPConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(
-    subscription().subscriptionId,
-    hciResourceProviderObjectId,
-    'ConnectedMachineResourceManagerRolePermissions',
-    resourceGroup().id
-  )
-  scope: resourceGroup()
-  properties: {
-    roleDefinitionId: azureConnectedMachineResourceManagerRoleID
-    principalId: hciResourceProviderObjectId
-    principalType: 'ServicePrincipal'
-    description: 'Created by Azure Stack HCI deployment template'
-  }
-}
-
-resource NodeAzureConnectedMachineResourceManagerRolePermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: {
-    name: guid(
-      subscription().subscriptionId,
-      hciResourceProviderObjectId,
-      'azureConnectedMachineResourceManager',
-      hciNode,
-      resourceGroup().id
-    )
-    properties: {
-      roleDefinitionId: azureConnectedMachineResourceManagerRoleID
-      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
-      principalType: 'ServicePrincipal'
-      description: 'Created by Azure Stack HCI deployment template'
-    }
-  }
-]
-
-resource NodeazureStackHCIDeviceManagementRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: {
-    name: guid(
-      subscription().subscriptionId,
-      hciResourceProviderObjectId,
-      'azureStackHCIDeviceManagementRole',
-      hciNode,
-      resourceGroup().id
-    )
-    properties: {
-      roleDefinitionId: azureStackHCIDeviceManagementRole
-      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
-      principalType: 'ServicePrincipal'
-      description: 'Created by Azure Stack HCI deployment template'
-    }
-  }
-]
-
-resource NodereaderRoleIDPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: {
-    name: guid(subscription().subscriptionId, hciResourceProviderObjectId, 'reader', hciNode, resourceGroup().id)
-    properties: {
-      roleDefinitionId: readerRoleID
-      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
-      principalType: 'ServicePrincipal'
-      description: 'Created by Azure Stack HCI deployment template'
-    }
-  }
-]
-
-resource KeyVaultSecretsUserPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
-  for hciNode in arcNodeResourceIds: {
-    name: guid(
-      subscription().subscriptionId,
-      hciResourceProviderObjectId,
-      'keyVaultSecretUser',
-      hciNode,
-      resourceGroup().id
-    )
-    scope: keyVault
-    properties: {
-      roleDefinitionId: keyVaultSecretUserRoleID
-      principalId: reference(hciNode, '2023-10-03-preview', 'Full').identity.principalId
-      principalType: 'ServicePrincipal'
-      description: 'Created by Azure Stack HCI deployment template'
-    }
-  }
-]

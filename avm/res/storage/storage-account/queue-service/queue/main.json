@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "6383154227554431205"
+      "version": "0.35.1.17967",
+      "templateHash": "9203389950224823099"
     },
     "name": "Storage Account Queues",
     "description": "This module deploys a Storage Account Queue."
@@ -104,10 +104,13 @@
     },
     "metadata": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Storage/storageAccounts/queueServices/queues@2024-01-01#properties/properties/properties/metadata"
+        },
         "description": "Optional. A name-value pair that represents queue metadata."
-      }
+      },
+      "defaultValue": {}
     },
     "roleAssignments": {
       "type": "array",
@@ -148,18 +151,18 @@
     "storageAccount::queueServices": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts/queueServices",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), 'default')]"
     },
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('storageAccountName')]"
     },
     "queue": {
       "type": "Microsoft.Storage/storageAccounts/queueServices/queues",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), 'default', parameters('name'))]",
       "properties": {
         "metadata": "[parameters('metadata')]"

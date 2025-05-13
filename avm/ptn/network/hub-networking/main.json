@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "13578022486694565821"
+      "version": "0.34.44.8038",
+      "templateHash": "12444621813857429578"
     },
     "name": "Hub Networking",
     "description": "This module is designed to simplify the creation of multi-region hub networks in Azure. It will create a number of virtual networks and subnets, and optionally peer them together in a mesh topology with routing."
@@ -320,13 +320,6 @@
               "description": "Optional. The Azure Bastion config."
             }
           },
-          "enableTelemetry": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Enable/Disable usage telemetry for module."
-            }
-          },
           "enableBastion": {
             "type": "bool",
             "nullable": true,
@@ -552,13 +545,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Diagnostic settings."
-          }
-        },
-        "enableTelemetry": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enable/Disable usage telemetry for module."
           }
         },
         "firewallPolicyId": {
@@ -793,7 +779,7 @@
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'dnsServers'), createArray())]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "flowTimeoutInMinutes": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'flowTimeoutInMinutes'), 0)]"
@@ -2379,8 +2365,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "6971888757750761810"
+              "version": "0.34.44.8038",
+              "templateHash": "4864041993073360642"
             },
             "name": "Virtual Networks",
             "description": "This module deploys a Virtual Network."
@@ -2454,7 +2440,7 @@
             "value": true
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'roleAssignments'), createArray())]"
@@ -2856,7 +2842,7 @@
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'location'), parameters('location'))]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "roleAssignments": {
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'roleAssignments'), createArray())]"
@@ -4082,7 +4068,7 @@
             "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'diagnosticSettings'), createArray())]"
           },
           "enableTelemetry": {
-            "value": "[coalesce(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'enableTelemetry'), true())]"
+            "value": "[parameters('enableTelemetry')]"
           },
           "firewallPolicyId": {
             "value": "[coalesce(tryGet(tryGet(items(coalesce(parameters('hubVirtualNetworks'), createObject()))[copyIndex()].value, 'azureFirewallSettings'), 'firewallPolicyId'), '')]"
@@ -6515,8 +6501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4695558034353162860"
+              "version": "0.34.44.8038",
+              "templateHash": "663660887193318079"
             },
             "name": "Existing Virtual Network Subnets",
             "description": "This module retrieves an existing Virtual Network Subnet."
@@ -6597,8 +6583,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "3980815084200627301"
+              "version": "0.34.44.8038",
+              "templateHash": "13703443757240259852"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
@@ -6804,7 +6790,7 @@
               "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
               "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
               "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
               "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
             }
           },

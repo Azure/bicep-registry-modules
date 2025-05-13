@@ -16,6 +16,7 @@ This module deploys a Container App.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.App/containerApps` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps) |
+| `Microsoft.App/containerApps/authConfigs` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps/authConfigs) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -281,6 +282,23 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentResourceId: '<environmentResourceId>'
     name: 'acamax001'
     // Non-required parameters
+    authConfig: {
+      globalValidation: {
+        unauthenticatedClientAction: 'Return401'
+      }
+      httpSettings: {
+        requireHttps: true
+      }
+      platform: {
+        enabled: true
+      }
+    }
+    identitySettings: [
+      {
+        identity: '<identity>'
+        lifecycle: 'None'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -321,6 +339,12 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
           }
         ]
       }
+    }
+    scaleSettings: {
+      cooldownPeriod: 500
+      maxReplicas: 11
+      minReplicas: 4
+      pollingInterval: 45
     }
     secrets: [
       {
@@ -400,6 +424,27 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acamax001"
     },
     // Non-required parameters
+    "authConfig": {
+      "value": {
+        "globalValidation": {
+          "unauthenticatedClientAction": "Return401"
+        },
+        "httpSettings": {
+          "requireHttps": true
+        },
+        "platform": {
+          "enabled": true
+        }
+      }
+    },
+    "identitySettings": {
+      "value": [
+        {
+          "identity": "<identity>",
+          "lifecycle": "None"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -449,6 +494,14 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
             }
           ]
         }
+      }
+    },
+    "scaleSettings": {
+      "value": {
+        "cooldownPeriod": 500,
+        "maxReplicas": 11,
+        "minReplicas": 4,
+        "pollingInterval": 45
       }
     },
     "secrets": {
@@ -525,6 +578,23 @@ param containers = [
 param environmentResourceId = '<environmentResourceId>'
 param name = 'acamax001'
 // Non-required parameters
+param authConfig = {
+  globalValidation: {
+    unauthenticatedClientAction: 'Return401'
+  }
+  httpSettings: {
+    requireHttps: true
+  }
+  platform: {
+    enabled: true
+  }
+}
+param identitySettings = [
+  {
+    identity: '<identity>'
+    lifecycle: 'None'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -565,6 +635,12 @@ param runtime = {
       }
     ]
   }
+}
+param scaleSettings = {
+  cooldownPeriod: 500
+  maxReplicas: 11
+  minReplicas: 4
+  pollingInterval: 45
 }
 param secrets = [
   {
@@ -929,6 +1005,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`activeRevisionsMode`](#parameter-activerevisionsmode) | string | Controls how active revisions are handled for the Container app. |
 | [`additionalPortMappings`](#parameter-additionalportmappings) | array | Settings to expose additional ports on container app. |
+| [`authConfig`](#parameter-authconfig) | object | The name of the Container App Auth configs. |
 | [`clientCertificateMode`](#parameter-clientcertificatemode) | string | Client certificate mode for mTLS. |
 | [`corsPolicy`](#parameter-corspolicy) | object | Object userd to configure CORS policy. |
 | [`customDomains`](#parameter-customdomains) | array | Custom domain bindings for Container App hostnames. |
@@ -936,6 +1013,7 @@ param tags = {
 | [`disableIngress`](#parameter-disableingress) | bool | Bool to disable all ingress traffic for the container app. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`exposedPort`](#parameter-exposedport) | int | Exposed Port in containers for TCP traffic from ingress. |
+| [`identitySettings`](#parameter-identitysettings) | array | Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used. |
 | [`includeAddOns`](#parameter-includeaddons) | bool | Toggle to include the service configuration. |
 | [`ingressAllowInsecure`](#parameter-ingressallowinsecure) | bool | Bool indicating if HTTP connections to is allowed. If set to false HTTP connections are automatically redirected to HTTPS connections. |
 | [`ingressExternal`](#parameter-ingressexternal) | bool | Bool indicating if the App exposes an external HTTP endpoint. |
@@ -951,9 +1029,7 @@ param tags = {
 | [`revisionSuffix`](#parameter-revisionsuffix) | string | User friendly suffix that is appended to the revision name. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`runtime`](#parameter-runtime) | object | Runtime configuration for the Container App. |
-| [`scaleMaxReplicas`](#parameter-scalemaxreplicas) | int | Maximum number of container replicas. Defaults to 10 if not set. |
-| [`scaleMinReplicas`](#parameter-scaleminreplicas) | int | Minimum number of container replicas. Defaults to 3 if not set. |
-| [`scaleRules`](#parameter-scalerules) | array | Scaling rules. |
+| [`scaleSettings`](#parameter-scalesettings) | object | The scaling settings of the service. |
 | [`secrets`](#parameter-secrets) | array | The secrets of the Container App. |
 | [`service`](#parameter-service) | object | Dev ContainerApp service type. |
 | [`serviceBinds`](#parameter-servicebinds) | array | List of container app services bound to the app. |
@@ -1103,8 +1179,6 @@ HTTPGet specifies the http request to perform.
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10
 
 **Required parameters**
 
@@ -1127,8 +1201,6 @@ Path to access on the HTTP server.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.port`
 
@@ -1136,8 +1208,6 @@ Name or number of the port to access on the container.
 
 - Required: Yes
 - Type: int
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.host`
 
@@ -1145,8 +1215,6 @@ Host name to connect to. Defaults to the pod IP.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.httpHeaders`
 
@@ -1154,8 +1222,6 @@ HTTP headers to set in the request.
 
 - Required: No
 - Type: array
-- MinValue: 1
-- MaxValue: 10
 
 **Required parameters**
 
@@ -1170,8 +1236,6 @@ Name of the header.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.httpHeaders.value`
 
@@ -1179,8 +1243,6 @@ Value of the header.
 
 - Required: Yes
 - Type: string
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.httpGet.scheme`
 
@@ -1195,8 +1257,6 @@ Scheme to use for connecting to the host. Defaults to HTTP.
     'HTTPS'
   ]
   ```
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.initialDelaySeconds`
 
@@ -1231,8 +1291,6 @@ The TCP socket specifies an action involving a TCP port. TCP hooks not yet suppo
 
 - Required: No
 - Type: object
-- MinValue: 1
-- MaxValue: 10
 
 **Required parameters**
 
@@ -1261,8 +1319,6 @@ Host name to connect to, defaults to the pod IP.
 
 - Required: No
 - Type: string
-- MinValue: 1
-- MaxValue: 65535
 
 ### Parameter: `containers.probes.terminationGracePeriodSeconds`
 
@@ -1270,8 +1326,6 @@ Optional duration in seconds the pod needs to terminate gracefully upon probe fa
 
 - Required: No
 - Type: int
-- MinValue: 1
-- MaxValue: 10
 
 ### Parameter: `containers.probes.timeoutSeconds`
 
@@ -1296,8 +1350,6 @@ The type of probe.
     'Startup'
   ]
   ```
-- MinValue: 1
-- MaxValue: 240
 
 ### Parameter: `containers.volumeMounts`
 
@@ -1409,6 +1461,66 @@ Specifies the exposed port for the target port. If not specified, it defaults to
 
 - Required: No
 - Type: int
+
+### Parameter: `authConfig`
+
+The name of the Container App Auth configs.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`encryptionSettings`](#parameter-authconfigencryptionsettings) | object | The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization. |
+| [`globalValidation`](#parameter-authconfigglobalvalidation) | object | The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization. |
+| [`httpSettings`](#parameter-authconfighttpsettings) | object | The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization. |
+| [`identityProviders`](#parameter-authconfigidentityproviders) | object | The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization. |
+| [`login`](#parameter-authconfiglogin) | object | The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization. |
+| [`platform`](#parameter-authconfigplatform) | object | The configuration settings of the platform of ContainerApp Service Authentication/Authorization. |
+
+### Parameter: `authConfig.encryptionSettings`
+
+The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfig.globalValidation`
+
+The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfig.httpSettings`
+
+The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfig.identityProviders`
+
+The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfig.login`
+
+The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfig.platform`
+
+The configuration settings of the platform of ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
 
 ### Parameter: `clientCertificateMode`
 
@@ -1525,6 +1637,13 @@ Exposed Port in containers for TCP traffic from ingress.
 - Required: No
 - Type: int
 - Default: `0`
+
+### Parameter: `identitySettings`
+
+Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.
+
+- Required: No
+- Type: array
 
 ### Parameter: `includeAddOns`
 
@@ -1898,29 +2017,119 @@ Name of the logger.
 - Required: Yes
 - Type: string
 
-### Parameter: `scaleMaxReplicas`
+### Parameter: `scaleSettings`
 
-Maximum number of container replicas. Defaults to 10 if not set.
+The scaling settings of the service.
+
+- Required: No
+- Type: object
+- Default:
+  ```Bicep
+  {
+      maxReplicas: 10
+      minReplicas: 3
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`maxReplicas`](#parameter-scalesettingsmaxreplicas) | int | The maximum number of replicas. |
+| [`minReplicas`](#parameter-scalesettingsminreplicas) | int | The minimum number of replicas. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`cooldownPeriod`](#parameter-scalesettingscooldownperiod) | int | The cooldown period in seconds. |
+| [`pollingInterval`](#parameter-scalesettingspollinginterval) | int | The polling interval in seconds. |
+| [`rules`](#parameter-scalesettingsrules) | array | The scaling rules. |
+
+### Parameter: `scaleSettings.maxReplicas`
+
+The maximum number of replicas.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `scaleSettings.minReplicas`
+
+The minimum number of replicas.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `scaleSettings.cooldownPeriod`
+
+The cooldown period in seconds.
 
 - Required: No
 - Type: int
-- Default: `10`
 
-### Parameter: `scaleMinReplicas`
+### Parameter: `scaleSettings.pollingInterval`
 
-Minimum number of container replicas. Defaults to 3 if not set.
+The polling interval in seconds.
 
 - Required: No
 - Type: int
-- Default: `3`
 
-### Parameter: `scaleRules`
+### Parameter: `scaleSettings.rules`
 
-Scaling rules.
+The scaling rules.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-scalesettingsrulesname) | string | The name of the scaling rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureQueue`](#parameter-scalesettingsrulesazurequeue) | object | The Azure Queue based scaling rule. |
+| [`custom`](#parameter-scalesettingsrulescustom) | object | The custom scaling rule. |
+| [`http`](#parameter-scalesettingsruleshttp) | object | The HTTP requests based scaling rule. |
+| [`tcp`](#parameter-scalesettingsrulestcp) | object | The TCP based scaling rule. |
+
+### Parameter: `scaleSettings.rules.name`
+
+The name of the scaling rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `scaleSettings.rules.azureQueue`
+
+The Azure Queue based scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.custom`
+
+The custom scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.http`
+
+The HTTP requests based scaling rule.
+
+- Required: No
+- Type: object
+
+### Parameter: `scaleSettings.rules.tcp`
+
+The TCP based scaling rule.
+
+- Required: No
+- Type: object
 
 ### Parameter: `secrets`
 
@@ -1933,26 +2142,26 @@ The secrets of the Container App.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null. |
-| [`value`](#parameter-secretsvalue) | securestring | The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null. |
+| [`keyVaultUrl`](#parameter-secretskeyvaulturl) | string | The URL of the Azure Key Vault secret referenced by the Container App. Required if `value` is null. |
+| [`value`](#parameter-secretsvalue) | securestring | The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`identity`](#parameter-secretsidentity) | string | Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity. |
-| [`name`](#parameter-secretsname) | string | The name of the secret. |
+| [`name`](#parameter-secretsname) | string | The name of the container app secret. |
 
 ### Parameter: `secrets.keyVaultUrl`
 
-Azure Key Vault URL pointing to the secret referenced by the Container App Job. Required if `value` is null.
+The URL of the Azure Key Vault secret referenced by the Container App. Required if `value` is null.
 
 - Required: No
 - Type: string
 
 ### Parameter: `secrets.value`
 
-The secret value, if not fetched from Key Vault. Required if `keyVaultUrl` is not null.
+The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null.
 
 - Required: No
 - Type: securestring
@@ -1966,7 +2175,7 @@ Resource ID of a managed identity to authenticate with Azure Key Vault, or Syste
 
 ### Parameter: `secrets.name`
 
-The name of the secret.
+The name of the container app secret.
 
 - Required: No
 - Type: string

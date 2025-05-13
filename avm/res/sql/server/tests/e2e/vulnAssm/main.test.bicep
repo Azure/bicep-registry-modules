@@ -48,50 +48,49 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 // Test Execution //
 // ============== //
-
-module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
-  params: {
-    name: '${namePrefix}-${serviceShort}'
-    primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: password
-    location: resourceLocation
-    vulnerabilityAssessmentsObj: {
-      name: 'default'
-      recurringScans: {
-        emails: [
-          'test1@contoso.com'
-          'test2@contoso.com'
-        ]
-        emailSubscriptionAdmins: true
-        isEnabled: true
+@batchSize(1)
+module testDeployment '../../../main.bicep' = [
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
+    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    params: {
+      name: '${namePrefix}-${serviceShort}'
+      primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      administratorLogin: 'adminUserName'
+      administratorLoginPassword: password
+      location: resourceLocation
+      vulnerabilityAssessmentsObj: {
+        name: 'default'
+        recurringScans: {
+          emails: [
+            'test1@contoso.com'
+            'test2@contoso.com'
+          ]
+          emailSubscriptionAdmins: true
+          isEnabled: true
+        }
+        storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+        useStorageAccountAccessKey: false
+        createStorageRoleAssignment: true
       }
-      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-      useStorageAccountAccessKey: false
-      createStorageRoleAssignment: true
-    }
-    securityAlertPolicies: [
-      {
-        name: 'Default'
-        state: 'Enabled'
-        emailAccountAdmins: true
-      }
-    ]
-    managedIdentities: {
-      systemAssigned: true
-      userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+      securityAlertPolicies: [
+        {
+          name: 'Default'
+          state: 'Enabled'
+          emailAccountAdmins: true
+        }
       ]
-    }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
+      tags: {
+        'hidden-title': 'This is visible in the resource name'
+        Environment: 'Non-Prod'
+        Role: 'DeploymentValidation'
+      }
     }
   }
-  dependsOn: [
-    nestedDependencies
-  ]
-}
+]

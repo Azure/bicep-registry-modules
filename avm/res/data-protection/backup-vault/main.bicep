@@ -10,16 +10,41 @@ param enableTelemetry bool = true
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
-@description('Optional. Tags of the Recovery Service Vault resource.')
+@description('Optional. Whether or not the service applies a secondary layer of encryption. For security reasons, it is recommended to set it to Enabled.')
+@allowed([
+  'Enabled'
+  'Disabled'
+])
+param infrastructureEncryption string = 'Enabled'
+
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The customer managed key (CMK) definition. ENABLING CMK WITH USER ASSIGNED MANAGED IDENTITY IS A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/en-us/azure/backup/encryption-at-rest-with-cmk-for-backup-vault) FOR CLARIFICATION.')
+param customerManagedKey customerManagedKeyWithAutoRotateType?
+
+@description('Optional. The soft delete related settings.')
+param softDeleteSettings softDeleteSettingType?
+
+@description('Optional. The immmutability setting state of the backup vault resource.')
+@allowed([
+  'Disabled'
+  'Locked'
+  'Unlocked'
+])
+param immutabilitySettingState string?
+
+@description('Optional. Tags of the backup vault resource.')
 param tags object?
 
 @description('Optional. The datastore type to use. ArchiveStore does not support ZoneRedundancy.')
@@ -46,19 +71,30 @@ param type string = 'GeoRedundant'
 param azureMonitorAlertSettingsAlertsForAllJobFailures string = 'Enabled'
 
 @description('Optional. List of all backup policies.')
-param backupPolicies array = []
+param backupPolicies array?
 
-@description('Optional. Security settings for the backup vault.')
-param securitySettings object = {}
+@description('Optional. List of all backup instances.')
+param backupInstances backupInstanceType[]?
 
 @description('Optional. Feature settings for the backup vault.')
-param featureSettings object = {}
+param featureSettings object?
+
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
 var identity = !empty(managedIdentities)
   ? {
-      type: (managedIdentities.?systemAssigned ?? false) ? 'SystemAssigned' : null
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
-  : null
+  : {
+      type: 'None'
+    }
 
 var builtInRoleNames = {
   'Backup Contributor': subscriptionResourceId(
@@ -116,7 +152,27 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' = {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+  name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
+    split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
+  )
+}
+
+resource backupVault 'Microsoft.DataProtection/backupVaults@2024-04-01' = {
   name: name
   location: location
   tags: tags
@@ -134,18 +190,63 @@ resource backupVault 'Microsoft.DataProtection/backupVaults@2023-05-01' = {
       }
     ]
     featureSettings: featureSettings
-    securitySettings: securitySettings
+    securitySettings: {
+      encryptionSettings: !empty(customerManagedKey)
+        ? {
+            infrastructureEncryption: infrastructureEncryption
+            kekIdentity: !empty(customerManagedKey.?userAssignedIdentityResourceId)
+              ? {
+                  identityId: cMKUserAssignedIdentity.id
+                  identityType: 'UserAssigned'
+                }
+              : {
+                  identityType: 'SystemAssigned'
+                }
+            keyVaultProperties: {
+              keyUri: !empty(customerManagedKey.?keyVersion)
+                ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+                : (customerManagedKey.?autoRotationEnabled ?? true)
+                    ? cMKKeyVault::cMKKey.properties.keyUri
+                    : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+            }
+            state: 'Enabled'
+          }
+        : null
+      immutabilitySettings: !empty(immutabilitySettingState)
+        ? {
+            state: immutabilitySettingState
+          }
+        : null
+      softDeleteSettings: softDeleteSettings
+    }
   }
 }
 
 module backupVault_backupPolicies 'backup-policy/main.bicep' = [
-  for (backupPolicy, index) in backupPolicies: {
+  for (backupPolicy, index) in (backupPolicies ?? []): {
     name: '${uniqueString(deployment().name, location)}-BV-BackupPolicy-${index}'
     params: {
       backupVaultName: backupVault.name
       name: backupPolicy.name
       properties: backupPolicy.properties
     }
+  }
+]
+
+@batchSize(1)
+module backupVault_backupInstances 'backup-instance/main.bicep' = [
+  for (backupInstance, index) in (backupInstances ?? []): {
+    name: '${uniqueString(deployment().name, location)}-BV-BackupInstance-${index}'
+    params: {
+      backupVaultName: backupVault.name
+      name: backupInstance.name
+      friendlyName: backupInstance.?friendlyName
+      dataSourceInfo: backupInstance.dataSourceInfo
+      policyInfo: backupInstance.policyInfo
+    }
+    dependsOn: [
+      backupVault_backupPolicies
+    ]
   }
 ]
 
@@ -195,41 +296,29 @@ output location string = backupVault.location
 //   Definitions   //
 // =============== //
 
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-}?
+@export()
+@description('The type for soft delete settings.')
+type softDeleteSettingType = {
+  @description('Required. The soft delete retention period in days.')
+  retentionDurationInDays: int
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+  @description('Required. The soft delete state.')
+  state: ('AlwaysON' | 'On' | 'Off')
+}
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
+import { dataSourceInfoType, policyInfoType } from 'backup-instance/main.bicep'
+@export()
+@description('The type for a backup instance.')
+type backupInstanceType = {
+  @description('Required. The name of the backup instance.')
+  name: string
 
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
+  @description('Optional. The friendly name of the backup instance.')
+  friendlyName: string?
 
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
+  @description('Required. The data source info for the backup instance.')
+  dataSourceInfo: dataSourceInfoType
 
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
+  @description('Required. The policy info for the backup instance.')
+  policyInfo: policyInfoType
+}

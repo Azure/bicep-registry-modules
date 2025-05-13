@@ -8,7 +8,7 @@ param databaseAccountName string
 param name string
 
 @description('Optional. Array of containers to deploy in the SQL database.')
-param containers object[] = []
+param containers object[]?
 
 @description('Optional. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
 param throughput int?
@@ -19,11 +19,11 @@ param autoscaleSettingsMaxThroughput int?
 @description('Optional. Tags of the SQL database resource.')
 param tags object?
 
-resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2023-04-15' existing = {
+resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' existing = {
   name: databaseAccountName
 }
 
-resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-04-15' = {
+resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2024-11-15' = {
   name: name
   parent: databaseAccount
   tags: tags
@@ -45,7 +45,7 @@ resource sqlDatabase 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases@2023-04
 }
 
 module container 'container/main.bicep' = [
-  for container in containers: {
+  for container in (containers ?? []): {
     name: '${uniqueString(deployment().name, sqlDatabase.name)}-sqldb-${container.name}'
     params: {
       databaseAccountName: databaseAccountName
