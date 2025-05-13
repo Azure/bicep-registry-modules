@@ -31,7 +31,7 @@ param containerDeleteRetentionPolicyAllowPermanentDelete bool = false
 param corsRules corsRuleType[]?
 
 @description('Optional. Indicates the default version to use for requests to the Blob service if an incoming request\'s version is not specified. Possible values include version 2008-10-27 and all more recent versions.')
-param defaultServiceVersion string = ''
+param defaultServiceVersion string?
 
 @description('Optional. The blob service properties for blob soft delete.')
 param deleteRetentionPolicyEnabled bool = true
@@ -67,11 +67,11 @@ param diagnosticSettings diagnosticSettingFullType[]?
 // The name of the blob services
 var name = 'default'
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 }
 
-resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
+resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01' = {
   name: name
   parent: storageAccount
   properties: {
@@ -94,7 +94,7 @@ resource blobServices 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01
           corsRules: corsRules
         }
       : null
-    defaultServiceVersion: !empty(defaultServiceVersion) ? defaultServiceVersion : null
+    defaultServiceVersion: defaultServiceVersion
     deleteRetentionPolicy: {
       enabled: deleteRetentionPolicyEnabled
       days: deleteRetentionPolicyDays
