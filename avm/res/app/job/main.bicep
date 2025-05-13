@@ -179,7 +179,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.app-job.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -197,7 +197,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource job 'Microsoft.App/jobs@2024-03-01' = {
+resource job 'Microsoft.App/jobs@2025-01-01' = {
   name: name
   tags: tags
   location: location
@@ -557,6 +557,9 @@ type jobScaleType = {
       @description('Required. Trigger Parameter that uses the secret.')
       triggerParameter: string
     }[]?
+
+    @description('Optional. The resource ID of a user-assigned managed identity that is assigned to the Container App, or "system" for system-assigned identity.')
+    identity: string?
 
     @description('Required. Metadata properties to describe the scale rule.')
     @metadata({

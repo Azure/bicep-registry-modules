@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "12516312162606079362"
+      "version": "0.35.1.17967",
+      "templateHash": "5345099336209703330"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job."
@@ -526,6 +526,13 @@
                   "description": "Optional. Authentication secrets for the scale rule."
                 }
               },
+              "identity": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The resource ID of a user-assigned managed identity that is assigned to the Container App, or \"system\" for system-assigned identity."
+                }
+              },
               "metadata": {
                 "type": "object",
                 "metadata": {
@@ -1017,7 +1024,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-03-01",
       "name": "[format('46d3xbcp.res.app-job.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1036,7 +1043,7 @@
     },
     "job": {
       "type": "Microsoft.App/jobs",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-01-01",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
@@ -1129,7 +1136,7 @@
         "example": "Germany West Central",
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('job', '2024-03-01', 'full').location]"
+      "value": "[reference('job', '2025-01-01', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1138,7 +1145,7 @@
         "example": "00000000-0000-0000-0000-000000000000",
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('job', '2024-03-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('job', '2025-01-01', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

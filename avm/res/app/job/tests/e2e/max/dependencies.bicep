@@ -13,9 +13,15 @@ param workloadProfileName string
 @description('Required. The name of the storage account to create.')
 param storageAccountName string
 
-resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' = {
+resource managedEnvironment 'Microsoft.App/managedEnvironments@2025-01-01' = {
   name: managedEnvironmentName
   location: location
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
   properties: {
     workloadProfiles: [
       {
@@ -25,15 +31,18 @@ resource managedEnvironment 'Microsoft.App/managedEnvironments@2024-03-01' = {
         minimumCount: 1
       }
     ]
+    appLogsConfiguration: {
+      destination: 'azure-monitor'
+    }
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2022-01-31-preview' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
   location: location
   kind: 'StorageV2'
@@ -54,12 +63,23 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' = {
     Env: 'test'
   }
 
-  resource storageQueueService 'queueServices@2023-04-01' = {
+  resource storageQueueService 'queueServices@2024-01-01' = {
     name: 'default'
 
-    resource storageQueue 'queues@2023-04-01' = {
+    resource storageQueue 'queues@2024-01-01' = {
       name: 'jobs-queue'
     }
+  }
+}
+
+// assign "Storage Queue Data Contributor" role to the managed identity for the storage account
+resource roleAssignment_storageQueueDataContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, 'StorageQueueDataContributor', storageAccount.id)
+  scope: storageAccount
+  properties: {
+    roleDefinitionId: '/providers/Microsoft.Authorization/roleDefinitions/974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
   }
 }
 
