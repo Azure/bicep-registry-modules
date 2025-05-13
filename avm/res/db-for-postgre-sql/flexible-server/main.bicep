@@ -429,7 +429,7 @@ module flexibleServer_administrators 'administrator/main.bicep' = [
   }
 ]
 
-module flexibleServer_advancedThreatProtection 'advanced-threat-protection/main.bicep' = if (enableAdvancedThreatProtection) {
+module flexibleServer_advancedThreatProtection 'advanced-threat-protection-setting/main.bicep' = if (enableAdvancedThreatProtection) {
   name: '${uniqueString(deployment().name, location)}-PostgreSQL-Threat'
   params: {
     serverThreatProtection: serverThreatProtection
