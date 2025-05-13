@@ -115,6 +115,20 @@ param virtualMachineConfiguration virtualMachineConfigurationType = {
   vmSize: 'Standard_D2s_v3'
   subnetResourceId: null //Default value set on module configuration
 }
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services Content Understanding resource.')
+param aiFoundryAiServicesConfiguration aiServicesConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}aifdaisv'
+  location: contains(
+      ['West US', 'westus', 'Sweden Central', 'swedencentral', 'Australia East', 'australiaeast'],
+      solutionLocation
+    )
+    ? solutionLocation
+    : 'West US'
+  sku: 'S0'
+  deployments: null //Default value set on module configuration
+  subnetResourceId: null //Default value set on module configuration
+}
 
 @description('Optional. The configuration of the Entra ID Application used to authenticate the website.')
 param entraIdApplicationConfiguration entraIdApplicationConfigurationType = {
@@ -275,22 +289,148 @@ module networkSecurityGroupBastion 'br/public:avm/res/network/network-security-g
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     securityRules: networkSecurityGroupBastionConfiguration.?securityRules ?? [
-      // {
-      //   name: 'DenySshRdpOutbound' //Azure Bastion
-      //   properties: {
-      //     priority: 200
-      //     access: 'Deny'
-      //     protocol: '*'
-      //     direction: 'Outbound'
-      //     sourceAddressPrefix: 'VirtualNetwork'
-      //     sourcePortRange: '*'
-      //     destinationAddressPrefix: '*'
-      //     destinationPortRanges: [
-      //       '3389'
-      //       '22'
-      //     ]
-      //   }
-      // }
+      {
+        name: 'AllowHttpsInBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'Internet'
+          destinationPortRange: '443'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 100
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'AllowGatewayManagerInBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'GatewayManager'
+          destinationPortRange: '443'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 110
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'AllowLoadBalancerInBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'AzureLoadBalancer'
+          destinationPortRange: '443'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 120
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'AllowBastionHostCommunicationInBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationPortRanges: [
+            '8080'
+            '5701'
+          ]
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 130
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'DenyAllInBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationPortRange: '*'
+          destinationAddressPrefix: '*'
+          access: 'Deny'
+          priority: 1000
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'AllowSshRdpOutBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationPortRanges: [
+            '22'
+            '3389'
+          ]
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 100
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'AllowAzureCloudCommunicationOutBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationPortRange: '443'
+          destinationAddressPrefix: 'AzureCloud'
+          access: 'Allow'
+          priority: 110
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'AllowBastionHostCommunicationOutBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationPortRanges: [
+            '8080'
+            '5701'
+          ]
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 120
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'AllowGetSessionInformationOutBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: 'Internet'
+          destinationPortRanges: [
+            '80'
+            '443'
+          ]
+          access: 'Allow'
+          priority: 130
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'DenyAllOutBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          access: 'Deny'
+          priority: 1000
+          direction: 'Outbound'
+        }
+      }
     ]
   }
 }
@@ -362,7 +502,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
         // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
         // https://learn.microsoft.com/en-us/azure/container-apps/networking?tabs=workload-profiles-env%2Cazure-cli#custom-vnet-configuration
         name: 'containers'
-        addressPrefix: '10.0.1.0/23' //subnet of size /23 is required for container app
+        addressPrefix: '10.0.2.0/23' //subnet of size /23 is required for container app
         //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
         delegation: 'Microsoft.App/environments'
         networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
@@ -461,7 +601,7 @@ var openAiPrivateDnsZones = {
 }
 
 module privateDnsZonesAiServices 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
-  for zone in objectKeys(openAiPrivateDnsZones): if (virtualNetworkEnabled) {
+  for zone in objectKeys(openAiPrivateDnsZones): if (virtualNetworkEnabled && aiFoundryAIservicesEnabled) {
     name: 'network-dns-zone-${uniqueString(deployment().name, zone)}'
     params: {
       name: zone
@@ -474,6 +614,8 @@ module privateDnsZonesAiServices 'br/public:avm/res/network/private-dns-zone:0.7
 
 // ========== AI Foundry: AI Services ==========
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' not available in AVM
+var aiFoundryAiServicesResourceName = aiFoundryAiServicesConfiguration.?name ?? '${solutionPrefix}aifdaisv'
+var aiFoundryAIservicesEnabled = aiFoundryAiServicesConfiguration.?enabled ?? true
 var aiFoundryAiServicesModelDeployment = {
   format: 'OpenAI'
   name: 'gpt-4o'
@@ -485,28 +627,28 @@ var aiFoundryAiServicesModelDeployment = {
   raiPolicyName: 'Microsoft.Default'
 }
 
-var aiFoundryAiServicesAccountName = '${solutionPrefix}aifdaisv'
-module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
-  name: 'cognitive-services-account'
+module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = if (aiFoundryAIservicesEnabled) {
+  name: take('cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
-    name: aiFoundryAiServicesAccountName
-    tags: tags
-    location: solutionLocation
+    name: aiFoundryAiServicesResourceName
+    tags: aiFoundryAiServicesConfiguration.?tags ?? tags
+    location: aiFoundryAiServicesConfiguration.?location ?? solutionLocation
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    sku: 'S0'
+    sku: aiFoundryAiServicesConfiguration.?sku ?? 'S0'
     kind: 'AIServices'
     disableLocalAuth: false //Should be set to true for WAF aligned configuration
-    customSubDomainName: aiFoundryAiServicesAccountName
+    customSubDomainName: aiFoundryAiServicesResourceName
     apiProperties: {
       //staticsEnabled: false
     }
+    //publicNetworkAccess: virtualNetworkEnabled ? 'Disabled' : 'Enabled'
     //publicNetworkAccess: virtualNetworkEnabled ? 'Disabled' : 'Enabled'
     publicNetworkAccess: 'Enabled' //TODO: connection via private endpoint is not working from containers network. Change this when fixed
     privateEndpoints: virtualNetworkEnabled
       ? ([
           {
-            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
+            subnetResourceId: aiFoundryAiServicesConfiguration.?subnetResourceId ?? virtualNetwork.outputs.subnetResourceIds[0]
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: map(objectKeys(openAiPrivateDnsZones), zone => {
                 name: replace(zone, '.', '-')
@@ -528,7 +670,7 @@ module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.10.2'
         roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
       }
     ]
-    deployments: [
+    deployments: aiFoundryAiServicesConfiguration.?deployments ?? [
       {
         name: aiFoundryAiServicesModelDeployment.name
         model: {
@@ -793,7 +935,7 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = {
     vnetConfiguration: virtualNetworkEnabled
       ? {
           internal: false
-          infrastructureSubnetId: virtualNetwork.?outputs.?subnetResourceIds[2] ?? ''
+          infrastructureSubnetId: virtualNetwork.?outputs.?subnetResourceIds[3] ?? ''
         }
       : {}
   }
@@ -890,7 +1032,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
           }
           {
             name: 'AZURE_OPENAI_ENDPOINT'
-            value: 'https://${aiFoundryAiServicesAccountName}.openai.azure.com/'
+            value: 'https://${aiFoundryAiServicesResourceName}.openai.azure.com/'
           }
           {
             name: 'AZURE_OPENAI_MODEL_NAME'
@@ -1489,6 +1631,51 @@ type virtualMachineConfigurationType = {
 
   @description('Optional. The resource ID of the subnet where the Virtual Machine resource should be deployed.')
   subnetResourceId: string?
+}
+
+@export()
+import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.10.2'
+@description('The type for the Multi-Agent Custom Automation Engine AI Services resource configuration.')
+type aiServicesConfigurationType = {
+  @description('Optional. If the AI Services resource should be enabled or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the AI Services resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the AI Services resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: ('West US' | 'westus' | 'Sweden Central' | 'swedencentral' | 'Australia East' | 'australiaeast')?
+
+  @description('Optional. The tags to set for the AI Services resource.')
+  tags: object?
+
+  @description('Optional. The SKU of the AI Services resource. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
+  sku: (
+    | 'C2'
+    | 'C3'
+    | 'C4'
+    | 'F0'
+    | 'F1'
+    | 'S'
+    | 'S0'
+    | 'S1'
+    | 'S10'
+    | 'S2'
+    | 'S3'
+    | 'S4'
+    | 'S5'
+    | 'S6'
+    | 'S7'
+    | 'S8'
+    | 'S9')?
+
+  @description('Optional. The resource Id of the subnet where the AI Services resource private endpoint should be created.')
+  subnetResourceId: string?
+
+  @description('Optional. The model deployments to set for the AI Services resource.')
+  deployments: deploymentType[]?
 }
 
 @export()
