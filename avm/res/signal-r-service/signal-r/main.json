@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "1623745601639432975"
+      "templateHash": "5426066936368639243"
     },
     "name": "SignalR Service SignalR",
     "description": "This module deploys a SignalR Service SignalR."
@@ -522,10 +522,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SignalRService/signalR@2022-02-01#properties/tags"
+        },
         "description": "Optional. The tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "allowedOrigins": {
       "type": "array",
@@ -552,22 +555,28 @@
     },
     "features": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SignalRService/signalR@2022-02-01#properties/properties/properties/features"
+        },
+        "description": "Optional. The features settings of the resource, `ServiceMode` is the only required feature. See https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/signalr?pivots=deployment-language-bicep#signalrfeature for more information."
+      },
       "defaultValue": [
         {
           "flag": "ServiceMode",
           "value": "Serverless"
         }
-      ],
-      "metadata": {
-        "description": "Optional. The features settings of the resource, `ServiceMode` is the only required feature. See https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/signalr?pivots=deployment-language-bicep#signalrfeature for more information."
-      }
+      ]
     },
     "networkAcls": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SignalRService/signalR@2022-02-01#properties/properties/properties/networkACLs"
+        },
         "description": "Optional. Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the 'SKU' is not 'Free_F1'. For security reasons, it is recommended to set the DefaultAction Deny."
-      }
+      },
+      "nullable": true
     },
     "publicNetworkAccess": {
       "type": "string",
@@ -582,6 +591,9 @@
     },
     "liveTraceCatagoriesToEnable": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [
         "ConnectivityLogs",
         "MessagingLogs"
@@ -596,6 +608,9 @@
     },
     "resourceLogConfigurationsToEnable": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "defaultValue": [
         "ConnectivityLogs",
         "MessagingLogs"
@@ -749,7 +764,7 @@
         "disableLocalAuth": "[parameters('disableLocalAuth')]",
         "features": "[parameters('features')]",
         "liveTraceConfiguration": "[if(not(empty(parameters('liveTraceCatagoriesToEnable'))), createObject('categories', variables('liveTraceCatagories')), createObject())]",
-        "networkACLs": "[if(not(empty(parameters('networkAcls'))), parameters('networkAcls'), null())]",
+        "networkACLs": "[parameters('networkAcls')]",
         "publicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))]",
         "resourceLogConfiguration": {
           "categories": "[variables('resourceLogConfiguration')]"

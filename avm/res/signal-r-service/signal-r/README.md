@@ -901,7 +901,6 @@ Networks ACLs, this value contains IPs to allow and/or Subnet information. Can o
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `privateEndpoints`
 

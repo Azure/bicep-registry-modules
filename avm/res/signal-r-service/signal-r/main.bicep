@@ -44,7 +44,7 @@ param tier string = sku == 'Free_F1'
 param capacity int = 1
 
 @description('Optional. The tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.SignalRService/signalR@2022-02-01'>.tags?
 
 @description('Optional. The allowed origin settings of the resource.')
 param allowedOrigins array = [
@@ -58,7 +58,7 @@ param disableAadAuth bool = false
 param disableLocalAuth bool = true
 
 @description('Optional. The features settings of the resource, `ServiceMode` is the only required feature. See https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/signalr?pivots=deployment-language-bicep#signalrfeature for more information.')
-param features array = [
+param features resourceInput<'Microsoft.SignalRService/signalR@2022-02-01'>.properties.features = [
   {
     flag: 'ServiceMode'
     value: 'Serverless'
@@ -66,7 +66,7 @@ param features array = [
 ]
 
 @description('Optional. Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the \'SKU\' is not \'Free_F1\'. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls object = {}
+param networkAcls resourceInput<'Microsoft.SignalRService/signalR@2022-02-01'>.properties.networkACLs?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
@@ -80,7 +80,7 @@ param publicNetworkAccess string?
   'MessagingLogs'
 ])
 @description('Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled.')
-param liveTraceCatagoriesToEnable array = [
+param liveTraceCatagoriesToEnable string[] = [
   'ConnectivityLogs'
   'MessagingLogs'
 ]
@@ -90,7 +90,7 @@ param liveTraceCatagoriesToEnable array = [
   'MessagingLogs'
 ])
 @description('Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled.')
-param resourceLogConfigurationsToEnable array = [
+param resourceLogConfigurationsToEnable string[] = [
   'ConnectivityLogs'
   'MessagingLogs'
 ]
@@ -253,7 +253,7 @@ resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
           categories: liveTraceCatagories
         }
       : {}
-    networkACLs: !empty(networkAcls) ? any(networkAcls) : null
+    networkACLs: networkAcls
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)

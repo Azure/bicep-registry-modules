@@ -20,7 +20,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.SignalRService/webPubSub@2024-03-01'>.tags?
 
 @description('Optional. The unit count of the resource. 1 by default.')
 param capacity int = 1
@@ -63,7 +63,7 @@ param resourceLogConfigurationsToEnable array = [
 param clientCertEnabled bool = false
 
 @description('Optional. Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the \'SKU\' is not \'Free_F1\'. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls object?
+param networkAcls resourceInput<'Microsoft.SignalRService/webPubSub@2024-03-01'>.properties.networkACLs?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -168,7 +168,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource webPubSub 'Microsoft.SignalRService/webPubSub@2021-10-01' = {
+resource webPubSub 'Microsoft.SignalRService/webPubSub@2024-03-01' = {
   name: name
   location: location
   tags: tags

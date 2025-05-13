@@ -24,7 +24,7 @@ This module deploys a SignalR Web PubSub Service.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.SignalRService/webPubSub` | [2021-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SignalRService/2021-10-01/webPubSub) |
+| `Microsoft.SignalRService/webPubSub` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SignalRService/2024-03-01/webPubSub) |
 
 ## Usage examples
 

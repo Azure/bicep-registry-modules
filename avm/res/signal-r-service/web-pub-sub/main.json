@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "16050835068163388958"
+      "templateHash": "15282959301166410671"
     },
     "name": "SignalR Web PubSub Services",
     "description": "This module deploys a SignalR Web PubSub Service."
@@ -503,10 +503,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SignalRService/webPubSub@2024-03-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "capacity": {
       "type": "int",
@@ -581,10 +584,13 @@
     },
     "networkAcls": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.SignalRService/webPubSub@2024-03-01#properties/properties/properties/networkACLs"
+        },
         "description": "Optional. Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the 'SKU' is not 'Free_F1'. For security reasons, it is recommended to set the DefaultAction Deny."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -652,7 +658,7 @@
     },
     "webPubSub": {
       "type": "Microsoft.SignalRService/webPubSub",
-      "apiVersion": "2021-10-01",
+      "apiVersion": "2024-03-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1525,14 +1531,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('webPubSub', '2021-10-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('webPubSub', '2024-03-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('webPubSub', '2021-10-01', 'full').location]"
+      "value": "[reference('webPubSub', '2024-03-01', 'full').location]"
     },
     "privateEndpoints": {
       "type": "array",
