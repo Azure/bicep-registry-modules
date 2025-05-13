@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "1939762263992707789"
+      "templateHash": "17945301790696727841"
     },
-    "name": "Event Grid System Topic Event Subscriptions",
-    "description": "This module deploys an Event Grid System Topic Event Subscription."
+    "name": "Event Grid Domain Event Subscriptions",
+    "description": "This module deploys an Event Grid Domain Event Subscription."
   },
   "parameters": {
     "name": {
@@ -18,37 +18,37 @@
         "description": "Required. The name of the Event Subscription."
       }
     },
-    "systemTopicName": {
+    "domainName": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Event Grid System Topic."
+        "description": "Conditional. The name of the parent event grid domain. Required if the template is used in a standalone deployment."
       }
     },
     "deadLetterDestination": {
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information)."
+        "description": "Optional. Dead Letter Destination. See DeadLetterDestination objects for full shape."
       }
     },
     "deadLetterWithResourceIdentity": {
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information)."
+        "description": "Optional. Dead Letter with Resource Identity Configuration. See DeadLetterWithResourceIdentity objects for full shape."
       }
     },
     "deliveryWithResourceIdentity": {
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information)."
+        "description": "Optional. Delivery with Resource Identity Configuration. See DeliveryWithResourceIdentity objects for full shape."
       }
     },
     "destination": {
       "type": "object",
       "metadata": {
-        "description": "Required. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
+        "description": "Required. The destination for the event subscription. See EventSubscriptionDestination objects for full shape."
       }
     },
     "eventDeliverySchema": {
@@ -75,7 +75,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information)."
+        "description": "Optional. The filter for the event subscription. See EventSubscriptionFilter objects for full shape."
       }
     },
     "labels": {
@@ -89,21 +89,21 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events."
+        "description": "Optional. The retry policy for events. See RetryPolicy objects for full shape."
       }
     }
   },
   "resources": {
-    "systemTopic": {
+    "domain": {
       "existing": true,
-      "type": "Microsoft.EventGrid/systemTopics",
-      "apiVersion": "2023-12-15-preview",
-      "name": "[parameters('systemTopicName')]"
+      "type": "Microsoft.EventGrid/domains",
+      "apiVersion": "2025-02-15",
+      "name": "[parameters('domainName')]"
     },
     "eventSubscription": {
-      "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
-      "apiVersion": "2023-12-15-preview",
-      "name": "[format('{0}/{1}', parameters('systemTopicName'), parameters('name'))]",
+      "type": "Microsoft.EventGrid/domains/eventSubscriptions",
+      "apiVersion": "2025-02-15",
+      "name": "[format('{0}/{1}', parameters('domainName'), parameters('name'))]",
       "properties": {
         "deadLetterDestination": "[parameters('deadLetterDestination')]",
         "deadLetterWithResourceIdentity": "[parameters('deadLetterWithResourceIdentity')]",
@@ -111,7 +111,7 @@
         "destination": "[if(empty(parameters('deliveryWithResourceIdentity')), parameters('destination'), null())]",
         "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
         "expirationTimeUtc": "[coalesce(parameters('expirationTimeUtc'), '')]",
-        "filter": "[coalesce(parameters('filter'), createObject())]",
+        "filter": "[coalesce(parameters('filter'), createObject('advancedFilters', createArray(), 'enableAdvancedFilteringOnArrays', false(), 'includedEventTypes', createArray(), 'isSubjectCaseSensitive', false(), 'subjectBeginsWith', '', 'subjectEndsWith', ''))]",
         "labels": "[coalesce(parameters('labels'), createArray())]",
         "retryPolicy": "[parameters('retryPolicy')]"
       }
@@ -130,7 +130,7 @@
       "metadata": {
         "description": "The resource ID of the event subscription."
       },
-      "value": "[resourceId('Microsoft.EventGrid/systemTopics/eventSubscriptions', parameters('systemTopicName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.EventGrid/domains/eventSubscriptions', parameters('domainName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
@@ -144,7 +144,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('systemTopic', '2023-12-15-preview', 'full').location]"
+      "value": "[reference('domain', '2025-02-15', 'full').location]"
     }
   }
 }
