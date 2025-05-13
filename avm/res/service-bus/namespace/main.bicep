@@ -67,12 +67,11 @@ param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
-  ''
   'Disabled'
   'Enabled'
   'SecuredByPerimeter'
 ])
-param publicNetworkAccess string = ''
+param publicNetworkAccess string?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
@@ -85,7 +84,7 @@ param networkRuleSets networkRuleSetType?
 param disableLocalAuth bool = true
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ServiceBus/namespaces@2024-01-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -196,7 +195,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' = {
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2024-01-01' = {
   name: name
   location: location
   tags: tags
@@ -226,8 +225,8 @@ resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview
                 : null
               keyName: customerManagedKey!.keyName
               keyVaultUri: cMKKeyVault.properties.vaultUri
-              keyVersion: !empty(customerManagedKey.?keyVersion ?? '')
-                ? customerManagedKey!.?keyVersion
+              keyVersion: !empty(customerManagedKey.?keyVersion)
+                ? customerManagedKey!.keyVersion!
                 : (customerManagedKey.?autoRotationEnabled ?? true)
                     ? null
                     : last(split(cMKKeyVault::cMKKey.properties.keyUriWithVersion, '/'))
@@ -480,6 +479,34 @@ output privateEndpoints privateEndpointOutputType[] = [
 
 @description('The endpoint of the deployed service bus namespace.')
 output serviceBusEndpoint string = serviceBusNamespace.properties.serviceBusEndpoint
+
+@secure()
+@description('The primary connection string of the service bus namespace.')
+output primaryConnectionString string = listkeys(
+  '${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).primaryConnectionString
+
+@secure()
+@description('The secondary connection string of the service bus namespace.')
+output secondaryConnectionString string = listkeys(
+  '${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).secondaryConnectionString
+
+@secure()
+@description('The primary key of the service bus namespace.')
+output primaryKey string = listkeys(
+  '${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).primaryKey
+
+@secure()
+@description('The secondary key of the service bus namespace.')
+output secondaryKey string = listkeys(
+  '${serviceBusNamespace.id}/AuthorizationRules/RootManageSharedAccessKey',
+  '2024-01-01'
+).secondaryKey
 
 // =============== //
 //   Definitions   //
