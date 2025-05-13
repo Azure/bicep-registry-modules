@@ -50,7 +50,6 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    location: enforcedLocation
     name: '${namePrefix}-user-mi'
     managedIdentities: {
       systemAssigned: true
