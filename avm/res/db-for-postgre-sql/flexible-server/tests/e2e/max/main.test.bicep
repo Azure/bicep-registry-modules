@@ -61,6 +61,9 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      availabilityZone: 1
+      highAvailability: 'ZoneRedundant'
+      highAvailabilityZone: 2
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       skuName: 'Standard_D2s_v3'
