@@ -34,9 +34,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/key-vault/vault:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using only defaults](#example-2-using-only-defaults)
+- [With EC key type](#example-2-with-ec-key-type)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [Using only defaults](#example-4-using-only-defaults)
+- [With RSA key type](#example-4-with-rsa-key-type)
 - [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -103,9 +103,9 @@ param enablePurgeProtection = false
 </details>
 <p>
 
-### Example 2: _Using only defaults_
+### Example 2: _With EC key type_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with the parameters needed for an EC key.
 
 
 <details>
@@ -1053,9 +1053,9 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using only defaults_
+### Example 4: _With RSA key type_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with the parameters needed for an RSA key.
 
 
 <details>
