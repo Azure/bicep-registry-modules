@@ -722,7 +722,7 @@
         "$ref": "#/definitions/endpointDetailsType"
       },
       "metadata": {
-        "description": "The outbound endpoints object."
+        "description": "The inbound endpoints object."
       },
       "copy": {
         "count": "[length(range(0, length(coalesce(parameters('inboundEndpoints'), createArray()))))]",
