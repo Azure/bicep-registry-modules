@@ -72,7 +72,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     name: 'analytical'
     // Non-required parameters
     enableAnalyticalStorage: true
-    location: '<location>'
     sqlDatabases: [
       {
         name: 'no-containers-specified'
@@ -102,9 +101,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "enableAnalyticalStorage": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "sqlDatabases": {
       "value": [
         {
@@ -130,7 +126,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 param name = 'analytical'
 // Non-required parameters
 param enableAnalyticalStorage = true
-param location = '<location>'
 param sqlDatabases = [
   {
     name: 'no-containers-specified'
@@ -158,7 +153,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     name: 'bounded'
     // Non-required parameters
     defaultConsistencyLevel: 'BoundedStaleness'
-    location: '<location>'
     maxIntervalInSeconds: 600
     maxStalenessPrefix: 200000
     sqlDatabases: [
@@ -189,9 +183,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Non-required parameters
     "defaultConsistencyLevel": {
       "value": "BoundedStaleness"
-    },
-    "location": {
-      "value": "<location>"
     },
     "maxIntervalInSeconds": {
       "value": 600
@@ -224,7 +215,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 param name = 'bounded'
 // Non-required parameters
 param defaultConsistencyLevel = 'BoundedStaleness'
-param location = '<location>'
 param maxIntervalInSeconds = 600
 param maxStalenessPrefix = 200000
 param sqlDatabases = [
@@ -250,10 +240,7 @@ This instance deploys the module with the minimum set of required parameters.
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   name: 'databaseAccountDeployment'
   params: {
-    // Required parameters
     name: 'dddamin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -270,13 +257,8 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "dddamin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -292,10 +274,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 ```bicep-params
 using 'br/public:avm/res/document-db/database-account:<version>'
 
-// Required parameters
 param name = 'dddamin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -369,7 +348,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'gdb-dddagrm-002'
       }
     ]
-    location: '<location>'
   }
 }
 ```
@@ -446,9 +424,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "gdb-dddagrm-002"
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -519,7 +494,6 @@ param gremlinDatabases = [
     name: 'gdb-dddagrm-002'
   }
 ]
-param location = '<location>'
 ```
 
 </details>
@@ -541,7 +515,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'kv-ref'
     // Non-required parameters
-    location: '<location>'
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
       primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
@@ -574,9 +547,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "kv-ref"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "secretsExportConfiguration": {
       "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
@@ -607,7 +577,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'kv-ref'
 // Non-required parameters
-param location = '<location>'
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
   primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
@@ -640,7 +609,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'user-mi'
     // Non-required parameters
-    location: '<location>'
     managedIdentities: {
       systemAssigned: true
       userAssignedResourceIds: [
@@ -686,9 +654,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "user-mi"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "managedIdentities": {
       "value": {
         "systemAssigned": true,
@@ -734,7 +699,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'user-mi'
 // Non-required parameters
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: true
   userAssignedResourceIds: [
@@ -780,7 +744,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'dddamng001'
     // Non-required parameters
-    location: '<location>'
     mongodbDatabases: [
       {
         collections: [
@@ -988,9 +951,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddamng001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "mongodbDatabases": {
       "value": [
         {
@@ -1196,7 +1156,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'dddamng001'
 // Non-required parameters
-param location = '<location>'
 param mongodbDatabases = [
   {
     collections: [
@@ -1410,8 +1369,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     backupRetentionIntervalInHours: 16
     backupStorageRedundancy: 'Zone'
     enableMultipleWriteLocations: true
-    location: '<location>'
-    locations: [
+    failoverLocations: [
       {
         failoverPriority: 0
         isZoneRedundant: true
@@ -1467,10 +1425,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "enableMultipleWriteLocations": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
-    "locations": {
+    "failoverLocations": {
       "value": [
         {
           "failoverPriority": 0,
@@ -1514,8 +1469,7 @@ param backupPolicyType = 'Periodic'
 param backupRetentionIntervalInHours = 16
 param backupStorageRedundancy = 'Zone'
 param enableMultipleWriteLocations = true
-param location = '<location>'
-param locations = [
+param failoverLocations = [
   {
     failoverPriority: 0
     isZoneRedundant: true
@@ -1557,29 +1511,18 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       'EnableServerless'
     ]
     databaseAccountOfferType: 'Standard'
-    enableTelemetry: false
-    location: '<location>'
-    locations: [
+    failoverLocations: [
       {
         failoverPriority: 0
         isZoneRedundant: false
         locationName: '<locationName>'
       }
     ]
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     sqlDatabases: [
       {
         name: 'no-containers-specified'
       }
     ]
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
     totalThroughputLimit: 4000
   }
 }
@@ -1610,13 +1553,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "databaseAccountOfferType": {
       "value": "Standard"
     },
-    "enableTelemetry": {
-      "value": false
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "locations": {
+    "failoverLocations": {
       "value": [
         {
           "failoverPriority": 0,
@@ -1625,25 +1562,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         }
       ]
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "sqlDatabases": {
       "value": [
         {
           "name": "no-containers-specified"
         }
       ]
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     },
     "totalThroughputLimit": {
       "value": 4000
@@ -1669,29 +1593,18 @@ param capabilitiesToAdd = [
   'EnableServerless'
 ]
 param databaseAccountOfferType = 'Standard'
-param enableTelemetry = false
-param location = '<location>'
-param locations = [
+param failoverLocations = [
   {
     failoverPriority: 0
     isZoneRedundant: false
     locationName: '<locationName>'
   }
 ]
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param sqlDatabases = [
   {
     name: 'no-containers-specified'
   }
 ]
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
-}
 param totalThroughputLimit = 4000
 ```
 
@@ -1714,7 +1627,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'dddapres001'
     // Non-required parameters
-    location: '<location>'
     networkRestrictions: {
       ipRules: [
         '79.0.0.0'
@@ -1754,9 +1666,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "dddapres001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "networkRestrictions": {
       "value": {
         "ipRules": [
@@ -1796,7 +1705,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'dddapres001'
 // Non-required parameters
-param location = '<location>'
 param networkRestrictions = {
   ipRules: [
     '79.0.0.0'
@@ -1837,7 +1745,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     name: 'dddasql001'
     // Non-required parameters
     enableAnalyticalStorage: true
-    location: '<location>'
     sqlDatabases: [
       {
         containers: [
@@ -2112,9 +2019,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "enableAnalyticalStorage": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "sqlDatabases": {
       "value": [
         {
@@ -2385,7 +2289,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 param name = 'dddasql001'
 // Non-required parameters
 param enableAnalyticalStorage = true
-param location = '<location>'
 param sqlDatabases = [
   {
     containers: [
@@ -2657,13 +2560,28 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'role-ref'
     // Non-required parameters
-    location: '<location>'
-    sqlRoleAssignmentsPrincipalIds: [
-      '<identityPrincipalId>'
+    builtInSqlRoleAssignments: [
+      {
+        principalId: '<principalId>'
+        roleDefinitionId: '<roleDefinitionId>'
+      }
     ]
     sqlRoleDefinitions: [
       {
-        name: 'cosmos-sql-role-test'
+        assignableScopes: [
+          '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+        ]
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        roleName: 'cosmos-sql-role-test'
+        sqlRoleAssignments: [
+          {
+            principalId: '<principalId>'
+          }
+        ]
       }
     ]
   }
@@ -2687,18 +2605,31 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "role-ref"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
-    "sqlRoleAssignmentsPrincipalIds": {
+    "builtInSqlRoleAssignments": {
       "value": [
-        "<identityPrincipalId>"
+        {
+          "principalId": "<principalId>",
+          "roleDefinitionId": "<roleDefinitionId>"
+        }
       ]
     },
     "sqlRoleDefinitions": {
       "value": [
         {
-          "name": "cosmos-sql-role-test"
+          "assignableScopes": [
+            "<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref"
+          ],
+          "dataActions": [
+            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
+            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+          ],
+          "roleName": "cosmos-sql-role-test",
+          "sqlRoleAssignments": [
+            {
+              "principalId": "<principalId>"
+            }
+          ]
         }
       ]
     }
@@ -2719,13 +2650,28 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'role-ref'
 // Non-required parameters
-param location = '<location>'
-param sqlRoleAssignmentsPrincipalIds = [
-  '<identityPrincipalId>'
+param builtInSqlRoleAssignments = [
+  {
+    principalId: '<principalId>'
+    roleDefinitionId: '<roleDefinitionId>'
+  }
 ]
 param sqlRoleDefinitions = [
   {
-    name: 'cosmos-sql-role-test'
+    assignableScopes: [
+      '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+    ]
+    dataActions: [
+      'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+      'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+    ]
+    roleName: 'cosmos-sql-role-test'
+    sqlRoleAssignments: [
+      {
+        principalId: '<principalId>'
+      }
+    ]
   }
 ]
 ```
@@ -2752,7 +2698,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     capabilitiesToAdd: [
       'EnableTable'
     ]
-    location: '<location>'
     tables: [
       {
         name: 'tbl-dddatableminprov'
@@ -2789,9 +2734,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         "EnableTable"
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "tables": {
       "value": [
         {
@@ -2824,7 +2766,6 @@ param name = 'dddatbl001'
 param capabilitiesToAdd = [
   'EnableTable'
 ]
-param location = '<location>'
 param tables = [
   {
     name: 'tbl-dddatableminprov'
@@ -2867,7 +2808,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     ]
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuth: true
-    location: '<location>'
     minimumTlsVersion: 'Tls12'
     networkRestrictions: {
       networkAclBypass: 'None'
@@ -2931,9 +2871,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "disableLocalAuth": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "minimumTlsVersion": {
       "value": "Tls12"
     },
@@ -2993,7 +2930,6 @@ param diagnosticSettings = [
 ]
 param disableKeyBasedMetadataWriteAccess = true
 param disableLocalAuth = true
-param location = '<location>'
 param minimumTlsVersion = 'Tls12'
 param networkRestrictions = {
   networkAclBypass: 'None'
@@ -3040,6 +2976,7 @@ param sqlDatabases = [
 | [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used. |
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type. |
+| [`builtInSqlRoleAssignments`](#parameter-builtinsqlroleassignments) | array | SQL Role Assignments of built-in roles. |
 | [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. |
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | Default to Standard. The offer type for the Azure Cosmos DB database account. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | Default to Session. The default consistency level of the Cosmos DB account. |
@@ -3050,9 +2987,9 @@ param sqlDatabases = [
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Default to false. Flag to indicate whether Free Tier is enabled. |
 | [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`failoverLocations`](#parameter-failoverlocations) | array | Default to the location where the account is deployed. Locations enabled for the Cosmos DB account. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Gremlin Databases configurations. |
 | [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
-| [`locations`](#parameter-locations) | array | Default to the location where the account is deployed. Locations enabled for the Cosmos DB account. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`maxIntervalInSeconds`](#parameter-maxintervalinseconds) | int | Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. |
@@ -3065,8 +3002,7 @@ param sqlDatabases = [
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`serverVersion`](#parameter-serverversion) | string | Default to 4.2. Specifies the MongoDB server version to use. |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
-| [`sqlRoleAssignmentsPrincipalIds`](#parameter-sqlroleassignmentsprincipalids) | array | SQL Role Definitions configurations. |
-| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. |
+| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. Also allows the assignment of custom roles. |
 | [`tables`](#parameter-tables) | array | Table configurations. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
 | [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s). |
@@ -3152,13 +3088,53 @@ Default to Local. Enum to indicate type of backup residency. Only applies to per
   ]
   ```
 
+### Parameter: `builtInSqlRoleAssignments`
+
+SQL Role Assignments of built-in roles.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-builtinsqlroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
+| [`roleDefinitionId`](#parameter-builtinsqlroleassignmentsroledefinitionid) | string | The unique identifier of the SQL Role Definition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-builtinsqlroleassignmentsname) | string | The unique name of the role assignment. |
+
+### Parameter: `builtInSqlRoleAssignments.principalId`
+
+The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `builtInSqlRoleAssignments.roleDefinitionId`
+
+The unique identifier of the SQL Role Definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `builtInSqlRoleAssignments.name`
+
+The unique name of the role assignment.
+
+- Required: No
+- Type: string
+
 ### Parameter: `capabilitiesToAdd`
 
 List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.
 
 - Required: No
 - Type: array
-- Default: `[]`
 - Allowed:
   ```Bicep
   [
@@ -3401,13 +3377,53 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `failoverLocations`
+
+Default to the location where the account is deployed. Locations enabled for the Cosmos DB account.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`failoverPriority`](#parameter-failoverlocationsfailoverpriority) | int | The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists. |
+| [`locationName`](#parameter-failoverlocationslocationname) | string | The name of the region. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`isZoneRedundant`](#parameter-failoverlocationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region. |
+
+### Parameter: `failoverLocations.failoverPriority`
+
+The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `failoverLocations.locationName`
+
+The name of the region.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `failoverLocations.isZoneRedundant`
+
+Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `gremlinDatabases`
 
 Gremlin Databases configurations.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -3416,48 +3432,6 @@ Default to current resource group scope location. Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `locations`
-
-Default to the location where the account is deployed. Locations enabled for the Cosmos DB account.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`failoverPriority`](#parameter-locationsfailoverpriority) | int | The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists. |
-| [`locationName`](#parameter-locationslocationname) | string | The name of the region. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`isZoneRedundant`](#parameter-locationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region. |
-
-### Parameter: `locations.failoverPriority`
-
-The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.
-
-- Required: Yes
-- Type: int
-
-### Parameter: `locations.locationName`
-
-The name of the region.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `locations.isZoneRedundant`
-
-Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `lock`
 
@@ -3563,7 +3537,6 @@ MongoDB Databases configurations.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `networkRestrictions`
 
@@ -4278,7 +4251,6 @@ SQL Databases configurations.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -4491,17 +4463,9 @@ Default to 400. Request units per second. Will be ignored if autoscaleSettingsMa
 - Required: No
 - Type: int
 
-### Parameter: `sqlRoleAssignmentsPrincipalIds`
-
-SQL Role Definitions configurations.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
 ### Parameter: `sqlRoleDefinitions`
 
-SQL Role Definitions configurations.
+SQL Role Definitions configurations. Also allows the assignment of custom roles.
 
 - Required: No
 - Type: array
@@ -4510,50 +4474,77 @@ SQL Role Definitions configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-sqlroledefinitionsname) | string | Name of the SQL Role Definition. |
+| [`roleName`](#parameter-sqlroledefinitionsrolename) | string | A user-friendly name for the Role Definition. Must be unique for the database account. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataAction`](#parameter-sqlroledefinitionsdataaction) | array | An array of data actions that are allowed. |
-| [`roleName`](#parameter-sqlroledefinitionsrolename) | string | A user-friendly name for the Role Definition. Must be unique for the database account. |
-| [`roleType`](#parameter-sqlroledefinitionsroletype) | string | Indicates whether the Role Definition was built-in or user created. |
+| [`assignableScopes`](#parameter-sqlroledefinitionsassignablescopes) | array | A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account. |
+| [`dataActions`](#parameter-sqlroledefinitionsdataactions) | array | An array of data actions that are allowed. |
+| [`name`](#parameter-sqlroledefinitionsname) | string | The unique identifier of the Role Definition. |
+| [`sqlRoleAssignments`](#parameter-sqlroledefinitionssqlroleassignments) | array | An array of SQL Role Assignments to be created for the SQL Role Definition. |
 
-### Parameter: `sqlRoleDefinitions.name`
+### Parameter: `sqlRoleDefinitions.roleName`
 
-Name of the SQL Role Definition.
+A user-friendly name for the Role Definition. Must be unique for the database account.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `sqlRoleDefinitions.dataAction`
+### Parameter: `sqlRoleDefinitions.assignableScopes`
+
+A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account.
+
+- Required: No
+- Type: array
+
+### Parameter: `sqlRoleDefinitions.dataActions`
 
 An array of data actions that are allowed.
 
 - Required: No
 - Type: array
 
-### Parameter: `sqlRoleDefinitions.roleName`
+### Parameter: `sqlRoleDefinitions.name`
 
-A user-friendly name for the Role Definition. Must be unique for the database account.
-
-- Required: No
-- Type: string
-
-### Parameter: `sqlRoleDefinitions.roleType`
-
-Indicates whether the Role Definition was built-in or user created.
+The unique identifier of the Role Definition.
 
 - Required: No
 - Type: string
-- Allowed:
-  ```Bicep
-  [
-    'BuiltInRole'
-    'CustomRole'
-  ]
-  ```
+
+### Parameter: `sqlRoleDefinitions.sqlRoleAssignments`
+
+An array of SQL Role Assignments to be created for the SQL Role Definition.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-sqlroledefinitionssqlroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-sqlroledefinitionssqlroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+
+### Parameter: `sqlRoleDefinitions.sqlRoleAssignments.principalId`
+
+The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `sqlRoleDefinitions.sqlRoleAssignments.name`
+
+Name unique identifier of the SQL Role Assignment.
+
+- Required: No
+- Type: string
 
 ### Parameter: `tables`
 
@@ -4561,7 +4552,6 @@ Table configurations.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 
@@ -4586,9 +4576,17 @@ Default to unlimited. The total throughput limit imposed on this Cosmos DB accou
 | `exportedSecrets` |  | The references to the secrets exported to the provided Key Vault. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the database account. |
+| `primaryReadOnlyConnectionString` | securestring | The primary read-only connection string. |
+| `primaryReadOnlyKey` | securestring | The base-64-encoded value of the primary read-only key. |
+| `primaryWriteConnectionString` | securestring | The primary write connection string. |
+| `primaryWriteKey` | securestring | The base-64-encoded value of the primary read-write key. |
 | `privateEndpoints` | array | The private endpoints of the database account. |
 | `resourceGroupName` | string | The name of the resource group the database account was created in. |
 | `resourceId` | string | The resource ID of the database account. |
+| `secondaryReadOnlyConnectionString` | securestring | The secondary read-only connection string. |
+| `secondaryReadOnlyKey` | securestring | The base-64-encoded value of the secondary read-only key. |
+| `secondaryWriteConnectionString` | securestring | The secondary write connection string. |
+| `secondaryWriteKey` | securestring | The base-64-encoded value of the secondary read-write key. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules

@@ -1659,16 +1659,14 @@ List of the language extensions of the Kusto Cluster.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`languageExtensionCustomImageName`](#parameter-languageextensionslanguageextensioncustomimagename) | string | The name of the language extension custom image. |
 | [`languageExtensionImageName`](#parameter-languageextensionslanguageextensionimagename) | string | The name of the language extension image. |
 | [`languageExtensionName`](#parameter-languageextensionslanguageextensionname) | string | The name of the language extension. |
 
-### Parameter: `languageExtensions.languageExtensionCustomImageName`
+**Optional parameters**
 
-The name of the language extension custom image.
-
-- Required: Yes
-- Type: string
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`languageExtensionCustomImageName`](#parameter-languageextensionslanguageextensioncustomimagename) | string | The name of the language extension custom image. |
 
 ### Parameter: `languageExtensions.languageExtensionImageName`
 
@@ -1700,6 +1698,13 @@ The name of the language extension.
     'R'
   ]
   ```
+
+### Parameter: `languageExtensions.languageExtensionCustomImageName`
+
+The name of the language extension custom image.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
