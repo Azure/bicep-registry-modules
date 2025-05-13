@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "14089376505118821394"
+      "version": "0.35.1.17967",
+      "templateHash": "10656979400520564521"
     },
     "name": "Security Insights Settings",
     "description": "This module deploys a Security Insights Setting.",
@@ -100,13 +100,6 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
-    "tags": {
-      "type": "object",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Tags of the resource."
-      }
-    },
     "name": {
       "type": "string",
       "metadata": {
@@ -197,7 +190,6 @@
       "apiVersion": "2024-10-01-preview",
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', last(split(parameters('workspaceResourceId'), '/')))]",
       "name": "[parameters('name')]",
-      "tags": "[parameters('tags')]",
       "kind": "[parameters('settingsType')]",
       "properties": "[parameters('properties')]"
     },

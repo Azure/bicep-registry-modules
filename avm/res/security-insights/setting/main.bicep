@@ -6,9 +6,6 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Optional. Tags of the resource.')
-param tags object?
-
 @description('Required. Name of the Security Insights Setting.')
 param name string
 
@@ -77,7 +74,6 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existin
 resource setting 'Microsoft.SecurityInsights/settings@2024-10-01-preview' = {
   scope: workspace
   name: name
-  tags: tags
   kind: settingsType
   properties: properties
 }

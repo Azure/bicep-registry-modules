@@ -54,10 +54,6 @@ module testDeployment '../../../main.bicep' = [
       workspaceResourceId: nestedDependencies.outputs.workspaceResourceId
       settingsType: 'Anomalies'
       properties: {}
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        resourceType: 'Security Insights Setting'
-      }
     }
   }
 ]

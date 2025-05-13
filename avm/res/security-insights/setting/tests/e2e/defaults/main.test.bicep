@@ -53,7 +53,6 @@ module testDeployment '../../../main.bicep' = [
       name: 'Anomalies'
       workspaceResourceId: nestedDependencies.outputs.workspaceResourceId
       settingsType: 'Anomalies'
-      properties: {}
     }
   }
 ]

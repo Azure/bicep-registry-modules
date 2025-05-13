@@ -47,8 +47,6 @@ module setting 'br/public:avm/res/security-insights/setting:<version>' = {
     name: 'Anomalies'
     settingsType: 'Anomalies'
     workspaceResourceId: '<workspaceResourceId>'
-    // Non-required parameters
-    properties: {}
   }
 }
 ```
@@ -74,10 +72,6 @@ module setting 'br/public:avm/res/security-insights/setting:<version>' = {
     },
     "workspaceResourceId": {
       "value": "<workspaceResourceId>"
-    },
-    // Non-required parameters
-    "properties": {
-      "value": {}
     }
   }
 }
@@ -97,8 +91,6 @@ using 'br/public:avm/res/security-insights/setting:<version>'
 param name = 'Anomalies'
 param settingsType = 'Anomalies'
 param workspaceResourceId = '<workspaceResourceId>'
-// Non-required parameters
-param properties = {}
 ```
 
 </details>
@@ -197,10 +189,6 @@ module setting 'br/public:avm/res/security-insights/setting:<version>' = {
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
     properties: {}
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      resourceType: 'Security Insights Setting'
-    }
   }
 }
 ```
@@ -230,12 +218,6 @@ module setting 'br/public:avm/res/security-insights/setting:<version>' = {
     // Non-required parameters
     "properties": {
       "value": {}
-    },
-    "tags": {
-      "value": {
-        "hidden-title": "This is visible in the resource name",
-        "resourceType": "Security Insights Setting"
-      }
     }
   }
 }
@@ -257,10 +239,6 @@ param settingsType = 'Anomalies'
 param workspaceResourceId = '<workspaceResourceId>'
 // Non-required parameters
 param properties = {}
-param tags = {
-  'hidden-title': 'This is visible in the resource name'
-  resourceType: 'Security Insights Setting'
-}
 ```
 
 </details>
@@ -284,7 +262,6 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`properties`](#parameter-properties) | object | Properties for the Security Insights Setting based on kind. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
 
@@ -438,13 +415,6 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
-
-### Parameter: `tags`
-
-Tags of the resource.
-
-- Required: No
-- Type: object
 
 ## Outputs
 
