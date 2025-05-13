@@ -17,9 +17,9 @@ param serviceShort string = 'dcncmin'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-// Hardcoded to 'australiaeast' because service not available in all regions
+// Hardcoded because service not available in all regions
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
+var enforcedLocation = 'uksouth'
 
 // ============ //
 // Dependencies //

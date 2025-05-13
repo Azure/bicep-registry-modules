@@ -21,7 +21,7 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param password string = newGuid()
 
-// Hardcoded to 'australiaeast' because service not available in all regions
+// Hardcoded because service not available in all regions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'australiaeast'
 
