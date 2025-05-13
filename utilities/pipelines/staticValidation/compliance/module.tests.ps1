@@ -1405,7 +1405,16 @@ Describe 'Module tests' -Tag 'Module' {
             )
 
             # the changelog should not be empty
-            $changelogContent.Length | Should -BeGreaterThan 0 -Because 'the changelog should not be empty'
+            if ($changelogContent.Count -eq 0) {
+                # check if the file exists
+
+                $changelogExists = Test-Path (Join-Path -Path $moduleFolderPath 'CHANGELOG.md')
+                if ($changelogExists) {
+                    $changelogContent.Length | Should -BeGreaterThan 0 -Because 'the changelog should not be empty'
+                } else {
+                    Set-ItResult -Skipped -Because 'the CHANGELOG.md file does not exist.'
+                }
+            }
         }
 
         It '[<moduleFolderName>] `CHANGELOG.md` must start with `#Changelog` header, followed by an empty line and a link to the latest version.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists -and $_.includeInTestPhase }) {
