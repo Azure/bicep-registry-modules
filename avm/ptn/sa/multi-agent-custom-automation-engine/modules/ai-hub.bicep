@@ -1,6 +1,7 @@
 param name string
 param tags object
 param location string
+param sku string
 param storageAccountResourceId string
 param logAnalyticsWorkspaceResourceId string
 param applicationInsightsResourceId string
@@ -15,7 +16,7 @@ resource aiServices 'Microsoft.CognitiveServices/accounts@2023-05-01' existing =
 }
 
 module aiFoundryAiHub 'br/public:avm/res/machine-learning-services/workspace:0.10.1' = {
-  name: 'avm.ptn.sa.macae.machine-learning-services-workspace-hub'
+  name: 'machine-learning-services.workspace.${name}'
   params: {
     name: name
     tags: tags
@@ -23,7 +24,7 @@ module aiFoundryAiHub 'br/public:avm/res/machine-learning-services/workspace:0.1
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
     kind: 'Hub'
-    sku: 'Basic'
+    sku: sku
     description: 'AI Hub for Multi Agent Custom Automation Engine Solution Accelerator template'
     //associatedKeyVaultResourceId: keyVaultResourceId
     associatedStorageAccountResourceId: storageAccountResourceId

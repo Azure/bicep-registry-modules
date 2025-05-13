@@ -115,7 +115,7 @@ param virtualMachineConfiguration virtualMachineConfigurationType = {
   vmSize: 'Standard_D2s_v3'
   subnetResourceId: null //Default value set on module configuration
 }
-@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Services Content Understanding resource.')
+@description('Optional. The configuration to apply for the AI Foundry AI Services Content Understanding resource.')
 param aiFoundryAiServicesConfiguration aiServicesConfigurationType = {
   enabled: true
   name: '${solutionPrefix}aifdaisv'
@@ -130,13 +130,23 @@ param aiFoundryAiServicesConfiguration aiServicesConfigurationType = {
   subnetResourceId: null //Default value set on module configuration
 }
 
-@description('Optional. The configuration to apply for the Conversation Knowledge Mining Storage Account resource.')
+@description('Optional. The configuration to apply for the AI Foundry Storage Account resource.')
 param aiFoundryStorageAccountConfiguration storageAccountType = {
   enabled: true
   name: replace('${solutionPrefix}aifdstrg', '-', '')
   location: solutionLocation
   tags: tags
   sku: 'Standard_LRS'
+  subnetResourceId: null //Default value set on module configuration
+}
+
+@description('Optional. The configuration to apply for the AI Foundry AI Hub resource.')
+param aiFoundryAiHubConfiguration aiHubType = {
+  enabled: true
+  name: '${solutionPrefix}aifdaihb'
+  location: solutionLocation
+  sku: 'Basic'
+  tags: tags
   subnetResourceId: null //Default value set on module configuration
 }
 
@@ -777,8 +787,8 @@ var mlPrivateDnsZones = {
   'privatelink.notebooks.azure.net': mlTargetSubResource
 }
 module privateDnsZonesAiFoundryWorkspaceHub 'br/public:avm/res/network/private-dns-zone:0.3.1' = [
-  for zone in objectKeys(mlPrivateDnsZones): if (virtualNetworkEnabled) {
-    name: 'network.private-dns-zone.${zone}'
+  for zone in objectKeys(mlPrivateDnsZones): if (virtualNetworkEnabled && aiFoundryAiHubEnabled) {
+    name: 'network.private-dns-zone.${uniqueString(aiFoundryAiHubName,zone)}'
     params: {
       name: zone
       enableTelemetry: enableTelemetry
@@ -791,16 +801,18 @@ module privateDnsZonesAiFoundryWorkspaceHub 'br/public:avm/res/network/private-d
     }
   }
 ]
-var aiFoundryAiHubName = '${solutionPrefix}aifdaihb'
-module aiFoundryAiHub 'modules/ai-hub.bicep' = {
-  name: 'modules-ai-hub'
+var aiFoundryAiHubEnabled = aiFoundryAiHubConfiguration.?enabled ?? true
+var aiFoundryAiHubName = aiFoundryAiHubConfiguration.?name ?? '${solutionPrefix}aifdaihb'
+module aiFoundryAiHub 'modules/ai-hub.bicep' = if (aiFoundryAiHubEnabled) {
+  name: 'module-ai-hub'
   dependsOn: [
     privateDnsZonesAiFoundryWorkspaceHub
   ]
   params: {
     name: aiFoundryAiHubName
-    location: solutionLocation
-    tags: tags
+    location: aiFoundryAiHubConfiguration.?location ?? solutionLocation
+    tags: aiFoundryAiHubConfiguration.?tags ?? tags
+    sku: aiFoundryAiHubConfiguration.?sku ?? 'Basic'
     aiFoundryAiServicesName: aiFoundryAiServices.outputs.name
     applicationInsightsResourceId: applicationInsights.outputs.resourceId
     enableTelemetry: enableTelemetry
@@ -813,7 +825,9 @@ module aiFoundryAiHub 'modules/ai-hub.bicep' = {
             name: 'pep-${mlTargetSubResource}-${aiFoundryAiHubName}'
             customNetworkInterfaceName: 'nic-${mlTargetSubResource}-${aiFoundryAiHubName}'
             service: mlTargetSubResource
-            subnetResourceId: virtualNetworkEnabled ? virtualNetwork.?outputs.?subnetResourceIds[0] : null
+            subnetResourceId: virtualNetworkEnabled
+              ? aiFoundryAiHubConfiguration.?subnetResourceId ?? virtualNetwork.?outputs.?subnetResourceIds[0]
+              : null
             privateDnsZoneGroup: {
               privateDnsZoneGroupConfigs: map(objectKeys(mlPrivateDnsZones), zone => {
                 name: replace(zone, '.', '-')
@@ -1714,6 +1728,30 @@ type storageAccountType = {
   sku: ('Standard_LRS' | 'Standard_GRS' | 'Standard_RAGRS' | 'Standard_ZRS' | 'Premium_LRS' | 'Premium_ZRS')?
 
   @description('Optional. The resource Id of the subnet where the Storage Account private endpoint should be created.')
+  subnetResourceId: string?
+}
+
+@export()
+@description('The type for the Multi-Agent Custom Automation Engine AI Hub resource configuration.')
+type aiHubType = {
+  @description('Optional. If the AI Hub resource should be deployed or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the AI Hub resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the AI Hub resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the AI Hub resource.')
+  tags: object?
+
+  @description('Optional. The SKU of the AI Hub resource.')
+  sku: ('Basic' | 'Free' | 'Standard' | 'Premium')?
+
+  @description('Optional. The resource Id of the subnet where the AI Hub private endpoint should be created.')
   subnetResourceId: string?
 }
 
