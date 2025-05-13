@@ -83,7 +83,7 @@ param networkSecurityGroupAdministrationConfiguration networkSecurityGroupConfig
   securityRules: null //Default value set on module configuration
 }
 
-@description('Optional. Configuration for the virtual machine.')
+@description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine virtual network resource.')
 param virtualNetworkConfiguration virtualNetworkConfigurationType = {
   enabled: true
   name: '${solutionPrefix}vnet'
@@ -91,6 +91,17 @@ param virtualNetworkConfiguration virtualNetworkConfigurationType = {
   tags: tags
   addressPrefixes: null //Default value set on module configuration
   subnets: null //Default value set on module configuration
+}
+
+@description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine bastion resource.')
+param bastionConfiguration bastionConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}bstn'
+  location: solutionLocation
+  tags: tags
+  sku: 'Standard'
+  virtualNetworkResourceId: null //Default value set on module configuration
+  publicIpResourceName: '${solutionPrefix}pbipbstn'
 }
 
 @description('Optional. Configuration for the virtual machine.')
@@ -357,19 +368,20 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
     ]
   }
 }
-
+var bastionEnabled = bastionConfiguration.?enabled ?? true
+var bastionResourceName = bastionConfiguration.?name ?? '${solutionPrefix}bstn'
 // ========== Bastion host ========== //
-module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualNetworkEnabled) {
-  name: 'network-dns-zone-bastion-host'
+module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualNetworkEnabled && bastionEnabled) {
+  name: take('network.bastion-host.${bastionResourceName}', 64)
   params: {
-    name: '${solutionPrefix}bstn'
-    location: solutionLocation
-    skuName: 'Standard'
+    name: bastionResourceName
+    location: bastionConfiguration.?location ?? solutionLocation
+    skuName: bastionConfiguration.?sku ?? 'Standard'
     enableTelemetry: enableTelemetry
-    tags: tags
-    virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+    tags: bastionConfiguration.?tags ?? tags
+    virtualNetworkResourceId: bastionConfiguration.?virtualNetworkResourceId ?? virtualNetwork.?outputs.?resourceId
     publicIPAddressObject: {
-      name: '${solutionPrefix}pbipbstn'
+      name: bastionConfiguration.?publicIpResourceName ?? '${solutionPrefix}pbipbstn'
     }
     disableCopyPaste: false
     enableFileCopy: false
@@ -1248,6 +1260,33 @@ type subnetType = {
 
   @description('Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.')
   sharingScope: ('DelegatedServices' | 'Tenant')?
+}
+
+@export()
+@description('The type for the Multi-Agent Custom Automation Engine Bastion resource configuration.')
+type bastionConfigurationType = {
+  @description('Optional. If the Bastion resource should be enabled or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the Bastion resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the Bastion resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the Bastion resource.')
+  tags: object?
+
+  @description('Optional. The SKU for the Bastion resource.')
+  sku: ('Basic' | 'Developer' | 'Premium' | 'Standard')?
+
+  @description('Optional. The Virtual Network resource id where the Bastion resource should be deployed.')
+  virtualNetworkResourceId: string?
+
+  @description('Optional. The name of the Public Ip resource created to connect to Bastion.')
+  publicIpResourceName: string?
 }
 
 @export()
