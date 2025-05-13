@@ -1577,7 +1577,7 @@ Describe 'Module tests' -Tag 'Module' {
                 }
             }
 
-            $incorrectVersions | Should -BeNullOrEmpty -Because ('all versions should exist as published version in {0}. Found invalid versions: [{1}].' -f $tagListUrl, ($incorrectVersions -join ', '))
+            $incorrectVersions | Should -BeNullOrEmpty -Because ('all versions should exist as published version in https://mcr.microsoft.com/v2/bicep/avm/{0}/{1}/tags/list' -f $ModuleType, $moduleFolderName)
         }
     }
 
