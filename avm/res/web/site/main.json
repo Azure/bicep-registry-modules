@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "5598982803518323765"
+      "templateHash": "4475929060585640573"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -471,6 +471,16 @@
           "metadata": {
             "description": "Optional. Names of hybrid connection relays to connect app with."
           }
+        },
+        "dnsConfiguration": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/dnsConfiguration"
+            },
+            "description": "Optional. Property to configure various DNS related settings for a site."
+          },
+          "nullable": true
         }
       },
       "metadata": {
@@ -5409,7 +5419,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "1325292572088672122"
+              "templateHash": "3077664209298290170"
             },
             "name": "Web/Function App Deployment Slots",
             "description": "This module deploys a Web or Function App Deployment Slot."
@@ -9772,6 +9782,16 @@
               "metadata": {
                 "description": "Optional. Names of hybrid connection relays to connect app with."
               }
+            },
+            "dnsConfiguration": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.Web/sites/slots@2024-04-01#properties/properties/properties/dnsConfiguration"
+                },
+                "description": "Optional. Property to configure various DNS related settings for a site."
+              },
+              "nullable": true
             }
           },
           "variables": {
@@ -9835,7 +9855,8 @@
                 "redundancyMode": "[parameters('redundancyMode')]",
                 "vnetContentShareEnabled": "[parameters('vnetContentShareEnabled')]",
                 "vnetImagePullEnabled": "[parameters('vnetImagePullEnabled')]",
-                "vnetRouteAllEnabled": "[parameters('vnetRouteAllEnabled')]"
+                "vnetRouteAllEnabled": "[parameters('vnetRouteAllEnabled')]",
+                "dnsConfiguration": "[parameters('dnsConfiguration')]"
               }
             },
             "slot_lock": {

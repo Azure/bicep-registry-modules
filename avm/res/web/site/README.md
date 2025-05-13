@@ -1287,6 +1287,14 @@ module site 'br/public:avm/res/web/site:<version>' = {
             workspaceResourceId: '<workspaceResourceId>'
           }
         ]
+        dnsConfiguration: {
+          dnsMaxCacheTimeout: 45
+          dnsRetryAttemptCount: 3
+          dnsRetryAttemptTimeout: 5
+          dnsServers: [
+            '168.63.129.20'
+          ]
+        }
         hybridConnectionRelays: [
           {
             hybridConnectionResourceId: '<hybridConnectionResourceId>'
@@ -1601,6 +1609,14 @@ module site 'br/public:avm/res/web/site:<version>' = {
               "workspaceResourceId": "<workspaceResourceId>"
             }
           ],
+          "dnsConfiguration": {
+            "dnsMaxCacheTimeout": 45,
+            "dnsRetryAttemptCount": 3,
+            "dnsRetryAttemptTimeout": 5,
+            "dnsServers": [
+              "168.63.129.20"
+            ]
+          },
           "hybridConnectionRelays": [
             {
               "hybridConnectionResourceId": "<hybridConnectionResourceId>",
@@ -1885,6 +1901,14 @@ param slots = [
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    dnsConfiguration: {
+      dnsMaxCacheTimeout: 45
+      dnsRetryAttemptCount: 3
+      dnsRetryAttemptTimeout: 5
+      dnsServers: [
+        '168.63.129.20'
+      ]
+    }
     hybridConnectionRelays: [
       {
         hybridConnectionResourceId: '<hybridConnectionResourceId>'
@@ -8387,6 +8411,7 @@ Configuration for deployment slots for an app.
 | [`customDomainVerificationId`](#parameter-slotscustomdomainverificationid) | string | Unique identifier that verifies the custom domains assigned to the app. Customer will add this ID to a txt record for verification. |
 | [`dailyMemoryTimeQuota`](#parameter-slotsdailymemorytimequota) | int | Maximum allowed daily memory-time quota (applicable on dynamic apps only). |
 | [`diagnosticSettings`](#parameter-slotsdiagnosticsettings) | array | The diagnostic settings of the service. |
+| [`dnsConfiguration`](#parameter-slotsdnsconfiguration) | object | Property to configure various DNS related settings for a site. |
 | [`enabled`](#parameter-slotsenabled) | bool | Setting this value to false disables the app (takes the app offline). |
 | [`extensions`](#parameter-slotsextensions) | array | The extensions configuration. |
 | [`functionAppConfig`](#parameter-slotsfunctionappconfig) | object | The Function App config object. |
@@ -13062,6 +13087,13 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+
+### Parameter: `slots.dnsConfiguration`
+
+Property to configure various DNS related settings for a site.
+
+- Required: No
+- Type: object
 
 ### Parameter: `slots.enabled`
 

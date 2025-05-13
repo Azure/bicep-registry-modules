@@ -152,6 +152,9 @@ param vnetRouteAllEnabled bool = false
 @description('Optional. Names of hybrid connection relays to connect app with.')
 param hybridConnectionRelays hybridConnectionRelayType[]?
 
+@description('Optional. Property to configure various DNS related settings for a site.')
+param dnsConfiguration resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.dnsConfiguration?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -246,6 +249,7 @@ resource slot 'Microsoft.Web/sites/slots@2024-04-01' = {
     vnetContentShareEnabled: vnetContentShareEnabled
     vnetImagePullEnabled: vnetImagePullEnabled
     vnetRouteAllEnabled: vnetRouteAllEnabled
+    dnsConfiguration: dnsConfiguration
   }
 }
 

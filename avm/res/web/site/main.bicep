@@ -740,6 +740,9 @@ type slotType = {
 
   @description('Optional. Names of hybrid connection relays to connect app with.')
   hybridConnectionRelays: hybridConnectionRelayType[]?
+
+  @description('Optional. Property to configure various DNS related settings for a site.')
+  dnsConfiguration: resourceInput<'Microsoft.Web/sites/slots@2024-04-01'>.properties.dnsConfiguration?
 }
 
 type extensionType = {
