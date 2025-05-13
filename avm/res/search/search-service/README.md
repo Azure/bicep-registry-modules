@@ -1968,19 +1968,6 @@ Tags to help categorize the resource in the Azure portal.
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-tags>any_other_property<) | string | A tag key-value pair. |
-
-### Parameter: `tags.>Any_other_property<`
-
-A tag key-value pair.
-
-- Required: No
-- Type: string
-
 ## Outputs
 
 | Output | Type | Description |

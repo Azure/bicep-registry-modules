@@ -102,10 +102,7 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. Tags to help categorize the resource in the Azure portal.')
-param tags {
-  @description('Optional. A tag key-value pair.')
-  *: string?
-}?
+param tags resourceInput<'Microsoft.Search/searchServices@2025-02-01-preview'>.tags?
 
 // ============= //
 //   Variables   //
