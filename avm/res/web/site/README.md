@@ -1177,6 +1177,14 @@ module site 'br/public:avm/res/web/site:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    dnsConfiguration: {
+      dnsMaxCacheTimeout: 45
+      dnsRetryAttemptCount: 3
+      dnsRetryAttemptTimeout: 5
+      dnsServers: [
+        '168.63.129.16'
+      ]
+    }
     httpsOnly: true
     hybridConnectionRelays: [
       {
@@ -1459,6 +1467,16 @@ module site 'br/public:avm/res/web/site:<version>' = {
           "workspaceResourceId": "<workspaceResourceId>"
         }
       ]
+    },
+    "dnsConfiguration": {
+      "value": {
+        "dnsMaxCacheTimeout": 45,
+        "dnsRetryAttemptCount": 3,
+        "dnsRetryAttemptTimeout": 5,
+        "dnsServers": [
+          "168.63.129.16"
+        ]
+      }
     },
     "httpsOnly": {
       "value": true
@@ -1757,6 +1775,14 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param dnsConfiguration = {
+  dnsMaxCacheTimeout: 45
+  dnsRetryAttemptCount: 3
+  dnsRetryAttemptTimeout: 5
+  dnsServers: [
+    '168.63.129.16'
+  ]
+}
 param httpsOnly = true
 param hybridConnectionRelays = [
   {
@@ -2856,6 +2882,7 @@ param siteConfig = {
 | [`containerSize`](#parameter-containersize) | int | Size of the function container. |
 | [`dailyMemoryTimeQuota`](#parameter-dailymemorytimequota) | int | Maximum allowed daily memory-time quota (applicable on dynamic apps only). |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`dnsConfiguration`](#parameter-dnsconfiguration) | object | Property to configure various DNS related settings for a site. |
 | [`e2eEncryptionEnabled`](#parameter-e2eencryptionenabled) | bool | End to End Encryption Setting. |
 | [`enabled`](#parameter-enabled) | bool | Setting this value to false disables the app (takes the app offline). |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
@@ -7570,6 +7597,13 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 - Required: No
 - Type: string
+
+### Parameter: `dnsConfiguration`
+
+Property to configure various DNS related settings for a site.
+
+- Required: No
+- Type: object
 
 ### Parameter: `e2eEncryptionEnabled`
 

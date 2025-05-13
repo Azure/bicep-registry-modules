@@ -168,6 +168,9 @@ param publicNetworkAccess string?
 @description('Optional. End to End Encryption Setting.')
 param e2eEncryptionEnabled bool?
 
+@description('Optional. Property to configure various DNS related settings for a site.')
+param dnsConfiguration resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.dnsConfiguration?
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -280,6 +283,7 @@ resource app 'Microsoft.Web/sites@2024-04-01' = {
     vnetRouteAllEnabled: vnetRouteAllEnabled
     scmSiteAlsoStopped: scmSiteAlsoStopped
     endToEndEncryptionEnabled: e2eEncryptionEnabled
+    dnsConfiguration: dnsConfiguration
   }
 }
 

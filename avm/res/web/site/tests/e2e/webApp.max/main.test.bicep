@@ -73,6 +73,14 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
+      dnsConfiguration: {
+        dnsMaxCacheTimeout: 45
+        dnsRetryAttemptCount: 3
+        dnsRetryAttemptTimeout: 5
+        dnsServers: [
+          '168.63.129.16'
+        ]
+      }
       diagnosticSettings: [
         {
           name: 'customSetting'

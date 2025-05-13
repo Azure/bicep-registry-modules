@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "6521835122218547242"
+      "templateHash": "5598982803518323765"
     },
     "name": "Web/Function Apps",
     "description": "This module deploys a Web or Function App."
@@ -4803,6 +4803,16 @@
       "metadata": {
         "description": "Optional. End to End Encryption Setting."
       }
+    },
+    "dnsConfiguration": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Web/sites@2024-04-01#properties/properties/properties/dnsConfiguration"
+        },
+        "description": "Optional. Property to configure various DNS related settings for a site."
+      },
+      "nullable": true
     }
   },
   "variables": {
@@ -4882,7 +4892,8 @@
         "vnetImagePullEnabled": "[parameters('vnetImagePullEnabled')]",
         "vnetRouteAllEnabled": "[parameters('vnetRouteAllEnabled')]",
         "scmSiteAlsoStopped": "[parameters('scmSiteAlsoStopped')]",
-        "endToEndEncryptionEnabled": "[parameters('e2eEncryptionEnabled')]"
+        "endToEndEncryptionEnabled": "[parameters('e2eEncryptionEnabled')]",
+        "dnsConfiguration": "[parameters('dnsConfiguration')]"
       }
     },
     "app_lock": {
