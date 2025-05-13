@@ -104,13 +104,17 @@ param bastionConfiguration bastionConfigurationType = {
   publicIpResourceName: '${solutionPrefix}pbipbstn'
 }
 
-@description('Optional. Configuration for the virtual machine.')
+@description('Optional. Configuration for the Windows virtual machine.')
 param virtualMachineConfiguration virtualMachineConfigurationType = {
   enabled: true
+  name: '${solutionPrefix}vmws'
+  location: solutionLocation
+  tags: tags
   adminUsername: 'adminuser'
   adminPassword: guid(solutionPrefix, subscription().subscriptionId)
+  vmSize: 'Standard_D2s_v3'
+  subnetResourceId: null //Default value set on module configuration
 }
-var virtualMachineEnabled = virtualMachineConfiguration.?enabled ?? true
 
 @description('Optional. The configuration of the Entra ID Application used to authenticate the website.')
 param entraIdApplicationConfiguration entraIdApplicationConfigurationType = {
@@ -393,26 +397,28 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualN
 }
 
 // ========== Virtual machine ========== //
-
+var virtualMachineEnabled = virtualMachineConfiguration.?enabled ?? true
+var virtualMachineResourceName = virtualMachineConfiguration.?name ?? '${solutionPrefix}vmws'
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = if (virtualNetworkEnabled && virtualMachineEnabled) {
-  name: 'compute-virtual-machine'
+  name: take('compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
-    name: '${solutionPrefix}vmws'
-    computerName: take('${solutionPrefix}vmws', 15)
-    location: solutionLocation
-    tags: tags
+    name: virtualMachineResourceName
+    computerName: take(virtualMachineResourceName, 15)
+    location: virtualMachineConfiguration.?location ?? solutionLocation
+    tags: virtualMachineConfiguration.?tags ?? tags
     enableTelemetry: enableTelemetry
-    adminUsername: virtualMachineConfiguration.?adminUsername!
-    adminPassword: virtualMachineConfiguration.?adminPassword!
+    vmSize: virtualMachineConfiguration.?vmSize ?? 'Standard_D2s_v3'
+    adminUsername: virtualMachineConfiguration.?adminUsername ?? 'adminuser'
+    adminPassword: virtualMachineConfiguration.?adminPassword ?? guid(solutionPrefix, subscription().subscriptionId)
     nicConfigurations: [
       {
         //networkSecurityGroupResourceId: virtualMachineConfiguration.?nicConfigurationConfiguration.networkSecurityGroupResourceId
-        nicSuffix: 'nic01'
+        nicSuffix: '${virtualMachineResourceName}-nic01'
         diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
         ipConfigurations: [
           {
-            name: 'ipconfig01'
-            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+            name: '${virtualMachineResourceName}-nic01-ipconfig01'
+            subnetResourceId: virtualMachineConfiguration.?subnetResourceId ?? virtualNetwork.outputs.subnetResourceIds[1]
             diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
           }
         ]
@@ -435,7 +441,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = if (v
     //patchMode: virtualMachineConfiguration.?patchMode
     osType: 'Windows'
     encryptionAtHost: false //The property 'securityProfile.encryptionAtHost' is not valid because the 'Microsoft.Compute/EncryptionAtHost' feature is not enabled for this subscription.
-    vmSize: 'Standard_D2s_v3'
     zone: 0
     extensionAadJoinConfig: {
       enabled: true
@@ -1216,7 +1221,7 @@ type virtualNetworkConfigurationType = {
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 type subnetType = {
-  @description('Required. The Name of the subnet resource.')
+  @description('Optional. The Name of the subnet resource.')
   name: string
 
   @description('Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty.')
@@ -1290,17 +1295,200 @@ type bastionConfigurationType = {
 }
 
 @export()
-@description('The type for the Multi-Agent Custom Automation virtual machine resource configuration.')
+@description('The type for the Multi-Agent Custom Automation Engine virtual machine resource configuration.')
 type virtualMachineConfigurationType = {
   @description('Optional. If the Virtual Machine resource should be enabled or not.')
   enabled: bool?
 
-  @description('Required. The username for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
+  @description('Optional. The name of the Virtual Machine resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the Virtual Machine resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the Virtual Machine resource.')
+  tags: object?
+
+  @description('Optional. Specifies the size for the Virtual Machine resource.')
+  vmSize: (
+    | 'Basic_A0'
+    | 'Basic_A1'
+    | 'Basic_A2'
+    | 'Basic_A3'
+    | 'Basic_A4'
+    | 'Standard_A0'
+    | 'Standard_A1'
+    | 'Standard_A2'
+    | 'Standard_A3'
+    | 'Standard_A4'
+    | 'Standard_A5'
+    | 'Standard_A6'
+    | 'Standard_A7'
+    | 'Standard_A8'
+    | 'Standard_A9'
+    | 'Standard_A10'
+    | 'Standard_A11'
+    | 'Standard_A1_v2'
+    | 'Standard_A2_v2'
+    | 'Standard_A4_v2'
+    | 'Standard_A8_v2'
+    | 'Standard_A2m_v2'
+    | 'Standard_A4m_v2'
+    | 'Standard_A8m_v2'
+    | 'Standard_B1s'
+    | 'Standard_B1ms'
+    | 'Standard_B2s'
+    | 'Standard_B2ms'
+    | 'Standard_B4ms'
+    | 'Standard_B8ms'
+    | 'Standard_D1'
+    | 'Standard_D2'
+    | 'Standard_D3'
+    | 'Standard_D4'
+    | 'Standard_D11'
+    | 'Standard_D12'
+    | 'Standard_D13'
+    | 'Standard_D14'
+    | 'Standard_D1_v2'
+    | 'Standard_D2_v2'
+    | 'Standard_D3_v2'
+    | 'Standard_D4_v2'
+    | 'Standard_D5_v2'
+    | 'Standard_D2_v3'
+    | 'Standard_D4_v3'
+    | 'Standard_D8_v3'
+    | 'Standard_D16_v3'
+    | 'Standard_D32_v3'
+    | 'Standard_D64_v3'
+    | 'Standard_D2s_v3'
+    | 'Standard_D4s_v3'
+    | 'Standard_D8s_v3'
+    | 'Standard_D16s_v3'
+    | 'Standard_D32s_v3'
+    | 'Standard_D64s_v3'
+    | 'Standard_D11_v2'
+    | 'Standard_D12_v2'
+    | 'Standard_D13_v2'
+    | 'Standard_D14_v2'
+    | 'Standard_D15_v2'
+    | 'Standard_DS1'
+    | 'Standard_DS2'
+    | 'Standard_DS3'
+    | 'Standard_DS4'
+    | 'Standard_DS11'
+    | 'Standard_DS12'
+    | 'Standard_DS13'
+    | 'Standard_DS14'
+    | 'Standard_DS1_v2'
+    | 'Standard_DS2_v2'
+    | 'Standard_DS3_v2'
+    | 'Standard_DS4_v2'
+    | 'Standard_DS5_v2'
+    | 'Standard_DS11_v2'
+    | 'Standard_DS12_v2'
+    | 'Standard_DS13_v2'
+    | 'Standard_DS14_v2'
+    | 'Standard_DS15_v2'
+    | 'Standard_DS13-4_v2'
+    | 'Standard_DS13-2_v2'
+    | 'Standard_DS14-8_v2'
+    | 'Standard_DS14-4_v2'
+    | 'Standard_E2_v3'
+    | 'Standard_E4_v3'
+    | 'Standard_E8_v3'
+    | 'Standard_E16_v3'
+    | 'Standard_E32_v3'
+    | 'Standard_E64_v3'
+    | 'Standard_E2s_v3'
+    | 'Standard_E4s_v3'
+    | 'Standard_E8s_v3'
+    | 'Standard_E16s_v3'
+    | 'Standard_E32s_v3'
+    | 'Standard_E64s_v3'
+    | 'Standard_E32-16_v3'
+    | 'Standard_E32-8s_v3'
+    | 'Standard_E64-32s_v3'
+    | 'Standard_E64-16s_v3'
+    | 'Standard_F1'
+    | 'Standard_F2'
+    | 'Standard_F4'
+    | 'Standard_F8'
+    | 'Standard_F16'
+    | 'Standard_F1s'
+    | 'Standard_F2s'
+    | 'Standard_F4s'
+    | 'Standard_F8s'
+    | 'Standard_F16s'
+    | 'Standard_F2s_v2'
+    | 'Standard_F4s_v2'
+    | 'Standard_F8s_v2'
+    | 'Standard_F16s_v2'
+    | 'Standard_F32s_v2'
+    | 'Standard_F64s_v2'
+    | 'Standard_F72s_v2'
+    | 'Standard_G1'
+    | 'Standard_G2'
+    | 'Standard_G3'
+    | 'Standard_G4'
+    | 'Standard_G5'
+    | 'Standard_GS1'
+    | 'Standard_GS2'
+    | 'Standard_GS3'
+    | 'Standard_GS4'
+    | 'Standard_GS5'
+    | 'Standard_GS4-8'
+    | 'Standard_GS4-4'
+    | 'Standard_GS5-16'
+    | 'Standard_GS5-8'
+    | 'Standard_H8'
+    | 'Standard_H16'
+    | 'Standard_H8m'
+    | 'Standard_H16m'
+    | 'Standard_H16r'
+    | 'Standard_H16mr'
+    | 'Standard_L4s'
+    | 'Standard_L8s'
+    | 'Standard_L16s'
+    | 'Standard_L32s'
+    | 'Standard_M64s'
+    | 'Standard_M64ms'
+    | 'Standard_M128s'
+    | 'Standard_M128ms'
+    | 'Standard_M64-32ms'
+    | 'Standard_M64-16ms'
+    | 'Standard_M128-64ms'
+    | 'Standard_M128-32ms'
+    | 'Standard_NC6'
+    | 'Standard_NC12'
+    | 'Standard_NC24'
+    | 'Standard_NC24r'
+    | 'Standard_NC6s_v2'
+    | 'Standard_NC12s_v2'
+    | 'Standard_NC24s_v2'
+    | 'Standard_NC24rs_v2'
+    | 'Standard_NC6s_v3'
+    | 'Standard_NC12s_v3'
+    | 'Standard_NC24s_v3'
+    | 'Standard_NC24rs_v3'
+    | 'Standard_ND6s'
+    | 'Standard_ND12s'
+    | 'Standard_ND24s'
+    | 'Standard_ND24rs'
+    | 'Standard_NV6'
+    | 'Standard_NV12'
+    | 'Standard_NV24')?
+
+  @description('Optional. The username for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
   adminUsername: string?
 
-  @description('Required. The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
+  @description('Optional. The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
   @secure()
   adminPassword: string?
+
+  @description('Optional. The resource ID of the subnet where the Virtual Machine resource should be deployed.')
+  subnetResourceId: string?
 }
 
 @export()
