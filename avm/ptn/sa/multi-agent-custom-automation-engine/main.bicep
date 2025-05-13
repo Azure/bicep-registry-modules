@@ -53,24 +53,7 @@ param networkSecurityGroupBackendConfiguration networkSecurityGroupConfiguration
   name: '${solutionPrefix}nsgr-backend'
   location: solutionLocation
   tags: tags
-  securityRules: [
-    // {
-    //   name: 'DenySshRdpOutbound' //Azure Bastion
-    //   properties: {
-    //     priority: 200
-    //     access: 'Deny'
-    //     protocol: '*'
-    //     direction: 'Outbound'
-    //     sourceAddressPrefix: 'VirtualNetwork'
-    //     sourcePortRange: '*'
-    //     destinationAddressPrefix: '*'
-    //     destinationPortRanges: [
-    //       '3389'
-    //       '22'
-    //     ]
-    //   }
-    // }
-  ]
+  securityRules: null //Default value set on module variables
 }
 
 @description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the containers subnet.')
@@ -79,24 +62,7 @@ param networkSecurityGroupContainersConfiguration networkSecurityGroupConfigurat
   name: '${solutionPrefix}nsgr-containers'
   location: solutionLocation
   tags: tags
-  securityRules: [
-    // {
-    //   name: 'DenySshRdpOutbound' //Azure Bastion
-    //   properties: {
-    //     priority: 200
-    //     access: 'Deny'
-    //     protocol: '*'
-    //     direction: 'Outbound'
-    //     sourceAddressPrefix: 'VirtualNetwork'
-    //     sourcePortRange: '*'
-    //     destinationAddressPrefix: '*'
-    //     destinationPortRanges: [
-    //       '3389'
-    //       '22'
-    //     ]
-    //   }
-    // }
-  ]
+  securityRules: null //Default value set on module variables
 }
 
 @description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the Bastion subnet.')
@@ -105,24 +71,7 @@ param networkSecurityGroupBastionConfiguration networkSecurityGroupConfiguration
   name: '${solutionPrefix}nsgr-bastion'
   location: solutionLocation
   tags: tags
-  securityRules: [
-    // {
-    //   name: 'DenySshRdpOutbound' //Azure Bastion
-    //   properties: {
-    //     priority: 200
-    //     access: 'Deny'
-    //     protocol: '*'
-    //     direction: 'Outbound'
-    //     sourceAddressPrefix: 'VirtualNetwork'
-    //     sourcePortRange: '*'
-    //     destinationAddressPrefix: '*'
-    //     destinationPortRanges: [
-    //       '3389'
-    //       '22'
-    //     ]
-    //   }
-    // }
-  ]
+  securityRules: null //Default value set on module variables
 }
 
 @description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the administration subnet.')
@@ -131,24 +80,17 @@ param networkSecurityGroupAdministrationConfiguration networkSecurityGroupConfig
   name: '${solutionPrefix}nsgr-administration'
   location: solutionLocation
   tags: tags
-  securityRules: [
-    // {
-    //   name: 'DenySshRdpOutbound' //Azure Bastion
-    //   properties: {
-    //     priority: 200
-    //     access: 'Deny'
-    //     protocol: '*'
-    //     direction: 'Outbound'
-    //     sourceAddressPrefix: 'VirtualNetwork'
-    //     sourcePortRange: '*'
-    //     destinationAddressPrefix: '*'
-    //     destinationPortRanges: [
-    //       '3389'
-    //       '22'
-    //     ]
-    //   }
-    // }
-  ]
+  securityRules: null //Default value set on module variables
+}
+
+@description('Optional. Configuration for the virtual machine.')
+param virtualNetworkConfiguration virtualNetworkConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}vnet'
+  location: solutionLocation
+  tags: tags
+  addressPrefixes: null //Default value set on module variables
+  subnets: null //Default value set on module variables
 }
 
 @description('Optional. Configuration for the virtual machine.')
@@ -158,12 +100,6 @@ param virtualMachineConfiguration virtualMachineConfigurationType = {
   adminPassword: guid(solutionPrefix, subscription().subscriptionId)
 }
 var virtualMachineEnabled = virtualMachineConfiguration.?enabled ?? true
-
-@description('Optional. Configuration for the virtual machine.')
-param virtualNetworkConfiguration virtualNetworkConfigurationType = {
-  enabled: true
-}
-var virtualNetworkEnabled = virtualNetworkConfiguration.?enabled ?? true
 
 @description('Optional. The configuration of the Entra ID Application used to authenticate the website.')
 param entraIdApplicationConfiguration entraIdApplicationConfigurationType = {
@@ -397,54 +333,57 @@ module networkSecurityGroupAdministration 'br/public:avm/res/network/network-sec
 }
 
 // ========== Virtual Network ========== //
-
+var virtualNetworkEnabled = virtualNetworkConfiguration.?enabled ?? true
+var virtualNetworkResourceName = virtualNetworkConfiguration.?name ?? '${solutionPrefix}vnet'
+var virtualNetworkLocation = virtualNetworkConfiguration.?location ?? solutionLocation
+var virtualNetworkTags = virtualNetworkConfiguration.?tags ?? tags
+var virtualNetworkAddressPrefixes = virtualNetworkConfiguration.?addressPrefixes ?? ['10.0.0.0/8']
+var virtualNetworkSubnets = virtualNetworkConfiguration.?subnets ?? [
+  {
+    name: 'backend'
+    addressPrefix: '10.0.0.0/27'
+    //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
+    networkSecurityGroupResourceId: networkSecurityGroupBackend.outputs.resourceId
+  }
+  {
+    name: 'administration'
+    addressPrefix: '10.0.0.32/27'
+    networkSecurityGroupResourceId: networkSecurityGroupAdministration.outputs.resourceId
+    //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
+    //natGatewayResourceId: natGateway.outputs.resourceId
+  }
+  {
+    // For Azure Bastion resources deployed on or after November 2, 2021, the minimum AzureBastionSubnet size is /26 or larger (/25, /24, etc.).
+    // https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#subnet
+    name: 'AzureBastionSubnet' //This exact name is required for Azure Bastion
+    addressPrefix: '10.0.0.64/26'
+    networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
+  }
+  {
+    // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
+    // https://learn.microsoft.com/en-us/azure/container-apps/networking?tabs=workload-profiles-env%2Cazure-cli#custom-vnet-configuration
+    name: 'containers'
+    addressPrefix: '10.0.1.0/23' //subnet of size /23 is required for container app
+    //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
+    delegation: 'Microsoft.App/environments'
+    networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+  }
+]
 module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (virtualNetworkEnabled) {
-  name: 'network-virtual-network'
+  name: take('network.virtual-network.${virtualNetworkResourceName}', 64)
   params: {
-    name: '${solutionPrefix}vnet'
-    location: solutionLocation
-    tags: tags
+    name: virtualNetworkResourceName
+    location: virtualNetworkLocation
+    tags: virtualNetworkTags
     enableTelemetry: enableTelemetry
-    addressPrefixes: ['10.0.0.0/8']
-    subnets: [
-      // The default subnet **must** be the first in the subnets array
-      {
-        name: 'backend'
-        addressPrefix: '10.0.0.0/27'
-        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        networkSecurityGroupResourceId: networkSecurityGroupBackend.outputs.resourceId
-      }
-      {
-        name: 'administration'
-        addressPrefix: '10.0.0.32/27'
-        networkSecurityGroupResourceId: networkSecurityGroupAdministration.outputs.resourceId
-        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        //natGatewayResourceId: natGateway.outputs.resourceId
-      }
-      {
-        // For Azure Bastion resources deployed on or after November 2, 2021, the minimum AzureBastionSubnet size is /26 or larger (/25, /24, etc.).
-        // https://learn.microsoft.com/en-us/azure/bastion/configuration-settings#subnet
-        name: 'AzureBastionSubnet' //This exact name is required for Azure Bastion
-        addressPrefix: '10.0.0.64/26'
-        networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
-      }
-      {
-        // If you use your own VNet, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
-        // https://learn.microsoft.com/en-us/azure/container-apps/networking?tabs=workload-profiles-env%2Cazure-cli#custom-vnet-configuration
-        name: 'containers'
-        addressPrefix: '10.0.1.0/23' //subnet of size /23 is required for container app
-        //defaultOutboundAccess: false TODO: check this configuration for a more restricted outbound access
-        delegation: 'Microsoft.App/environments'
-        networkSecurityGroupResourceId: networkSecurityGroupContainers.outputs.resourceId
-        privateEndpointNetworkPolicies: 'Disabled'
-        privateLinkServiceNetworkPolicies: 'Enabled'
-      }
-    ]
+    addressPrefixes: virtualNetworkAddressPrefixes
+    subnets: virtualNetworkSubnets
   }
 }
 
 // ========== Bastion host ========== //
-
 module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualNetworkEnabled) {
   name: 'network-dns-zone-bastion-host'
   params: {
@@ -1265,6 +1204,78 @@ type networkSecurityGroupConfigurationType = {
 }
 
 @export()
+@description('The type for the Multi-Agent Custom Automation virtual network resource configuration.')
+type virtualNetworkConfigurationType = {
+  @description('Optional. If the Virtual Network resource should be enabled or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the Virtual Network resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the Virtual Network resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the Virtual Network resource.')
+  tags: object?
+
+  @description('Optional. An array of 1 or more IP Addresses prefixes for the Virtual Network resource.')
+  addressPrefixes: string[]?
+
+  @description('Optional. An array of 1 or more subnets for the Virtual Network resource.')
+  subnets: subnetType[]?
+}
+
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+type subnetType = {
+  @description('Required. The Name of the subnet resource.')
+  name: string
+
+  @description('Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty.')
+  addressPrefix: string?
+
+  @description('Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty.')
+  addressPrefixes: string[]?
+
+  @description('Optional. Application gateway IP configurations of virtual network resource.')
+  applicationGatewayIPConfigurations: object[]?
+
+  @description('Optional. The delegation to enable on the subnet.')
+  delegation: string?
+
+  @description('Optional. The resource ID of the NAT Gateway to use for the subnet.')
+  natGatewayResourceId: string?
+
+  @description('Optional. The resource ID of the network security group to assign to the subnet.')
+  networkSecurityGroupResourceId: string?
+
+  @description('Optional. enable or disable apply network policies on private endpoint in the subnet.')
+  privateEndpointNetworkPolicies: ('Disabled' | 'Enabled' | 'NetworkSecurityGroupEnabled' | 'RouteTableEnabled')?
+
+  @description('Optional. enable or disable apply network policies on private link service in the subnet.')
+  privateLinkServiceNetworkPolicies: ('Disabled' | 'Enabled')?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The resource ID of the route table to assign to the subnet.')
+  routeTableResourceId: string?
+
+  @description('Optional. An array of service endpoint policies.')
+  serviceEndpointPolicies: object[]?
+
+  @description('Optional. The service endpoints to enable on the subnet.')
+  serviceEndpoints: string[]?
+
+  @description('Optional. Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet.')
+  defaultOutboundAccess: bool?
+
+  @description('Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.')
+  sharingScope: ('DelegatedServices' | 'Tenant')?
+}
+
+@export()
 @description('The type for the Multi-Agent Custom Automation virtual machine resource configuration.')
 type virtualMachineConfigurationType = {
   @description('Optional. If the Virtual Machine resource should be enabled or not.')
@@ -1276,13 +1287,6 @@ type virtualMachineConfigurationType = {
   @description('Required. The password for the administrator account on the virtual machine. Required if a virtual machine is created as part of the module.')
   @secure()
   adminPassword: string?
-}
-
-@export()
-@description('The type for the Multi-Agent Custom Automation virtual network resource configuration.')
-type virtualNetworkConfigurationType = {
-  @description('Optional. If the Virtual Network resource should be enabled or not.')
-  enabled: bool?
 }
 
 @export()
