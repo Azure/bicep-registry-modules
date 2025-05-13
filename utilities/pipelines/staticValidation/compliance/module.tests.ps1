@@ -1451,7 +1451,7 @@ Describe 'Module tests' -Tag 'Module' {
             } else {
                 # the module will not be published. Use the current version
                 Write-Verbose 'A new version will not be published. Use the current version.' -Verbose
-                $publishedVersions = Get-PublishedModuleVersionsList -TagListUrl ('https://mcr.microsoft.com/v2/bicep/avm/{0}/{1}/tags/list' -f $moduleType, ($moduleFolderName -replace '\\', '/'))
+                $publishedVersions = Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName ($moduleFolderName -replace '\\', '/')
                 # the last version in the array is the latest published version
                 Write-Verbose "Latest published version is [$($publishedVersions[-1])]." -Verbose
                 $expectedModuleVersion = $publishedVersions[-1]
@@ -1564,8 +1564,7 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             # get all tags for a module
-            $tagListUrl = "https://mcr.microsoft.com/v2/bicep/avm/$moduleType/$moduleFolderName/tags/list"
-            $publishedTags = Get-PublishedModuleVersionsList -TagListUrl $tagListUrl
+            $publishedTags = Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName $moduleFolderName
 
             $incorrectVersions = [System.Collections.ArrayList]@()
             $regex = '##\s(\d+\.\d+\.\d+)'
