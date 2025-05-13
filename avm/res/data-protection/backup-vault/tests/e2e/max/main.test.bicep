@@ -42,7 +42,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    diskName: 'dep-${namePrefix}-dsk-${serviceShort}-01'
+    diskNamePrefix: 'dep-${namePrefix}-dsk-${serviceShort}'
+    diskOccurrences: 2
     location: resourceLocation
   }
 }
@@ -230,12 +231,12 @@ module testDeployment '../../../main.bicep' = {
         }
       }
       {
-        name: last(split(nestedDependencies.outputs.diskResourceId, '/'))
+        name: last(split(nestedDependencies.outputs.diskResourceIdList[0], '/'))
         dataSourceInfo: {
-          resourceID: nestedDependencies.outputs.diskResourceId
-          resourceName: last(split(nestedDependencies.outputs.diskResourceId, '/'))
+          resourceID: nestedDependencies.outputs.diskResourceIdList[0]
+          resourceName: last(split(nestedDependencies.outputs.diskResourceIdList[0], '/'))
           resourceType: 'Microsoft.Compute/disks'
-          resourceUri: nestedDependencies.outputs.diskResourceId
+          resourceUri: nestedDependencies.outputs.diskResourceIdList[0]
           resourceLocation: resourceLocation
           datasourceType: 'Microsoft.Compute/disks'
         }
@@ -246,7 +247,30 @@ module testDeployment '../../../main.bicep' = {
               {
                 objectType: 'AzureOperationalStoreParameters'
                 dataStoreType: 'OperationalStore'
-                resourceGroupId: resourceGroup_src.id
+                resourceGroupId: resourceGroup.id
+              }
+            ]
+          }
+        }
+      }
+      {
+        name: last(split(nestedDependencies.outputs.diskResourceIdList[1], '/'))
+        dataSourceInfo: {
+          resourceID: nestedDependencies.outputs.diskResourceIdList[1]
+          resourceName: last(split(nestedDependencies.outputs.diskResourceIdList[1], '/'))
+          resourceType: 'Microsoft.Compute/disks'
+          resourceUri: nestedDependencies.outputs.diskResourceIdList[1]
+          resourceLocation: resourceLocation
+          datasourceType: 'Microsoft.Compute/disks'
+        }
+        policyInfo: {
+          policyName: diskBackupPolicyName
+          policyParameters: {
+            dataStoreParametersList: [
+              {
+                objectType: 'AzureOperationalStoreParameters'
+                dataStoreType: 'OperationalStore'
+                resourceGroupId: resourceGroup.id
               }
             ]
           }

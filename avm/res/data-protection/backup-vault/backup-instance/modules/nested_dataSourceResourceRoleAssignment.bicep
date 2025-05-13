@@ -12,6 +12,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing 
   name: last(split(resourceId, '/'))
 }
 
+resource disk 'Microsoft.Compute/disks@2024-03-02' existing = if (resourceType == 'Microsoft.Compute/disks') {
+  name: last(split(resourceId, '/'))
+}
+
 // Assign Storage Account Backup Contributor RBAC role
 resource roleAssignment_storageAccount 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (resourceType == 'Microsoft.Storage/storageAccounts') {
   name: guid('${resourceId}-${principalId}-Storage-Account-Backup-Contributor')
@@ -31,6 +35,7 @@ resource roleAssignment_storageAccount 'Microsoft.Authorization/roleAssignments@
 // Assign Disk Backup Reader RBAC role
 resource roleAssignment_disk 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (resourceType == 'Microsoft.Compute/disks') {
   name: guid('${resourceId}-${principalId}-Disk-Backup-Reader')
+  scope: disk
   properties: {
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
@@ -39,20 +44,4 @@ resource roleAssignment_disk 'Microsoft.Authorization/roleAssignments@2022-04-01
     principalId: principalId
     principalType: 'ServicePrincipal'
   }
-}
-
-// Assign Disk Snapshot Contributor RBAC role
-resource roleAssignment_snapshotRG 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (resourceType == 'Microsoft.Compute/disks') {
-  name: guid('${resourceId}-${principalId}-Disk-Snapshot-Contributor')
-  properties: {
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '7efff54f-a5b4-42b5-a1c5-5411624893ce' // Disk Snapshot Contributor
-    )
-    principalId: principalId
-    principalType: 'ServicePrincipal'
-  }
-  dependsOn: [
-    roleAssignment_disk
-  ]
 }

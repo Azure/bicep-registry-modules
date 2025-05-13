@@ -24,6 +24,14 @@ param autoDeleteTopicWithLastSubscription bool = true
 @description('Optional. This can be used to restrict traffic from specific IPs instead of all IPs. Note: These are considered only if PublicNetworkAccess is enabled.')
 param inboundIpRules array = []
 
+@description('Optional. The minimum TLS version required for API requests to the domain.')
+@allowed([
+  '1.0'
+  '1.1'
+  '1.2'
+])
+param minimumTlsVersionAllowed string = '1.2'
+
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
@@ -149,6 +157,7 @@ resource domain 'Microsoft.EventGrid/domains@2023-06-01-preview' = {
     autoCreateTopicWithFirstSubscription: autoCreateTopicWithFirstSubscription
     autoDeleteTopicWithLastSubscription: autoDeleteTopicWithLastSubscription
     disableLocalAuth: disableLocalAuth
+    minimumTlsVersionAllowed: minimumTlsVersionAllowed
   }
 }
 

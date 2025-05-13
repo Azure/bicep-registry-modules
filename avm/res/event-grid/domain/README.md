@@ -140,6 +140,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    minimumTlsVersionAllowed: '1.2'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -248,6 +249,9 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         "name": "myCustomLockName"
       }
     },
+    "minimumTlsVersionAllowed": {
+      "value": "1.2"
+    },
     "privateEndpoints": {
       "value": [
         {
@@ -352,6 +356,7 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param minimumTlsVersionAllowed = '1.2'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -447,6 +452,7 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    minimumTlsVersionAllowed: '1.2'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -522,6 +528,9 @@ module domain 'br/public:avm/res/event-grid/domain:<version>' = {
         "name": "myCustomLockName"
       }
     },
+    "minimumTlsVersionAllowed": {
+      "value": "1.2"
+    },
     "privateEndpoints": {
       "value": [
         {
@@ -591,6 +600,7 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param minimumTlsVersionAllowed = '1.2'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -643,6 +653,7 @@ param topics = [
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`minimumTlsVersionAllowed`](#parameter-minimumtlsversionallowed) | string | The minimum TLS version required for API requests to the domain. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and inboundIpRules are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
@@ -913,6 +924,22 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 - Required: No
 - Type: array
+
+### Parameter: `minimumTlsVersionAllowed`
+
+The minimum TLS version required for API requests to the domain.
+
+- Required: No
+- Type: string
+- Default: `'1.2'`
+- Allowed:
+  ```Bicep
+  [
+    '1.0'
+    '1.1'
+    '1.2'
+  ]
+  ```
 
 ### Parameter: `privateEndpoints`
 

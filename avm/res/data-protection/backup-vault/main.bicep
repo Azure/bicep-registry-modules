@@ -92,7 +92,9 @@ var identity = !empty(managedIdentities)
         : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
-  : null
+  : {
+      type: 'None'
+    }
 
 var builtInRoleNames = {
   'Backup Contributor': subscriptionResourceId(
@@ -231,6 +233,7 @@ module backupVault_backupPolicies 'backup-policy/main.bicep' = [
   }
 ]
 
+@batchSize(1)
 module backupVault_backupInstances 'backup-instance/main.bicep' = [
   for (backupInstance, index) in (backupInstances ?? []): {
     name: '${uniqueString(deployment().name, location)}-BV-BackupInstance-${index}'

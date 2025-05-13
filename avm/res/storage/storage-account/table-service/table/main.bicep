@@ -61,15 +61,15 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 
-  resource tableServices 'tableServices@2023-04-01' existing = {
+  resource tableServices 'tableServices@2024-01-01' existing = {
     name: 'default'
   }
 }
 
-resource table 'Microsoft.Storage/storageAccounts/tableServices/tables@2023-04-01' = {
+resource table 'Microsoft.Storage/storageAccounts/tableServices/tables@2024-01-01' = {
   name: name
   parent: storageAccount::tableServices
 }
