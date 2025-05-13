@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "11658141471014496154"
+      "templateHash": "6041736049309224364"
     },
     "name": "App Configuration Stores",
     "description": "This module deploys an App Configuration Store."
@@ -783,10 +783,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.AppConfiguration/configurationStores@2024-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "dataPlaneProxy": {
       "$ref": "#/definitions/dataPlaneProxyType",

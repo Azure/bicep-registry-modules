@@ -66,7 +66,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.AppConfiguration/configurationStores@2024-05-01'>.tags?
 
 @description('Optional. Property specifying the configuration of data plane proxy for Azure Resource Manager (ARM).')
 param dataPlaneProxy dataPlaneProxyType?
