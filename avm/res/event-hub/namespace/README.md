@@ -2454,19 +2454,6 @@ Tags of the resource.
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-tags>any_other_property<) | string | A tag key-value pair. |
-
-### Parameter: `tags.>Any_other_property<`
-
-A tag key-value pair.
-
-- Required: No
-- Type: string
-
 ### Parameter: `zoneRedundant`
 
 Switch to make the Event Hub Namespace zone redundant.

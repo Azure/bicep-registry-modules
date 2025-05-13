@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "10245351014566093597"
+      "templateHash": "17822043346238174909"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -915,18 +915,13 @@
     },
     "tags": {
       "type": "object",
-      "properties": {},
-      "additionalProperties": {
-        "type": "string",
-        "nullable": true,
-        "metadata": {
-          "description": "Optional. A tag key-value pair."
-        }
-      },
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventHub/namespaces@2024-01-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
