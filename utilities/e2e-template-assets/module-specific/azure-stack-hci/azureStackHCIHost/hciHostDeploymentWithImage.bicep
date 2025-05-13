@@ -280,16 +280,18 @@ resource ad 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
         value: domainAdminUsername
       }
       {
-        name: 'AdministratorPassword'
-        value: domainAdminPassword
-      }
-      {
         name: 'ADOUPath'
         value: domainOUPath
       }
       {
         name: 'DeploymentUserAccount'
         value: deploymentUsername
+      }
+    ]
+    protectedParameters: [
+      {
+        name: 'AdministratorPassword'
+        value: domainAdminPassword
       }
       {
         name: 'DeploymentUserPassword'
@@ -325,16 +327,8 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
         value: domainAdminUsername
       }
       {
-        name: 'LocalAdministratorPassword'
-        value: domainAdminPassword
-      }
-      {
         name: 'ServicePrincipalId'
         value: arbDeploymentAppId
-      }
-      {
-        name: 'ServicePrincipalSecret'
-        value: arbDeploymentServicePrincipalSecret
       }
       {
         name: 'SubscriptionId'
@@ -353,8 +347,17 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
         value: location
       }
     ]
+    protectedParameters: [
+      {
+        name: 'LocalAdministratorPassword'
+        value: domainAdminPassword
+      }
+      {
+        name: 'ServicePrincipalSecret'
+        value: arbDeploymentServicePrincipalSecret
+      }
+    ]
   }
-  dependsOn: [ad]
 }
 
 resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
@@ -383,16 +386,8 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
         value: domainAdminUsername
       }
       {
-        name: 'LocalAdministratorPassword'
-        value: domainAdminPassword
-      }
-      {
         name: 'ServicePrincipalId'
         value: arbDeploymentAppId
-      }
-      {
-        name: 'ServicePrincipalSecret'
-        value: arbDeploymentServicePrincipalSecret
       }
       {
         name: 'SubscriptionId'
@@ -411,8 +406,17 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
         value: location
       }
     ]
+    protectedParameters: [
+      {
+        name: 'LocalAdministratorPassword'
+        value: domainAdminPassword
+      }
+      {
+        name: 'ServicePrincipalSecret'
+        value: arbDeploymentServicePrincipalSecret
+      }
+    ]
   }
-  dependsOn: [ad]
 }
 
 output vnetSubnetResourceId string = vnet.properties.subnets[0].id

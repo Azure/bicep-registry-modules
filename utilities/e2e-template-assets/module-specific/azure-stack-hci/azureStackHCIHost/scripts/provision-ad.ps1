@@ -17,9 +17,9 @@ param(
     [Parameter(Mandatory = $true)]
     [string]$ADOUPath,
     [Parameter(Mandatory = $true)]
-    [string]$deploymentUserAccount,
+    [string]$DeploymentUserAccount,
     [Parameter(Mandatory = $true)]
-    [string]$deploymentUserPassword
+    [string]$DeploymentUserPassword
 )
 
 $script:ErrorActionPreference = 'Stop'
@@ -37,8 +37,8 @@ try {
         Install-Module AsHciADArtifactsPreCreationTool -Repository PSGallery -Force -Confirm:$false -Verbose
         Add-KdsRootKey -EffectiveTime ((Get-Date).addhours(-10)) -Verbose # TODO: is this idempotent?
 
-        $deploymentSecurePassword = ConvertTo-SecureString $Using:deploymentUserPassword -AsPlainText -Force
-        $lcmCredential = New-Object System.Management.Automation.PSCredential -ArgumentList $Using:deploymentUserAccount, $deploymentSecurePassword
+        $deploymentSecurePassword = ConvertTo-SecureString $Using:DeploymentUserPassword -AsPlainText -Force
+        $lcmCredential = New-Object System.Management.Automation.PSCredential -ArgumentList $Using:DeploymentUserAccount, $deploymentSecurePassword
         New-HciAdObjectsPreCreation -AzureStackLCMUserCredential $lcmCredential -AsHciOUName $Using:ADOUPath -Verbose
         # automatically skipped if it exists
     }
