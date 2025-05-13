@@ -54,7 +54,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Batch/batchAccounts@2024-07-01'>.tags?
 
 @allowed([
   'AAD'
@@ -62,7 +62,7 @@ param tags object?
   'TaskAuthenticationToken'
 ])
 @description('Optional. List of allowed authentication modes for the Batch account that can be used to authenticate with the data plane.')
-param allowedAuthenticationModes array?
+param allowedAuthenticationModes resourceInput<'Microsoft.Batch/batchAccounts@2024-07-01'>.properties.allowedAuthenticationModes?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -170,7 +170,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empt
   }
 }
 
-resource batchAccount 'Microsoft.Batch/batchAccounts@2022-06-01' = {
+resource batchAccount 'Microsoft.Batch/batchAccounts@2024-07-01' = {
   name: name
   location: location
   tags: tags

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "1966716166879087645"
+      "templateHash": "15778186882897844323"
     },
     "name": "Batch Accounts",
     "description": "This module deploys a Batch Account."
@@ -777,22 +777,28 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Batch/batchAccounts@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "allowedAuthenticationModes": {
       "type": "array",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Batch/batchAccounts@2024-07-01#properties/properties/properties/allowedAuthenticationModes"
+        },
+        "description": "Optional. List of allowed authentication modes for the Batch account that can be used to authenticate with the data plane."
+      },
       "nullable": true,
       "allowedValues": [
         "AAD",
         "SharedKey",
         "TaskAuthenticationToken"
-      ],
-      "metadata": {
-        "description": "Optional. List of allowed authentication modes for the Batch account that can be used to authenticate with the data plane."
-      }
+      ]
     },
     "enableTelemetry": {
       "type": "bool",
@@ -911,7 +917,7 @@
     },
     "batchAccount": {
       "type": "Microsoft.Batch/batchAccounts",
-      "apiVersion": "2022-06-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1796,7 +1802,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('batchAccount', '2022-06-01', 'full').location]"
+      "value": "[reference('batchAccount', '2024-07-01', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1804,7 +1810,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('batchAccount', '2022-06-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('batchAccount', '2024-07-01', 'full'), 'identity'), 'principalId')]"
     },
     "privateEndpoints": {
       "type": "array",
