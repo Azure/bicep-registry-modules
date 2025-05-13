@@ -130,6 +130,16 @@ param aiFoundryAiServicesConfiguration aiServicesConfigurationType = {
   subnetResourceId: null //Default value set on module configuration
 }
 
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Storage Account resource.')
+param aiFoundryStorageAccountConfiguration storageAccountType = {
+  enabled: true
+  name: replace('${solutionPrefix}aifdstrg', '-', '')
+  location: solutionLocation
+  tags: tags
+  sku: 'Standard_LRS'
+  subnetResourceId: null //Default value set on module configuration
+}
+
 @description('Optional. The configuration of the Entra ID Application used to authenticate the website.')
 param entraIdApplicationConfiguration entraIdApplicationConfigurationType = {
   enabled: false
@@ -602,7 +612,7 @@ var openAiPrivateDnsZones = {
 
 module privateDnsZonesAiServices 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
   for zone in objectKeys(openAiPrivateDnsZones): if (virtualNetworkEnabled && aiFoundryAIservicesEnabled) {
-    name: 'network-dns-zone-${uniqueString(deployment().name, zone)}'
+    name: 'network.private-dns-zone.${uniqueString(aiFoundryAiServicesResourceName,zone)}'
     params: {
       name: zone
       tags: tags
@@ -696,8 +706,8 @@ var storageAccountPrivateDnsZones = {
 }
 
 module privateDnsZonesAiFoundryStorageAccount 'br/public:avm/res/network/private-dns-zone:0.3.1' = [
-  for zone in objectKeys(storageAccountPrivateDnsZones): if (virtualNetworkEnabled) {
-    name: 'network-dns-zone-aifd-stac-${zone}'
+  for zone in objectKeys(storageAccountPrivateDnsZones): if (virtualNetworkEnabled && aiFoundryStorageAccountEnabled) {
+    name: 'network.private-dns-zone.${uniqueString(aiFoundryStorageAccountResourceName,zone)}'
     params: {
       name: zone
       tags: tags
@@ -710,20 +720,25 @@ module privateDnsZonesAiFoundryStorageAccount 'br/public:avm/res/network/private
     }
   }
 ]
+var aiFoundryStorageAccountEnabled = aiFoundryStorageAccountConfiguration.?enabled ?? true
+var aiFoundryStorageAccountResourceName = aiFoundryStorageAccountConfiguration.?name ?? replace(
+  '${solutionPrefix}aifdstrg',
+  '-',
+  ''
+)
 
-var aiFoundryStorageAccountName = '${solutionPrefix}aifdstrg'
-module aiFoundryStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
-  name: 'storage-storage-account'
+module aiFoundryStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = if (aiFoundryStorageAccountEnabled) {
+  name: 'storage.storage-account.${aiFoundryStorageAccountResourceName}'
   dependsOn: [
     privateDnsZonesAiFoundryStorageAccount
   ]
   params: {
-    name: aiFoundryStorageAccountName
-    location: solutionLocation
-    tags: tags
+    name: aiFoundryStorageAccountResourceName
+    location: aiFoundryStorageAccountConfiguration.?location ?? solutionLocation
+    tags: aiFoundryStorageAccountConfiguration.?tags ?? tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    skuName: 'Standard_LRS'
+    skuName: aiFoundryStorageAccountConfiguration.?sku ?? 'Standard_LRS'
     allowSharedKeyAccess: false
     networkAcls: {
       bypass: 'AzureServices'
@@ -739,10 +754,10 @@ module aiFoundryStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2
     allowBlobPublicAccess: virtualNetworkEnabled ? false : true
     privateEndpoints: virtualNetworkEnabled
       ? map(items(storageAccountPrivateDnsZones), zone => {
-          name: 'pep-${zone.value}-${aiFoundryStorageAccountName}'
-          customNetworkInterfaceName: 'nic-${zone.value}-${aiFoundryStorageAccountName}'
+          name: 'pep-${zone.value}-${aiFoundryStorageAccountResourceName}'
+          customNetworkInterfaceName: 'nic-${zone.value}-${aiFoundryStorageAccountResourceName}'
           service: zone.value
-          subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0] ?? ''
+          subnetResourceId: aiFoundryStorageAccountConfiguration.?subnetResourceId ?? virtualNetwork.outputs.subnetResourceIds[0] ?? ''
           privateDnsZoneResourceIds: [resourceId('Microsoft.Network/privateDnsZones', zone.key)]
         })
       : null
@@ -763,7 +778,7 @@ var mlPrivateDnsZones = {
 }
 module privateDnsZonesAiFoundryWorkspaceHub 'br/public:avm/res/network/private-dns-zone:0.3.1' = [
   for zone in objectKeys(mlPrivateDnsZones): if (virtualNetworkEnabled) {
-    name: 'network-dns-zone-${zone}'
+    name: 'network.private-dns-zone.${zone}'
     params: {
       name: zone
       enableTelemetry: enableTelemetry
@@ -837,7 +852,7 @@ module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace
 
 // ========== DNS Zone for Cosmos DB ========== //
 module privateDnsZonesCosmosDb 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (virtualNetworkEnabled) {
-  name: 'network-dns-zone-cosmos-db'
+  name: 'network.private-dns-zone.cosmos-db'
   params: {
     name: 'privatelink.documents.azure.com'
     enableTelemetry: enableTelemetry
@@ -1254,7 +1269,7 @@ module webSite 'br/public:avm/res/web/site:0.15.1' = {
 @export()
 @description('The type for the Multi-Agent Custom Automation Engine Log Analytics Workspace resource configuration.')
 type logAnalyticsWorkspaceConfigurationType = {
-  @description('Optional. If the Log Analytics Workspace resource should be enabled or not.')
+  @description('Optional. If the Log Analytics Workspace resource should be deployed or not.')
   enabled: bool?
 
   @description('Optional. The name of the Log Analytics Workspace resource.')
@@ -1279,7 +1294,7 @@ type logAnalyticsWorkspaceConfigurationType = {
 @export()
 @description('The type for the Multi-Agent Custom Automation Engine Application Insights resource configuration.')
 type applicationInsightsConfigurationType = {
-  @description('Optional. If the Application Insights resource should be enabled or not.')
+  @description('Optional. If the Application Insights resource should be deployed or not.')
   enabled: bool?
 
   @description('Optional. The name of the Application Insights resource.')
@@ -1300,7 +1315,7 @@ type applicationInsightsConfigurationType = {
 @export()
 @description('The type for the Multi-Agent Custom Automation Engine Application User Assigned Managed Identity resource configuration.')
 type userAssignedManagedIdentityType = {
-  @description('Optional. If the User Assigned Managed Identity resource should be enabled or not.')
+  @description('Optional. If the User Assigned Managed Identity resource should be deployed or not.')
   enabled: bool?
 
   @description('Optional. The name of the User Assigned Managed Identity resource.')
@@ -1319,7 +1334,7 @@ type userAssignedManagedIdentityType = {
 import { securityRuleType } from 'br/public:avm/res/network/network-security-group:0.5.1'
 @description('The type for the Multi-Agent Custom Automation Engine Network Security Group resource configuration.')
 type networkSecurityGroupConfigurationType = {
-  @description('Optional. If the Network Security Group resource should be enabled or not.')
+  @description('Optional. If the Network Security Group resource should be deployed or not.')
   enabled: bool?
 
   @description('Optional. The name of the Network Security Group resource.')
@@ -1340,7 +1355,7 @@ type networkSecurityGroupConfigurationType = {
 @export()
 @description('The type for the Multi-Agent Custom Automation virtual network resource configuration.')
 type virtualNetworkConfigurationType = {
-  @description('Optional. If the Virtual Network resource should be enabled or not.')
+  @description('Optional. If the Virtual Network resource should be deployed or not.')
   enabled: bool?
 
   @description('Optional. The name of the Virtual Network resource.')
@@ -1412,7 +1427,7 @@ type subnetType = {
 @export()
 @description('The type for the Multi-Agent Custom Automation Engine Bastion resource configuration.')
 type bastionConfigurationType = {
-  @description('Optional. If the Bastion resource should be enabled or not.')
+  @description('Optional. If the Bastion resource should be deployed or not.')
   enabled: bool?
 
   @description('Optional. The name of the Bastion resource.')
@@ -1439,7 +1454,7 @@ type bastionConfigurationType = {
 @export()
 @description('The type for the Multi-Agent Custom Automation Engine virtual machine resource configuration.')
 type virtualMachineConfigurationType = {
-  @description('Optional. If the Virtual Machine resource should be enabled or not.')
+  @description('Optional. If the Virtual Machine resource should be deployed or not.')
   enabled: bool?
 
   @description('Optional. The name of the Virtual Machine resource.')
@@ -1637,7 +1652,7 @@ type virtualMachineConfigurationType = {
 import { deploymentType } from 'br/public:avm/res/cognitive-services/account:0.10.2'
 @description('The type for the Multi-Agent Custom Automation Engine AI Services resource configuration.')
 type aiServicesConfigurationType = {
-  @description('Optional. If the AI Services resource should be enabled or not.')
+  @description('Optional. If the AI Services resource should be deployed or not.')
   enabled: bool?
 
   @description('Optional. The name of the AI Services resource.')
@@ -1671,7 +1686,7 @@ type aiServicesConfigurationType = {
     | 'S8'
     | 'S9')?
 
-  @description('Optional. The resource Id of the subnet where the AI Services resource private endpoint should be created.')
+  @description('Optional. The resource Id of the subnet where the AI Services private endpoint should be created.')
   subnetResourceId: string?
 
   @description('Optional. The model deployments to set for the AI Services resource.')
@@ -1679,8 +1694,32 @@ type aiServicesConfigurationType = {
 }
 
 @export()
+@description('The type for the Multi-Agent Custom Automation Engine Storage Account resource configuration.')
+type storageAccountType = {
+  @description('Optional. If the Storage Account resource should be deployed or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the Storage Account resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the Storage Account resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the Storage Account resource.')
+  tags: object?
+
+  @description('Optional. The SKU for the Storage Account resource.')
+  sku: ('Standard_LRS' | 'Standard_GRS' | 'Standard_RAGRS' | 'Standard_ZRS' | 'Premium_LRS' | 'Premium_ZRS')?
+
+  @description('Optional. The resource Id of the subnet where the Storage Account private endpoint should be created.')
+  subnetResourceId: string?
+}
+
+@export()
 @description('The type for the Multi-Agent Custom Automation Engine Entra ID Application resource configuration.')
 type entraIdApplicationConfigurationType = {
-  @description('Optional. If the Entra ID Application for website authentication should be enabled or not.')
+  @description('Optional. If the Entra ID Application for website authentication should be deployed or not.')
   enabled: bool?
 }
