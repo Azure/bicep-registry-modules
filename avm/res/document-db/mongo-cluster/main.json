@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "5530221558850497945"
+      "templateHash": "15047960024142016693"
     },
     "name": "Azure Cosmos DB MongoDB vCore cluster",
     "description": "This module deploys a Azure Cosmos DB MongoDB vCore cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -1128,7 +1128,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "17653171882399090885"
+              "templateHash": "4651660997503960626"
             },
             "name": "Azure Cosmos DB for MongoDB (vCore) cluster user",
             "description": "This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster. These users are used to connect to the cluster and perform operations using Microsoft Entra authentication."
@@ -1196,8 +1196,9 @@
             },
             "location": {
               "type": "string",
+              "defaultValue": "[resourceGroup().location]",
               "metadata": {
-                "description": "Required. The configured location for the user."
+                "description": "Optional. Default to current resource group scope location. Location for all resources."
               }
             },
             "targetIdentity": {

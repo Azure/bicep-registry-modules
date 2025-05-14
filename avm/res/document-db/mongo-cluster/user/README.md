@@ -20,7 +20,6 @@ This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | The configured location for the user. |
 | [`targetIdentity`](#parameter-targetidentity) | object | The principal/identity to create as a user on the cluster. |
 
 **Conditional parameters**
@@ -33,14 +32,8 @@ This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
 | [`targetRoles`](#parameter-targetroles) | array | The roles to assign to the user per database. Defaults to the "dbOwner" role on the "admin" database. |
-
-### Parameter: `location`
-
-The configured location for the user.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `targetIdentity`
 
@@ -83,6 +76,14 @@ The name of the parent Azure Cosmos DB for MongoDB (vCore) cluster. Required if 
 
 - Required: Yes
 - Type: string
+
+### Parameter: `location`
+
+Default to current resource group scope location. Location for all resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `targetRoles`
 
