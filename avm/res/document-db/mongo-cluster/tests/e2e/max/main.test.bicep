@@ -102,7 +102,6 @@ module testDeployment '../../../main.bicep' = [
         allowAllIPs: true
       }
       nodeCount: 2
-      nodeType: 'Shard'
       privateEndpoints: [
         {
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
@@ -154,6 +153,8 @@ module testDeployment '../../../main.bicep' = [
       ]
       sku: 'M30'
       storage: 256
+      enableMicrosoftEntraAuth: false
+      entraAuthIdentities: []
     }
   }
 ]
