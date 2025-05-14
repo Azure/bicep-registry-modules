@@ -1,6 +1,6 @@
-# Site App Settings `[Microsoft.Web/sites/config]`
+# Site Slot App Settings `[Microsoft.Web/sites/slots/config]`
 
-This module deploys a Site App Setting.
+This module deploys a Site Slot App Setting.
 
 ## Navigation
 
@@ -13,7 +13,7 @@ This module deploys a Site App Setting.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Web/sites/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/config) |
+| `Microsoft.Web/sites/slots/config` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Web/2024-04-01/sites/slots/config) |
 
 ## Parameters
 
@@ -21,7 +21,8 @@ This module deploys a Site App Setting.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the config. |
+| [`kind`](#parameter-kind) | string | Type of site to deploy. |
+| [`slotName`](#parameter-slotname) | string | Slot name to be configured. |
 
 **Conditional parameters**
 
@@ -33,34 +34,42 @@ This module deploys a Site App Setting.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`applicationInsightResourceId`](#parameter-applicationinsightresourceid) | string | Resource ID of the application insight to leverage for this resource. |
+| [`appInsightResourceId`](#parameter-appinsightresourceid) | string | Resource ID of the app insight to leverage for this resource. |
+| [`appSettingsKeyValuePairs`](#parameter-appsettingskeyvaluepairs) | object | The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING. |
 | [`currentAppSettings`](#parameter-currentappsettings) | object | The current app settings. |
-| [`properties`](#parameter-properties) | object | The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name. |
 | [`storageAccountResourceId`](#parameter-storageaccountresourceid) | string | Required if app of kind functionapp. Resource ID of the storage account to manage triggers and logging function executions. |
 | [`storageAccountUseIdentityAuthentication`](#parameter-storageaccountuseidentityauthentication) | bool | If the provided storage account requires Identity based authentication ('allowSharedKeyAccess' is set to false). When set to true, the minimum role assignment required for the App Service Managed Identity to the storage account is 'Storage Blob Data Owner'. |
 
-### Parameter: `name`
+### Parameter: `kind`
 
-The name of the config.
+Type of site to deploy.
 
 - Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
   [
-    'appsettings'
-    'authsettings'
-    'authsettingsV2'
-    'azurestorageaccounts'
-    'backup'
-    'connectionstrings'
-    'logs'
-    'metadata'
-    'pushsettings'
-    'slotConfigNames'
-    'web'
+    'api'
+    'app'
+    'app,container,windows'
+    'app,linux'
+    'app,linux,container'
+    'functionapp'
+    'functionapp,linux'
+    'functionapp,linux,container'
+    'functionapp,linux,container,azurecontainerapps'
+    'functionapp,workflowapp'
+    'functionapp,workflowapp,linux'
+    'linux,api'
   ]
   ```
+
+### Parameter: `slotName`
+
+Slot name to be configured.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `appName`
 
@@ -69,37 +78,23 @@ The name of the parent site resource. Required if the template is used in a stan
 - Required: Yes
 - Type: string
 
-### Parameter: `applicationInsightResourceId`
+### Parameter: `appInsightResourceId`
 
-Resource ID of the application insight to leverage for this resource.
+Resource ID of the app insight to leverage for this resource.
 
 - Required: No
 - Type: string
+
+### Parameter: `appSettingsKeyValuePairs`
+
+The app settings key-value pairs except for AzureWebJobsStorage, AzureWebJobsDashboard, APPINSIGHTS_INSTRUMENTATIONKEY and APPLICATIONINSIGHTS_CONNECTION_STRING.
+
+- Required: No
+- Type: object
 
 ### Parameter: `currentAppSettings`
 
 The current app settings.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`>Any_other_property<`](#parameter-currentappsettings>any_other_property<) | string | The key-values pairs of the current app settings. |
-
-### Parameter: `currentAppSettings.>Any_other_property<`
-
-The key-values pairs of the current app settings.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `properties`
-
-The properties of the config. Note: This parameter is highly dependent on the config type, defined by its name.
 
 - Required: No
 - Type: object
@@ -124,9 +119,9 @@ If the provided storage account requires Identity based authentication ('allowSh
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the site config. |
-| `resourceGroupName` | string | The resource group the site config was deployed into. |
-| `resourceId` | string | The resource ID of the site config. |
+| `name` | string | The name of the slot config. |
+| `resourceGroupName` | string | The resource group the slot config was deployed into. |
+| `resourceId` | string | The resource ID of the slot config. |
 
 ## Notes
 
@@ -141,16 +136,12 @@ For all other app settings key-value pairs use this object.
 
 ```json
 "appSettingsKeyValuePairs": {
-    "value": [
-        {
-            "name": "key1",
-            "value": "val1"
-        },
-        {
-            "name": "key2",
-            "value": "val2"
-        }
-    ]
+    "value": {
+      "AzureFunctionsJobHost__logging__logLevel__default": "Trace",
+      "EASYAUTH_SECRET": "https://adp-#_namePrefix_#-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password",
+      "FUNCTIONS_EXTENSION_VERSION": "~4",
+      "FUNCTIONS_WORKER_RUNTIME": "dotnet"
+    }
 }
 ```
 
@@ -161,17 +152,16 @@ For all other app settings key-value pairs use this object.
 <summary>Bicep format</summary>
 
 ```bicep
-appSettingsKeyValuePairs: [
-    {
-        name: 'key1'
-        value: 'val1'
-    }
-    {
-        name: 'key2'
-        value: 'val2'
-    }
-]
+appSettingsKeyValuePairs: {
+  AzureFunctionsJobHost__logging__logLevel__default: 'Trace'
+  EASYAUTH_SECRET: 'https://adp-#_namePrefix_#-az-kv-x-001.vault.azure.net/secrets/Modules-Test-SP-Password'
+  FUNCTIONS_EXTENSION_VERSION: '~4'
+  FUNCTIONS_WORKER_RUNTIME: 'dotnet'
+}
 ```
+
+</details>
+<p>
 
 </details>
 <p>

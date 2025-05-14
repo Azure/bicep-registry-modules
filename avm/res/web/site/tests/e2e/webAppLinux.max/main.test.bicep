@@ -106,13 +106,9 @@ module testDeployment '../../../main.bicep' = [
           privateEndpoints: [
             {
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
-              privateDnsZoneGroup: {
-                privateDnsZoneGroupConfigs: [
-                  {
-                    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-                  }
-                ]
-              }
+              privateDnsZoneResourceIds: [
+                nestedDependencies.outputs.privateDNSZoneResourceId
+              ]
               tags: {
                 'hidden-title': 'This is visible in the resource name'
                 Environment: 'Non-Prod'
@@ -160,16 +156,11 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          configs: [
-            {
-              name: 'appsettings'
-              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-              storageAccountUseIdentityAuthentication: true
-            }
-          ]
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
           hybridConnectionRelays: [
             {
-              hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
+              resourceId: nestedDependencies.outputs.hybridConnectionResourceId
               sendKeyName: 'defaultSender'
             }
           ]
@@ -184,13 +175,8 @@ module testDeployment '../../../main.bicep' = [
               name: 'scm'
             }
           ]
-          configs: [
-            {
-              name: 'appsettings'
-              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-              storageAccountUseIdentityAuthentication: true
-            }
-          ]
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
         }
       ]
       privateEndpoints: [
@@ -249,13 +235,8 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
-      configs: [
-        {
-          name: 'appsettings'
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
-        }
-      ]
+      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+      storageAccountUseIdentityAuthentication: true
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
@@ -274,7 +255,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       hybridConnectionRelays: [
         {
-          hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
+          resourceId: nestedDependencies.outputs.hybridConnectionResourceId
           sendKeyName: 'defaultSender'
         }
       ]

@@ -26,9 +26,7 @@ This module deploys a Site extension for MSDeploy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`kind`](#parameter-kind) | string | The kind of extension. |
-| [`name`](#parameter-name) | string | The name of the extension. |
-| [`properties`](#parameter-properties) | object | Sets the properties. |
+| [`msDeployConfiguration`](#parameter-msdeployconfiguration) | object | Sets the MSDeployment Properties. |
 
 ### Parameter: `appName`
 
@@ -37,37 +35,9 @@ The name of the parent site resource.
 - Required: Yes
 - Type: string
 
-### Parameter: `kind`
+### Parameter: `msDeployConfiguration`
 
-The kind of extension.
-
-- Required: No
-- Type: string
-- Default: `'MSDeploy'`
-- Allowed:
-  ```Bicep
-  [
-    'MSDeploy'
-  ]
-  ```
-
-### Parameter: `name`
-
-The name of the extension.
-
-- Required: No
-- Type: string
-- Default: `'MSDeploy'`
-- Allowed:
-  ```Bicep
-  [
-    'MSDeploy'
-  ]
-  ```
-
-### Parameter: `properties`
-
-Sets the properties.
+Sets the MSDeployment Properties.
 
 - Required: No
 - Type: object
@@ -76,6 +46,6 @@ Sets the properties.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the extension. |
-| `resourceGroupName` | string | The resource group the extension was deployed into. |
-| `resourceId` | string | The resource ID of the extension. |
+| `name` | string | The name of the MSDeploy Package. |
+| `resourceGroupName` | string | The resource group the site config was deployed into. |
+| `resourceId` | string | The resource ID of the Site Extension. |

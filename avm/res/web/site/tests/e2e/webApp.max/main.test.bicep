@@ -41,7 +41,6 @@ module nestedDependencies 'dependencies.bicep' = {
     relayNamespaceName: 'dep-${namePrefix}-ns-${serviceShort}'
     storageAccountName: 'dep${namePrefix}st${serviceShort}'
     hybridConnectionName: 'dep-${namePrefix}-hc-${serviceShort}'
-    apiManagementName: 'dep-${namePrefix}-apim-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -73,14 +72,6 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       kind: 'app'
       serverFarmResourceId: nestedDependencies.outputs.serverFarmResourceId
-      dnsConfiguration: {
-        dnsMaxCacheTimeout: 45
-        dnsRetryAttemptCount: 3
-        dnsRetryAttemptTimeout: 5
-        dnsServers: [
-          '168.63.129.16'
-        ]
-      }
       diagnosticSettings: [
         {
           name: 'customSetting'
@@ -115,13 +106,9 @@ module testDeployment '../../../main.bicep' = [
           privateEndpoints: [
             {
               subnetResourceId: nestedDependencies.outputs.subnetResourceId
-              privateDnsZoneGroup: {
-                privateDnsZoneGroupConfigs: [
-                  {
-                    privateDnsZoneResourceId: nestedDependencies.outputs.privateDNSZoneResourceId
-                  }
-                ]
-              }
+              privateDnsZoneResourceIds: [
+                nestedDependencies.outputs.privateDNSZoneResourceId
+              ]
               tags: {
                 'hidden-title': 'This is visible in the resource name'
                 Environment: 'Non-Prod'
@@ -130,14 +117,6 @@ module testDeployment '../../../main.bicep' = [
               service: 'sites-slot1'
             }
           ]
-          dnsConfiguration: {
-            dnsMaxCacheTimeout: 45
-            dnsRetryAttemptCount: 3
-            dnsRetryAttemptTimeout: 5
-            dnsServers: [
-              '168.63.129.20'
-            ]
-          }
           basicPublishingCredentialsPolicies: [
             {
               name: 'ftp'
@@ -179,16 +158,11 @@ module testDeployment '../../../main.bicep' = [
               }
             ]
           }
-          configs: [
-            {
-              name: 'appsettings'
-              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-              storageAccountUseIdentityAuthentication: true
-            }
-          ]
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
           hybridConnectionRelays: [
             {
-              hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
+              resourceId: nestedDependencies.outputs.hybridConnectionResourceId
               sendKeyName: 'defaultSender'
             }
           ]
@@ -203,13 +177,8 @@ module testDeployment '../../../main.bicep' = [
               name: 'scm'
             }
           ]
-          configs: [
-            {
-              name: 'appsettings'
-              storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-              storageAccountUseIdentityAuthentication: true
-            }
-          ]
+          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+          storageAccountUseIdentityAuthentication: true
         }
       ]
       privateEndpoints: [
@@ -269,43 +238,8 @@ module testDeployment '../../../main.bicep' = [
           }
         ]
       }
-      configs: [
-        {
-          // Persisted on service in 'Settings/Environment variables'
-          name: 'appsettings'
-          storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
-          storageAccountUseIdentityAuthentication: true
-        }
-        {
-          // Persisted on service in 'Monitoring/App Service logs'
-          name: 'logs'
-          properties: {
-            applicationLogs: { fileSystem: { level: 'Verbose' } }
-            detailedErrorMessages: { enabled: true }
-            failedRequestsTracing: { enabled: true }
-            httpLogs: { fileSystem: { enabled: true, retentionInDays: 1, retentionInMb: 35 } }
-          }
-        }
-        {
-          // Persisted on service in 'API/API Management'
-          name: 'web'
-          properties: {
-            ipSecurityRestrictions: [
-              {
-                action: 'Allow'
-                description: 'Test IP Restriction'
-                tag: 'ServiceTag'
-                name: 'Test Restriction'
-                priority: 200
-                ipAddress: 'ApiManagement'
-              }
-            ]
-            apiManagementConfig: {
-              id: '${nestedDependencies.outputs.apiManagementResourceId}/apis/todo-api'
-            }
-          }
-        }
-      ]
+      storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
+      storageAccountUseIdentityAuthentication: true
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
@@ -324,7 +258,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       hybridConnectionRelays: [
         {
-          hybridConnectionResourceId: nestedDependencies.outputs.hybridConnectionResourceId
+          resourceId: nestedDependencies.outputs.hybridConnectionResourceId
           sendKeyName: 'defaultSender'
         }
       ]
