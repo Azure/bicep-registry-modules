@@ -375,6 +375,7 @@ type subnetType = {
   @description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool.')
   ipamPoolPrefixAllocations: [
     {
+      @description('Required. The Resource ID of the IPAM pool.')
       pool: {
         @description('Required. The Resource ID of the IPAM pool.')
         id: string

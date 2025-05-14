@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "9032040987126030190"
+      "templateHash": "1072507697038683427"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -155,6 +155,9 @@
                         "description": "Required. The Resource ID of the IPAM pool."
                       }
                     }
+                  },
+                  "metadata": {
+                    "description": "Required. The Resource ID of the IPAM pool."
                   }
                 },
                 "numberOfIpAddresses": {
