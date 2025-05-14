@@ -44,9 +44,6 @@ param networkAcls networkAclsType?
 @description('Required. Number of nodes in the node group.')
 param nodeCount int
 
-@description('Optional. Deployed Node type in the node group.')
-param nodeType string = 'Shard'
-
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
@@ -63,6 +60,12 @@ param sku string
 
 @description('Required. Disk storage size for the node group in GB.')
 param storage int
+
+@description('Optional. The type of the secrets export configuration.')
+param enableMicrosoftEntraAuth bool = false
+
+@description('Optional, the Microsoft Entra ID authentication identity assignments to be created for the cluster.')
+param entraAuthIdentities authIdentityType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -136,23 +139,40 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2024-02-15-preview' = {
+resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-04-01-preview' = {
   name: name
-  tags: tags
+  tags: tags ?? {}
   location: location
   properties: {
-    administratorLogin: administratorLogin
-    administratorLoginPassword: administratorLoginPassword
+    administrator: {
+      userName: administratorLogin
+      password: administratorLoginPassword
+    }
     createMode: createMode
-    nodeGroupSpecs: [
-      {
-        diskSizeGB: storage
-        enableHa: highAvailabilityMode
-        kind: nodeType
-        nodeCount: nodeCount
-        sku: sku
-      }
-    ]
+    compute: {
+      tier: sku
+    }
+    sharding: {
+      shardCount: nodeCount
+    }
+    storage: {
+      sizeGb: storage
+    }
+    highAvailability: {
+      targetMode: highAvailabilityMode
+    }
+    authConfig: {
+      allowedModes: union(
+        [
+          'NativeAuth'
+        ],
+        enableMicrosoftEntraAuth
+          ? [
+              'MicrosoftEntraID'
+            ]
+          : []
+      )
+    }
   }
 }
 
@@ -209,6 +229,19 @@ module mongoCluster_configFireWallRules 'firewall-rule/main.bicep' = [
       name: firewallRule.name
       startIpAddress: firewallRule.startIpAddress
       endIpAddress: firewallRule.endIpAddress
+    }
+  }
+]
+
+module mongoCluster_users 'user/main.bicep' = [
+  for (targetIdentity, index) in (entraAuthIdentities ?? []): {
+    name: '${uniqueString(deployment().name, location)}-user-${index}'
+    params: {
+      mongoClusterName: mongoCluster.name
+      targetIdentity: {
+        principalId: targetIdentity.principalId
+        principalType: targetIdentity.principalType ?? 'ServicePrincipal'
+      }
     }
   }
 ]
@@ -407,4 +440,14 @@ import { secretSetType } from 'modules/keyVaultExport.bicep'
 type secretsOutputType = {
   @description('An exported secret\'s references.')
   *: secretSetType
+}
+
+@export()
+@description('The type for identities that can be used for Microsoft Entra ID authentication.')
+type authIdentityType = {
+  @description('Required. The principal (object) ID of the identity to create as a user on the cluster.')
+  principalId: string
+
+  @description('Optional. The type of principal to be used for the identity provider. Defaults to "ServicePrincipal".')
+  principalType: 'ServicePrincipal' | 'User'?
 }
