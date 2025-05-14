@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "15202444687633091947"
+      "version": "0.35.1.17967",
+      "templateHash": "15624488954958814427"
     },
     "name": "Log Analytics Workspace Linked Services",
     "description": "This module deploys a Log Analytics Workspace Linked Service."

@@ -44,11 +44,11 @@ The following section provides usage examples for the module, which were used to
 - [Using large parameter set for Linux](#example-3-using-large-parameter-set-for-linux)
 - [WAF-aligned](#example-4-waf-aligned)
 - [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
-- [Using guest configuration for Windows](#example-6-using-guest-configuration-for-windows)
-- [Using a host pool to register the VM](#example-7-using-a-host-pool-to-register-the-vm)
-- [Using large parameter set for Windows](#example-8-using-large-parameter-set-for-windows)
-- [Deploy a VM with nVidia graphic card](#example-9-deploy-a-vm-with-nvidia-graphic-card)
-- [Deploying Windows VM with premium SSDv2 data disk](#example-10-deploying-windows-vm-with-premium-ssdv2-data-disk)
+- [Deploying Windows VM with premium SSDv2 data disk and shared disk](#example-6-deploying-windows-vm-with-premium-ssdv2-data-disk-and-shared-disk)
+- [Using guest configuration for Windows](#example-7-using-guest-configuration-for-windows)
+- [Using a host pool to register the VM](#example-8-using-a-host-pool-to-register-the-vm)
+- [Using large parameter set for Windows](#example-9-using-large-parameter-set-for-windows)
+- [Deploy a VM with nVidia graphic card](#example-10-deploy-a-vm-with-nvidia-graphic-card)
 - [Using disk encryption set for the VM.](#example-11-using-disk-encryption-set-for-the-vm)
 - [Adding the VM to a VMSS.](#example-12-adding-the-vm-to-a-vmss)
 - [Deploying Windows VM in a defined zone with a premium zrs data disk](#example-13-deploying-windows-vm-in-a-defined-zone-with-a-premium-zrs-data-disk)
@@ -293,9 +293,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         ipConfigurations: [
           {
             name: 'ipconfig01'
-            pipConfiguration: {
-              name: 'pip-01'
-            }
             subnetResourceId: '<subnetResourceId>'
           }
         ]
@@ -358,9 +355,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           "ipConfigurations": [
             {
               "name": "ipconfig01",
-              "pipConfiguration": {
-                "name": "pip-01"
-              },
               "subnetResourceId": "<subnetResourceId>"
             }
           ],
@@ -429,9 +423,6 @@ param nicConfigurations = [
     ipConfigurations: [
       {
         name: 'ipconfig01'
-        pipConfiguration: {
-          name: 'pip-01'
-        }
         subnetResourceId: '<subnetResourceId>'
       }
     ]
@@ -529,6 +520,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             ]
             name: 'ipconfig01'
             pipConfiguration: {
+              diagnosticSettings: [
+                {
+                  workspaceResourceId: '<workspaceResourceId>'
+                }
+              ]
               publicIpNameSuffix: '-pip-01'
               roleAssignments: [
                 {
@@ -623,6 +619,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     encryptionAtHost: false
     extensionAadJoinConfig: {
       enabled: true
+      name: 'myAADLogin'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -655,6 +652,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           uri: '<uri>'
         }
       ]
+      name: 'myCustomScript'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -667,6 +665,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionDependencyAgentConfig: {
       enableAMA: true
       enabled: true
+      name: 'myDependencyAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -675,6 +674,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionDSCConfig: {
       enabled: false
+      name: 'myDesiredStateConfiguration'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -689,6 +689,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       ]
       enabled: true
+      name: 'myMonitoringAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -697,6 +698,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionNetworkWatcherAgentConfig: {
       enabled: true
+      name: 'myNetworkWatcherAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -823,6 +825,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ],
               "name": "ipconfig01",
               "pipConfiguration": {
+                "diagnosticSettings": [
+                  {
+                    "workspaceResourceId": "<workspaceResourceId>"
+                  }
+                ],
                 "publicIpNameSuffix": "-pip-01",
                 "roleAssignments": [
                   {
@@ -943,6 +950,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
+        "name": "myAADLogin",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -979,6 +987,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             "uri": "<uri>"
           }
         ],
+        "name": "myCustomScript",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -995,6 +1004,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "enableAMA": true,
         "enabled": true,
+        "name": "myDependencyAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -1005,6 +1015,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionDSCConfig": {
       "value": {
         "enabled": false,
+        "name": "myDesiredStateConfiguration",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -1021,6 +1032,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         ],
         "enabled": true,
+        "name": "myMonitoringAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -1031,6 +1043,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionNetworkWatcherAgentConfig": {
       "value": {
         "enabled": true,
+        "name": "myNetworkWatcherAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -1165,6 +1178,11 @@ param nicConfigurations = [
         ]
         name: 'ipconfig01'
         pipConfiguration: {
+          diagnosticSettings: [
+            {
+              workspaceResourceId: '<workspaceResourceId>'
+            }
+          ]
           publicIpNameSuffix: '-pip-01'
           roleAssignments: [
             {
@@ -1259,6 +1277,7 @@ param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
+  name: 'myAADLogin'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -1291,6 +1310,7 @@ param extensionCustomScriptConfig = {
       uri: '<uri>'
     }
   ]
+  name: 'myCustomScript'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -1303,6 +1323,7 @@ param extensionCustomScriptProtectedSetting = {
 param extensionDependencyAgentConfig = {
   enableAMA: true
   enabled: true
+  name: 'myDependencyAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -1311,6 +1332,7 @@ param extensionDependencyAgentConfig = {
 }
 param extensionDSCConfig = {
   enabled: false
+  name: 'myDesiredStateConfiguration'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -1325,6 +1347,7 @@ param extensionMonitoringAgentConfig = {
     }
   ]
   enabled: true
+  name: 'myMonitoringAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -1333,6 +1356,7 @@ param extensionMonitoringAgentConfig = {
 }
 param extensionNetworkWatcherAgentConfig = {
   enabled: true
+  name: 'myNetworkWatcherAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -1628,10 +1652,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       }
     }
     location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
     managedIdentities: {
       systemAssigned: true
@@ -1961,12 +1981,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "lock": {
-      "value": {
-        "kind": "CanNotDelete",
-        "name": "myCustomLockName"
-      }
-    },
     "maintenanceConfigurationResourceId": {
       "value": "<maintenanceConfigurationResourceId>"
     },
@@ -2252,10 +2266,6 @@ param extensionNetworkWatcherAgentConfig = {
   }
 }
 param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
 param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
 param managedIdentities = {
   systemAssigned: true
@@ -2459,7 +2469,241 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 6: _Using guest configuration for Windows_
+### Example 6: _Deploying Windows VM with premium SSDv2 data disk and shared disk_
+
+This instance deploys the module with premium SSDv2 data disk and attachment of an existing shared disk.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
+  name: 'virtualMachineDeployment'
+  params: {
+    // Required parameters
+    adminUsername: 'localAdminUser'
+    imageReference: {
+      offer: 'WindowsServer'
+      publisher: 'MicrosoftWindowsServer'
+      sku: '2022-datacenter-azure-edition'
+      version: 'latest'
+    }
+    name: 'cvmwindisk'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig01'
+            subnetResourceId: '<subnetResourceId>'
+          }
+        ]
+        nicSuffix: '-nic-01'
+      }
+    ]
+    osDisk: {
+      caching: 'ReadWrite'
+      diskSizeGB: 128
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Windows'
+    vmSize: 'Standard_D2s_v3'
+    zone: 1
+    // Non-required parameters
+    adminPassword: '<adminPassword>'
+    dataDisks: [
+      {
+        caching: 'None'
+        diskIOPSReadWrite: 3000
+        diskMBpsReadWrite: 125
+        diskSizeGB: 1024
+        managedDisk: {
+          storageAccountType: 'PremiumV2_LRS'
+        }
+      }
+      {
+        managedDisk: {
+          id: '<id>'
+        }
+      }
+    ]
+    location: '<location>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminUsername": {
+      "value": "localAdminUser"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "WindowsServer",
+        "publisher": "MicrosoftWindowsServer",
+        "sku": "2022-datacenter-azure-edition",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmwindisk"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig01",
+              "subnetResourceId": "<subnetResourceId>"
+            }
+          ],
+          "nicSuffix": "-nic-01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "caching": "ReadWrite",
+        "diskSizeGB": 128,
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Windows"
+    },
+    "vmSize": {
+      "value": "Standard_D2s_v3"
+    },
+    "zone": {
+      "value": 1
+    },
+    // Non-required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "dataDisks": {
+      "value": [
+        {
+          "caching": "None",
+          "diskIOPSReadWrite": 3000,
+          "diskMBpsReadWrite": 125,
+          "diskSizeGB": 1024,
+          "managedDisk": {
+            "storageAccountType": "PremiumV2_LRS"
+          }
+        },
+        {
+          "managedDisk": {
+            "id": "<id>"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine:<version>'
+
+// Required parameters
+param adminUsername = 'localAdminUser'
+param imageReference = {
+  offer: 'WindowsServer'
+  publisher: 'MicrosoftWindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+}
+param name = 'cvmwindisk'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig01'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    nicSuffix: '-nic-01'
+  }
+]
+param osDisk = {
+  caching: 'ReadWrite'
+  diskSizeGB: 128
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Windows'
+param vmSize = 'Standard_D2s_v3'
+param zone = 1
+// Non-required parameters
+param adminPassword = '<adminPassword>'
+param dataDisks = [
+  {
+    caching: 'None'
+    diskIOPSReadWrite: 3000
+    diskMBpsReadWrite: 125
+    diskSizeGB: 1024
+    managedDisk: {
+      storageAccountType: 'PremiumV2_LRS'
+    }
+  }
+  {
+    managedDisk: {
+      id: '<id>'
+    }
+  }
+]
+param location = '<location>'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 7: _Using guest configuration for Windows_
 
 This instance deploys the module with the a guest configuration.
 
@@ -2531,7 +2775,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           value: '75'
         }
       ]
-      name: 'AzureWindowsBaseline'
+      name: 'myAzureWindowsBaseline'
       version: '1.*'
     }
     location: '<location>'
@@ -2634,7 +2878,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             "value": "75"
           }
         ],
-        "name": "AzureWindowsBaseline",
+        "name": "myAzureWindowsBaseline",
         "version": "1.*"
       }
     },
@@ -2719,7 +2963,7 @@ param guestConfiguration = {
       value: '75'
     }
   ]
-  name: 'AzureWindowsBaseline'
+  name: 'myAzureWindowsBaseline'
   version: '1.*'
 }
 param location = '<location>'
@@ -2731,7 +2975,7 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 7: _Using a host pool to register the VM_
+### Example 8: _Using a host pool to register the VM_
 
 This instance deploys the module and registers it in a host pool.
 
@@ -2973,7 +3217,7 @@ param managedIdentities = {
 </details>
 <p>
 
-### Example 8: _Using large parameter set for Windows_
+### Example 9: _Using large parameter set for Windows_
 
 This instance deploys the module with most of its features enabled.
 
@@ -3041,6 +3285,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             ]
             name: 'ipconfig01'
             pipConfiguration: {
+              diagnosticSettings: [
+                {
+                  workspaceResourceId: '<workspaceResourceId>'
+                }
+              ]
               publicIPAddressResourceId: '<publicIPAddressResourceId>'
               roleAssignments: [
                 {
@@ -3144,11 +3393,18 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
         name: 'datadisk02'
       }
+      {
+        lun: 2
+        managedDisk: {
+          id: '<id>'
+        }
+      }
     ]
     enableAutomaticUpdates: true
     encryptionAtHost: false
     extensionAadJoinConfig: {
       enabled: true
+      name: 'myAADLogin'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3157,6 +3413,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionAntiMalwareConfig: {
       enabled: true
+      name: 'myMicrosoftAntiMalware'
       settings: {
         AntimalwareEnabled: 'true'
         Exclusions: {
@@ -3180,6 +3437,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionAzureDiskEncryptionConfig: {
       enabled: true
+      name: 'myAzureDiskEncryption'
       settings: {
         EncryptionOperation: 'EnableEncryption'
         KekVaultResourceId: '<KekVaultResourceId>'
@@ -3204,6 +3462,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           uri: '<uri>'
         }
       ]
+      name: 'myCustomScript'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3216,6 +3475,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionDependencyAgentConfig: {
       enableAMA: true
       enabled: true
+      name: 'myDependencyAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3224,6 +3484,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionDSCConfig: {
       enabled: true
+      name: 'myDesiredStateConfiguration'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3238,6 +3499,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         }
       ]
       enabled: true
+      name: 'myMonitoringAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3246,6 +3508,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     }
     extensionNetworkWatcherAgentConfig: {
       enabled: true
+      name: 'myNetworkWatcherAgent'
       tags: {
         Environment: 'Non-Prod'
         'hidden-title': 'This is visible in the resource name'
@@ -3368,6 +3631,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
               ],
               "name": "ipconfig01",
               "pipConfiguration": {
+                "diagnosticSettings": [
+                  {
+                    "workspaceResourceId": "<workspaceResourceId>"
+                  }
+                ],
                 "publicIPAddressResourceId": "<publicIPAddressResourceId>",
                 "roleAssignments": [
                   {
@@ -3494,6 +3762,12 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             "storageAccountType": "Premium_LRS"
           },
           "name": "datadisk02"
+        },
+        {
+          "lun": 2,
+          "managedDisk": {
+            "id": "<id>"
+          }
         }
       ]
     },
@@ -3506,6 +3780,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAadJoinConfig": {
       "value": {
         "enabled": true,
+        "name": "myAADLogin",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3516,6 +3791,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAntiMalwareConfig": {
       "value": {
         "enabled": true,
+        "name": "myMicrosoftAntiMalware",
         "settings": {
           "AntimalwareEnabled": "true",
           "Exclusions": {
@@ -3541,6 +3817,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionAzureDiskEncryptionConfig": {
       "value": {
         "enabled": true,
+        "name": "myAzureDiskEncryption",
         "settings": {
           "EncryptionOperation": "EnableEncryption",
           "KekVaultResourceId": "<KekVaultResourceId>",
@@ -3567,6 +3844,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
             "uri": "<uri>"
           }
         ],
+        "name": "myCustomScript",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3583,6 +3861,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
       "value": {
         "enableAMA": true,
         "enabled": true,
+        "name": "myDependencyAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3593,6 +3872,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionDSCConfig": {
       "value": {
         "enabled": true,
+        "name": "myDesiredStateConfiguration",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3609,6 +3889,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
           }
         ],
         "enabled": true,
+        "name": "myMonitoringAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3619,6 +3900,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     "extensionNetworkWatcherAgentConfig": {
       "value": {
         "enabled": true,
+        "name": "myNetworkWatcherAgent",
         "tags": {
           "Environment": "Non-Prod",
           "hidden-title": "This is visible in the resource name",
@@ -3749,6 +4031,11 @@ param nicConfigurations = [
         ]
         name: 'ipconfig01'
         pipConfiguration: {
+          diagnosticSettings: [
+            {
+              workspaceResourceId: '<workspaceResourceId>'
+            }
+          ]
           publicIPAddressResourceId: '<publicIPAddressResourceId>'
           roleAssignments: [
             {
@@ -3852,11 +4139,18 @@ param dataDisks = [
     }
     name: 'datadisk02'
   }
+  {
+    lun: 2
+    managedDisk: {
+      id: '<id>'
+    }
+  }
 ]
 param enableAutomaticUpdates = true
 param encryptionAtHost = false
 param extensionAadJoinConfig = {
   enabled: true
+  name: 'myAADLogin'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3865,6 +4159,7 @@ param extensionAadJoinConfig = {
 }
 param extensionAntiMalwareConfig = {
   enabled: true
+  name: 'myMicrosoftAntiMalware'
   settings: {
     AntimalwareEnabled: 'true'
     Exclusions: {
@@ -3888,6 +4183,7 @@ param extensionAntiMalwareConfig = {
 }
 param extensionAzureDiskEncryptionConfig = {
   enabled: true
+  name: 'myAzureDiskEncryption'
   settings: {
     EncryptionOperation: 'EnableEncryption'
     KekVaultResourceId: '<KekVaultResourceId>'
@@ -3912,6 +4208,7 @@ param extensionCustomScriptConfig = {
       uri: '<uri>'
     }
   ]
+  name: 'myCustomScript'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3924,6 +4221,7 @@ param extensionCustomScriptProtectedSetting = {
 param extensionDependencyAgentConfig = {
   enableAMA: true
   enabled: true
+  name: 'myDependencyAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3932,6 +4230,7 @@ param extensionDependencyAgentConfig = {
 }
 param extensionDSCConfig = {
   enabled: true
+  name: 'myDesiredStateConfiguration'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3946,6 +4245,7 @@ param extensionMonitoringAgentConfig = {
     }
   ]
   enabled: true
+  name: 'myMonitoringAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -3954,6 +4254,7 @@ param extensionMonitoringAgentConfig = {
 }
 param extensionNetworkWatcherAgentConfig = {
   enabled: true
+  name: 'myNetworkWatcherAgent'
   tags: {
     Environment: 'Non-Prod'
     'hidden-title': 'This is visible in the resource name'
@@ -4003,7 +4304,7 @@ param tags = {
 </details>
 <p>
 
-### Example 9: _Deploy a VM with nVidia graphic card_
+### Example 10: _Deploy a VM with nVidia graphic card_
 
 This instance deploys the module for a VM with dedicated nVidia graphic card.
 
@@ -4051,6 +4352,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
     extensionNvidiaGpuDriverWindows: {
       enabled: true
     }
+    hibernationEnabled: true
     location: '<location>'
   }
 }
@@ -4123,6 +4425,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
         "enabled": true
       }
     },
+    "hibernationEnabled": {
+      "value": true
+    },
     "location": {
       "value": "<location>"
     }
@@ -4175,208 +4480,7 @@ param adminPassword = '<adminPassword>'
 param extensionNvidiaGpuDriverWindows = {
   enabled: true
 }
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 10: _Deploying Windows VM with premium SSDv2 data disk_
-
-This instance deploys the module with premium SSDv2 data disk.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module virtualMachine 'br/public:avm/res/compute/virtual-machine:<version>' = {
-  name: 'virtualMachineDeployment'
-  params: {
-    // Required parameters
-    adminUsername: 'localAdminUser'
-    imageReference: {
-      offer: 'WindowsServer'
-      publisher: 'MicrosoftWindowsServer'
-      sku: '2022-datacenter-azure-edition'
-      version: 'latest'
-    }
-    name: 'cvmwinssd2'
-    nicConfigurations: [
-      {
-        ipConfigurations: [
-          {
-            name: 'ipconfig01'
-            subnetResourceId: '<subnetResourceId>'
-          }
-        ]
-        nicSuffix: '-nic-01'
-      }
-    ]
-    osDisk: {
-      caching: 'ReadWrite'
-      diskSizeGB: 128
-      managedDisk: {
-        storageAccountType: 'Premium_LRS'
-      }
-    }
-    osType: 'Windows'
-    vmSize: 'Standard_D2s_v3'
-    zone: 1
-    // Non-required parameters
-    adminPassword: '<adminPassword>'
-    dataDisks: [
-      {
-        caching: 'None'
-        diskIOPSReadWrite: 3000
-        diskMBpsReadWrite: 125
-        diskSizeGB: 1024
-        managedDisk: {
-          storageAccountType: 'PremiumV2_LRS'
-        }
-      }
-    ]
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "adminUsername": {
-      "value": "localAdminUser"
-    },
-    "imageReference": {
-      "value": {
-        "offer": "WindowsServer",
-        "publisher": "MicrosoftWindowsServer",
-        "sku": "2022-datacenter-azure-edition",
-        "version": "latest"
-      }
-    },
-    "name": {
-      "value": "cvmwinssd2"
-    },
-    "nicConfigurations": {
-      "value": [
-        {
-          "ipConfigurations": [
-            {
-              "name": "ipconfig01",
-              "subnetResourceId": "<subnetResourceId>"
-            }
-          ],
-          "nicSuffix": "-nic-01"
-        }
-      ]
-    },
-    "osDisk": {
-      "value": {
-        "caching": "ReadWrite",
-        "diskSizeGB": 128,
-        "managedDisk": {
-          "storageAccountType": "Premium_LRS"
-        }
-      }
-    },
-    "osType": {
-      "value": "Windows"
-    },
-    "vmSize": {
-      "value": "Standard_D2s_v3"
-    },
-    "zone": {
-      "value": 1
-    },
-    // Non-required parameters
-    "adminPassword": {
-      "value": "<adminPassword>"
-    },
-    "dataDisks": {
-      "value": [
-        {
-          "caching": "None",
-          "diskIOPSReadWrite": 3000,
-          "diskMBpsReadWrite": 125,
-          "diskSizeGB": 1024,
-          "managedDisk": {
-            "storageAccountType": "PremiumV2_LRS"
-          }
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/compute/virtual-machine:<version>'
-
-// Required parameters
-param adminUsername = 'localAdminUser'
-param imageReference = {
-  offer: 'WindowsServer'
-  publisher: 'MicrosoftWindowsServer'
-  sku: '2022-datacenter-azure-edition'
-  version: 'latest'
-}
-param name = 'cvmwinssd2'
-param nicConfigurations = [
-  {
-    ipConfigurations: [
-      {
-        name: 'ipconfig01'
-        subnetResourceId: '<subnetResourceId>'
-      }
-    ]
-    nicSuffix: '-nic-01'
-  }
-]
-param osDisk = {
-  caching: 'ReadWrite'
-  diskSizeGB: 128
-  managedDisk: {
-    storageAccountType: 'Premium_LRS'
-  }
-}
-param osType = 'Windows'
-param vmSize = 'Standard_D2s_v3'
-param zone = 1
-// Non-required parameters
-param adminPassword = '<adminPassword>'
-param dataDisks = [
-  {
-    caching: 'None'
-    diskIOPSReadWrite: 3000
-    diskMBpsReadWrite: 125
-    diskSizeGB: 1024
-    managedDisk: {
-      storageAccountType: 'PremiumV2_LRS'
-    }
-  }
-]
+param hibernationEnabled = true
 param location = '<location>'
 ```
 
@@ -5019,6 +5123,7 @@ param location = '<location>'
 | [`extensionNvidiaGpuDriverWindows`](#parameter-extensionnvidiagpudriverwindows) | object | The configuration for the [Nvidia Gpu Driver Windows] extension. Must at least contain the ["enabled": true] property to be executed. |
 | [`galleryApplications`](#parameter-galleryapplications) | array | Specifies the gallery applications that should be made available to the VM/VMSS. |
 | [`guestConfiguration`](#parameter-guestconfiguration) | object | The guest configuration for the virtual machine. Needs the Guest Configuration extension to be enabled. |
+| [`hibernationEnabled`](#parameter-hibernationenabled) | bool | The flag that enables or disables hibernation capability on the VM. |
 | [`licenseType`](#parameter-licensetype) | string | Specifies that the image or disk that is being used was licensed on-premises. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -7163,27 +7268,21 @@ Specifies the data disks. For security reasons, it is recommended to specify Dis
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. |
 | [`managedDisk`](#parameter-datadisksmanageddisk) | object | The managed disk parameters. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. |
-| [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machine should be created. |
-| [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. |
-| [`diskIOPSReadWrite`](#parameter-datadisksdiskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. |
-| [`diskMBpsReadWrite`](#parameter-datadisksdiskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. |
+| [`caching`](#parameter-datadiskscaching) | string | Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk. |
+| [`createOption`](#parameter-datadiskscreateoption) | string | Specifies how the virtual machine should be created. This property is automatically set to 'Attach' when attaching a pre-existing disk. |
+| [`deleteOption`](#parameter-datadisksdeleteoption) | string | Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to 'Detach' when attaching a pre-existing disk. |
+| [`diskIOPSReadWrite`](#parameter-datadisksdiskiopsreadwrite) | int | The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk. |
+| [`diskMBpsReadWrite`](#parameter-datadisksdiskmbpsreadwrite) | int | The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk. |
+| [`diskSizeGB`](#parameter-datadisksdisksizegb) | int | Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk. |
 | [`lun`](#parameter-datadiskslun) | int | Specifies the logical unit number of the data disk. |
-| [`name`](#parameter-datadisksname) | string | The disk name. |
-
-### Parameter: `dataDisks.diskSizeGB`
-
-Specifies the size of an empty data disk in gigabytes.
-
-- Required: Yes
-- Type: int
+| [`name`](#parameter-datadisksname) | string | The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used. |
+| [`tags`](#parameter-datadiskstags) | object | The tags of the public IP address. Valid only when creating a new managed disk. |
 
 ### Parameter: `dataDisks.managedDisk`
 
@@ -7192,24 +7291,33 @@ The managed disk parameters.
 - Required: Yes
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`diskEncryptionSetResourceId`](#parameter-datadisksmanageddiskdiskencryptionsetresourceid) | string | Specifies the customer managed disk encryption set resource id for the managed disk. |
-| [`id`](#parameter-datadisksmanageddiskid) | string | Specifies the customer managed disk id for the managed disk. |
+| [`id`](#parameter-datadisksmanageddiskid) | string | Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty. |
+| [`storageAccountType`](#parameter-datadisksmanageddiskstorageaccounttype) | string | Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk. |
+
+### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
+
+Specifies the customer managed disk encryption set resource id for the managed disk.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataDisks.managedDisk.id`
+
+Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.
+
+- Required: No
+- Type: string
 
 ### Parameter: `dataDisks.managedDisk.storageAccountType`
 
-Specifies the storage account type for the managed disk.
+Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk.
 
-- Required: Yes
+- Required: No
 - Type: string
 - Allowed:
   ```Bicep
@@ -7224,23 +7332,9 @@ Specifies the storage account type for the managed disk.
   ]
   ```
 
-### Parameter: `dataDisks.managedDisk.diskEncryptionSetResourceId`
-
-Specifies the customer managed disk encryption set resource id for the managed disk.
-
-- Required: No
-- Type: string
-
-### Parameter: `dataDisks.managedDisk.id`
-
-Specifies the customer managed disk id for the managed disk.
-
-- Required: No
-- Type: string
-
 ### Parameter: `dataDisks.caching`
 
-Specifies the caching requirements.
+Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk.
 
 - Required: No
 - Type: string
@@ -7255,7 +7349,7 @@ Specifies the caching requirements.
 
 ### Parameter: `dataDisks.createOption`
 
-Specifies how the virtual machine should be created.
+Specifies how the virtual machine should be created. This property is automatically set to 'Attach' when attaching a pre-existing disk.
 
 - Required: No
 - Type: string
@@ -7270,7 +7364,7 @@ Specifies how the virtual machine should be created.
 
 ### Parameter: `dataDisks.deleteOption`
 
-Specifies whether data disk should be deleted or detached upon VM deletion.
+Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to 'Detach' when attaching a pre-existing disk.
 
 - Required: No
 - Type: string
@@ -7284,14 +7378,21 @@ Specifies whether data disk should be deleted or detached upon VM deletion.
 
 ### Parameter: `dataDisks.diskIOPSReadWrite`
 
-The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes.
+The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk.
 
 - Required: No
 - Type: int
 
 ### Parameter: `dataDisks.diskMBpsReadWrite`
 
-The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10.
+The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk.
+
+- Required: No
+- Type: int
+
+### Parameter: `dataDisks.diskSizeGB`
+
+Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk.
 
 - Required: No
 - Type: int
@@ -7305,10 +7406,17 @@ Specifies the logical unit number of the data disk.
 
 ### Parameter: `dataDisks.name`
 
-The disk name.
+The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used.
 
 - Required: No
 - Type: string
+
+### Parameter: `dataDisks.tags`
+
+The tags of the public IP address. Valid only when creating a new managed disk.
+
+- Required: No
+- Type: object
 
 ### Parameter: `dedicatedHostId`
 
@@ -7618,6 +7726,14 @@ The guest configuration for the virtual machine. Needs the Guest Configuration e
 - Type: object
 - Default: `{}`
 
+### Parameter: `hibernationEnabled`
+
+The flag that enables or disables hibernation capability on the VM.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `licenseType`
 
 Specifies that the image or disk that is being used was licensed on-premises.
@@ -7807,7 +7923,6 @@ Specifies the priority for the virtual machine.
 
 - Required: No
 - Type: string
-- Default: `'Regular'`
 - Allowed:
   ```Bicep
   [
@@ -8123,6 +8238,7 @@ Do not provide a value! This date value is used to generate a registration token
 | :-- | :-- | :-- |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the VM. |
+| `nicConfigurations` | array | The list of NIC configurations of the virtual machine. |
 | `resourceGroupName` | string | The name of the resource group the VM was created in. |
 | `resourceId` | string | The resource ID of the VM. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
@@ -8133,7 +8249,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/network-interface:0.5.0` | Remote reference |
+| `br/public:avm/res/network/network-interface:0.5.1` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
@@ -8293,6 +8409,8 @@ osDisk: {
 
 ### Parameter Usage: `dataDisks`
 
+#### Creation during deployment
+
 <details>
 
 <summary>Parameter JSON format</summary>
@@ -8364,6 +8482,43 @@ dataDisks: [
 </details>
 <p>
 
+#### Pre-existing disks
+
+<details>
+
+<summary>Parameter JSON format</summary>
+
+```json
+"dataDisks": {
+    "value": [
+        {
+          "managedDisk": {
+            "id": "<resourceId>"
+          }
+        }
+    ]
+}
+```
+
+</details>
+
+<details>
+
+<summary>Bicep format</summary>
+
+```bicep
+dataDisks: [
+    {
+        managedDisk: {
+            id: '<resourceId>'
+        }
+    }
+]
+```
+
+</details>
+<p>
+
 ### Parameter Usage: `nicConfigurations`
 
 Comments:
@@ -8404,7 +8559,7 @@ Comments:
           "subnetResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>",
         }
       ],
-      "nsgId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>",
+      "networkSecurityGroupResourceId": "/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>",
       "roleAssignments": [
         {
           "roleDefinitionIdOrName": "Reader",
@@ -8469,7 +8624,7 @@ nicConfigurations: {
           subnetResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/virtualNetworks/<vNetName>/subnets/<subnetName>'
         }
       ]
-      nsgId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>'
+      networkSecurityGroupResourceId: '/subscriptions/<subscriptionId>/resourceGroups/<resourceGroupName>/providers/Microsoft.Network/networkSecurityGroups/<nsgName>'
       roleAssignments: [
         {
           roleDefinitionIdOrName: 'Reader'
@@ -8823,10 +8978,7 @@ extensionDSCConfig: {
         "uri": "https://github.com/myProject/File3.ps1",
         "storageAccountId": ""
       }
-    ],
-    "settings": {
-      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File testscript.ps1"
-    }
+    ]
   }
 }
 ```
@@ -8856,9 +9008,6 @@ extensionCustomScriptConfig: {
         storageAccountId: ''
       }
     ]
-    settings: {
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File testscript.ps1'
-    }
 }
 ```
 
@@ -8877,7 +9026,7 @@ This is used if you are going to use secrets or other sensitive information that
 "extensionCustomScriptProtectedSetting": {
   "value": [
     {
-      "commandToExecute": "mycommandToRun -someParam MYSECRET"
+      "commandToExecute": "powershell -ExecutionPolicy Unrestricted -File testscript.ps1"
     }
   ]
 }
@@ -8892,7 +9041,7 @@ This is used if you are going to use secrets or other sensitive information that
 ```bicep
 extensionCustomScriptProtectedSetting: [
     {
-        commandToExecute: 'mycommandToRun -someParam MYSECRET'
+        commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File testscript.ps1'
     }
 ]
 ```

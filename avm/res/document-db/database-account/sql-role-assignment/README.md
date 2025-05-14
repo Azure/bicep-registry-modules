@@ -1,4 +1,4 @@
-# DocumentDB Database Account SQL Role Assignments. `[Microsoft.DocumentDB/databaseaccount/sqlrole/sqlroleassignments]`
+# DocumentDB Database Account SQL Role Assignments. `[Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments]`
 
 This module deploys a SQL Role Assignment in a CosmosDB Account.
 
@@ -20,8 +20,8 @@ This module deploys a SQL Role Assignment in a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the SQL Role Assignment. |
-| [`roleDefinitionId`](#parameter-roledefinitionid) | string | Id of the SQL Role Definition. |
+| [`principalId`](#parameter-principalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
+| [`roleDefinitionId`](#parameter-roledefinitionid) | string | The unique identifier of the associated SQL Role Definition. |
 
 **Conditional parameters**
 
@@ -33,18 +33,18 @@ This module deploys a SQL Role Assignment in a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-principalid) | string | Id needs to be granted. |
+| [`name`](#parameter-name) | string | Name unique identifier of the SQL Role Assignment. |
 
-### Parameter: `name`
+### Parameter: `principalId`
 
-Name of the SQL Role Assignment.
+The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `roleDefinitionId`
 
-Id of the SQL Role Definition.
+The unique identifier of the associated SQL Role Definition.
 
 - Required: Yes
 - Type: string
@@ -56,16 +56,17 @@ The name of the parent Database Account. Required if the template is used in a s
 - Required: Yes
 - Type: string
 
-### Parameter: `principalId`
+### Parameter: `name`
 
-Id needs to be granted.
+Name unique identifier of the SQL Role Assignment.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `resourceGroupName` | string | The name of the resource group the SQL Role Assignment was created in. |
+| `name` | string | The name of the SQL Role Assignment. |
+| `resourceGroupName` | string | The name of the resource group the SQL Role Definition was created in. |
+| `resourceId` | string | The resource ID of the SQL Role Assignment. |

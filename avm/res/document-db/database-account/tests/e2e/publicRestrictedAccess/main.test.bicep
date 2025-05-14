@@ -51,7 +51,6 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    location: enforcedLocation
     networkRestrictions: {
       publicNetworkAccess: 'Enabled'
       networkAclBypass: 'AzureServices'
