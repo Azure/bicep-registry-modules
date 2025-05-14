@@ -680,7 +680,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     sku: 'M30'
     storage: 256
     // Non-required parameters
-    highAvailabilityMode: 'ZoneRedundantPreferred'
+    highAvailabilityMode: 'SameZone'
     tags: {
       environment: 'dev'
       role: 'validation'
@@ -723,7 +723,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     },
     // Non-required parameters
     "highAvailabilityMode": {
-      "value": "ZoneRedundantPreferred"
+      "value": "SameZone"
     },
     "tags": {
       "value": {
@@ -754,7 +754,7 @@ param nodeCount = 3
 param sku = 'M30'
 param storage = 256
 // Non-required parameters
-param highAvailabilityMode = 'ZoneRedundantPreferred'
+param highAvailabilityMode = 'SameZone'
 param tags = {
   environment: 'dev'
   role: 'validation'
