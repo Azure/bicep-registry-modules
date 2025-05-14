@@ -33,16 +33,6 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 - none
 
-## 0.2.2
-
-### Changes
-
-- Resource Provider version update
-
-### Breaking Changes
-
-- none
-
 ## 0.2.1
 
 ### Changes
