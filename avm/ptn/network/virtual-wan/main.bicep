@@ -151,8 +151,30 @@ module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.1' = [
       outboundRouteMapResourceId: virtualHub.?p2sVpnParameters.?outboundRouteMapResourceId
       propagatedLabelNames: virtualHub.?p2sVpnParameters.?propagatedLabelNames
       propagatedRouteTableNames: virtualHub.?p2sVpnParameters.?propagatedRouteTableNames
-      //tags:
+      tags: virtualHub.?tags
       vnetRoutesStaticRoutes: virtualHub.?p2sVpnParameters.?vnetRoutesStaticRoutes
+    }
+  }
+]
+
+module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.1.5' = [
+  for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?s2sVpnParameters.?deployS2SVpnGateway == true) {
+    name: virtualHub.?s2sVpnParameters.?vpnGatewayName!
+    params: {
+      // Required parameters
+      name: virtualHub.?s2sVpnParameters.?vpnGatewayName!
+      location: virtualHubModule[i].outputs.location
+      virtualHubResourceId: virtualHubModule[i].outputs.resourceId
+      // Optional parameters
+      bgpSettings: virtualHub.?s2sVpnParameters.?bgpSettings
+      enableBgpRouteTranslationForNat: virtualHub.?s2sVpnParameters.?enableBgpRouteTranslationForNat
+      isRoutingPreferenceInternet: virtualHub.?s2sVpnParameters.?isRoutingPreferenceInternet
+      natRules: []
+      vpnConnections: virtualHub.?s2sVpnParameters.?vpnConnections
+      vpnGatewayScaleUnit: virtualHub.?s2sVpnParameters.?vpnGatewayScaleUnit
+      enableTelemetry: enableTelemetry
+      tags: virtualHub.?tags
+      lock: lock ?? {}
     }
   }
 ]
@@ -235,6 +257,44 @@ type virtualHubParameterType = {
     connectionConfigurationsName: string
     vpnGatewayScaleUnit: int?
     vpnGatewayAssociatedRouteTable: ('noneRouteTable' | 'defaultRouteTable')?
+  }?
+  s2sVpnParameters: {
+    deployS2SVpnGateway: bool
+    vpnGatewayName: string?
+    vpnGatewayScaleUnit: int?
+    bgpSettings: {
+      asn: int
+      bgpPeeringAddress: string
+      bgpPeeringAddresses: [
+        {
+          customBgpIpAddresses: [
+            string
+          ]
+          ipconfigurationId: string
+        }
+      ]?
+      peerWeight: int
+    }?
+    enableBgpRouteTranslationForNat: bool?
+    isRoutingPreferenceInternet: bool?
+    vpnConnections: {
+      //name: string
+      //vpnGatewayName: 
+      //connectionBandwidth: int
+      //enableBgp: bool
+      //enableInternetSecurity: bool
+      //remoteVpnSiteResourceId: connection.?remoteVpnSiteResourceId
+      enableRateLimiting: bool?
+      //routingConfiguration: connection.?routingConfiguration
+      //routingWeight: int
+      //sharedKey: string
+      //useLocalAzureIpAddress: bool
+      //usePolicyBasedTrafficSelectors: bool
+      //vpnConnectionProtocolType: ('IKEv1' | 'IKEv2')
+      //ipsecPolicies: []
+      //trafficSelectorPolicies: []
+      //vpnLinkConnections: connection.?vpnLinkConnections
+    }[]
   }?
   secureHubParameters: {
     deploySecureHub: bool

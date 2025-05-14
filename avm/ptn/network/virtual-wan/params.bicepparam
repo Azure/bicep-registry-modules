@@ -1,7 +1,7 @@
 using 'main.bicep'
 
 param virtualWanParameters = {
-  //location: 'eastus2'
+  location: 'eastus2'
   allowBranchToBranchTraffic: true
   allowVnetToVnetTraffic: true
   disableVpnEncryption: true
@@ -50,7 +50,11 @@ param virtualHubParameters = [
         '10.50.10.50'
       ]
       enableInternetSecurity: true
-      
     }*/
+    s2sVpnParameters: {
+      deployS2SVpnGateway: true
+      vpnGatewayName: 'erschef-eus2-s2sgw'
+      
+    }
   }
 ]
