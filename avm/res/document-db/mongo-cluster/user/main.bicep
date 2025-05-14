@@ -4,8 +4,8 @@ metadata description = 'This module creates a user within an Azure Cosmos DB for
 @description('Conditional. The name of the parent Azure Cosmos DB for MongoDB (vCore) cluster. Required if the template is used in a standalone deployment.')
 param mongoClusterName string
 
-@description('Required. The configured location for the user.')
-param location string
+@description('Optional. Default to current resource group scope location. Location for all resources.')
+param location string = resourceGroup().location
 
 @description('Required. The principal/identity to create as a user on the cluster.')
 param targetIdentity targetPrincipalPropertiesType
