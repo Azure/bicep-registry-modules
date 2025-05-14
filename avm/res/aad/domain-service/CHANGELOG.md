@@ -35,11 +35,6 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ## 0.2.0
 
-### Changes
-
-- TLSV1 is disabled by default
-- Kerberos RC4 is disabled by default
-
 ### Breaking Changes
 
 - none
@@ -63,3 +58,7 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 ### Breaking Changes
 
 - none
+
+### Changes
+
+- should not be here
