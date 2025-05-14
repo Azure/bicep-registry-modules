@@ -122,9 +122,9 @@ resource subnet 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' = {
   name: name
   parent: virtualNetwork
   properties: {
-    addressPrefix: !empty(addressPrefix) ? addressPrefix : null
-    addressPrefixes: !empty(addressPrefixes) ? addressPrefixes : null
-    ipamPoolPrefixAllocations: !empty(ipamPoolPrefixAllocations) ? ipamPoolPrefixAllocations : null
+    addressPrefix: addressPrefix
+    addressPrefixes: addressPrefixes
+    ipamPoolPrefixAllocations: ipamPoolPrefixAllocations
     networkSecurityGroup: !empty(networkSecurityGroupResourceId)
       ? {
           id: networkSecurityGroupResourceId

@@ -7,11 +7,11 @@ param name string
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. An Array of 1 or more IP Address Prefixes for the Virtual Network.')
-param addressPrefixes array?
+@description('Required. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`')
+param addressPrefixes array
 
-@description('Optional. This is used to allocate an IP Address Pool from the VNet Manager IPAM service.')
-param ipamPoolPrefixAllocations ipamPoolPrefixAllocationsType[]?
+@description('Optional. Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool.')
+param ipamPoolNumberOfIpAddresses string?
 
 @description('Optional. The BGP community associated with the virtual network.')
 param virtualNetworkBgpCommunity string?
@@ -122,15 +122,20 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
   location: location
   tags: tags
   properties: {
-    addressSpace: !empty(addressPrefixes)
+    addressSpace: contains(addressPrefixes[0], '/Microsoft.Network/networkManagers/')
       ? {
+          ipamPoolPrefixAllocations: [
+            {
+              pool: {
+                id: addressPrefixes[0]
+              }
+              numberOfIpAddresses: ipamPoolNumberOfIpAddresses
+            }
+          ]
+        }
+      : {
           addressPrefixes: addressPrefixes
         }
-      : !empty(ipamPoolPrefixAllocations)
-          ? {
-              ipamPoolPrefixAllocations: ipamPoolPrefixAllocations
-            }
-          : null
     bgpCommunities: !empty(virtualNetworkBgpCommunity)
       ? {
           virtualNetworkCommunity: virtualNetworkBgpCommunity!
@@ -367,8 +372,17 @@ type subnetType = {
   @description('Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty.')
   addressPrefixes: string[]?
 
-  @description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` or `addressPrefix` is empty.')
-  ipamPoolPrefixAllocations: object[]?
+  @description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool.')
+  ipamPoolPrefixAllocations: [
+    {
+      pool: {
+        @description('Required. The Resource ID of the IPAM pool.')
+        id: string
+      }
+      @description('Required. Number of IP addresses allocated from the pool.')
+      numberOfIpAddresses: string
+    }
+  ]?
 
   @description('Optional. Application gateway IP configurations of virtual network resource.')
   applicationGatewayIPConfigurations: object[]?
@@ -405,15 +419,4 @@ type subnetType = {
 
   @description('Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.')
   sharingScope: ('DelegatedServices' | 'Tenant')?
-}
-
-@description('Optional. A Type for the IPAM pool prefix allocations.')
-type ipamPoolPrefixAllocationsType = {
-  @description('Optional. The Resource ID of the IPAM pool.')
-  pool: {
-    @description('Required. The Resource ID of the IPAM pool.')
-    id: string
-  }
-  @description('Optional. Number of IP addresses allocated from the pool.')
-  numberOfIpAddresses: string
 }
