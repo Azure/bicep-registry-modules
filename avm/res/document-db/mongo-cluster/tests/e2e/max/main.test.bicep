@@ -89,7 +89,7 @@ module testDeployment '../../../main.bicep' = [
           workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
         }
       ]
-      highAvailabilityMode: false
+      highAvailabilityMode: 'Disabled'
       networkAcls: {
         customRules: [
           {
