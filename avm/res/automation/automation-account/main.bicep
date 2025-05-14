@@ -484,7 +484,7 @@ resource automationAccount_diagnosticSettings 'Microsoft.Insights/diagnosticSett
 
 module automationAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-automationAccount-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-sa-PrivateEndpoint-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
