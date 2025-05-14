@@ -170,6 +170,34 @@ param cosmosDbAccountConfiguration cosmosDbAccountConfigurationType = {
   sqlDatabases: null //Default value set on module configuration
 }
 
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Container App Environment resource.')
+param containerAppEnvironmentConfiguration containerAppEnvironmentConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}cenv'
+  location: solutionLocation
+  tags: tags
+  subnetResourceId: null //Default value set on module configuration
+}
+
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Container App resource.')
+param containerAppConfiguration containerAppConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}capp'
+  location: solutionLocation
+  tags: tags
+  environmentResourceId: null //Default value set on module configuration
+  concurrentRequests: '100'
+  containerCpu: '2.0'
+  containerMemory: '4.0Gi'
+  containerImageRegistryDomain: 'biabcontainerreg.azurecr.io'
+  containerImageName: 'macaebackend'
+  containerImageTag: 'fnd01'
+  containerName: 'backend'
+  ingressTargetPort: 8000
+  maxReplicas: 1
+  minReplicas: 1
+}
+
 @description('Optional. The configuration of the Entra ID Application used to authenticate the website.')
 param entraIdApplicationConfiguration entraIdApplicationConfigurationType = {
   enabled: false
@@ -824,7 +852,7 @@ module privateDnsZonesAiFoundryWorkspaceHub 'br/public:avm/res/network/private-d
 var aiFoundryAiHubEnabled = aiFoundryAiHubConfiguration.?enabled ?? true
 var aiFoundryAiHubName = aiFoundryAiHubConfiguration.?name ?? '${solutionPrefix}aifdaihb'
 module aiFoundryAiHub 'modules/ai-hub.bicep' = if (aiFoundryAiHubEnabled) {
-  name: 'module-ai-hub'
+  name: 'module.ai-hub'
   dependsOn: [
     privateDnsZonesAiFoundryWorkspaceHub
   ]
@@ -972,13 +1000,14 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = if (co
 }
 
 // ========== Backend Container App Environment ========== //
-
-module containerAppEnvironment 'modules/container-app-environment.bicep' = {
-  name: 'modules-container-app-environment'
+var containerAppEnvironmentEnabled = containerAppEnvironmentConfiguration.?enabled ?? true
+var containerAppEnvironmentResourceName = containerAppEnvironmentConfiguration.?name ?? '${solutionPrefix}cenv'
+module containerAppEnvironment 'modules/container-app-environment.bicep' = if (containerAppEnvironmentEnabled) {
+  name: 'module.container-app-environment'
   params: {
-    name: '${solutionPrefix}cenv'
-    tags: tags
-    location: solutionLocation
+    name: containerAppEnvironmentResourceName
+    tags: containerAppEnvironmentConfiguration.?tags ?? tags
+    location: containerAppEnvironmentConfiguration.?location ?? solutionLocation
     logAnalyticsResourceName: logAnalyticsWorkspace.outputs.name
     publicNetworkAccess: 'Enabled'
     zoneRedundant: virtualNetworkEnabled ? true : false
@@ -986,55 +1015,28 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = {
     vnetConfiguration: virtualNetworkEnabled
       ? {
           internal: false
-          infrastructureSubnetId: virtualNetwork.?outputs.?subnetResourceIds[3] ?? ''
+          infrastructureSubnetId: containerAppEnvironmentConfiguration.?subnetResourceId ?? virtualNetwork.?outputs.?subnetResourceIds[3] ?? ''
         }
       : {}
   }
 }
 
-// module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.0' = {
-//   name: 'container-app-environment'
-//   params: {
-//     name: '${solutionPrefix}cenv'
-//     location: solutionLocation
-//     tags: tags
-//     enableTelemetry: enableTelemetry
-//     //daprAIConnectionString: applicationInsights.outputs.connectionString //Troubleshoot: ContainerAppsConfiguration.DaprAIConnectionString is invalid.  DaprAIConnectionString can not be set when AppInsightsConfiguration has been set, please set DaprAIConnectionString to null. (Code:InvalidRequestParameterWithDetails
-//     appLogsConfiguration: {
-//       destination: 'log-analytics'
-//       logAnalyticsConfiguration: {
-//         customerId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
-//         sharedKey: listKeys(
-//           '${resourceGroup().id}/providers/Microsoft.OperationalInsights/workspaces/${logAnalyticsWorkspaceName}',
-//           '2023-09-01'
-//         ).primarySharedKey
-//       }
-//     }
-//     appInsightsConnectionString: applicationInsights.outputs.connectionString
-//     publicNetworkAccess: virtualNetworkEnabled ? 'Disabled' : 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
-//     zoneRedundant: true //TODO: make it zone redundant for waf aligned
-//     infrastructureSubnetResourceId: virtualNetworkEnabled
-//       ? virtualNetwork.outputs.subnetResourceIds[1]
-//       : null
-//     internal: false
-//   }
-// }
-
 // ========== Backend Container App Service ========== //
-module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
-  name: 'container-app'
+var containerAppEnabled = containerAppConfiguration.?enabled ?? true
+var containerAppResourceName = containerAppConfiguration.?name ?? '${solutionPrefix}capp'
+module containerApp 'br/public:avm/res/app/container-app:0.14.2' = if (containerAppEnabled) {
+  name: take('app.container-app.${containerAppResourceName}', 64)
   params: {
-    name: '${solutionPrefix}capp'
-    tags: tags
-    location: solutionLocation
+    name: containerAppResourceName
+    tags: containerAppConfiguration.?tags ?? tags
+    location: containerAppConfiguration.?location ?? solutionLocation
     enableTelemetry: enableTelemetry
-    //environmentResourceId: containerAppEnvironment.outputs.resourceId
-    environmentResourceId: containerAppEnvironment.outputs.resourceId
+    environmentResourceId: containerAppConfiguration.?environmentResourceId ?? containerAppEnvironment.outputs.resourceId
     managedIdentities: {
       systemAssigned: true //Replace with user assigned identity
       userAssignedResourceIds: [userAssignedIdentity.outputs.resourceId]
     }
-    ingressTargetPort: 8000
+    ingressTargetPort: containerAppConfiguration.?ingressTargetPort ?? 8000
     ingressExternal: true
     activeRevisionsMode: 'Single'
     corsPolicy: {
@@ -1045,14 +1047,14 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
     }
     scaleSettings: {
       //TODO: Make maxReplicas and minReplicas parameterized
-      maxReplicas: 1
-      minReplicas: 1
+      maxReplicas: containerAppConfiguration.?maxReplicas ?? 1
+      minReplicas: containerAppConfiguration.?minReplicas ?? 1
       rules: [
         {
           name: 'http-scaler'
           http: {
             metadata: {
-              concurrentRequests: '100'
+              concurrentRequests: containerAppConfiguration.?concurrentRequests ?? '100'
             }
           }
         }
@@ -1060,13 +1062,12 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
     }
     containers: [
       {
-        name: 'backend'
-        //TODO: Make image parameterized for the registry name and the appversion
-        image: 'biabcontainerreg.azurecr.io/macaebackend:fnd01'
+        name: containerAppConfiguration.?containerName ?? 'backend'
+        image: '${containerAppConfiguration.?containerImageRegistryDomain ?? 'biabcontainerreg.azurecr.io'}/${containerAppConfiguration.?containerImageName ?? 'macaebackend'}:${containerAppConfiguration.?containerImageTag ?? 'fnd01'}'
         resources: {
           //TODO: Make cpu and memory parameterized
-          cpu: '2.0'
-          memory: '4.0Gi'
+          cpu: containerAppConfiguration.?containerCpu ?? '2.0'
+          memory: containerAppConfiguration.?containerMemory ?? '4.0Gi'
         }
         env: [
           {
@@ -1820,6 +1821,78 @@ type cosmosDbAccountConfigurationType = {
 
   @description('Optional. The SQL databases configuration for the Cosmos DB Account resource.')
   sqlDatabases: sqlDatabaseType[]?
+}
+
+@export()
+@description('The type for the Multi-Agent Custom Automation Engine Container App Environment resource configuration.')
+type containerAppEnvironmentConfigurationType = {
+  @description('Optional. If the Container App Environment resource should be deployed or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the Container App Environment resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the Container App Environment resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the Container App Environment resource.')
+  tags: object?
+
+  @description('Optional. The resource Id of the subnet where the Container App Environment private endpoint should be created.')
+  subnetResourceId: string?
+}
+
+@export()
+@description('The type for the Multi-Agent Custom Automation Engine Container App resource configuration.')
+type containerAppConfigurationType = {
+  @description('Optional. If the Container App resource should be deployed or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the Container App resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the Container App resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the Container App resource.')
+  tags: object?
+
+  @description('Optional. The resource Id of the Container App Environment where the Container App should be created.')
+  environmentResourceId: string?
+
+  @description('Optional. The maximum number of replicas of the Container App.')
+  maxReplicas: int?
+
+  @description('Optional. The minimum number of replicas of the Container App.')
+  minReplicas: int?
+
+  @description('Optional. The ingress target port of the Container App.')
+  ingressTargetPort: int?
+
+  @description('Optional. The concurrent requests allowed for the Container App.')
+  concurrentRequests: string?
+
+  @description('Optional. The name given to the Container App.')
+  containerName: string?
+
+  @description('Optional. The container registry domain of the image of the Container App. Default to `biabcontainerreg.azurecr.io`')
+  containerImageRegistryDomain: string?
+
+  @description('Optional. The name of the image of the Container App.')
+  containerImageName: string?
+
+  @description('Optional. The tag of the image f the Container App.')
+  containerImageTag: string?
+
+  @description('Optional. The CPU reserved for the Container App. Defaults to 2.0')
+  containerCpu: string?
+
+  @description('Optional. The Memory reserved for the Container App. Defaults to 4.0Gi')
+  containerMemory: string?
 }
 
 @export()
