@@ -6,18 +6,9 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ### Changes
 
-- Updated UDTs (RoleAssignments, DiagnosticsSettings, Locks) to use AVM common type
-- configured `replicaSetType` to be exportable
-
 ### Breaking Changes
-
-- none
 
 ## 0.3.1
-
-### Breaking Changes
-
-- none
 
 ### Changes
 
@@ -25,7 +16,6 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ### Breaking Changes
 
-- none
 
 ## 0.3.0
 
@@ -41,8 +31,6 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ### Changes
 
-- Resource Provider version update for AVM Telemetry
-
 ### Breaking Changes
 
 - none
@@ -53,6 +41,10 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 - TLSV1 is disabled by default
 - Kerberos RC4 is disabled by default
+
+### Breaking Changes
+
+- none
 
 ## 0.1.0
 
