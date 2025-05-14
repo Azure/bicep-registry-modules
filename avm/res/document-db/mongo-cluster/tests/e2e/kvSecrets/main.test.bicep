@@ -56,9 +56,9 @@ module testDeployment '../../../main.bicep' = {
     }
     administratorLogin: 'Admin002'
     administratorLoginPassword: password
-    nodeCount: 2
-    sku: 'M30'
-    storage: 256
+    nodeCount: 1
+    sku: 'M10'
+    storage: 32
   }
 }
 

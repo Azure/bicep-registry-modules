@@ -55,9 +55,9 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       administratorLogin: 'Admin001'
       administratorLoginPassword: password
-      nodeCount: 1 // Minimize size to speed-up testing
-      sku: 'M10' // Minimize size to speed-up testing
-      storage: 32 // Minimize size to speed-up testing
+      nodeCount: 1
+      sku: 'M10'
+      storage: 32
       enableMicrosoftEntraAuth: true
       entraAuthIdentities: [
         {

@@ -48,9 +48,9 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       administratorLogin: 'Admin001'
       administratorLoginPassword: password
-      nodeCount: 2
-      sku: 'M30'
-      storage: 256
+      nodeCount: 1
+      sku: 'M10'
+      storage: 32
     }
   }
 ]
