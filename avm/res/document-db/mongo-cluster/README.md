@@ -19,8 +19,9 @@ This module deploys a Azure Cosmos DB MongoDB vCore cluster.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DocumentDB/mongoClusters` | [2024-02-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-02-15-preview/mongoClusters) |
+| `Microsoft.DocumentDB/mongoClusters` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/mongoClusters) |
 | `Microsoft.DocumentDB/mongoClusters/firewallRules` | [2024-02-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-02-15-preview/mongoClusters/firewallRules) |
+| `Microsoft.DocumentDB/mongoClusters/users` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/mongoClusters) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
@@ -37,7 +38,8 @@ The following section provides usage examples for the module, which were used to
 - [Using only defaults](#example-1-using-only-defaults)
 - [Deploying with a key vault reference to save secrets](#example-2-deploying-with-a-key-vault-reference-to-save-secrets)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Microsoft Entra authentication](#example-4-microsoft-entra-authentication)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -254,6 +256,8 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
+    enableMicrosoftEntraAuth: false
+    entraAuthIdentities: []
     highAvailabilityMode: false
     location: '<location>'
     networkAcls: {
@@ -267,7 +271,6 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
         }
       ]
     }
-    nodeType: 'Shard'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -369,6 +372,12 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
         }
       ]
     },
+    "enableMicrosoftEntraAuth": {
+      "value": false
+    },
+    "entraAuthIdentities": {
+      "value": []
+    },
     "highAvailabilityMode": {
       "value": false
     },
@@ -387,9 +396,6 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
           }
         ]
       }
-    },
-    "nodeType": {
-      "value": "Shard"
     },
     "privateEndpoints": {
       "value": [
@@ -478,6 +484,8 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
+param enableMicrosoftEntraAuth = false
+param entraAuthIdentities = []
 param highAvailabilityMode = false
 param location = '<location>'
 param networkAcls = {
@@ -491,7 +499,6 @@ param networkAcls = {
     }
   ]
 }
-param nodeType = 'Shard'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -543,7 +550,116 @@ param roleAssignments = [
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _Microsoft Entra authentication_
+
+This instance deploys the module for an Azure Cosmos DB for MongoDB (vCore) cluster with access configured for an user-assigned managed identity.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
+  name: 'mongoClusterDeployment'
+  params: {
+    // Required parameters
+    administratorLogin: 'Admin001'
+    administratorLoginPassword: '<administratorLoginPassword>'
+    name: 'ddmcdefmin001'
+    nodeCount: 1
+    sku: 'M10'
+    storage: 32
+    // Non-required parameters
+    enableMicrosoftEntraAuth: true
+    entraAuthIdentities: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "administratorLogin": {
+      "value": "Admin001"
+    },
+    "administratorLoginPassword": {
+      "value": "<administratorLoginPassword>"
+    },
+    "name": {
+      "value": "ddmcdefmin001"
+    },
+    "nodeCount": {
+      "value": 1
+    },
+    "sku": {
+      "value": "M10"
+    },
+    "storage": {
+      "value": 32
+    },
+    // Non-required parameters
+    "enableMicrosoftEntraAuth": {
+      "value": true
+    },
+    "entraAuthIdentities": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/document-db/mongo-cluster:<version>'
+
+// Required parameters
+param administratorLogin = 'Admin001'
+param administratorLoginPassword = '<administratorLoginPassword>'
+param name = 'ddmcdefmin001'
+param nodeCount = 1
+param sku = 'M10'
+param storage = 32
+// Non-required parameters
+param enableMicrosoftEntraAuth = true
+param entraAuthIdentities = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -643,12 +759,13 @@ param storage = 256
 | :-- | :-- | :-- |
 | [`createMode`](#parameter-createmode) | string | Mode to create the azure cosmos db mongodb vCore cluster. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`enableMicrosoftEntraAuth`](#parameter-enablemicrosoftentraauth) | bool | The type of the secrets export configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`entraAuthIdentities`](#parameter-entraauthidentities) | array | The Microsoft Entra ID authentication identity assignments to be created for the cluster. |
 | [`highAvailabilityMode`](#parameter-highavailabilitymode) | bool | Whether high availability is enabled on the node group. |
 | [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`networkAcls`](#parameter-networkacls) | object | IP addresses to allow access to the cluster from. |
-| [`nodeType`](#parameter-nodetype) | string | Deployed Node type in the node group. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
@@ -850,6 +967,14 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 - Required: No
 - Type: string
 
+### Parameter: `enableMicrosoftEntraAuth`
+
+The type of the secrets export configuration.
+
+- Required: No
+- Type: bool
+- Default: `False`
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -857,6 +982,46 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `entraAuthIdentities`
+
+The Microsoft Entra ID authentication identity assignments to be created for the cluster.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-entraauthidentitiesprincipalid) | string | The principal (object) ID of the identity to create as a user on the cluster. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalType`](#parameter-entraauthidentitiesprincipaltype) | string | The type of principal to be used for the identity provider. Defaults to "ServicePrincipal". |
+
+### Parameter: `entraAuthIdentities.principalId`
+
+The principal (object) ID of the identity to create as a user on the cluster.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `entraAuthIdentities.principalType`
+
+The type of principal to be used for the identity provider. Defaults to "ServicePrincipal".
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
 
 ### Parameter: `highAvailabilityMode`
 
@@ -950,14 +1115,6 @@ List of custom firewall rules.
 
 - Required: No
 - Type: array
-
-### Parameter: `nodeType`
-
-Deployed Node type in the node group.
-
-- Required: No
-- Type: string
-- Default: `'Shard'`
 
 ### Parameter: `privateEndpoints`
 

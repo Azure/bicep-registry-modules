@@ -64,7 +64,7 @@ param storage int
 @description('Optional. The type of the secrets export configuration.')
 param enableMicrosoftEntraAuth bool = false
 
-@description('Optional, the Microsoft Entra ID authentication identity assignments to be created for the cluster.')
+@description('Optional. The Microsoft Entra ID authentication identity assignments to be created for the cluster.')
 param entraAuthIdentities authIdentityType[]?
 
 var enableReferencedModulesTelemetry = false
