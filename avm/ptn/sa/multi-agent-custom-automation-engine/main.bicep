@@ -115,6 +115,7 @@ param virtualMachineConfiguration virtualMachineConfigurationType = {
   vmSize: 'Standard_D2s_v3'
   subnetResourceId: null //Default value set on module configuration
 }
+
 @description('Optional. The configuration to apply for the AI Foundry AI Services Content Understanding resource.')
 param aiFoundryAiServicesConfiguration aiServicesConfigurationType = {
   enabled: true
@@ -148,6 +149,25 @@ param aiFoundryAiHubConfiguration aiHubType = {
   sku: 'Basic'
   tags: tags
   subnetResourceId: null //Default value set on module configuration
+}
+
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Project resource.')
+param aiFoundryAiProjectConfiguration aiProjectConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}aifdaipj'
+  location: solutionLocation
+  sku: 'Basic'
+  tags: tags
+}
+
+@description('Optional. The configuration to apply for the Conversation Knowledge Mining Cosmos DB Account resource.')
+param cosmosDbAccountConfiguration cosmosDbAccountConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}csdb'
+  location: solutionLocation
+  tags: tags
+  subnetResourceId: null //Default value set on module configuration
+  sqlDatabases: null //Default value set on module configuration
 }
 
 @description('Optional. The configuration of the Entra ID Application used to authenticate the website.')
@@ -841,17 +861,18 @@ module aiFoundryAiHub 'modules/ai-hub.bicep' = if (aiFoundryAiHubEnabled) {
 }
 
 // AI Foundry: AI Project
-var aiFoundryAiProjectName = '${solutionPrefix}aifdaipj'
+var aiFoundryAiProjectEnabled = aiFoundryAiProjectConfiguration.?enabled ?? true
+var aiFoundryAiProjectName = aiFoundryAiProjectConfiguration.?name ?? '${solutionPrefix}aifdaipj'
 
-module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = {
-  name: 'machine-learning-services-workspace-project'
+module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = if (aiFoundryAiProjectEnabled) {
+  name: take('machine-learning-services.workspace.${aiFoundryAiProjectName}', 64)
   params: {
     name: aiFoundryAiProjectName
-    location: solutionLocation
-    tags: tags
+    location: aiFoundryAiProjectConfiguration.?location ?? solutionLocation
+    tags: aiFoundryAiProjectConfiguration.?tags ?? tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    sku: 'Basic'
+    sku: aiFoundryAiProjectConfiguration.?sku ?? 'Basic'
     kind: 'Project'
     hubResourceId: aiFoundryAiHub.outputs.resourceId
     roleAssignments: [
@@ -876,16 +897,17 @@ module privateDnsZonesCosmosDb 'br/public:avm/res/network/private-dns-zone:0.7.0
 }
 
 // ========== Cosmos DB ========== //
-var cosmosDbName = '${solutionPrefix}csdb'
+var cosmosDbAccountEnabled = cosmosDbAccountConfiguration.?enabled ?? true
+var cosmosDbResourceName = cosmosDbAccountConfiguration.?name ?? '${solutionPrefix}csdb'
 var cosmosDbDatabaseName = 'autogen'
 var cosmosDbDatabaseMemoryContainerName = 'memory'
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
-  name: 'cosmos-db'
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = if (cosmosDbAccountEnabled) {
+  name: take('document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
     // Required parameters
-    name: cosmosDbName
-    tags: tags
-    location: solutionLocation
+    name: cosmosDbAccountConfiguration.?name ?? '${solutionPrefix}csdb'
+    location: cosmosDbAccountConfiguration.?location ?? solutionLocation
+    tags: cosmosDbAccountConfiguration.?tags ?? tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     databaseAccountOfferType: 'Standard'
@@ -901,11 +923,11 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
               privateDnsZoneGroupConfigs: [{ privateDnsZoneResourceId: privateDnsZonesCosmosDb.outputs.resourceId }]
             }
             service: 'Sql'
-            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
+            subnetResourceId: cosmosDbAccountConfiguration.?subnetResourceId ?? virtualNetwork.outputs.subnetResourceIds[0]
           }
         ]
       : []
-    sqlDatabases: [
+    sqlDatabases: concat(cosmosDbAccountConfiguration.?sqlDatabases ?? [], [
       {
         name: cosmosDbDatabaseName
         containers: [
@@ -919,10 +941,10 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = {
           }
         ]
       }
-    ]
+    ])
     locations: [
       {
-        locationName: solutionLocation
+        locationName: cosmosDbAccountConfiguration.?location ?? solutionLocation
         failoverPriority: 0
       }
     ]
@@ -1049,7 +1071,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = {
         env: [
           {
             name: 'COSMOSDB_ENDPOINT'
-            value: 'https://${cosmosDbName}.documents.azure.com:443/'
+            value: 'https://${cosmosDbResourceName}.documents.azure.com:443/'
           }
           {
             name: 'COSMOSDB_DATABASE'
@@ -1753,6 +1775,51 @@ type aiHubType = {
 
   @description('Optional. The resource Id of the subnet where the AI Hub private endpoint should be created.')
   subnetResourceId: string?
+}
+
+@export()
+@description('The type for the Multi-Agent Custom Automation Engine AI Foundry AI Project resource configuration.')
+type aiProjectConfigurationType = {
+  @description('Optional. If the AI Project resource should be deployed or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the AI Project resource.')
+  @maxLength(90)
+  name: string?
+
+  @description('Optional. Location for the AI Project resource deployment.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The SKU of the AI Project resource.')
+  sku: ('Basic' | 'Free' | 'Standard' | 'Premium')?
+
+  @description('Optional. The tags to set for the AI Project resource.')
+  tags: object?
+}
+
+import { sqlDatabaseType } from 'br/public:avm/res/document-db/database-account:0.13.0'
+@export()
+@description('The type for the Multi-Agent Custom Automation Engine Cosmos DB Account resource configuration.')
+type cosmosDbAccountConfigurationType = {
+  @description('Optional. If the Cosmos DB Account resource should be deployed or not.')
+  enabled: bool?
+  @description('Optional. The name of the Cosmos DB Account resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the Cosmos DB Account resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the Cosmos DB Account resource.')
+  tags: object?
+
+  @description('Optional. The resource Id of the subnet where the Cosmos DB Account private endpoint should be created.')
+  subnetResourceId: string?
+
+  @description('Optional. The SQL databases configuration for the Cosmos DB Account resource.')
+  sqlDatabases: sqlDatabaseType[]?
 }
 
 @export()
