@@ -238,6 +238,7 @@ module mongoCluster_users 'user/main.bicep' = [
     name: '${uniqueString(deployment().name, location)}-user-${index}'
     params: {
       mongoClusterName: mongoCluster.name
+      location: location
       targetIdentity: {
         principalId: targetIdentity.principalId
         principalType: targetIdentity.principalType ?? 'ServicePrincipal'

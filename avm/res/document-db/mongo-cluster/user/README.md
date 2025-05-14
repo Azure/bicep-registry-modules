@@ -39,9 +39,8 @@ This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster
 
 The configured location for the user.
 
-- Required: No
+- Required: Yes
 - Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `targetIdentity`
 

@@ -5,13 +5,13 @@ metadata description = 'This module creates a user within an Azure Cosmos DB for
 param mongoClusterName string
 
 @description('Required. The configured location for the user.')
-param location string = resourceGroup().location
+param location string
 
 @description('Required. The principal/identity to create as a user on the cluster.')
-param targetIdentity targetPrincipalProperties
+param targetIdentity targetPrincipalPropertiesType
 
 @description('Optional. The roles to assign to the user per database. Defaults to the "dbOwner" role on the "admin" database.')
-param targetRoles roleProperties[] = [
+param targetRoles rolePropertiesType[] = [
   {
     database: 'admin'
     role: 'dbOwner'
@@ -44,7 +44,7 @@ resource user 'Microsoft.DocumentDB/mongoClusters/users@2025-04-01-preview' = {
 
 @export()
 @description('Properties for the identity associated with the user.')
-type targetPrincipalProperties = {
+type targetPrincipalPropertiesType = {
   @description('Required. The principal (object) ID of the identity to create as a user on the cluster.')
   principalId: string
 
@@ -54,7 +54,7 @@ type targetPrincipalProperties = {
 
 @export()
 @description('Properties for the role[s] assigned to the user.')
-type roleProperties = {
+type rolePropertiesType = {
   @description('Required. The database to assign the role to.')
   database: 'admin'
 

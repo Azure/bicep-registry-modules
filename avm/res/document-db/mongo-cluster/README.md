@@ -679,6 +679,12 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     nodeCount: 2
     sku: 'M30'
     storage: 256
+    // Non-required parameters
+    tags: {
+      environment: 'dev'
+      role: 'validation'
+      type: 'waf-aligned'
+    }
   }
 }
 ```
@@ -713,6 +719,14 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     },
     "storage": {
       "value": 256
+    },
+    // Non-required parameters
+    "tags": {
+      "value": {
+        "environment": "dev",
+        "role": "validation",
+        "type": "waf-aligned"
+      }
     }
   }
 }
@@ -735,6 +749,12 @@ param name = 'ddmcwaf001'
 param nodeCount = 2
 param sku = 'M30'
 param storage = 256
+// Non-required parameters
+param tags = {
+  environment: 'dev'
+  role: 'validation'
+  type: 'waf-aligned'
+}
 ```
 
 </details>

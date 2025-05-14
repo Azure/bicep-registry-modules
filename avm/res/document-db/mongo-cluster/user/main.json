@@ -6,13 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "15294895433701378018"
+      "templateHash": "17653171882399090885"
     },
     "name": "Azure Cosmos DB for MongoDB (vCore) cluster user",
     "description": "This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster. These users are used to connect to the cluster and perform operations using Microsoft Entra authentication."
   },
   "definitions": {
-    "targetPrincipalProperties": {
+    "targetPrincipalPropertiesType": {
       "type": "object",
       "properties": {
         "principalId": {
@@ -37,7 +37,7 @@
         "description": "Properties for the identity associated with the user."
       }
     },
-    "roleProperties": {
+    "rolePropertiesType": {
       "type": "object",
       "properties": {
         "database": {
@@ -74,13 +74,12 @@
     },
     "location": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Required. The configured location for the user."
       }
     },
     "targetIdentity": {
-      "$ref": "#/definitions/targetPrincipalProperties",
+      "$ref": "#/definitions/targetPrincipalPropertiesType",
       "metadata": {
         "description": "Required. The principal/identity to create as a user on the cluster."
       }
@@ -88,7 +87,7 @@
     "targetRoles": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/roleProperties"
+        "$ref": "#/definitions/rolePropertiesType"
       },
       "defaultValue": [
         {
