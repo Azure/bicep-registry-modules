@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "12430723351216910562"
+      "templateHash": "6928993269407282230"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet."
@@ -298,9 +298,9 @@
             }
           }
         ],
-        "addressPrefix": "[if(not(empty(parameters('addressPrefix'))), parameters('addressPrefix'), null())]",
-        "addressPrefixes": "[if(not(empty(parameters('addressPrefixes'))), parameters('addressPrefixes'), null())]",
-        "ipamPoolPrefixAllocations": "[if(not(empty(parameters('ipamPoolPrefixAllocations'))), parameters('ipamPoolPrefixAllocations'), null())]",
+        "addressPrefix": "[parameters('addressPrefix')]",
+        "addressPrefixes": "[parameters('addressPrefixes')]",
+        "ipamPoolPrefixAllocations": "[parameters('ipamPoolPrefixAllocations')]",
         "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
         "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
         "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",

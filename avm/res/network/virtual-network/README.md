@@ -32,10 +32,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using an IPv6 address space](#example-2-using-an-ipv6-address-space)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Deploying a bi-directional peering](#example-4-deploying-a-bi-directional-peering)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using IPAM Pool Prefix Allocations](#example-2-using-ipam-pool-prefix-allocations)
+- [Using an IPv6 address space](#example-3-using-an-ipv6-address-space)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Deploying a bi-directional peering](#example-5-deploying-a-bi-directional-peering)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -51,11 +52,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
-    name: 'nvnmin001'
-    // Non-required parameters
     addressPrefixes: [
       '10.0.0.0/16'
     ]
+    name: 'nvnmin001'
+    // Non-required parameters
     location: '<location>'
   }
 }
@@ -74,15 +75,15 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nvnmin001"
-    },
-    // Non-required parameters
     "addressPrefixes": {
       "value": [
         "10.0.0.0/16"
       ]
     },
+    "name": {
+      "value": "nvnmin001"
+    },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -101,18 +102,205 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param name = 'nvnmin001'
-// Non-required parameters
 param addressPrefixes = [
   '10.0.0.0/16'
 ]
+param name = 'nvnmin001'
+// Non-required parameters
 param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 2: _Using an IPv6 address space_
+### Example 2: _Using IPAM Pool Prefix Allocations_
+
+This instance deploys the module with IP Addresses allocated from the IPAM Pool
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
+  name: 'virtualNetworkDeployment'
+  params: {
+    // Required parameters
+    addressPrefixes: [
+      '<networkManagerIpamPoolId>'
+    ]
+    name: 'nvnipam001'
+    // Non-required parameters
+    ipamPoolNumberOfIpAddresses: '254'
+    location: '<location>'
+    subnets: [
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '64'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'subnet-1'
+      }
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '16'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'subnet-2'
+      }
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '8'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'subnet-3'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "addressPrefixes": {
+      "value": [
+        "<networkManagerIpamPoolId>"
+      ]
+    },
+    "name": {
+      "value": "nvnipam001"
+    },
+    // Non-required parameters
+    "ipamPoolNumberOfIpAddresses": {
+      "value": "254"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "subnets": {
+      "value": [
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "64",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "subnet-1"
+        },
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "16",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "subnet-2"
+        },
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "8",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "subnet-3"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '<networkManagerIpamPoolId>'
+]
+param name = 'nvnipam001'
+// Non-required parameters
+param ipamPoolNumberOfIpAddresses = '254'
+param location = '<location>'
+param subnets = [
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '64'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'subnet-1'
+  }
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '16'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'subnet-2'
+  }
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '8'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'subnet-3'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 3: _Using an IPv6 address space_
 
 This instance deploys the module using an IPv6 address space.
 
@@ -126,12 +314,12 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
-    name: 'nvnipv6001'
-    // Non-required parameters
     addressPrefixes: [
       '10.0.0.0/21'
       'fd00:592b:3014::/64'
     ]
+    name: 'nvnipv6001'
+    // Non-required parameters
     location: '<location>'
     subnets: [
       {
@@ -159,16 +347,16 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nvnipv6001"
-    },
-    // Non-required parameters
     "addressPrefixes": {
       "value": [
         "10.0.0.0/21",
         "fd00:592b:3014::/64"
       ]
     },
+    "name": {
+      "value": "nvnipv6001"
+    },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     },
@@ -198,12 +386,12 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param name = 'nvnipv6001'
-// Non-required parameters
 param addressPrefixes = [
   '10.0.0.0/21'
   'fd00:592b:3014::/64'
 ]
+param name = 'nvnipv6001'
+// Non-required parameters
 param location = '<location>'
 param subnets = [
   {
@@ -219,7 +407,7 @@ param subnets = [
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -233,11 +421,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
-    name: 'nvnmax001'
-    // Non-required parameters
     addressPrefixes: [
       '<addressPrefix>'
     ]
+    name: 'nvnmax001'
+    // Non-required parameters
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -365,15 +553,15 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nvnmax001"
-    },
-    // Non-required parameters
     "addressPrefixes": {
       "value": [
         "<addressPrefix>"
       ]
     },
+    "name": {
+      "value": "nvnmax001"
+    },
+    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
@@ -515,11 +703,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param name = 'nvnmax001'
-// Non-required parameters
 param addressPrefixes = [
   '<addressPrefix>'
 ]
+param name = 'nvnmax001'
+// Non-required parameters
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -635,7 +823,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Deploying a bi-directional peering_
+### Example 5: _Deploying a bi-directional peering_
 
 This instance deploys the module with both an inbound and outbound peering.
 
@@ -649,11 +837,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
-    name: 'nvnpeer001'
-    // Non-required parameters
     addressPrefixes: [
       '10.1.0.0/24'
     ]
+    name: 'nvnpeer001'
+    // Non-required parameters
     location: '<location>'
     peerings: [
       {
@@ -705,15 +893,15 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nvnpeer001"
-    },
-    // Non-required parameters
     "addressPrefixes": {
       "value": [
         "10.1.0.0/24"
       ]
     },
+    "name": {
+      "value": "nvnpeer001"
+    },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     },
@@ -771,11 +959,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param name = 'nvnpeer001'
-// Non-required parameters
 param addressPrefixes = [
   '10.1.0.0/24'
 ]
+param name = 'nvnpeer001'
+// Non-required parameters
 param location = '<location>'
 param peerings = [
   {
@@ -815,7 +1003,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -829,11 +1017,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   name: 'virtualNetworkDeployment'
   params: {
     // Required parameters
-    name: 'nvnwaf001'
-    // Non-required parameters
     addressPrefixes: [
       '<addressPrefix>'
     ]
+    name: 'nvnwaf001'
+    // Non-required parameters
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -921,15 +1109,15 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "nvnwaf001"
-    },
-    // Non-required parameters
     "addressPrefixes": {
       "value": [
         "<addressPrefix>"
       ]
     },
+    "name": {
+      "value": "nvnwaf001"
+    },
+    // Non-required parameters
     "diagnosticSettings": {
       "value": [
         {
@@ -1027,11 +1215,11 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
 using 'br/public:avm/res/network/virtual-network:<version>'
 
 // Required parameters
-param name = 'nvnwaf001'
-// Non-required parameters
 param addressPrefixes = [
   '<addressPrefix>'
 ]
+param name = 'nvnwaf001'
+// Non-required parameters
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1113,20 +1301,20 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses` |
 | [`name`](#parameter-name) | string | The name of the Virtual Network (vNet). |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network. |
 | [`ddosProtectionPlanResourceId`](#parameter-ddosprotectionplanresourceid) | string | Resource ID of the DDoS protection plan to assign the VNET to. If it's left blank, DDoS protection will not be configured. If it's provided, the VNET created by this template will be attached to the referenced DDoS protection plan. The DDoS protection plan can exist in the same or in a different subscription. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`dnsServers`](#parameter-dnsservers) | array | DNS Servers associated to the Virtual Network. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enableVmProtection`](#parameter-enablevmprotection) | bool | Indicates if VM protection is enabled for all the subnets in the virtual network. |
 | [`flowTimeoutInMinutes`](#parameter-flowtimeoutinminutes) | int | The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes. Default value 0 will set the property to null. |
-| [`ipamPoolPrefixAllocations`](#parameter-ipampoolprefixallocations) | array | This is used to allocate an IP Address Pool from the VNet Manager IPAM service. |
+| [`ipamPoolNumberOfIpAddresses`](#parameter-ipampoolnumberofipaddresses) | string | Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`peerings`](#parameter-peerings) | array | Virtual Network Peering configurations. |
@@ -1137,19 +1325,19 @@ param tags = {
 | [`vnetEncryption`](#parameter-vnetencryption) | bool | Indicates if encryption is enabled on virtual network and if VM without encryption is allowed in encrypted VNet. Requires the EnableVNetEncryption feature to be registered for the subscription and a supported region to use this property. |
 | [`vnetEncryptionEnforcement`](#parameter-vnetencryptionenforcement) | string | If the encrypted VNet allows VM that does not support encryption. Can only be used when vnetEncryption is enabled. |
 
+### Parameter: `addressPrefixes`
+
+An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `name`
 
 The name of the Virtual Network (vNet).
 
 - Required: Yes
 - Type: string
-
-### Parameter: `addressPrefixes`
-
-An Array of 1 or more IP Address Prefixes for the Virtual Network.
-
-- Required: No
-- Type: array
 
 ### Parameter: `ddosProtectionPlanResourceId`
 
@@ -1335,45 +1523,11 @@ The flow timeout in minutes for the Virtual Network, which is used to enable con
 - Default: `0`
 - MaxValue: 30
 
-### Parameter: `ipamPoolPrefixAllocations`
+### Parameter: `ipamPoolNumberOfIpAddresses`
 
-This is used to allocate an IP Address Pool from the VNet Manager IPAM service.
+Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool.
 
 - Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`numberOfIpAddresses`](#parameter-ipampoolprefixallocationsnumberofipaddresses) | string | Number of IP addresses allocated from the pool. |
-| [`pool`](#parameter-ipampoolprefixallocationspool) | object | The Resource ID of the IPAM pool. |
-
-### Parameter: `ipamPoolPrefixAllocations.numberOfIpAddresses`
-
-Number of IP addresses allocated from the pool.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `ipamPoolPrefixAllocations.pool`
-
-The Resource ID of the IPAM pool.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-ipampoolprefixallocationspoolid) | string | The Resource ID of the IPAM pool. |
-
-### Parameter: `ipamPoolPrefixAllocations.pool.id`
-
-The Resource ID of the IPAM pool.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `location`
@@ -1672,7 +1826,7 @@ An Array of subnets to deploy to the Virtual Network.
 | :-- | :-- | :-- |
 | [`addressPrefix`](#parameter-subnetsaddressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
 | [`addressPrefixes`](#parameter-subnetsaddressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
-| [`ipamPoolPrefixAllocations`](#parameter-subnetsipampoolprefixallocations) | array | The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` or `addressPrefix` is empty. |
+| [`ipamPoolPrefixAllocations`](#parameter-subnetsipampoolprefixallocations) | array | The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool. |
 
 **Optional parameters**
 
@@ -1714,7 +1868,7 @@ List of address prefixes for the subnet. Required if `addressPrefix` is empty.
 
 ### Parameter: `subnets.ipamPoolPrefixAllocations`
 
-The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` or `addressPrefix` is empty.
+The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool.
 
 - Required: No
 - Type: array

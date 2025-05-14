@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "16509120772985063224"
+      "templateHash": "9032040987126030190"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -142,12 +142,34 @@
         },
         "ipamPoolPrefixAllocations": {
           "type": "array",
-          "items": {
-            "type": "object"
-          },
+          "prefixItems": [
+            {
+              "type": "object",
+              "properties": {
+                "pool": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Resource ID of the IPAM pool."
+                      }
+                    }
+                  }
+                },
+                "numberOfIpAddresses": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Number of IP addresses allocated from the pool."
+                  }
+                }
+              }
+            }
+          ],
+          "items": false,
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` or `addressPrefix` is empty."
+            "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool."
           }
         },
         "applicationGatewayIPConfigurations": {
@@ -260,34 +282,6 @@
             "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
           }
         }
-      }
-    },
-    "ipamPoolPrefixAllocationsType": {
-      "type": "object",
-      "properties": {
-        "pool": {
-          "type": "object",
-          "properties": {
-            "id": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The Resource ID of the IPAM pool."
-              }
-            }
-          },
-          "metadata": {
-            "description": "Optional. The Resource ID of the IPAM pool."
-          }
-        },
-        "numberOfIpAddresses": {
-          "type": "string",
-          "metadata": {
-            "description": "Optional. Number of IP addresses allocated from the pool."
-          }
-        }
-      },
-      "metadata": {
-        "description": "Optional. A Type for the IPAM pool prefix allocations."
       }
     },
     "diagnosticSettingFullType": {
@@ -534,19 +528,15 @@
     },
     "addressPrefixes": {
       "type": "array",
-      "nullable": true,
       "metadata": {
-        "description": "Optional. An Array of 1 or more IP Address Prefixes for the Virtual Network."
+        "description": "Required. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`"
       }
     },
-    "ipamPoolPrefixAllocations": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/ipamPoolPrefixAllocationsType"
-      },
+    "ipamPoolNumberOfIpAddresses": {
+      "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. This is used to allocate an IP Address Pool from the VNet Manager IPAM service."
+        "description": "Optional. Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool."
       }
     },
     "virtualNetworkBgpCommunity": {
@@ -714,7 +704,7 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "addressSpace": "[if(not(empty(parameters('addressPrefixes'))), createObject('addressPrefixes', parameters('addressPrefixes')), if(not(empty(parameters('ipamPoolPrefixAllocations'))), createObject('ipamPoolPrefixAllocations', parameters('ipamPoolPrefixAllocations')), null()))]",
+        "addressSpace": "[if(contains(parameters('addressPrefixes')[0], '/Microsoft.Network/networkManagers/'), createObject('ipamPoolPrefixAllocations', createArray(createObject('pool', createObject('id', parameters('addressPrefixes')[0]), 'numberOfIpAddresses', parameters('ipamPoolNumberOfIpAddresses')))), createObject('addressPrefixes', parameters('addressPrefixes')))]",
         "bgpCommunities": "[if(not(empty(parameters('virtualNetworkBgpCommunity'))), createObject('virtualNetworkCommunity', parameters('virtualNetworkBgpCommunity')), null())]",
         "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), createObject('id', parameters('ddosProtectionPlanResourceId')), null())]",
         "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', array(parameters('dnsServers'))), null())]",
@@ -880,7 +870,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12430723351216910562"
+              "templateHash": "6928993269407282230"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
@@ -1172,9 +1162,9 @@
                     }
                   }
                 ],
-                "addressPrefix": "[if(not(empty(parameters('addressPrefix'))), parameters('addressPrefix'), null())]",
-                "addressPrefixes": "[if(not(empty(parameters('addressPrefixes'))), parameters('addressPrefixes'), null())]",
-                "ipamPoolPrefixAllocations": "[if(not(empty(parameters('ipamPoolPrefixAllocations'))), parameters('ipamPoolPrefixAllocations'), null())]",
+                "addressPrefix": "[parameters('addressPrefix')]",
+                "addressPrefixes": "[parameters('addressPrefixes')]",
+                "ipamPoolPrefixAllocations": "[parameters('ipamPoolPrefixAllocations')]",
                 "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
                 "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
                 "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
