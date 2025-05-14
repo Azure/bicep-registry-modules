@@ -1,4 +1,4 @@
-# DBforPostgreSQL Flexible Server Advanced Threat Protection `[Microsoft.DBforPostgreSQL/flexibleServers]`
+# DBforPostgreSQL Flexible Server Advanced Threat Protection `[Microsoft.DBforPostgreSQL/flexibleServers/advancedThreatProtectionSettings]`
 
 This module deploys a DBforPostgreSQL Advanced Threat Protection.
 

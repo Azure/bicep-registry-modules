@@ -9,10 +9,10 @@ param storageAccountName string
 param name string = 'default'
 
 @description('Optional. Protocol settings for file service.')
-param protocolSettings object = {}
+param protocolSettings resourceInput<'Microsoft.Storage/storageAccounts/fileServices@2024-01-01'>.properties.protocolSettings = {}
 
 @description('Optional. The service properties for soft delete.')
-param shareDeleteRetentionPolicy object = {
+param shareDeleteRetentionPolicy resourceInput<'Microsoft.Storage/storageAccounts/fileServices@2024-01-01'>.properties.shareDeleteRetentionPolicy = {
   enabled: true
   days: 7
 }
@@ -29,11 +29,11 @@ param shares array?
 
 var defaultShareAccessTier = storageAccount.kind == 'FileStorage' ? 'Premium' : 'TransactionOptimized' // default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind, 'TransactionOptimized' otherwise
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 }
 
-resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2023-04-01' = {
+resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2024-01-01' = {
   name: name
   parent: storageAccount
   properties: {

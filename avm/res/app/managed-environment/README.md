@@ -1085,12 +1085,12 @@ The configuration for Log Analytics.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customerId`](#parameter-applogsconfigurationloganalyticsconfigurationcustomerid) | string | The customer ID of the Log Analytics workspace. |
+| [`customerId`](#parameter-applogsconfigurationloganalyticsconfigurationcustomerid) | string | The Log Analytics Workspace ID. |
 | [`sharedKey`](#parameter-applogsconfigurationloganalyticsconfigurationsharedkey) | securestring | The shared key of the Log Analytics workspace. |
 
 ### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.customerId`
 
-The customer ID of the Log Analytics workspace.
+The Log Analytics Workspace ID.
 
 - Required: Yes
 - Type: string
