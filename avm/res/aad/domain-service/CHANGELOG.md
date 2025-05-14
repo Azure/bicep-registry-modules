@@ -25,13 +25,23 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ## 0.3.0
 
+### Changes
+
+- Roleassignment update to align to the latest specs. Added the optional name parameter.
+
 ### Breaking Changes
 
 - none
 
+## 0.2.2
+
 ### Changes
 
-- Roleassignment update to align to the latest specs. Added the optional name parameter.
+- Resource Provider version update
+
+### Breaking Changes
+
+- none
 
 ## 0.2.1
 
