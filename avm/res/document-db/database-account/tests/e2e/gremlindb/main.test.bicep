@@ -43,7 +43,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}002'
-      location: enforcedLocation
       capabilitiesToAdd: [
         'EnableGremlin'
       ]
