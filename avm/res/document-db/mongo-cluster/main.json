@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "15047960024142016693"
+      "templateHash": "1389742016142963515"
     },
-    "name": "Azure Cosmos DB MongoDB vCore cluster",
-    "description": "This module deploys a Azure Cosmos DB MongoDB vCore cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
+    "name": "Azure Cosmos DB for MongoDB (vCore) cluster",
+    "description": "This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
   },
   "definitions": {
     "privateEndpointOutputType": {
@@ -718,7 +718,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Azure Cosmos DB MongoDB vCore cluster."
+        "description": "Required. Name of the Azure Cosmos DB for MongoDB (vCore) cluster."
       }
     },
     "location": {
@@ -753,7 +753,7 @@
       "type": "string",
       "defaultValue": "Default",
       "metadata": {
-        "description": "Optional. Mode to create the azure cosmos db mongodb vCore cluster."
+        "description": "Optional. Mode to create the Azure Cosmos DB for MongoDB (vCore) cluster."
       }
     },
     "diagnosticSettings": {
@@ -774,8 +774,14 @@
       }
     },
     "highAvailabilityMode": {
-      "type": "bool",
-      "defaultValue": false,
+      "type": "string",
+      "defaultValue": "Disabled",
+      "allowedValues": [
+        "Disabled",
+        "SameZone",
+        "ZoneRedundant",
+        "ZoneRedundantPreferred"
+      ],
       "metadata": {
         "description": "Optional. Whether high availability is enabled on the node group."
       }
@@ -2177,14 +2183,14 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the Azure Cosmos DB MongoDB vCore cluster."
+        "description": "The name of the Azure Cosmos DB for MongoDB (vCore) cluster."
       },
       "value": "[parameters('name')]"
     },
     "mongoClusterResourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the Azure Cosmos DB MongoDB vCore cluster."
+        "description": "The resource ID of the Azure Cosmos DB for MongoDB (vCore) cluster."
       },
       "value": "[resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name'))]"
     },
