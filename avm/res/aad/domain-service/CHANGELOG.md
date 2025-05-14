@@ -15,6 +15,10 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ## 0.3.1
 
+### Breaking Changes
+
+- none
+
 ### Changes
 
 - Removed unused owner metadata
@@ -45,9 +49,10 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ## 0.2.0
 
-### Breaking Changes
+### Changes
 
-- none
+- TLSV1 is disabled by default
+- Kerberos RC4 is disabled by default
 
 ## 0.1.0
 
@@ -58,7 +63,3 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 ### Breaking Changes
 
 - none
-
-### Changes
-
-- should not be here
