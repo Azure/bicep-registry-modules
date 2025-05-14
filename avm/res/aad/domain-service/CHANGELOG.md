@@ -33,17 +33,17 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 - none
 
-## 0.2.0
-
-### Breaking Changes
-
-- none
-
 ## 0.2.1
 
 ### Changes
 
 - Resource Provider version update for AVM Telemetry
+
+### Breaking Changes
+
+- none
+
+## 0.2.0
 
 ### Breaking Changes
 
