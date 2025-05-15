@@ -64,6 +64,7 @@ module testDeployment '../../../main.bicep' = [
         sku: '2022-datacenter-azure-edition'
         version: 'latest'
       }
+      diskControllerType: 'SCSI'
       zone: 1
       nicConfigurations: [
         {
