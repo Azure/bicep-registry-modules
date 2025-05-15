@@ -90,7 +90,7 @@ function Get-TemplateFileToPublish {
         [Parameter(Mandatory)]
         [string] $ModuleFolderPath,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $false)]
         [string[]] $PathsToInclude = @(),
 
         [Parameter(Mandatory = $false)]
