@@ -51,6 +51,7 @@ module testDeployment '../../../main.bicep' = [
       nodeCount: 1
       sku: 'M10'
       storage: 32
+      highAvailabilityMode: 'Disabled'
     }
   }
 ]

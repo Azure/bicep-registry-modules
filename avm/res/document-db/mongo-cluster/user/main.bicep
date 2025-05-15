@@ -42,6 +42,15 @@ resource user 'Microsoft.DocumentDB/mongoClusters/users@2025-04-01-preview' = {
   }
 }
 
+@description('The name of the resource group the Azure Cosmos DB for MongoDB (vCore) cluster was created in.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The name of the user.')
+output name string = user.name
+
+@description('The resource ID of the user.')
+output resourceId string = user.id
+
 @export()
 @description('Properties for the identity associated with the user.')
 type targetPrincipalPropertiesType = {
@@ -61,12 +70,3 @@ type rolePropertiesType = {
   @description('Required. The role to assign to the user.')
   role: 'dbOwner'
 }
-
-@description('The name of the resource group the Azure Cosmos DB for MongoDB (vCore) cluster was created in.')
-output resourceGroupName string = resourceGroup().name
-
-@description('The name of the user.')
-output name string = user.name
-
-@description('The resource ID of the user.')
-output resourceId string = user.id

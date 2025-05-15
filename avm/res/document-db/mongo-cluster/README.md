@@ -61,6 +61,8 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     nodeCount: 1
     sku: 'M10'
     storage: 32
+    // Non-required parameters
+    highAvailabilityMode: 'Disabled'
   }
 }
 ```
@@ -95,6 +97,10 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     },
     "storage": {
       "value": 32
+    },
+    // Non-required parameters
+    "highAvailabilityMode": {
+      "value": "Disabled"
     }
   }
 }
@@ -117,6 +123,8 @@ param name = 'ddmcdefmin001'
 param nodeCount = 1
 param sku = 'M10'
 param storage = 32
+// Non-required parameters
+param highAvailabilityMode = 'Disabled'
 ```
 
 </details>
@@ -143,6 +151,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     sku: 'M10'
     storage: 32
     // Non-required parameters
+    highAvailabilityMode: 'Disabled'
     secretsExportConfiguration: {
       connectionStringSecretName: 'connectionString'
       keyVaultResourceId: '<keyVaultResourceId>'
@@ -183,6 +192,9 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
       "value": 32
     },
     // Non-required parameters
+    "highAvailabilityMode": {
+      "value": "Disabled"
+    },
     "secretsExportConfiguration": {
       "value": {
         "connectionStringSecretName": "connectionString",
@@ -211,6 +223,7 @@ param nodeCount = 1
 param sku = 'M10'
 param storage = 32
 // Non-required parameters
+param highAvailabilityMode = 'Disabled'
 param secretsExportConfiguration = {
   connectionStringSecretName: 'connectionString'
   keyVaultResourceId: '<keyVaultResourceId>'
@@ -578,6 +591,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
         principalType: 'ServicePrincipal'
       }
     ]
+    highAvailabilityMode: 'Disabled'
   }
 }
 ```
@@ -624,6 +638,9 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
           "principalType": "ServicePrincipal"
         }
       ]
+    },
+    "highAvailabilityMode": {
+      "value": "Disabled"
     }
   }
 }
@@ -654,6 +671,7 @@ param entraAuthIdentities = [
     principalType: 'ServicePrincipal'
   }
 ]
+param highAvailabilityMode = 'Disabled'
 ```
 
 </details>
@@ -680,7 +698,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     sku: 'M30'
     storage: 256
     // Non-required parameters
-    highAvailabilityMode: 'SameZone'
+    highAvailabilityMode: 'ZoneRedundant'
     tags: {
       environment: 'dev'
       role: 'validation'
@@ -723,7 +741,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     },
     // Non-required parameters
     "highAvailabilityMode": {
-      "value": "SameZone"
+      "value": "ZoneRedundant"
     },
     "tags": {
       "value": {
@@ -754,7 +772,7 @@ param nodeCount = 3
 param sku = 'M30'
 param storage = 256
 // Non-required parameters
-param highAvailabilityMode = 'SameZone'
+param highAvailabilityMode = 'ZoneRedundant'
 param tags = {
   environment: 'dev'
   role: 'validation'
@@ -1054,7 +1072,7 @@ Whether high availability is enabled on the node group.
 
 - Required: No
 - Type: string
-- Default: `'Disabled'`
+- Default: `'ZoneRedundant'`
 - Allowed:
   ```Bicep
   [
