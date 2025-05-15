@@ -133,7 +133,7 @@ function Get-TemplateFileToPublish {
             -not (Test-Path (Join-Path (Split-Path $_) 'version.json'))
         }
         if ($toSkip.Count -gt 0) {
-            Write-Verbose "Skipping [$toSkip] modules that are not versioned." -Verbose
+            Write-Verbose ('Skipping [{0}] modules that are not versioned.' -f $toSkip.Count) -Verbose
             $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
                 $_ -notin $toSkip
             }
