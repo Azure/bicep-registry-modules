@@ -1574,13 +1574,15 @@ Describe 'Module tests' -Tag 'Module' {
 
             # get all tags for a module
             $publishedTags = Get-PublishedModuleVersionsList -ModuleType $moduleType -ModuleName $moduleFolderName
+            # the next version to be published
+            $nextPublishedModuleVersion = '## {0}' -f (Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath)
 
             $incorrectVersions = [System.Collections.ArrayList]@()
             $regex = '##\s(\d+\.\d+\.\d+)'
             foreach ($section in $sections) {
                 if ($section -match $regex) {
                     $version = $matches[1]
-                    if ($publishedTags -notcontains $version) {
+                    if ($publishedTags -notcontains $version -and $section -ne $nextPublishedModuleVersion) {
                         $incorrectVersions += $version
                     }
                 }
