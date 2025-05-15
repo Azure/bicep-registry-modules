@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "1389742016142963515"
+      "templateHash": "14149284653019221454"
     },
     "name": "Azure Cosmos DB for MongoDB (vCore) cluster",
     "description": "This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -1028,7 +1028,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "11348282878809602495"
+              "templateHash": "6395411876490462293"
             },
             "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
             "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster."
@@ -1062,7 +1062,7 @@
           "resources": [
             {
               "type": "Microsoft.DocumentDB/mongoClusters/firewallRules",
-              "apiVersion": "2024-02-15-preview",
+              "apiVersion": "2024-10-01-preview",
               "name": "[format('{0}/{1}', parameters('mongoClusterName'), if(not(contains(parameters('name'), '.')), parameters('name'), fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')))]",
               "properties": {
                 "startIpAddress": "[parameters('startIpAddress')]",

@@ -20,7 +20,7 @@ This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.DocumentDB/mongoClusters` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/mongoClusters) |
-| `Microsoft.DocumentDB/mongoClusters/firewallRules` | [2024-02-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-02-15-preview/mongoClusters/firewallRules) |
+| `Microsoft.DocumentDB/mongoClusters/firewallRules` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-10-01-preview/mongoClusters/firewallRules) |
 | `Microsoft.DocumentDB/mongoClusters/users` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/mongoClusters) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
