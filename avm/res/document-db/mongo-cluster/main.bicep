@@ -147,7 +147,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-04-01-preview' = {
   name: name
-  tags: tags ?? {}
+  tags: tags
   location: location
   properties: {
     administrator: {
