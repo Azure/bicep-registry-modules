@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "14149284653019221454"
+      "templateHash": "15825695359941775847"
     },
     "name": "Azure Cosmos DB for MongoDB (vCore) cluster",
     "description": "This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -1028,16 +1028,16 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "6395411876490462293"
+              "templateHash": "16764717011313154043"
             },
-            "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
-            "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster."
+            "name": "Azure Cosmos DB for MongoDB (vCore) cluster Config FireWall Rules",
+            "description": "This module config firewall rules for the Azure Cosmos DB for MongoDB (vCore) cluster."
           },
           "parameters": {
             "mongoClusterName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent Azure Cosmos DB MongoDB vCore cluster. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent Azure Cosmos DB for MongoDB (vCore) cluster. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
@@ -1049,13 +1049,13 @@
             "startIpAddress": {
               "type": "string",
               "metadata": {
-                "description": "Required. The start IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format."
+                "description": "Required. The start IP address of the Azure Cosmos DB for MongoDB (vCore) cluster firewall rule. Must be IPv4 format."
               }
             },
             "endIpAddress": {
               "type": "string",
               "metadata": {
-                "description": "Required. The end IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format."
+                "description": "Required. The end IP address of the Azure Cosmos DB for MongoDB (vCore) cluster firewall rule. Must be IPv4 format."
               }
             }
           },
@@ -1074,7 +1074,7 @@
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the resource group the Azure Cosmos DB MongoDB vCore cluster was created in."
+                "description": "The name of the resource group the Azure Cosmos DB for MongoDB (vCore) cluster was created in."
               },
               "value": "[resourceGroup().name]"
             },
