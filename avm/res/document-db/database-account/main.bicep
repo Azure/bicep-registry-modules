@@ -82,8 +82,8 @@ param sqlRoleDefinitions customSqlRoleDefinitionType[]?
 @description('Optional. SQL Role Assignments of built-in roles.')
 param builtInSqlRoleAssignments builtInSqlRoleAssignmentType[]?
 
-@description('Optional. MongoDB Databases configurations.')
-param mongodbDatabases array?
+@description('Optional. Configuration for databases when using Azure Cosmos DB for MongoDB RU.')
+param mongodbDatabases mongodbDatabaseType[]?
 
 @description('Optional. Gremlin Databases configurations.')
 param gremlinDatabases array?
@@ -452,11 +452,12 @@ module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
   for mongodbDatabase in (mongodbDatabases ?? []): {
     name: '${uniqueString(deployment().name, location)}-mongodb-${mongodbDatabase.name}'
     params: {
-      databaseAccountName: databaseAccount.name
+      parentAccountName: databaseAccount.name
       name: mongodbDatabase.name
       tags: mongodbDatabase.?tags ?? tags
-      collections: mongodbDatabase.?collections
       throughput: mongodbDatabase.?throughput
+      autoscaleMaxThroughput: mongodbDatabase.?autoscaleMaxThroughput
+      collections: mongodbDatabase.?collections
     }
   }
 ]
@@ -765,6 +766,26 @@ type customSqlRoleDefinitionType = {
 
   @description('Optional. An array of SQL Role Assignments to be created for the SQL Role Definition.')
   sqlRoleAssignments: sqlRoleAssignmentType[]?
+}
+
+import { mongodbCollectionType } from 'mongodb-database/main.bicep'
+@export()
+@description('A collection within the database.')
+type mongodbDatabaseType = {
+  @description('Required. The name of the database.')
+  name: string
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
+
+  @description('Optional. The provisioned throughput assigned to the database.')
+  throughput: int?
+
+  @description('Optional. The maximum throughput for the database when using autoscale.')
+  autoscaleMaxThroughput: int?
+
+  @description('Optional. The set of collections within the database.')
+  collections: mongodbCollectionType[]?
 }
 
 @export()
