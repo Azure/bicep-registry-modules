@@ -66,10 +66,15 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    disableLocalAuth: true
+    tags: {
+      environment: 'dev'
+      role: 'validation'
+      type: 'waf-aligned'
+    }
+    disableLocalAuthentication: true
+    disableKeyBasedMetadataWriteAccess: true
     automaticFailover: true
     minimumTlsVersion: 'Tls12'
-    disableKeyBasedMetadataWriteAccess: true
     networkRestrictions: {
       networkAclBypass: 'None'
       publicNetworkAccess: 'Disabled'

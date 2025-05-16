@@ -23,6 +23,9 @@ param databaseAccountOfferType string = 'Standard'
 @description('Optional. The set of locations enabled for the account. Defaults to the location where the account is deployed.')
 param failoverLocations failoverLocationType[]?
 
+@description('Optional. Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts.')
+param zoneRedundant bool = true
+
 @allowed([
   'Eventual'
   'ConsistentPrefix'
@@ -34,7 +37,7 @@ param failoverLocations failoverLocationType[]?
 param defaultConsistencyLevel string = 'Session'
 
 @description('Optional. Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true.')
-param disableLocalAuth bool = true
+param disableLocalAuthentication bool = true
 
 @description('Optional. Flag to indicate whether to enable storage analytics. Defaults to false.')
 param enableAnalyticalStorage bool = false
@@ -262,9 +265,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
   location: location
   tags: tags
   identity: identity
-  kind: !empty(sqlDatabases) || !empty(gremlinDatabases)
-    ? 'GlobalDocumentDB'
-    : (!empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB')
+  kind: !empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB'
   properties: {
     databaseAccountOfferType: databaseAccountOfferType
     backupPolicy: {
@@ -295,6 +296,8 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
       totalThroughputLimit: totalThroughputLimit
     }
     publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
+    disableLocalAuth: disableLocalAuthentication
+    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
     ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
       ? {
           // NoSQL, MongoDB RU, Table, and Apache Gremlin common properties
@@ -318,7 +321,7 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
                 {
                   failoverPriority: 0
                   locationName: location
-                  isZoneRedundant: true
+                  isZoneRedundant: zoneRedundant
                 }
               ]
           ipRules: map(networkRestrictions.?ipRules ?? [], ipRule => {
@@ -333,13 +336,6 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
           enableFreeTier: enableFreeTier
           enableAutomaticFailover: automaticFailover
           enableAnalyticalStorage: enableAnalyticalStorage
-        }
-      : {})
-    ...((!empty(sqlDatabases) || !empty(tables))
-      ? {
-          // NoSQL and Table properties
-          disableLocalAuth: disableLocalAuth
-          disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
         }
       : {})
     ...(!empty(mongodbDatabases)
@@ -654,38 +650,6 @@ output privateEndpoints privateEndpointOutputType[] = [
     networkInterfaceResourceIds: databaseAccount_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
-
-@secure()
-@description('The base-64-encoded value of the primary read-write key.')
-output primaryWriteKey string = databaseAccount.listKeys().primaryMasterKey
-
-@secure()
-@description('The base-64-encoded value of the primary read-only key.')
-output primaryReadOnlyKey string = databaseAccount.listKeys().primaryReadonlyMasterKey
-
-@secure()
-@description('The primary write connection string.')
-output primaryWriteConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
-
-@secure()
-@description('The primary read-only connection string.')
-output primaryReadOnlyConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
-
-@secure()
-@description('The base-64-encoded value of the secondary read-write key.')
-output secondaryWriteKey string = databaseAccount.listKeys().secondaryMasterKey
-
-@secure()
-@description('The base-64-encoded value of the secondary read-only key.')
-output secondaryReadOnlyKey string = databaseAccount.listKeys().secondaryReadonlyMasterKey
-
-@secure()
-@description('The secondary write connection string.')
-output secondaryWriteConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
-
-@secure()
-@description('The secondary read-only connection string.')
-output secondaryReadOnlyConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
 
 // =============== //
 //   Definitions   //

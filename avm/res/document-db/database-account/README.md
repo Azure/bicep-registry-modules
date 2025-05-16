@@ -2807,7 +2807,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       }
     ]
     disableKeyBasedMetadataWriteAccess: true
-    disableLocalAuth: true
+    disableLocalAuthentication: true
     minimumTlsVersion: 'Tls12'
     networkRestrictions: {
       networkAclBypass: 'None'
@@ -2831,6 +2831,11 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
+    tags: {
+      environment: 'dev'
+      role: 'validation'
+      type: 'waf-aligned'
+    }
   }
 }
 ```
@@ -2868,7 +2873,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "disableKeyBasedMetadataWriteAccess": {
       "value": true
     },
-    "disableLocalAuth": {
+    "disableLocalAuthentication": {
       "value": true
     },
     "minimumTlsVersion": {
@@ -2901,6 +2906,13 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
+    },
+    "tags": {
+      "value": {
+        "environment": "dev",
+        "role": "validation",
+        "type": "waf-aligned"
+      }
     }
   }
 }
@@ -2929,7 +2941,7 @@ param diagnosticSettings = [
   }
 ]
 param disableKeyBasedMetadataWriteAccess = true
-param disableLocalAuth = true
+param disableLocalAuthentication = true
 param minimumTlsVersion = 'Tls12'
 param networkRestrictions = {
   networkAclBypass: 'None'
@@ -2953,6 +2965,11 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
+param tags = {
+  environment: 'dev'
+  role: 'validation'
+  type: 'waf-aligned'
+}
 ```
 
 </details>
@@ -2982,7 +2999,7 @@ param sqlDatabases = [
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the account. Defaults to "Session". |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
-| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
+| [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether "Free Tier" is enabled. Defaults to false. |
 | [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false. |
@@ -3006,6 +3023,7 @@ param sqlDatabases = [
 | [`tables`](#parameter-tables) | array | Configuration for databases when using Azure Cosmos DB for Table. |
 | [`tags`](#parameter-tags) | object | Tags for the resource. |
 | [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s). |
+| [`zoneRedundant`](#parameter-zoneredundant) | bool | Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts. |
 
 ### Parameter: `name`
 
@@ -3337,7 +3355,7 @@ Disable write operations on metadata resources (databases, containers, throughpu
 - Type: bool
 - Default: `True`
 
-### Parameter: `disableLocalAuth`
+### Parameter: `disableLocalAuthentication`
 
 Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true.
 
@@ -4568,6 +4586,14 @@ Default to unlimited. The total throughput limit imposed on this Cosmos DB accou
 - Type: int
 - Default: `-1`
 
+### Parameter: `zoneRedundant`
+
+Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
 ## Outputs
 
 | Output | Type | Description |
@@ -4576,17 +4602,9 @@ Default to unlimited. The total throughput limit imposed on this Cosmos DB accou
 | `exportedSecrets` |  | The references to the secrets exported to the provided Key Vault. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the database account. |
-| `primaryReadOnlyConnectionString` | securestring | The primary read-only connection string. |
-| `primaryReadOnlyKey` | securestring | The base-64-encoded value of the primary read-only key. |
-| `primaryWriteConnectionString` | securestring | The primary write connection string. |
-| `primaryWriteKey` | securestring | The base-64-encoded value of the primary read-write key. |
 | `privateEndpoints` | array | The private endpoints of the database account. |
 | `resourceGroupName` | string | The name of the resource group the database account was created in. |
 | `resourceId` | string | The resource ID of the database account. |
-| `secondaryReadOnlyConnectionString` | securestring | The secondary read-only connection string. |
-| `secondaryReadOnlyKey` | securestring | The base-64-encoded value of the secondary read-only key. |
-| `secondaryWriteConnectionString` | securestring | The secondary write connection string. |
-| `secondaryWriteKey` | securestring | The base-64-encoded value of the secondary read-write key. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
