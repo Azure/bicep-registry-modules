@@ -10,6 +10,9 @@ param virtualNetworkName string
 @description('Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty.')
 param addressPrefix string?
 
+@description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty.')
+param ipamPoolPrefixAllocations object[]?
+
 @description('Optional. The resource ID of the network security group to assign to the subnet.')
 param networkSecurityGroupResourceId string?
 
@@ -115,12 +118,13 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-01-01' existing 
   name: virtualNetworkName
 }
 
-resource subnet 'Microsoft.Network/virtualNetworks/subnets@2024-01-01' = {
+resource subnet 'Microsoft.Network/virtualNetworks/subnets@2024-05-01' = {
   name: name
   parent: virtualNetwork
   properties: {
     addressPrefix: addressPrefix
     addressPrefixes: addressPrefixes
+    ipamPoolPrefixAllocations: ipamPoolPrefixAllocations
     networkSecurityGroup: !empty(networkSecurityGroupResourceId)
       ? {
           id: networkSecurityGroupResourceId
@@ -190,3 +194,6 @@ output addressPrefix string = subnet.properties.?addressPrefix ?? ''
 
 @description('List of address prefixes for the subnet.')
 output addressPrefixes array = subnet.properties.?addressPrefixes ?? []
+
+@description('The IPAM pool prefix allocations for the subnet.')
+output ipamPoolPrefixAllocations array = subnet.properties.?ipamPoolPrefixAllocations ?? []

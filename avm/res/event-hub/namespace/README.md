@@ -25,7 +25,7 @@ This module deploys an Event Hub Namespace.
 | `Microsoft.EventHub/namespaces` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces) |
 | `Microsoft.EventHub/namespaces/authorizationRules` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/authorizationRules) |
 | `Microsoft.EventHub/namespaces/disasterRecoveryConfigs` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/disasterRecoveryConfigs) |
-| `Microsoft.EventHub/namespaces/eventhubs` | [2022-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2022-10-01-preview/namespaces/eventhubs) |
+| `Microsoft.EventHub/namespaces/eventhubs` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs) |
 | `Microsoft.EventHub/namespaces/eventhubs/authorizationRules` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/authorizationRules) |
 | `Microsoft.EventHub/namespaces/eventhubs/consumergroups` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/eventhubs/consumergroups) |
 | `Microsoft.EventHub/namespaces/networkRuleSets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/networkRuleSets) |
@@ -339,6 +339,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     disableLocalAuth: true
     eventhubs: [
       {
+        messageRetentionInDays: 3
         name: 'az-evh-x-001'
         roleAssignments: [
           {
@@ -381,10 +382,10 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
             userMetadata: 'customMetadata'
           }
         ]
-        messageRetentionInDays: 1
         name: 'az-evh-x-002'
         partitionCount: 2
         retentionDescriptionCleanupPolicy: 'Delete'
+        retentionDescriptionEnabled: true
         retentionDescriptionRetentionTimeInHours: 3
         roleAssignments: [
           {
@@ -398,6 +399,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
       {
         name: 'az-evh-x-003'
         retentionDescriptionCleanupPolicy: 'Compact'
+        retentionDescriptionEnabled: true
         retentionDescriptionTombstoneRetentionTimeInHours: 24
       }
     ]
@@ -541,6 +543,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     "eventhubs": {
       "value": [
         {
+          "messageRetentionInDays": 3,
           "name": "az-evh-x-001",
           "roleAssignments": [
             {
@@ -583,10 +586,10 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
               "userMetadata": "customMetadata"
             }
           ],
-          "messageRetentionInDays": 1,
           "name": "az-evh-x-002",
           "partitionCount": 2,
           "retentionDescriptionCleanupPolicy": "Delete",
+          "retentionDescriptionEnabled": true,
           "retentionDescriptionRetentionTimeInHours": 3,
           "roleAssignments": [
             {
@@ -600,6 +603,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         {
           "name": "az-evh-x-003",
           "retentionDescriptionCleanupPolicy": "Compact",
+          "retentionDescriptionEnabled": true,
           "retentionDescriptionTombstoneRetentionTimeInHours": 24
         }
       ]
@@ -763,6 +767,7 @@ param diagnosticSettings = [
 param disableLocalAuth = true
 param eventhubs = [
   {
+    messageRetentionInDays: 3
     name: 'az-evh-x-001'
     roleAssignments: [
       {
@@ -805,10 +810,10 @@ param eventhubs = [
         userMetadata: 'customMetadata'
       }
     ]
-    messageRetentionInDays: 1
     name: 'az-evh-x-002'
     partitionCount: 2
     retentionDescriptionCleanupPolicy: 'Delete'
+    retentionDescriptionEnabled: true
     retentionDescriptionRetentionTimeInHours: 3
     roleAssignments: [
       {
@@ -822,6 +827,7 @@ param eventhubs = [
   {
     name: 'az-evh-x-003'
     retentionDescriptionCleanupPolicy: 'Compact'
+    retentionDescriptionEnabled: true
     retentionDescriptionTombstoneRetentionTimeInHours: 24
   }
 ]
@@ -1408,7 +1414,7 @@ param tags = {
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`skuCapacity`](#parameter-skucapacity) | int | The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. |
+| [`skuCapacity`](#parameter-skucapacity) | int | The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. |
 | [`skuName`](#parameter-skuname) | string | event hub plan SKU name. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Switch to make the Event Hub Namespace zone redundant. |
@@ -2423,7 +2429,7 @@ The rootSecondaryKeyName secret name to create.
 
 ### Parameter: `skuCapacity`
 
-The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.
+The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.
 
 - Required: No
 - Type: int

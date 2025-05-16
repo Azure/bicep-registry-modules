@@ -16,7 +16,7 @@ param location string = resourceGroup().location
 ])
 param skuName string = 'Standard'
 
-@description('Optional. The Event Hub\'s throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.')
+@description('Optional. The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.')
 @minValue(1)
 @maxValue(20)
 param skuCapacity int = 1
@@ -294,6 +294,7 @@ module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
       partitionCount: eventHub.?partitionCount
       roleAssignments: eventHub.?roleAssignments
       status: eventHub.?status
+      retentionDescriptionEnabled: eventHub.?retentionDescriptionEnabled
       retentionDescriptionCleanupPolicy: eventHub.?retentionDescriptionCleanupPolicy
       retentionDescriptionRetentionTimeInHours: eventHub.?retentionDescriptionRetentionTimeInHours
       retentionDescriptionTombstoneRetentionTimeInHours: eventHub.?retentionDescriptionTombstoneRetentionTimeInHours
@@ -317,7 +318,7 @@ module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!emp
 
 module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-ehNamespace-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-namespace-PrivateEndpoint-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]

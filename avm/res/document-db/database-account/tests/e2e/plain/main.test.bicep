@@ -40,20 +40,12 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: enforcedLocation
-
-      enableTelemetry: false
       databaseAccountOfferType: 'Standard'
       totalThroughputLimit: 4000
       capabilitiesToAdd: [
         'EnableServerless'
       ]
-
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
-      }
-      locations: [
+      failoverLocations: [
         {
           failoverPriority: 0
           isZoneRedundant: false
@@ -65,11 +57,6 @@ module testDeployment '../../../main.bicep' = [
           name: 'no-containers-specified'
         }
       ]
-      tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
-        Role: 'DeploymentValidation'
-      }
     }
   }
 ]
