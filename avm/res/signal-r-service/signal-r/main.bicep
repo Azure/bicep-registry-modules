@@ -44,7 +44,7 @@ param tier string = sku == 'Free_F1'
 param capacity int = 1
 
 @description('Optional. The tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.SignalRService/signalR@2022-02-01'>.tags?
 
 @description('Optional. The allowed origin settings of the resource.')
 param allowedOrigins array = [
@@ -58,7 +58,7 @@ param disableAadAuth bool = false
 param disableLocalAuth bool = true
 
 @description('Optional. The features settings of the resource, `ServiceMode` is the only required feature. See https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/signalr?pivots=deployment-language-bicep#signalrfeature for more information.')
-param features array = [
+param features resourceInput<'Microsoft.SignalRService/signalR@2022-02-01'>.properties.features = [
   {
     flag: 'ServiceMode'
     value: 'Serverless'
@@ -66,7 +66,7 @@ param features array = [
 ]
 
 @description('Optional. Networks ACLs, this value contains IPs to allow and/or Subnet information. Can only be set if the \'SKU\' is not \'Free_F1\'. For security reasons, it is recommended to set the DefaultAction Deny.')
-param networkAcls object = {}
+param networkAcls resourceInput<'Microsoft.SignalRService/signalR@2022-02-01'>.properties.networkACLs?
 
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
@@ -80,7 +80,7 @@ param publicNetworkAccess string?
   'MessagingLogs'
 ])
 @description('Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled.')
-param liveTraceCatagoriesToEnable array = [
+param liveTraceCatagoriesToEnable string[] = [
   'ConnectivityLogs'
   'MessagingLogs'
 ]
@@ -90,7 +90,7 @@ param liveTraceCatagoriesToEnable array = [
   'MessagingLogs'
 ])
 @description('Optional. Control permission for data plane traffic coming from public networks while private endpoint is enabled.')
-param resourceLogConfigurationsToEnable array = [
+param resourceLogConfigurationsToEnable string[] = [
   'ConnectivityLogs'
   'MessagingLogs'
 ]
@@ -101,22 +101,22 @@ param clientCertEnabled bool = false
 @description('Optional. Upstream templates to enable. For more information, see https://learn.microsoft.com/en-us/azure/templates/microsoft.signalrservice/2022-02-01/signalr?pivots=deployment-language-bicep#upstreamtemplate.')
 param upstreamTemplatesToEnable array?
 
-import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
 
-import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
@@ -253,7 +253,7 @@ resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
           categories: liveTraceCatagories
         }
       : {}
-    networkACLs: !empty(networkAcls) ? any(networkAcls) : null
+    networkACLs: networkAcls
     publicNetworkAccess: !empty(publicNetworkAccess)
       ? any(publicNetworkAccess)
       : (!empty(privateEndpoints) && empty(networkAcls) ? 'Disabled' : null)
@@ -271,10 +271,13 @@ resource signalR 'Microsoft.SignalRService/signalR@2022-02-01' = {
   }
 }
 
-module signalR_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.8.0' = [
+module signalR_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-signalR-PrivateEndpoint-${index}'
-    scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
+    scope: resourceGroup(
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(signalR.id, '/'))}-${privateEndpoint.?service ?? 'signalr'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
@@ -366,12 +369,39 @@ output location string = signalR.location
 output systemAssignedMIPrincipalId string? = signalR.?identity.?principalId
 
 @description('The private endpoints of the SignalR.')
-output privateEndpoints array = [
-  for (pe, i) in (!empty(privateEndpoints) ? array(privateEndpoints) : []): {
-    name: signalR_privateEndpoints[i].outputs.name
-    resourceId: signalR_privateEndpoints[i].outputs.resourceId
-    groupId: signalR_privateEndpoints[i].outputs.groupId
-    customDnsConfig: signalR_privateEndpoints[i].outputs.customDnsConfig
-    networkInterfaceIds: signalR_privateEndpoints[i].outputs.networkInterfaceIds
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: signalR_privateEndpoints[index].outputs.name
+    resourceId: signalR_privateEndpoints[index].outputs.resourceId
+    groupId: signalR_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: signalR_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: signalR_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
+
+// ================ //
+// Definitions      //
+// ================ //
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
