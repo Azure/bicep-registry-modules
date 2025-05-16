@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "6807608060530468134"
+      "templateHash": "9868040144347773619"
     },
     "name": "Azure Cosmos DB for MongoDB (vCore) cluster",
     "description": "This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -149,42 +149,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a network ACLs configuration"
-      }
-    },
-    "secretsExportConfigurationType": {
-      "type": "object",
-      "properties": {
-        "keyVaultResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of the key vault where to store the secrets of this module."
-          }
-        },
-        "connectionStringSecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name to use when creating the primary write connection string secret."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the secrets export configuration"
-      }
-    },
-    "secretsOutputType": {
-      "type": "object",
-      "properties": {},
-      "additionalProperties": {
-        "$ref": "#/definitions/secretSetType",
-        "metadata": {
-          "description": "An exported secret's references."
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the secrets output"
       }
     },
     "authIdentityType": {
@@ -690,28 +654,6 @@
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
-    },
-    "secretSetType": {
-      "type": "object",
-      "properties": {
-        "secretResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "The resourceId of the exported secret."
-          }
-        },
-        "secretUri": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI of the exported secret."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/keyVaultExport.bicep"
-        }
-      }
     }
   },
   "parameters": {
@@ -823,13 +765,6 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
-      }
-    },
-    "secretsExportConfiguration": {
-      "$ref": "#/definitions/secretsExportConfigurationType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Key vault reference and secret settings for the module's secrets export."
       }
     },
     "sku": {
@@ -1281,137 +1216,6 @@
                 "description": "The resource ID of the user."
               },
               "value": "[resourceId('Microsoft.DocumentDB/mongoClusters/users', parameters('mongoClusterName'), parameters('targetIdentity').principalId)]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "mongoCluster"
-      ]
-    },
-    "secretsExport": {
-      "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "keyVaultName": {
-            "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
-          },
-          "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'connectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionStringSecretName'), 'value', reference('mongoCluster').connectionString)), createArray()))]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "12974901829581589938"
-            }
-          },
-          "definitions": {
-            "secretSetType": {
-              "type": "object",
-              "properties": {
-                "secretResourceId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The resourceId of the exported secret."
-                  }
-                },
-                "secretUri": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The secret URI of the exported secret."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
-            "secretToSetType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the secret to set."
-                  }
-                },
-                "value": {
-                  "type": "securestring",
-                  "metadata": {
-                    "description": "Required. The value of the secret to set."
-                  }
-                }
-              }
-            }
-          },
-          "parameters": {
-            "keyVaultName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the Key Vault to set the secrets in."
-              }
-            },
-            "secretsToSet": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/secretToSetType"
-              },
-              "metadata": {
-                "description": "Required. The secrets to set in the Key Vault."
-              }
-            }
-          },
-          "resources": {
-            "keyVault": {
-              "existing": true,
-              "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
-              "name": "[parameters('keyVaultName')]"
-            },
-            "secrets": {
-              "copy": {
-                "name": "secrets",
-                "count": "[length(parameters('secretsToSet'))]"
-              },
-              "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2023-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
-              "properties": {
-                "value": "[parameters('secretsToSet')[copyIndex()].value]"
-              }
-            }
-          },
-          "outputs": {
-            "secretsSet": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/secretSetType"
-              },
-              "metadata": {
-                "description": "The references to the secrets exported to the provided Key Vault."
-              },
-              "copy": {
-                "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
-                "input": {
-                  "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
-                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]"
-                }
-              }
             }
           }
         }
@@ -2207,13 +2011,6 @@
       },
       "value": "[resourceGroup().name]"
     },
-    "connectionStringKey": {
-      "type": "string",
-      "metadata": {
-        "description": "The connection string key of the mongo cluster."
-      },
-      "value": "[reference('mongoCluster').connectionString]"
-    },
     "firewallRules": {
       "type": "array",
       "items": {
@@ -2249,12 +2046,19 @@
         }
       }
     },
-    "exportedSecrets": {
-      "$ref": "#/definitions/secretsOutputType",
+    "obscuredConnectionString": {
+      "type": "securestring",
       "metadata": {
-        "description": "The references to the secrets exported to the provided Key Vault."
+        "description": "The connection string of the Azure Cosmos DB for MongoDB (vCore) cluster with the username and password obscured. This variant contains the `<user>` and `<password>` placeholders in place of the actual credentials."
       },
-      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
+      "value": "[reference('mongoCluster').connectionString]"
+    },
+    "connectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The connection string of the Azure Cosmos DB for MongoDB (vCore) cluster. This variant contains the actual username and password credentials."
+      },
+      "value": "[replace(replace(reference('mongoCluster').connectionString, '<user>', parameters('administratorLogin')), '<password>', parameters('administratorLoginPassword'))]"
     }
   }
 }
