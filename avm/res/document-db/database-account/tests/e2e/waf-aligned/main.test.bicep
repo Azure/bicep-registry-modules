@@ -19,7 +19,9 @@ param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'spaincentral'
+var enforcedLocation = 'eastus2'
+#disable-next-line no-hardcoded-location
+var enforcedSecondLocation = 'westus3'
 
 // ============ //
 // Dependencies //
@@ -66,10 +68,28 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
-    disableLocalAuth: true
+    tags: {
+      environment: 'dev'
+      role: 'validation'
+      type: 'waf-aligned'
+    }
+    failoverLocations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: true
+        locationName: enforcedLocation
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: true
+        locationName: enforcedSecondLocation
+      }
+    ]
+    zoneRedundant: true
+    disableLocalAuthentication: true
+    disableKeyBasedMetadataWriteAccess: true
     automaticFailover: true
     minimumTlsVersion: 'Tls12'
-    disableKeyBasedMetadataWriteAccess: true
     networkRestrictions: {
       networkAclBypass: 'None'
       publicNetworkAccess: 'Disabled'

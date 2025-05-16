@@ -19,7 +19,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'spaincentral'
+var enforcedLocation = 'westus3'
 
 // ============== //
 // General resources
@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-role-${serviceShort}'
   params: {
     name: '${namePrefix}-role-ref'
-    sqlRoleDefinitions: [
+    dataPlaneRoleDefinitions: [
       {
         roleName: 'cosmos-sql-role-test'
         dataActions: [
@@ -59,18 +59,19 @@ module testDeployment '../../../main.bicep' = {
         assignableScopes: [
           '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref'
         ]
-        sqlRoleAssignments: [
+        assignments: [
           {
             principalId: nestedDependencies.outputs.identityPrincipalId
           }
         ]
       }
     ]
-    builtInSqlRoleAssignments: [
+    dataPlaneRoleAssignments: [
       {
         principalId: nestedDependencies.outputs.identityPrincipalId
         roleDefinitionId: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
       }
     ]
+    zoneRedundant: false
   }
 }

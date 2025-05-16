@@ -1,6 +1,6 @@
-# DocumentDB Database Accounts `[Microsoft.DocumentDB/databaseAccounts]`
+# Azure Cosmos DB account `[Microsoft.DocumentDB/databaseAccounts]`
 
-This module deploys a DocumentDB Database Account.
+This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed.
 
 ## Navigation
 
@@ -28,7 +28,6 @@ This module deploys a DocumentDB Database Account.
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions) |
 | `Microsoft.DocumentDB/databaseAccounts/tables` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/tables) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -77,6 +76,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -107,6 +107,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -131,6 +134,7 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -160,6 +164,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -196,6 +201,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -222,6 +230,7 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -240,7 +249,10 @@ This instance deploys the module with the minimum set of required parameters.
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   name: 'databaseAccountDeployment'
   params: {
+    // Required parameters
     name: 'dddamin001'
+    // Non-required parameters
+    zoneRedundant: false
   }
 }
 ```
@@ -257,8 +269,13 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "dddamin001"
+    },
+    // Non-required parameters
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -274,7 +291,10 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 ```bicep-params
 using 'br/public:avm/res/document-db/database-account:<version>'
 
+// Required parameters
 param name = 'dddamin001'
+// Non-required parameters
+param zoneRedundant = false
 ```
 
 </details>
@@ -348,6 +368,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'gdb-dddagrm-002'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -424,6 +445,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "gdb-dddagrm-002"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -494,6 +518,7 @@ param gremlinDatabases = [
     name: 'gdb-dddagrm-002'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -515,17 +540,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'kv-ref'
     // Non-required parameters
-    secretsExportConfiguration: {
-      keyVaultResourceId: '<keyVaultResourceId>'
-      primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
-      primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
-      primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
-      primaryWriteKeySecretName: 'primaryWriteKey'
-      secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
-      secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
-      secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
-      secondaryWriteKeySecretName: 'secondaryWriteKey'
-    }
+    zoneRedundant: false
   }
 }
 ```
@@ -547,18 +562,8 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "kv-ref"
     },
     // Non-required parameters
-    "secretsExportConfiguration": {
-      "value": {
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "primaryReadonlyConnectionStringSecretName": "primaryReadonlyConnectionString",
-        "primaryReadOnlyKeySecretName": "primaryReadOnlyKey",
-        "primaryWriteConnectionStringSecretName": "primaryWriteConnectionString",
-        "primaryWriteKeySecretName": "primaryWriteKey",
-        "secondaryReadonlyConnectionStringSecretName": "secondaryReadonlyConnectionString",
-        "secondaryReadonlyKeySecretName": "secondaryReadonlyKey",
-        "secondaryWriteConnectionStringSecretName": "secondaryWriteConnectionString",
-        "secondaryWriteKeySecretName": "secondaryWriteKey"
-      }
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -577,17 +582,7 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'kv-ref'
 // Non-required parameters
-param secretsExportConfiguration = {
-  keyVaultResourceId: '<keyVaultResourceId>'
-  primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
-  primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
-  primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
-  primaryWriteKeySecretName: 'primaryWriteKey'
-  secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
-  secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
-  secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
-  secondaryWriteKeySecretName: 'secondaryWriteKey'
-}
+param zoneRedundant = false
 ```
 
 </details>
@@ -633,6 +628,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -681,6 +677,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -723,6 +722,7 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -894,6 +894,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'mdb-dddamng-002'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -1066,6 +1067,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "mdb-dddamng-002"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -1234,6 +1238,7 @@ param mongodbDatabases = [
     name: 'mdb-dddamng-002'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -1259,17 +1264,17 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     backupIntervalInMinutes: 300
     backupPolicyType: 'Periodic'
     backupRetentionIntervalInHours: 16
-    backupStorageRedundancy: 'Zone'
+    backupStorageRedundancy: 'Geo'
     enableMultipleWriteLocations: true
     failoverLocations: [
       {
         failoverPriority: 0
-        isZoneRedundant: true
+        isZoneRedundant: false
         locationName: '<locationName>'
       }
       {
         failoverPriority: 1
-        isZoneRedundant: true
+        isZoneRedundant: false
         locationName: '<locationName>'
       }
     ]
@@ -1312,7 +1317,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": 16
     },
     "backupStorageRedundancy": {
-      "value": "Zone"
+      "value": "Geo"
     },
     "enableMultipleWriteLocations": {
       "value": true
@@ -1321,12 +1326,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": [
         {
           "failoverPriority": 0,
-          "isZoneRedundant": true,
+          "isZoneRedundant": false,
           "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
-          "isZoneRedundant": true,
+          "isZoneRedundant": false,
           "locationName": "<locationName>"
         }
       ]
@@ -1359,17 +1364,17 @@ param automaticFailover = true
 param backupIntervalInMinutes = 300
 param backupPolicyType = 'Periodic'
 param backupRetentionIntervalInHours = 16
-param backupStorageRedundancy = 'Zone'
+param backupStorageRedundancy = 'Geo'
 param enableMultipleWriteLocations = true
 param failoverLocations = [
   {
     failoverPriority: 0
-    isZoneRedundant: true
+    isZoneRedundant: false
     locationName: '<locationName>'
   }
   {
     failoverPriority: 1
-    isZoneRedundant: true
+    isZoneRedundant: false
     locationName: '<locationName>'
   }
 ]
@@ -1416,6 +1421,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       }
     ]
     totalThroughputLimit: 4000
+    zoneRedundant: false
   }
 }
 ```
@@ -1463,6 +1469,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     },
     "totalThroughputLimit": {
       "value": 4000
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -1498,6 +1507,7 @@ param sqlDatabases = [
   }
 ]
 param totalThroughputLimit = 4000
+param zoneRedundant = false
 ```
 
 </details>
@@ -1537,6 +1547,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -1579,6 +1590,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -1615,6 +1629,7 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -1887,6 +1902,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -2162,6 +2178,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -2431,6 +2450,7 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -2452,16 +2472,21 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'role-ref'
     // Non-required parameters
-    builtInSqlRoleAssignments: [
+    dataPlaneRoleAssignments: [
       {
         principalId: '<principalId>'
         roleDefinitionId: '<roleDefinitionId>'
       }
     ]
-    sqlRoleDefinitions: [
+    dataPlaneRoleDefinitions: [
       {
         assignableScopes: [
           '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+        ]
+        assignments: [
+          {
+            principalId: '<principalId>'
+          }
         ]
         dataActions: [
           'Microsoft.DocumentDB/databaseAccounts/readMetadata'
@@ -2469,13 +2494,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
         ]
         roleName: 'cosmos-sql-role-test'
-        sqlRoleAssignments: [
-          {
-            principalId: '<principalId>'
-          }
-        ]
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -2497,7 +2518,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "role-ref"
     },
     // Non-required parameters
-    "builtInSqlRoleAssignments": {
+    "dataPlaneRoleAssignments": {
       "value": [
         {
           "principalId": "<principalId>",
@@ -2505,25 +2526,28 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         }
       ]
     },
-    "sqlRoleDefinitions": {
+    "dataPlaneRoleDefinitions": {
       "value": [
         {
           "assignableScopes": [
             "<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref"
+          ],
+          "assignments": [
+            {
+              "principalId": "<principalId>"
+            }
           ],
           "dataActions": [
             "Microsoft.DocumentDB/databaseAccounts/readMetadata",
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
           ],
-          "roleName": "cosmos-sql-role-test",
-          "sqlRoleAssignments": [
-            {
-              "principalId": "<principalId>"
-            }
-          ]
+          "roleName": "cosmos-sql-role-test"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -2542,16 +2566,21 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'role-ref'
 // Non-required parameters
-param builtInSqlRoleAssignments = [
+param dataPlaneRoleAssignments = [
   {
     principalId: '<principalId>'
     roleDefinitionId: '<roleDefinitionId>'
   }
 ]
-param sqlRoleDefinitions = [
+param dataPlaneRoleDefinitions = [
   {
     assignableScopes: [
       '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
+    ]
+    assignments: [
+      {
+        principalId: '<principalId>'
+      }
     ]
     dataActions: [
       'Microsoft.DocumentDB/databaseAccounts/readMetadata'
@@ -2559,13 +2588,9 @@ param sqlRoleDefinitions = [
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
     ]
     roleName: 'cosmos-sql-role-test'
-    sqlRoleAssignments: [
-      {
-        principalId: '<principalId>'
-      }
-    ]
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -2600,6 +2625,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'tbl-dddatableminauto'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -2637,6 +2663,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "tbl-dddatableminauto"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -2668,6 +2697,7 @@ param tables = [
     name: 'tbl-dddatableminauto'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -2699,7 +2729,19 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       }
     ]
     disableKeyBasedMetadataWriteAccess: true
-    disableLocalAuth: true
+    disableLocalAuthentication: true
+    failoverLocations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: true
+        locationName: '<locationName>'
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: true
+        locationName: '<locationName>'
+      }
+    ]
     minimumTlsVersion: 'Tls12'
     networkRestrictions: {
       networkAclBypass: 'None'
@@ -2723,6 +2765,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
+    tags: {
+      environment: 'dev'
+      role: 'validation'
+      type: 'waf-aligned'
+    }
+    zoneRedundant: true
   }
 }
 ```
@@ -2760,8 +2808,22 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "disableKeyBasedMetadataWriteAccess": {
       "value": true
     },
-    "disableLocalAuth": {
+    "disableLocalAuthentication": {
       "value": true
+    },
+    "failoverLocations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": true,
+          "locationName": "<locationName>"
+        },
+        {
+          "failoverPriority": 1,
+          "isZoneRedundant": true,
+          "locationName": "<locationName>"
+        }
+      ]
     },
     "minimumTlsVersion": {
       "value": "Tls12"
@@ -2793,6 +2855,16 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
+    },
+    "tags": {
+      "value": {
+        "environment": "dev",
+        "role": "validation",
+        "type": "waf-aligned"
+      }
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
@@ -2821,7 +2893,19 @@ param diagnosticSettings = [
   }
 ]
 param disableKeyBasedMetadataWriteAccess = true
-param disableLocalAuth = true
+param disableLocalAuthentication = true
+param failoverLocations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: true
+    locationName: '<locationName>'
+  }
+  {
+    failoverPriority: 1
+    isZoneRedundant: true
+    locationName: '<locationName>'
+  }
+]
 param minimumTlsVersion = 'Tls12'
 param networkRestrictions = {
   networkAclBypass: 'None'
@@ -2845,6 +2929,12 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
+param tags = {
+  environment: 'dev'
+  role: 'validation'
+  type: 'waf-aligned'
+}
+param zoneRedundant = true
 ```
 
 </details>
@@ -2856,59 +2946,59 @@ param sqlDatabases = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Database Account. |
+| [`name`](#parameter-name) | string | The name of the account. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`automaticFailover`](#parameter-automaticfailover) | bool | Default to true. Enable automatic failover for regions. |
-| [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type. |
-| [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Default to Continuous30Days. Configuration values for continuous mode backup. |
-| [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used. |
-| [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type. |
-| [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type. |
-| [`builtInSqlRoleAssignments`](#parameter-builtinsqlroleassignments) | array | SQL Role Assignments of built-in roles. |
-| [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. |
-| [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | Default to Standard. The offer type for the Azure Cosmos DB database account. |
-| [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | Default to Session. The default consistency level of the Cosmos DB account. |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Default to true. Disable write operations on metadata resources (databases, containers, throughput) via account keys. |
-| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Default to true. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. |
-| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Default to false. Flag to indicate whether to enable storage analytics. |
-| [`enableFreeTier`](#parameter-enablefreetier) | bool | Default to false. Flag to indicate whether Free Tier is enabled. |
-| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled. |
+| [`automaticFailover`](#parameter-automaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
+| [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | An integer representing the interval in minutes between two backups. This setting only applies to the periodic backup type. Defaults to 240. |
+| [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days". |
+| [`backupPolicyType`](#parameter-backuppolicytype) | string | Configures the backup mode. Periodic backup must be used if multiple write locations are used. Defaults to "Continuous". |
+| [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8. |
+| [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local". |
+| [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | A list of Azure Cosmos DB specific capabilities for the account. |
+| [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the account. Defaults to "Standard". |
+| [`dataPlaneRoleAssignments`](#parameter-dataplaneroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
+| [`dataPlaneRoleDefinitions`](#parameter-dataplaneroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
+| [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the account. Defaults to "Session". |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings for the service. |
+| [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
+| [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
+| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
+| [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether "Free Tier" is enabled. Defaults to false. |
+| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`failoverLocations`](#parameter-failoverlocations) | array | Default to the location where the account is deployed. Locations enabled for the Cosmos DB account. |
-| [`gremlinDatabases`](#parameter-gremlindatabases) | array | Gremlin Databases configurations. |
-| [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
+| [`failoverLocations`](#parameter-failoverlocations) | array | The set of locations enabled for the account. Defaults to the location where the account is deployed. |
+| [`gremlinDatabases`](#parameter-gremlindatabases) | array | Configuration for databases when using Azure Cosmos DB for Apache Gremlin. |
+| [`location`](#parameter-location) | string | Defaults to the current resource group scope location. Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`maxIntervalInSeconds`](#parameter-maxintervalinseconds) | int | Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. |
-| [`maxStalenessPrefix`](#parameter-maxstalenessprefix) | int | Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. |
-| [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. |
+| [`maxIntervalInSeconds`](#parameter-maxintervalinseconds) | int | The maximum lag time in minutes. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. Defaults to 300. |
+| [`maxStalenessPrefix`](#parameter-maxstalenessprefix) | int | The maximum stale requests. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. Defaults to 100000. |
+| [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2). |
 | [`mongodbDatabases`](#parameter-mongodbdatabases) | array | Configuration for databases when using Azure Cosmos DB for MongoDB RU. |
 | [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: 'Disabled' }`. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`serverVersion`](#parameter-serverversion) | string | Default to 4.2. Specifies the MongoDB server version to use. |
-| [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
-| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. Also allows the assignment of custom roles. |
-| [`tables`](#parameter-tables) | array | Table configurations. |
-| [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
-| [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s). |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible. |
+| [`roleAssignments`](#parameter-roleassignments) | array | An array of control plane Azure role-based access control assignments. |
+| [`serverVersion`](#parameter-serverversion) | string | Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to "4.2". |
+| [`sqlDatabases`](#parameter-sqldatabases) | array | Configuration for databases when using Azure Cosmos DB for NoSQL. |
+| [`tables`](#parameter-tables) | array | Configuration for databases when using Azure Cosmos DB for Table. |
+| [`tags`](#parameter-tags) | object | Tags for the resource. |
+| [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | The total throughput limit imposed on this account in request units per second (RU/s). Default to unlimited throughput. |
+| [`zoneRedundant`](#parameter-zoneredundant) | bool | Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts. |
 
 ### Parameter: `name`
 
-Name of the Database Account.
+The name of the account.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `automaticFailover`
 
-Default to true. Enable automatic failover for regions.
+Enable automatic failover for regions. Defaults to true.
 
 - Required: No
 - Type: bool
@@ -2916,7 +3006,7 @@ Default to true. Enable automatic failover for regions.
 
 ### Parameter: `backupIntervalInMinutes`
 
-Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type.
+An integer representing the interval in minutes between two backups. This setting only applies to the periodic backup type. Defaults to 240.
 
 - Required: No
 - Type: int
@@ -2926,7 +3016,7 @@ Default to 240. An integer representing the interval in minutes between two back
 
 ### Parameter: `backupPolicyContinuousTier`
 
-Default to Continuous30Days. Configuration values for continuous mode backup.
+Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days".
 
 - Required: No
 - Type: string
@@ -2941,7 +3031,7 @@ Default to Continuous30Days. Configuration values for continuous mode backup.
 
 ### Parameter: `backupPolicyType`
 
-Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used.
+Configures the backup mode. Periodic backup must be used if multiple write locations are used. Defaults to "Continuous".
 
 - Required: No
 - Type: string
@@ -2956,7 +3046,7 @@ Default to Continuous. Describes the mode of backups. Periodic backup must be us
 
 ### Parameter: `backupRetentionIntervalInHours`
 
-Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type.
+An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8.
 
 - Required: No
 - Type: int
@@ -2966,7 +3056,7 @@ Default to 8. An integer representing the time (in hours) that each backup is re
 
 ### Parameter: `backupStorageRedundancy`
 
-Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type.
+Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local".
 
 - Required: No
 - Type: string
@@ -2980,50 +3070,9 @@ Default to Local. Enum to indicate type of backup residency. Only applies to per
   ]
   ```
 
-### Parameter: `builtInSqlRoleAssignments`
-
-SQL Role Assignments of built-in roles.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-builtinsqlroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
-| [`roleDefinitionId`](#parameter-builtinsqlroleassignmentsroledefinitionid) | string | The unique identifier of the SQL Role Definition. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-builtinsqlroleassignmentsname) | string | The unique name of the role assignment. |
-
-### Parameter: `builtInSqlRoleAssignments.principalId`
-
-The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `builtInSqlRoleAssignments.roleDefinitionId`
-
-The unique identifier of the SQL Role Definition.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `builtInSqlRoleAssignments.name`
-
-The unique name of the role assignment.
-
-- Required: No
-- Type: string
-
 ### Parameter: `capabilitiesToAdd`
 
-List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.
+A list of Azure Cosmos DB specific capabilities for the account.
 
 - Required: No
 - Type: array
@@ -3045,7 +3094,7 @@ List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey
 
 ### Parameter: `databaseAccountOfferType`
 
-Default to Standard. The offer type for the Azure Cosmos DB database account.
+The offer type for the account. Defaults to "Standard".
 
 - Required: No
 - Type: string
@@ -3057,9 +3106,133 @@ Default to Standard. The offer type for the Azure Cosmos DB database account.
   ]
   ```
 
+### Parameter: `dataPlaneRoleAssignments`
+
+Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-dataplaneroleassignmentsprincipalid) | string | The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription. |
+| [`roleDefinitionId`](#parameter-dataplaneroleassignmentsroledefinitionid) | string | The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-dataplaneroleassignmentsname) | string | The unique name of the role assignment. |
+
+### Parameter: `dataPlaneRoleAssignments.principalId`
+
+The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataPlaneRoleAssignments.roleDefinitionId`
+
+The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataPlaneRoleAssignments.name`
+
+The unique name of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataPlaneRoleDefinitions`
+
+Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleName`](#parameter-dataplaneroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. This must be unique within the database account. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignableScopes`](#parameter-dataplaneroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
+| [`assignments`](#parameter-dataplaneroledefinitionsassignments) | array | An array of role-based access control assignments to be created for the definition. |
+| [`dataActions`](#parameter-dataplaneroledefinitionsdataactions) | array | An array of data actions that are allowed. |
+| [`name`](#parameter-dataplaneroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
+
+### Parameter: `dataPlaneRoleDefinitions.roleName`
+
+A user-friendly name for the role-based access control definition. This must be unique within the database account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataPlaneRoleDefinitions.assignableScopes`
+
+A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataPlaneRoleDefinitions.assignments`
+
+An array of role-based access control assignments to be created for the definition.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-dataplaneroledefinitionsassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-dataplaneroledefinitionsassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+
+### Parameter: `dataPlaneRoleDefinitions.assignments.principalId`
+
+The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataPlaneRoleDefinitions.assignments.name`
+
+Name unique identifier of the SQL Role Assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataPlaneRoleDefinitions.dataActions`
+
+An array of data actions that are allowed.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataPlaneRoleDefinitions.name`
+
+The unique identifier of the role-based access control definition.
+
+- Required: No
+- Type: string
+
 ### Parameter: `defaultConsistencyLevel`
 
-Default to Session. The default consistency level of the Cosmos DB account.
+The default consistency level of the account. Defaults to "Session".
 
 - Required: No
 - Type: string
@@ -3077,7 +3250,7 @@ Default to Session. The default consistency level of the Cosmos DB account.
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings for the service.
 
 - Required: No
 - Type: array
@@ -3223,15 +3396,15 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `disableKeyBasedMetadataWriteAccess`
 
-Default to true. Disable write operations on metadata resources (databases, containers, throughput) via account keys.
+Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true.
 
 - Required: No
 - Type: bool
 - Default: `True`
 
-### Parameter: `disableLocalAuth`
+### Parameter: `disableLocalAuthentication`
 
-Default to true. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.
+Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true.
 
 - Required: No
 - Type: bool
@@ -3239,7 +3412,7 @@ Default to true. Opt-out of local authentication and ensure only MSI and AAD can
 
 ### Parameter: `enableAnalyticalStorage`
 
-Default to false. Flag to indicate whether to enable storage analytics.
+Flag to indicate whether to enable storage analytics. Defaults to false.
 
 - Required: No
 - Type: bool
@@ -3247,7 +3420,7 @@ Default to false. Flag to indicate whether to enable storage analytics.
 
 ### Parameter: `enableFreeTier`
 
-Default to false. Flag to indicate whether Free Tier is enabled.
+Flag to indicate whether "Free Tier" is enabled. Defaults to false.
 
 - Required: No
 - Type: bool
@@ -3255,7 +3428,7 @@ Default to false. Flag to indicate whether Free Tier is enabled.
 
 ### Parameter: `enableMultipleWriteLocations`
 
-Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.
+Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false.
 
 - Required: No
 - Type: bool
@@ -3271,7 +3444,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `failoverLocations`
 
-Default to the location where the account is deployed. Locations enabled for the Cosmos DB account.
+The set of locations enabled for the account. Defaults to the location where the account is deployed.
 
 - Required: No
 - Type: array
@@ -3287,7 +3460,7 @@ Default to the location where the account is deployed. Locations enabled for the
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`isZoneRedundant`](#parameter-failoverlocationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region. |
+| [`isZoneRedundant`](#parameter-failoverlocationsiszoneredundant) | bool | Flag to indicate whether or not this region is an AvailabilityZone region. Defaults to true. |
 
 ### Parameter: `failoverLocations.failoverPriority`
 
@@ -3305,21 +3478,21 @@ The name of the region.
 
 ### Parameter: `failoverLocations.isZoneRedundant`
 
-Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.
+Flag to indicate whether or not this region is an AvailabilityZone region. Defaults to true.
 
 - Required: No
 - Type: bool
 
 ### Parameter: `gremlinDatabases`
 
-Gremlin Databases configurations.
+Configuration for databases when using Azure Cosmos DB for Apache Gremlin.
 
 - Required: No
 - Type: array
 
 ### Parameter: `location`
 
-Default to current resource group scope location. Location for all resources.
+Defaults to the current resource group scope location. Location for all resources.
 
 - Required: No
 - Type: string
@@ -3391,7 +3564,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `maxIntervalInSeconds`
 
-Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.
+The maximum lag time in minutes. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. Defaults to 300.
 
 - Required: No
 - Type: int
@@ -3401,7 +3574,7 @@ Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ran
 
 ### Parameter: `maxStalenessPrefix`
 
-Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000.
+The maximum stale requests. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. Defaults to 100000.
 
 - Required: No
 - Type: int
@@ -3411,7 +3584,7 @@ Default to 100000. Max stale requests. Required for BoundedStaleness. Valid rang
 
 ### Parameter: `minimumTlsVersion`
 
-Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.
+Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2).
 
 - Required: No
 - Type: string
@@ -3618,21 +3791,21 @@ The network configuration of this module. Defaults to `{ ipRules: [], virtualNet
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`ipRules`](#parameter-networkrestrictionsiprules) | array | A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8". |
-| [`networkAclBypass`](#parameter-networkrestrictionsnetworkaclbypass) | string | Default to None. Specifies the network ACL bypass for Azure services. |
-| [`publicNetworkAccess`](#parameter-networkrestrictionspublicnetworkaccess) | string | Default to Disabled. Whether requests from Public Network are allowed. |
-| [`virtualNetworkRules`](#parameter-networkrestrictionsvirtualnetworkrules) | array | List of Virtual Network ACL rules configured for the Cosmos DB account.. |
+| [`ipRules`](#parameter-networkrestrictionsiprules) | array | A single IPv4 address or a single IPv4 address range in Classless Inter-Domain Routing (CIDR) format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`, `192.168.0.0/16`, since these are not enforceable by the IP address filter. Example of valid inputs: `23.40.210.245` or `23.40.210.0/8`. |
+| [`networkAclBypass`](#parameter-networkrestrictionsnetworkaclbypass) | string | Specifies the network ACL bypass for Azure services. Default to "None". |
+| [`publicNetworkAccess`](#parameter-networkrestrictionspublicnetworkaccess) | string | Whether requests from the public network are allowed. Default to "Disabled". |
+| [`virtualNetworkRules`](#parameter-networkrestrictionsvirtualnetworkrules) | array | List of virtual network access control list (ACL) rules configured for the account. |
 
 ### Parameter: `networkRestrictions.ipRules`
 
-A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".
+A single IPv4 address or a single IPv4 address range in Classless Inter-Domain Routing (CIDR) format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`, `192.168.0.0/16`, since these are not enforceable by the IP address filter. Example of valid inputs: `23.40.210.245` or `23.40.210.0/8`.
 
 - Required: No
 - Type: array
 
 ### Parameter: `networkRestrictions.networkAclBypass`
 
-Default to None. Specifies the network ACL bypass for Azure services.
+Specifies the network ACL bypass for Azure services. Default to "None".
 
 - Required: No
 - Type: string
@@ -3646,7 +3819,7 @@ Default to None. Specifies the network ACL bypass for Azure services.
 
 ### Parameter: `networkRestrictions.publicNetworkAccess`
 
-Default to Disabled. Whether requests from Public Network are allowed.
+Whether requests from the public network are allowed. Default to "Disabled".
 
 - Required: No
 - Type: string
@@ -3660,7 +3833,7 @@ Default to Disabled. Whether requests from Public Network are allowed.
 
 ### Parameter: `networkRestrictions.virtualNetworkRules`
 
-List of Virtual Network ACL rules configured for the Cosmos DB account..
+List of virtual network access control list (ACL) rules configured for the account.
 
 - Required: No
 - Type: array
@@ -3680,7 +3853,7 @@ Resource ID of a subnet.
 
 ### Parameter: `privateEndpoints`
 
-Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
+Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible.
 
 - Required: No
 - Type: array
@@ -3980,17 +4153,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Roles configurable by name:
-  - `'Contributor'`
-  - `'DNS Resolver Contributor'`
-  - `'DNS Zone Contributor'`
-  - `'Domain Services Contributor'`
-  - `'Domain Services Reader'`
-  - `'Network Contributor'`
-  - `'Owner'`
-  - `'Private DNS Zone Contributor'`
-  - `'Reader'`
-  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -4091,21 +4253,10 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 ### Parameter: `roleAssignments`
 
-Array of role assignments to create.
+An array of control plane Azure role-based access control assignments.
 
 - Required: No
 - Type: array
-- Roles configurable by name:
-  - `'Contributor'`
-  - `'Cosmos DB Account Reader Role'`
-  - `'Cosmos DB Operator'`
-  - `'CosmosBackupOperator'`
-  - `'CosmosRestoreOperator'`
-  - `'DocumentDB Account Contributor'`
-  - `'Owner'`
-  - `'Reader'`
-  - `'Role Based Access Control Administrator'`
-  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -4197,98 +4348,9 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `secretsExportConfiguration`
-
-Key vault reference and secret settings for the module's secrets export.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`primaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationprimaryreadonlyconnectionstringsecretname) | string | The primary readonly connection string secret name to create. |
-| [`primaryReadOnlyKeySecretName`](#parameter-secretsexportconfigurationprimaryreadonlykeysecretname) | string | The primary readonly key secret name to create. |
-| [`primaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationprimarywriteconnectionstringsecretname) | string | The primary write connection string secret name to create. |
-| [`primaryWriteKeySecretName`](#parameter-secretsexportconfigurationprimarywritekeysecretname) | string | The primary write key secret name to create. |
-| [`secondaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondaryreadonlyconnectionstringsecretname) | string | The primary readonly connection string secret name to create. |
-| [`secondaryReadonlyKeySecretName`](#parameter-secretsexportconfigurationsecondaryreadonlykeysecretname) | string | The primary readonly key secret name to create. |
-| [`secondaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondarywriteconnectionstringsecretname) | string | The primary write connection string secret name to create. |
-| [`secondaryWriteKeySecretName`](#parameter-secretsexportconfigurationsecondarywritekeysecretname) | string | The primary write key secret name to create. |
-
-### Parameter: `secretsExportConfiguration.keyVaultResourceId`
-
-The resource ID of the key vault where to store the secrets of this module.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryReadonlyConnectionStringSecretName`
-
-The primary readonly connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryReadOnlyKeySecretName`
-
-The primary readonly key secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryWriteConnectionStringSecretName`
-
-The primary write connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryWriteKeySecretName`
-
-The primary write key secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryReadonlyConnectionStringSecretName`
-
-The primary readonly connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryReadonlyKeySecretName`
-
-The primary readonly key secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryWriteConnectionStringSecretName`
-
-The primary write connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryWriteKeySecretName`
-
-The primary write key secret name to create.
-
-- Required: No
-- Type: string
-
 ### Parameter: `serverVersion`
 
-Default to 4.2. Specifies the MongoDB server version to use.
+Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to "4.2".
 
 - Required: No
 - Type: string
@@ -4308,7 +4370,7 @@ Default to 4.2. Specifies the MongoDB server version to use.
 
 ### Parameter: `sqlDatabases`
 
-SQL Databases configurations.
+Configuration for databases when using Azure Cosmos DB for NoSQL.
 
 - Required: No
 - Type: array
@@ -4317,33 +4379,33 @@ SQL Databases configurations.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-sqldatabasesname) | string | Name of the SQL database . |
+| [`name`](#parameter-sqldatabasesname) | string | Name of the database . |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasesautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
-| [`containers`](#parameter-sqldatabasescontainers) | array | Array of containers to deploy in the SQL database. |
-| [`throughput`](#parameter-sqldatabasesthroughput) | int | Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasesautoscalesettingsmaxthroughput) | int | Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
+| [`containers`](#parameter-sqldatabasescontainers) | array | Set of containers to deploy in the database. |
+| [`throughput`](#parameter-sqldatabasesthroughput) | int | Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400. |
 
 ### Parameter: `sqlDatabases.name`
 
-Name of the SQL database .
+Name of the database .
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `sqlDatabases.autoscaleSettingsMaxThroughput`
 
-Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
+Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
 
 - Required: No
 - Type: int
 
 ### Parameter: `sqlDatabases.containers`
 
-Array of containers to deploy in the SQL database.
+Set of containers to deploy in the database.
 
 - Required: No
 - Type: array
@@ -4519,135 +4581,59 @@ Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Vers
 
 ### Parameter: `sqlDatabases.throughput`
 
-Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
+Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400.
 
 - Required: No
 - Type: int
 
-### Parameter: `sqlRoleDefinitions`
-
-SQL Role Definitions configurations. Also allows the assignment of custom roles.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`roleName`](#parameter-sqlroledefinitionsrolename) | string | A user-friendly name for the Role Definition. Must be unique for the database account. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`assignableScopes`](#parameter-sqlroledefinitionsassignablescopes) | array | A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account. |
-| [`dataActions`](#parameter-sqlroledefinitionsdataactions) | array | An array of data actions that are allowed. |
-| [`name`](#parameter-sqlroledefinitionsname) | string | The unique identifier of the Role Definition. |
-| [`sqlRoleAssignments`](#parameter-sqlroledefinitionssqlroleassignments) | array | An array of SQL Role Assignments to be created for the SQL Role Definition. |
-
-### Parameter: `sqlRoleDefinitions.roleName`
-
-A user-friendly name for the Role Definition. Must be unique for the database account.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `sqlRoleDefinitions.assignableScopes`
-
-A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account.
-
-- Required: No
-- Type: array
-
-### Parameter: `sqlRoleDefinitions.dataActions`
-
-An array of data actions that are allowed.
-
-- Required: No
-- Type: array
-
-### Parameter: `sqlRoleDefinitions.name`
-
-The unique identifier of the Role Definition.
-
-- Required: No
-- Type: string
-
-### Parameter: `sqlRoleDefinitions.sqlRoleAssignments`
-
-An array of SQL Role Assignments to be created for the SQL Role Definition.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-sqlroledefinitionssqlroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-sqlroledefinitionssqlroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
-
-### Parameter: `sqlRoleDefinitions.sqlRoleAssignments.principalId`
-
-The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `sqlRoleDefinitions.sqlRoleAssignments.name`
-
-Name unique identifier of the SQL Role Assignment.
-
-- Required: No
-- Type: string
-
 ### Parameter: `tables`
 
-Table configurations.
+Configuration for databases when using Azure Cosmos DB for Table.
 
 - Required: No
 - Type: array
 
 ### Parameter: `tags`
 
-Tags of the Database Account resource.
+Tags for the resource.
 
 - Required: No
 - Type: object
 
 ### Parameter: `totalThroughputLimit`
 
-Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s).
+The total throughput limit imposed on this account in request units per second (RU/s). Default to unlimited throughput.
 
 - Required: No
 - Type: int
 - Default: `-1`
+
+### Parameter: `zoneRedundant`
+
+Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `endpoint` | string | The endpoint of the database account. |
-| `exportedSecrets` |  | The references to the secrets exported to the provided Key Vault. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the database account. |
 | `primaryReadOnlyConnectionString` | securestring | The primary read-only connection string. |
-| `primaryReadOnlyKey` | securestring | The base-64-encoded value of the primary read-only key. |
-| `primaryWriteConnectionString` | securestring | The primary write connection string. |
-| `primaryWriteKey` | securestring | The base-64-encoded value of the primary read-write key. |
+| `primaryReadOnlyKey` | securestring | The primary read-only key. |
+| `primaryReadWriteConnectionString` | securestring | The primary read-write connection string. |
+| `primaryReadWriteKey` | securestring | The primary read-write key. |
 | `privateEndpoints` | array | The private endpoints of the database account. |
 | `resourceGroupName` | string | The name of the resource group the database account was created in. |
 | `resourceId` | string | The resource ID of the database account. |
 | `secondaryReadOnlyConnectionString` | securestring | The secondary read-only connection string. |
-| `secondaryReadOnlyKey` | securestring | The base-64-encoded value of the secondary read-only key. |
-| `secondaryWriteConnectionString` | securestring | The secondary write connection string. |
-| `secondaryWriteKey` | securestring | The base-64-encoded value of the secondary read-write key. |
+| `secondaryReadOnlyKey` | securestring | The secondary read-only key. |
+| `secondaryReadWriteConnectionString` | securestring | The secondary read-write connection string. |
+| `secondaryReadWriteKey` | securestring | The secondary read-write key. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
