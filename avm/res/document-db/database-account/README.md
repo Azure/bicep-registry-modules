@@ -1,6 +1,6 @@
-# DocumentDB Database Accounts `[Microsoft.DocumentDB/databaseAccounts]`
+# Azure Cosmos DB account `[Microsoft.DocumentDB/databaseAccounts]`
 
-This module deploys a DocumentDB Database Account.
+This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed.
 
 ## Navigation
 
@@ -2964,59 +2964,59 @@ param sqlDatabases = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the Database Account. |
+| [`name`](#parameter-name) | string | The name of the account. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`automaticFailover`](#parameter-automaticfailover) | bool | Default to true. Enable automatic failover for regions. |
+| [`automaticFailover`](#parameter-automaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
 | [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type. |
 | [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Default to Continuous30Days. Configuration values for continuous mode backup. |
 | [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used. |
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type. |
-| [`builtInSqlRoleAssignments`](#parameter-builtinsqlroleassignments) | array | SQL Role Assignments of built-in roles. |
+| [`builtInSqlRoleAssignments`](#parameter-builtinsqlroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
 | [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. |
-| [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | Default to Standard. The offer type for the Azure Cosmos DB database account. |
-| [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | Default to Session. The default consistency level of the Cosmos DB account. |
+| [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the account. Defaults to "Standard". |
+| [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the account. Defaults to "Session". |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
-| [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Default to true. Disable write operations on metadata resources (databases, containers, throughput) via account keys. |
-| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Default to true. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication. |
-| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Default to false. Flag to indicate whether to enable storage analytics. |
-| [`enableFreeTier`](#parameter-enablefreetier) | bool | Default to false. Flag to indicate whether Free Tier is enabled. |
-| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled. |
+| [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
+| [`disableLocalAuth`](#parameter-disablelocalauth) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
+| [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
+| [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether "Free Tier" is enabled. Defaults to false. |
+| [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`failoverLocations`](#parameter-failoverlocations) | array | Default to the location where the account is deployed. Locations enabled for the Cosmos DB account. |
-| [`gremlinDatabases`](#parameter-gremlindatabases) | array | Gremlin Databases configurations. |
-| [`location`](#parameter-location) | string | Default to current resource group scope location. Location for all resources. |
+| [`failoverLocations`](#parameter-failoverlocations) | array | The set of locations enabled for the account. Defaults to the location where the account is deployed. |
+| [`gremlinDatabases`](#parameter-gremlindatabases) | array | Configuration for databases when using Azure Cosmos DB for Apache Gremlin. |
+| [`location`](#parameter-location) | string | Defaults to the current resource group scope location. Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`maxIntervalInSeconds`](#parameter-maxintervalinseconds) | int | Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. |
-| [`maxStalenessPrefix`](#parameter-maxstalenessprefix) | int | Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. |
+| [`maxIntervalInSeconds`](#parameter-maxintervalinseconds) | int | The maximum lag time in minutes. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. Defaults to 300. |
+| [`maxStalenessPrefix`](#parameter-maxstalenessprefix) | int | The maximum stale requests. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. Defaults to 100000. |
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. |
-| [`mongodbDatabases`](#parameter-mongodbdatabases) | array | MongoDB Databases configurations. |
+| [`mongodbDatabases`](#parameter-mongodbdatabases) | array | Configuration for databases when using Azure Cosmos DB for MongoDB RU. |
 | [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: 'Disabled' }`. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`serverVersion`](#parameter-serverversion) | string | Default to 4.2. Specifies the MongoDB server version to use. |
-| [`sqlDatabases`](#parameter-sqldatabases) | array | SQL Databases configurations. |
-| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | SQL Role Definitions configurations. Also allows the assignment of custom roles. |
-| [`tables`](#parameter-tables) | array | Table configurations. |
-| [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
+| [`serverVersion`](#parameter-serverversion) | string | Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to "4.2". |
+| [`sqlDatabases`](#parameter-sqldatabases) | array | Configuration for databases when using Azure Cosmos DB for NoSQL. |
+| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
+| [`tables`](#parameter-tables) | array | Configuration for databases when using Azure Cosmos DB for Table. |
+| [`tags`](#parameter-tags) | object | Tags for the resource. |
 | [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s). |
 
 ### Parameter: `name`
 
-Name of the Database Account.
+The name of the account.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `automaticFailover`
 
-Default to true. Enable automatic failover for regions.
+Enable automatic failover for regions. Defaults to true.
 
 - Required: No
 - Type: bool
@@ -3090,7 +3090,7 @@ Default to Local. Enum to indicate type of backup residency. Only applies to per
 
 ### Parameter: `builtInSqlRoleAssignments`
 
-SQL Role Assignments of built-in roles.
+Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.
 
 - Required: No
 - Type: array
@@ -3153,7 +3153,7 @@ List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey
 
 ### Parameter: `databaseAccountOfferType`
 
-Default to Standard. The offer type for the Azure Cosmos DB database account.
+The offer type for the account. Defaults to "Standard".
 
 - Required: No
 - Type: string
@@ -3167,7 +3167,7 @@ Default to Standard. The offer type for the Azure Cosmos DB database account.
 
 ### Parameter: `defaultConsistencyLevel`
 
-Default to Session. The default consistency level of the Cosmos DB account.
+The default consistency level of the account. Defaults to "Session".
 
 - Required: No
 - Type: string
@@ -3331,7 +3331,7 @@ Resource ID of the diagnostic log analytics workspace. For security reasons, it 
 
 ### Parameter: `disableKeyBasedMetadataWriteAccess`
 
-Default to true. Disable write operations on metadata resources (databases, containers, throughput) via account keys.
+Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true.
 
 - Required: No
 - Type: bool
@@ -3339,7 +3339,7 @@ Default to true. Disable write operations on metadata resources (databases, cont
 
 ### Parameter: `disableLocalAuth`
 
-Default to true. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.
+Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true.
 
 - Required: No
 - Type: bool
@@ -3347,7 +3347,7 @@ Default to true. Opt-out of local authentication and ensure only MSI and AAD can
 
 ### Parameter: `enableAnalyticalStorage`
 
-Default to false. Flag to indicate whether to enable storage analytics.
+Flag to indicate whether to enable storage analytics. Defaults to false.
 
 - Required: No
 - Type: bool
@@ -3355,7 +3355,7 @@ Default to false. Flag to indicate whether to enable storage analytics.
 
 ### Parameter: `enableFreeTier`
 
-Default to false. Flag to indicate whether Free Tier is enabled.
+Flag to indicate whether "Free Tier" is enabled. Defaults to false.
 
 - Required: No
 - Type: bool
@@ -3363,7 +3363,7 @@ Default to false. Flag to indicate whether Free Tier is enabled.
 
 ### Parameter: `enableMultipleWriteLocations`
 
-Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.
+Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false.
 
 - Required: No
 - Type: bool
@@ -3379,7 +3379,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `failoverLocations`
 
-Default to the location where the account is deployed. Locations enabled for the Cosmos DB account.
+The set of locations enabled for the account. Defaults to the location where the account is deployed.
 
 - Required: No
 - Type: array
@@ -3420,14 +3420,14 @@ Default to true. Flag to indicate whether or not this region is an AvailabilityZ
 
 ### Parameter: `gremlinDatabases`
 
-Gremlin Databases configurations.
+Configuration for databases when using Azure Cosmos DB for Apache Gremlin.
 
 - Required: No
 - Type: array
 
 ### Parameter: `location`
 
-Default to current resource group scope location. Location for all resources.
+Defaults to the current resource group scope location. Location for all resources.
 
 - Required: No
 - Type: string
@@ -3499,7 +3499,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `maxIntervalInSeconds`
 
-Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.
+The maximum lag time in minutes. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. Defaults to 300.
 
 - Required: No
 - Type: int
@@ -3509,7 +3509,7 @@ Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ran
 
 ### Parameter: `maxStalenessPrefix`
 
-Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000.
+The maximum stale requests. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. Defaults to 100000.
 
 - Required: No
 - Type: int
@@ -3533,7 +3533,7 @@ Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosm
 
 ### Parameter: `mongodbDatabases`
 
-MongoDB Databases configurations.
+Configuration for databases when using Azure Cosmos DB for MongoDB RU.
 
 - Required: No
 - Type: array
@@ -4227,7 +4227,7 @@ The primary write key secret name to create.
 
 ### Parameter: `serverVersion`
 
-Default to 4.2. Specifies the MongoDB server version to use.
+Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to "4.2".
 
 - Required: No
 - Type: string
@@ -4247,7 +4247,7 @@ Default to 4.2. Specifies the MongoDB server version to use.
 
 ### Parameter: `sqlDatabases`
 
-SQL Databases configurations.
+Configuration for databases when using Azure Cosmos DB for NoSQL.
 
 - Required: No
 - Type: array
@@ -4465,7 +4465,7 @@ Default to 400. Request units per second. Will be ignored if autoscaleSettingsMa
 
 ### Parameter: `sqlRoleDefinitions`
 
-SQL Role Definitions configurations. Also allows the assignment of custom roles.
+Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.
 
 - Required: No
 - Type: array
@@ -4548,14 +4548,14 @@ Name unique identifier of the SQL Role Assignment.
 
 ### Parameter: `tables`
 
-Table configurations.
+Configuration for databases when using Azure Cosmos DB for Table.
 
 - Required: No
 - Type: array
 
 ### Parameter: `tags`
 
-Tags of the Database Account resource.
+Tags for the resource.
 
 - Required: No
 - Type: object

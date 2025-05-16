@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "11612753914354478474"
+      "templateHash": "9464215497872980890"
     },
-    "name": "DocumentDB Database Accounts",
-    "description": "This module deploys a DocumentDB Database Account."
+    "name": "Azure Cosmos DB account",
+    "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
   },
   "definitions": {
     "privateEndpointOutputType": {
@@ -1057,14 +1057,14 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Database Account."
+        "description": "Required. The name of the account."
       }
     },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. Default to current resource group scope location. Location for all resources."
+        "description": "Optional. Defaults to the current resource group scope location. Location for all resources."
       }
     },
     "tags": {
@@ -1073,7 +1073,7 @@
         "__bicep_resource_derived_type!": {
           "source": "Microsoft.DocumentDB/databaseAccounts@2024-11-15#properties/tags"
         },
-        "description": "Optional. Tags of the Database Account resource."
+        "description": "Optional. Tags for the resource."
       },
       "nullable": true
     },
@@ -1091,7 +1091,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Optional. Default to Standard. The offer type for the Azure Cosmos DB database account."
+        "description": "Optional. The offer type for the account. Defaults to \"Standard\"."
       }
     },
     "failoverLocations": {
@@ -1101,7 +1101,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. Default to the location where the account is deployed. Locations enabled for the Cosmos DB account."
+        "description": "Optional. The set of locations enabled for the account. Defaults to the location where the account is deployed."
       }
     },
     "defaultConsistencyLevel": {
@@ -1115,49 +1115,49 @@
         "Strong"
       ],
       "metadata": {
-        "description": "Optional. Default to Session. The default consistency level of the Cosmos DB account."
+        "description": "Optional. The default consistency level of the account. Defaults to \"Session\"."
       }
     },
     "disableLocalAuth": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Default to true. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication."
+        "description": "Optional. Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true."
       }
     },
     "enableAnalyticalStorage": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Default to false. Flag to indicate whether to enable storage analytics."
+        "description": "Optional. Flag to indicate whether to enable storage analytics. Defaults to false."
       }
     },
     "automaticFailover": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Default to true. Enable automatic failover for regions."
+        "description": "Optional. Enable automatic failover for regions. Defaults to true."
       }
     },
     "enableFreeTier": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Default to false. Flag to indicate whether Free Tier is enabled."
+        "description": "Optional. Flag to indicate whether \"Free Tier\" is enabled. Defaults to false."
       }
     },
     "enableMultipleWriteLocations": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Optional. Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled."
+        "description": "Optional. Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false."
       }
     },
     "disableKeyBasedMetadataWriteAccess": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Default to true. Disable write operations on metadata resources (databases, containers, throughput) via account keys."
+        "description": "Optional. Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true."
       }
     },
     "maxStalenessPrefix": {
@@ -1166,7 +1166,7 @@
       "minValue": 1,
       "maxValue": 2147483647,
       "metadata": {
-        "description": "Optional. Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000."
+        "description": "Optional. The maximum stale requests. Required for \"BoundedStaleness\" consistency level. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. Defaults to 100000."
       }
     },
     "maxIntervalInSeconds": {
@@ -1175,7 +1175,7 @@
       "minValue": 5,
       "maxValue": 86400,
       "metadata": {
-        "description": "Optional. Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400."
+        "description": "Optional. The maximum lag time in minutes. Required for \"BoundedStaleness\" consistency level. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. Defaults to 300."
       }
     },
     "serverVersion": {
@@ -1191,7 +1191,7 @@
         "7.0"
       ],
       "metadata": {
-        "description": "Optional. Default to 4.2. Specifies the MongoDB server version to use."
+        "description": "Optional. Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to \"4.2\"."
       }
     },
     "sqlDatabases": {
@@ -1201,7 +1201,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. SQL Databases configurations."
+        "description": "Optional. Configuration for databases when using Azure Cosmos DB for NoSQL."
       }
     },
     "sqlRoleDefinitions": {
@@ -1211,7 +1211,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. SQL Role Definitions configurations. Also allows the assignment of custom roles."
+        "description": "Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions."
       }
     },
     "builtInSqlRoleAssignments": {
@@ -1221,28 +1221,28 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Optional. SQL Role Assignments of built-in roles."
+        "description": "Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments."
       }
     },
     "mongodbDatabases": {
       "type": "array",
       "nullable": true,
       "metadata": {
-        "description": "Optional. MongoDB Databases configurations."
+        "description": "Optional. Configuration for databases when using Azure Cosmos DB for MongoDB RU."
       }
     },
     "gremlinDatabases": {
       "type": "array",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Gremlin Databases configurations."
+        "description": "Optional. Configuration for databases when using Azure Cosmos DB for Apache Gremlin."
       }
     },
     "tables": {
       "type": "array",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Table configurations."
+        "description": "Optional. Configuration for databases when using Azure Cosmos DB for Table."
       }
     },
     "enableTelemetry": {
