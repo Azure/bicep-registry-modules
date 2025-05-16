@@ -80,10 +80,10 @@ param serverVersion string = '4.2'
 param sqlDatabases sqlDatabaseType[]?
 
 @description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.')
-param sqlRoleDefinitions customSqlRoleDefinitionType[]?
+param nosqlRoleDefinitions customNosqlRoleDefinitionType[]?
 
 @description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.')
-param builtInSqlRoleAssignments builtInSqlRoleAssignmentType[]?
+param builtInNosqlRoleAssignments builtInNosqlRoleAssignmentType[]?
 
 @description('Optional. Configuration for databases when using Azure Cosmos DB for MongoDB RU.')
 param mongodbDatabases array?
@@ -94,10 +94,10 @@ param gremlinDatabases array?
 @description('Optional. Configuration for databases when using Azure Cosmos DB for Table.')
 param tables array?
 
-@description('Optional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enables or disables usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s).')
+@description('Optional. The total throughput limit imposed on this account in request units per second (RU/s). Default to unlimited throughput.')
 param totalThroughputLimit int = -1
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
@@ -105,11 +105,11 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 param lock lockType?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. Array of role assignments to create.')
+@description('Optional. An array of control plane Azure role-based access control assignments.')
 param roleAssignments roleAssignmentType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. The diagnostic settings of the service.')
+@description('Optional. The diagnostic settings for the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @allowed([
@@ -124,31 +124,31 @@ param diagnosticSettings diagnosticSettingFullType[]?
   'EnableMaterializedViews'
   'DeleteAllItemsByPartitionKey'
 ])
-@description('Optional. List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.')
+@description('Optional. A list of Azure Cosmos DB specific capabilities for the account.')
 param capabilitiesToAdd string[]?
 
 @allowed([
   'Periodic'
   'Continuous'
 ])
-@description('Optional. Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used.')
+@description('Optional. Configures the backup mode. Periodic backup must be used if multiple write locations are used. Defaults to "Continuous".')
 param backupPolicyType string = 'Continuous'
 
 @allowed([
   'Continuous30Days'
   'Continuous7Days'
 ])
-@description('Optional. Default to Continuous30Days. Configuration values for continuous mode backup.')
+@description('Optional. Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days". ')
 param backupPolicyContinuousTier string = 'Continuous30Days'
 
 @minValue(60)
 @maxValue(1440)
-@description('Optional. Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type.')
+@description('Optional. An integer representing the interval in minutes between two backups. This setting only applies to the periodic backup type. Defaults to 240.')
 param backupIntervalInMinutes int = 240
 
 @minValue(2)
 @maxValue(720)
-@description('Optional. Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type.')
+@description('Optional. An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8.')
 param backupRetentionIntervalInHours int = 8
 
 @allowed([
@@ -156,11 +156,11 @@ param backupRetentionIntervalInHours int = 8
   'Local'
   'Zone'
 ])
-@description('Optional. Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type.')
+@description('Optional. Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local".')
 param backupStorageRedundancy string = 'Local'
 
 import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
+@description('Optional. Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
@@ -176,7 +176,7 @@ param networkRestrictions networkRestrictionType = {
 @allowed([
   'Tls12'
 ])
-@description('Optional. Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.')
+@description('Optional. Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2).')
 param minimumTlsVersion string = 'Tls12'
 
 var enableReferencedModulesTelemetry = false
@@ -196,7 +196,7 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-var builtInRoleNames = {
+var builtInControlPlaneRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'Cosmos DB Account Reader Role': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
@@ -232,7 +232,7 @@ var builtInRoleNames = {
 
 var formattedRoleAssignments = [
   for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
-    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+    roleDefinitionId: builtInControlPlaneRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
         roleAssignment.roleDefinitionIdOrName,
         '/providers/Microsoft.Authorization/roleDefinitions/'
       )
@@ -296,8 +296,6 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
       totalThroughputLimit: totalThroughputLimit
     }
     publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
-    disableLocalAuth: disableLocalAuthentication
-    disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
     ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
       ? {
           // NoSQL, MongoDB RU, Table, and Apache Gremlin common properties
@@ -338,6 +336,16 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
           enableAnalyticalStorage: enableAnalyticalStorage
         }
       : {})
+    ...((!empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
+      ? {
+          // Key-based authentication is the only allowed authentication method for MongoDB, Gremlin, and Table APIs.
+          disableLocalAuth: false
+          disableKeyBasedMetadataWriteAccess: false
+        }
+      : {
+          disableLocalAuth: disableLocalAuthentication
+          disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
+        })
     ...(!empty(mongodbDatabases)
       ? {
           // MongoDB RU properties
@@ -419,27 +427,27 @@ module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [
 ]
 
 module databaseAccount_sqlRoleDefinitions 'sql-role-definition/main.bicep' = [
-  for (sqlRoleDefinition, index) in (sqlRoleDefinitions ?? []): {
+  for (nosqlRoleDefinition, index) in (nosqlRoleDefinitions ?? []): {
     name: '${uniqueString(deployment().name, location)}-sqlrd-${index}'
     params: {
       databaseAccountName: databaseAccount.name
-      name: sqlRoleDefinition.?name
-      dataActions: sqlRoleDefinition.?dataActions
-      roleName: sqlRoleDefinition.roleName
-      assignableScopes: sqlRoleDefinition.?assignableScopes
-      sqlRoleAssignments: sqlRoleDefinition.?sqlRoleAssignments
+      name: nosqlRoleDefinition.?name
+      dataActions: nosqlRoleDefinition.?dataActions
+      roleName: nosqlRoleDefinition.roleName
+      assignableScopes: nosqlRoleDefinition.?assignableScopes
+      sqlRoleAssignments: nosqlRoleDefinition.?nosqlRoleAssignments
     }
   }
 ]
 
 module databaseAccount_sqlRoleAssignments 'sql-role-assignment/main.bicep' = [
-  for (sqlRoleAssignment, index) in (builtInSqlRoleAssignments ?? []): {
+  for (nosqlRoleAssignment, index) in (builtInNosqlRoleAssignments ?? []): {
     name: '${uniqueString(deployment().name)}-sqlra-${index}'
     params: {
       databaseAccountName: databaseAccount.name
-      roleDefinitionId: sqlRoleAssignment.roleDefinitionId
-      principalId: sqlRoleAssignment.principalId
-      name: sqlRoleAssignment.?name
+      roleDefinitionId: nosqlRoleAssignment.roleDefinitionId
+      principalId: nosqlRoleAssignment.principalId
+      name: nosqlRoleAssignment.?name
     }
   }
 ]
@@ -664,15 +672,15 @@ type privateEndpointOutputType = {
   @description('The resource ID of the private endpoint.')
   resourceId: string
 
-  @description('The group Id for the private endpoint Group.')
+  @description('The group ID for the private endpoint group.')
   groupId: string?
 
   @description('The custom DNS configurations of the private endpoint.')
   customDnsConfigs: {
-    @description('FQDN that resolves to private endpoint IP address.')
+    @description('fully-qualified domain name (FQDN) that resolves to private endpoint IP address.')
     fqdn: string?
 
-    @description('A list of private IP addresses of the private endpoint.')
+    @description('A list of private IP addresses for the private endpoint.')
     ipAddresses: string[]
   }[]
 
@@ -686,7 +694,7 @@ type failoverLocationType = {
   @description('Required. The failover priority of the region. A failover priority of 0 indicates a write region. The maximum value for a failover priority = (total number of regions - 1). Failover priority values must be unique for each of the regions in which the database account exists.')
   failoverPriority: int
 
-  @description('Optional. Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.')
+  @description('Optional. Flag to indicate whether or not this region is an AvailabilityZone region. Defaults to true.')
   isZoneRedundant: bool?
 
   @description('Required. The name of the region.')
@@ -694,56 +702,51 @@ type failoverLocationType = {
 }
 
 @export()
-@description('The type of a Built-In SQL Role Definition.')
-type builtInSqlRoleAssignmentType = {
+@description('The type for an Azure Cosmos DB for NoSQL native role-based access control assignment.')
+type builtInNosqlRoleAssignmentType = {
   @description('Optional. The unique name of the role assignment.')
   name: string?
 
-  @description('Required. The unique identifier of the SQL Role Definition.')
+  @description('Required. The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition.')
   roleDefinitionId: string
 
-  @description('Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.')
+  @description('Required. The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.')
   principalId: string
 }
 
 import { sqlRoleAssignmentType } from 'sql-role-definition/main.bicep'
-
 @export()
-@description('The type of a custom SQL Role Definition.')
-type customSqlRoleDefinitionType = {
-  @description('Optional. The unique identifier of the Role Definition.')
+@description('The type for an Azure Cosmos DB for NoSQL native role-based access control definition.')
+type customNosqlRoleDefinitionType = {
+  @description('Optional. The unique identifier of the role-based access control definition.')
   name: string?
 
-  @description('Required. A user-friendly name for the Role Definition. Must be unique for the database account.')
+  @description('Required. A user-friendly name for the role-based access control definition. This must be unique within the database account.')
   roleName: string
 
   @description('Optional. An array of data actions that are allowed.')
   dataActions: string[]?
 
-  // While a property, currently NOT supported by the Resource Provider. (2025-05-12)
-  // @description('Optional. An array of data actions that are denied.')
-  // notDataActions: string[]?
-
-  @description('Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account.')
+  @description('Optional. A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.')
   assignableScopes: string[]?
 
-  @description('Optional. An array of SQL Role Assignments to be created for the SQL Role Definition.')
-  sqlRoleAssignments: sqlRoleAssignmentType[]?
+  @description('Optional. An array of role-based access control assignments to be created for the definition.')
+  nosqlRoleAssignments: sqlRoleAssignmentType[]?
 }
 
 @export()
-@description('The type for the SQL database.')
+@description('The type for an Azure Cosmos DB for NoSQL database.')
 type sqlDatabaseType = {
-  @description('Required. Name of the SQL database .')
+  @description('Required. Name of the database .')
   name: string
 
-  @description('Optional. Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
+  @description('Optional. Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400.')
   throughput: int?
 
-  @description('Optional. Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
+  @description('Optional. Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.')
   autoscaleSettingsMaxThroughput: int?
 
-  @description('Optional. Array of containers to deploy in the SQL database.')
+  @description('Optional. Set of containers to deploy in the database.')
   containers: {
     @description('Required. Name of the container.')
     name: string
@@ -803,28 +806,28 @@ type secretsExportConfigurationType = {
   @description('Required. The resource ID of the key vault where to store the secrets of this module.')
   keyVaultResourceId: string
 
-  @description('Optional. The primary write key secret name to create.')
+  @description('Optional. The primary read-write key secret name to create.')
   primaryWriteKeySecretName: string?
 
-  @description('Optional. The primary readonly key secret name to create.')
+  @description('Optional. The primary read-only key secret name to create.')
   primaryReadOnlyKeySecretName: string?
 
-  @description('Optional. The primary write connection string secret name to create.')
+  @description('Optional. The primary read-write connection string secret name to create.')
   primaryWriteConnectionStringSecretName: string?
 
-  @description('Optional. The primary readonly connection string secret name to create.')
+  @description('Optional. The primary read-only connection string secret name to create.')
   primaryReadonlyConnectionStringSecretName: string?
 
-  @description('Optional. The primary write key secret name to create.')
+  @description('Optional. The primary read-write key secret name to create.')
   secondaryWriteKeySecretName: string?
 
-  @description('Optional. The primary readonly key secret name to create.')
+  @description('Optional. The primary read-only key secret name to create.')
   secondaryReadonlyKeySecretName: string?
 
-  @description('Optional. The primary write connection string secret name to create.')
+  @description('Optional. The primary read-write connection string secret name to create.')
   secondaryWriteConnectionStringSecretName: string?
 
-  @description('Optional. The primary readonly connection string secret name to create.')
+  @description('Optional. The primary read-only connection string secret name to create.')
   secondaryReadonlyConnectionStringSecretName: string?
 }
 
@@ -839,16 +842,16 @@ type secretsOutputType = {
 @export()
 @description('The type for the network restriction.')
 type networkRestrictionType = {
-  @description('Optional. A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".')
+  @description('Optional. A single IPv4 address or a single IPv4 address range in Classless Inter-Domain Routing (CIDR) format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`, `192.168.0.0/16`, since these are not enforceable by the IP address filter. Example of valid inputs: `23.40.210.245` or `23.40.210.0/8`.')
   ipRules: string[]?
 
-  @description('Optional. Default to None. Specifies the network ACL bypass for Azure services.')
+  @description('Optional. Specifies the network ACL bypass for Azure services. Default to "None".')
   networkAclBypass: ('AzureServices' | 'None')?
 
-  @description('Optional. Default to Disabled. Whether requests from Public Network are allowed.')
+  @description('Optional. Whether requests from the public network are allowed. Default to "Disabled".')
   publicNetworkAccess: ('Enabled' | 'Disabled')?
 
-  @description('Optional. List of Virtual Network ACL rules configured for the Cosmos DB account..')
+  @description('Optional. List of virtual network access control list (ACL) rules configured for the account.')
   virtualNetworkRules: {
     @description('Required. Resource ID of a subnet.')
     subnetResourceId: string

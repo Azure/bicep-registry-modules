@@ -2560,13 +2560,13 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'role-ref'
     // Non-required parameters
-    builtInSqlRoleAssignments: [
+    builtInNosqlRoleAssignments: [
       {
         principalId: '<principalId>'
         roleDefinitionId: '<roleDefinitionId>'
       }
     ]
-    sqlRoleDefinitions: [
+    nosqlRoleDefinitions: [
       {
         assignableScopes: [
           '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
@@ -2576,12 +2576,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
         ]
-        roleName: 'cosmos-sql-role-test'
-        sqlRoleAssignments: [
+        nosqlRoleAssignments: [
           {
             principalId: '<principalId>'
           }
         ]
+        roleName: 'cosmos-sql-role-test'
       }
     ]
   }
@@ -2605,7 +2605,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "role-ref"
     },
     // Non-required parameters
-    "builtInSqlRoleAssignments": {
+    "builtInNosqlRoleAssignments": {
       "value": [
         {
           "principalId": "<principalId>",
@@ -2613,7 +2613,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         }
       ]
     },
-    "sqlRoleDefinitions": {
+    "nosqlRoleDefinitions": {
       "value": [
         {
           "assignableScopes": [
@@ -2624,12 +2624,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
           ],
-          "roleName": "cosmos-sql-role-test",
-          "sqlRoleAssignments": [
+          "nosqlRoleAssignments": [
             {
               "principalId": "<principalId>"
             }
-          ]
+          ],
+          "roleName": "cosmos-sql-role-test"
         }
       ]
     }
@@ -2650,13 +2650,13 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'role-ref'
 // Non-required parameters
-param builtInSqlRoleAssignments = [
+param builtInNosqlRoleAssignments = [
   {
     principalId: '<principalId>'
     roleDefinitionId: '<roleDefinitionId>'
   }
 ]
-param sqlRoleDefinitions = [
+param nosqlRoleDefinitions = [
   {
     assignableScopes: [
       '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
@@ -2666,12 +2666,12 @@ param sqlRoleDefinitions = [
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
     ]
-    roleName: 'cosmos-sql-role-test'
-    sqlRoleAssignments: [
+    nosqlRoleAssignments: [
       {
         principalId: '<principalId>'
       }
     ]
+    roleName: 'cosmos-sql-role-test'
   }
 ]
 ```
@@ -2988,22 +2988,22 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`automaticFailover`](#parameter-automaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
-| [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type. |
-| [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Default to Continuous30Days. Configuration values for continuous mode backup. |
-| [`backupPolicyType`](#parameter-backuppolicytype) | string | Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used. |
-| [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type. |
-| [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type. |
-| [`builtInSqlRoleAssignments`](#parameter-builtinsqlroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
-| [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION. |
+| [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | An integer representing the interval in minutes between two backups. This setting only applies to the periodic backup type. Defaults to 240. |
+| [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days".  |
+| [`backupPolicyType`](#parameter-backuppolicytype) | string | Configures the backup mode. Periodic backup must be used if multiple write locations are used. Defaults to "Continuous". |
+| [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8. |
+| [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local". |
+| [`builtInNosqlRoleAssignments`](#parameter-builtinnosqlroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
+| [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | A list of Azure Cosmos DB specific capabilities for the account. |
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the account. Defaults to "Standard". |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the account. Defaults to "Session". |
-| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
+| [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings for the service. |
 | [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
 | [`disableLocalAuthentication`](#parameter-disablelocalauthentication) | bool | Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true. |
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether "Free Tier" is enabled. Defaults to false. |
 | [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enables or disables usage telemetry for module. |
 | [`failoverLocations`](#parameter-failoverlocations) | array | The set of locations enabled for the account. Defaults to the location where the account is deployed. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Configuration for databases when using Azure Cosmos DB for Apache Gremlin. |
 | [`location`](#parameter-location) | string | Defaults to the current resource group scope location. Location for all resources. |
@@ -3011,18 +3011,18 @@ param tags = {
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`maxIntervalInSeconds`](#parameter-maxintervalinseconds) | int | The maximum lag time in minutes. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. Defaults to 300. |
 | [`maxStalenessPrefix`](#parameter-maxstalenessprefix) | int | The maximum stale requests. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. Defaults to 100000. |
-| [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. |
+| [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2). |
 | [`mongodbDatabases`](#parameter-mongodbdatabases) | array | Configuration for databases when using Azure Cosmos DB for MongoDB RU. |
 | [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: 'Disabled' }`. |
-| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`nosqlRoleDefinitions`](#parameter-nosqlroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
+| [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible. |
+| [`roleAssignments`](#parameter-roleassignments) | array | An array of control plane Azure role-based access control assignments. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`serverVersion`](#parameter-serverversion) | string | Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to "4.2". |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | Configuration for databases when using Azure Cosmos DB for NoSQL. |
-| [`sqlRoleDefinitions`](#parameter-sqlroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`tables`](#parameter-tables) | array | Configuration for databases when using Azure Cosmos DB for Table. |
 | [`tags`](#parameter-tags) | object | Tags for the resource. |
-| [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s). |
+| [`totalThroughputLimit`](#parameter-totalthroughputlimit) | int | The total throughput limit imposed on this account in request units per second (RU/s). Default to unlimited throughput. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts. |
 
 ### Parameter: `name`
@@ -3042,7 +3042,7 @@ Enable automatic failover for regions. Defaults to true.
 
 ### Parameter: `backupIntervalInMinutes`
 
-Default to 240. An integer representing the interval in minutes between two backups. Only applies to periodic backup type.
+An integer representing the interval in minutes between two backups. This setting only applies to the periodic backup type. Defaults to 240.
 
 - Required: No
 - Type: int
@@ -3052,7 +3052,7 @@ Default to 240. An integer representing the interval in minutes between two back
 
 ### Parameter: `backupPolicyContinuousTier`
 
-Default to Continuous30Days. Configuration values for continuous mode backup.
+Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days". 
 
 - Required: No
 - Type: string
@@ -3067,7 +3067,7 @@ Default to Continuous30Days. Configuration values for continuous mode backup.
 
 ### Parameter: `backupPolicyType`
 
-Default to Continuous. Describes the mode of backups. Periodic backup must be used if multiple write locations are used.
+Configures the backup mode. Periodic backup must be used if multiple write locations are used. Defaults to "Continuous".
 
 - Required: No
 - Type: string
@@ -3082,7 +3082,7 @@ Default to Continuous. Describes the mode of backups. Periodic backup must be us
 
 ### Parameter: `backupRetentionIntervalInHours`
 
-Default to 8. An integer representing the time (in hours) that each backup is retained. Only applies to periodic backup type.
+An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8.
 
 - Required: No
 - Type: int
@@ -3092,7 +3092,7 @@ Default to 8. An integer representing the time (in hours) that each backup is re
 
 ### Parameter: `backupStorageRedundancy`
 
-Default to Local. Enum to indicate type of backup residency. Only applies to periodic backup type.
+Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local".
 
 - Required: No
 - Type: string
@@ -3106,7 +3106,7 @@ Default to Local. Enum to indicate type of backup residency. Only applies to per
   ]
   ```
 
-### Parameter: `builtInSqlRoleAssignments`
+### Parameter: `builtInNosqlRoleAssignments`
 
 Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.
 
@@ -3117,30 +3117,30 @@ Configurations for Azure Cosmos DB for NoSQL native role-based access control as
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-builtinsqlroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
-| [`roleDefinitionId`](#parameter-builtinsqlroleassignmentsroledefinitionid) | string | The unique identifier of the SQL Role Definition. |
+| [`principalId`](#parameter-builtinnosqlroleassignmentsprincipalid) | string | The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription. |
+| [`roleDefinitionId`](#parameter-builtinnosqlroleassignmentsroledefinitionid) | string | The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-builtinsqlroleassignmentsname) | string | The unique name of the role assignment. |
+| [`name`](#parameter-builtinnosqlroleassignmentsname) | string | The unique name of the role assignment. |
 
-### Parameter: `builtInSqlRoleAssignments.principalId`
+### Parameter: `builtInNosqlRoleAssignments.principalId`
 
-The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `builtInSqlRoleAssignments.roleDefinitionId`
-
-The unique identifier of the SQL Role Definition.
+The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `builtInSqlRoleAssignments.name`
+### Parameter: `builtInNosqlRoleAssignments.roleDefinitionId`
+
+The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `builtInNosqlRoleAssignments.name`
 
 The unique name of the role assignment.
 
@@ -3149,7 +3149,7 @@ The unique name of the role assignment.
 
 ### Parameter: `capabilitiesToAdd`
 
-List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.
+A list of Azure Cosmos DB specific capabilities for the account.
 
 - Required: No
 - Type: array
@@ -3203,7 +3203,7 @@ The default consistency level of the account. Defaults to "Session".
 
 ### Parameter: `diagnosticSettings`
 
-The diagnostic settings of the service.
+The diagnostic settings for the service.
 
 - Required: No
 - Type: array
@@ -3389,7 +3389,7 @@ Enables the account to write in multiple locations. Periodic backup must be used
 
 ### Parameter: `enableTelemetry`
 
-Enable/Disable usage telemetry for module.
+Enables or disables usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -3413,7 +3413,7 @@ The set of locations enabled for the account. Defaults to the location where the
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`isZoneRedundant`](#parameter-failoverlocationsiszoneredundant) | bool | Default to true. Flag to indicate whether or not this region is an AvailabilityZone region. |
+| [`isZoneRedundant`](#parameter-failoverlocationsiszoneredundant) | bool | Flag to indicate whether or not this region is an AvailabilityZone region. Defaults to true. |
 
 ### Parameter: `failoverLocations.failoverPriority`
 
@@ -3431,7 +3431,7 @@ The name of the region.
 
 ### Parameter: `failoverLocations.isZoneRedundant`
 
-Default to true. Flag to indicate whether or not this region is an AvailabilityZone region.
+Flag to indicate whether or not this region is an AvailabilityZone region. Defaults to true.
 
 - Required: No
 - Type: bool
@@ -3537,7 +3537,7 @@ The maximum stale requests. Required for "BoundedStaleness" consistency level. V
 
 ### Parameter: `minimumTlsVersion`
 
-Default to TLS 1.2. Enum to indicate the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later.
+Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2).
 
 - Required: No
 - Type: string
@@ -3575,21 +3575,21 @@ The network configuration of this module. Defaults to `{ ipRules: [], virtualNet
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`ipRules`](#parameter-networkrestrictionsiprules) | array | A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8". |
-| [`networkAclBypass`](#parameter-networkrestrictionsnetworkaclbypass) | string | Default to None. Specifies the network ACL bypass for Azure services. |
-| [`publicNetworkAccess`](#parameter-networkrestrictionspublicnetworkaccess) | string | Default to Disabled. Whether requests from Public Network are allowed. |
-| [`virtualNetworkRules`](#parameter-networkrestrictionsvirtualnetworkrules) | array | List of Virtual Network ACL rules configured for the Cosmos DB account.. |
+| [`ipRules`](#parameter-networkrestrictionsiprules) | array | A single IPv4 address or a single IPv4 address range in Classless Inter-Domain Routing (CIDR) format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`, `192.168.0.0/16`, since these are not enforceable by the IP address filter. Example of valid inputs: `23.40.210.245` or `23.40.210.0/8`. |
+| [`networkAclBypass`](#parameter-networkrestrictionsnetworkaclbypass) | string | Specifies the network ACL bypass for Azure services. Default to "None". |
+| [`publicNetworkAccess`](#parameter-networkrestrictionspublicnetworkaccess) | string | Whether requests from the public network are allowed. Default to "Disabled". |
+| [`virtualNetworkRules`](#parameter-networkrestrictionsvirtualnetworkrules) | array | List of virtual network access control list (ACL) rules configured for the account. |
 
 ### Parameter: `networkRestrictions.ipRules`
 
-A single IPv4 address or a single IPv4 address range in CIDR format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: 10.0.0.0/8, 100.64.0.0/10, 172.16.0.0/12, 192.168.0.0/16, since these are not enforceable by the IP address filter. Example of valid inputs: "23.40.210.245" or "23.40.210.0/8".
+A single IPv4 address or a single IPv4 address range in Classless Inter-Domain Routing (CIDR) format. Provided IPs must be well-formatted and cannot be contained in one of the following ranges: `10.0.0.0/8`, `100.64.0.0/10`, `172.16.0.0/12`, `192.168.0.0/16`, since these are not enforceable by the IP address filter. Example of valid inputs: `23.40.210.245` or `23.40.210.0/8`.
 
 - Required: No
 - Type: array
 
 ### Parameter: `networkRestrictions.networkAclBypass`
 
-Default to None. Specifies the network ACL bypass for Azure services.
+Specifies the network ACL bypass for Azure services. Default to "None".
 
 - Required: No
 - Type: string
@@ -3603,7 +3603,7 @@ Default to None. Specifies the network ACL bypass for Azure services.
 
 ### Parameter: `networkRestrictions.publicNetworkAccess`
 
-Default to Disabled. Whether requests from Public Network are allowed.
+Whether requests from the public network are allowed. Default to "Disabled".
 
 - Required: No
 - Type: string
@@ -3617,7 +3617,7 @@ Default to Disabled. Whether requests from Public Network are allowed.
 
 ### Parameter: `networkRestrictions.virtualNetworkRules`
 
-List of Virtual Network ACL rules configured for the Cosmos DB account..
+List of virtual network access control list (ACL) rules configured for the account.
 
 - Required: No
 - Type: array
@@ -3635,9 +3635,92 @@ Resource ID of a subnet.
 - Required: Yes
 - Type: string
 
+### Parameter: `nosqlRoleDefinitions`
+
+Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleName`](#parameter-nosqlroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. This must be unique within the database account. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignableScopes`](#parameter-nosqlroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
+| [`dataActions`](#parameter-nosqlroledefinitionsdataactions) | array | An array of data actions that are allowed. |
+| [`name`](#parameter-nosqlroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
+| [`nosqlRoleAssignments`](#parameter-nosqlroledefinitionsnosqlroleassignments) | array | An array of role-based access control assignments to be created for the definition. |
+
+### Parameter: `nosqlRoleDefinitions.roleName`
+
+A user-friendly name for the role-based access control definition. This must be unique within the database account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `nosqlRoleDefinitions.assignableScopes`
+
+A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.
+
+- Required: No
+- Type: array
+
+### Parameter: `nosqlRoleDefinitions.dataActions`
+
+An array of data actions that are allowed.
+
+- Required: No
+- Type: array
+
+### Parameter: `nosqlRoleDefinitions.name`
+
+The unique identifier of the role-based access control definition.
+
+- Required: No
+- Type: string
+
+### Parameter: `nosqlRoleDefinitions.nosqlRoleAssignments`
+
+An array of role-based access control assignments to be created for the definition.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-nosqlroledefinitionsnosqlroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-nosqlroledefinitionsnosqlroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+
+### Parameter: `nosqlRoleDefinitions.nosqlRoleAssignments.principalId`
+
+The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `nosqlRoleDefinitions.nosqlRoleAssignments.name`
+
+Name unique identifier of the SQL Role Assignment.
+
+- Required: No
+- Type: string
+
 ### Parameter: `privateEndpoints`
 
-Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.
+Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible.
 
 - Required: No
 - Type: array
@@ -3937,17 +4020,6 @@ Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Roles configurable by name:
-  - `'Contributor'`
-  - `'DNS Resolver Contributor'`
-  - `'DNS Zone Contributor'`
-  - `'Domain Services Contributor'`
-  - `'Domain Services Reader'`
-  - `'Network Contributor'`
-  - `'Owner'`
-  - `'Private DNS Zone Contributor'`
-  - `'Reader'`
-  - `'Role Based Access Control Administrator'`
 
 **Required parameters**
 
@@ -4048,21 +4120,10 @@ Tags to be applied on all resources/resource groups in this deployment.
 
 ### Parameter: `roleAssignments`
 
-Array of role assignments to create.
+An array of control plane Azure role-based access control assignments.
 
 - Required: No
 - Type: array
-- Roles configurable by name:
-  - `'Contributor'`
-  - `'Cosmos DB Account Reader Role'`
-  - `'Cosmos DB Operator'`
-  - `'CosmosBackupOperator'`
-  - `'CosmosRestoreOperator'`
-  - `'DocumentDB Account Contributor'`
-  - `'Owner'`
-  - `'Reader'`
-  - `'Role Based Access Control Administrator'`
-  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -4171,14 +4232,14 @@ Key vault reference and secret settings for the module's secrets export.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`primaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationprimaryreadonlyconnectionstringsecretname) | string | The primary readonly connection string secret name to create. |
-| [`primaryReadOnlyKeySecretName`](#parameter-secretsexportconfigurationprimaryreadonlykeysecretname) | string | The primary readonly key secret name to create. |
-| [`primaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationprimarywriteconnectionstringsecretname) | string | The primary write connection string secret name to create. |
-| [`primaryWriteKeySecretName`](#parameter-secretsexportconfigurationprimarywritekeysecretname) | string | The primary write key secret name to create. |
-| [`secondaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondaryreadonlyconnectionstringsecretname) | string | The primary readonly connection string secret name to create. |
-| [`secondaryReadonlyKeySecretName`](#parameter-secretsexportconfigurationsecondaryreadonlykeysecretname) | string | The primary readonly key secret name to create. |
-| [`secondaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondarywriteconnectionstringsecretname) | string | The primary write connection string secret name to create. |
-| [`secondaryWriteKeySecretName`](#parameter-secretsexportconfigurationsecondarywritekeysecretname) | string | The primary write key secret name to create. |
+| [`primaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationprimaryreadonlyconnectionstringsecretname) | string | The primary read-only connection string secret name to create. |
+| [`primaryReadOnlyKeySecretName`](#parameter-secretsexportconfigurationprimaryreadonlykeysecretname) | string | The primary read-only key secret name to create. |
+| [`primaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationprimarywriteconnectionstringsecretname) | string | The primary read-write connection string secret name to create. |
+| [`primaryWriteKeySecretName`](#parameter-secretsexportconfigurationprimarywritekeysecretname) | string | The primary read-write key secret name to create. |
+| [`secondaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondaryreadonlyconnectionstringsecretname) | string | The primary read-only connection string secret name to create. |
+| [`secondaryReadonlyKeySecretName`](#parameter-secretsexportconfigurationsecondaryreadonlykeysecretname) | string | The primary read-only key secret name to create. |
+| [`secondaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondarywriteconnectionstringsecretname) | string | The primary read-write connection string secret name to create. |
+| [`secondaryWriteKeySecretName`](#parameter-secretsexportconfigurationsecondarywritekeysecretname) | string | The primary read-write key secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -4189,56 +4250,56 @@ The resource ID of the key vault where to store the secrets of this module.
 
 ### Parameter: `secretsExportConfiguration.primaryReadonlyConnectionStringSecretName`
 
-The primary readonly connection string secret name to create.
+The primary read-only connection string secret name to create.
 
 - Required: No
 - Type: string
 
 ### Parameter: `secretsExportConfiguration.primaryReadOnlyKeySecretName`
 
-The primary readonly key secret name to create.
+The primary read-only key secret name to create.
 
 - Required: No
 - Type: string
 
 ### Parameter: `secretsExportConfiguration.primaryWriteConnectionStringSecretName`
 
-The primary write connection string secret name to create.
+The primary read-write connection string secret name to create.
 
 - Required: No
 - Type: string
 
 ### Parameter: `secretsExportConfiguration.primaryWriteKeySecretName`
 
-The primary write key secret name to create.
+The primary read-write key secret name to create.
 
 - Required: No
 - Type: string
 
 ### Parameter: `secretsExportConfiguration.secondaryReadonlyConnectionStringSecretName`
 
-The primary readonly connection string secret name to create.
+The primary read-only connection string secret name to create.
 
 - Required: No
 - Type: string
 
 ### Parameter: `secretsExportConfiguration.secondaryReadonlyKeySecretName`
 
-The primary readonly key secret name to create.
+The primary read-only key secret name to create.
 
 - Required: No
 - Type: string
 
 ### Parameter: `secretsExportConfiguration.secondaryWriteConnectionStringSecretName`
 
-The primary write connection string secret name to create.
+The primary read-write connection string secret name to create.
 
 - Required: No
 - Type: string
 
 ### Parameter: `secretsExportConfiguration.secondaryWriteKeySecretName`
 
-The primary write key secret name to create.
+The primary read-write key secret name to create.
 
 - Required: No
 - Type: string
@@ -4274,33 +4335,33 @@ Configuration for databases when using Azure Cosmos DB for NoSQL.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-sqldatabasesname) | string | Name of the SQL database . |
+| [`name`](#parameter-sqldatabasesname) | string | Name of the database . |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasesautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
-| [`containers`](#parameter-sqldatabasescontainers) | array | Array of containers to deploy in the SQL database. |
-| [`throughput`](#parameter-sqldatabasesthroughput) | int | Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-sqldatabasesautoscalesettingsmaxthroughput) | int | Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
+| [`containers`](#parameter-sqldatabasescontainers) | array | Set of containers to deploy in the database. |
+| [`throughput`](#parameter-sqldatabasesthroughput) | int | Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400. |
 
 ### Parameter: `sqlDatabases.name`
 
-Name of the SQL database .
+Name of the database .
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `sqlDatabases.autoscaleSettingsMaxThroughput`
 
-Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
+Specifies the autoscale settings and represents maximum throughput the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If the value is not set, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
 
 - Required: No
 - Type: int
 
 ### Parameter: `sqlDatabases.containers`
 
-Array of containers to deploy in the SQL database.
+Set of containers to deploy in the database.
 
 - Required: No
 - Type: array
@@ -4476,93 +4537,10 @@ Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Vers
 
 ### Parameter: `sqlDatabases.throughput`
 
-Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
+Request units per second. Will be ignored if `autoscaleSettingsMaxThroughput` is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. Defaults to 400.
 
 - Required: No
 - Type: int
-
-### Parameter: `sqlRoleDefinitions`
-
-Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`roleName`](#parameter-sqlroledefinitionsrolename) | string | A user-friendly name for the Role Definition. Must be unique for the database account. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`assignableScopes`](#parameter-sqlroledefinitionsassignablescopes) | array | A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account. |
-| [`dataActions`](#parameter-sqlroledefinitionsdataactions) | array | An array of data actions that are allowed. |
-| [`name`](#parameter-sqlroledefinitionsname) | string | The unique identifier of the Role Definition. |
-| [`sqlRoleAssignments`](#parameter-sqlroledefinitionssqlroleassignments) | array | An array of SQL Role Assignments to be created for the SQL Role Definition. |
-
-### Parameter: `sqlRoleDefinitions.roleName`
-
-A user-friendly name for the Role Definition. Must be unique for the database account.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `sqlRoleDefinitions.assignableScopes`
-
-A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account.
-
-- Required: No
-- Type: array
-
-### Parameter: `sqlRoleDefinitions.dataActions`
-
-An array of data actions that are allowed.
-
-- Required: No
-- Type: array
-
-### Parameter: `sqlRoleDefinitions.name`
-
-The unique identifier of the Role Definition.
-
-- Required: No
-- Type: string
-
-### Parameter: `sqlRoleDefinitions.sqlRoleAssignments`
-
-An array of SQL Role Assignments to be created for the SQL Role Definition.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-sqlroledefinitionssqlroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-sqlroledefinitionssqlroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
-
-### Parameter: `sqlRoleDefinitions.sqlRoleAssignments.principalId`
-
-The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `sqlRoleDefinitions.sqlRoleAssignments.name`
-
-Name unique identifier of the SQL Role Assignment.
-
-- Required: No
-- Type: string
 
 ### Parameter: `tables`
 
@@ -4580,7 +4558,7 @@ Tags for the resource.
 
 ### Parameter: `totalThroughputLimit`
 
-Default to unlimited. The total throughput limit imposed on this Cosmos DB account (RU/s).
+The total throughput limit imposed on this account in request units per second (RU/s). Default to unlimited throughput.
 
 - Required: No
 - Type: int
