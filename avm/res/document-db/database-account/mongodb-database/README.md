@@ -1,6 +1,6 @@
-# DocumentDB Database Account MongoDB Databases `[Microsoft.DocumentDB/databaseAccounts/mongodbDatabases]`
+# Azure Cosmos DB for MongoDB RU database `[Microsoft.DocumentDB/databaseAccounts/mongodbDatabases]`
 
-This module deploys a MongoDB Database within a CosmosDB Account.
+This module deploys an Azure Cosmos DB for MongoDB RU database within an account.
 
 ## Navigation
 
@@ -21,62 +21,188 @@ This module deploys a MongoDB Database within a CosmosDB Account.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | Name of the mongodb database. |
+| [`name`](#parameter-name) | string | The name of the database. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`databaseAccountName`](#parameter-databaseaccountname) | string | The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment. |
+| [`parentAccountName`](#parameter-parentaccountname) | string | The name of the parent Azure Cosmos DB for MongoDB RU account. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`collections`](#parameter-collections) | array | Collections in the mongodb database. |
-| [`tags`](#parameter-tags) | object | Tags of the resource. |
-| [`throughput`](#parameter-throughput) | int | Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level. |
+| [`autoscaleMaxThroughput`](#parameter-autoscalemaxthroughput) | int | The maximum throughput for the database when using autoscale. |
+| [`collections`](#parameter-collections) | array | The set of collections within the database. |
+| [`tags`](#parameter-tags) | object | Tags for the resource. |
+| [`throughput`](#parameter-throughput) | int | The provisioned throughput assigned to the database. |
 
 ### Parameter: `name`
 
-Name of the mongodb database.
+The name of the database.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `databaseAccountName`
+### Parameter: `parentAccountName`
 
-The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment.
+The name of the parent Azure Cosmos DB for MongoDB RU account. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `autoscaleMaxThroughput`
+
+The maximum throughput for the database when using autoscale.
+
+- Required: No
+- Type: int
 
 ### Parameter: `collections`
 
-Collections in the mongodb database.
+The set of collections within the database.
 
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-collectionsname) | string | The name of the collection. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleMaxThroughput`](#parameter-collectionsautoscalemaxthroughput) | int | The maximum throughput for the collection when using autoscale. |
+| [`indexes`](#parameter-collectionsindexes) | array | The indexes to create for the collection. |
+| [`shardKeys`](#parameter-collectionsshardkeys) | array | The set of shard keys to use for the collection. |
+| [`tags`](#parameter-collectionstags) | object | Tags for the resource. |
+| [`throughput`](#parameter-collectionsthroughput) | int | The provisioned throughput assigned to the collection. |
+
+### Parameter: `collections.name`
+
+The name of the collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `collections.autoscaleMaxThroughput`
+
+The maximum throughput for the collection when using autoscale.
+
+- Required: No
+- Type: int
+
+### Parameter: `collections.indexes`
+
+The indexes to create for the collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keys`](#parameter-collectionsindexeskeys) | array | The fields to use for the index. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ttl`](#parameter-collectionsindexesttl) | int | The time-to-live (TTL) for documents in the index, in seconds. |
+| [`unique`](#parameter-collectionsindexesunique) | bool | Indicator for whether the index is unique. |
+
+### Parameter: `collections.indexes.keys`
+
+The fields to use for the index.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `collections.indexes.ttl`
+
+The time-to-live (TTL) for documents in the index, in seconds.
+
+- Required: No
+- Type: int
+
+### Parameter: `collections.indexes.unique`
+
+Indicator for whether the index is unique.
+
+- Required: No
+- Type: bool
+
+### Parameter: `collections.shardKeys`
+
+The set of shard keys to use for the collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`field`](#parameter-collectionsshardkeysfield) | string | The field to use for the shard key. |
+| [`type`](#parameter-collectionsshardkeystype) | string | The type of the shard key. Defaults to "Hash". Note that "Hash" is the only supported type at this time. |
+
+### Parameter: `collections.shardKeys.field`
+
+The field to use for the shard key.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `collections.shardKeys.type`
+
+The type of the shard key. Defaults to "Hash". Note that "Hash" is the only supported type at this time.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Hash'
+  ]
+  ```
+
+### Parameter: `collections.tags`
+
+Tags for the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `collections.throughput`
+
+The provisioned throughput assigned to the collection.
+
+- Required: No
+- Type: int
+
 ### Parameter: `tags`
 
-Tags of the resource.
+Tags for the resource.
 
 - Required: No
 - Type: object
 
 ### Parameter: `throughput`
 
-Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.
+The provisioned throughput assigned to the database.
 
 - Required: No
 - Type: int
-- Default: `400`
 
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `name` | string | The name of the mongodb database. |
-| `resourceGroupName` | string | The name of the resource group the mongodb database was created in. |
-| `resourceId` | string | The resource ID of the mongodb database. |
+| `name` | string | The name of the MongoDB database. |
+| `resourceGroupName` | string | The name of the resource group the MongoDB database was created in. |
+| `resourceId` | string | The resource ID of the MongoDB database. |

@@ -6,66 +6,200 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "16911349070369924403"
+      "templateHash": "7611029117416937771"
     },
-    "name": "DocumentDB Database Account MongoDB Databases",
-    "description": "This module deploys a MongoDB Database within a CosmosDB Account."
+    "name": "Azure Cosmos DB for MongoDB RU database",
+    "description": "This module deploys an Azure Cosmos DB for MongoDB RU database within an account."
+  },
+  "definitions": {
+    "mongodbCollectionType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the collection."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags for the resource."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The provisioned throughput assigned to the collection."
+          }
+        },
+        "autoscaleMaxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The maximum throughput for the collection when using autoscale."
+          }
+        },
+        "shardKeys": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/shardKeyType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The set of shard keys to use for the collection."
+          }
+        },
+        "indexes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/indexType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The indexes to create for the collection."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "A collection within the database."
+      }
+    },
+    "indexType": {
+      "type": "object",
+      "properties": {
+        "keys": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "Required. The fields to use for the index."
+          }
+        },
+        "unique": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Indicator for whether the index is unique."
+          }
+        },
+        "ttl": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The time-to-live (TTL) for documents in the index, in seconds."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An index specification for the collection.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "collection/main.bicep"
+        }
+      }
+    },
+    "shardKeyType": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The field to use for the shard key."
+          }
+        },
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "Hash"
+          ],
+          "metadata": {
+            "description": "Required. The type of the shard key. Defaults to \"Hash\". Note that \"Hash\" is the only supported type at this time."
+          }
+        }
+      },
+      "metadata": {
+        "description": "A shard key specification for the collection.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "collection/main.bicep"
+        }
+      }
+    }
   },
   "parameters": {
-    "databaseAccountName": {
+    "parentAccountName": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment."
+        "description": "Conditional. The name of the parent Azure Cosmos DB for MongoDB RU account. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the mongodb database."
-      }
-    },
-    "throughput": {
-      "type": "int",
-      "defaultValue": 400,
-      "metadata": {
-        "description": "Optional. Request Units per second. Setting throughput at the database level is only recommended for development/test or when workload across all collections in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
-      }
-    },
-    "collections": {
-      "type": "array",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Collections in the mongodb database."
+        "description": "Required. The name of the database."
       }
     },
     "tags": {
       "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2024-11-15#properties/tags"
+        },
+        "description": "Optional. Tags for the resource."
+      },
+      "nullable": true
+    },
+    "throughput": {
+      "type": "int",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Tags of the resource."
+        "description": "Optional. The provisioned throughput assigned to the database."
+      }
+    },
+    "autoscaleMaxThroughput": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The maximum throughput for the database when using autoscale."
+      }
+    },
+    "collections": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/mongodbCollectionType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The set of collections within the database."
       }
     }
   },
   "resources": {
-    "databaseAccount": {
+    "account": {
       "existing": true,
       "type": "Microsoft.DocumentDB/databaseAccounts",
       "apiVersion": "2024-11-15",
-      "name": "[parameters('databaseAccountName')]"
+      "name": "[parameters('parentAccountName')]"
     },
-    "mongodbDatabase": {
+    "database": {
       "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
       "apiVersion": "2024-11-15",
-      "name": "[format('{0}/{1}', parameters('databaseAccountName'), parameters('name'))]",
+      "name": "[format('{0}/{1}', parameters('parentAccountName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
         "resource": {
           "id": "[parameters('name')]"
         },
-        "options": "[if(contains(reference('databaseAccount').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]"
+        "options": {
+          "autoscaleSettings": "[if(contains(reference('account').capabilities, createObject('name', 'EnableServerless')), null(), createObject('maxThroughput', parameters('autoscaleMaxThroughput')))]",
+          "throughput": "[if(contains(reference('account').capabilities, createObject('name', 'EnableServerless')), null(), parameters('throughput'))]"
+        }
       },
       "dependsOn": [
-        "databaseAccount"
+        "account"
       ]
     },
     "mongodbDatabase_collections": {
@@ -82,91 +216,198 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "databaseAccountName": {
-            "value": "[parameters('databaseAccountName')]"
+          "ancestorAccountName": {
+            "value": "[parameters('parentAccountName')]"
           },
-          "mongodbDatabaseName": {
+          "parentDatabaseName": {
             "value": "[parameters('name')]"
           },
           "name": {
             "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].name]"
           },
-          "indexes": {
-            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].indexes]"
-          },
-          "shardKey": {
-            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].shardKey]"
+          "tags": {
+            "value": "[coalesce(tryGet(coalesce(parameters('collections'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
           "throughput": {
-            "value": "[tryGet(coalesce(parameters('collections'), createArray())[copyIndex()], 'throughput')]"
+            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].throughput]"
+          },
+          "autoscaleMaxThroughput": {
+            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].autoscaleMaxThroughput]"
+          },
+          "shardKeys": {
+            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].shardKeys]"
+          },
+          "indexes": {
+            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].indexes]"
           }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "7802955893269337475"
+              "templateHash": "13559419276256508746"
             },
-            "name": "DocumentDB Database Account MongoDB Database Collections",
-            "description": "This module deploys a MongoDB Database Collection."
+            "name": "Azure Cosmos DB for MongoDB RU collection",
+            "description": "This module deploys an Azure Cosmos DB for MongoDB RU collection within a database."
           },
-          "parameters": {
-            "databaseAccountName": {
-              "type": "string",
+          "definitions": {
+            "shardKeyType": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The field to use for the shard key."
+                  }
+                },
+                "type": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Hash"
+                  ],
+                  "metadata": {
+                    "description": "Required. The type of the shard key. Defaults to \"Hash\". Note that \"Hash\" is the only supported type at this time."
+                  }
+                }
+              },
               "metadata": {
-                "description": "Conditional. The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment."
+                "__bicep_export!": true,
+                "description": "A shard key specification for the collection."
               }
             },
-            "mongodbDatabaseName": {
+            "indexType": {
+              "type": "object",
+              "properties": {
+                "keys": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. The fields to use for the index."
+                  }
+                },
+                "unique": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Indicator for whether the index is unique."
+                  }
+                },
+                "ttl": {
+                  "type": "int",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The time-to-live (TTL) for documents in the index, in seconds."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "An index specification for the collection."
+              }
+            }
+          },
+          "parameters": {
+            "ancestorAccountName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent mongodb database. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent Azure Cosmos DB for MongoDB RU account. Required if the template is used in a standalone deployment."
+              }
+            },
+            "parentDatabaseName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent database. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. Name of the collection."
+                "description": "Required. The name of the collection."
               }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2024-11-15#properties/tags"
+                },
+                "description": "Optional. Tags for the resource."
+              },
+              "nullable": true
             },
             "throughput": {
               "type": "int",
-              "defaultValue": 400,
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level."
+                "description": "Optional. The provisioned throughput assigned to the collection."
+              }
+            },
+            "autoscaleMaxThroughput": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The maximum throughput for the collection when using autoscale."
+              }
+            },
+            "shardKeys": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/shardKeyType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The set of shard keys to use for the collection."
               }
             },
             "indexes": {
               "type": "array",
+              "items": {
+                "$ref": "#/definitions/indexType"
+              },
+              "nullable": true,
               "metadata": {
-                "description": "Required. Indexes for the collection."
-              }
-            },
-            "shardKey": {
-              "type": "object",
-              "metadata": {
-                "description": "Required. ShardKey for the collection."
+                "description": "Optional. The indexes to create for the collection."
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "account": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('ancestorAccountName')]"
+            },
+            "database": {
+              "existing": true,
+              "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases",
+              "apiVersion": "2024-11-15",
+              "name": "[parameters('parentDatabaseName')]"
+            },
+            "collection": {
               "type": "Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections",
               "apiVersion": "2024-11-15",
-              "name": "[format('{0}/{1}/{2}', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]",
+              "name": "[format('{0}/{1}/{2}', split(parameters('parentDatabaseName'), '/')[0], split(parameters('parentDatabaseName'), '/')[1], parameters('name'))]",
+              "tags": "[parameters('tags')]",
               "properties": {
-                "options": "[if(contains(reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccountName')), '2024-11-15').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', parameters('throughput')))]",
+                "options": "[if(and(and(and(and(equals(parameters('autoscaleMaxThroughput'), null()), equals(parameters('throughput'), null())), equals(reference('database').options.autoscaleSettings, null())), equals(reference('database').options.throughput, null())), not(contains(reference('account').capabilities, createObject('name', 'EnableServerless')))), createObject('autoscaleSettings', createObject('maxThroughput', 1000)), createObject('autoscaleSettings', if(contains(reference('account').capabilities, createObject('name', 'EnableServerless')), null(), createObject('maxThroughput', parameters('autoscaleMaxThroughput'))), 'throughput', if(contains(reference('account').capabilities, createObject('name', 'EnableServerless')), null(), parameters('throughput'))))]",
                 "resource": {
                   "id": "[parameters('name')]",
-                  "indexes": "[parameters('indexes')]",
-                  "shardKey": "[parameters('shardKey')]"
+                  "indexes": "[if(not(equals(parameters('indexes'), null())), map(coalesce(parameters('indexes'), createArray()), lambda('index', createObject('key', createObject('keys', lambdaVariables('index').keys), 'options', createObject('expireAfterSeconds', lambdaVariables('index').ttl, 'unique', lambdaVariables('index').unique)))), null())]",
+                  "shardKey": "[if(not(equals(parameters('shardKeys'), null())), reduce(coalesce(parameters('shardKeys'), createArray()), createObject(), lambda('current', 'next', union(lambdaVariables('current'), createObject(format('{0}', lambdaVariables('next').field), lambdaVariables('next').type)))), null())]"
                 }
-              }
+              },
+              "dependsOn": [
+                "account",
+                "database"
+              ]
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -180,7 +421,7 @@
               "metadata": {
                 "description": "The resource ID of the mongodb database collection."
               },
-              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections', parameters('databaseAccountName'), parameters('mongodbDatabaseName'), parameters('name'))]"
+              "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections', split(parameters('parentDatabaseName'), '/')[0], split(parameters('parentDatabaseName'), '/')[1], parameters('name'))]"
             },
             "resourceGroupName": {
               "type": "string",
@@ -193,7 +434,7 @@
         }
       },
       "dependsOn": [
-        "mongodbDatabase"
+        "database"
       ]
     }
   },
@@ -201,21 +442,21 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the mongodb database."
+        "description": "The name of the MongoDB database."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the mongodb database."
+        "description": "The resource ID of the MongoDB database."
       },
-      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases', parameters('databaseAccountName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.DocumentDB/databaseAccounts/mongodbDatabases', parameters('parentAccountName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource group the mongodb database was created in."
+        "description": "The name of the resource group the MongoDB database was created in."
       },
       "value": "[resourceGroup().name]"
     }

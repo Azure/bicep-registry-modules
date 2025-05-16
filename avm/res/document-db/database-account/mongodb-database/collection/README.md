@@ -1,6 +1,6 @@
-# DocumentDB Database Account MongoDB Database Collections `[Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections]`
+# Azure Cosmos DB for MongoDB RU collection `[Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections]`
 
-This module deploys a MongoDB Database Collection.
+This module deploys an Azure Cosmos DB for MongoDB RU collection within a database.
 
 ## Navigation
 
@@ -21,65 +21,141 @@ This module deploys a MongoDB Database Collection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`indexes`](#parameter-indexes) | array | Indexes for the collection. |
-| [`name`](#parameter-name) | string | Name of the collection. |
-| [`shardKey`](#parameter-shardkey) | object | ShardKey for the collection. |
+| [`name`](#parameter-name) | string | The name of the collection. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`databaseAccountName`](#parameter-databaseaccountname) | string | The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment. |
-| [`mongodbDatabaseName`](#parameter-mongodbdatabasename) | string | The name of the parent mongodb database. Required if the template is used in a standalone deployment. |
+| [`ancestorAccountName`](#parameter-ancestoraccountname) | string | The name of the parent Azure Cosmos DB for MongoDB RU account. Required if the template is used in a standalone deployment. |
+| [`parentDatabaseName`](#parameter-parentdatabasename) | string | The name of the parent database. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`throughput`](#parameter-throughput) | int | Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level. |
+| [`autoscaleMaxThroughput`](#parameter-autoscalemaxthroughput) | int | The maximum throughput for the collection when using autoscale. |
+| [`indexes`](#parameter-indexes) | array | The indexes to create for the collection. |
+| [`shardKeys`](#parameter-shardkeys) | array | The set of shard keys to use for the collection. |
+| [`tags`](#parameter-tags) | object | Tags for the resource. |
+| [`throughput`](#parameter-throughput) | int | The provisioned throughput assigned to the collection. |
+
+### Parameter: `name`
+
+The name of the collection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `ancestorAccountName`
+
+The name of the parent Azure Cosmos DB for MongoDB RU account. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `parentDatabaseName`
+
+The name of the parent database. Required if the template is used in a standalone deployment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `autoscaleMaxThroughput`
+
+The maximum throughput for the collection when using autoscale.
+
+- Required: No
+- Type: int
 
 ### Parameter: `indexes`
 
-Indexes for the collection.
+The indexes to create for the collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keys`](#parameter-indexeskeys) | array | The fields to use for the index. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ttl`](#parameter-indexesttl) | int | The time-to-live (TTL) for documents in the index, in seconds. |
+| [`unique`](#parameter-indexesunique) | bool | Indicator for whether the index is unique. |
+
+### Parameter: `indexes.keys`
+
+The fields to use for the index.
 
 - Required: Yes
 - Type: array
 
-### Parameter: `name`
+### Parameter: `indexes.ttl`
 
-Name of the collection.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `shardKey`
-
-ShardKey for the collection.
-
-- Required: Yes
-- Type: object
-
-### Parameter: `databaseAccountName`
-
-The name of the parent Cosmos DB database account. Required if the template is used in a standalone deployment.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `mongodbDatabaseName`
-
-The name of the parent mongodb database. Required if the template is used in a standalone deployment.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `throughput`
-
-Request Units per second. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the collection level and not at the database level.
+The time-to-live (TTL) for documents in the index, in seconds.
 
 - Required: No
 - Type: int
-- Default: `400`
+
+### Parameter: `indexes.unique`
+
+Indicator for whether the index is unique.
+
+- Required: No
+- Type: bool
+
+### Parameter: `shardKeys`
+
+The set of shard keys to use for the collection.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`field`](#parameter-shardkeysfield) | string | The field to use for the shard key. |
+| [`type`](#parameter-shardkeystype) | string | The type of the shard key. Defaults to "Hash". Note that "Hash" is the only supported type at this time. |
+
+### Parameter: `shardKeys.field`
+
+The field to use for the shard key.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `shardKeys.type`
+
+The type of the shard key. Defaults to "Hash". Note that "Hash" is the only supported type at this time.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Hash'
+  ]
+  ```
+
+### Parameter: `tags`
+
+Tags for the resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `throughput`
+
+The provisioned throughput assigned to the collection.
+
+- Required: No
+- Type: int
 
 ## Outputs
 
