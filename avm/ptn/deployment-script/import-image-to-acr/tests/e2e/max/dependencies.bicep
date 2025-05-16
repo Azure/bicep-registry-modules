@@ -18,7 +18,7 @@ param keyVaultName string
 
 var ipRange = '10.0.0.0'
 
-module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: managedIdentityName
   params: {
     name: managedIdentityName
@@ -43,7 +43,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   }
   resource subnet_deploymentscript 'subnets@2023-11-01' = {
     name: 'deploymentscript-subnet'
-    dependsOn: [subnet_privateendpoints]
+    dependsOn: [subnet_privateendpoints] // for the order of creation
     properties: {
       addressPrefix: cidrSubnet(ipRange, 24, 1)
       serviceEndpoints: [
@@ -63,7 +63,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   }
 }
 
-module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.6.0' = {
+module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
   name: '${uniqueString(deployment().name, location)}-dnsZone-ACR'
   params: {
     name: 'privatelink.azurecr.io'
@@ -77,13 +77,12 @@ module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.6.
   }
 }
 
-module storage 'br/public:avm/res/storage/storage-account:0.9.1' = {
+module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
   name: '${uniqueString(resourceGroup().name, location)}-storage'
   params: {
     name: storageAccountName
     location: location
     kind: 'StorageV2'
-    minimumTlsVersion: 'TLS1_2'
     skuName: 'Standard_LRS'
     accessTier: 'Hot'
     allowSharedKeyAccess: true
@@ -143,10 +142,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
           tenantId: tenant().tenantId
           objectId: identity.outputs.principalId
           permissions: {
-            keys: []
             secrets: ['get', 'list', 'set']
-            certificates: []
-            storage: []
           }
         }
       ]
@@ -155,7 +151,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
 }
 
 // the container registry to upload the image into
-module acr 'br/public:avm/res/container-registry/registry:0.6.0' = {
+module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: '${uniqueString(resourceGroup().name, location)}-acr'
   params: {
     name: acrName

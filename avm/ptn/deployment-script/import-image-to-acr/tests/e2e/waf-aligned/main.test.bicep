@@ -28,14 +28,14 @@ module dependencies 'dependencies.bicep' = {
   name: 'dependencies'
   scope: resourceGroup
   params: {
-    acrName: 'dep${namePrefix}acr${serviceShort}'
+    acrName: uniqueString('dep${namePrefix}acr${serviceShort}', subscription().subscriptionId, resourceGroupName)
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
   }
 }
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
