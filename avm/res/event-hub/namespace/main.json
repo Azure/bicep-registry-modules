@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "11353320383084487080"
+      "templateHash": "334431459776497504"
     },
     "name": "Event Hub Namespaces",
     "description": "This module deploys an Event Hub Namespace."
@@ -915,10 +915,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventHub/namespaces@2024-01-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -2218,8 +2221,9 @@
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-eventHubNamespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex()), 64)]",
-      "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
+      "name": "[format('{0}-namespace-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+      "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
+      "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2272,8 +2276,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -2682,7 +2686,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2700,7 +2704,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2788,8 +2792,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -2861,12 +2865,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -2930,7 +2934,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
@@ -3174,7 +3178,7 @@
         "description": "The private endpoints of the eventspace."
       },
       "copy": {
-        "count": "[length(if(not(empty(parameters('privateEndpoints'))), array(parameters('privateEndpoints')), createArray()))]",
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
         "input": {
           "name": "[reference(format('eventHubNamespace_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
           "resourceId": "[reference(format('eventHubNamespace_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
@@ -3190,6 +3194,34 @@
         "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
       },
       "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
+    },
+    "primaryConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The namespace's primary connection string."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').primaryConnectionString]"
+    },
+    "secondaryConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The namespace's secondary connection string."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').secondaryConnectionString]"
+    },
+    "primaryKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The namespace's primary key."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').primaryKey]"
+    },
+    "secondaryKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The namespace's secondary key."
+      },
+      "value": "[listkeys(format('{0}/AuthorizationRules/RootManageSharedAccessKey', resourceId('Microsoft.EventHub/namespaces', parameters('name'))), '2024-01-01').secondaryKey]"
     }
   }
 }

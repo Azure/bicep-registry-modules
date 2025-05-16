@@ -31,8 +31,8 @@ This module deploys an Event Hub Namespace.
 | `Microsoft.EventHub/namespaces/networkRuleSets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventHub/2024-01-01/namespaces/networkRuleSets) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
 ## Usage examples
 
@@ -61,10 +61,7 @@ This instance deploys the module with the minimum set of required parameters.
 module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   name: 'namespaceDeployment'
   params: {
-    // Required parameters
     name: 'ehnmin001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -81,13 +78,8 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "name": {
       "value": "ehnmin001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -103,10 +95,7 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
 ```bicep-params
 using 'br/public:avm/res/event-hub/namespace:<version>'
 
-// Required parameters
 param name = 'ehnmin001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -133,7 +122,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
-    location: '<location>'
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -169,9 +157,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
         "keyVaultResourceId": "<keyVaultResourceId>",
         "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
       }
-    },
-    "location": {
-      "value": "<location>"
     },
     "managedIdentities": {
       "value": {
@@ -209,7 +194,6 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
-param location = '<location>'
 param managedIdentities = {
   systemAssigned: false
   userAssignedResourceIds: [
@@ -239,7 +223,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     // Required parameters
     name: 'ehnkv001'
     // Non-required parameters
-    location: '<location>'
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
       rootPrimaryConnectionStringName: 'primaryConnectionString-name'
@@ -268,9 +251,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
       "value": "ehnkv001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "secretsExportConfiguration": {
       "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
@@ -297,7 +277,6 @@ using 'br/public:avm/res/event-hub/namespace:<version>'
 // Required parameters
 param name = 'ehnkv001'
 // Non-required parameters
-param location = '<location>'
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
   rootPrimaryConnectionStringName: 'primaryConnectionString-name'
@@ -1035,7 +1014,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     ]
     isAutoInflateEnabled: true
     kafkaEnabled: true
-    location: '<location>'
     maximumThroughputUnits: 4
     minimumTlsVersion: '1.2'
     networkRuleSets: {
@@ -1195,9 +1173,6 @@ module namespace 'br/public:avm/res/event-hub/namespace:<version>' = {
     },
     "kafkaEnabled": {
       "value": true
-    },
-    "location": {
-      "value": "<location>"
     },
     "maximumThroughputUnits": {
       "value": 4
@@ -1359,7 +1334,6 @@ param eventhubs = [
 ]
 param isAutoInflateEnabled = true
 param kafkaEnabled = true
-param location = '<location>'
 param maximumThroughputUnits = 4
 param minimumTlsVersion = '1.2'
 param networkRuleSets = {
@@ -2502,9 +2476,13 @@ Switch to make the Event Hub Namespace zone redundant.
 | `exportedSecrets` |  | A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the eventspace. |
+| `primaryConnectionString` | securestring | The namespace's primary connection string. |
+| `primaryKey` | securestring | The namespace's primary key. |
 | `privateEndpoints` | array | The private endpoints of the eventspace. |
 | `resourceGroupName` | string | The resource group where the namespace is deployed. |
 | `resourceId` | string | The resource ID of the eventspace. |
+| `secondaryConnectionString` | securestring | The namespace's secondary connection string. |
+| `secondaryKey` | securestring | The namespace's secondary key. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
@@ -2513,7 +2491,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
