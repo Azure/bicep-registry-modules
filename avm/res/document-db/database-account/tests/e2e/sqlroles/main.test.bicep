@@ -59,7 +59,7 @@ module testDeployment '../../../main.bicep' = {
         assignableScopes: [
           '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref'
         ]
-        dataPlaneRoleAssignments: [
+        assignments: [
           {
             principalId: nestedDependencies.outputs.identityPrincipalId
           }

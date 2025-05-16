@@ -2571,15 +2571,15 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         assignableScopes: [
           '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
         ]
+        assignments: [
+          {
+            principalId: '<principalId>'
+          }
+        ]
         dataActions: [
           'Microsoft.DocumentDB/databaseAccounts/readMetadata'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
-        ]
-        dataPlaneRoleAssignments: [
-          {
-            principalId: '<principalId>'
-          }
         ]
         roleName: 'cosmos-sql-role-test'
       }
@@ -2619,15 +2619,15 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "assignableScopes": [
             "<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref"
           ],
+          "assignments": [
+            {
+              "principalId": "<principalId>"
+            }
+          ],
           "dataActions": [
             "Microsoft.DocumentDB/databaseAccounts/readMetadata",
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
-          ],
-          "dataPlaneRoleAssignments": [
-            {
-              "principalId": "<principalId>"
-            }
           ],
           "roleName": "cosmos-sql-role-test"
         }
@@ -2661,15 +2661,15 @@ param dataPlaneRoleDefinitions = [
     assignableScopes: [
       '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
     ]
+    assignments: [
+      {
+        principalId: '<principalId>'
+      }
+    ]
     dataActions: [
       'Microsoft.DocumentDB/databaseAccounts/readMetadata'
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
-    ]
-    dataPlaneRoleAssignments: [
-      {
-        principalId: '<principalId>'
-      }
     ]
     roleName: 'cosmos-sql-role-test'
   }
@@ -2989,7 +2989,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`automaticFailover`](#parameter-automaticfailover) | bool | Enable automatic failover for regions. Defaults to true. |
 | [`backupIntervalInMinutes`](#parameter-backupintervalinminutes) | int | An integer representing the interval in minutes between two backups. This setting only applies to the periodic backup type. Defaults to 240. |
-| [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days".  |
+| [`backupPolicyContinuousTier`](#parameter-backuppolicycontinuoustier) | string | Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days". |
 | [`backupPolicyType`](#parameter-backuppolicytype) | string | Configures the backup mode. Periodic backup must be used if multiple write locations are used. Defaults to "Continuous". |
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local". |
@@ -3004,7 +3004,7 @@ param tags = {
 | [`enableAnalyticalStorage`](#parameter-enableanalyticalstorage) | bool | Flag to indicate whether to enable storage analytics. Defaults to false. |
 | [`enableFreeTier`](#parameter-enablefreetier) | bool | Flag to indicate whether "Free Tier" is enabled. Defaults to false. |
 | [`enableMultipleWriteLocations`](#parameter-enablemultiplewritelocations) | bool | Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false. |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enables or disables usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`failoverLocations`](#parameter-failoverlocations) | array | The set of locations enabled for the account. Defaults to the location where the account is deployed. |
 | [`gremlinDatabases`](#parameter-gremlindatabases) | array | Configuration for databases when using Azure Cosmos DB for Apache Gremlin. |
 | [`location`](#parameter-location) | string | Defaults to the current resource group scope location. Location for all resources. |
@@ -3052,7 +3052,7 @@ An integer representing the interval in minutes between two backups. This settin
 
 ### Parameter: `backupPolicyContinuousTier`
 
-Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days". 
+Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days".
 
 - Required: No
 - Type: string
@@ -3201,8 +3201,8 @@ Configurations for Azure Cosmos DB for NoSQL native role-based access control de
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`assignableScopes`](#parameter-dataplaneroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
+| [`assignments`](#parameter-dataplaneroledefinitionsassignments) | array | An array of role-based access control assignments to be created for the definition. |
 | [`dataActions`](#parameter-dataplaneroledefinitionsdataactions) | array | An array of data actions that are allowed. |
-| [`dataPlaneRoleAssignments`](#parameter-dataplaneroledefinitionsdataplaneroleassignments) | array | An array of role-based access control assignments to be created for the definition. |
 | [`name`](#parameter-dataplaneroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
 
 ### Parameter: `dataPlaneRoleDefinitions.roleName`
@@ -3219,14 +3219,7 @@ A set of fully-qualified scopes at or below which role-based access control assi
 - Required: No
 - Type: array
 
-### Parameter: `dataPlaneRoleDefinitions.dataActions`
-
-An array of data actions that are allowed.
-
-- Required: No
-- Type: array
-
-### Parameter: `dataPlaneRoleDefinitions.dataPlaneRoleAssignments`
+### Parameter: `dataPlaneRoleDefinitions.assignments`
 
 An array of role-based access control assignments to be created for the definition.
 
@@ -3237,27 +3230,34 @@ An array of role-based access control assignments to be created for the definiti
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`principalId`](#parameter-dataplaneroledefinitionsdataplaneroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
+| [`principalId`](#parameter-dataplaneroledefinitionsassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-dataplaneroledefinitionsdataplaneroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+| [`name`](#parameter-dataplaneroledefinitionsassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
 
-### Parameter: `dataPlaneRoleDefinitions.dataPlaneRoleAssignments.principalId`
+### Parameter: `dataPlaneRoleDefinitions.assignments.principalId`
 
 The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `dataPlaneRoleDefinitions.dataPlaneRoleAssignments.name`
+### Parameter: `dataPlaneRoleDefinitions.assignments.name`
 
 Name unique identifier of the SQL Role Assignment.
 
 - Required: No
 - Type: string
+
+### Parameter: `dataPlaneRoleDefinitions.dataActions`
+
+An array of data actions that are allowed.
+
+- Required: No
+- Type: array
 
 ### Parameter: `dataPlaneRoleDefinitions.name`
 
@@ -3472,7 +3472,7 @@ Enables the account to write in multiple locations. Periodic backup must be used
 
 ### Parameter: `enableTelemetry`
 
-Enables or disables usage telemetry for module.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool

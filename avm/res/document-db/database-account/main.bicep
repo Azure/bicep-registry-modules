@@ -88,7 +88,7 @@ param gremlinDatabases array?
 @description('Optional. Configuration for databases when using Azure Cosmos DB for Table.')
 param tables array?
 
-@description('Optional. Enables or disables usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. The total throughput limit imposed on this account in request units per second (RU/s). Default to unlimited throughput.')
@@ -138,7 +138,7 @@ param backupPolicyType string = 'Continuous'
   'Continuous30Days'
   'Continuous7Days'
 ])
-@description('Optional. Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days". ')
+@description('Optional. Configuration values to specify the retention period for continuous mode backup. Default to "Continuous30Days".')
 param backupPolicyContinuousTier string = 'Continuous30Days'
 
 @minValue(60)
@@ -435,7 +435,7 @@ module databaseAccount_sqlRoleDefinitions 'sql-role-definition/main.bicep' = [
       dataActions: nosqlRoleDefinition.?dataActions
       roleName: nosqlRoleDefinition.roleName
       assignableScopes: nosqlRoleDefinition.?assignableScopes
-      sqlRoleAssignments: nosqlRoleDefinition.?nosqlRoleAssignments
+      sqlRoleAssignments: nosqlRoleDefinition.?assignments
     }
   }
 ]
@@ -731,7 +731,7 @@ type dataPlaneRoleDefinitionType = {
   assignableScopes: string[]?
 
   @description('Optional. An array of role-based access control assignments to be created for the definition.')
-  dataPlaneRoleAssignments: sqlRoleAssignmentType[]?
+  assignments: sqlRoleAssignmentType[]?
 }
 
 @export()

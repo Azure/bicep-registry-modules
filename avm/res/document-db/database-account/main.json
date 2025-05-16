@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "8638706144153249662"
+      "templateHash": "6207764501433539353"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -168,7 +168,7 @@
             "description": "Optional. A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope."
           }
         },
-        "dataPlaneRoleAssignments": {
+        "assignments": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/sqlRoleAssignmentType"
@@ -1236,7 +1236,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enables or disables usage telemetry for module."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "totalThroughputLimit": {
@@ -1334,7 +1334,7 @@
         "Continuous7Days"
       ],
       "metadata": {
-        "description": "Optional. Configuration values to specify the retention period for continuous mode backup. Default to \"Continuous30Days\". "
+        "description": "Optional. Configuration values to specify the retention period for continuous mode backup. Default to \"Continuous30Days\"."
       }
     },
     "backupIntervalInMinutes": {
@@ -1951,7 +1951,7 @@
             "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'assignableScopes')]"
           },
           "sqlRoleAssignments": {
-            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'nosqlRoleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'assignments')]"
           }
         },
         "template": {
