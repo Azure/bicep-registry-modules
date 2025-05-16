@@ -1408,17 +1408,17 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     backupIntervalInMinutes: 300
     backupPolicyType: 'Periodic'
     backupRetentionIntervalInHours: 16
-    backupStorageRedundancy: 'Zone'
+    backupStorageRedundancy: 'Geo'
     enableMultipleWriteLocations: true
     failoverLocations: [
       {
         failoverPriority: 0
-        isZoneRedundant: true
+        isZoneRedundant: false
         locationName: '<locationName>'
       }
       {
         failoverPriority: 1
-        isZoneRedundant: true
+        isZoneRedundant: false
         locationName: '<locationName>'
       }
     ]
@@ -1427,7 +1427,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
-    zoneRedundant: false
   }
 }
 ```
@@ -1462,7 +1461,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": 16
     },
     "backupStorageRedundancy": {
-      "value": "Zone"
+      "value": "Geo"
     },
     "enableMultipleWriteLocations": {
       "value": true
@@ -1471,12 +1470,12 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": [
         {
           "failoverPriority": 0,
-          "isZoneRedundant": true,
+          "isZoneRedundant": false,
           "locationName": "<locationName>"
         },
         {
           "failoverPriority": 1,
-          "isZoneRedundant": true,
+          "isZoneRedundant": false,
           "locationName": "<locationName>"
         }
       ]
@@ -1487,9 +1486,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
-    },
-    "zoneRedundant": {
-      "value": false
     }
   }
 }
@@ -1512,17 +1508,17 @@ param automaticFailover = true
 param backupIntervalInMinutes = 300
 param backupPolicyType = 'Periodic'
 param backupRetentionIntervalInHours = 16
-param backupStorageRedundancy = 'Zone'
+param backupStorageRedundancy = 'Geo'
 param enableMultipleWriteLocations = true
 param failoverLocations = [
   {
     failoverPriority: 0
-    isZoneRedundant: true
+    isZoneRedundant: false
     locationName: '<locationName>'
   }
   {
     failoverPriority: 1
-    isZoneRedundant: true
+    isZoneRedundant: false
     locationName: '<locationName>'
   }
 ]
@@ -1531,7 +1527,6 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
-param zoneRedundant = false
 ```
 
 </details>

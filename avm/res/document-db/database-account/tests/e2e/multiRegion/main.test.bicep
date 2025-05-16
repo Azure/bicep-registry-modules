@@ -44,17 +44,17 @@ module testDeployment '../../../main.bicep' = {
     enableMultipleWriteLocations: true
     backupPolicyType: 'Periodic'
     backupIntervalInMinutes: 300
-    backupStorageRedundancy: 'Zone'
+    backupStorageRedundancy: 'Geo'
     backupRetentionIntervalInHours: 16
     failoverLocations: [
       {
         failoverPriority: 0
-        isZoneRedundant: true
+        isZoneRedundant: false
         locationName: enforcedLocation
       }
       {
         failoverPriority: 1
-        isZoneRedundant: true
+        isZoneRedundant: false
         locationName: enforcedSecondLocation
       }
     ]
@@ -63,6 +63,5 @@ module testDeployment '../../../main.bicep' = {
         name: 'no-containers-specified'
       }
     ]
-    zoneRedundant: false
   }
 }
