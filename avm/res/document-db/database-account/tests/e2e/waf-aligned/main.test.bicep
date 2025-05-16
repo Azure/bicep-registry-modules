@@ -19,9 +19,9 @@ param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
+var enforcedLocation = 'eastus2'
 #disable-next-line no-hardcoded-location
-var enforcedPairedLocation = 'uksouth'
+var enforcedSecondLocation = 'westus3'
 
 // ============ //
 // Dependencies //
@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = {
       {
         failoverPriority: 1
         isZoneRedundant: true
-        locationName: enforcedPairedLocation
+        locationName: enforcedSecondLocation
       }
     ]
     zoneRedundant: true
