@@ -77,6 +77,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -107,6 +108,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -131,6 +135,7 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -160,6 +165,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -196,6 +202,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -222,6 +231,7 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -240,7 +250,10 @@ This instance deploys the module with the minimum set of required parameters.
 module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
   name: 'databaseAccountDeployment'
   params: {
+    // Required parameters
     name: 'dddamin001'
+    // Non-required parameters
+    zoneRedundant: false
   }
 }
 ```
@@ -257,8 +270,13 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "name": {
       "value": "dddamin001"
+    },
+    // Non-required parameters
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -274,7 +292,10 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
 ```bicep-params
 using 'br/public:avm/res/document-db/database-account:<version>'
 
+// Required parameters
 param name = 'dddamin001'
+// Non-required parameters
+param zoneRedundant = false
 ```
 
 </details>
@@ -348,6 +369,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'gdb-dddagrm-002'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -424,6 +446,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "gdb-dddagrm-002"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -494,6 +519,7 @@ param gremlinDatabases = [
     name: 'gdb-dddagrm-002'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -526,6 +552,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
       secondaryWriteKeySecretName: 'secondaryWriteKey'
     }
+    zoneRedundant: false
   }
 }
 ```
@@ -559,6 +586,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         "secondaryWriteConnectionStringSecretName": "secondaryWriteConnectionString",
         "secondaryWriteKeySecretName": "secondaryWriteKey"
       }
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -588,6 +618,7 @@ param secretsExportConfiguration = {
   secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
   secondaryWriteKeySecretName: 'secondaryWriteKey'
 }
+param zoneRedundant = false
 ```
 
 </details>
@@ -633,6 +664,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -681,6 +713,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -723,6 +758,7 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -930,6 +966,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'mdb-dddamng-002'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -1138,6 +1175,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "mdb-dddamng-002"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -1342,6 +1382,7 @@ param mongodbDatabases = [
     name: 'mdb-dddamng-002'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -1386,6 +1427,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -1445,6 +1487,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -1486,6 +1531,7 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -1524,6 +1570,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       }
     ]
     totalThroughputLimit: 4000
+    zoneRedundant: false
   }
 }
 ```
@@ -1571,6 +1618,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     },
     "totalThroughputLimit": {
       "value": 4000
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -1606,6 +1656,7 @@ param sqlDatabases = [
   }
 ]
 param totalThroughputLimit = 4000
+param zoneRedundant = false
 ```
 
 </details>
@@ -1645,6 +1696,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -1687,6 +1739,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -1723,6 +1778,7 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -1995,6 +2051,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -2270,6 +2327,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "no-containers-specified"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -2539,6 +2599,7 @@ param sqlDatabases = [
     name: 'no-containers-specified'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -2584,6 +2645,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         roleName: 'cosmos-sql-role-test'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -2632,6 +2694,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "roleName": "cosmos-sql-role-test"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -2674,6 +2739,7 @@ param dataPlaneRoleDefinitions = [
     roleName: 'cosmos-sql-role-test'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -2708,6 +2774,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         name: 'tbl-dddatableminauto'
       }
     ]
+    zoneRedundant: false
   }
 }
 ```
@@ -2745,6 +2812,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           "name": "tbl-dddatableminauto"
         }
       ]
+    },
+    "zoneRedundant": {
+      "value": false
     }
   }
 }
@@ -2776,6 +2846,7 @@ param tables = [
     name: 'tbl-dddatableminauto'
   }
 ]
+param zoneRedundant = false
 ```
 
 </details>
@@ -2808,6 +2879,18 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     ]
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: true
+    failoverLocations: [
+      {
+        failoverPriority: 0
+        isZoneRedundant: true
+        locationName: '<locationName>'
+      }
+      {
+        failoverPriority: 1
+        isZoneRedundant: true
+        locationName: '<locationName>'
+      }
+    ]
     minimumTlsVersion: 'Tls12'
     networkRestrictions: {
       networkAclBypass: 'None'
@@ -2836,6 +2919,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       role: 'validation'
       type: 'waf-aligned'
     }
+    zoneRedundant: true
   }
 }
 ```
@@ -2876,6 +2960,20 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     "disableLocalAuthentication": {
       "value": true
     },
+    "failoverLocations": {
+      "value": [
+        {
+          "failoverPriority": 0,
+          "isZoneRedundant": true,
+          "locationName": "<locationName>"
+        },
+        {
+          "failoverPriority": 1,
+          "isZoneRedundant": true,
+          "locationName": "<locationName>"
+        }
+      ]
+    },
     "minimumTlsVersion": {
       "value": "Tls12"
     },
@@ -2913,6 +3011,9 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         "role": "validation",
         "type": "waf-aligned"
       }
+    },
+    "zoneRedundant": {
+      "value": true
     }
   }
 }
@@ -2942,6 +3043,18 @@ param diagnosticSettings = [
 ]
 param disableKeyBasedMetadataWriteAccess = true
 param disableLocalAuthentication = true
+param failoverLocations = [
+  {
+    failoverPriority: 0
+    isZoneRedundant: true
+    locationName: '<locationName>'
+  }
+  {
+    failoverPriority: 1
+    isZoneRedundant: true
+    locationName: '<locationName>'
+  }
+]
 param minimumTlsVersion = 'Tls12'
 param networkRestrictions = {
   networkAclBypass: 'None'
@@ -2970,6 +3083,7 @@ param tags = {
   role: 'validation'
   type: 'waf-aligned'
 }
+param zoneRedundant = true
 ```
 
 </details>
