@@ -95,6 +95,7 @@ module testDeployment '../../../main.bicep' = [
           name: '${namePrefix}-gdb-${serviceShort}-002'
         }
       ]
+      zoneRedundant: false
     }
   }
 ]

@@ -58,6 +58,7 @@ module testDeployment '../../../main.bicep' = {
       secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
       secondaryWriteKeySecretName: 'secondaryWriteKey'
     }
+    zoneRedundant: false
   }
 }
 

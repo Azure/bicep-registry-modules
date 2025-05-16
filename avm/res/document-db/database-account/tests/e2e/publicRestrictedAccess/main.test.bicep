@@ -66,5 +66,6 @@ module testDeployment '../../../main.bicep' = {
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }

@@ -78,5 +78,6 @@ module testDeployment '../../../main.bicep' = {
         principalType: 'ServicePrincipal'
       }
     ]
+    zoneRedundant: false
   }
 }

@@ -56,6 +56,7 @@ module testDeployment '../../../main.bicep' = [
           maxThroughput: 1000
         }
       ]
+      zoneRedundant: false
     }
   }
 ]

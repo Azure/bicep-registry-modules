@@ -229,6 +229,7 @@ module testDeployment '../../../main.bicep' = [
           name: '${namePrefix}-mdb-${serviceShort}-002'
         }
       ]
+      zoneRedundant: false
     }
   }
 ]

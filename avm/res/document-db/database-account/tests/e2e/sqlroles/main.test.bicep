@@ -72,5 +72,6 @@ module testDeployment '../../../main.bicep' = {
         roleDefinitionId: '${resourceGroup.id}/providers/Microsoft.DocumentDB/databaseAccounts/${namePrefix}-role-ref/sqlRoleDefinitions/00000000-0000-0000-0000-000000000001' // 'Cosmos DB Built-in Data Reader'
       }
     ]
+    zoneRedundant: false
   }
 }

@@ -40,15 +40,12 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}-multi-region'
-
     automaticFailover: true
     enableMultipleWriteLocations: true
-
     backupPolicyType: 'Periodic'
     backupIntervalInMinutes: 300
     backupStorageRedundancy: 'Zone'
     backupRetentionIntervalInHours: 16
-
     failoverLocations: [
       {
         failoverPriority: 0
@@ -66,5 +63,6 @@ module testDeployment '../../../main.bicep' = {
         name: 'no-containers-specified'
       }
     ]
+    zoneRedundant: false
   }
 }
