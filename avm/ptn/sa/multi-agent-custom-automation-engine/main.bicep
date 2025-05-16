@@ -1,8 +1,5 @@
-extension graphV1
-//extension graphBeta
-
-metadata name = '<Add module name>'
-metadata description = '<Add description>'
+metadata name = 'Multi-Agent Custom Automation Engine'
+metadata description = 'This module contains the resources required to deploy the Multi-Agent Custom Automation Engine solution accelerator for both Sandbox environments and WAF aligned environments.'
 
 @description('Required. The prefix to add in the default names given to all deployed Azure resources.')
 @maxLength(19)
