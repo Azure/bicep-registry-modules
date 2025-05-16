@@ -18,8 +18,9 @@ param serviceShort string = 'dddarole'
 param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
+// This workaround also specifies the region for the dependency resources.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'westus3'
+var enforcedLocation = 'spaincentral'
 
 // ============== //
 // General resources
