@@ -333,13 +333,14 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
           enableAnalyticalStorage: enableAnalyticalStorage
         }
       : {})
-    ...((!empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
+    ...((!empty(mongodbDatabases) || !empty(gremlinDatabases))
       ? {
-          // Key-based authentication is the only allowed authentication method for MongoDB, Gremlin, and Table APIs.
+          // Key-based authentication is the only allowed authentication method with Azure Cosmos DB for MongoDB RU and Apache Gremlin.
           disableLocalAuth: false
           disableKeyBasedMetadataWriteAccess: false
         }
       : {
+          // Microsoft Entra authentication is supported for Azure Cosmos DB for NoSQL and Table. Disable key-based authentication by default.
           disableLocalAuth: disableLocalAuthentication
           disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
         })
