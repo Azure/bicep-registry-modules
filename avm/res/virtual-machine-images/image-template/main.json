@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "17650936874255172135"
+      "version": "0.34.44.8038",
+      "templateHash": "331543822092355459"
     },
     "name": "Virtual Machine Image Templates",
     "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB)."
@@ -101,7 +101,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a shared image distribution."
       }
     },
     "unManagedDistributionType": {
@@ -133,12 +134,13 @@
         "imageName": {
           "type": "string",
           "metadata": {
-            "description": "Conditional. Name of the managed or unmanaged image that will be created."
+            "description": "Required. Name of the managed or unmanaged image that will be created."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an unmanaged distribution."
       }
     },
     "managedImageDistributionType": {
@@ -178,18 +180,19 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group."
+            "description": "Optional. The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group."
           }
         },
         "imageName": {
           "type": "string",
           "metadata": {
-            "description": "Conditional. Name of the managed or unmanaged image that will be created."
+            "description": "Required. Name of the managed or unmanaged image that will be created."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a managed image distribution."
       }
     },
     "validationProcessType": {
@@ -303,7 +306,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a validation process."
       }
     },
     "lockType": {

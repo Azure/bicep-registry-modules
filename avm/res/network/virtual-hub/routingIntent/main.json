@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "7933241653038038304"
+      "version": "0.34.44.8038",
+      "templateHash": "13466688747209126073"
     },
     "name": "Virtual Hub Routing Intent",
     "description": "This module configures Routing Intent for a Virtual Hub; this module requires an existing Virtual Hub, as well the firewall Resource ID."
@@ -51,7 +51,7 @@
   "resources": [
     {
       "type": "Microsoft.Network/virtualHubs/routingIntent",
-      "apiVersion": "2023-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
       "properties": {
         "routingPolicies": "[if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', '_policy_PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId')), createObject('name', '_policy_PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), true()), equals(parameters('privateToFirewall'), false())), createArray(createObject('name', '_policy_PublicTraffic', 'destinations', createArray('Internet'), 'nextHop', parameters('azureFirewallResourceId'))), if(and(equals(parameters('internetToFirewall'), false()), equals(parameters('privateToFirewall'), true())), createArray(createObject('name', '_policy_PrivateTraffic', 'destinations', createArray('PrivateTraffic'), 'nextHop', parameters('azureFirewallResourceId'))), null())))]"

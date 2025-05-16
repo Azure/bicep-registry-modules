@@ -8,7 +8,7 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the Database Account resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts@2024-11-15'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -21,7 +21,7 @@ param managedIdentities managedIdentityAllType?
 param databaseAccountOfferType string = 'Standard'
 
 @description('Optional. Default to the location where the account is deployed. Locations enabled for the Cosmos DB account.')
-param locations failoverLocationType[] = []
+param failoverLocations failoverLocationType[]?
 
 @allowed([
   'Eventual'
@@ -74,22 +74,22 @@ param maxIntervalInSeconds int = 300
 param serverVersion string = '4.2'
 
 @description('Optional. SQL Databases configurations.')
-param sqlDatabases sqlDatabaseType[] = []
+param sqlDatabases sqlDatabaseType[]?
 
-@description('Optional. SQL Role Definitions configurations.')
-param sqlRoleAssignmentsPrincipalIds array = []
+@description('Optional. SQL Role Definitions configurations. Also allows the assignment of custom roles.')
+param sqlRoleDefinitions customSqlRoleDefinitionType[]?
 
-@description('Optional. SQL Role Definitions configurations.')
-param sqlRoleDefinitions sqlRoleDefinitionType[]?
+@description('Optional. SQL Role Assignments of built-in roles.')
+param builtInSqlRoleAssignments builtInSqlRoleAssignmentType[]?
 
 @description('Optional. MongoDB Databases configurations.')
-param mongodbDatabases array = []
+param mongodbDatabases array?
 
 @description('Optional. Gremlin Databases configurations.')
-param gremlinDatabases array = []
+param gremlinDatabases array?
 
 @description('Optional. Table configurations.')
-param tables array = []
+param tables array?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -122,7 +122,7 @@ param diagnosticSettings diagnosticSettingFullType[]?
   'DeleteAllItemsByPartitionKey'
 ])
 @description('Optional. List of Cosmos DB capabilities for the account. THE DeleteAllItemsByPartitionKey VALUE USED IN THIS PARAMETER IS USED FOR A PREVIEW SERVICE/FEATURE, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE PRODUCT DOCS FOR CLARIFICATION.')
-param capabilitiesToAdd string[] = []
+param capabilitiesToAdd string[]?
 
 @allowed([
   'Periodic'
@@ -193,126 +193,6 @@ var identity = !empty(managedIdentities)
     }
   : null
 
-var consistencyPolicy = {
-  Eventual: {
-    defaultConsistencyLevel: 'Eventual'
-  }
-  ConsistentPrefix: {
-    defaultConsistencyLevel: 'ConsistentPrefix'
-  }
-  Session: {
-    defaultConsistencyLevel: 'Session'
-  }
-  BoundedStaleness: {
-    defaultConsistencyLevel: 'BoundedStaleness'
-    maxStalenessPrefix: maxStalenessPrefix
-    maxIntervalInSeconds: maxIntervalInSeconds
-  }
-  Strong: {
-    defaultConsistencyLevel: 'Strong'
-  }
-}
-
-var defaultFailoverLocation = [
-  {
-    failoverPriority: 0
-    locationName: location
-    isZoneRedundant: true
-  }
-]
-
-var databaseAccount_locations = [
-  for failoverLocation in locations: {
-    failoverPriority: failoverLocation.failoverPriority
-    locationName: failoverLocation.locationName
-    isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
-  }
-]
-
-var kind = !empty(sqlDatabases) || !empty(gremlinDatabases)
-  ? 'GlobalDocumentDB'
-  : (!empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB')
-
-var capabilities = [
-  for capability in capabilitiesToAdd: {
-    name: capability
-  }
-]
-
-var backupPolicy = backupPolicyType == 'Continuous'
-  ? {
-      type: backupPolicyType
-      continuousModeProperties: {
-        tier: backupPolicyContinuousTier
-      }
-    }
-  : {
-      type: backupPolicyType
-      periodicModeProperties: {
-        backupIntervalInMinutes: backupIntervalInMinutes
-        backupRetentionIntervalInHours: backupRetentionIntervalInHours
-        backupStorageRedundancy: backupStorageRedundancy
-      }
-    }
-
-var ipRules = [
-  for i in (networkRestrictions.?ipRules ?? []): {
-    ipAddressOrRange: i
-  }
-]
-
-var virtualNetworkRules = [
-  for vnet in (networkRestrictions.?virtualNetworkRules ?? []): {
-    id: vnet.subnetResourceId
-    ignoreMissingVnetServiceEndpoint: false
-  }
-]
-
-var databaseAccountProperties = union(
-  {
-    databaseAccountOfferType: databaseAccountOfferType
-    backupPolicy: backupPolicy
-    capabilities: capabilities
-    minimalTlsVersion: minimumTlsVersion
-    capacity: {
-      totalThroughputLimit: totalThroughputLimit
-    }
-  },
-  ((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
-    ? {
-        // NoSQL, MongoDB RU, Table, and Apache Gremlin common properties
-        consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
-        enableMultipleWriteLocations: enableMultipleWriteLocations
-        locations: empty(databaseAccount_locations) ? defaultFailoverLocation : databaseAccount_locations
-
-        ipRules: ipRules
-        virtualNetworkRules: virtualNetworkRules
-        networkAclBypass: networkRestrictions.?networkAclBypass ?? 'None'
-        publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
-        isVirtualNetworkFilterEnabled: !empty(ipRules) || !empty(virtualNetworkRules)
-
-        enableFreeTier: enableFreeTier
-        enableAutomaticFailover: automaticFailover
-        enableAnalyticalStorage: enableAnalyticalStorage
-      }
-    : {}),
-  ((!empty(sqlDatabases) || !empty(tables))
-    ? {
-        // NoSQL and Table properties
-        disableLocalAuth: disableLocalAuth
-        disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
-      }
-    : {}),
-  (!empty(mongodbDatabases)
-    ? {
-        // MongoDB RU properties
-        apiProperties: {
-          serverVersion: serverVersion
-        }
-      }
-    : {})
-)
-
 var builtInRoleNames = {
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   'Cosmos DB Account Reader Role': subscriptionResourceId(
@@ -337,7 +217,7 @@ var builtInRoleNames = {
   )
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
-  'Role Based Access Control Administrator (Preview)': subscriptionResourceId(
+  'Role Based Access Control Administrator': subscriptionResourceId(
     'Microsoft.Authorization/roleDefinitions',
     'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
   )
@@ -382,8 +262,95 @@ resource databaseAccount 'Microsoft.DocumentDB/databaseAccounts@2024-11-15' = {
   location: location
   tags: tags
   identity: identity
-  kind: kind
-  properties: databaseAccountProperties
+  kind: !empty(sqlDatabases) || !empty(gremlinDatabases)
+    ? 'GlobalDocumentDB'
+    : (!empty(mongodbDatabases) ? 'MongoDB' : 'GlobalDocumentDB')
+  properties: {
+    databaseAccountOfferType: databaseAccountOfferType
+    backupPolicy: {
+      #disable-next-line BCP225 // Value has a default
+      type: backupPolicyType
+      ...(backupPolicyType == 'Continuous'
+        ? {
+            continuousModeProperties: {
+              tier: backupPolicyContinuousTier
+            }
+          }
+        : {})
+      ...(backupPolicyType == 'Periodic'
+        ? {
+            periodicModeProperties: {
+              backupIntervalInMinutes: backupIntervalInMinutes
+              backupRetentionIntervalInHours: backupRetentionIntervalInHours
+              backupStorageRedundancy: backupStorageRedundancy
+            }
+          }
+        : {})
+    }
+    capabilities: map(capabilitiesToAdd ?? [], capability => {
+      name: capability
+    })
+    minimalTlsVersion: minimumTlsVersion
+    capacity: {
+      totalThroughputLimit: totalThroughputLimit
+    }
+    publicNetworkAccess: networkRestrictions.?publicNetworkAccess ?? 'Disabled'
+    ...((!empty(sqlDatabases) || !empty(mongodbDatabases) || !empty(gremlinDatabases) || !empty(tables))
+      ? {
+          // NoSQL, MongoDB RU, Table, and Apache Gremlin common properties
+          consistencyPolicy: {
+            defaultConsistencyLevel: defaultConsistencyLevel
+            ...(defaultConsistencyLevel == 'BoundedStaleness'
+              ? {
+                  maxStalenessPrefix: maxStalenessPrefix
+                  maxIntervalInSeconds: maxIntervalInSeconds
+                }
+              : {})
+          }
+          enableMultipleWriteLocations: enableMultipleWriteLocations
+          locations: !empty(failoverLocations)
+            ? map(failoverLocations!, failoverLocation => {
+                failoverPriority: failoverLocation.failoverPriority
+                locationName: failoverLocation.locationName
+                isZoneRedundant: failoverLocation.?isZoneRedundant ?? true
+              })
+            : [
+                {
+                  failoverPriority: 0
+                  locationName: location
+                  isZoneRedundant: true
+                }
+              ]
+          ipRules: map(networkRestrictions.?ipRules ?? [], ipRule => {
+            ipAddressOrRange: ipRule
+          })
+          virtualNetworkRules: map(networkRestrictions.?virtualNetworkRules ?? [], rule => {
+            id: rule.subnetResourceId
+            ignoreMissingVNetServiceEndpoint: false
+          })
+          networkAclBypass: networkRestrictions.?networkAclBypass ?? 'None'
+          isVirtualNetworkFilterEnabled: !empty(networkRestrictions.?ipRules) || !empty(networkRestrictions.?virtualNetworkRules)
+          enableFreeTier: enableFreeTier
+          enableAutomaticFailover: automaticFailover
+          enableAnalyticalStorage: enableAnalyticalStorage
+        }
+      : {})
+    ...((!empty(sqlDatabases) || !empty(tables))
+      ? {
+          // NoSQL and Table properties
+          disableLocalAuth: disableLocalAuth
+          disableKeyBasedMetadataWriteAccess: disableKeyBasedMetadataWriteAccess
+        }
+      : {})
+    ...(!empty(mongodbDatabases)
+      ? {
+          // MongoDB RU properties
+          apiProperties: {
+            serverVersion: serverVersion
+          }
+        }
+      : {})
+  }
 }
 
 resource databaseAccount_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
@@ -443,7 +410,7 @@ resource databaseAccount_roleAssignments 'Microsoft.Authorization/roleAssignment
 ]
 
 module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [
-  for sqlDatabase in sqlDatabases: {
+  for sqlDatabase in (sqlDatabases ?? []): {
     name: '${uniqueString(deployment().name, location)}-sqldb-${sqlDatabase.name}'
     params: {
       name: sqlDatabase.name
@@ -455,22 +422,34 @@ module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [
   }
 ]
 
-module databaseAccount_sqlRoleDefinitions 'sql-role/main.bicep' = [
-  for sqlRoleDefinition in (sqlRoleDefinitions ?? []): {
-    name: '${uniqueString(deployment().name, location)}-sqlrd-${sqlRoleDefinition.name}'
+module databaseAccount_sqlRoleDefinitions 'sql-role-definition/main.bicep' = [
+  for (sqlRoleDefinition, index) in (sqlRoleDefinitions ?? []): {
+    name: '${uniqueString(deployment().name, location)}-sqlrd-${index}'
     params: {
-      name: sqlRoleDefinition.name
       databaseAccountName: databaseAccount.name
+      name: sqlRoleDefinition.?name
       dataActions: sqlRoleDefinition.?dataActions
-      roleName: sqlRoleDefinition.?roleName
-      roleType: sqlRoleDefinition.?roleType
-      principalIds: sqlRoleAssignmentsPrincipalIds
+      roleName: sqlRoleDefinition.roleName
+      assignableScopes: sqlRoleDefinition.?assignableScopes
+      sqlRoleAssignments: sqlRoleDefinition.?sqlRoleAssignments
+    }
+  }
+]
+
+module databaseAccount_sqlRoleAssignments 'sql-role-assignment/main.bicep' = [
+  for (sqlRoleAssignment, index) in (builtInSqlRoleAssignments ?? []): {
+    name: '${uniqueString(deployment().name)}-sqlra-${index}'
+    params: {
+      databaseAccountName: databaseAccount.name
+      roleDefinitionId: sqlRoleAssignment.roleDefinitionId
+      principalId: sqlRoleAssignment.principalId
+      name: sqlRoleAssignment.?name
     }
   }
 ]
 
 module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
-  for mongodbDatabase in mongodbDatabases: {
+  for mongodbDatabase in (mongodbDatabases ?? []): {
     name: '${uniqueString(deployment().name, location)}-mongodb-${mongodbDatabase.name}'
     params: {
       databaseAccountName: databaseAccount.name
@@ -483,7 +462,7 @@ module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
 ]
 
 module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [
-  for gremlinDatabase in gremlinDatabases: {
+  for gremlinDatabase in (gremlinDatabases ?? []): {
     name: '${uniqueString(deployment().name, location)}-gremlin-${gremlinDatabase.name}'
     params: {
       databaseAccountName: databaseAccount.name
@@ -497,7 +476,7 @@ module databaseAccount_gremlinDatabases 'gremlin-database/main.bicep' = [
 ]
 
 module databaseAccount_tables 'table/main.bicep' = [
-  for table in tables: {
+  for table in (tables ?? []): {
     name: '${uniqueString(deployment().name, location)}-table-${table.name}'
     params: {
       databaseAccountName: databaseAccount.name
@@ -511,7 +490,7 @@ module databaseAccount_tables 'table/main.bicep' = [
 
 module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-databaseAccount-PrivateEndpoint-${index}'
+    name: '${uniqueString(deployment().name, location)}-dbAccount-PrivateEndpoint-${index}'
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
@@ -676,6 +655,38 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
+@secure()
+@description('The base-64-encoded value of the primary read-write key.')
+output primaryWriteKey string = databaseAccount.listKeys().primaryMasterKey
+
+@secure()
+@description('The base-64-encoded value of the primary read-only key.')
+output primaryReadOnlyKey string = databaseAccount.listKeys().primaryReadonlyMasterKey
+
+@secure()
+@description('The primary write connection string.')
+output primaryWriteConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
+
+@secure()
+@description('The primary read-only connection string.')
+output primaryReadOnlyConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
+
+@secure()
+@description('The base-64-encoded value of the secondary read-write key.')
+output secondaryWriteKey string = databaseAccount.listKeys().secondaryMasterKey
+
+@secure()
+@description('The base-64-encoded value of the secondary read-only key.')
+output secondaryReadOnlyKey string = databaseAccount.listKeys().secondaryReadonlyMasterKey
+
+@secure()
+@description('The secondary write connection string.')
+output secondaryWriteConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
+
+@secure()
+@description('The secondary read-only connection string.')
+output secondaryReadOnlyConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -719,19 +730,41 @@ type failoverLocationType = {
 }
 
 @export()
-@description('The type for the SQL Role Definitions.')
-type sqlRoleDefinitionType = {
-  @description('Required. Name of the SQL Role Definition.')
-  name: string
+@description('The type of a Built-In SQL Role Definition.')
+type builtInSqlRoleAssignmentType = {
+  @description('Optional. The unique name of the role assignment.')
+  name: string?
+
+  @description('Required. The unique identifier of the SQL Role Definition.')
+  roleDefinitionId: string
+
+  @description('Required. The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.')
+  principalId: string
+}
+
+import { sqlRoleAssignmentType } from 'sql-role-definition/main.bicep'
+
+@export()
+@description('The type of a custom SQL Role Definition.')
+type customSqlRoleDefinitionType = {
+  @description('Optional. The unique identifier of the Role Definition.')
+  name: string?
+
+  @description('Required. A user-friendly name for the Role Definition. Must be unique for the database account.')
+  roleName: string
 
   @description('Optional. An array of data actions that are allowed.')
-  dataAction: array?
+  dataActions: string[]?
 
-  @description('Optional. A user-friendly name for the Role Definition. Must be unique for the database account.')
-  roleName: string?
+  // While a property, currently NOT supported by the Resource Provider. (2025-05-12)
+  // @description('Optional. An array of data actions that are denied.')
+  // notDataActions: string[]?
 
-  @description('Optional. Indicates whether the Role Definition was built-in or user created.')
-  roleType: ('CustomRole' | 'BuiltInRole')?
+  @description('Optional. A set of fully qualified Scopes at or below which Role Assignments may be created using this Role Definition. This will allow application of this Role Definition on the entire database account or any underlying Database / Collection. Must have at least one element. Scopes higher than Database account are not enforceable as assignable Scopes. Note that resources referenced in assignable Scopes need not exist. Defaults to the current account.')
+  assignableScopes: string[]?
+
+  @description('Optional. An array of SQL Role Assignments to be created for the SQL Role Definition.')
+  sqlRoleAssignments: sqlRoleAssignmentType[]?
 }
 
 @export()

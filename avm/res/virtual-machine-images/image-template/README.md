@@ -797,12 +797,12 @@ The distribution targets where the image output needs to go to.
 
 | Variant | Description |
 | :-- | :-- |
-| [`SharedImage`](#variant-distributionstype-sharedimage) |  |
-| [`ManagedImage`](#variant-distributionstype-managedimage) |  |
-| [`VHD`](#variant-distributionstype-vhd) |  |
+| [`SharedImage`](#variant-distributionstype-sharedimage) | The type for a shared image distribution. |
+| [`ManagedImage`](#variant-distributionstype-managedimage) | The type for a managed image distribution. |
+| [`VHD`](#variant-distributionstype-vhd) | The type for an unmanaged distribution. |
 
 ### Variant: `distributions.type-SharedImage`
-
+The type for a shared image distribution.
 
 To use this variant, set the property `type` to `SharedImage`.
 
@@ -894,7 +894,7 @@ The storage account type of the image. Defaults to [Standard_LRS].
   ```
 
 ### Variant: `distributions.type-ManagedImage`
-
+The type for a managed image distribution.
 
 To use this variant, set the property `type` to `ManagedImage`.
 
@@ -902,28 +902,23 @@ To use this variant, set the property `type` to `ManagedImage`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`imageResourceId`](#parameter-distributionstype-managedimageimageresourceid) | string | The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group. |
-| [`type`](#parameter-distributionstype-managedimagetype) | string | The type of distribution. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`imageName`](#parameter-distributionstype-managedimageimagename) | string | Name of the managed or unmanaged image that will be created. |
+| [`type`](#parameter-distributionstype-managedimagetype) | string | The type of distribution. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`artifactTags`](#parameter-distributionstype-managedimageartifacttags) | object | Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source. |
+| [`imageResourceId`](#parameter-distributionstype-managedimageimageresourceid) | string | The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group. |
 | [`location`](#parameter-distributionstype-managedimagelocation) | string | Azure location for the image, should match if image already exists. Defaults to the value of the 'location' parameter. |
 | [`runOutputName`](#parameter-distributionstype-managedimagerunoutputname) | string | The name to be used for the associated RunOutput. If not provided, a name will be calculated. |
 
-### Parameter: `distributions.type-ManagedImage.imageResourceId`
+### Parameter: `distributions.type-ManagedImage.imageName`
 
-The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group.
+Name of the managed or unmanaged image that will be created.
 
-- Required: No
+- Required: Yes
 - Type: string
 
 ### Parameter: `distributions.type-ManagedImage.type`
@@ -939,19 +934,19 @@ The type of distribution.
   ]
   ```
 
-### Parameter: `distributions.type-ManagedImage.imageName`
-
-Name of the managed or unmanaged image that will be created.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `distributions.type-ManagedImage.artifactTags`
 
 Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source.
 
 - Required: No
 - Type: object
+
+### Parameter: `distributions.type-ManagedImage.imageResourceId`
+
+The resource ID of the managed image. Defaults to a compute image with name 'imageName-baseTime' in the current resource group.
+
+- Required: No
+- Type: string
 
 ### Parameter: `distributions.type-ManagedImage.location`
 
@@ -968,7 +963,7 @@ The name to be used for the associated RunOutput. If not provided, a name will b
 - Type: string
 
 ### Variant: `distributions.type-VHD`
-
+The type for an unmanaged distribution.
 
 To use this variant, set the property `type` to `VHD`.
 
@@ -976,13 +971,8 @@ To use this variant, set the property `type` to `VHD`.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`type`](#parameter-distributionstype-vhdtype) | string | The type of distribution. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`imageName`](#parameter-distributionstype-vhdimagename) | string | Name of the managed or unmanaged image that will be created. |
+| [`type`](#parameter-distributionstype-vhdtype) | string | The type of distribution. |
 
 **Optional parameters**
 
@@ -990,6 +980,13 @@ To use this variant, set the property `type` to `VHD`.
 | :-- | :-- | :-- |
 | [`artifactTags`](#parameter-distributionstype-vhdartifacttags) | object | Tags that will be applied to the artifact once it has been created/updated by the distributor. If not provided will set tags based on the provided image source. |
 | [`runOutputName`](#parameter-distributionstype-vhdrunoutputname) | string | The name to be used for the associated RunOutput. If not provided, a name will be calculated. |
+
+### Parameter: `distributions.type-VHD.imageName`
+
+Name of the managed or unmanaged image that will be created.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `distributions.type-VHD.type`
 
@@ -1003,13 +1000,6 @@ The type of distribution.
     'VHD'
   ]
   ```
-
-### Parameter: `distributions.type-VHD.imageName`
-
-Name of the managed or unmanaged image that will be created.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `distributions.type-VHD.artifactTags`
 
