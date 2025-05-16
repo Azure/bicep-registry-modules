@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "6209285081997076041"
+      "templateHash": "13118883060685735808"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -354,6 +354,52 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for an Azure Cosmos DB for NoSQL database."
+      }
+    },
+    "mongodbDatabaseType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the database."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags of the resource."
+          }
+        },
+        "throughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The provisioned throughput assigned to the database."
+          }
+        },
+        "autoscaleMaxThroughput": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The maximum throughput for the database when using autoscale."
+          }
+        },
+        "collections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/mongodbCollectionType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The set of collections within the database."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "A collection within the database."
       }
     },
     "networkRestrictionType": {
@@ -1223,6 +1269,9 @@
     },
     "mongodbDatabases": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/mongodbDatabaseType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for databases when using Azure Cosmos DB for MongoDB RU."

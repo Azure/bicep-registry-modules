@@ -3615,8 +3615,8 @@ Configuration for databases when using Azure Cosmos DB for MongoDB RU.
 | :-- | :-- | :-- |
 | [`autoscaleMaxThroughput`](#parameter-mongodbdatabasesautoscalemaxthroughput) | int | The maximum throughput for the database when using autoscale. |
 | [`collections`](#parameter-mongodbdatabasescollections) | array | The set of collections within the database. |
-| [`manualThroughput`](#parameter-mongodbdatabasesmanualthroughput) | int | The provisioned standard throughput assigned to the database. |
 | [`tags`](#parameter-mongodbdatabasestags) | object | Tags of the resource. |
+| [`throughput`](#parameter-mongodbdatabasesthroughput) | int | The provisioned throughput assigned to the database. |
 
 ### Parameter: `mongodbDatabases.name`
 
@@ -3758,19 +3758,19 @@ Tags for the resource.
 - Required: No
 - Type: object
 
-### Parameter: `mongodbDatabases.manualThroughput`
-
-The provisioned standard throughput assigned to the database.
-
-- Required: No
-- Type: int
-
 ### Parameter: `mongodbDatabases.tags`
 
 Tags of the resource.
 
 - Required: No
 - Type: object
+
+### Parameter: `mongodbDatabases.throughput`
+
+The provisioned throughput assigned to the database.
+
+- Required: No
+- Type: int
 
 ### Parameter: `networkRestrictions`
 
