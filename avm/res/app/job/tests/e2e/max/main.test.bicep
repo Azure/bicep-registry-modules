@@ -69,7 +69,7 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       managedIdentities: {
-        systemAssigned: false
+        systemAssigned: true
         userAssignedResourceIds: [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
@@ -98,7 +98,7 @@ module testDeployment '../../../main.bicep' = [
               ]
             }
             {
-              name: 'queue-identity'
+              name: 'queue-identity-user'
               type: 'azure-queue'
               metadata: {
                 accountName: nestedDependencies.outputs.storageAccountName
@@ -108,6 +108,18 @@ module testDeployment '../../../main.bicep' = [
               }
               auth: []
               identity: nestedDependencies.outputs.managedIdentityResourceId
+            }
+            {
+              name: 'queue-identity-system'
+              type: 'azure-queue'
+              metadata: {
+                accountName: nestedDependencies.outputs.storageAccountName
+                cloud: 'AzurePublicCloud'
+                queueName: nestedDependencies.outputs.storageQueueName
+                queueLength: '2'
+              }
+              auth: []
+              identity: 'system'
             }
           ]
         }

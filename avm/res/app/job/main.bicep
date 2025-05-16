@@ -197,7 +197,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-03-01' = if (enableT
   }
 }
 
-resource job 'Microsoft.App/jobs@2025-01-01' = {
+resource job 'Microsoft.App/jobs@2024-08-02-preview' = {
   name: name
   tags: tags
   location: location

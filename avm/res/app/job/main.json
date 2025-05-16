@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "5345099336209703330"
+      "templateHash": "4754734719703501046"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job."
@@ -1043,7 +1043,7 @@
     },
     "job": {
       "type": "Microsoft.App/jobs",
-      "apiVersion": "2025-01-01",
+      "apiVersion": "2024-08-02-preview",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
@@ -1136,7 +1136,7 @@
         "example": "Germany West Central",
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('job', '2025-01-01', 'full').location]"
+      "value": "[reference('job', '2024-08-02-preview', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1145,7 +1145,7 @@
         "example": "00000000-0000-0000-0000-000000000000",
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('job', '2025-01-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('job', '2024-08-02-preview', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

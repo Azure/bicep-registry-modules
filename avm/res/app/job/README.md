@@ -15,7 +15,7 @@ This module deploys a Container App Job.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/jobs` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/jobs) |
+| `Microsoft.App/jobs` | [2024-08-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-08-02-preview/jobs) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -354,7 +354,19 @@ module job 'br/public:avm/res/app/job:<version>' = {
               queueLength: '2'
               queueName: '<queueName>'
             }
-            name: 'queue-identity'
+            name: 'queue-identity-user'
+            type: 'azure-queue'
+          }
+          {
+            auth: []
+            identity: 'system'
+            metadata: {
+              accountName: '<accountName>'
+              cloud: 'AzurePublicCloud'
+              queueLength: '2'
+              queueName: '<queueName>'
+            }
+            name: 'queue-identity-system'
             type: 'azure-queue'
           }
         ]
@@ -366,7 +378,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
       name: 'myCustomLockName'
     }
     managedIdentities: {
-      systemAssigned: false
+      systemAssigned: true
       userAssignedResourceIds: [
         '<managedIdentityResourceId>'
       ]
@@ -531,7 +543,19 @@ module job 'br/public:avm/res/app/job:<version>' = {
                 "queueLength": "2",
                 "queueName": "<queueName>"
               },
-              "name": "queue-identity",
+              "name": "queue-identity-user",
+              "type": "azure-queue"
+            },
+            {
+              "auth": [],
+              "identity": "system",
+              "metadata": {
+                "accountName": "<accountName>",
+                "cloud": "AzurePublicCloud",
+                "queueLength": "2",
+                "queueName": "<queueName>"
+              },
+              "name": "queue-identity-system",
               "type": "azure-queue"
             }
           ]
@@ -549,7 +573,7 @@ module job 'br/public:avm/res/app/job:<version>' = {
     },
     "managedIdentities": {
       "value": {
-        "systemAssigned": false,
+        "systemAssigned": true,
         "userAssignedResourceIds": [
           "<managedIdentityResourceId>"
         ]
@@ -714,7 +738,19 @@ param eventTriggerConfig = {
           queueLength: '2'
           queueName: '<queueName>'
         }
-        name: 'queue-identity'
+        name: 'queue-identity-user'
+        type: 'azure-queue'
+      }
+      {
+        auth: []
+        identity: 'system'
+        metadata: {
+          accountName: '<accountName>'
+          cloud: 'AzurePublicCloud'
+          queueLength: '2'
+          queueName: '<queueName>'
+        }
+        name: 'queue-identity-system'
         type: 'azure-queue'
       }
     ]
@@ -726,7 +762,7 @@ param lock = {
   name: 'myCustomLockName'
 }
 param managedIdentities = {
-  systemAssigned: false
+  systemAssigned: true
   userAssignedResourceIds: [
     '<managedIdentityResourceId>'
   ]
