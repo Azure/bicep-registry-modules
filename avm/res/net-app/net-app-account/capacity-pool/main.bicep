@@ -125,6 +125,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       volumeType: volume.?volumeType
       securityStyle: volume.?securityStyle
       unixPermissions: volume.?unixPermissions
+      throughputMibps: volume.?throughputMibps
     }
   }
 ]
