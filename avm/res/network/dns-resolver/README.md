@@ -768,7 +768,7 @@ Tags of the resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `inboundEndpointsObject` | array | The outbound endpoints object. |
+| `inboundEndpointsObject` | array | The inbound endpoints object. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the DNS Private Resolver. |
 | `outboundEndpointsObject` | array | The outbound endpoints object. |
