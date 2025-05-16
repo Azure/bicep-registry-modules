@@ -214,7 +214,7 @@ param webSiteConfiguration webSiteConfigurationType = {
   name: '${solutionPrefix}wapp'
   location: solutionLocation
   containerImageRegistryDomain: 'biabcontainerreg.azurecr.io'
-  containerImageName: 'macaebackend'
+  containerImageName: 'macaefrontend'
   containerImageTag: 'latest'
   containerName: 'backend'
   tags: tags
