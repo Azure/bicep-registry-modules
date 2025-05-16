@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "17977303735857570817"
+      "version": "0.35.1.17967",
+      "templateHash": "2352107137090586494"
     },
     "name": "Azure Cosmos DB MongoDB vCore cluster",
     "description": "This module deploys a Azure Cosmos DB MongoDB vCore cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
@@ -977,8 +977,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "4427483613542642631"
+              "version": "0.35.1.17967",
+              "templateHash": "11348282878809602495"
             },
             "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
             "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster."
@@ -1076,8 +1076,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "162520627816225036"
+              "version": "0.35.1.17967",
+              "templateHash": "12974901829581589938"
             }
           },
           "definitions": {
