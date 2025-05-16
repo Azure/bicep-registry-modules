@@ -1,26 +1,26 @@
-metadata name = 'DocumentDB Database Accounts'
-metadata description = 'This module deploys a DocumentDB Database Account.'
+metadata name = 'Azure Cosmos DB account'
+metadata description = 'This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed.'
 
-@description('Required. Name of the Database Account.')
+@description('Required. The name of the account.')
 param name string
 
-@description('Optional. Default to current resource group scope location. Location for all resources.')
+@description('Optional. Defaults to the current resource group scope location. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Optional. Tags of the Database Account resource.')
+@description('Optional. Tags for the resource.')
 param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts@2024-11-15'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-@description('Optional. Default to Standard. The offer type for the Azure Cosmos DB database account.')
+@description('Optional. The offer type for the account. Defaults to "Standard".')
 @allowed([
   'Standard'
 ])
 param databaseAccountOfferType string = 'Standard'
 
-@description('Optional. Default to the location where the account is deployed. Locations enabled for the Cosmos DB account.')
+@description('Optional. The set of locations enabled for the account. Defaults to the location where the account is deployed.')
 param failoverLocations failoverLocationType[]?
 
 @allowed([
@@ -30,38 +30,38 @@ param failoverLocations failoverLocationType[]?
   'BoundedStaleness'
   'Strong'
 ])
-@description('Optional. Default to Session. The default consistency level of the Cosmos DB account.')
+@description('Optional. The default consistency level of the account. Defaults to "Session".')
 param defaultConsistencyLevel string = 'Session'
 
-@description('Optional. Default to true. Opt-out of local authentication and ensure only MSI and AAD can be used exclusively for authentication.')
+@description('Optional. Opt-out of local authentication and ensure that only Microsoft Entra can be used exclusively for authentication. Defaults to true.')
 param disableLocalAuth bool = true
 
-@description('Optional. Default to false. Flag to indicate whether to enable storage analytics.')
+@description('Optional. Flag to indicate whether to enable storage analytics. Defaults to false.')
 param enableAnalyticalStorage bool = false
 
-@description('Optional. Default to true. Enable automatic failover for regions.')
+@description('Optional. Enable automatic failover for regions. Defaults to true.')
 param automaticFailover bool = true
 
-@description('Optional. Default to false. Flag to indicate whether Free Tier is enabled.')
+@description('Optional. Flag to indicate whether "Free Tier" is enabled. Defaults to false.')
 param enableFreeTier bool = false
 
-@description('Optional. Default to false. Enables the account to write in multiple locations. Periodic backup must be used if enabled.')
+@description('Optional. Enables the account to write in multiple locations. Periodic backup must be used if enabled. Defaults to false.')
 param enableMultipleWriteLocations bool = false
 
-@description('Optional. Default to true. Disable write operations on metadata resources (databases, containers, throughput) via account keys.')
+@description('Optional. Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true.')
 param disableKeyBasedMetadataWriteAccess bool = true
 
 @minValue(1)
 @maxValue(2147483647)
-@description('Optional. Default to 100000. Max stale requests. Required for BoundedStaleness. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000.')
+@description('Optional. The maximum stale requests. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 10 to 1000000. Multi Region: 100000 to 1000000. Defaults to 100000.')
 param maxStalenessPrefix int = 100000
 
 @minValue(5)
 @maxValue(86400)
-@description('Optional. Default to 300. Max lag time (minutes). Required for BoundedStaleness. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400.')
+@description('Optional. The maximum lag time in minutes. Required for "BoundedStaleness" consistency level. Valid ranges, Single Region: 5 to 84600. Multi Region: 300 to 86400. Defaults to 300.')
 param maxIntervalInSeconds int = 300
 
-@description('Optional. Default to 4.2. Specifies the MongoDB server version to use.')
+@description('Optional. Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to "4.2".')
 @allowed([
   '3.2'
   '3.6'
@@ -73,22 +73,22 @@ param maxIntervalInSeconds int = 300
 ])
 param serverVersion string = '4.2'
 
-@description('Optional. SQL Databases configurations.')
+@description('Optional. Configuration for databases when using Azure Cosmos DB for NoSQL.')
 param sqlDatabases sqlDatabaseType[]?
 
-@description('Optional. SQL Role Definitions configurations. Also allows the assignment of custom roles.')
+@description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.')
 param sqlRoleDefinitions customSqlRoleDefinitionType[]?
 
-@description('Optional. SQL Role Assignments of built-in roles.')
+@description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.')
 param builtInSqlRoleAssignments builtInSqlRoleAssignmentType[]?
 
-@description('Optional. MongoDB Databases configurations.')
+@description('Optional. Configuration for databases when using Azure Cosmos DB for MongoDB RU.')
 param mongodbDatabases array?
 
-@description('Optional. Gremlin Databases configurations.')
+@description('Optional. Configuration for databases when using Azure Cosmos DB for Apache Gremlin.')
 param gremlinDatabases array?
 
-@description('Optional. Table configurations.')
+@description('Optional. Configuration for databases when using Azure Cosmos DB for Table.')
 param tables array?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
