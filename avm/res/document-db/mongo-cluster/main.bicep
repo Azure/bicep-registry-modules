@@ -1,9 +1,9 @@
-metadata name = 'Azure Cosmos DB MongoDB vCore cluster'
-metadata description = '''This module deploys a Azure Cosmos DB MongoDB vCore cluster.
+metadata name = 'Azure Cosmos DB for MongoDB (vCore) cluster'
+metadata description = '''This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.
 
 **Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case.'''
 
-@description('Required. Name of the Azure Cosmos DB MongoDB vCore cluster.')
+@description('Required. Name of the Azure Cosmos DB for MongoDB (vCore) cluster.')
 param name string
 
 @description('Optional. Default to current resource group scope location. Location for all resources.')
@@ -21,7 +21,7 @@ param administratorLogin string
 @maxLength(128)
 param administratorLoginPassword string
 
-@description('Optional. Mode to create the azure cosmos db mongodb vCore cluster.')
+@description('Optional. Mode to create the Azure Cosmos DB for MongoDB (vCore) cluster.')
 param createMode string = 'Default'
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
@@ -32,7 +32,12 @@ param diagnosticSettings diagnosticSettingFullType[]?
 param enableTelemetry bool = true
 
 @description('Optional. Whether high availability is enabled on the node group.')
-param highAvailabilityMode bool = false
+@allowed([
+  'Disabled'
+  'SameZone'
+  'ZoneRedundantPreferred'
+])
+param highAvailabilityMode string = 'ZoneRedundantPreferred'
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -43,9 +48,6 @@ param networkAcls networkAclsType?
 
 @description('Required. Number of nodes in the node group.')
 param nodeCount int
-
-@description('Optional. Deployed Node type in the node group.')
-param nodeType string = 'Shard'
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
@@ -63,6 +65,12 @@ param sku string
 
 @description('Required. Disk storage size for the node group in GB.')
 param storage int
+
+@description('Optional. The type of the secrets export configuration.')
+param enableMicrosoftEntraAuth bool = false
+
+@description('Optional. The Microsoft Entra ID authentication identity assignments to be created for the cluster.')
+param entraAuthIdentities authIdentityType[]?
 
 var enableReferencedModulesTelemetry = false
 
@@ -136,23 +144,40 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2024-02-15-preview' = {
+resource mongoCluster 'Microsoft.DocumentDB/mongoClusters@2025-04-01-preview' = {
   name: name
   tags: tags
   location: location
   properties: {
-    administratorLogin: administratorLogin
-    administratorLoginPassword: administratorLoginPassword
+    administrator: {
+      userName: administratorLogin
+      password: administratorLoginPassword
+    }
     createMode: createMode
-    nodeGroupSpecs: [
-      {
-        diskSizeGB: storage
-        enableHa: highAvailabilityMode
-        kind: nodeType
-        nodeCount: nodeCount
-        sku: sku
-      }
-    ]
+    compute: {
+      tier: sku
+    }
+    sharding: {
+      shardCount: nodeCount
+    }
+    storage: {
+      sizeGb: storage
+    }
+    highAvailability: {
+      targetMode: highAvailabilityMode
+    }
+    authConfig: {
+      allowedModes: union(
+        [
+          'NativeAuth'
+        ],
+        enableMicrosoftEntraAuth
+          ? [
+              'MicrosoftEntraID'
+            ]
+          : []
+      )
+    }
   }
 }
 
@@ -209,6 +234,20 @@ module mongoCluster_configFireWallRules 'firewall-rule/main.bicep' = [
       name: firewallRule.name
       startIpAddress: firewallRule.startIpAddress
       endIpAddress: firewallRule.endIpAddress
+    }
+  }
+]
+
+module mongoCluster_users 'user/main.bicep' = [
+  for (targetIdentity, index) in (entraAuthIdentities ?? []): {
+    name: '${uniqueString(deployment().name, location)}-user-${index}'
+    params: {
+      mongoClusterName: mongoCluster.name
+      location: location
+      targetIdentity: {
+        principalId: targetIdentity.principalId
+        principalType: targetIdentity.principalType ?? 'ServicePrincipal'
+      }
     }
   }
 ]
@@ -290,10 +329,10 @@ module mongoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint
   }
 ]
 
-@description('The name of the Azure Cosmos DB MongoDB vCore cluster.')
+@description('The name of the Azure Cosmos DB for MongoDB (vCore) cluster.')
 output name string = mongoCluster.name
 
-@description('The resource ID of the Azure Cosmos DB MongoDB vCore cluster.')
+@description('The resource ID of the Azure Cosmos DB for MongoDB (vCore) cluster.')
 output mongoClusterResourceId string = mongoCluster.id
 
 @description('The resource ID of the resource group the firewall rule was created in.')
@@ -407,4 +446,14 @@ import { secretSetType } from 'modules/keyVaultExport.bicep'
 type secretsOutputType = {
   @description('An exported secret\'s references.')
   *: secretSetType
+}
+
+@export()
+@description('The type for identities that can be used for Microsoft Entra ID authentication.')
+type authIdentityType = {
+  @description('Required. The principal (object) ID of the identity to create as a user on the cluster.')
+  principalId: string
+
+  @description('Optional. The type of principal to be used for the identity provider. Defaults to "ServicePrincipal".')
+  principalType: 'ServicePrincipal' | 'User'?
 }

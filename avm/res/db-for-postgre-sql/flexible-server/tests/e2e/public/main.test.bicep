@@ -65,6 +65,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
+      availabilityZone: 1
       administrators: [
         {
           objectId: nestedDependencies.outputs.managedIdentityClientId
