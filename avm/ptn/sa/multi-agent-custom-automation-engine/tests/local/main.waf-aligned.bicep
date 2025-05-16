@@ -4,6 +4,7 @@ module testDeployment '../../main.bicep' = {
     solutionPrefix: 'macaewaf013'
     solutionLocation: 'australiaeast'
     virtualMachineConfiguration: {
+      //enabled: false
       adminUsername: 'adminuser'
       adminPassword: 'P@ssw0rd1234'
       //enabled: false

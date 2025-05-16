@@ -16,7 +16,7 @@ resource aiServices 'Microsoft.CognitiveServices/accounts@2023-05-01' existing =
 }
 
 module aiFoundryAiHub 'br/public:avm/res/machine-learning-services/workspace:0.10.1' = {
-  name: 'machine-learning-services.workspace.${name}'
+  name: take('avm.res.machine-learning-services.workspace.${name}', 64)
   params: {
     name: name
     tags: tags

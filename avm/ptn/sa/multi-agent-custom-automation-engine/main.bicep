@@ -27,7 +27,7 @@ param logAnalyticsWorkspaceConfiguration logAnalyticsWorkspaceConfigurationType 
   location: solutionLocation
   sku: 'PerGB2018'
   tags: tags
-  dataRetentionInDays: 30
+  dataRetentionInDays: 365
 }
 
 @description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Application Insights resource.')
@@ -36,7 +36,7 @@ param applicationInsightsConfiguration applicationInsightsConfigurationType = {
   name: '${solutionPrefix}appi'
   location: solutionLocation
   tags: tags
-  retentionInDays: 30
+  retentionInDays: 365
 }
 
 @description('Optional. The configuration to apply for the Multi-Agent Custom Automation Engine Managed Identity resource.')
@@ -137,7 +137,7 @@ param aiFoundryStorageAccountConfiguration storageAccountType = {
   name: replace('${solutionPrefix}aifdstrg', '-', '')
   location: solutionLocation
   tags: tags
-  sku: 'Standard_LRS'
+  sku: 'Standard_ZRS'
   subnetResourceId: null //Default value set on module configuration
 }
 
@@ -151,7 +151,7 @@ param aiFoundryAiHubConfiguration aiHubType = {
   subnetResourceId: null //Default value set on module configuration
 }
 
-@description('Optional. The configuration to apply for the Conversation Knowledge Mining AI Foundry AI Project resource.')
+@description('Optional. The configuration to apply for the AI Foundry AI Project resource.')
 param aiFoundryAiProjectConfiguration aiProjectConfigurationType = {
   enabled: true
   name: '${solutionPrefix}aifdaipj'
@@ -160,7 +160,7 @@ param aiFoundryAiProjectConfiguration aiProjectConfigurationType = {
   tags: tags
 }
 
-@description('Optional. The configuration to apply for the Conversation Knowledge Mining Cosmos DB Account resource.')
+@description('Optional. The configuration to apply for the Cosmos DB Account resource.')
 param cosmosDbAccountConfiguration cosmosDbAccountConfigurationType = {
   enabled: true
   name: '${solutionPrefix}csdb'
@@ -170,7 +170,7 @@ param cosmosDbAccountConfiguration cosmosDbAccountConfigurationType = {
   sqlDatabases: null //Default value set on module configuration
 }
 
-@description('Optional. The configuration to apply for the Conversation Knowledge Mining Container App Environment resource.')
+@description('Optional. The configuration to apply for the Container App Environment resource.')
 param containerAppEnvironmentConfiguration containerAppEnvironmentConfigurationType = {
   enabled: true
   name: '${solutionPrefix}cenv'
@@ -179,7 +179,7 @@ param containerAppEnvironmentConfiguration containerAppEnvironmentConfigurationT
   subnetResourceId: null //Default value set on module configuration
 }
 
-@description('Optional. The configuration to apply for the Conversation Knowledge Mining Container App resource.')
+@description('Optional. The configuration to apply for the Container App resource.')
 param containerAppConfiguration containerAppConfigurationType = {
   enabled: true
   name: '${solutionPrefix}capp'
@@ -191,20 +191,35 @@ param containerAppConfiguration containerAppConfigurationType = {
   containerMemory: '4.0Gi'
   containerImageRegistryDomain: 'biabcontainerreg.azurecr.io'
   containerImageName: 'macaebackend'
-  containerImageTag: 'fnd01'
+  containerImageTag: 'latest'
   containerName: 'backend'
   ingressTargetPort: 8000
   maxReplicas: 1
   minReplicas: 1
 }
 
-@description('Optional. The configuration of the Entra ID Application used to authenticate the website.')
-param entraIdApplicationConfiguration entraIdApplicationConfigurationType = {
-  enabled: false
+@description('Optional. The configuration to apply for the Web Server Farm resource.')
+param webServerFarmConfiguration webServerFarmConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}wsvf'
+  location: solutionLocation
+  skuName: 'P1v3'
+  skuCapacity: 3
+  tags: tags
 }
 
-@description('Optional. The UTC time deployment.')
-param deploymentTime string = utcNow()
+@description('Optional. The configuration to apply for the Web Server Farm resource.')
+param webSiteConfiguration webSiteConfigurationType = {
+  enabled: true
+  name: '${solutionPrefix}wapp'
+  location: solutionLocation
+  containerImageRegistryDomain: 'biabcontainerreg.azurecr.io'
+  containerImageName: 'macaebackend'
+  containerImageTag: 'latest'
+  containerName: 'backend'
+  tags: tags
+  environmentResourceId: null //Default value set on module configuration
+}
 
 //
 // Add your parameters here
@@ -234,28 +249,30 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 } */
 
 // ========== Log Analytics Workspace ========== //
+// WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
 // Log Analytics configuration defaults
 var logAnalyticsWorkspaceEnabled = logAnalyticsWorkspaceConfiguration.?enabled ?? true
 var logAnalyticsWorkspaceResourceName = logAnalyticsWorkspaceConfiguration.?name ?? '${solutionPrefix}-laws'
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (logAnalyticsWorkspaceEnabled) {
-  name: take('operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
+  name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
   params: {
     name: logAnalyticsWorkspaceResourceName
     tags: logAnalyticsWorkspaceConfiguration.?tags ?? tags
     location: logAnalyticsWorkspaceConfiguration.?location ?? solutionLocation
     enableTelemetry: enableTelemetry
     skuName: logAnalyticsWorkspaceConfiguration.?sku ?? 'PerGB2018'
-    dataRetention: logAnalyticsWorkspaceConfiguration.?dataRetentionInDays ?? 30
+    dataRetention: logAnalyticsWorkspaceConfiguration.?dataRetentionInDays ?? 365
     diagnosticSettings: [{ useThisWorkspace: true }]
   }
 }
 
 // ========== Application Insights ========== //
+// WAF best practices for Application Insights: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/application-insights
 // Application Insights configuration defaults
 var applicationInsightsEnabled = applicationInsightsConfiguration.?enabled ?? true
 var applicationInsightsResourceName = applicationInsightsConfiguration.?name ?? '${solutionPrefix}appi'
 module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (applicationInsightsEnabled) {
-  name: take('insights.component.${applicationInsightsResourceName}', 64)
+  name: take('avm.res.insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName
     workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
@@ -270,11 +287,12 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (ap
   }
 }
 
-// ========== User assigned identity Web App ========== //
+// ========== User assigned identity Web Site ========== //
+// WAF best practices for identity and access management: https://learn.microsoft.com/en-us/azure/well-architected/security/identity-access
 var userAssignedManagedIdentityEnabled = userAssignedManagedIdentityConfiguration.?enabled ?? true
 var userAssignedManagedIdentityResourceName = userAssignedManagedIdentityConfiguration.?name ?? '${solutionPrefix}uaid'
 module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (userAssignedManagedIdentityEnabled) {
-  name: take('managed-identity.user-assigned-identity.${userAssignedManagedIdentityResourceName}', 64)
+  name: take('avm.res.managed-identity.user-assigned-identity.${userAssignedManagedIdentityResourceName}', 64)
   params: {
     name: userAssignedManagedIdentityResourceName
     tags: userAssignedManagedIdentityConfiguration.?tags ?? tags
@@ -284,10 +302,12 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
 }
 
 // ========== Network Security Groups ========== //
+// WAF best practices for virtual networks: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/virtual-network
+// WAF recommendations for networking and connectivity: https://learn.microsoft.com/en-us/azure/well-architected/security/networking
 var networkSecurityGroupBackendEnabled = networkSecurityGroupBackendConfiguration.?enabled ?? true
 var networkSecurityGroupBackendResourceName = networkSecurityGroupBackendConfiguration.?name ?? '${solutionPrefix}nsgr-backend'
 module networkSecurityGroupBackend 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupBackendEnabled) {
-  name: take('network.network-security-group.${networkSecurityGroupBackendResourceName}', 64)
+  name: take('avm.res.network.network-security-group.${networkSecurityGroupBackendResourceName}', 64)
   params: {
     name: networkSecurityGroupBackendResourceName
     location: networkSecurityGroupBackendConfiguration.?location ?? solutionLocation
@@ -318,7 +338,7 @@ module networkSecurityGroupBackend 'br/public:avm/res/network/network-security-g
 var networkSecurityGroupContainersEnabled = networkSecurityGroupContainersConfiguration.?enabled ?? true
 var networkSecurityGroupContainersResourceName = networkSecurityGroupContainersConfiguration.?name ?? '${solutionPrefix}nsgr-containers'
 module networkSecurityGroupContainers 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupContainersEnabled) {
-  name: take('network.network-security-group.${networkSecurityGroupContainersResourceName}', 64)
+  name: take('avm.res.network.network-security-group.${networkSecurityGroupContainersResourceName}', 64)
   params: {
     name: networkSecurityGroupContainersResourceName
     location: networkSecurityGroupContainersConfiguration.?location ?? solutionLocation
@@ -349,7 +369,7 @@ module networkSecurityGroupContainers 'br/public:avm/res/network/network-securit
 var networkSecurityGroupBastionEnabled = networkSecurityGroupBastionConfiguration.?enabled ?? true
 var networkSecurityGroupBastionResourceName = networkSecurityGroupBastionConfiguration.?name ?? '${solutionPrefix}nsgr-bastion'
 module networkSecurityGroupBastion 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupBastionEnabled) {
-  name: take('network.network-security-group.${networkSecurityGroupBastionResourceName}', 64)
+  name: take('avm.res.network.network-security-group.${networkSecurityGroupBastionResourceName}', 64)
   params: {
     name: networkSecurityGroupBastionResourceName
     location: networkSecurityGroupBastionConfiguration.?location ?? solutionLocation
@@ -506,7 +526,7 @@ module networkSecurityGroupBastion 'br/public:avm/res/network/network-security-g
 var networkSecurityGroupAdministrationEnabled = networkSecurityGroupAdministrationConfiguration.?enabled ?? true
 var networkSecurityGroupAdministrationResourceName = networkSecurityGroupAdministrationConfiguration.?name ?? '${solutionPrefix}nsgr-administration'
 module networkSecurityGroupAdministration 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkEnabled && networkSecurityGroupAdministrationEnabled) {
-  name: take('network.network-security-group.${networkSecurityGroupAdministrationResourceName}', 64)
+  name: take('avm.res.network.network-security-group.${networkSecurityGroupAdministrationResourceName}', 64)
   params: {
     name: networkSecurityGroupAdministrationResourceName
     location: networkSecurityGroupAdministrationConfiguration.?location ?? solutionLocation
@@ -535,10 +555,12 @@ module networkSecurityGroupAdministration 'br/public:avm/res/network/network-sec
 }
 
 // ========== Virtual Network ========== //
+// WAF best practices for virtual networks: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/virtual-network
+// WAF recommendations for networking and connectivity: https://learn.microsoft.com/en-us/azure/well-architected/security/networking
 var virtualNetworkEnabled = virtualNetworkConfiguration.?enabled ?? true
 var virtualNetworkResourceName = virtualNetworkConfiguration.?name ?? '${solutionPrefix}vnet'
 module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (virtualNetworkEnabled) {
-  name: take('network.virtual-network.${virtualNetworkResourceName}', 64)
+  name: take('avm.res.network.virtual-network.${virtualNetworkResourceName}', 64)
   params: {
     name: virtualNetworkResourceName
     location: virtualNetworkConfiguration.?location ?? solutionLocation
@@ -582,9 +604,12 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (vi
 }
 var bastionEnabled = bastionConfiguration.?enabled ?? true
 var bastionResourceName = bastionConfiguration.?name ?? '${solutionPrefix}bstn'
+
 // ========== Bastion host ========== //
+// WAF best practices for virtual networks: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/virtual-network
+// WAF recommendations for networking and connectivity: https://learn.microsoft.com/en-us/azure/well-architected/security/networking
 module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualNetworkEnabled && bastionEnabled) {
-  name: take('network.bastion-host.${bastionResourceName}', 64)
+  name: take('avm.res.network.bastion-host.${bastionResourceName}', 64)
   params: {
     name: bastionResourceName
     location: bastionConfiguration.?location ?? solutionLocation
@@ -605,10 +630,11 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualN
 }
 
 // ========== Virtual machine ========== //
+// WAF best practices for virtual machines: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/virtual-machines
 var virtualMachineEnabled = virtualMachineConfiguration.?enabled ?? true
 var virtualMachineResourceName = virtualMachineConfiguration.?name ?? '${solutionPrefix}vmws'
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = if (virtualNetworkEnabled && virtualMachineEnabled) {
-  name: take('compute.virtual-machine.${virtualMachineResourceName}', 64)
+  name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
     name: virtualMachineResourceName
     computerName: take(virtualMachineResourceName, 15)
@@ -660,7 +686,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = if (v
     //    maintenanceConfigurationResourceId: virtualMachineConfiguration.?maintenanceConfigurationResourceId
   }
 }
-// ========== DNS Zone for AI Foundry: Open AI ========== //
+
+// ========== AI Foundry: AI Services ========== //
+// WAF best practices for Open AI: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-openai
 var openAiSubResource = 'account'
 var openAiPrivateDnsZones = {
   'privatelink.cognitiveservices.azure.com': openAiSubResource
@@ -680,7 +708,6 @@ module privateDnsZonesAiServices 'br/public:avm/res/network/private-dns-zone:0.7
   }
 ]
 
-// ========== AI Foundry: AI Services ==========
 // NOTE: Required version 'Microsoft.CognitiveServices/accounts@2024-04-01-preview' not available in AVM
 var aiFoundryAiServicesResourceName = aiFoundryAiServicesConfiguration.?name ?? '${solutionPrefix}aifdaisv'
 var aiFoundryAIservicesEnabled = aiFoundryAiServicesConfiguration.?enabled ?? true
@@ -696,7 +723,7 @@ var aiFoundryAiServicesModelDeployment = {
 }
 
 module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = if (aiFoundryAIservicesEnabled) {
-  name: take('cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
+  name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
     tags: aiFoundryAiServicesConfiguration.?tags ?? tags
@@ -757,7 +784,7 @@ module aiFoundryAiServices 'br/public:avm/res/cognitive-services/account:0.10.2'
 }
 
 // AI Foundry: storage account
-
+// WAF best practices for Azure Blob Storage: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-blob-storage
 var storageAccountPrivateDnsZones = {
   'privatelink.blob.${environment().suffixes.storage}': 'blob'
   'privatelink.file.${environment().suffixes.storage}': 'file'
@@ -796,7 +823,7 @@ module aiFoundryStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2
     tags: aiFoundryStorageAccountConfiguration.?tags ?? tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-    skuName: aiFoundryStorageAccountConfiguration.?sku ?? 'Standard_LRS'
+    skuName: aiFoundryStorageAccountConfiguration.?sku ?? 'Standard_ZRS'
     allowSharedKeyAccess: false
     networkAcls: {
       bypass: 'AzureServices'
@@ -829,6 +856,7 @@ module aiFoundryStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2
 }
 
 // AI Foundry: AI Hub
+// WAF best practices for Open AI: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-openai
 var mlTargetSubResource = 'amlworkspace'
 var mlPrivateDnsZones = {
   'privatelink.api.azureml.ms': mlTargetSubResource
@@ -852,7 +880,7 @@ module privateDnsZonesAiFoundryWorkspaceHub 'br/public:avm/res/network/private-d
 var aiFoundryAiHubEnabled = aiFoundryAiHubConfiguration.?enabled ?? true
 var aiFoundryAiHubName = aiFoundryAiHubConfiguration.?name ?? '${solutionPrefix}aifdaihb'
 module aiFoundryAiHub 'modules/ai-hub.bicep' = if (aiFoundryAiHubEnabled) {
-  name: 'module.ai-hub'
+  name: take('module.ai-hub.${aiFoundryAiHubName}', 64)
   dependsOn: [
     privateDnsZonesAiFoundryWorkspaceHub
   ]
@@ -889,11 +917,12 @@ module aiFoundryAiHub 'modules/ai-hub.bicep' = if (aiFoundryAiHubEnabled) {
 }
 
 // AI Foundry: AI Project
+// WAF best practices for Open AI: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-openai
 var aiFoundryAiProjectEnabled = aiFoundryAiProjectConfiguration.?enabled ?? true
 var aiFoundryAiProjectName = aiFoundryAiProjectConfiguration.?name ?? '${solutionPrefix}aifdaipj'
 
 module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = if (aiFoundryAiProjectEnabled) {
-  name: take('machine-learning-services.workspace.${aiFoundryAiProjectName}', 64)
+  name: take('avm.res.machine-learning-services.workspace.${aiFoundryAiProjectName}', 64)
   params: {
     name: aiFoundryAiProjectName
     location: aiFoundryAiProjectConfiguration.?location ?? solutionLocation
@@ -913,7 +942,8 @@ module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace
   }
 }
 
-// ========== DNS Zone for Cosmos DB ========== //
+// ========== Cosmos DB ========== //
+// WAF best practices for Cosmos DB: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/cosmos-db
 module privateDnsZonesCosmosDb 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (virtualNetworkEnabled) {
   name: 'network.private-dns-zone.cosmos-db'
   params: {
@@ -924,13 +954,12 @@ module privateDnsZonesCosmosDb 'br/public:avm/res/network/private-dns-zone:0.7.0
   }
 }
 
-// ========== Cosmos DB ========== //
 var cosmosDbAccountEnabled = cosmosDbAccountConfiguration.?enabled ?? true
 var cosmosDbResourceName = cosmosDbAccountConfiguration.?name ?? '${solutionPrefix}csdb'
 var cosmosDbDatabaseName = 'autogen'
 var cosmosDbDatabaseMemoryContainerName = 'memory'
 module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = if (cosmosDbAccountEnabled) {
-  name: take('document-db.database-account.${cosmosDbResourceName}', 64)
+  name: take('avm.res.document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
     // Required parameters
     name: cosmosDbAccountConfiguration.?name ?? '${solutionPrefix}csdb'
@@ -1000,10 +1029,11 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = if (co
 }
 
 // ========== Backend Container App Environment ========== //
+// WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 var containerAppEnvironmentEnabled = containerAppEnvironmentConfiguration.?enabled ?? true
 var containerAppEnvironmentResourceName = containerAppEnvironmentConfiguration.?name ?? '${solutionPrefix}cenv'
 module containerAppEnvironment 'modules/container-app-environment.bicep' = if (containerAppEnvironmentEnabled) {
-  name: 'module.container-app-environment'
+  name: take('module.container-app-environment.${containerAppEnvironmentResourceName}', 64)
   params: {
     name: containerAppEnvironmentResourceName
     tags: containerAppEnvironmentConfiguration.?tags ?? tags
@@ -1011,21 +1041,27 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = if (c
     logAnalyticsResourceName: logAnalyticsWorkspace.outputs.name
     publicNetworkAccess: 'Enabled'
     zoneRedundant: virtualNetworkEnabled ? true : false
-    aspireDashboardEnabled: !virtualNetworkEnabled
-    vnetConfiguration: virtualNetworkEnabled
-      ? {
-          internal: false
-          infrastructureSubnetId: containerAppEnvironmentConfiguration.?subnetResourceId ?? virtualNetwork.?outputs.?subnetResourceIds[3] ?? ''
-        }
-      : {}
+    applicationInsightsConnectionString: applicationInsights.outputs.connectionString
+    enableTelemetry: enableTelemetry
+    subnetResourceId: virtualNetworkEnabled
+      ? containerAppEnvironmentConfiguration.?subnetResourceId ?? virtualNetwork.?outputs.?subnetResourceIds[3] ?? ''
+      : ''
+    //aspireDashboardEnabled: !virtualNetworkEnabled
+    // vnetConfiguration: virtualNetworkEnabled
+    //   ? {
+    //       internal: false
+    //       infrastructureSubnetId: containerAppEnvironmentConfiguration.?subnetResourceId ?? virtualNetwork.?outputs.?subnetResourceIds[3] ?? ''
+    //     }
+    //   : {}
   }
 }
 
 // ========== Backend Container App Service ========== //
+// WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 var containerAppEnabled = containerAppConfiguration.?enabled ?? true
 var containerAppResourceName = containerAppConfiguration.?name ?? '${solutionPrefix}capp'
 module containerApp 'br/public:avm/res/app/container-app:0.14.2' = if (containerAppEnabled) {
-  name: take('app.container-app.${containerAppResourceName}', 64)
+  name: take('avm.res.app.container-app.${containerAppResourceName}', 64)
   params: {
     name: containerAppResourceName
     tags: containerAppConfiguration.?tags ?? tags
@@ -1063,7 +1099,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = if (container
     containers: [
       {
         name: containerAppConfiguration.?containerName ?? 'backend'
-        image: '${containerAppConfiguration.?containerImageRegistryDomain ?? 'biabcontainerreg.azurecr.io'}/${containerAppConfiguration.?containerImageName ?? 'macaebackend'}:${containerAppConfiguration.?containerImageTag ?? 'fnd01'}'
+        image: '${containerAppConfiguration.?containerImageRegistryDomain ?? 'biabcontainerreg.azurecr.io'}/${containerAppConfiguration.?containerImageName ?? 'macaebackend'}:${containerAppConfiguration.?containerImageTag ?? 'latest'}'
         resources: {
           //TODO: Make cpu and memory parameterized
           cpu: containerAppConfiguration.?containerCpu ?? '2.0'
@@ -1133,15 +1169,19 @@ module containerApp 'br/public:avm/res/app/container-app:0.14.2' = if (container
   }
 }
 
+var webServerFarmEnabled = webServerFarmConfiguration.?enabled ?? true
+var webServerFarmResourceName = webServerFarmConfiguration.?name ?? '${solutionPrefix}wsvf'
+
 // ========== Frontend server farm ========== //
-module webServerfarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
-  name: 'web-server-farm'
+// WAF best practices for web app service: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
+module webServerFarm 'br/public:avm/res/web/serverfarm:0.4.1' = if (webServerFarmEnabled) {
+  name: take('avm.res.web.serverfarm.${webServerFarmResourceName}', 64)
   params: {
+    name: webServerFarmResourceName
     tags: tags
-    location: solutionLocation
-    name: '${solutionPrefix}sfrm'
-    skuName: 'P1v2'
-    skuCapacity: 1
+    location: webServerFarmConfiguration.?location ?? solutionLocation
+    skuName: webServerFarmConfiguration.?skuName ?? 'P1v3'
+    skuCapacity: webServerFarmConfiguration.?skuCapacity ?? 3
     reserved: true
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     kind: 'linux'
@@ -1149,134 +1189,33 @@ module webServerfarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
   }
 }
 
-// ========== Entra ID Application ========== //
-resource entraIdApplication 'Microsoft.Graph/applications@v1.0' = if (entraIdApplicationConfiguration.?enabled!) {
-  displayName: '${webSiteName}-app'
-  uniqueName: '${webSiteName}-app-${uniqueString(resourceGroup().id, webSiteName)}'
-  description: 'EntraId Application for ${webSiteName} authentication'
-  passwordCredentials: [
-    {
-      displayName: 'Credential for website ${webSiteName}'
-      endDateTime: dateTimeAdd(deploymentTime, 'P180D')
-      // keyId: 'string'
-      // startDateTime: 'string'
-    }
-  ]
-}
-
-var graphAppId = '00000003-0000-0000-c000-000000000000' //Microsoft Graph ID
-// Get the Microsoft Graph service principal so that the scope names can be looked up and mapped to a permission ID
-resource msGraphSP 'Microsoft.Graph/servicePrincipals@v1.0' existing = {
-  appId: graphAppId
-}
-
-// ========== Entra ID Service Principal ========== //
-resource entraIdServicePrincipal 'Microsoft.Graph/servicePrincipals@v1.0' = if (entraIdApplicationConfiguration.?enabled!) {
-  appId: entraIdApplication.appId
-}
-
-// Grant the OAuth2.0 scopes (requested in parameters) to the basic app, for all users in the tenant
-resource graphScopesAssignment 'Microsoft.Graph/oauth2PermissionGrants@v1.0' = if (entraIdApplicationConfiguration.?enabled!) {
-  clientId: entraIdServicePrincipal.id
-  resourceId: msGraphSP.id
-  consentType: 'AllPrincipals'
-  scope: 'User.Read'
-}
-
 // ========== Frontend web site ========== //
+// WAF best practices for web app service: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
+var webSiteEnabled = webSiteConfiguration.?enabled ?? true
+
 var webSiteName = '${solutionPrefix}wapp'
-var entraIdApplicationCredentialSecretSettingName = 'MICROSOFT_PROVIDER_AUTHENTICATION_SECRET'
-module webSite 'br/public:avm/res/web/site:0.15.1' = {
-  name: 'web-site'
+module webSite 'br/public:avm/res/web/site:0.15.1' = if (webSiteEnabled) {
+  name: take('avm.res.web.site.${webSiteName}', 64)
   params: {
-    tags: tags
-    kind: 'app,linux,container'
     name: webSiteName
-    location: solutionLocation
-    serverFarmResourceId: webServerfarm.outputs.resourceId
+    tags: webSiteConfiguration.?tags ?? tags
+    location: webSiteConfiguration.?location ?? solutionLocation
+    kind: 'app,linux,container'
+    enableTelemetry: enableTelemetry
+    serverFarmResourceId: webSiteConfiguration.?environmentResourceId ?? webServerFarm.?outputs.resourceId
     appInsightResourceId: applicationInsights.outputs.resourceId
-    siteConfig: {
-      linuxFxVersion: 'DOCKER|biabcontainerreg.azurecr.io/macaefrontend:fnd01'
-    }
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     publicNetworkAccess: 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
-    //privateEndpoints: [{ subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0] }]
-    //Not required, this resource only serves a static website
-    appSettingsKeyValuePairs: union(
-      {
-        SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
-        DOCKER_REGISTRY_SERVER_URL: 'https://biabcontainerreg.azurecr.io'
-        WEBSITES_PORT: '3000'
-        WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
-        BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
-        AUTH_ENABLED: 'false'
-      },
-      (entraIdApplicationConfiguration.?enabled!
-        ? { '${entraIdApplicationCredentialSecretSettingName}': entraIdApplication.passwordCredentials[0].secretText }
-        : {})
-    )
-    authSettingV2Configuration: {
-      platform: {
-        enabled: entraIdApplicationConfiguration.?enabled!
-        runtimeVersion: '~1'
-      }
-      login: {
-        cookieExpiration: {
-          convention: 'FixedTime'
-          timeToExpiration: '08:00:00'
-        }
-        nonce: {
-          nonceExpirationInterval: '00:05:00'
-          validateNonce: true
-        }
-        preserveUrlFragmentsForLogins: false
-        routes: {}
-        tokenStore: {
-          azureBlobStorage: {}
-          enabled: true
-          fileSystem: {}
-          tokenRefreshExtensionHours: 72
-        }
-      }
-      globalValidation: {
-        requireAuthentication: true
-        unauthenticatedClientAction: 'RedirectToLoginPage'
-        redirectToProvider: 'azureactivedirectory'
-      }
-      httpSettings: {
-        forwardProxy: {
-          convention: 'NoProxy'
-        }
-        requireHttps: true
-        routes: {
-          apiPrefix: '/.auth'
-        }
-      }
-      identityProviders: {
-        azureActiveDirectory: entraIdApplicationConfiguration.?enabled!
-          ? {
-              isAutoProvisioned: true
-              enabled: true
-              login: {
-                disableWWWAuthenticate: false
-              }
-              registration: {
-                clientId: entraIdApplication.appId //create application in AAD
-                clientSecretSettingName: entraIdApplicationCredentialSecretSettingName
-                openIdIssuer: 'https://sts.windows.net/${tenant().tenantId}/v2.0/'
-              }
-              validation: {
-                allowedAudiences: [
-                  'api://${entraIdApplication.appId}'
-                ]
-                defaultAuthorizationPolicy: {
-                  allowedPrincipals: {}
-                  allowedApplications: ['86e2d249-6832-461f-8888-cfa0394a5f8c']
-                }
-                jwtClaimChecks: {}
-              }
-            }
-          : {}
-      }
+    siteConfig: {
+      linuxFxVersion: 'DOCKER|${webSiteConfiguration.?containerImageRegistryDomain ?? 'biabcontainerreg.azurecr.io'}/${webSiteConfiguration.?containerImageName ?? 'macaefrontend'}:${webSiteConfiguration.?containerImageTag ?? 'latest'}'
+    }
+    appSettingsKeyValuePairs: {
+      SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
+      DOCKER_REGISTRY_SERVER_URL: 'https://${webSiteConfiguration.?containerImageRegistryDomain ?? 'biabcontainerreg.azurecr.io'}'
+      WEBSITES_PORT: '3000'
+      WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
+      BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
+      AUTH_ENABLED: 'false'
     }
   }
 }
@@ -1323,7 +1262,7 @@ type logAnalyticsWorkspaceConfigurationType = {
   @description('Optional. The SKU for the Log Analytics Workspace resource.')
   sku: ('CapacityReservation' | 'Free' | 'LACluster' | 'PerGB2018' | 'PerNode' | 'Premium' | 'Standalone' | 'Standard')?
 
-  @description('Optional. The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 30 days.')
+  @description('Optional. The number of days to retain the data in the Log Analytics Workspace. If empty, it will be set to 365 days.')
   @maxValue(730)
   dataRetentionInDays: int?
 }
@@ -1879,13 +1818,13 @@ type containerAppConfigurationType = {
   @description('Optional. The name given to the Container App.')
   containerName: string?
 
-  @description('Optional. The container registry domain of the image of the Container App. Default to `biabcontainerreg.azurecr.io`')
+  @description('Optional. The container registry domain of the container image to be used by the Container App. Default to `biabcontainerreg.azurecr.io`')
   containerImageRegistryDomain: string?
 
-  @description('Optional. The name of the image of the Container App.')
+  @description('Optional. The name of the container image to be used by the Container App.')
   containerImageName: string?
 
-  @description('Optional. The tag of the image f the Container App.')
+  @description('Optional. The tag of the container image to be used by the Container App.')
   containerImageTag: string?
 
   @description('Optional. The CPU reserved for the Container App. Defaults to 2.0')
@@ -1900,4 +1839,61 @@ type containerAppConfigurationType = {
 type entraIdApplicationConfigurationType = {
   @description('Optional. If the Entra ID Application for website authentication should be deployed or not.')
   enabled: bool?
+}
+
+@export()
+@description('The type for the Multi-Agent Custom Automation Engine Web Server Farm resource configuration.')
+type webServerFarmConfigurationType = {
+  @description('Optional. If the Web Server Farm resource should be deployed or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the Web Server Farm resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the Web Server Farm resource.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the Web Server Farm resource.')
+  tags: object?
+
+  @description('Optional. The name of th SKU that will determine the tier, size and family for the Web Server Farm resource. This defaults to P1v3 to leverage availability zones.')
+  skuName: string?
+
+  @description('Optional. Number of workers associated with the App Service Plan. This defaults to 3, to leverage availability zones.')
+  skuCapacity: int?
+}
+
+@export()
+@description('The type for the Multi-Agent Custom Automation Engine Web Site resource configuration.')
+type webSiteConfigurationType = {
+  @description('Optional. If the Web Site resource should be deployed or not.')
+  enabled: bool?
+
+  @description('Optional. The name of the Web Site resource.')
+  @maxLength(60)
+  name: string?
+
+  @description('Optional. Location for the Web Site resource deployment.')
+  @metadata({ azd: { type: 'location' } })
+  location: string?
+
+  @description('Optional. The tags to set for the Web Site resource.')
+  tags: object?
+
+  @description('Optional. The resource Id of the Web Site Environment where the Web Site should be created.')
+  environmentResourceId: string?
+
+  @description('Optional. The name given to the Container App.')
+  containerName: string?
+
+  @description('Optional. The container registry domain of the container image to be used by the Web Site. Default to `biabcontainerreg.azurecr.io`')
+  containerImageRegistryDomain: string?
+
+  @description('Optional. The name of the container image to be used by the Web Site.')
+  containerImageName: string?
+
+  @description('Optional. The tag of the container image to be used by the Web Site.')
+  containerImageTag: string?
 }
