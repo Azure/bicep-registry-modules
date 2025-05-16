@@ -79,12 +79,6 @@ param serverVersion string = '4.2'
 @description('Optional. Configuration for databases when using Azure Cosmos DB for NoSQL.')
 param sqlDatabases sqlDatabaseType[]?
 
-@description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.')
-param nosqlRoleDefinitions customNosqlRoleDefinitionType[]?
-
-@description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.')
-param builtInNosqlRoleAssignments builtInNosqlRoleAssignmentType[]?
-
 @description('Optional. Configuration for databases when using Azure Cosmos DB for MongoDB RU.')
 param mongodbDatabases array?
 
@@ -107,6 +101,12 @@ param lock lockType?
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. An array of control plane Azure role-based access control assignments.')
 param roleAssignments roleAssignmentType[]?
+
+@description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.')
+param dataPlaneRoleDefinitions dataPlaneRoleDefinitionType[]?
+
+@description('Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.')
+param dataPlaneRoleAssignments dataPlaneRoleAssignmentType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings for the service.')
@@ -427,7 +427,7 @@ module databaseAccount_sqlDatabases 'sql-database/main.bicep' = [
 ]
 
 module databaseAccount_sqlRoleDefinitions 'sql-role-definition/main.bicep' = [
-  for (nosqlRoleDefinition, index) in (nosqlRoleDefinitions ?? []): {
+  for (nosqlRoleDefinition, index) in (dataPlaneRoleDefinitions ?? []): {
     name: '${uniqueString(deployment().name, location)}-sqlrd-${index}'
     params: {
       databaseAccountName: databaseAccount.name
@@ -441,7 +441,7 @@ module databaseAccount_sqlRoleDefinitions 'sql-role-definition/main.bicep' = [
 ]
 
 module databaseAccount_sqlRoleAssignments 'sql-role-assignment/main.bicep' = [
-  for (nosqlRoleAssignment, index) in (builtInNosqlRoleAssignments ?? []): {
+  for (nosqlRoleAssignment, index) in (dataPlaneRoleAssignments ?? []): {
     name: '${uniqueString(deployment().name)}-sqlra-${index}'
     params: {
       databaseAccountName: databaseAccount.name
@@ -703,7 +703,7 @@ type failoverLocationType = {
 
 @export()
 @description('The type for an Azure Cosmos DB for NoSQL native role-based access control assignment.')
-type builtInNosqlRoleAssignmentType = {
+type dataPlaneRoleAssignmentType = {
   @description('Optional. The unique name of the role assignment.')
   name: string?
 
@@ -716,8 +716,8 @@ type builtInNosqlRoleAssignmentType = {
 
 import { sqlRoleAssignmentType } from 'sql-role-definition/main.bicep'
 @export()
-@description('The type for an Azure Cosmos DB for NoSQL native role-based access control definition.')
-type customNosqlRoleDefinitionType = {
+@description('The type for an Azure Cosmos DB for NoSQL or Table native role-based access control definition.')
+type dataPlaneRoleDefinitionType = {
   @description('Optional. The unique identifier of the role-based access control definition.')
   name: string?
 
@@ -731,7 +731,7 @@ type customNosqlRoleDefinitionType = {
   assignableScopes: string[]?
 
   @description('Optional. An array of role-based access control assignments to be created for the definition.')
-  nosqlRoleAssignments: sqlRoleAssignmentType[]?
+  dataPlaneRoleAssignments: sqlRoleAssignmentType[]?
 }
 
 @export()

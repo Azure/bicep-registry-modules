@@ -2560,13 +2560,13 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'role-ref'
     // Non-required parameters
-    builtInNosqlRoleAssignments: [
+    dataPlaneRoleAssignments: [
       {
         principalId: '<principalId>'
         roleDefinitionId: '<roleDefinitionId>'
       }
     ]
-    nosqlRoleDefinitions: [
+    dataPlaneRoleDefinitions: [
       {
         assignableScopes: [
           '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
@@ -2576,7 +2576,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
         ]
-        nosqlRoleAssignments: [
+        dataPlaneRoleAssignments: [
           {
             principalId: '<principalId>'
           }
@@ -2605,7 +2605,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "role-ref"
     },
     // Non-required parameters
-    "builtInNosqlRoleAssignments": {
+    "dataPlaneRoleAssignments": {
       "value": [
         {
           "principalId": "<principalId>",
@@ -2613,7 +2613,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
         }
       ]
     },
-    "nosqlRoleDefinitions": {
+    "dataPlaneRoleDefinitions": {
       "value": [
         {
           "assignableScopes": [
@@ -2624,7 +2624,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
             "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
           ],
-          "nosqlRoleAssignments": [
+          "dataPlaneRoleAssignments": [
             {
               "principalId": "<principalId>"
             }
@@ -2650,13 +2650,13 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'role-ref'
 // Non-required parameters
-param builtInNosqlRoleAssignments = [
+param dataPlaneRoleAssignments = [
   {
     principalId: '<principalId>'
     roleDefinitionId: '<roleDefinitionId>'
   }
 ]
-param nosqlRoleDefinitions = [
+param dataPlaneRoleDefinitions = [
   {
     assignableScopes: [
       '<value>/providers/Microsoft.DocumentDB/databaseAccounts/role-ref'
@@ -2666,7 +2666,7 @@ param nosqlRoleDefinitions = [
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
       'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
     ]
-    nosqlRoleAssignments: [
+    dataPlaneRoleAssignments: [
       {
         principalId: '<principalId>'
       }
@@ -2993,9 +2993,10 @@ param tags = {
 | [`backupPolicyType`](#parameter-backuppolicytype) | string | Configures the backup mode. Periodic backup must be used if multiple write locations are used. Defaults to "Continuous". |
 | [`backupRetentionIntervalInHours`](#parameter-backupretentionintervalinhours) | int | An integer representing the time (in hours) that each backup is retained. This setting only applies to the periodic backup type. Defaults to 8. |
 | [`backupStorageRedundancy`](#parameter-backupstorageredundancy) | string | Setting that indicates the type of backup residency. This setting only applies to the periodic backup type. Defaults to "Local". |
-| [`builtInNosqlRoleAssignments`](#parameter-builtinnosqlroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
 | [`capabilitiesToAdd`](#parameter-capabilitiestoadd) | array | A list of Azure Cosmos DB specific capabilities for the account. |
 | [`databaseAccountOfferType`](#parameter-databaseaccountoffertype) | string | The offer type for the account. Defaults to "Standard". |
+| [`dataPlaneRoleAssignments`](#parameter-dataplaneroleassignments) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments. |
+| [`dataPlaneRoleDefinitions`](#parameter-dataplaneroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`defaultConsistencyLevel`](#parameter-defaultconsistencylevel) | string | The default consistency level of the account. Defaults to "Session". |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings for the service. |
 | [`disableKeyBasedMetadataWriteAccess`](#parameter-disablekeybasedmetadatawriteaccess) | bool | Disable write operations on metadata resources (databases, containers, throughput) via account keys. Defaults to true. |
@@ -3014,7 +3015,6 @@ param tags = {
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | Setting that indicates the minimum allowed TLS version. Azure Cosmos DB for MongoDB RU and Apache Cassandra only work with TLS 1.2 or later. Defaults to "Tls12" (TLS 1.2). |
 | [`mongodbDatabases`](#parameter-mongodbdatabases) | array | Configuration for databases when using Azure Cosmos DB for MongoDB RU. |
 | [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: 'Disabled' }`. |
-| [`nosqlRoleDefinitions`](#parameter-nosqlroledefinitions) | array | Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | An array of control plane Azure role-based access control assignments. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
@@ -3106,47 +3106,6 @@ Setting that indicates the type of backup residency. This setting only applies t
   ]
   ```
 
-### Parameter: `builtInNosqlRoleAssignments`
-
-Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-builtinnosqlroleassignmentsprincipalid) | string | The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription. |
-| [`roleDefinitionId`](#parameter-builtinnosqlroleassignmentsroledefinitionid) | string | The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-builtinnosqlroleassignmentsname) | string | The unique name of the role assignment. |
-
-### Parameter: `builtInNosqlRoleAssignments.principalId`
-
-The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `builtInNosqlRoleAssignments.roleDefinitionId`
-
-The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `builtInNosqlRoleAssignments.name`
-
-The unique name of the role assignment.
-
-- Required: No
-- Type: string
-
 ### Parameter: `capabilitiesToAdd`
 
 A list of Azure Cosmos DB specific capabilities for the account.
@@ -3182,6 +3141,130 @@ The offer type for the account. Defaults to "Standard".
     'Standard'
   ]
   ```
+
+### Parameter: `dataPlaneRoleAssignments`
+
+Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-dataplaneroleassignmentsprincipalid) | string | The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription. |
+| [`roleDefinitionId`](#parameter-dataplaneroleassignmentsroledefinitionid) | string | The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-dataplaneroleassignmentsname) | string | The unique name of the role assignment. |
+
+### Parameter: `dataPlaneRoleAssignments.principalId`
+
+The unique identifier for the associated Microsoft Entra ID principal to which access is being granted through this role-based access control assignment. The tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataPlaneRoleAssignments.roleDefinitionId`
+
+The unique identifier of the Azure Cosmos DB for NoSQL native role-based access control definition.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataPlaneRoleAssignments.name`
+
+The unique name of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataPlaneRoleDefinitions`
+
+Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`roleName`](#parameter-dataplaneroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. This must be unique within the database account. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`assignableScopes`](#parameter-dataplaneroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
+| [`dataActions`](#parameter-dataplaneroledefinitionsdataactions) | array | An array of data actions that are allowed. |
+| [`dataPlaneRoleAssignments`](#parameter-dataplaneroledefinitionsdataplaneroleassignments) | array | An array of role-based access control assignments to be created for the definition. |
+| [`name`](#parameter-dataplaneroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
+
+### Parameter: `dataPlaneRoleDefinitions.roleName`
+
+A user-friendly name for the role-based access control definition. This must be unique within the database account.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataPlaneRoleDefinitions.assignableScopes`
+
+A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataPlaneRoleDefinitions.dataActions`
+
+An array of data actions that are allowed.
+
+- Required: No
+- Type: array
+
+### Parameter: `dataPlaneRoleDefinitions.dataPlaneRoleAssignments`
+
+An array of role-based access control assignments to be created for the definition.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-dataplaneroledefinitionsdataplaneroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-dataplaneroledefinitionsdataplaneroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
+
+### Parameter: `dataPlaneRoleDefinitions.dataPlaneRoleAssignments.principalId`
+
+The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `dataPlaneRoleDefinitions.dataPlaneRoleAssignments.name`
+
+Name unique identifier of the SQL Role Assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `dataPlaneRoleDefinitions.name`
+
+The unique identifier of the role-based access control definition.
+
+- Required: No
+- Type: string
 
 ### Parameter: `defaultConsistencyLevel`
 
@@ -3633,89 +3716,6 @@ List of virtual network access control list (ACL) rules configured for the accou
 Resource ID of a subnet.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `nosqlRoleDefinitions`
-
-Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`roleName`](#parameter-nosqlroledefinitionsrolename) | string | A user-friendly name for the role-based access control definition. This must be unique within the database account. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`assignableScopes`](#parameter-nosqlroledefinitionsassignablescopes) | array | A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope. |
-| [`dataActions`](#parameter-nosqlroledefinitionsdataactions) | array | An array of data actions that are allowed. |
-| [`name`](#parameter-nosqlroledefinitionsname) | string | The unique identifier of the role-based access control definition. |
-| [`nosqlRoleAssignments`](#parameter-nosqlroledefinitionsnosqlroleassignments) | array | An array of role-based access control assignments to be created for the definition. |
-
-### Parameter: `nosqlRoleDefinitions.roleName`
-
-A user-friendly name for the role-based access control definition. This must be unique within the database account.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `nosqlRoleDefinitions.assignableScopes`
-
-A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope.
-
-- Required: No
-- Type: array
-
-### Parameter: `nosqlRoleDefinitions.dataActions`
-
-An array of data actions that are allowed.
-
-- Required: No
-- Type: array
-
-### Parameter: `nosqlRoleDefinitions.name`
-
-The unique identifier of the role-based access control definition.
-
-- Required: No
-- Type: string
-
-### Parameter: `nosqlRoleDefinitions.nosqlRoleAssignments`
-
-An array of role-based access control assignments to be created for the definition.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-nosqlroledefinitionsnosqlroleassignmentsprincipalid) | string | The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-nosqlroledefinitionsnosqlroleassignmentsname) | string | Name unique identifier of the SQL Role Assignment. |
-
-### Parameter: `nosqlRoleDefinitions.nosqlRoleAssignments.principalId`
-
-The unique identifier for the associated AAD principal in the AAD graph to which access is being granted through this Role Assignment. Tenant ID for the principal is inferred using the tenant associated with the subscription.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `nosqlRoleDefinitions.nosqlRoleAssignments.name`
-
-Name unique identifier of the SQL Role Assignment.
-
-- Required: No
 - Type: string
 
 ### Parameter: `privateEndpoints`

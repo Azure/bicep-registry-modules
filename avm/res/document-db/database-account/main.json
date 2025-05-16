@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "15390986448118739665"
+      "templateHash": "8638706144153249662"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -104,7 +104,7 @@
         "description": "The type for the failover location."
       }
     },
-    "builtInNosqlRoleAssignmentType": {
+    "dataPlaneRoleAssignmentType": {
       "type": "object",
       "properties": {
         "name": {
@@ -132,7 +132,7 @@
         "description": "The type for an Azure Cosmos DB for NoSQL native role-based access control assignment."
       }
     },
-    "customNosqlRoleDefinitionType": {
+    "dataPlaneRoleDefinitionType": {
       "type": "object",
       "properties": {
         "name": {
@@ -168,7 +168,7 @@
             "description": "Optional. A set of fully-qualified scopes at or below which role-based access control assignments may be created using this definition. This setting allows application of this definition on the entire account or any underlying resource. This setting must have at least one element. Scopes higher than the account level are not enforceable as assignable scopes. Resources referenced in assignable scopes do not need to exist at creation. Defaults to the current account scope."
           }
         },
-        "nosqlRoleAssignments": {
+        "dataPlaneRoleAssignments": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/sqlRoleAssignmentType"
@@ -181,7 +181,7 @@
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for an Azure Cosmos DB for NoSQL native role-based access control definition."
+        "description": "The type for an Azure Cosmos DB for NoSQL or Table native role-based access control definition."
       }
     },
     "sqlDatabaseType": {
@@ -1211,26 +1211,6 @@
         "description": "Optional. Configuration for databases when using Azure Cosmos DB for NoSQL."
       }
     },
-    "nosqlRoleDefinitions": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/customNosqlRoleDefinitionType"
-      },
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions."
-      }
-    },
-    "builtInNosqlRoleAssignments": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/builtInNosqlRoleAssignmentType"
-      },
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments."
-      }
-    },
     "mongodbDatabases": {
       "type": "array",
       "nullable": true,
@@ -1281,6 +1261,26 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. An array of control plane Azure role-based access control assignments."
+      }
+    },
+    "dataPlaneRoleDefinitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dataPlaneRoleDefinitionType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control definitions. Allows the creations of custom role definitions."
+      }
+    },
+    "dataPlaneRoleAssignments": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dataPlaneRoleAssignmentType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Configurations for Azure Cosmos DB for NoSQL native role-based access control assignments."
       }
     },
     "diagnosticSettings": {
@@ -1924,7 +1924,7 @@
     "databaseAccount_sqlRoleDefinitions": {
       "copy": {
         "name": "databaseAccount_sqlRoleDefinitions",
-        "count": "[length(coalesce(parameters('nosqlRoleDefinitions'), createArray()))]"
+        "count": "[length(coalesce(parameters('dataPlaneRoleDefinitions'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -1939,19 +1939,19 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[tryGet(coalesce(parameters('nosqlRoleDefinitions'), createArray())[copyIndex()], 'name')]"
+            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'name')]"
           },
           "dataActions": {
-            "value": "[tryGet(coalesce(parameters('nosqlRoleDefinitions'), createArray())[copyIndex()], 'dataActions')]"
+            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'dataActions')]"
           },
           "roleName": {
-            "value": "[coalesce(parameters('nosqlRoleDefinitions'), createArray())[copyIndex()].roleName]"
+            "value": "[coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()].roleName]"
           },
           "assignableScopes": {
-            "value": "[tryGet(coalesce(parameters('nosqlRoleDefinitions'), createArray())[copyIndex()], 'assignableScopes')]"
+            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'assignableScopes')]"
           },
           "sqlRoleAssignments": {
-            "value": "[tryGet(coalesce(parameters('nosqlRoleDefinitions'), createArray())[copyIndex()], 'nosqlRoleAssignments')]"
+            "value": "[tryGet(coalesce(parameters('dataPlaneRoleDefinitions'), createArray())[copyIndex()], 'nosqlRoleAssignments')]"
           }
         },
         "template": {
@@ -2218,7 +2218,7 @@
     "databaseAccount_sqlRoleAssignments": {
       "copy": {
         "name": "databaseAccount_sqlRoleAssignments",
-        "count": "[length(coalesce(parameters('builtInNosqlRoleAssignments'), createArray()))]"
+        "count": "[length(coalesce(parameters('dataPlaneRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -2233,13 +2233,13 @@
             "value": "[parameters('name')]"
           },
           "roleDefinitionId": {
-            "value": "[coalesce(parameters('builtInNosqlRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
+            "value": "[coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]"
           },
           "principalId": {
-            "value": "[coalesce(parameters('builtInNosqlRoleAssignments'), createArray())[copyIndex()].principalId]"
+            "value": "[coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()].principalId]"
           },
           "name": {
-            "value": "[tryGet(coalesce(parameters('builtInNosqlRoleAssignments'), createArray())[copyIndex()], 'name')]"
+            "value": "[tryGet(coalesce(parameters('dataPlaneRoleAssignments'), createArray())[copyIndex()], 'name')]"
           }
         },
         "template": {
