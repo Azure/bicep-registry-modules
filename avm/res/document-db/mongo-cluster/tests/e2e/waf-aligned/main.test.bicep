@@ -53,7 +53,7 @@ module testDeployment '../../../main.bicep' = [
       }
       administratorLogin: 'Admin001'
       administratorLoginPassword: password
-      highAvailabilityMode: 'ZoneRedundant'
+      highAvailabilityMode: 'ZoneRedundantPreferred'
       nodeCount: 3
       sku: 'M30'
       storage: 256
