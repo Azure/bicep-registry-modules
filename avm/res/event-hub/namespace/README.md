@@ -1,5 +1,10 @@
 # Event Hub Namespaces `[Microsoft.EventHub/namespaces]`
 
+> ⚠️THIS MODULE IS CURRENTLY ORPHANED.⚠️
+> 
+> - Only security and bug fixes are being handled by the AVM core team at present.
+> - If interested in becoming the module owner of this orphaned module (must be Microsoft FTE), please look for the related "orphaned module" GitHub issue [here](https://aka.ms/AVM/OrphanedModules)!
+
 This module deploys an Event Hub Namespace.
 
 ## Navigation
@@ -1435,7 +1440,7 @@ param tags = {
 | [`requireInfrastructureEncryption`](#parameter-requireinfrastructureencryption) | bool | Enable infrastructure encryption (double encryption). Note, this setting requires the configuration of Customer-Managed-Keys (CMK) via the corresponding module parameters. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
-| [`skuCapacity`](#parameter-skucapacity) | int | The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. |
+| [`skuCapacity`](#parameter-skucapacity) | int | The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units. |
 | [`skuName`](#parameter-skuname) | string | event hub plan SKU name. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-zoneredundant) | bool | Switch to make the Event Hub Namespace zone redundant. |
@@ -2450,7 +2455,7 @@ The rootSecondaryKeyName secret name to create.
 
 ### Parameter: `skuCapacity`
 
-The Event Hub's throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.
+The Event Hubs throughput units for Basic or Standard tiers, where value should be 0 to 20 throughput units. The Event Hubs premium units for Premium tier, where value should be 0 to 10 premium units.
 
 - Required: No
 - Type: int
