@@ -294,6 +294,7 @@ module eventHubNamespace_eventhubs 'eventhub/main.bicep' = [
       partitionCount: eventHub.?partitionCount
       roleAssignments: eventHub.?roleAssignments
       status: eventHub.?status
+      retentionDescriptionEnabled: eventHub.?retentionDescriptionEnabled
       retentionDescriptionCleanupPolicy: eventHub.?retentionDescriptionCleanupPolicy
       retentionDescriptionRetentionTimeInHours: eventHub.?retentionDescriptionRetentionTimeInHours
       retentionDescriptionTombstoneRetentionTimeInHours: eventHub.?retentionDescriptionTombstoneRetentionTimeInHours
@@ -317,7 +318,7 @@ module eventHubNamespace_networkRuleSet 'network-rule-set/main.bicep' = if (!emp
 
 module eventHubNamespace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-eventHubNamespace-PrivateEndpoint-${index}'
+    name: take('${uniqueString(deployment().name, location)}-eventHubNamespace-PrivateEndpoint-${index}', 64)
     scope: resourceGroup(privateEndpoint.?resourceGroupName ?? '')
     params: {
       name: privateEndpoint.?name ?? 'pep-${last(split(eventHubNamespace.id, '/'))}-${privateEndpoint.?service ?? 'namespace'}-${index}'
