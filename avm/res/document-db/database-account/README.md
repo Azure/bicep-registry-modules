@@ -43,16 +43,15 @@ The following section provides usage examples for the module, which were used to
 - [Using bounded consistency](#example-2-using-bounded-consistency)
 - [Using only defaults](#example-3-using-only-defaults)
 - [Gremlin Database](#example-4-gremlin-database)
-- [Deploying with a key vault reference to save secrets](#example-5-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Deploying with Managed identities](#example-6-deploying-with-managed-identities)
-- [Mongo Database](#example-7-mongo-database)
-- [Deploying multiple regions](#example-8-deploying-multiple-regions)
-- [Plain](#example-9-plain)
-- [Public network restricted access with ACL](#example-10-public-network-restricted-access-with-acl)
-- [SQL Database](#example-11-sql-database)
-- [Deploying with a sql role definition and assignment](#example-12-deploying-with-a-sql-role-definition-and-assignment)
-- [API for Table](#example-13-api-for-table)
-- [WAF-aligned](#example-14-waf-aligned)
+- [Deploying with Managed identities](#example-5-deploying-with-managed-identities)
+- [Mongo Database](#example-6-mongo-database)
+- [Deploying multiple regions](#example-7-deploying-multiple-regions)
+- [Plain](#example-8-plain)
+- [Public network restricted access with ACL](#example-9-public-network-restricted-access-with-acl)
+- [SQL Database](#example-10-sql-database)
+- [Deploying with a sql role definition and assignment](#example-11-deploying-with-a-sql-role-definition-and-assignment)
+- [API for Table](#example-12-api-for-table)
+- [WAF-aligned](#example-13-waf-aligned)
 
 ### Example 1: _Using analytical storage_
 
@@ -524,71 +523,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 5: _Deploying with a key vault reference to save secrets_
-
-This instance deploys the module saving all its secrets in a key vault.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module databaseAccount 'br/public:avm/res/document-db/database-account:<version>' = {
-  name: 'databaseAccountDeployment'
-  params: {
-    // Required parameters
-    name: 'kv-ref'
-    // Non-required parameters
-    zoneRedundant: false
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "kv-ref"
-    },
-    // Non-required parameters
-    "zoneRedundant": {
-      "value": false
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/document-db/database-account:<version>'
-
-// Required parameters
-param name = 'kv-ref'
-// Non-required parameters
-param zoneRedundant = false
-```
-
-</details>
-<p>
-
-### Example 6: _Deploying with Managed identities_
+### Example 5: _Deploying with Managed identities_
 
 This instance deploys the module with an system and user assigned managed identity.
 
@@ -728,7 +663,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 7: _Mongo Database_
+### Example 6: _Mongo Database_
 
 This instance deploys the module with a Mongo Database.
 
@@ -1352,7 +1287,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 8: _Deploying multiple regions_
+### Example 7: _Deploying multiple regions_
 
 This instance deploys the module in multiple regions with configs specific of multi region scenarios.
 
@@ -1496,7 +1431,7 @@ param sqlDatabases = [
 </details>
 <p>
 
-### Example 9: _Plain_
+### Example 8: _Plain_
 
 This instance deploys the module without a Database.
 
@@ -1621,7 +1556,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 10: _Public network restricted access with ACL_
+### Example 9: _Public network restricted access with ACL_
 
 This instance deploys the module with public network access enabled but restricted to IPs, CIDRS or subnets.
 
@@ -1743,7 +1678,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 11: _SQL Database_
+### Example 10: _SQL Database_
 
 This instance deploys the module with a SQL Database.
 
@@ -2564,7 +2499,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 12: _Deploying with a sql role definition and assignment_
+### Example 11: _Deploying with a sql role definition and assignment_
 
 This instance deploys the module with sql role definition and assignment
 
@@ -2704,7 +2639,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 13: _API for Table_
+### Example 12: _API for Table_
 
 This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.
 
@@ -2811,7 +2746,7 @@ param zoneRedundant = false
 </details>
 <p>
 
-### Example 14: _WAF-aligned_
+### Example 13: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 

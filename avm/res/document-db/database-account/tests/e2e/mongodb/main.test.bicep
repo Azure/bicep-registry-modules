@@ -233,3 +233,27 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+@secure()
+output primaryReadOnlyKey string = testDeployment[0].outputs.primaryReadOnlyKey
+
+@secure()
+output primaryReadWriteKey string = testDeployment[0].outputs.primaryReadWriteKey
+
+@secure()
+output primaryReadOnlyConnectionString string = testDeployment[0].outputs.primaryReadOnlyConnectionString
+
+@secure()
+output primaryReadWriteConnectionString string = testDeployment[0].outputs.primaryReadWriteConnectionString
+
+@secure()
+output secondaryReadOnlyKey string = testDeployment[1].outputs.secondaryReadOnlyKey
+
+@secure()
+output secondaryReadWriteKey string = testDeployment[1].outputs.secondaryReadWriteKey
+
+@secure()
+output secondaryReadOnlyConnectionString string = testDeployment[1].outputs.secondaryReadOnlyConnectionString
+
+@secure()
+output secondaryReadWriteConnectionString string = testDeployment[1].outputs.secondaryReadWriteConnectionString
