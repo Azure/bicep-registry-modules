@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "6207764501433539353"
+      "templateHash": "6209285081997076041"
     },
     "name": "Azure Cosmos DB account",
     "description": "This module deploys an Azure Cosmos DB account. The API used for the account is determined by the child resources that are deployed."
@@ -354,91 +354,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for an Azure Cosmos DB for NoSQL database."
-      }
-    },
-    "secretsExportConfigurationType": {
-      "type": "object",
-      "properties": {
-        "keyVaultResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of the key vault where to store the secrets of this module."
-          }
-        },
-        "primaryWriteKeySecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary read-write key secret name to create."
-          }
-        },
-        "primaryReadOnlyKeySecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary read-only key secret name to create."
-          }
-        },
-        "primaryWriteConnectionStringSecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary read-write connection string secret name to create."
-          }
-        },
-        "primaryReadonlyConnectionStringSecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary read-only connection string secret name to create."
-          }
-        },
-        "secondaryWriteKeySecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary read-write key secret name to create."
-          }
-        },
-        "secondaryReadonlyKeySecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary read-only key secret name to create."
-          }
-        },
-        "secondaryWriteConnectionStringSecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary read-write connection string secret name to create."
-          }
-        },
-        "secondaryReadonlyConnectionStringSecretName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The primary read-only connection string secret name to create."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the secrets export configuration."
-      }
-    },
-    "secretsOutputType": {
-      "type": "object",
-      "properties": {},
-      "additionalProperties": {
-        "$ref": "#/definitions/secretSetType",
-        "metadata": {
-          "description": "An exported secret's references."
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the secrets output."
       }
     },
     "networkRestrictionType": {
@@ -1005,29 +920,6 @@
         }
       }
     },
-    "secretSetType": {
-      "type": "object",
-      "properties": {
-        "secretResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "The resourceId of the exported secret."
-          }
-        },
-        "secretUri": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI of the exported secret."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for the secret set.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/keyVaultExport.bicep"
-        }
-      }
-    },
     "sqlRoleAssignmentType": {
       "type": "object",
       "properties": {
@@ -1375,13 +1267,6 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible."
-      }
-    },
-    "secretsExportConfiguration": {
-      "$ref": "#/definitions/secretsExportConfigurationType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Key vault reference and secret settings for the module's secrets export."
       }
     },
     "networkRestrictions": {
@@ -3753,152 +3638,9 @@
       "dependsOn": [
         "databaseAccount"
       ]
-    },
-    "secretsExport": {
-      "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "keyVaultName": {
-            "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
-          },
-          "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryWriteKeySecretName'), 'value', listKeys('databaseAccount', '2024-11-15').primaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryReadOnlyKeySecretName'), 'value', listKeys('databaseAccount', '2024-11-15').primaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryWriteConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryWriteConnectionStringSecretName'), 'value', listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[0].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'primaryReadonlyConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'primaryReadonlyConnectionStringSecretName'), 'value', listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[2].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryWriteKeySecretName'), 'value', listKeys('databaseAccount', '2024-11-15').secondaryMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyKeySecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryReadonlyKeySecretName'), 'value', listKeys('databaseAccount', '2024-11-15').secondaryReadonlyMasterKey)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryWriteConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryWriteConnectionStringSecretName'), 'value', listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[1].connectionString)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'secondaryReadonlyConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'secondaryReadonlyConnectionStringSecretName'), 'value', listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[3].connectionString)), createArray()))]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "2474274848311423258"
-            }
-          },
-          "definitions": {
-            "secretSetType": {
-              "type": "object",
-              "properties": {
-                "secretResourceId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The resourceId of the exported secret."
-                  }
-                },
-                "secretUri": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The secret URI of the exported secret."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the secret set."
-              }
-            },
-            "secretToSetType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The name of the secret to set."
-                  }
-                },
-                "value": {
-                  "type": "securestring",
-                  "metadata": {
-                    "description": "Required. The value of the secret to set."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true,
-                "description": "The type for the secrets to set."
-              }
-            }
-          },
-          "parameters": {
-            "keyVaultName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the Key Vault to set the ecrets in."
-              }
-            },
-            "secretsToSet": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/secretToSetType"
-              },
-              "metadata": {
-                "description": "Required. The secrets to set in the Key Vault."
-              }
-            }
-          },
-          "resources": {
-            "keyVault": {
-              "existing": true,
-              "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2023-07-01",
-              "name": "[parameters('keyVaultName')]"
-            },
-            "secrets": {
-              "copy": {
-                "name": "secrets",
-                "count": "[length(parameters('secretsToSet'))]"
-              },
-              "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2023-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
-              "properties": {
-                "value": "[parameters('secretsToSet')[copyIndex()].value]"
-              }
-            }
-          },
-          "outputs": {
-            "secretsSet": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/secretSetType"
-              },
-              "metadata": {
-                "description": "The references to the secrets exported to the provided Key Vault."
-              },
-              "copy": {
-                "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
-                "input": {
-                  "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
-                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]"
-                }
-              }
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "databaseAccount"
-      ]
     }
   },
   "outputs": {
-    "exportedSecrets": {
-      "$ref": "#/definitions/secretsOutputType",
-      "metadata": {
-        "description": "The references to the secrets exported to the provided Key Vault."
-      },
-      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
-    },
     "name": {
       "type": "string",
       "metadata": {
@@ -3960,6 +3702,62 @@
           "networkInterfaceResourceIds": "[reference(format('databaseAccount_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }
+    },
+    "primaryReadWriteKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary read-write key."
+      },
+      "value": "[listKeys('databaseAccount', '2024-11-15').primaryMasterKey]"
+    },
+    "primaryReadOnlyKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary read-only key."
+      },
+      "value": "[listKeys('databaseAccount', '2024-11-15').primaryReadonlyMasterKey]"
+    },
+    "primaryReadWriteConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary read-write connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[0].connectionString]"
+    },
+    "primaryReadOnlyConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The primary read-only connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[2].connectionString]"
+    },
+    "secondaryReadWriteKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary read-write key."
+      },
+      "value": "[listKeys('databaseAccount', '2024-11-15').secondaryMasterKey]"
+    },
+    "secondaryReadOnlyKey": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary read-only key."
+      },
+      "value": "[listKeys('databaseAccount', '2024-11-15').secondaryReadonlyMasterKey]"
+    },
+    "secondaryReadWriteConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary read-write connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[1].connectionString]"
+    },
+    "secondaryReadOnlyConnectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The secondary read-only connection string."
+      },
+      "value": "[listConnectionStrings('databaseAccount', '2024-11-15').connectionStrings[3].connectionString]"
     }
   }
 }

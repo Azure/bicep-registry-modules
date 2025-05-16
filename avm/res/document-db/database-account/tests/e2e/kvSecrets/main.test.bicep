@@ -24,18 +24,10 @@ var enforcedLocation = 'eastus2'
 // ============== //
 // General resources
 // ============== //
+
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: resourceGroupName
   location: enforcedLocation
-}
-
-module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
-  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
-  params: {
-    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
-    location: enforcedLocation
-  }
 }
 
 // ============== //
@@ -47,25 +39,54 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}-kv-ref'
-    secretsExportConfiguration: {
-      keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
-      primaryWriteKeySecretName: 'primaryWriteKey'
-      primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
-      primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
-      secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
-      secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
-      secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
-      secondaryWriteKeySecretName: 'secondaryWriteKey'
-    }
     zoneRedundant: false
   }
 }
 
-// Output usage examples
-output specificSecret string = testDeployment.outputs.exportedSecrets.primaryReadOnlyKey.secretResourceId
-output allEportedSecrets object = testDeployment.outputs.exportedSecrets
-output allExportedSecretResourceIds array = map(
-  items(testDeployment.outputs.exportedSecrets),
-  item => item.value.secretResourceId
-)
+// ============== //
+// Usage          //
+// ============== //
+
+module keyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-kv'
+  params: {
+    name: '${namePrefix}-kv'
+    enablePurgeProtection: false
+    enableRbacAuthorization: true
+    secrets: [
+      {
+        name: 'primaryReadOnlyKey'
+        value: testDeployment.outputs.primaryReadOnlyKey
+      }
+      {
+        name: 'primaryReadWriteKey'
+        value: testDeployment.outputs.primaryReadWriteKey
+      }
+      {
+        name: 'primaryReadOnlyConnectionString'
+        value: testDeployment.outputs.primaryReadOnlyConnectionString
+      }
+      {
+        name: 'primaryReadWriteConnectionString'
+        value: testDeployment.outputs.primaryReadWriteConnectionString
+      }
+      {
+        name: 'secondaryReadOnlyConnectionString'
+        value: testDeployment.outputs.secondaryReadOnlyConnectionString
+      }
+      {
+        name: 'secondaryReadOnlyKey'
+        value: testDeployment.outputs.secondaryReadOnlyKey
+      }
+      {
+        name: 'secondaryReadWriteConnectionString'
+        value: testDeployment.outputs.secondaryReadWriteConnectionString
+      }
+      {
+        name: 'secondaryReadWriteKey'
+        value: testDeployment.outputs.secondaryReadWriteKey
+      }
+    ]
+  }
+}

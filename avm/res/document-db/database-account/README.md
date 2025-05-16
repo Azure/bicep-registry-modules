@@ -28,7 +28,6 @@ This module deploys an Azure Cosmos DB account. The API used for the account is 
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions) |
 | `Microsoft.DocumentDB/databaseAccounts/tables` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/tables) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -541,17 +540,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
     // Required parameters
     name: 'kv-ref'
     // Non-required parameters
-    secretsExportConfiguration: {
-      keyVaultResourceId: '<keyVaultResourceId>'
-      primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
-      primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
-      primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
-      primaryWriteKeySecretName: 'primaryWriteKey'
-      secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
-      secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
-      secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
-      secondaryWriteKeySecretName: 'secondaryWriteKey'
-    }
     zoneRedundant: false
   }
 }
@@ -574,19 +562,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
       "value": "kv-ref"
     },
     // Non-required parameters
-    "secretsExportConfiguration": {
-      "value": {
-        "keyVaultResourceId": "<keyVaultResourceId>",
-        "primaryReadonlyConnectionStringSecretName": "primaryReadonlyConnectionString",
-        "primaryReadOnlyKeySecretName": "primaryReadOnlyKey",
-        "primaryWriteConnectionStringSecretName": "primaryWriteConnectionString",
-        "primaryWriteKeySecretName": "primaryWriteKey",
-        "secondaryReadonlyConnectionStringSecretName": "secondaryReadonlyConnectionString",
-        "secondaryReadonlyKeySecretName": "secondaryReadonlyKey",
-        "secondaryWriteConnectionStringSecretName": "secondaryWriteConnectionString",
-        "secondaryWriteKeySecretName": "secondaryWriteKey"
-      }
-    },
     "zoneRedundant": {
       "value": false
     }
@@ -607,17 +582,6 @@ using 'br/public:avm/res/document-db/database-account:<version>'
 // Required parameters
 param name = 'kv-ref'
 // Non-required parameters
-param secretsExportConfiguration = {
-  keyVaultResourceId: '<keyVaultResourceId>'
-  primaryReadonlyConnectionStringSecretName: 'primaryReadonlyConnectionString'
-  primaryReadOnlyKeySecretName: 'primaryReadOnlyKey'
-  primaryWriteConnectionStringSecretName: 'primaryWriteConnectionString'
-  primaryWriteKeySecretName: 'primaryWriteKey'
-  secondaryReadonlyConnectionStringSecretName: 'secondaryReadonlyConnectionString'
-  secondaryReadonlyKeySecretName: 'secondaryReadonlyKey'
-  secondaryWriteConnectionStringSecretName: 'secondaryWriteConnectionString'
-  secondaryWriteKeySecretName: 'secondaryWriteKey'
-}
 param zoneRedundant = false
 ```
 
@@ -3126,7 +3090,6 @@ param zoneRedundant = true
 | [`networkRestrictions`](#parameter-networkrestrictions) | object | The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: 'Disabled' }`. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | An array of control plane Azure role-based access control assignments. |
-| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`serverVersion`](#parameter-serverversion) | string | Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to "4.2". |
 | [`sqlDatabases`](#parameter-sqldatabases) | array | Configuration for databases when using Azure Cosmos DB for NoSQL. |
 | [`tables`](#parameter-tables) | array | Configuration for databases when using Azure Cosmos DB for Table. |
@@ -4324,95 +4287,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `secretsExportConfiguration`
-
-Key vault reference and secret settings for the module's secrets export.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`primaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationprimaryreadonlyconnectionstringsecretname) | string | The primary read-only connection string secret name to create. |
-| [`primaryReadOnlyKeySecretName`](#parameter-secretsexportconfigurationprimaryreadonlykeysecretname) | string | The primary read-only key secret name to create. |
-| [`primaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationprimarywriteconnectionstringsecretname) | string | The primary read-write connection string secret name to create. |
-| [`primaryWriteKeySecretName`](#parameter-secretsexportconfigurationprimarywritekeysecretname) | string | The primary read-write key secret name to create. |
-| [`secondaryReadonlyConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondaryreadonlyconnectionstringsecretname) | string | The primary read-only connection string secret name to create. |
-| [`secondaryReadonlyKeySecretName`](#parameter-secretsexportconfigurationsecondaryreadonlykeysecretname) | string | The primary read-only key secret name to create. |
-| [`secondaryWriteConnectionStringSecretName`](#parameter-secretsexportconfigurationsecondarywriteconnectionstringsecretname) | string | The primary read-write connection string secret name to create. |
-| [`secondaryWriteKeySecretName`](#parameter-secretsexportconfigurationsecondarywritekeysecretname) | string | The primary read-write key secret name to create. |
-
-### Parameter: `secretsExportConfiguration.keyVaultResourceId`
-
-The resource ID of the key vault where to store the secrets of this module.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryReadonlyConnectionStringSecretName`
-
-The primary read-only connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryReadOnlyKeySecretName`
-
-The primary read-only key secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryWriteConnectionStringSecretName`
-
-The primary read-write connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.primaryWriteKeySecretName`
-
-The primary read-write key secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryReadonlyConnectionStringSecretName`
-
-The primary read-only connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryReadonlyKeySecretName`
-
-The primary read-only key secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryWriteConnectionStringSecretName`
-
-The primary read-write connection string secret name to create.
-
-- Required: No
-- Type: string
-
-### Parameter: `secretsExportConfiguration.secondaryWriteKeySecretName`
-
-The primary read-write key secret name to create.
-
-- Required: No
-- Type: string
-
 ### Parameter: `serverVersion`
 
 Specifies the MongoDB server version to use if using Azure Cosmos DB for MongoDB RU. Defaults to "4.2".
@@ -4686,12 +4560,19 @@ Indicates whether the single-region account is zone redundant. Defaults to true.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `endpoint` | string | The endpoint of the database account. |
-| `exportedSecrets` |  | The references to the secrets exported to the provided Key Vault. |
 | `location` | string | The location the resource was deployed into. |
 | `name` | string | The name of the database account. |
+| `primaryReadOnlyConnectionString` | securestring | The primary read-only connection string. |
+| `primaryReadOnlyKey` | securestring | The primary read-only key. |
+| `primaryReadWriteConnectionString` | securestring | The primary read-write connection string. |
+| `primaryReadWriteKey` | securestring | The primary read-write key. |
 | `privateEndpoints` | array | The private endpoints of the database account. |
 | `resourceGroupName` | string | The name of the resource group the database account was created in. |
 | `resourceId` | string | The resource ID of the database account. |
+| `secondaryReadOnlyConnectionString` | securestring | The secondary read-only connection string. |
+| `secondaryReadOnlyKey` | securestring | The secondary read-only key. |
+| `secondaryReadWriteConnectionString` | securestring | The secondary read-write connection string. |
+| `secondaryReadWriteKey` | securestring | The secondary read-write key. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules

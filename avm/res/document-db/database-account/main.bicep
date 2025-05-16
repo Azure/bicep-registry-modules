@@ -163,9 +163,6 @@ import { privateEndpointMultiServiceType } from 'br/public:avm/utl/types/avm-com
 @description('Optional. Configuration details for private endpoints. For security reasons, it is advised to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointMultiServiceType[]?
 
-@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
-param secretsExportConfiguration secretsExportConfigurationType?
-
 @description('Optional. The network configuration of this module. Defaults to `{ ipRules: [], virtualNetworkRules: [], publicNetworkAccess: \'Disabled\' }`.')
 param networkRestrictions networkRestrictionType = {
   ipRules: []
@@ -547,89 +544,6 @@ module databaseAccount_privateEndpoints 'br/public:avm/res/network/private-endpo
   }
 ]
 
-module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
-  name: '${uniqueString(deployment().name, location)}-secrets-kv'
-  scope: resourceGroup(
-    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
-    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
-  )
-  params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
-    secretsToSet: union(
-      [],
-      contains(secretsExportConfiguration!, 'primaryWriteKeySecretName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?primaryWriteKeySecretName
-              value: databaseAccount.listKeys().primaryMasterKey
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'primaryReadOnlyKeySecretName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?primaryReadOnlyKeySecretName
-              value: databaseAccount.listKeys().primaryReadonlyMasterKey
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'primaryWriteConnectionStringSecretName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?primaryWriteConnectionStringSecretName
-              value: databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'primaryReadonlyConnectionStringSecretName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?primaryReadonlyConnectionStringSecretName
-              value: databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'secondaryWriteKeySecretName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?secondaryWriteKeySecretName
-              value: databaseAccount.listKeys().secondaryMasterKey
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'secondaryReadonlyKeySecretName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?secondaryReadonlyKeySecretName
-              value: databaseAccount.listKeys().secondaryReadonlyMasterKey
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'secondaryWriteConnectionStringSecretName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?secondaryWriteConnectionStringSecretName
-              value: databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'secondaryReadonlyConnectionStringSecretName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?secondaryReadonlyConnectionStringSecretName
-              value: databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
-            }
-          ]
-        : []
-    )
-  }
-}
-
-@description('The references to the secrets exported to the provided Key Vault.')
-output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
-  : {}
-
 @description('The name of the database account.')
 output name string = databaseAccount.name
 
@@ -658,6 +572,38 @@ output privateEndpoints privateEndpointOutputType[] = [
     networkInterfaceResourceIds: databaseAccount_privateEndpoints[index].outputs.networkInterfaceResourceIds
   }
 ]
+
+@secure()
+@description('The primary read-write key.')
+output primaryReadWriteKey string = databaseAccount.listKeys().primaryMasterKey
+
+@secure()
+@description('The primary read-only key.')
+output primaryReadOnlyKey string = databaseAccount.listKeys().primaryReadonlyMasterKey
+
+@secure()
+@description('The primary read-write connection string.')
+output primaryReadWriteConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[0].connectionString
+
+@secure()
+@description('The primary read-only connection string.')
+output primaryReadOnlyConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[2].connectionString
+
+@secure()
+@description('The secondary read-write key.')
+output secondaryReadWriteKey string = databaseAccount.listKeys().secondaryMasterKey
+
+@secure()
+@description('The secondary read-only key.')
+output secondaryReadOnlyKey string = databaseAccount.listKeys().secondaryReadonlyMasterKey
+
+@secure()
+@description('The secondary read-write connection string.')
+output secondaryReadWriteConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[1].connectionString
+
+@secure()
+@description('The secondary read-only connection string.')
+output secondaryReadOnlyConnectionString string = databaseAccount.listConnectionStrings().connectionStrings[3].connectionString
 
 // =============== //
 //   Definitions   //
@@ -798,45 +744,6 @@ type sqlDatabaseType = {
       paths: string[]
     }[]?
   }[]?
-}
-
-@export()
-@description('The type for the secrets export configuration.')
-type secretsExportConfigurationType = {
-  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
-  keyVaultResourceId: string
-
-  @description('Optional. The primary read-write key secret name to create.')
-  primaryWriteKeySecretName: string?
-
-  @description('Optional. The primary read-only key secret name to create.')
-  primaryReadOnlyKeySecretName: string?
-
-  @description('Optional. The primary read-write connection string secret name to create.')
-  primaryWriteConnectionStringSecretName: string?
-
-  @description('Optional. The primary read-only connection string secret name to create.')
-  primaryReadonlyConnectionStringSecretName: string?
-
-  @description('Optional. The primary read-write key secret name to create.')
-  secondaryWriteKeySecretName: string?
-
-  @description('Optional. The primary read-only key secret name to create.')
-  secondaryReadonlyKeySecretName: string?
-
-  @description('Optional. The primary read-write connection string secret name to create.')
-  secondaryWriteConnectionStringSecretName: string?
-
-  @description('Optional. The primary read-only connection string secret name to create.')
-  secondaryReadonlyConnectionStringSecretName: string?
-}
-
-import { secretSetType } from 'modules/keyVaultExport.bicep'
-@export()
-@description('The type for the secrets output.')
-type secretsOutputType = {
-  @description('An exported secret\'s references.')
-  *: secretSetType
 }
 
 @export()
