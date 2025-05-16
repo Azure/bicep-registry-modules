@@ -455,7 +455,7 @@ module databaseAccount_mongodbDatabases 'mongodb-database/main.bicep' = [
       parentAccountName: databaseAccount.name
       name: mongodbDatabase.name
       tags: mongodbDatabase.?tags ?? tags
-      throughput: mongodbDatabase.?throughput
+      manualThroughput: mongodbDatabase.?manualThroughput
       autoscaleMaxThroughput: mongodbDatabase.?autoscaleMaxThroughput
       collections: mongodbDatabase.?collections
     }
@@ -778,8 +778,8 @@ type mongodbDatabaseType = {
   @description('Optional. Tags of the resource.')
   tags: object?
 
-  @description('Optional. The provisioned throughput assigned to the database.')
-  throughput: int?
+  @description('Optional. The provisioned standard throughput assigned to the database.')
+  manualThroughput: int?
 
   @description('Optional. The maximum throughput for the database when using autoscale.')
   autoscaleMaxThroughput: int?

@@ -10,8 +10,8 @@ param name string
 @description('Optional. Tags for the resource.')
 param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2024-11-15'>.tags?
 
-@description('Optional. The provisioned throughput assigned to the database.')
-param throughput int?
+@description('Optional. The provisioned standard throughput assigned to the database.')
+param manualThroughput int?
 
 @description('Optional. The maximum throughput for the database when using autoscale.')
 param autoscaleMaxThroughput int?
@@ -31,14 +31,16 @@ resource database 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2024-1
     resource: {
       id: name
     }
-    options: {
-      autoscaleSettings: contains(account.properties.capabilities, { name: 'EnableServerless' })
-        ? null
-        : {
-            maxThroughput: autoscaleMaxThroughput
-          }
-      throughput: contains(account.properties.capabilities, { name: 'EnableServerless' }) ? null : throughput
-    }
+    options: contains(account.properties.capabilities, { name: 'EnableServerless' })
+      ? null
+      : {
+          throughput: autoscaleMaxThroughput == null ? manualThroughput : null
+          autoscaleSettings: autoscaleMaxThroughput != null
+            ? {
+                maxThroughput: autoscaleMaxThroughput
+              }
+            : null
+        }
   }
 }
 
@@ -50,7 +52,7 @@ module mongodbDatabase_collections 'collection/main.bicep' = [
       parentDatabaseName: name
       name: collection.name
       tags: collection.?tags ?? tags
-      throughput: collection.throughput
+      manualThroughput: collection.manualThroughput
       autoscaleMaxThroughput: collection.autoscaleMaxThroughput
       shardKeys: collection.shardKeys
       indexes: collection.indexes
@@ -78,8 +80,8 @@ type mongodbCollectionType = {
   @description('Optional. Tags for the resource.')
   tags: object?
 
-  @description('Optional. The provisioned throughput assigned to the collection.')
-  throughput: int?
+  @description('Optional. The provisioned standard throughput assigned to the collection.')
+  manualThroughput: int?
 
   @description('Optional. The maximum throughput for the collection when using autoscale.')
   autoscaleMaxThroughput: int?

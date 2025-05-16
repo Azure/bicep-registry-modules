@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "7611029117416937771"
+      "templateHash": "6357625137770875927"
     },
     "name": "Azure Cosmos DB for MongoDB RU database",
     "description": "This module deploys an Azure Cosmos DB for MongoDB RU database within an account."
@@ -28,11 +28,11 @@
             "description": "Optional. Tags for the resource."
           }
         },
-        "throughput": {
+        "manualThroughput": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The provisioned throughput assigned to the collection."
+            "description": "Optional. The provisioned standard throughput assigned to the collection."
           }
         },
         "autoscaleMaxThroughput": {
@@ -152,11 +152,11 @@
       },
       "nullable": true
     },
-    "throughput": {
+    "manualThroughput": {
       "type": "int",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The provisioned throughput assigned to the database."
+        "description": "Optional. The provisioned standard throughput assigned to the database."
       }
     },
     "autoscaleMaxThroughput": {
@@ -193,10 +193,7 @@
         "resource": {
           "id": "[parameters('name')]"
         },
-        "options": {
-          "autoscaleSettings": "[if(contains(reference('account').capabilities, createObject('name', 'EnableServerless')), null(), createObject('maxThroughput', parameters('autoscaleMaxThroughput')))]",
-          "throughput": "[if(contains(reference('account').capabilities, createObject('name', 'EnableServerless')), null(), parameters('throughput'))]"
-        }
+        "options": "[if(contains(reference('account').capabilities, createObject('name', 'EnableServerless')), null(), createObject('throughput', if(equals(parameters('autoscaleMaxThroughput'), null()), parameters('manualThroughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleMaxThroughput')), null())))]"
       },
       "dependsOn": [
         "account"
@@ -228,8 +225,8 @@
           "tags": {
             "value": "[coalesce(tryGet(coalesce(parameters('collections'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
           },
-          "throughput": {
-            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].throughput]"
+          "manualThroughput": {
+            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].manualThroughput]"
           },
           "autoscaleMaxThroughput": {
             "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].autoscaleMaxThroughput]"
@@ -249,7 +246,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "13559419276256508746"
+              "templateHash": "5004608617425238159"
             },
             "name": "Azure Cosmos DB for MongoDB RU collection",
             "description": "This module deploys an Azure Cosmos DB for MongoDB RU collection within a database."
@@ -341,11 +338,11 @@
               },
               "nullable": true
             },
-            "throughput": {
+            "manualThroughput": {
               "type": "int",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The provisioned throughput assigned to the collection."
+                "description": "Optional. The provisioned standard throughput assigned to the collection."
               }
             },
             "autoscaleMaxThroughput": {
@@ -395,7 +392,7 @@
               "name": "[format('{0}/{1}/{2}', split(parameters('parentDatabaseName'), '/')[0], split(parameters('parentDatabaseName'), '/')[1], parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "options": "[if(and(and(and(and(equals(parameters('autoscaleMaxThroughput'), null()), equals(parameters('throughput'), null())), equals(reference('database').options.autoscaleSettings, null())), equals(reference('database').options.throughput, null())), not(contains(reference('account').capabilities, createObject('name', 'EnableServerless')))), createObject('autoscaleSettings', createObject('maxThroughput', 1000)), createObject('autoscaleSettings', if(contains(reference('account').capabilities, createObject('name', 'EnableServerless')), null(), createObject('maxThroughput', parameters('autoscaleMaxThroughput'))), 'throughput', if(contains(reference('account').capabilities, createObject('name', 'EnableServerless')), null(), parameters('throughput'))))]",
+                "options": "[if(contains(reference('account').capabilities, createObject('name', 'EnableServerless')), null(), if(and(and(and(equals(parameters('autoscaleMaxThroughput'), null()), equals(parameters('manualThroughput'), null())), equals(reference('database').options.autoscaleSettings, null())), equals(reference('database').options.throughput, null())), createObject('autoscaleSettings', createObject('maxThroughput', 1000)), createObject('throughput', if(equals(parameters('autoscaleMaxThroughput'), null()), parameters('manualThroughput'), null()), 'autoscaleSettings', if(not(equals(parameters('autoscaleMaxThroughput'), null())), createObject('maxThroughput', parameters('autoscaleMaxThroughput')), null()))))]",
                 "resource": {
                   "id": "[parameters('name')]",
                   "indexes": "[if(not(equals(parameters('indexes'), null())), map(coalesce(parameters('indexes'), createArray()), lambda('index', createObject('key', createObject('keys', lambdaVariables('index').keys), 'options', createObject('expireAfterSeconds', lambdaVariables('index').ttl, 'unique', lambdaVariables('index').unique)))), null())]",

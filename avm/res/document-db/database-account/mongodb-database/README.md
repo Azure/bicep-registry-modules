@@ -35,8 +35,8 @@ This module deploys an Azure Cosmos DB for MongoDB RU database within an account
 | :-- | :-- | :-- |
 | [`autoscaleMaxThroughput`](#parameter-autoscalemaxthroughput) | int | The maximum throughput for the database when using autoscale. |
 | [`collections`](#parameter-collections) | array | The set of collections within the database. |
+| [`manualThroughput`](#parameter-manualthroughput) | int | The provisioned standard throughput assigned to the database. |
 | [`tags`](#parameter-tags) | object | Tags for the resource. |
-| [`throughput`](#parameter-throughput) | int | The provisioned throughput assigned to the database. |
 
 ### Parameter: `name`
 
@@ -78,9 +78,9 @@ The set of collections within the database.
 | :-- | :-- | :-- |
 | [`autoscaleMaxThroughput`](#parameter-collectionsautoscalemaxthroughput) | int | The maximum throughput for the collection when using autoscale. |
 | [`indexes`](#parameter-collectionsindexes) | array | The indexes to create for the collection. |
+| [`manualThroughput`](#parameter-collectionsmanualthroughput) | int | The provisioned standard throughput assigned to the collection. |
 | [`shardKeys`](#parameter-collectionsshardkeys) | array | The set of shard keys to use for the collection. |
 | [`tags`](#parameter-collectionstags) | object | Tags for the resource. |
-| [`throughput`](#parameter-collectionsthroughput) | int | The provisioned throughput assigned to the collection. |
 
 ### Parameter: `collections.name`
 
@@ -137,6 +137,13 @@ Indicator for whether the index is unique.
 - Required: No
 - Type: bool
 
+### Parameter: `collections.manualThroughput`
+
+The provisioned standard throughput assigned to the collection.
+
+- Required: No
+- Type: int
+
 ### Parameter: `collections.shardKeys`
 
 The set of shard keys to use for the collection.
@@ -178,9 +185,9 @@ Tags for the resource.
 - Required: No
 - Type: object
 
-### Parameter: `collections.throughput`
+### Parameter: `manualThroughput`
 
-The provisioned throughput assigned to the collection.
+The provisioned standard throughput assigned to the database.
 
 - Required: No
 - Type: int
@@ -191,13 +198,6 @@ Tags for the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `throughput`
-
-The provisioned throughput assigned to the database.
-
-- Required: No
-- Type: int
 
 ## Outputs
 

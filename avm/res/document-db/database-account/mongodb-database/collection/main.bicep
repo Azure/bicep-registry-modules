@@ -13,8 +13,8 @@ param name string
 @description('Optional. Tags for the resource.')
 param tags resourceInput<'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2024-11-15'>.tags?
 
-@description('Optional. The provisioned throughput assigned to the collection.')
-param throughput int?
+@description('Optional. The provisioned standard throughput assigned to the collection.')
+param manualThroughput int?
 
 @description('Optional. The maximum throughput for the collection when using autoscale.')
 param autoscaleMaxThroughput int?
@@ -33,35 +33,34 @@ resource database 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases@2024-1
   name: parentDatabaseName
 }
 
-// This checks the edge case where throughput is not specified at the database or container level and the account is not serverless.
-var throughputNotSet = (autoscaleMaxThroughput == null && throughput == null && database.properties.options.autoscaleSettings == null && database.properties.options.throughput == null && !contains(
-  account.properties.capabilities,
-  { name: 'EnableServerless' }
-))
+// This checks the edge case where throughput is not specified at the database or container level
+var throughputNotSet = (autoscaleMaxThroughput == null && manualThroughput == null && database.properties.options.autoscaleSettings == null && database.properties.options.throughput == null)
 
 resource collection 'Microsoft.DocumentDB/databaseAccounts/mongodbDatabases/collections@2024-11-15' = {
   name: name
   parent: database
   tags: tags
   properties: {
-    options: throughputNotSet
-      ? {
-          autoscaleSettings: {
-            maxThroughput: 1000
-          }
-          // In this special case, we set the throughput to 1,000 RU/s, which is the minimum throughput for autoscale on a collection.
-          // With autoscale enabled, the throughput can scale down to as little as 100 RU/s.
-          // This is less than the minimum of 400 RU/s for a provisioned collection.
-          // For best performance for large production workloads, set dedicated throughput at the collection level.
-        }
-      : {
-          autoscaleSettings: contains(account.properties.capabilities, { name: 'EnableServerless' })
-            ? null
-            : {
-                maxThroughput: autoscaleMaxThroughput
+    options: contains(account.properties.capabilities, { name: 'EnableServerless' })
+      ? null
+      : throughputNotSet
+          ? {
+              autoscaleSettings: {
+                maxThroughput: 1000
               }
-          throughput: contains(account.properties.capabilities, { name: 'EnableServerless' }) ? null : throughput
-        }
+              // In this special case, we set the throughput to 1,000 RU/s, which is the minimum throughput for autoscale on a collection.
+              // With autoscale enabled, the throughput can scale down to as little as 100 RU/s.
+              // This is less than the minimum of 400 RU/s for a provisioned collection.
+              // For best performance for large production workloads, set dedicated throughput at the collection level.
+            }
+          : {
+              throughput: autoscaleMaxThroughput == null ? manualThroughput : null
+              autoscaleSettings: autoscaleMaxThroughput != null
+                ? {
+                    maxThroughput: autoscaleMaxThroughput
+                  }
+                : null
+            }
     resource: {
       id: name
       indexes: indexes != null

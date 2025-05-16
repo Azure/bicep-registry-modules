@@ -3442,8 +3442,8 @@ Configuration for databases when using Azure Cosmos DB for MongoDB RU.
 | :-- | :-- | :-- |
 | [`autoscaleMaxThroughput`](#parameter-mongodbdatabasesautoscalemaxthroughput) | int | The maximum throughput for the database when using autoscale. |
 | [`collections`](#parameter-mongodbdatabasescollections) | array | The set of collections within the database. |
+| [`manualThroughput`](#parameter-mongodbdatabasesmanualthroughput) | int | The provisioned standard throughput assigned to the database. |
 | [`tags`](#parameter-mongodbdatabasestags) | object | Tags of the resource. |
-| [`throughput`](#parameter-mongodbdatabasesthroughput) | int | The provisioned throughput assigned to the database. |
 
 ### Parameter: `mongodbDatabases.name`
 
@@ -3478,9 +3478,9 @@ The set of collections within the database.
 | :-- | :-- | :-- |
 | [`autoscaleMaxThroughput`](#parameter-mongodbdatabasescollectionsautoscalemaxthroughput) | int | The maximum throughput for the collection when using autoscale. |
 | [`indexes`](#parameter-mongodbdatabasescollectionsindexes) | array | The indexes to create for the collection. |
+| [`manualThroughput`](#parameter-mongodbdatabasescollectionsmanualthroughput) | int | The provisioned standard throughput assigned to the collection. |
 | [`shardKeys`](#parameter-mongodbdatabasescollectionsshardkeys) | array | The set of shard keys to use for the collection. |
 | [`tags`](#parameter-mongodbdatabasescollectionstags) | object | Tags for the resource. |
-| [`throughput`](#parameter-mongodbdatabasescollectionsthroughput) | int | The provisioned throughput assigned to the collection. |
 
 ### Parameter: `mongodbDatabases.collections.name`
 
@@ -3537,6 +3537,13 @@ Indicator for whether the index is unique.
 - Required: No
 - Type: bool
 
+### Parameter: `mongodbDatabases.collections.manualThroughput`
+
+The provisioned standard throughput assigned to the collection.
+
+- Required: No
+- Type: int
+
 ### Parameter: `mongodbDatabases.collections.shardKeys`
 
 The set of shard keys to use for the collection.
@@ -3578,9 +3585,9 @@ Tags for the resource.
 - Required: No
 - Type: object
 
-### Parameter: `mongodbDatabases.collections.throughput`
+### Parameter: `mongodbDatabases.manualThroughput`
 
-The provisioned throughput assigned to the collection.
+The provisioned standard throughput assigned to the database.
 
 - Required: No
 - Type: int
@@ -3591,13 +3598,6 @@ Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `mongodbDatabases.throughput`
-
-The provisioned throughput assigned to the database.
-
-- Required: No
-- Type: int
 
 ### Parameter: `networkRestrictions`
 

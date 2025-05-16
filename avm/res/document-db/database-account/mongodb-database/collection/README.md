@@ -36,9 +36,9 @@ This module deploys an Azure Cosmos DB for MongoDB RU collection within a databa
 | :-- | :-- | :-- |
 | [`autoscaleMaxThroughput`](#parameter-autoscalemaxthroughput) | int | The maximum throughput for the collection when using autoscale. |
 | [`indexes`](#parameter-indexes) | array | The indexes to create for the collection. |
+| [`manualThroughput`](#parameter-manualthroughput) | int | The provisioned standard throughput assigned to the collection. |
 | [`shardKeys`](#parameter-shardkeys) | array | The set of shard keys to use for the collection. |
 | [`tags`](#parameter-tags) | object | Tags for the resource. |
-| [`throughput`](#parameter-throughput) | int | The provisioned throughput assigned to the collection. |
 
 ### Parameter: `name`
 
@@ -109,6 +109,13 @@ Indicator for whether the index is unique.
 - Required: No
 - Type: bool
 
+### Parameter: `manualThroughput`
+
+The provisioned standard throughput assigned to the collection.
+
+- Required: No
+- Type: int
+
 ### Parameter: `shardKeys`
 
 The set of shard keys to use for the collection.
@@ -149,13 +156,6 @@ Tags for the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `throughput`
-
-The provisioned throughput assigned to the collection.
-
-- Required: No
-- Type: int
 
 ## Outputs
 
