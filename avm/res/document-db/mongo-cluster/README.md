@@ -698,7 +698,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     sku: 'M30'
     storage: 256
     // Non-required parameters
-    highAvailabilityMode: 'ZoneRedundant'
+    highAvailabilityMode: 'ZoneRedundantPreferred'
     tags: {
       environment: 'dev'
       role: 'validation'
@@ -741,7 +741,7 @@ module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
     },
     // Non-required parameters
     "highAvailabilityMode": {
-      "value": "ZoneRedundant"
+      "value": "ZoneRedundantPreferred"
     },
     "tags": {
       "value": {
@@ -772,7 +772,7 @@ param nodeCount = 3
 param sku = 'M30'
 param storage = 256
 // Non-required parameters
-param highAvailabilityMode = 'ZoneRedundant'
+param highAvailabilityMode = 'ZoneRedundantPreferred'
 param tags = {
   environment: 'dev'
   role: 'validation'
@@ -1072,13 +1072,12 @@ Whether high availability is enabled on the node group.
 
 - Required: No
 - Type: string
-- Default: `'ZoneRedundant'`
+- Default: `'ZoneRedundantPreferred'`
 - Allowed:
   ```Bicep
   [
     'Disabled'
     'SameZone'
-    'ZoneRedundant'
     'ZoneRedundantPreferred'
   ]
   ```

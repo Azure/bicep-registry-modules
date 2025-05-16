@@ -35,10 +35,9 @@ param enableTelemetry bool = true
 @allowed([
   'Disabled'
   'SameZone'
-  'ZoneRedundant'
   'ZoneRedundantPreferred'
 ])
-param highAvailabilityMode string = 'ZoneRedundant'
+param highAvailabilityMode string = 'ZoneRedundantPreferred'
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
