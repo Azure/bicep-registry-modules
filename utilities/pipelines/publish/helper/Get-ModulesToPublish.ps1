@@ -17,11 +17,15 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-    if ((Get-GitBranchName) -eq 'main') {
-        Write-Verbose 'Gathering modified files from the previous head' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
+    $CurrentBranch = Get-GitBranchName
+    if ($CurrentBranch -eq 'main') {
+        Write-Verbose 'Gathering modified files from the pull request' -Verbose
+        $Diff = git diff --name-only --diff-filter=AM 'HEAD^' 'HEAD'
+    } else {
+        Write-Verbose 'Gathering modified files between current branch and main' -Verbose
+        $Diff = git diff --name-only --diff-filter=AM 'origin/main'
     }
-    $ModifiedFiles = $Diff ? ($Diff | Get-Item -Force) : @()
+    $ModifiedFiles = $Diff | Get-Item -Force
 
     return $ModifiedFiles
 }
@@ -86,7 +90,7 @@ function Get-TemplateFileToPublish {
         [Parameter(Mandatory)]
         [string] $ModuleFolderPath,
 
-        [Parameter(Mandatory)]
+        [Parameter(Mandatory = $false)]
         [string[]] $PathsToInclude = @(),
 
         [Parameter(Mandatory = $false)]
@@ -125,9 +129,14 @@ function Get-TemplateFileToPublish {
     }
 
     if ($SkipNotVersionedModules) {
-        Write-Verbose 'Skipping modules that are not versioned.' -Verbose
-        $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
-            Test-Path (Join-Path (Split-Path $_) 'version.json')
+        $toSkip = $TemplateFilesToPublish | Where-Object {
+            -not (Test-Path (Join-Path (Split-Path $_) 'version.json'))
+        }
+        if ($toSkip.Count -gt 0) {
+            Write-Verbose ('Skipping [{0}] modules that are not versioned.' -f $toSkip.Count) -Verbose
+            $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
+                $_ -notin $toSkip
+            }
         }
     }
 
