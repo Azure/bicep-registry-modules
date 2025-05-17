@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'API for Table'
-metadata description = 'This instance deploys the module for an Azure Cosmos DB for Table account with two example tables.'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -9,17 +9,17 @@ metadata description = 'This instance deploys the module for an Azure Cosmos DB 
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-documentdb.databaseaccounts-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-devcenter.networkconnection-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'dddatbl'
+param serviceShort string = 'dcncmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-// The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
+// Hardcoded because service not available in all regions
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'westus3'
+var enforcedLocation = 'uksouth'
 
 // ============ //
 // Dependencies //
@@ -30,6 +30,14 @@ var enforcedLocation = 'westus3'
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  params: {
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+  }
 }
 
 // ============== //
@@ -43,20 +51,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      capabilitiesToAdd: [
-        'EnableTable'
-      ]
-      tables: [
-        {
-          name: 'tbl-dddatableminprov'
-          throughput: 400
-        }
-        {
-          name: 'tbl-dddatableminauto'
-          maxThroughput: 1000
-        }
-      ]
-      zoneRedundant: false
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
     }
   }
 ]
