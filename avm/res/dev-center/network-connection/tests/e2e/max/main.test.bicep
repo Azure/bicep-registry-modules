@@ -43,7 +43,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
-    location: enforcedLocation
   }
 }
 

@@ -47,8 +47,6 @@ module networkConnection 'br/public:avm/res/dev-center/network-connection:<versi
     // Required parameters
     name: 'dcncmin001'
     subnetResourceId: '<subnetResourceId>'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -71,10 +69,6 @@ module networkConnection 'br/public:avm/res/dev-center/network-connection:<versi
     },
     "subnetResourceId": {
       "value": "<subnetResourceId>"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -93,8 +87,6 @@ using 'br/public:avm/res/dev-center/network-connection:<version>'
 // Required parameters
 param name = 'dcncmin001'
 param subnetResourceId = '<subnetResourceId>'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -298,7 +290,6 @@ module networkConnection 'br/public:avm/res/dev-center/network-connection:<versi
     subnetResourceId: '<subnetResourceId>'
     // Non-required parameters
     domainJoinType: 'AzureADJoin'
-    location: '<location>'
     networkingResourceGroupName: 'rg-dcncwaf-networking'
   }
 }
@@ -327,9 +318,6 @@ module networkConnection 'br/public:avm/res/dev-center/network-connection:<versi
     "domainJoinType": {
       "value": "AzureADJoin"
     },
-    "location": {
-      "value": "<location>"
-    },
     "networkingResourceGroupName": {
       "value": "rg-dcncwaf-networking"
     }
@@ -352,7 +340,6 @@ param name = 'dcncwaf001'
 param subnetResourceId = '<subnetResourceId>'
 // Non-required parameters
 param domainJoinType = 'AzureADJoin'
-param location = '<location>'
 param networkingResourceGroupName = 'rg-dcncwaf-networking'
 ```
 
