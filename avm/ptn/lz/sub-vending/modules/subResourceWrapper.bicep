@@ -408,6 +408,7 @@ module moveSubscriptionToManagementGroup './managementGroupSubscription.bicep' =
   scope: managementGroup(subscriptionManagementGroupId)
   dependsOn: [
     moveSubscriptionToManagementGroupDelay
+    registerResourceProviders
   ]
   name: deploymentNames.moveSubscriptionToManagementGroup
   params: {
