@@ -102,7 +102,6 @@ function Get-TemplateFileToPublish {
     $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
 
     $relevantPaths = @()
-    $PathsToInclude += './version.json' # Add the file itself to be considered too
     foreach ($modifiedFile in $modifiedModuleFiles) {
 
         foreach ($path in  $PathsToInclude) {
