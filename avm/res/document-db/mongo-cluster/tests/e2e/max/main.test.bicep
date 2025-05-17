@@ -158,3 +158,9 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+@secure()
+output obscuredConnectionString string = testDeployment[0].outputs.obscuredConnectionString
+
+@secure()
+output connectionString string = testDeployment[1].outputs.connectionString

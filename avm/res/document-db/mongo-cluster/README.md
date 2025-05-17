@@ -23,7 +23,6 @@ This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.
 | `Microsoft.DocumentDB/mongoClusters/firewallRules` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-10-01-preview/mongoClusters/firewallRules) |
 | `Microsoft.DocumentDB/mongoClusters/users` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/mongoClusters) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 
@@ -36,10 +35,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/document-db/mongo-cluster:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Deploying with a key vault reference to save secrets](#example-2-deploying-with-a-key-vault-reference-to-save-secrets)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Microsoft Entra authentication](#example-4-microsoft-entra-authentication)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [Microsoft Entra authentication](#example-3-microsoft-entra-authentication)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -130,110 +128,7 @@ param highAvailabilityMode = 'Disabled'
 </details>
 <p>
 
-### Example 2: _Deploying with a key vault reference to save secrets_
-
-This instance deploys the module saving its secrets in a key vault.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module mongoCluster 'br/public:avm/res/document-db/mongo-cluster:<version>' = {
-  name: 'mongoClusterDeployment'
-  params: {
-    // Required parameters
-    administratorLogin: 'Admin002'
-    administratorLoginPassword: '<administratorLoginPassword>'
-    name: 'kv-ref'
-    nodeCount: 1
-    sku: 'M10'
-    storage: 32
-    // Non-required parameters
-    highAvailabilityMode: 'Disabled'
-    secretsExportConfiguration: {
-      connectionStringSecretName: 'connectionString'
-      keyVaultResourceId: '<keyVaultResourceId>'
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "administratorLogin": {
-      "value": "Admin002"
-    },
-    "administratorLoginPassword": {
-      "value": "<administratorLoginPassword>"
-    },
-    "name": {
-      "value": "kv-ref"
-    },
-    "nodeCount": {
-      "value": 1
-    },
-    "sku": {
-      "value": "M10"
-    },
-    "storage": {
-      "value": 32
-    },
-    // Non-required parameters
-    "highAvailabilityMode": {
-      "value": "Disabled"
-    },
-    "secretsExportConfiguration": {
-      "value": {
-        "connectionStringSecretName": "connectionString",
-        "keyVaultResourceId": "<keyVaultResourceId>"
-      }
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/document-db/mongo-cluster:<version>'
-
-// Required parameters
-param administratorLogin = 'Admin002'
-param administratorLoginPassword = '<administratorLoginPassword>'
-param name = 'kv-ref'
-param nodeCount = 1
-param sku = 'M10'
-param storage = 32
-// Non-required parameters
-param highAvailabilityMode = 'Disabled'
-param secretsExportConfiguration = {
-  connectionStringSecretName: 'connectionString'
-  keyVaultResourceId: '<keyVaultResourceId>'
-}
-```
-
-</details>
-<p>
-
-### Example 3: _Using large parameter set_
+### Example 2: _Using large parameter set_
 
 This instance deploys the module with the maximum set of required parameters.
 
@@ -563,7 +458,7 @@ param roleAssignments = [
 </details>
 <p>
 
-### Example 4: _Microsoft Entra authentication_
+### Example 3: _Microsoft Entra authentication_
 
 This instance deploys the module for an Azure Cosmos DB for MongoDB (vCore) cluster with access configured for an user-assigned managed identity.
 
@@ -677,7 +572,7 @@ param highAvailabilityMode = 'Disabled'
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -811,7 +706,6 @@ param tags = {
 | [`networkAcls`](#parameter-networkacls) | object | IP addresses to allow access to the cluster from. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`secretsExportConfiguration`](#parameter-secretsexportconfiguration) | object | Key vault reference and secret settings for the module's secrets export. |
 | [`tags`](#parameter-tags) | object | Tags of the Database Account resource. |
 
 ### Parameter: `administratorLogin`
@@ -1681,39 +1575,6 @@ The principal type of the assigned principal ID.
   ]
   ```
 
-### Parameter: `secretsExportConfiguration`
-
-Key vault reference and secret settings for the module's secrets export.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`keyVaultResourceId`](#parameter-secretsexportconfigurationkeyvaultresourceid) | string | The resource ID of the key vault where to store the secrets of this module. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`connectionStringSecretName`](#parameter-secretsexportconfigurationconnectionstringsecretname) | string | The name to use when creating the primary write connection string secret. |
-
-### Parameter: `secretsExportConfiguration.keyVaultResourceId`
-
-The resource ID of the key vault where to store the secrets of this module.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `secretsExportConfiguration.connectionStringSecretName`
-
-The name to use when creating the primary write connection string secret.
-
-- Required: No
-- Type: string
-
 ### Parameter: `tags`
 
 Tags of the Database Account resource.
@@ -1725,11 +1586,11 @@ Tags of the Database Account resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `connectionStringKey` | string | The connection string key of the mongo cluster. |
-| `exportedSecrets` |  | The references to the secrets exported to the provided Key Vault. |
+| `connectionString` | securestring | The connection string of the Azure Cosmos DB for MongoDB (vCore) cluster. This variant contains the actual username and password credentials. |
 | `firewallRules` | array | The name and resource ID of firewall rule. |
 | `mongoClusterResourceId` | string | The resource ID of the Azure Cosmos DB for MongoDB (vCore) cluster. |
 | `name` | string | The name of the Azure Cosmos DB for MongoDB (vCore) cluster. |
+| `obscuredConnectionString` | securestring | The connection string of the Azure Cosmos DB for MongoDB (vCore) cluster with the username and password obscured. This variant contains the `<user>` and `<password>` placeholders in place of the actual credentials. |
 | `privateEndpoints` | array | The private endpoints of the database account. |
 | `resourceGroupName` | string | The name of the resource group the firewall rule was created in. |
 | `resourceId` | string | The resource ID of the resource group the firewall rule was created in. |
