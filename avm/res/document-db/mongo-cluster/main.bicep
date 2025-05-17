@@ -57,9 +57,6 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
-param secretsExportConfiguration secretsExportConfigurationType?
-
 @description('Required. SKU defines the CPU and memory that is provisioned for each node.')
 param sku string
 
@@ -252,28 +249,6 @@ module mongoCluster_users 'user/main.bicep' = [
   }
 ]
 
-module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfiguration != null) {
-  name: '${uniqueString(deployment().name, location)}-secrets-kv'
-  scope: resourceGroup(
-    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
-    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
-  )
-  params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
-    secretsToSet: union(
-      [],
-      contains(secretsExportConfiguration!, 'connectionStringSecretName')
-        ? [
-            {
-              name: secretsExportConfiguration!.?connectionStringSecretName
-              value: mongoCluster.properties.connectionString
-            }
-          ]
-        : []
-    )
-  }
-}
-
 module mongoCluster_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-databaseAccount-PE-${index}'
@@ -341,9 +316,6 @@ output resourceId string = resourceGroup().id
 @description('The name of the resource group the firewall rule was created in.')
 output resourceGroupName string = resourceGroup().name
 
-@description('The connection string key of the mongo cluster.')
-output connectionStringKey string = mongoCluster.properties.connectionString
-
 @description('The name and resource ID of firewall rule.')
 output firewallRules firewallSetOutputType[] = [
   for index in range(0, length(firewallRules ?? [])): {
@@ -363,10 +335,17 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
-@description('The references to the secrets exported to the provided Key Vault.')
-output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
-  : {}
+@secure()
+@description('The connection string of the Azure Cosmos DB for MongoDB (vCore) cluster with the username and password obscured. This variant contains the `<user>` and `<password>` placeholders in place of the actual credentials.')
+output obscuredConnectionString string = mongoCluster.properties.connectionString
+
+@secure()
+@description('The connection string of the Azure Cosmos DB for MongoDB (vCore) cluster. This variant contains the actual username and password credentials.')
+output connectionString string = replace(
+  replace(mongoCluster.properties.connectionString, '<user>', administratorLogin),
+  '<password>',
+  administratorLoginPassword
+)
 
 // =============== //
 //   Definitions   //
@@ -428,24 +407,6 @@ type networkAclsType = {
 
   @description('Required. Indicates whether to allow all Azure internal IP addresses.')
   allowAzureIPs: bool
-}
-
-@export()
-@description('The type for the secrets export configuration')
-type secretsExportConfigurationType = {
-  @description('Required. The resource ID of the key vault where to store the secrets of this module.')
-  keyVaultResourceId: string
-
-  @description('Optional. The name to use when creating the primary write connection string secret.')
-  connectionStringSecretName: string?
-}
-
-import { secretSetType } from 'modules/keyVaultExport.bicep'
-@export()
-@description('The type for the secrets output')
-type secretsOutputType = {
-  @description('An exported secret\'s references.')
-  *: secretSetType
 }
 
 @export()
