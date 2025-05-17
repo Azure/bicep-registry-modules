@@ -49,89 +49,71 @@ module testDeployment '../../../main.bicep' = [
             {
               indexes: [
                 {
-                  key: {
-                    keys: [
-                      '_id'
-                    ]
-                  }
+                  keys: [
+                    '_id'
+                  ]
                 }
                 {
-                  key: {
-                    keys: [
-                      '$**'
-                    ]
-                  }
+                  keys: [
+                    '$**'
+                  ]
                 }
                 {
-                  key: {
-                    keys: [
-                      'car_id'
-                      'car_model'
-                    ]
-                  }
-                  options: {
-                    unique: true
-                  }
+                  keys: [
+                    'car_id'
+                    'car_model'
+                  ]
+                  unique: true
                 }
                 {
-                  key: {
-                    keys: [
-                      '_ts'
-                    ]
-                  }
-                  options: {
-                    expireAfterSeconds: 2629746
-                  }
+                  keys: [
+                    '_ts'
+                  ]
+                  ttl: 2629746
                 }
               ]
               name: 'car_collection'
-              shardKey: {
-                car_id: 'Hash'
-              }
+              shardKeys: [
+                {
+                  field: 'car_id'
+                  type: 'Hash'
+                }
+              ]
               throughput: 600
             }
             {
               indexes: [
                 {
-                  key: {
-                    keys: [
-                      '_id'
-                    ]
-                  }
+                  keys: [
+                    '_id'
+                  ]
                 }
                 {
-                  key: {
-                    keys: [
-                      '$**'
-                    ]
-                  }
+                  keys: [
+                    '$**'
+                  ]
                 }
                 {
-                  key: {
-                    keys: [
-                      'truck_id'
-                      'truck_model'
-                    ]
-                  }
-                  options: {
-                    unique: true
-                  }
+                  keys: [
+                    'truck_id'
+                    'truck_model'
+                  ]
+                  unique: true
                 }
                 {
-                  key: {
-                    keys: [
-                      '_ts'
-                    ]
-                  }
-                  options: {
-                    expireAfterSeconds: 2629746
-                  }
+                  keys: [
+                    '_ts'
+                  ]
+                  ttl: 2629746
                 }
               ]
               name: 'truck_collection'
-              shardKey: {
-                truck_id: 'Hash'
-              }
+              shardKeys: [
+                {
+                  field: 'truck_id'
+                  type: 'Hash'
+                }
+              ]
             }
           ]
           name: '${namePrefix}-mdb-${serviceShort}-001'
@@ -142,88 +124,70 @@ module testDeployment '../../../main.bicep' = [
             {
               indexes: [
                 {
-                  key: {
-                    keys: [
-                      '_id'
-                    ]
-                  }
+                  keys: [
+                    '_id'
+                  ]
                 }
                 {
-                  key: {
-                    keys: [
-                      '$**'
-                    ]
-                  }
+                  keys: [
+                    '$**'
+                  ]
                 }
                 {
-                  key: {
-                    keys: [
-                      'bike_id'
-                      'bike_model'
-                    ]
-                  }
-                  options: {
-                    unique: true
-                  }
+                  keys: [
+                    'bike_id'
+                    'bike_model'
+                  ]
+                  unique: true
                 }
                 {
-                  key: {
-                    keys: [
-                      '_ts'
-                    ]
-                  }
-                  options: {
-                    expireAfterSeconds: 2629746
-                  }
+                  keys: [
+                    '_ts'
+                  ]
+                  ttl: 2629746
                 }
               ]
               name: 'bike_collection'
-              shardKey: {
-                bike_id: 'Hash'
-              }
+              shardKeys: [
+                {
+                  field: 'bike_id'
+                  type: 'Hash'
+                }
+              ]
             }
             {
               indexes: [
                 {
-                  key: {
-                    keys: [
-                      '_id'
-                    ]
-                  }
+                  keys: [
+                    '_id'
+                  ]
                 }
                 {
-                  key: {
-                    keys: [
-                      '$**'
-                    ]
-                  }
+                  keys: [
+                    '$**'
+                  ]
                 }
                 {
-                  key: {
-                    keys: [
-                      'bicycle_id'
-                      'bicycle_model'
-                    ]
-                  }
-                  options: {
-                    unique: true
-                  }
+                  keys: [
+                    'bicycle_id'
+                    'bicycle_model'
+                  ]
+                  unique: true
                 }
                 {
-                  key: {
-                    keys: [
-                      '_ts'
-                    ]
-                  }
-                  options: {
-                    expireAfterSeconds: 2629746
-                  }
+                  keys: [
+                    '_ts'
+                  ]
+                  ttl: 2629746
                 }
               ]
               name: 'bicycle_collection'
-              shardKey: {
-                bicycle_id: 'Hash'
-              }
+              shardKeys: [
+                {
+                  field: 'bicycle_id'
+                  type: 'Hash'
+                }
+              ]
             }
           ]
           name: '${namePrefix}-mdb-${serviceShort}-002'
