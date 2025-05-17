@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "15749402363167693758"
+      "templateHash": "3803279347306956054"
     },
     "name": "Azure NetApp Files Capacity Pools",
     "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -189,7 +189,7 @@
             "description": "Optional. The type of the volume. DataProtection volumes are used for replication."
           }
         },
-        "thoughtputMibps": {
+        "throughputMibps": {
           "type": "int",
           "nullable": true,
           "metadata": {

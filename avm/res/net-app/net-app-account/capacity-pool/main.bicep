@@ -244,7 +244,7 @@ type volumeType = {
   volumeType: string?
 
   @description('Optional. The throughput in MiBps for the NetApp account.')
-  thoughtputMibps: int?
+  throughputMibps: int?
 }
 
 // ================ //
