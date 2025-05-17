@@ -52,7 +52,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: enforcedLocation
       subnetResourceId: nestedDependencies.outputs.subnetResourceId
       domainJoinType: 'AzureADJoin'
       networkingResourceGroupName: 'rg-${namePrefix}${serviceShort}-networking'
