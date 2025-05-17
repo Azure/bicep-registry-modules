@@ -111,6 +111,9 @@ param securityStyle string?
 @description('Optional. Unix Permissions for NFS volume.')
 param unixPermissions string?
 
+@description('Optional. The throughput in MiBps for the NetApp account.')
+param throughputMibps int?
+
 var remoteCapacityPoolName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
   ? split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
   : ''
@@ -267,6 +270,11 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2025-01-0
     smbEncryption: smbEncryption
     smbNonBrowsable: smbNonBrowsable
     kerberosEnabled: kerberosEnabled
+    ...(throughputMibps != null
+      ? {
+          throughputMibps: throughputMibps
+        }
+      : {})
   }
   zones: zone != 0 ? [string(zone)] : null
 }

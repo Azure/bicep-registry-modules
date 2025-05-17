@@ -125,6 +125,7 @@ module capacityPool_volumes 'volume/main.bicep' = [
       volumeType: volume.?volumeType
       securityStyle: volume.?securityStyle
       unixPermissions: volume.?unixPermissions
+      throughputMibps: volume.?throughputMibps
     }
   }
 ]
@@ -241,6 +242,9 @@ type volumeType = {
 
   @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
   volumeType: string?
+
+  @description('Optional. The throughput in MiBps for the NetApp account.')
+  throughputMibps: int?
 }
 
 // ================ //
