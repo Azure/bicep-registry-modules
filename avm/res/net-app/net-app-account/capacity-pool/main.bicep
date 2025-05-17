@@ -242,6 +242,9 @@ type volumeType = {
 
   @description('Optional. The type of the volume. DataProtection volumes are used for replication.')
   volumeType: string?
+
+  @description('Optional. The throughput in MiBps for the NetApp account.')
+  thoughtputMibps: int?
 }
 
 // ================ //
