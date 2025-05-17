@@ -88,8 +88,8 @@ function Get-TemplateFileToPublish {
 
         [Parameter(Mandatory = $false)]
         [string[]] $PathsToInclude = @(
-            'main.json',
-            'version.json'
+            './main.json',
+            './version.json'
         ),
 
         [Parameter(Mandatory = $false)]
