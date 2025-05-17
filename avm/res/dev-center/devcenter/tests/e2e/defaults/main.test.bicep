@@ -12,7 +12,7 @@ param resourceGroupName string = 'dep-${namePrefix}-devcenter.devcenter-${servic
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ddcmin'
+param serviceShort string = 'dcdcmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'

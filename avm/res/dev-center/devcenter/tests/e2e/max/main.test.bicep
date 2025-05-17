@@ -15,10 +15,10 @@ param resourceGroupName string = 'dep-${namePrefix}-devcenter-devcenter-${servic
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ddcmax'
+param serviceShort string = 'dcdcmax'
 
-@description('Generated. Used as a basis for unique resource names.')
-param baseTime string = 'testa'
+// @description('Generated. Used as a basis for unique resource names.')
+// param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -107,6 +107,29 @@ module testDeployment '../../../main.bicep' = [
       projectCatalogSettings: {
         catalogItemSyncEnableStatus: 'Enabled'
       }
+      environmentTypes: [
+        {
+          name: 'dev'
+          displayName: 'Development Environment'
+          tags: {
+            costCenter: '1234'
+          }
+        }
+        {
+          name: 'test'
+          displayName: 'Testing Environment'
+          tags: {
+            costCenter: '5678'
+          }
+        }
+        {
+          name: 'prod'
+          displayName: 'Production Environment'
+          tags: {
+            costCenter: '9012'
+          }
+        }
+      ]
     }
   }
 ]
