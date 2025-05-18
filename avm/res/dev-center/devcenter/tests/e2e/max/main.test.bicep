@@ -50,13 +50,15 @@ module nestedDependencies 'dependencies.bicep' = {
 // Test Execution //
 // ============== //
 
+var devcenterName = '${namePrefix}${serviceShort}001'
+var devcenterExpectedResourceID = '${resourceGroup.id}/providers/Microsoft.DevCenter/devcenters/${devcenterName}'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
+      name: devcenterName
       location: resourceLocation
       tags: {
         costCenter: '1234'
@@ -128,6 +130,40 @@ module testDeployment '../../../main.bicep' = [
           tags: {
             costCenter: '9012'
           }
+        }
+      ]
+      projectPolicies: [
+        {
+          name: 'Default'
+          resourcePolicies: [
+            {
+              action: 'Allow'
+              resourceType: 'Images'
+            }
+            {
+              action: 'Allow'
+              resourceType: 'Skus'
+            }
+            {
+              action: 'Allow'
+              resourceType: 'AttachedNetworks'
+            }
+          ]
+        }
+        {
+          name: 'ProjectPolicy1'
+          resourcePolicies: [
+            {
+              resources: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.DevCenter/skus'
+              filter: 'Name eq \'general_i_8c32gb512ssd_v2\''
+            }
+            {
+              resources: '${devcenterExpectedResourceID}/galleries/Default/images/microsoftvisualstudio_windowsplustools_base-win11-gen2'
+            }
+            {
+              resources: '${devcenterExpectedResourceID}/galleries/Default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-24h2-ent-cpc'
+            }
+          ]
         }
       ]
     }

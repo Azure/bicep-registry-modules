@@ -46,6 +46,12 @@ param projectCatalogSettings projectCatalogSettingsType?
 @description('Optional. Define the environment types that development teams can deploy. For example, sandbox, dev, test, and production. A dev center environment type is available to a specific project only after you add an associated project environment type. You can\'t delete a dev center environment type if any existing project environment types or deployed environments reference it.')
 param environmentTypes environmentTypeType[]?
 
+@description('Optional. Project policies provide a mechanism to restrict access to certain resources—specifically, SKUs, Images, and Network Connections—to designated projects. Creating a policy does not mean it has automatically been enforced on the selected projects. It must be explicitly assigned to a project as part of the scope property. You must first create the "Default" project policy before you can create any other project policies. The "Default" project policy is automatically assigned to all projects in the Dev Center.')
+param projectPolicies projectPolicyType[]?
+
+@description('Optional. The compute galleries to associate with the Dev Center. The Dev Center identity (system or user) must have "Contributor" access to the gallery.')
+param galleries devCenterGalleryType[]?
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -187,14 +193,41 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' = {
 }
 
 module devcenter_environmentType 'environment-type/main.bicep' = [
-  for (artifactSource, index) in (environmentTypes ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Lab-ArtifactSources-${index}'
+  for (environmentType, index) in (environmentTypes ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Devcenter-EnvironmentType-${index}'
     params: {
-      devcentereName: devcenter.name
-      name: artifactSource.name
-      tags: artifactSource.?tags ?? tags
-      displayName: artifactSource.?displayName ?? artifactSource.name
+      devcenterName: devcenter.name
+      name: environmentType.name
+      tags: environmentType.?tags
+      displayName: environmentType.?displayName
     }
+  }
+]
+
+module devcenter_gallery 'gallery/main.bicep' = [
+  for (gallery, index) in (galleries ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Devcenter-Gallery-${index}'
+    params: {
+      devcenterName: devcenter.name
+      name: gallery.name
+      galleryResourceId: gallery.galleryResourceId
+    }
+  }
+]
+
+@batchSize(1)
+module devCenter_projectPolicy 'project-policy/main.bicep' = [
+  for (projectPolicy, index) in (projectPolicies ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Devcenter-ProjectPolicy-${index}'
+    params: {
+      devcenterName: devcenter.name
+      name: projectPolicy.name
+      resourcePolicies: projectPolicy.?resourcePolicies
+      projectResourceIds: projectPolicy.?projectResourceIds
+    }
+    dependsOn: [
+      devcenter_gallery
+    ]
   }
 ]
 
@@ -279,4 +312,26 @@ type environmentTypeType = {
 
   @description('Optional. Tags of the resource.')
   tags: object?
+}
+
+import { resourcePolicyType } from 'project-policy/main.bicep'
+@description('The type for project policies.')
+type projectPolicyType = {
+  @description('Required. The name of the project policy.')
+  name: string
+
+  @description('Required. Resource policies that are a part of this project policy.')
+  resourcePolicies: resourcePolicyType
+
+  @description('Optional. Resources (Projects) that have access to the shared resources that are a part of this project policy. If not specified, the project policy status will be set to "Unassigned".')
+  projectResourceIds: string[]?
+}
+
+@description('The type for Dev Center Gallery.')
+type devCenterGalleryType = {
+  @description('Required. The name of the gallery resource.')
+  name: string
+
+  @description('Required. The resource ID of the backing Azure Compute Gallery. The devcenter identity (system or user) must have "Contributor" access to the gallery.')
+  galleryResourceId: string
 }
