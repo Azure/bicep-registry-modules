@@ -708,6 +708,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
                 ttl: 2629746
               }
             ]
+            manualThroughput: 400
             name: 'car_collection'
             shardKeys: [
               {
@@ -715,7 +716,6 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
                 type: 'Hash'
               }
             ]
-            throughput: 600
           }
           {
             indexes: [
@@ -752,8 +752,8 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             ]
           }
         ]
+        manualThroughput: 600
         name: 'mdb-dddamng-001'
-        throughput: 800
       }
       {
         collections: [
@@ -783,6 +783,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
                 ttl: 2629746
               }
             ]
+            manualThroughput: 400
             name: 'bike_collection'
             shardKeys: [
               {
@@ -792,6 +793,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             ]
           }
           {
+            autoscaleMaxThroughput: 1000
             indexes: [
               {
                 keys: [
@@ -827,6 +829,47 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
           }
         ]
         name: 'mdb-dddamng-002'
+      }
+      {
+        autoscaleMaxThroughput: 1000
+        collections: [
+          {
+            autoscaleMaxThroughput: 1000
+            indexes: [
+              {
+                keys: [
+                  '_id'
+                ]
+              }
+              {
+                keys: [
+                  '$**'
+                ]
+              }
+              {
+                keys: [
+                  'wheel_id'
+                  'wheel_model'
+                ]
+                unique: true
+              }
+              {
+                keys: [
+                  '_ts'
+                ]
+                ttl: 2629746
+              }
+            ]
+            name: 'wheel_collection'
+            shardKeys: [
+              {
+                field: 'wheel_id'
+                type: 'Hash'
+              }
+            ]
+          }
+        ]
+        name: 'mdb-dddamng-003'
       }
     ]
     zoneRedundant: false
@@ -881,14 +924,14 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
                   "ttl": 2629746
                 }
               ],
+              "manualThroughput": 400,
               "name": "car_collection",
               "shardKeys": [
                 {
                   "field": "car_id",
                   "type": "Hash"
                 }
-              ],
-              "throughput": 600
+              ]
             },
             {
               "indexes": [
@@ -925,8 +968,8 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               ]
             }
           ],
-          "name": "mdb-dddamng-001",
-          "throughput": 800
+          "manualThroughput": 600,
+          "name": "mdb-dddamng-001"
         },
         {
           "collections": [
@@ -956,6 +999,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
                   "ttl": 2629746
                 }
               ],
+              "manualThroughput": 400,
               "name": "bike_collection",
               "shardKeys": [
                 {
@@ -965,6 +1009,7 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
               ]
             },
             {
+              "autoscaleMaxThroughput": 1000,
               "indexes": [
                 {
                   "keys": [
@@ -1000,6 +1045,47 @@ module databaseAccount 'br/public:avm/res/document-db/database-account:<version>
             }
           ],
           "name": "mdb-dddamng-002"
+        },
+        {
+          "autoscaleMaxThroughput": 1000,
+          "collections": [
+            {
+              "autoscaleMaxThroughput": 1000,
+              "indexes": [
+                {
+                  "keys": [
+                    "_id"
+                  ]
+                },
+                {
+                  "keys": [
+                    "$**"
+                  ]
+                },
+                {
+                  "keys": [
+                    "wheel_id",
+                    "wheel_model"
+                  ],
+                  "unique": true
+                },
+                {
+                  "keys": [
+                    "_ts"
+                  ],
+                  "ttl": 2629746
+                }
+              ],
+              "name": "wheel_collection",
+              "shardKeys": [
+                {
+                  "field": "wheel_id",
+                  "type": "Hash"
+                }
+              ]
+            }
+          ],
+          "name": "mdb-dddamng-003"
         }
       ]
     },
@@ -1052,6 +1138,7 @@ param mongodbDatabases = [
             ttl: 2629746
           }
         ]
+        manualThroughput: 400
         name: 'car_collection'
         shardKeys: [
           {
@@ -1059,7 +1146,6 @@ param mongodbDatabases = [
             type: 'Hash'
           }
         ]
-        throughput: 600
       }
       {
         indexes: [
@@ -1096,8 +1182,8 @@ param mongodbDatabases = [
         ]
       }
     ]
+    manualThroughput: 600
     name: 'mdb-dddamng-001'
-    throughput: 800
   }
   {
     collections: [
@@ -1127,6 +1213,7 @@ param mongodbDatabases = [
             ttl: 2629746
           }
         ]
+        manualThroughput: 400
         name: 'bike_collection'
         shardKeys: [
           {
@@ -1136,6 +1223,7 @@ param mongodbDatabases = [
         ]
       }
       {
+        autoscaleMaxThroughput: 1000
         indexes: [
           {
             keys: [
@@ -1171,6 +1259,47 @@ param mongodbDatabases = [
       }
     ]
     name: 'mdb-dddamng-002'
+  }
+  {
+    autoscaleMaxThroughput: 1000
+    collections: [
+      {
+        autoscaleMaxThroughput: 1000
+        indexes: [
+          {
+            keys: [
+              '_id'
+            ]
+          }
+          {
+            keys: [
+              '$**'
+            ]
+          }
+          {
+            keys: [
+              'wheel_id'
+              'wheel_model'
+            ]
+            unique: true
+          }
+          {
+            keys: [
+              '_ts'
+            ]
+            ttl: 2629746
+          }
+        ]
+        name: 'wheel_collection'
+        shardKeys: [
+          {
+            field: 'wheel_id'
+            type: 'Hash'
+          }
+        ]
+      }
+    ]
+    name: 'mdb-dddamng-003'
   }
 ]
 param zoneRedundant = false
@@ -3550,8 +3679,8 @@ Configuration for databases when using Azure Cosmos DB for MongoDB RU.
 | :-- | :-- | :-- |
 | [`autoscaleMaxThroughput`](#parameter-mongodbdatabasesautoscalemaxthroughput) | int | The maximum throughput for the database when using autoscale. |
 | [`collections`](#parameter-mongodbdatabasescollections) | array | The set of collections within the database. |
+| [`manualThroughput`](#parameter-mongodbdatabasesmanualthroughput) | int | The provisioned throughput assigned to the database. |
 | [`tags`](#parameter-mongodbdatabasestags) | object | Tags of the resource. |
-| [`throughput`](#parameter-mongodbdatabasesthroughput) | int | The provisioned throughput assigned to the database. |
 
 ### Parameter: `mongodbDatabases.name`
 
@@ -3693,19 +3822,19 @@ Tags for the resource.
 - Required: No
 - Type: object
 
+### Parameter: `mongodbDatabases.manualThroughput`
+
+The provisioned throughput assigned to the database.
+
+- Required: No
+- Type: int
+
 ### Parameter: `mongodbDatabases.tags`
 
 Tags of the resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `mongodbDatabases.throughput`
-
-The provisioned throughput assigned to the database.
-
-- Required: No
-- Type: int
 
 ### Parameter: `networkRestrictions`
 
