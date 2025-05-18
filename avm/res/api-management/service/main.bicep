@@ -758,7 +758,7 @@ type apiVersionSetType = {
   @sys.description('Required. API Version set name.')
   name: string
 
-  @sys.description('Required. The display name of the Name of API Version Set')
+  @sys.description('Required. The display name of the Name of API Version Set.')
   @minLength(1)
   @maxLength(100)
   displayName: string

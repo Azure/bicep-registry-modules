@@ -2525,7 +2525,7 @@ API Version Sets.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-apiversionsetsdisplayname) | string | The display name of the Name of API Version Set |
+| [`displayName`](#parameter-apiversionsetsdisplayname) | string | The display name of the Name of API Version Set. |
 | [`name`](#parameter-apiversionsetsname) | string | API Version set name. |
 | [`versioningScheme`](#parameter-apiversionsetsversioningscheme) | string | An value that determines where the API Version identifier will be located in a HTTP request. |
 
@@ -2539,7 +2539,7 @@ API Version Sets.
 
 ### Parameter: `apiVersionSets.displayName`
 
-The display name of the Name of API Version Set
+The display name of the Name of API Version Set.
 
 - Required: Yes
 - Type: string
