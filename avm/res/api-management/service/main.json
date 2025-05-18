@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "16687262834326812912"
+      "templateHash": "946904264143053360"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -370,7 +370,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Optional. API Version set name."
+            "description": "Required. API Version set name."
           }
         },
         "displayName": {
@@ -511,7 +511,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. A list of availability zones denoting where the resource needs to come from"
+            "description": "Optional. A list of availability zones denoting where the resource needs to come from."
           }
         }
       },
@@ -1222,7 +1222,7 @@
     },
     "skuCapacity": {
       "type": "int",
-      "defaultValue": 2,
+      "defaultValue": 3,
       "metadata": {
         "description": "Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/."
       }
@@ -2993,7 +2993,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "9567092172117454207"
+              "templateHash": "11694183233744573980"
             },
             "name": "API Management Service API Version Sets",
             "description": "This module deploys an API Management Service API Version Set."
@@ -3017,7 +3017,7 @@
               "minLength": 1,
               "maxLength": 100,
               "metadata": {
-                "description": "Required. The display name of the Name of API Version Set"
+                "description": "Required. The display name of the Name of API Version Set."
               }
             },
             "versioningScheme": {

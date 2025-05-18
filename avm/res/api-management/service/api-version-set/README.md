@@ -20,7 +20,7 @@ This module deploys an API Management Service API Version Set.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`displayName`](#parameter-displayname) | string | The display name of the Name of API Version Set |
+| [`displayName`](#parameter-displayname) | string | The display name of the Name of API Version Set. |
 | [`versioningScheme`](#parameter-versioningscheme) | string | An value that determines where the API Version identifier will be located in a HTTP request. |
 
 **Conditional parameters**
@@ -40,7 +40,7 @@ This module deploys an API Management Service API Version Set.
 
 ### Parameter: `displayName`
 
-The display name of the Name of API Version Set
+The display name of the Name of API Version Set.
 
 - Required: Yes
 - Type: string

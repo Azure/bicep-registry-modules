@@ -1839,7 +1839,7 @@ The scale units for this API Management service. Required if using Basic, Standa
 
 - Required: No
 - Type: int
-- Default: `2`
+- Default: `3`
 
 ### Parameter: `additionalLocations`
 
@@ -1859,7 +1859,7 @@ Additional datacenter locations of the API Management service. Not supported wit
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`availabilityZones`](#parameter-additionallocationsavailabilityzones) | array | A list of availability zones denoting where the resource needs to come from |
+| [`availabilityZones`](#parameter-additionallocationsavailabilityzones) | array | A list of availability zones denoting where the resource needs to come from. |
 | [`disableGateway`](#parameter-additionallocationsdisablegateway) | bool | Property only valid for an Api Management service deployed in multiple locations. This can be used to disable the gateway in this additional location. |
 | [`natGatewayState`](#parameter-additionallocationsnatgatewaystate) | string | Property can be used to enable NAT Gateway for this API Management service. |
 | [`publicIpAddressResourceId`](#parameter-additionallocationspublicipaddressresourceid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the location. Supported only for Premium SKU being deployed in Virtual Network. |
@@ -1915,7 +1915,7 @@ Name of the Sku.
 
 ### Parameter: `additionalLocations.availabilityZones`
 
-A list of availability zones denoting where the resource needs to come from
+A list of availability zones denoting where the resource needs to come from.
 
 - Required: No
 - Type: array
@@ -2526,6 +2526,7 @@ API Version Sets.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-apiversionsetsdisplayname) | string | The display name of the Name of API Version Set |
+| [`name`](#parameter-apiversionsetsname) | string | API Version set name. |
 | [`versioningScheme`](#parameter-apiversionsetsversioningscheme) | string | An value that determines where the API Version identifier will be located in a HTTP request. |
 
 **Optional parameters**
@@ -2533,13 +2534,19 @@ API Version Sets.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`description`](#parameter-apiversionsetsdescription) | string | Description of API Version Set. |
-| [`name`](#parameter-apiversionsetsname) | string | API Version set name. |
 | [`versionHeaderName`](#parameter-apiversionsetsversionheadername) | string | Name of HTTP header parameter that indicates the API Version if versioningScheme is set to header. |
 | [`versionQueryName`](#parameter-apiversionsetsversionqueryname) | string | Name of query parameter that indicates the API Version if versioningScheme is set to query. |
 
 ### Parameter: `apiVersionSets.displayName`
 
 The display name of the Name of API Version Set
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apiVersionSets.name`
+
+API Version set name.
 
 - Required: Yes
 - Type: string
@@ -2564,13 +2571,6 @@ An value that determines where the API Version identifier will be located in a H
 Description of API Version Set.
 
 - Required: No
-- Type: string
-
-### Parameter: `apiVersionSets.name`
-
-API Version set name.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `apiVersionSets.versionHeaderName`

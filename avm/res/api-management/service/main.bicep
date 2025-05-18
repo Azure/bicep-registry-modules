@@ -78,7 +78,7 @@ param roleAssignments roleAssignmentType[]?
 param sku string = 'Premium'
 
 @description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
-param skuCapacity int = 2
+param skuCapacity int = 3
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
 param subnetResourceId string?
@@ -755,7 +755,7 @@ type apiType = {
 @export()
 @description('The type of an API Management service API Version Set.')
 type apiVersionSetType = {
-  @sys.description('Optional. API Version set name.')
+  @sys.description('Required. API Version set name.')
   name: string
 
   @sys.description('Required. The display name of the Name of API Version Set')
@@ -810,6 +810,6 @@ type additionalLocationType = {
     subnetResourceId: string
   }?
 
-  @sys.description('Optional. A list of availability zones denoting where the resource needs to come from')
+  @sys.description('Optional. A list of availability zones denoting where the resource needs to come from.')
   availabilityZones: (1 | 2 | 3)[]?
 }

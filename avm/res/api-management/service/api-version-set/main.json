@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "9567092172117454207"
+      "templateHash": "11694183233744573980"
     },
     "name": "API Management Service API Version Sets",
     "description": "This module deploys an API Management Service API Version Set."
@@ -30,7 +30,7 @@
       "minLength": 1,
       "maxLength": 100,
       "metadata": {
-        "description": "Required. The display name of the Name of API Version Set"
+        "description": "Required. The display name of the Name of API Version Set."
       }
     },
     "versioningScheme": {
