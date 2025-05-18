@@ -151,7 +151,7 @@ module testDeployment '../../../main.bicep' = [
           ]
         }
         {
-          name: 'ProjectPolicy1'
+          name: 'DevProjectsPolicy'
           resourcePolicies: [
             {
               resources: '/subscriptions/${subscription().subscriptionId}/providers/Microsoft.DevCenter/skus'
@@ -163,6 +163,9 @@ module testDeployment '../../../main.bicep' = [
             {
               resources: '${devcenterExpectedResourceID}/galleries/Default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-24h2-ent-cpc'
             }
+          ]
+          projectResourceIds: [
+            '${resourceGroup.id}/providers/Microsoft.DevCenter/projects/DevProject'
           ]
         }
       ]
