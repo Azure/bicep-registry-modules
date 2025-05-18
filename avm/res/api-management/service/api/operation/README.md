@@ -23,6 +23,7 @@ This module deploys an API Management Service API Policy.
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-displayname) | string | The display name of the operation. |
 | [`method`](#parameter-method) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
+| [`name`](#parameter-name) | string | The name of the policy. |
 
 **Conditional parameters**
 
@@ -40,12 +41,6 @@ This module deploys an API Management Service API Policy.
 | [`request`](#parameter-request) | object | An entity containing request details. |
 | [`responses`](#parameter-responses) | array | An entity containing request details. |
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the policy. |
-
 **Requried parameters**
 
 | Parameter | Type | Description |
@@ -62,6 +57,13 @@ The display name of the operation.
 ### Parameter: `method`
 
 A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `name`
+
+The name of the policy.
 
 - Required: Yes
 - Type: string
@@ -145,13 +147,6 @@ An entity containing request details.
 
 - Required: No
 - Type: array
-
-### Parameter: `name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `urlTemplate`
 

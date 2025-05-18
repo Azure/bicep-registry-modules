@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "15145797551796723628"
+      "templateHash": "11836115710342568822"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -756,7 +756,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Requied. The name of the policy."
+            "description": "Required. The name of the policy."
           }
         },
         "displayName": {
@@ -1549,7 +1549,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "13822292373468302846"
+              "templateHash": "10178815499454391896"
             },
             "name": "API Management Service APIs",
             "description": "This module deploys an API Management Service API."
@@ -1561,7 +1561,7 @@
                 "name": {
                   "type": "string",
                   "metadata": {
-                    "description": "Requied. The name of the policy."
+                    "description": "Required. The name of the policy."
                   }
                 },
                 "displayName": {
@@ -2507,7 +2507,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.35.1.17967",
-                      "templateHash": "5320265658981383788"
+                      "templateHash": "4453099014023660004"
                     },
                     "name": "API Management Service APIs Policies",
                     "description": "This module deploys an API Management Service API Policy."
@@ -2563,7 +2563,7 @@
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "Requied. The name of the policy."
+                        "description": "Required. The name of the policy."
                       }
                     },
                     "displayName": {

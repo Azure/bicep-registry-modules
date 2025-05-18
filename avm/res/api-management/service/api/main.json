@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "589174899645924350"
+      "templateHash": "10178815499454391896"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -964,7 +964,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "5320265658981383788"
+              "templateHash": "4453099014023660004"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy."
@@ -1020,7 +1020,7 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Requied. The name of the policy."
+                "description": "Required. The name of the policy."
               }
             },
             "displayName": {

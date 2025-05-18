@@ -2150,6 +2150,7 @@ The operations of the api.
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-apisoperationsdisplayname) | string | The display name of the operation. |
 | [`method`](#parameter-apisoperationsmethod) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
+| [`name`](#parameter-apisoperationsname) | string | The name of the policy. |
 
 **Optional parameters**
 
@@ -2159,12 +2160,6 @@ The operations of the api.
 | [`policies`](#parameter-apisoperationspolicies) | array | The policies to apply to the operation. |
 | [`request`](#parameter-apisoperationsrequest) | object | An entity containing request details. |
 | [`responses`](#parameter-apisoperationsresponses) | array | An entity containing request details. |
-
-**Requied parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-apisoperationsname) | string | The name of the policy. |
 
 **Requried parameters**
 
@@ -2182,6 +2177,13 @@ The display name of the operation.
 ### Parameter: `apis.operations.method`
 
 A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.operations.name`
+
+The name of the policy.
 
 - Required: Yes
 - Type: string
@@ -2251,13 +2253,6 @@ An entity containing request details.
 
 - Required: No
 - Type: array
-
-### Parameter: `apis.operations.name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `apis.operations.urlTemplate`
 
