@@ -54,6 +54,8 @@ spec:
     - Azure.SQLMI.MaintenanceWindow # Excluded as it requires user input
     # Application Gateway
     - Azure.AppGw.UseHTTPS # Excluded as it requires user input and additional configuration
+    # SQL Server
+    - Azure.SQL.VAScan # Excluded as it requires user input and additional configuration
   if:
     name: "."
     contains:
