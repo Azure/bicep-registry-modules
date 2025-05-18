@@ -5,13 +5,112 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "840069562099785569"
+      "version": "0.35.1.17967",
+      "templateHash": "12798648076250225784"
     },
     "name": "Azure Virtual Desktop Application Group",
     "description": "This module deploys an Azure Virtual Desktop Application Group."
   },
   "definitions": {
+    "applicationType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the Application to be created in the Application Group."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the Application."
+          }
+        },
+        "friendlyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Friendly name of the Application."
+          }
+        },
+        "filePath": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Specifies a path for the executable file for the Application."
+          }
+        },
+        "commandLineSetting": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "DoNotAllow",
+            "Require"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all."
+          }
+        },
+        "commandLineArguments": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Command-Line Arguments for the Application."
+          }
+        },
+        "showInPortal": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies whether to show the RemoteApp program in the RD Web Access server."
+          }
+        },
+        "iconPath": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Path to icon."
+          }
+        },
+        "iconIndex": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Index of the icon."
+          }
+        },
+        "applicationType": {
+          "type": "string",
+          "allowedValues": [
+            "InBuilt",
+            "MsixApplication"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource Type of Application."
+          }
+        },
+        "msixPackageApplicationId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the package application Id for MSIX applications."
+          }
+        },
+        "msixPackageFamilyName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specifies the package family name for MSIX applications."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of an application."
+      }
+    },
     "diagnosticSettingLogsOnlyType": {
       "type": "object",
       "properties": {
@@ -240,6 +339,13 @@
         "description": "Required. The type of the Application Group to be created. Allowed values: RemoteApp or Desktop."
       }
     },
+    "showInFeed": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Boolean representing whether the applicationGroup is show in the feed."
+      }
+    },
     "hostpoolName": {
       "type": "string",
       "metadata": {
@@ -262,6 +368,9 @@
     },
     "applications": {
       "type": "array",
+      "items": {
+        "$ref": "#/definitions/applicationType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. List of applications to be created in the Application Group."
@@ -363,15 +472,15 @@
         }
       }
     },
-    "appGroup_hostpool": {
+    "hostpool": {
       "existing": true,
       "type": "Microsoft.DesktopVirtualization/hostPools",
-      "apiVersion": "2022-09-09",
+      "apiVersion": "2024-04-03",
       "name": "[parameters('hostpoolName')]"
     },
     "appGroup": {
       "type": "Microsoft.DesktopVirtualization/applicationGroups",
-      "apiVersion": "2023-09-05",
+      "apiVersion": "2024-04-03",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -379,7 +488,8 @@
         "hostPoolArmPath": "[resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostpoolName'))]",
         "friendlyName": "[parameters('friendlyName')]",
         "description": "[parameters('description')]",
-        "applicationGroupType": "[parameters('applicationGroupType')]"
+        "applicationGroupType": "[parameters('applicationGroupType')]",
+        "showInFeed": "[parameters('showInFeed')]"
       }
     },
     "appGroup_lock": {
@@ -493,6 +603,15 @@
           },
           "iconIndex": {
             "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'iconIndex')]"
+          },
+          "applicationType": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'applicationType')]"
+          },
+          "msixPackageApplicationId": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'msixPackageApplicationId')]"
+          },
+          "msixPackageFamilyName": {
+            "value": "[tryGet(coalesce(parameters('applications'), createArray())[copyIndex()], 'msixPackageFamilyName')]"
           }
         },
         "template": {
@@ -502,8 +621,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "15850672413939004144"
+              "version": "0.35.1.17967",
+              "templateHash": "1576938984621251033"
             },
             "name": "Azure Virtual Desktop Application Group Application",
             "description": "This module deploys an Azure Virtual Desktop Application Group Application."
@@ -579,18 +698,43 @@
               "metadata": {
                 "description": "Optional. Index of the icon."
               }
+            },
+            "applicationType": {
+              "type": "string",
+              "nullable": true,
+              "allowedValues": [
+                "InBuilt",
+                "MsixApplication"
+              ],
+              "metadata": {
+                "description": "Optional. Resource Type of Application."
+              }
+            },
+            "msixPackageApplicationId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the package application Id for MSIX applications."
+              }
+            },
+            "msixPackageFamilyName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the package family name for MSIX applications."
+              }
             }
           },
           "resources": {
             "appGroup": {
               "existing": true,
               "type": "Microsoft.DesktopVirtualization/applicationGroups",
-              "apiVersion": "2023-09-05",
+              "apiVersion": "2024-04-03",
               "name": "[parameters('applicationGroupName')]"
             },
             "application": {
               "type": "Microsoft.DesktopVirtualization/applicationGroups/applications",
-              "apiVersion": "2023-09-05",
+              "apiVersion": "2024-04-03",
               "name": "[format('{0}/{1}', parameters('applicationGroupName'), parameters('name'))]",
               "properties": {
                 "description": "[parameters('description')]",
@@ -600,7 +744,10 @@
                 "commandLineArguments": "[parameters('commandLineArguments')]",
                 "showInPortal": "[parameters('showInPortal')]",
                 "iconPath": "[parameters('iconPath')]",
-                "iconIndex": "[parameters('iconIndex')]"
+                "iconIndex": "[parameters('iconIndex')]",
+                "applicationType": "[parameters('applicationType')]",
+                "msixPackageApplicationId": "[parameters('msixPackageApplicationId')]",
+                "msixPackageFamilyName": "[parameters('msixPackageFamilyName')]"
               }
             }
           },
@@ -661,7 +808,7 @@
       "metadata": {
         "description": "The location of the scaling plan."
       },
-      "value": "[reference('appGroup', '2023-09-05', 'full').location]"
+      "value": "[reference('appGroup', '2024-04-03', 'full').location]"
     }
   }
 }

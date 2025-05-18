@@ -15,6 +15,9 @@ param location string = resourceGroup().location
 ])
 param applicationGroupType string
 
+@sys.description('Optional. Boolean representing whether the applicationGroup is show in the feed.')
+param showInFeed bool = true
+
 @sys.description('Required. Name of the Host Pool to be linked to this Application Group.')
 param hostpoolName string
 
@@ -25,7 +28,7 @@ param friendlyName string = name
 param description string?
 
 @sys.description('Optional. List of applications to be created in the Application Group.')
-param applications array?
+param applications applicationType[]?
 
 @sys.description('Optional. Tags of the resource.')
 param tags object?
@@ -100,19 +103,20 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' existing = {
+resource hostpool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' existing = {
   name: hostpoolName
 }
 
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' = {
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-04-03' = {
   name: name
   location: location
   tags: tags
   properties: {
-    hostPoolArmPath: appGroup_hostpool.id
+    hostPoolArmPath: hostpool.id
     friendlyName: friendlyName
     description: description
     applicationGroupType: applicationGroupType
+    showInFeed: showInFeed
   }
 }
 
@@ -130,6 +134,9 @@ module appGroup_applications 'application/main.bicep' = [
       showInPortal: application.?showInPortal
       iconPath: application.?iconPath ?? application.filePath
       iconIndex: application.?iconIndex
+      applicationType: application.?applicationType
+      msixPackageApplicationId: application.?msixPackageApplicationId
+      msixPackageFamilyName: application.?msixPackageFamilyName
     }
   }
 ]
@@ -194,3 +201,47 @@ output name string = appGroup.name
 
 @sys.description('The location of the scaling plan.')
 output location string = appGroup.location
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@sys.description('The type of an application.')
+type applicationType = {
+  @sys.description('Required. Name of the Application to be created in the Application Group.')
+  name: string
+
+  @sys.description('Optional. Description of the Application.')
+  description: string?
+
+  @sys.description('Required. Friendly name of the Application.')
+  friendlyName: string
+
+  @sys.description('Required. Specifies a path for the executable file for the Application.')
+  filePath: string
+
+  @sys.description('Optional. Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all.')
+  commandLineSetting: ('Allow' | 'DoNotAllow' | 'Require')?
+
+  @sys.description('Optional. Command-Line Arguments for the Application.')
+  commandLineArguments: string?
+
+  @sys.description('Optional. Specifies whether to show the RemoteApp program in the RD Web Access server.')
+  showInPortal: bool?
+
+  @sys.description('Optional. Path to icon.')
+  iconPath: string?
+
+  @sys.description('Optional. Index of the icon.')
+  iconIndex: int?
+
+  @sys.description('Optional. Resource Type of Application.')
+  applicationType: ('InBuilt' | 'MsixApplication')?
+
+  @sys.description('Optional. Specifies the package application Id for MSIX applications.')
+  msixPackageApplicationId: string?
+
+  @sys.description('Optional. Specifies the package family name for MSIX applications.')
+  msixPackageFamilyName: string?
+}

@@ -63,7 +63,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}002'
-      location: resourceLocation
       applicationGroupType: 'Desktop'
       hostpoolName: nestedDependencies.outputs.hostPoolName
       diagnosticSettings: [
@@ -79,9 +78,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
