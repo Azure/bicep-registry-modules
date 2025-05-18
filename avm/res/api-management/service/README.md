@@ -1123,7 +1123,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     apis: [
       {
-        apiVersionSetName: 'echo-version'
+        apiVersionSetName: 'echo-version-set'
         description: 'An echo API service'
         displayName: 'Echo API'
         name: 'echo-api'
@@ -1340,7 +1340,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "apis": {
       "value": [
         {
-          "apiVersionSetName": "echo-version",
+          "apiVersionSetName": "echo-version-set",
           "description": "An echo API service",
           "displayName": "Echo API",
           "name": "echo-api",
@@ -1579,7 +1579,7 @@ param additionalLocations = [
 ]
 param apis = [
   {
-    apiVersionSetName: 'echo-version'
+    apiVersionSetName: 'echo-version-set'
     description: 'An echo API service'
     displayName: 'Echo API'
     name: 'echo-api'
