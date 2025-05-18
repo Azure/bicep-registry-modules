@@ -35,7 +35,7 @@ param apiType string = 'http'
 param apiVersion string?
 
 @description('Optional. Indicates the Version identifier of the API version set.')
-param apiVersionSetId string?
+param apiVersionSetResourceId string?
 
 @description('Optional. Description of the API Version.')
 param apiVersionDescription string?
@@ -117,7 +117,7 @@ resource api 'Microsoft.ApiManagement/service/apis@2024-05-01' = {
     apiType: apiType
     apiVersion: apiVersion
     apiVersionDescription: apiVersionDescription
-    apiVersionSetId: apiVersionSetId
+    apiVersionSetId: apiVersionSetResourceId
     authenticationSettings: authenticationSettings ?? {}
     description: apiDescription ?? ''
     displayName: displayName
