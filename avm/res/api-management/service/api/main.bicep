@@ -209,7 +209,7 @@ import * as operationTypes from 'operation/main.bicep'
 @export()
 @sys.description('The type of an operation.')
 type operationType = {
-  @sys.description('Requied. The name of the policy.')
+  @sys.description('Required. The name of the policy.')
   name: string
 
   @sys.description('Required. The display name of the operation.')

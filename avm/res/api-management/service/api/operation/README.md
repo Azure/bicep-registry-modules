@@ -40,7 +40,7 @@ This module deploys an API Management Service API Policy.
 | [`request`](#parameter-request) | object | An entity containing request details. |
 | [`responses`](#parameter-responses) | array | An entity containing request details. |
 
-**Requied parameters**
+**Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |

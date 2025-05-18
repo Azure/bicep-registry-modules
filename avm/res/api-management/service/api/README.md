@@ -340,6 +340,7 @@ The operations of the api.
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-operationsdisplayname) | string | The display name of the operation. |
 | [`method`](#parameter-operationsmethod) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
+| [`name`](#parameter-operationsname) | string | The name of the policy. |
 
 **Optional parameters**
 
@@ -349,12 +350,6 @@ The operations of the api.
 | [`policies`](#parameter-operationspolicies) | array | The policies to apply to the operation. |
 | [`request`](#parameter-operationsrequest) | object | An entity containing request details. |
 | [`responses`](#parameter-operationsresponses) | array | An entity containing request details. |
-
-**Requied parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-operationsname) | string | The name of the policy. |
 
 **Requried parameters**
 
@@ -372,6 +367,13 @@ The display name of the operation.
 ### Parameter: `operations.method`
 
 A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `operations.name`
+
+The name of the policy.
 
 - Required: Yes
 - Type: string
@@ -441,13 +443,6 @@ An entity containing request details.
 
 - Required: No
 - Type: array
-
-### Parameter: `operations.name`
-
-The name of the policy.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `operations.urlTemplate`
 
