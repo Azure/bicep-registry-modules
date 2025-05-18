@@ -2,7 +2,7 @@ metadata name = 'API Management Services'
 metadata description = 'This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.'
 
 @description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
-param additionalLocations array = []
+param additionalLocations additionalLocationType[]?
 
 @description('Required. The name of the API Management service.')
 param name string
@@ -248,7 +248,17 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
-    additionalLocations: contains(sku, 'Premium') ? additionalLocations : []
+    additionalLocations: contains(sku, 'Premium') && !empty(additionalLocations)
+      ? map((additionalLocations ?? []), additLoc => {
+          location: additLoc.location
+          sku: additLoc.sku
+          disableGateway: additLoc.?disableGateway
+          natGatewayState: additLoc.?natGatewayState
+          publicIpAddressId: additLoc.?publicIpAddressResourceId
+          virtualNetworkConfiguration: additLoc.?virtualNetworkConfiguration
+          zones: map(additLoc.?availabilityZones, zone => string(zone))
+        })
+      : []
     customProperties: contains(sku, 'Consumption') ? null : customProperties
     certificates: certificates
     enableClientCertificate: enableClientCertificate ? true : null
@@ -259,7 +269,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
           subnetResourceId: subnetResourceId
         }
       : null
-    publicIpAddressId: !empty(publicIpAddressResourceId) ? publicIpAddressResourceId : null
+    publicIpAddressId: publicIpAddressResourceId
     apiVersionConstraint: !empty(minApiVersion)
       ? {
           minApiVersion: minApiVersion
@@ -768,4 +778,38 @@ type apiVersionSetType = {
   @minLength(1)
   @maxLength(100)
   versionQueryName: string?
+}
+
+@export()
+@description('The type of an API Management service additional location.')
+type additionalLocationType = {
+  @sys.description('Optional. Property only valid for an Api Management service deployed in multiple locations. This can be used to disable the gateway in this additional location.')
+  disableGateway: bool?
+
+  @sys.description('Required. The location name of the additional region among Azure Data center regions.')
+  location: string
+
+  @sys.description('Optional. Property can be used to enable NAT Gateway for this API Management service.')
+  natGatewayState: ('Disabled' | 'Enabled')?
+
+  @sys.description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the location. Supported only for Premium SKU being deployed in Virtual Network.')
+  publicIpAddressResourceId: string?
+
+  @sys.description('Required. SKU properties of the API Management service.')
+  sku: {
+    @sys.description('Required. Capacity of the SKU (number of deployed units of the SKU). For Consumption SKU capacity must be specified as 0.')
+    capacity: int
+
+    @sys.description('Required. Name of the Sku.')
+    name: ('Basic' | 'BasicV2' | 'Consumption' | 'Developer' | 'Isolated' | 'Premium' | 'Standard' | 'StandardV2')
+  }
+
+  @sys.description('Optional. Virtual network configuration for the location.')
+  virtualNetworkConfiguration: {
+    @sys.description('Required. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
+    subnetResourceId: string
+  }?
+
+  @sys.description('Optional. A list of availability zones denoting where the resource needs to come from')
+  availabilityZones: (1 | 2 | 3)[]?
 }

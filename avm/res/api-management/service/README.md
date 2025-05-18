@@ -296,7 +296,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       {
         disableGateway: false
         location: '<location>'
-        publicIpAddressId: '<publicIpAddressId>'
+        publicIpAddressResourceId: '<publicIpAddressResourceId>'
         sku: {
           capacity: 1
           name: 'Premium'
@@ -531,7 +531,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         {
           "disableGateway": false,
           "location": "<location>",
-          "publicIpAddressId": "<publicIpAddressId>",
+          "publicIpAddressResourceId": "<publicIpAddressResourceId>",
           "sku": {
             "capacity": 1,
             "name": "Premium"
@@ -802,7 +802,7 @@ param additionalLocations = [
   {
     disableGateway: false
     location: '<location>'
-    publicIpAddressId: '<publicIpAddressId>'
+    publicIpAddressResourceId: '<publicIpAddressResourceId>'
     sku: {
       capacity: 1
       name: 'Premium'
@@ -1109,10 +1109,15 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     // Non-required parameters
     additionalLocations: [
       {
+        availabilityZones: [
+          1
+          2
+          3
+        ]
         disableGateway: false
         location: 'westus'
         sku: {
-          capacity: 1
+          capacity: 3
           name: 'Premium'
         }
       }
@@ -1319,10 +1324,15 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "additionalLocations": {
       "value": [
         {
+          "availabilityZones": [
+            1,
+            2,
+            3
+          ],
           "disableGateway": false,
           "location": "westus",
           "sku": {
-            "capacity": 1,
+            "capacity": 3,
             "name": "Premium"
           }
         }
@@ -1555,10 +1565,15 @@ param publisherName = 'az-amorg-x-001'
 // Non-required parameters
 param additionalLocations = [
   {
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     disableGateway: false
     location: 'westus'
     sku: {
-      capacity: 1
+      capacity: 3
       name: 'Premium'
     }
   }
@@ -1832,7 +1847,134 @@ Additional datacenter locations of the API Management service. Not supported wit
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-additionallocationslocation) | string | The location name of the additional region among Azure Data center regions. |
+| [`sku`](#parameter-additionallocationssku) | object | SKU properties of the API Management service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-additionallocationsavailabilityzones) | array | A list of availability zones denoting where the resource needs to come from |
+| [`disableGateway`](#parameter-additionallocationsdisablegateway) | bool | Property only valid for an Api Management service deployed in multiple locations. This can be used to disable the gateway in this additional location. |
+| [`natGatewayState`](#parameter-additionallocationsnatgatewaystate) | string | Property can be used to enable NAT Gateway for this API Management service. |
+| [`publicIpAddressResourceId`](#parameter-additionallocationspublicipaddressresourceid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the location. Supported only for Premium SKU being deployed in Virtual Network. |
+| [`virtualNetworkConfiguration`](#parameter-additionallocationsvirtualnetworkconfiguration) | object | Virtual network configuration for the location. |
+
+### Parameter: `additionalLocations.location`
+
+The location name of the additional region among Azure Data center regions.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `additionalLocations.sku`
+
+SKU properties of the API Management service.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-additionallocationsskucapacity) | int | Capacity of the SKU (number of deployed units of the SKU). For Consumption SKU capacity must be specified as 0. |
+| [`name`](#parameter-additionallocationsskuname) | string | Name of the Sku. |
+
+### Parameter: `additionalLocations.sku.capacity`
+
+Capacity of the SKU (number of deployed units of the SKU). For Consumption SKU capacity must be specified as 0.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `additionalLocations.sku.name`
+
+Name of the Sku.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'BasicV2'
+    'Consumption'
+    'Developer'
+    'Isolated'
+    'Premium'
+    'Standard'
+    'StandardV2'
+  ]
+  ```
+
+### Parameter: `additionalLocations.availabilityZones`
+
+A list of availability zones denoting where the resource needs to come from
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+
+### Parameter: `additionalLocations.disableGateway`
+
+Property only valid for an Api Management service deployed in multiple locations. This can be used to disable the gateway in this additional location.
+
+- Required: No
+- Type: bool
+
+### Parameter: `additionalLocations.natGatewayState`
+
+Property can be used to enable NAT Gateway for this API Management service.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `additionalLocations.publicIpAddressResourceId`
+
+Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the location. Supported only for Premium SKU being deployed in Virtual Network.
+
+- Required: No
+- Type: string
+
+### Parameter: `additionalLocations.virtualNetworkConfiguration`
+
+Virtual network configuration for the location.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subnetResourceId`](#parameter-additionallocationsvirtualnetworkconfigurationsubnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
+
+### Parameter: `additionalLocations.virtualNetworkConfiguration.subnetResourceId`
+
+The full resource ID of a subnet in a virtual network to deploy the API Management service in.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `apiDiagnostics`
 

@@ -76,8 +76,13 @@ module testDeployment '../../../main.bicep' = [
           location: 'westus'
           sku: {
             name: 'Premium'
-            capacity: 1
+            capacity: 3
           }
+          availabilityZones: [
+            1
+            2
+            3
+          ]
           disableGateway: false
         }
       ]

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "11836115710342568822"
+      "templateHash": "985562387067436794"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -421,6 +421,103 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of an API Management service API Version Set."
+      }
+    },
+    "additionalLocationType": {
+      "type": "object",
+      "properties": {
+        "disableGateway": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Property only valid for an Api Management service deployed in multiple locations. This can be used to disable the gateway in this additional location."
+          }
+        },
+        "location": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The location name of the additional region among Azure Data center regions."
+          }
+        },
+        "natGatewayState": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Property can be used to enable NAT Gateway for this API Management service."
+          }
+        },
+        "publicIpAddressResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the location. Supported only for Premium SKU being deployed in Virtual Network."
+          }
+        },
+        "sku": {
+          "type": "object",
+          "properties": {
+            "capacity": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. Capacity of the SKU (number of deployed units of the SKU). For Consumption SKU capacity must be specified as 0."
+              }
+            },
+            "name": {
+              "type": "string",
+              "allowedValues": [
+                "Basic",
+                "BasicV2",
+                "Consumption",
+                "Developer",
+                "Isolated",
+                "Premium",
+                "Standard",
+                "StandardV2"
+              ],
+              "metadata": {
+                "description": "Required. Name of the Sku."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. SKU properties of the API Management service."
+          }
+        },
+        "virtualNetworkConfiguration": {
+          "type": "object",
+          "properties": {
+            "subnetResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The full resource ID of a subnet in a virtual network to deploy the API Management service in."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Virtual network configuration for the location."
+          }
+        },
+        "availabilityZones": {
+          "type": "array",
+          "allowedValues": [
+            1,
+            2,
+            3
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of availability zones denoting where the resource needs to come from"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of an API Management service additional location."
       }
     },
     "_1.policyType": {
@@ -971,7 +1068,10 @@
   "parameters": {
     "additionalLocations": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "$ref": "#/definitions/additionalLocationType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs."
       }
@@ -1367,14 +1467,14 @@
         "publisherName": "[parameters('publisherName')]",
         "notificationSenderEmail": "[parameters('notificationSenderEmail')]",
         "hostnameConfigurations": "[parameters('hostnameConfigurations')]",
-        "additionalLocations": "[if(contains(parameters('sku'), 'Premium'), parameters('additionalLocations'), createArray())]",
+        "additionalLocations": "[if(and(contains(parameters('sku'), 'Premium'), not(empty(parameters('additionalLocations')))), map(coalesce(parameters('additionalLocations'), createArray()), lambda('additLoc', createObject('location', lambdaVariables('additLoc').location, 'sku', lambdaVariables('additLoc').sku, 'disableGateway', tryGet(lambdaVariables('additLoc'), 'disableGateway'), 'natGatewayState', tryGet(lambdaVariables('additLoc'), 'natGatewayState'), 'publicIpAddressId', tryGet(lambdaVariables('additLoc'), 'publicIpAddressResourceId'), 'virtualNetworkConfiguration', tryGet(lambdaVariables('additLoc'), 'virtualNetworkConfiguration'), 'zones', map(tryGet(lambdaVariables('additLoc'), 'availabilityZones'), lambda('zone', string(lambdaVariables('zone'))))))), createArray())]",
         "customProperties": "[if(contains(parameters('sku'), 'Consumption'), null(), parameters('customProperties'))]",
         "certificates": "[parameters('certificates')]",
         "enableClientCertificate": "[if(parameters('enableClientCertificate'), true(), null())]",
         "disableGateway": "[parameters('disableGateway')]",
         "virtualNetworkType": "[parameters('virtualNetworkType')]",
         "virtualNetworkConfiguration": "[if(not(empty(parameters('subnetResourceId'))), createObject('subnetResourceId', parameters('subnetResourceId')), null())]",
-        "publicIpAddressId": "[if(not(empty(parameters('publicIpAddressResourceId'))), parameters('publicIpAddressResourceId'), null())]",
+        "publicIpAddressId": "[parameters('publicIpAddressResourceId')]",
         "apiVersionConstraint": "[if(not(empty(parameters('minApiVersion'))), createObject('minApiVersion', parameters('minApiVersion')), createObject('minApiVersion', '2021-08-01'))]",
         "restore": "[parameters('restore')]",
         "developerPortalStatus": "[if(not(equals(parameters('sku'), 'Consumption')), if(parameters('enableDeveloperPortal'), 'Enabled', 'Disabled'), null())]"
