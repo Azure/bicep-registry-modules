@@ -117,7 +117,7 @@ param newGuidValue string = newGuid()
 param apis apiType[]?
 
 @description('Optional. API Version Sets.')
-param apiVersionSets array?
+param apiVersionSets apiVersionSetType[]?
 
 @description('Optional. Authorization servers.')
 param authorizationServers authorizationServerType[]?
@@ -280,13 +280,13 @@ module service_apis 'api/main.bicep' = [
       displayName: api.displayName
       name: api.name
       path: api.path
-      apiDescription: api.?apiDescription
+      description: api.?description
       apiRevision: api.?apiRevision
       apiRevisionDescription: api.?apiRevisionDescription
       apiType: api.?apiType
       apiVersion: api.?apiVersion
       apiVersionDescription: api.?apiVersionDescription
-      apiVersionSetResourceId: api.?apiVersionSetResourceId
+      apiVersionSetName: api.?apiVersionSetName
       authenticationSettings: api.?authenticationSettings
       format: api.?format
       isCurrent: api.?isCurrent
@@ -312,7 +312,11 @@ module service_apiVersionSets 'api-version-set/main.bicep' = [
     params: {
       apiManagementServiceName: service.name
       name: apiVersionSet.name
-      properties: apiVersionSet.?properties ?? {}
+      displayName: apiVersionSet.displayName
+      versioningScheme: apiVersionSet.versioningScheme
+      description: apiVersionSet.?description
+      versionHeaderName: apiVersionSet.?versionHeaderName
+      versionQueryName: apiVersionSet.?versionQueryName
     }
   }
 ]
@@ -680,8 +684,8 @@ type apiType = {
   @description('Optional. Indicates the Version identifier of the API if the API is versioned.')
   apiVersion: string?
 
-  @description('Optional. Indicates the Version identifier of the API version set.')
-  apiVersionSetResourceId: string?
+  @description('Optional. The name of the API version set to link.')
+  apiVersionSetName: string?
 
   @description('Optional. Description of the API Version.')
   apiVersionDescription: string?
@@ -690,7 +694,7 @@ type apiType = {
   authenticationSettings: resourceInput<'Microsoft.ApiManagement/service/apis@2024-05-01'>.properties.authenticationSettings?
 
   @description('Optional. Description of the API. May include HTML formatting tags.')
-  apiDescription: string?
+  description: string?
 
   @description('Required. API name. Must be 1 to 300 characters long.')
   @maxLength(300)
@@ -736,4 +740,32 @@ type apiType = {
 
   @description('Optional. Content value when Importing an API.')
   value: string?
+}
+
+@export()
+@description('The type of an API Management service API Version Set.')
+type apiVersionSetType = {
+  @sys.description('Optional. API Version set name.')
+  name: string
+
+  @sys.description('Required. The display name of the Name of API Version Set')
+  @minLength(1)
+  @maxLength(100)
+  displayName: string
+
+  @sys.description('Required. An value that determines where the API Version identifier will be located in a HTTP request.')
+  versioningScheme: ('Header' | 'Query' | 'Segment')
+
+  @sys.description('Optional. Description of API Version Set.')
+  description: string?
+
+  @sys.description('Optional. Name of HTTP header parameter that indicates the API Version if versioningScheme is set to header.')
+  @minLength(1)
+  @maxLength(100)
+  versionHeaderName: string?
+
+  @sys.description('Optional. Name of query parameter that indicates the API Version if versioningScheme is set to query.')
+  @minLength(1)
+  @maxLength(100)
+  versionQueryName: string?
 }

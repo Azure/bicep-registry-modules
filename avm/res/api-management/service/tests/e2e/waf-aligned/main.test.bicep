@@ -101,14 +101,7 @@ module testDeployment '../../../main.bicep' = [
       minApiVersion: '2022-08-01'
       apis: [
         {
-          apiVersionSet: {
-            name: 'echo-version-set'
-            properties: {
-              description: 'An echo API version set'
-              displayName: 'Echo version set'
-              versioningScheme: 'Segment'
-            }
-          }
+          apiVersionSetName: 'echo-version'
           displayName: 'Echo API'
           description: 'An echo API service'
           name: 'echo-api'
@@ -117,6 +110,14 @@ module testDeployment '../../../main.bicep' = [
           protocols: [
             'https'
           ]
+        }
+      ]
+      apiVersionSets: [
+        {
+          name: 'echo-version-set'
+          description: 'An echo API version set'
+          displayName: 'Echo version set'
+          versioningScheme: 'Segment'
         }
       ]
       authorizationServers: [

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "8003925948340237461"
+      "version": "0.35.1.17967",
+      "templateHash": "17954633540696938037"
     },
     "name": "API Management Service APIs Policies",
     "description": "This module deploys an API Management Service API Policy."
@@ -53,7 +53,7 @@
   "resources": [
     {
       "type": "Microsoft.ApiManagement/service/apis/policies",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
       "properties": {
         "format": "[parameters('format')]",
