@@ -31,7 +31,7 @@ param description string?
 param applications applicationType[]?
 
 @sys.description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DesktopVirtualization/applicationGroups@2024-04-03'>.tags?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. Array of role assignments to create.')
