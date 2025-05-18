@@ -759,7 +759,7 @@ type mongodbDatabaseType = {
   tags: object?
 
   @description('Optional. The provisioned throughput assigned to the database.')
-  throughput: int?
+  manualThroughput: int?
 
   @description('Optional. The maximum throughput for the database when using autoscale.')
   autoscaleMaxThroughput: int?
