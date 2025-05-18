@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "10326101309452670559"
+      "templateHash": "11231750711693415225"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -499,8 +499,8 @@
     "service::apiVersionSet": {
       "condition": "[not(empty(parameters('apiVersionSetName')))]",
       "existing": true,
-      "type": "Microsoft.ApiManagement/service/api-version-sets",
-      "apiVersion": "2018-01-01",
+      "type": "Microsoft.ApiManagement/service/apiVersionSets",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('apiVersionSetName'))]"
     },
     "service": {
@@ -519,7 +519,7 @@
         "apiType": "[parameters('apiType')]",
         "apiVersion": "[parameters('apiVersion')]",
         "apiVersionDescription": "[parameters('apiVersionDescription')]",
-        "apiVersionSetId": "[if(not(empty(parameters('apiVersionSetName'))), resourceId('Microsoft.ApiManagement/service/api-version-sets', parameters('apiManagementServiceName'), parameters('apiVersionSetName')), null())]",
+        "apiVersionSetId": "[if(not(empty(parameters('apiVersionSetName'))), resourceId('Microsoft.ApiManagement/service/apiVersionSets', parameters('apiManagementServiceName'), parameters('apiVersionSetName')), null())]",
         "authenticationSettings": "[coalesce(parameters('authenticationSettings'), createObject())]",
         "description": "[coalesce(parameters('description'), '')]",
         "displayName": "[parameters('displayName')]",

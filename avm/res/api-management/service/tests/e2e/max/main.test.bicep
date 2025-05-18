@@ -101,7 +101,6 @@ module testDeployment '../../../main.bicep' = [
         {
           displayName: 'Echo API'
           apiVersionSetName: 'echo-version-set'
-
           name: 'echo-api'
           path: 'echo'
           serviceUrl: 'http://echoapi.cloudapp.net/api'

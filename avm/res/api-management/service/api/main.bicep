@@ -107,7 +107,7 @@ param wsdlSelector resourceInput<'Microsoft.ApiManagement/service/apis@2024-05-0
 resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 
-  resource apiVersionSet 'api-version-sets@2018-01-01' existing = if (!empty(apiVersionSetName)) {
+  resource apiVersionSet 'apiVersionSets@2024-05-01' existing = if (!empty(apiVersionSetName)) {
     name: apiVersionSetName!
   }
 }
