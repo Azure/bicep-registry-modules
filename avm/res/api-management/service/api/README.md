@@ -341,6 +341,7 @@ The operations of the api.
 | [`displayName`](#parameter-operationsdisplayname) | string | The display name of the operation. |
 | [`method`](#parameter-operationsmethod) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
 | [`name`](#parameter-operationsname) | string | The name of the policy. |
+| [`urlTemplate`](#parameter-operationsurltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
 
 **Optional parameters**
 
@@ -350,12 +351,7 @@ The operations of the api.
 | [`policies`](#parameter-operationspolicies) | array | The policies to apply to the operation. |
 | [`request`](#parameter-operationsrequest) | object | An entity containing request details. |
 | [`responses`](#parameter-operationsresponses) | array | An entity containing request details. |
-
-**Requried parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`urlTemplate`](#parameter-operationsurltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
+| [`templateParameters`](#parameter-operationstemplateparameters) | array | Collection of URL template parameters. |
 
 ### Parameter: `operations.displayName`
 
@@ -374,6 +370,13 @@ A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not 
 ### Parameter: `operations.name`
 
 The name of the policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `operations.urlTemplate`
+
+Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.
 
 - Required: Yes
 - Type: string
@@ -444,12 +447,12 @@ An entity containing request details.
 - Required: No
 - Type: array
 
-### Parameter: `operations.urlTemplate`
+### Parameter: `operations.templateParameters`
 
-Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.
+Collection of URL template parameters.
 
-- Required: Yes
-- Type: string
+- Required: No
+- Type: array
 
 ### Parameter: `policies`
 

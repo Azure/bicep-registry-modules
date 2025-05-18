@@ -19,7 +19,7 @@ param policies policyType[]?
 @sys.description('Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.')
 param method string
 
-@sys.description('Requried. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.')
+@sys.description('Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.')
 param urlTemplate string
 
 @sys.description('Optional. Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters.')
@@ -31,7 +31,7 @@ param request resourceInput<'Microsoft.ApiManagement/service/apis/operations@202
 @sys.description('Optional. An entity containing request details.')
 param responses resourceInput<'Microsoft.ApiManagement/service/apis/operations@2024-05-01'>.properties.responses?
 
-@sys.description('Optional.Collection of URL template parameters.')
+@sys.description('Optional. Collection of URL template parameters.')
 param templateParameters resourceInput<'Microsoft.ApiManagement/service/apis/operations@2024-05-01'>.properties.templateParameters?
 
 resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "10178815499454391896"
+      "templateHash": "6866399732708097793"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -46,7 +46,7 @@
         "urlTemplate": {
           "type": "string",
           "metadata": {
-            "description": "Requried. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
+            "description": "Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
           }
         },
         "description": {
@@ -82,7 +82,7 @@
             "__bicep_resource_derived_type!": {
               "source": "Microsoft.ApiManagement/service/apis/operations@2024-05-01#properties/properties/properties/templateParameters"
             },
-            "description": "Optional.Collection of URL template parameters."
+            "description": "Optional. Collection of URL template parameters."
           },
           "nullable": true
         }
@@ -964,7 +964,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "4453099014023660004"
+              "templateHash": "10915134883833707619"
             },
             "name": "API Management Service APIs Policies",
             "description": "This module deploys an API Management Service API Policy."
@@ -1048,7 +1048,7 @@
             "urlTemplate": {
               "type": "string",
               "metadata": {
-                "description": "Requried. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
+                "description": "Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}."
               }
             },
             "description": {
@@ -1084,7 +1084,7 @@
                 "__bicep_resource_derived_type!": {
                   "source": "Microsoft.ApiManagement/service/apis/operations@2024-05-01#properties/properties/properties/templateParameters"
                 },
-                "description": "Optional.Collection of URL template parameters."
+                "description": "Optional. Collection of URL template parameters."
               },
               "nullable": true
             }

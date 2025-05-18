@@ -24,6 +24,7 @@ This module deploys an API Management Service API Policy.
 | [`displayName`](#parameter-displayname) | string | The display name of the operation. |
 | [`method`](#parameter-method) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
 | [`name`](#parameter-name) | string | The name of the policy. |
+| [`urlTemplate`](#parameter-urltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
 
 **Conditional parameters**
 
@@ -40,12 +41,7 @@ This module deploys an API Management Service API Policy.
 | [`policies`](#parameter-policies) | array | The policies to apply to the operation. |
 | [`request`](#parameter-request) | object | An entity containing request details. |
 | [`responses`](#parameter-responses) | array | An entity containing request details. |
-
-**Requried parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`urlTemplate`](#parameter-urltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
+| [`templateParameters`](#parameter-templateparameters) | array | Collection of URL template parameters. |
 
 ### Parameter: `displayName`
 
@@ -64,6 +60,13 @@ A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not 
 ### Parameter: `name`
 
 The name of the policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `urlTemplate`
+
+Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.
 
 - Required: Yes
 - Type: string
@@ -148,12 +151,12 @@ An entity containing request details.
 - Required: No
 - Type: array
 
-### Parameter: `urlTemplate`
+### Parameter: `templateParameters`
 
-Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.
+Collection of URL template parameters.
 
-- Required: Yes
-- Type: string
+- Required: No
+- Type: array
 
 ## Outputs
 

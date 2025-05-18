@@ -221,7 +221,7 @@ type operationType = {
   @sys.description('Required. A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.')
   method: string
 
-  @sys.description('Requried. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.')
+  @sys.description('Required. Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.')
   urlTemplate: string
 
   @sys.description('Optional. Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters.')
@@ -233,7 +233,7 @@ type operationType = {
   @sys.description('Optional. An entity containing request details.')
   responses: resourceInput<'Microsoft.ApiManagement/service/apis/operations@2024-05-01'>.properties.responses?
 
-  @sys.description('Optional.Collection of URL template parameters.')
+  @sys.description('Optional. Collection of URL template parameters.')
   templateParameters: resourceInput<'Microsoft.ApiManagement/service/apis/operations@2024-05-01'>.properties.templateParameters?
 }
 
