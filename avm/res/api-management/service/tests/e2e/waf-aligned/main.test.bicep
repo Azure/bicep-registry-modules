@@ -110,7 +110,6 @@ module testDeployment '../../../main.bicep' = [
       minApiVersion: '2022-08-01'
       apis: [
         {
-          apiVersionSetName: 'echo-version'
           displayName: 'Echo API'
           description: 'An echo API service'
           name: 'echo-api'
@@ -119,6 +118,7 @@ module testDeployment '../../../main.bicep' = [
           protocols: [
             'https'
           ]
+          apiVersionSetName: 'echo-version-set'
         }
       ]
       apiVersionSets: [
