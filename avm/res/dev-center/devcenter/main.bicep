@@ -323,7 +323,7 @@ type projectPolicyType = {
   @description('Required. Resource policies that are a part of this project policy.')
   resourcePolicies: resourcePolicyType
 
-  @description('Optional. Resources (Projects) that have access to the shared resources that are a part of this project policy. If not specified, the project policy status will be set to "Unassigned".')
+  @description('Optional. Resources (Projects) that have access to the shared resources that are a part of this project policy. If not specified, the project policy status will be set to "Unassigned". The project must be associated to the Dev Center where the project policy is created.')
   projectResourceIds: string[]?
 }
 

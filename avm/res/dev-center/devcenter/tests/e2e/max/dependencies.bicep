@@ -1,6 +1,12 @@
 @description('Optional. The location to deploy resources to.')
 param location string = resourceGroup().location
 
+@description('Required. The name of the Dev Center.')
+param devCenterName string
+
+@description('Required. The name of the Dev Center Project.')
+param devCenterProjectName string
+
 //@description('Required. The name of the KeyVault to create.')
 //param keyVaultName string
 
@@ -10,6 +16,19 @@ param managedIdentityName string
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
+}
+
+resource devCenter 'Microsoft.DevCenter/devcenters@2024-02-01' = {
+  name: devCenterName
+  location: location
+}
+
+resource devCenterProject 'Microsoft.DevCenter/projects@2024-02-01' = {
+  name: devCenterProjectName
+  location: location
+  properties: {
+    devCenterId: devCenter.id
+  }
 }
 
 //resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
@@ -63,3 +82,6 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 
 @description('The resource ID of the created Managed Identity.')
 output managedIdentityResourceId string = managedIdentity.id
+
+@description('The resource ID of the created DevCenter Project.')
+output devCenterProjectResourceId string = devCenterProject.id

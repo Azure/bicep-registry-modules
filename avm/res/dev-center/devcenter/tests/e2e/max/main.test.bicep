@@ -43,6 +43,8 @@ module nestedDependencies 'dependencies.bicep' = {
     //keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     location: resourceLocation
+    devCenterName: '${namePrefix}${serviceShort}001'
+    devCenterProjectName: 'dep-${namePrefix}-dcp-${serviceShort}'
   }
 }
 
@@ -165,7 +167,7 @@ module testDeployment '../../../main.bicep' = [
             }
           ]
           projectResourceIds: [
-            '${resourceGroup.id}/providers/Microsoft.DevCenter/projects/DevProject'
+            nestedDependencies.outputs.devCenterProjectResourceId
           ]
         }
       ]
