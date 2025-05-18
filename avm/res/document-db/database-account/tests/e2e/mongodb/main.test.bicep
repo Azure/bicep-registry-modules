@@ -45,8 +45,18 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       mongodbDatabases: [
         {
+          name: '${namePrefix}-mdb-${serviceShort}-001'
+          manualThroughput: 600
           collections: [
             {
+              name: 'car_collection'
+              shardKeys: [
+                {
+                  field: 'car_id'
+                  type: 'Hash'
+                }
+              ]
+              manualThroughput: 400
               indexes: [
                 {
                   keys: [
@@ -72,16 +82,15 @@ module testDeployment '../../../main.bicep' = [
                   ttl: 2629746
                 }
               ]
-              name: 'car_collection'
+            }
+            {
+              name: 'truck_collection'
               shardKeys: [
                 {
-                  field: 'car_id'
+                  field: 'truck_id'
                   type: 'Hash'
                 }
               ]
-              throughput: 600
-            }
-            {
               indexes: [
                 {
                   keys: [
@@ -107,21 +116,21 @@ module testDeployment '../../../main.bicep' = [
                   ttl: 2629746
                 }
               ]
-              name: 'truck_collection'
+            }
+          ]
+        }
+        {
+          name: '${namePrefix}-mdb-${serviceShort}-002'
+          collections: [
+            {
+              name: 'bike_collection'
+              manualThroughput: 400
               shardKeys: [
                 {
-                  field: 'truck_id'
+                  field: 'bike_id'
                   type: 'Hash'
                 }
               ]
-            }
-          ]
-          name: '${namePrefix}-mdb-${serviceShort}-001'
-          throughput: 800
-        }
-        {
-          collections: [
-            {
               indexes: [
                 {
                   keys: [
@@ -147,15 +156,16 @@ module testDeployment '../../../main.bicep' = [
                   ttl: 2629746
                 }
               ]
-              name: 'bike_collection'
+            }
+            {
+              name: 'bicycle_collection'
+              autoscaleMaxThroughput: 1000
               shardKeys: [
                 {
-                  field: 'bike_id'
+                  field: 'bicycle_id'
                   type: 'Hash'
                 }
               ]
-            }
-            {
               indexes: [
                 {
                   keys: [
@@ -181,16 +191,49 @@ module testDeployment '../../../main.bicep' = [
                   ttl: 2629746
                 }
               ]
-              name: 'bicycle_collection'
+            }
+          ]
+        }
+        {
+          name: '${namePrefix}-mdb-${serviceShort}-003'
+          autoscaleMaxThroughput: 1000
+          collections: [
+            {
+              name: 'wheel_collection'
+              autoscaleMaxThroughput: 1000
               shardKeys: [
                 {
-                  field: 'bicycle_id'
+                  field: 'wheel_id'
                   type: 'Hash'
+                }
+              ]
+              indexes: [
+                {
+                  keys: [
+                    '_id'
+                  ]
+                }
+                {
+                  keys: [
+                    '$**'
+                  ]
+                }
+                {
+                  keys: [
+                    'wheel_id'
+                    'wheel_model'
+                  ]
+                  unique: true
+                }
+                {
+                  keys: [
+                    '_ts'
+                  ]
+                  ttl: 2629746
                 }
               ]
             }
           ]
-          name: '${namePrefix}-mdb-${serviceShort}-002'
         }
       ]
       zoneRedundant: false
