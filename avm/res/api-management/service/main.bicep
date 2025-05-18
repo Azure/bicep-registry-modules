@@ -256,7 +256,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
           natGatewayState: additLoc.?natGatewayState
           publicIpAddressId: additLoc.?publicIpAddressResourceId
           virtualNetworkConfiguration: additLoc.?virtualNetworkConfiguration
-          zones: map(additLoc.?availabilityZones, zone => string(zone))
+          zones: map(additLoc.?availabilityZones ?? [], zone => string(zone))
         })
       : []
     customProperties: contains(sku, 'Consumption') ? null : customProperties

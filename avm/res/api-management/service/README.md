@@ -1115,7 +1115,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           3
         ]
         disableGateway: false
-        location: 'westus'
+        location: 'northeurope'
         sku: {
           capacity: 3
           name: 'Premium'
@@ -1330,7 +1330,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
             3
           ],
           "disableGateway": false,
-          "location": "westus",
+          "location": "northeurope",
           "sku": {
             "capacity": 3,
             "name": "Premium"
@@ -1571,7 +1571,7 @@ param additionalLocations = [
       3
     ]
     disableGateway: false
-    location: 'westus'
+    location: 'northeurope'
     sku: {
       capacity: 3
       name: 'Premium'

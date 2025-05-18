@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "10554648620230367213"
+      "templateHash": "16599366369552652265"
     },
     "name": "API Management Services",
     "description": "This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU."
@@ -1467,7 +1467,7 @@
         "publisherName": "[parameters('publisherName')]",
         "notificationSenderEmail": "[parameters('notificationSenderEmail')]",
         "hostnameConfigurations": "[parameters('hostnameConfigurations')]",
-        "additionalLocations": "[if(and(contains(parameters('sku'), 'Premium'), not(empty(parameters('additionalLocations')))), map(coalesce(parameters('additionalLocations'), createArray()), lambda('additLoc', createObject('location', lambdaVariables('additLoc').location, 'sku', lambdaVariables('additLoc').sku, 'disableGateway', tryGet(lambdaVariables('additLoc'), 'disableGateway'), 'natGatewayState', tryGet(lambdaVariables('additLoc'), 'natGatewayState'), 'publicIpAddressId', tryGet(lambdaVariables('additLoc'), 'publicIpAddressResourceId'), 'virtualNetworkConfiguration', tryGet(lambdaVariables('additLoc'), 'virtualNetworkConfiguration'), 'zones', map(tryGet(lambdaVariables('additLoc'), 'availabilityZones'), lambda('zone', string(lambdaVariables('zone'))))))), createArray())]",
+        "additionalLocations": "[if(and(contains(parameters('sku'), 'Premium'), not(empty(parameters('additionalLocations')))), map(coalesce(parameters('additionalLocations'), createArray()), lambda('additLoc', createObject('location', lambdaVariables('additLoc').location, 'sku', lambdaVariables('additLoc').sku, 'disableGateway', tryGet(lambdaVariables('additLoc'), 'disableGateway'), 'natGatewayState', tryGet(lambdaVariables('additLoc'), 'natGatewayState'), 'publicIpAddressId', tryGet(lambdaVariables('additLoc'), 'publicIpAddressResourceId'), 'virtualNetworkConfiguration', tryGet(lambdaVariables('additLoc'), 'virtualNetworkConfiguration'), 'zones', map(coalesce(tryGet(lambdaVariables('additLoc'), 'availabilityZones'), createArray()), lambda('zone', string(lambdaVariables('zone'))))))), createArray())]",
         "customProperties": "[if(contains(parameters('sku'), 'Consumption'), null(), parameters('customProperties'))]",
         "certificates": "[parameters('certificates')]",
         "enableClientCertificate": "[if(parameters('enableClientCertificate'), true(), null())]",
