@@ -428,7 +428,7 @@ function New-TemplateDeployment {
         [switch] $DoNotThrow,
 
         [Parameter(Mandatory = $false)]
-        [int] $RetryLimit = 3,
+        [int] $RetryLimit = 1, # TODO: Set back to 3
 
         [Parameter(Mandatory = $false)]
         [string] $RepoRoot = (Get-Item -Path $PSScriptRoot).parent.parent.parent.parent.FullName

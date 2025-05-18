@@ -17,7 +17,6 @@ This module deploys an API Management Service. The default deployment is set to 
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.ApiManagement/service` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service) |
-| `Microsoft.ApiManagement/service/api-version-sets` | [2018-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2018-01-01/service/api-version-sets) |
 | `Microsoft.ApiManagement/service/apis` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis) |
 | `Microsoft.ApiManagement/service/apis/diagnostics` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/diagnostics) |
 | `Microsoft.ApiManagement/service/apis/operations` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/operations) |

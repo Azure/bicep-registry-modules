@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "6866399732708097793"
+      "templateHash": "10326101309452670559"
     },
     "name": "API Management Service APIs",
     "description": "This module deploys an API Management Service API."
@@ -498,6 +498,7 @@
   "resources": {
     "service::apiVersionSet": {
       "condition": "[not(empty(parameters('apiVersionSetName')))]",
+      "existing": true,
       "type": "Microsoft.ApiManagement/service/api-version-sets",
       "apiVersion": "2018-01-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('apiVersionSetName'))]"
@@ -533,10 +534,7 @@
         "type": "[parameters('type')]",
         "value": "[parameters('value')]",
         "wsdlSelector": "[coalesce(parameters('wsdlSelector'), createObject())]"
-      },
-      "dependsOn": [
-        "service::apiVersionSet"
-      ]
+      }
     },
     "api_policies": {
       "copy": {
