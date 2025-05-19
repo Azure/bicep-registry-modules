@@ -19,9 +19,9 @@ param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
+var enforcedLocation = 'eastus2'
 #disable-next-line no-hardcoded-location
-var enforcedPairedLocation = 'uksouth'
+var enforcedSecondLocation = 'westus3'
 
 // ============== //
 // General resources
@@ -40,25 +40,22 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
     name: '${namePrefix}-multi-region'
-
     automaticFailover: true
     enableMultipleWriteLocations: true
-
     backupPolicyType: 'Periodic'
     backupIntervalInMinutes: 300
-    backupStorageRedundancy: 'Zone'
+    backupStorageRedundancy: 'Geo'
     backupRetentionIntervalInHours: 16
-
     failoverLocations: [
       {
         failoverPriority: 0
-        isZoneRedundant: true
+        isZoneRedundant: false
         locationName: enforcedLocation
       }
       {
         failoverPriority: 1
-        isZoneRedundant: true
-        locationName: enforcedPairedLocation
+        isZoneRedundant: false
+        locationName: enforcedSecondLocation
       }
     ]
     sqlDatabases: [
