@@ -67,6 +67,7 @@ module testDeployment '../../../main.bicep' = [
       storageSizeGB: 64
       storageIOPS: 400
       backupRetentionDays: 10
+      availabilityZone: -1
       databases: [
         {
           name: 'testdb1'
