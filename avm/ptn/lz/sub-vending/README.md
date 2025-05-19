@@ -21,7 +21,9 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.Authorization/roleEligibilityScheduleRequests` | [2022-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01-preview/roleEligibilityScheduleRequests) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
 | `Microsoft.Management/managementGroups/subscriptions` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2021-04-01/managementGroups/subscriptions) |
 | `Microsoft.Network/bastionHosts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/bastionHosts) |
@@ -77,7 +79,8 @@ The following section provides usage examples for the module, which were used to
 - [Using PIM Active Role assignments.](#example-5-using-pim-active-role-assignments)
 - [Using PIM Eligible Role assignments.](#example-6-using-pim-eligible-role-assignments)
 - [Using RBAC conditions.](#example-7-using-rbac-conditions)
-- [Vwan topology.](#example-8-vwan-topology)
+- [Using user-assigned managed identities.](#example-8-using-user-assigned-managed-identities)
+- [Vwan topology.](#example-9-vwan-topology)
 
 ### Example 1: _Deploy subscription with Bastion._
 
@@ -1410,7 +1413,258 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 8: _Vwan topology._
+### Example 8: _Using user-assigned managed identities._
+
+This instance deploys the module with user-assigned managed identities.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  name: 'subVendingDeployment'
+  params: {
+    resourceProviders: {}
+    roleAssignmentEnabled: true
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+    userAssignedIdentitiesResourceGroupLockEnabled: false
+    userAssignedIdentityResourceGroupName: '<userAssignedIdentityResourceGroupName>'
+    userAssignedManagedIdentities: [
+      {
+        federatedIdentityCredentials: [
+          {
+            audiences: [
+              'api://AzureADTokenExchange'
+            ]
+            issuer: 'https://token.actions.githubusercontent.com'
+            name: '<name>'
+            subject: 'repo:githubOrganization/sampleRepository:ref:refs/heads/main'
+          }
+        ]
+        location: '<location>'
+        name: '<name>'
+        roleAssignments: [
+          {
+            definition: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+            description: 'Virtual Machine Contributor'
+            relativeScope: ''
+          }
+          {
+            definition: '/providers/Microsoft.Authorization/roleDefinitions/602da2ba-a5c2-41da-b01d-5360126ab525'
+            description: 'Virtual Machine Local User Login'
+            relativeScope: '<relativeScope>'
+          }
+        ]
+        tags: {
+          namePrefix: '<namePrefix>'
+          serviceShort: '<serviceShort>'
+        }
+      }
+    ]
+    virtualNetworkAddressSpace: [
+      '10.110.0.0/16'
+    ]
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: '<virtualNetworkLocation>'
+    virtualNetworkName: '<virtualNetworkName>'
+    virtualNetworkResourceGroupLockEnabled: false
+    virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "resourceProviders": {
+      "value": {}
+    },
+    "roleAssignmentEnabled": {
+      "value": true
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    },
+    "userAssignedIdentitiesResourceGroupLockEnabled": {
+      "value": false
+    },
+    "userAssignedIdentityResourceGroupName": {
+      "value": "<userAssignedIdentityResourceGroupName>"
+    },
+    "userAssignedManagedIdentities": {
+      "value": [
+        {
+          "federatedIdentityCredentials": [
+            {
+              "audiences": [
+                "api://AzureADTokenExchange"
+              ],
+              "issuer": "https://token.actions.githubusercontent.com",
+              "name": "<name>",
+              "subject": "repo:githubOrganization/sampleRepository:ref:refs/heads/main"
+            }
+          ],
+          "location": "<location>",
+          "name": "<name>",
+          "roleAssignments": [
+            {
+              "definition": "/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c",
+              "description": "Virtual Machine Contributor",
+              "relativeScope": ""
+            },
+            {
+              "definition": "/providers/Microsoft.Authorization/roleDefinitions/602da2ba-a5c2-41da-b01d-5360126ab525",
+              "description": "Virtual Machine Local User Login",
+              "relativeScope": "<relativeScope>"
+            }
+          ],
+          "tags": {
+            "namePrefix": "<namePrefix>",
+            "serviceShort": "<serviceShort>"
+          }
+        }
+      ]
+    },
+    "virtualNetworkAddressSpace": {
+      "value": [
+        "10.110.0.0/16"
+      ]
+    },
+    "virtualNetworkEnabled": {
+      "value": true
+    },
+    "virtualNetworkLocation": {
+      "value": "<virtualNetworkLocation>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    },
+    "virtualNetworkResourceGroupLockEnabled": {
+      "value": false
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "<virtualNetworkResourceGroupName>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param resourceProviders = {}
+param roleAssignmentEnabled = true
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+param userAssignedIdentitiesResourceGroupLockEnabled = false
+param userAssignedIdentityResourceGroupName = '<userAssignedIdentityResourceGroupName>'
+param userAssignedManagedIdentities = [
+  {
+    federatedIdentityCredentials: [
+      {
+        audiences: [
+          'api://AzureADTokenExchange'
+        ]
+        issuer: 'https://token.actions.githubusercontent.com'
+        name: '<name>'
+        subject: 'repo:githubOrganization/sampleRepository:ref:refs/heads/main'
+      }
+    ]
+    location: '<location>'
+    name: '<name>'
+    roleAssignments: [
+      {
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+        description: 'Virtual Machine Contributor'
+        relativeScope: ''
+      }
+      {
+        definition: '/providers/Microsoft.Authorization/roleDefinitions/602da2ba-a5c2-41da-b01d-5360126ab525'
+        description: 'Virtual Machine Local User Login'
+        relativeScope: '<relativeScope>'
+      }
+    ]
+    tags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+  }
+]
+param virtualNetworkAddressSpace = [
+  '10.110.0.0/16'
+]
+param virtualNetworkEnabled = true
+param virtualNetworkLocation = '<virtualNetworkLocation>'
+param virtualNetworkName = '<virtualNetworkName>'
+param virtualNetworkResourceGroupLockEnabled = false
+param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
+```
+
+</details>
+<p>
+
+### Example 9: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
 
@@ -1652,6 +1906,9 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`subscriptionTags`](#parameter-subscriptiontags) | object | An object of Tag key & value pairs to be appended to a Subscription.<p><p>> **NOTE:** Tags will only be overwritten if existing tag exists with same key as provided in this parameter; values provided here win.<p> |
 | [`subscriptionTenantId`](#parameter-subscriptiontenantid) | string | The Azure Active Directory Tenant ID (GUID) to which the Subscription should be attached to.<p><p>> **Leave blank unless following this scenario only [Programmatically create MCA subscriptions across Azure Active Directory tenants](https://learn.microsoft.com/azure/cost-management-billing/manage/programmatically-create-subscription-microsoft-customer-agreement-across-tenants)**. |
 | [`subscriptionWorkload`](#parameter-subscriptionworkload) | string | The workload type can be either `Production` or `DevTest` and is case sensitive.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p> |
+| [`userAssignedIdentitiesResourceGroupLockEnabled`](#parameter-userassignedidentitiesresourcegrouplockenabled) | bool | Enables the deployment of a `CanNotDelete` resource locks to the Virtual Networks Resource Group that is created by this module.<p> |
+| [`userAssignedIdentityResourceGroupName`](#parameter-userassignedidentityresourcegroupname) | string | The name of the resource group to create the user-assigned managed identities in. |
+| [`userAssignedManagedIdentities`](#parameter-userassignedmanagedidentities) | array | The list of user-assigned managed identities. |
 | [`vHubRoutingIntentEnabled`](#parameter-vhubroutingintentenabled) | bool | Indicates whether routing intent is enabled on the Virtual Hub within the Virtual WAN.<p> |
 | [`virtualNetworkAddressSpace`](#parameter-virtualnetworkaddressspace) | array | The address space of the Virtual Network that will be created by this module, supplied as multiple CIDR blocks in an array, e.g. `["10.0.0.0/16","172.16.0.0/12"]`. |
 | [`virtualNetworkBastionConfiguration`](#parameter-virtualnetworkbastionconfiguration) | object | The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host. |
@@ -2344,6 +2601,7 @@ Supply an array of objects containing the details of the role assignments to cre
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`description`](#parameter-roleassignmentsdescription) | string | The role assignment description. |
 | [`principalType`](#parameter-roleassignmentsprincipaltype) | string | The principal type of the user, group, or service principal. |
 | [`roleAssignmentCondition`](#parameter-roleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
 
@@ -2366,6 +2624,13 @@ The principal ID of the user, group, or service principal.
 The relative scope of the role assignment.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `roleAssignments.description`
+
+The role assignment description.
+
+- Required: No
 - Type: string
 
 ### Parameter: `roleAssignments.principalType`
@@ -2673,6 +2938,364 @@ The workload type can be either `Production` or `DevTest` and is case sensitive.
     'Production'
   ]
   ```
+
+### Parameter: `userAssignedIdentitiesResourceGroupLockEnabled`
+
+Enables the deployment of a `CanNotDelete` resource locks to the Virtual Networks Resource Group that is created by this module.<p>
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `userAssignedIdentityResourceGroupName`
+
+The name of the resource group to create the user-assigned managed identities in.
+
+- Required: No
+- Type: string
+- Default: `[format('rsg-{0}-identities', deployment().location)]`
+
+### Parameter: `userAssignedManagedIdentities`
+
+The list of user-assigned managed identities.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-userassignedmanagedidentitiesname) | string | The name of the user assigned managed identity. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`federatedIdentityCredentials`](#parameter-userassignedmanagedidentitiesfederatedidentitycredentials) | array | The federated identity credentials for the user assigned managed identity. |
+| [`location`](#parameter-userassignedmanagedidentitieslocation) | string | The location of the user assigned managed identity. |
+| [`lock`](#parameter-userassignedmanagedidentitieslock) | object | The locks for the user assigned managed identity. |
+| [`roleAssignments`](#parameter-userassignedmanagedidentitiesroleassignments) | array | The role assignments for the user assigned managed identity. |
+| [`tags`](#parameter-userassignedmanagedidentitiestags) | object | The tags for the user assigned managed identity. |
+
+### Parameter: `userAssignedManagedIdentities.name`
+
+The name of the user assigned managed identity.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `userAssignedManagedIdentities.federatedIdentityCredentials`
+
+The federated identity credentials for the user assigned managed identity.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`audiences`](#parameter-userassignedmanagedidentitiesfederatedidentitycredentialsaudiences) | array | The list of audiences that can appear in the issued token. |
+| [`issuer`](#parameter-userassignedmanagedidentitiesfederatedidentitycredentialsissuer) | string | The URL of the issuer to be trusted. |
+| [`name`](#parameter-userassignedmanagedidentitiesfederatedidentitycredentialsname) | string | The name of the federated identity credential. |
+| [`subject`](#parameter-userassignedmanagedidentitiesfederatedidentitycredentialssubject) | string | The identifier of the external identity. |
+
+### Parameter: `userAssignedManagedIdentities.federatedIdentityCredentials.audiences`
+
+The list of audiences that can appear in the issued token.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `userAssignedManagedIdentities.federatedIdentityCredentials.issuer`
+
+The URL of the issuer to be trusted.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `userAssignedManagedIdentities.federatedIdentityCredentials.name`
+
+The name of the federated identity credential.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `userAssignedManagedIdentities.federatedIdentityCredentials.subject`
+
+The identifier of the external identity.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `userAssignedManagedIdentities.location`
+
+The location of the user assigned managed identity.
+
+- Required: No
+- Type: string
+
+### Parameter: `userAssignedManagedIdentities.lock`
+
+The locks for the user assigned managed identity.
+
+- Required: No
+- Type: object
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments`
+
+The role assignments for the user assigned managed identity.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`definition`](#parameter-userassignedmanagedidentitiesroleassignmentsdefinition) | string | The role definition ID or name. |
+| [`relativeScope`](#parameter-userassignedmanagedidentitiesroleassignmentsrelativescope) | string | The relative scope of the role assignment. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-userassignedmanagedidentitiesroleassignmentsdescription) | string | The role assignment description. |
+| [`roleAssignmentCondition`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentcondition) | object | The condition for the role assignment. |
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.definition`
+
+The role definition ID or name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.relativeScope`
+
+The relative scope of the role assignment.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.description`
+
+The role assignment description.
+
+- Required: No
+- Type: string
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition`
+
+The condition for the role assignment.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`conditionVersion`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionconditionversion) | string | The version of the condition template. |
+| [`delegationCode`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditiondelegationcode) | string | The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '. |
+| [`roleConditionType`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontype) | object | The type of template for the role assignment condition. |
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.conditionVersion`
+
+The version of the condition template.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.delegationCode`
+
+The code for a custom condition if no template is used. The user should supply their own custom code if the available templates are not matching their requirements. If a value is provided, this will overwrite any added template. All single quotes needs to be skipped using '.
+
+- Required: No
+- Type: string
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType`
+
+The type of template for the role assignment condition.
+
+- Required: No
+- Type: object
+- Discriminator: `templateName`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`excludeRoles`](#variant-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderoles) |  |
+| [`constrainRoles`](#variant-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainroles) |  |
+| [`constrainRolesAndPrincipalTypes`](#variant-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypes) |  |
+| [`constrainRolesAndPrincipals`](#variant-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipals) |  |
+
+### Variant: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles`
+
+
+To use this variant, set the property `templateName` to `excludeRoles`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`excludedRoles`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolesexcludedroles) | array | The list of roles that are not allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-excluderolestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.excludedRoles`
+
+The list of roles that are not allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-excludeRoles.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'excludeRoles'
+  ]
+  ```
+
+### Variant: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles`
+
+
+To use this variant, set the property `templateName` to `constrainRoles`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`rolesToAssign`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRoles.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRoles'
+  ]
+  ```
+
+### Variant: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes`
+
+
+To use this variant, set the property `templateName` to `constrainRolesAndPrincipalTypes`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principleTypesToAssign`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesprincipletypestoassign) | array | The list of principle types that are allowed to be assigned roles by the delegate. |
+| [`rolesToAssign`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypesrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipaltypestemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.principleTypesToAssign`
+
+The list of principle types that are allowed to be assigned roles by the delegate.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipalTypes.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRolesAndPrincipalTypes'
+  ]
+  ```
+
+### Variant: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals`
+
+
+To use this variant, set the property `templateName` to `constrainRolesAndPrincipals`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalsToAssignTo`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsprincipalstoassignto) | array | The list of principals that are allowed to be assigned roles by the delegate. |
+| [`rolesToAssign`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalsrolestoassign) | array | The list of roles that are allowed to be assigned by the delegate. |
+| [`templateName`](#parameter-userassignedmanagedidentitiesroleassignmentsroleassignmentconditionroleconditiontypetemplatename-constrainrolesandprincipalstemplatename) | string | Name of the RBAC condition template. |
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.principalsToAssignTo`
+
+The list of principals that are allowed to be assigned roles by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.rolesToAssign`
+
+The list of roles that are allowed to be assigned by the delegate.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `userAssignedManagedIdentities.roleAssignments.roleAssignmentCondition.roleConditionType.templateName-constrainRolesAndPrincipals.templateName`
+
+Name of the RBAC condition template.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'constrainRolesAndPrincipals'
+  ]
+  ```
+
+### Parameter: `userAssignedManagedIdentities.tags`
+
+The tags for the user assigned managed identity.
+
+- Required: No
+- Type: object
 
 ### Parameter: `vHubRoutingIntentEnabled`
 
@@ -3205,6 +3828,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/ptn/authorization/role-assignment:0.2.0` | Remote reference |
 | `br/public:avm/ptn/authorization/role-assignment:0.2.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
+| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
 | `br/public:avm/res/network/bastion-host:0.5.0` | Remote reference |
 | `br/public:avm/res/network/nat-gateway:1.2.1` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.0` | Remote reference |

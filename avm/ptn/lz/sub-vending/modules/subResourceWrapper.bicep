@@ -33,6 +33,9 @@ param virtualNetworkEnabled bool = false
 @sys.description('The name of the resource group to create the virtual network in.')
 param virtualNetworkResourceGroupName string = ''
 
+@sys.description('The name of the resource group to create the user-assigned managed identities in.')
+param userAssignedIdentityResourceGroupName string = ''
+
 @sys.description('Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group.')
 param virtualNetworkResourceGroupLockEnabled bool = true
 
@@ -208,6 +211,12 @@ param deploymentScriptStorageAccountName string
 @sys.description('Optional. The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur.')
 param managementGroupAssociationDelayCount int = 15
 
+@sys.description('Optional. The list of user-assigned managed identities.')
+param userAssignedManagedIdentities userAssignedIdentityType[] = []
+
+@sys.description('Enables the deployment of a `CanNotDelete` resource locks to the user-assigned managed identities resource group.')
+param userAssignedIdentitiesResourceGroupLockEnabled bool = true
+
 // VARIABLES
 
 // Deployment name variables
@@ -224,6 +233,10 @@ var deploymentNames = {
   tagSubscription: take('lz-vend-tag-sub-${uniqueString(subscriptionId, deployment().name)}', 64)
   createResourceGroupForLzNetworking: take(
     'lz-vend-rsg-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, deployment().name)}',
+    64
+  )
+  createResourceGroupForIdentities: take(
+    'lz-vend-rsg-identity-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, deployment().name)}',
     64
   )
   tagResoruceGroupForLzNetworking: take(
@@ -250,6 +263,10 @@ var deploymentNames = {
     'lz-vend-bastion-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
     64
   )
+  createUserAssignedIdentities: take(
+    'lz-vend-identity-create-${uniqueString(subscriptionId, userAssignedIdentityResourceGroupName, virtualNetworkLocation, deployment().name)}',
+    64
+  )
   createLzRoleAssignmentsSub: take('lz-vend-rbac-sub-create-${uniqueString(subscriptionId, deployment().name)}', 64)
   createLzRoleAssignmentsRsgsSelf: take(
     'lz-vend-rbac-rsg-self-create-${uniqueString(subscriptionId, deployment().name)}',
@@ -269,6 +286,18 @@ var deploymentNames = {
   )
   createLzPimRoleAssignmentsRsgsNotSelf: take(
     'lz-vend-pim-rbac-rsg-nself-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
+  createLzUMIRoleAssignmentsSub: take(
+    'lz-vend-umi-rbac-sub-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
+  createLzUMIRoleAssignmentsRsgsSelf: take(
+    'lz-vend-umi-rbac-rsg-self-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
+  createLzUMIRoleAssignmentsRsgsNotSelf: take(
+    'lz-vend-umi-rbac-rsg-nself-create-${uniqueString(subscriptionId, deployment().name)}',
     64
   )
   createResourceGroupForDeploymentScript: take(
@@ -348,6 +377,43 @@ var pimRoleAssignmentsResourceGroupNotSelf = filter(
   pimRoleAssignmentsResourceGroups,
   assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
 )
+
+// UMI Role Assignments filtering and splitting
+var umiRoleAssignmentsSubscription = [
+  for (item, i) in userAssignedManagedIdentities: filter(
+    item.?roleAssignments ?? [],
+    assignment => !contains(assignment.relativeScope, '/resourceGroups/')
+  )
+]
+
+var umiRoleAssignmentsSubscriptionFlattened = flatten(umiRoleAssignmentsSubscription)
+
+var umiRoleAssignmentsResourceGroups = [
+  for (item, i) in userAssignedManagedIdentities: filter(
+    item.?roleAssignments ?? [],
+    assignment => contains(assignment.relativeScope, '/resourceGroups/')
+  )
+]
+
+var umiRoleAssignmentsResourceGroupsFlattened = flatten(umiRoleAssignmentsResourceGroups)
+
+var umiRoleAssignmentsResourceGroupSelf = [
+  for (item, i) in userAssignedManagedIdentities: filter(
+    umiRoleAssignmentsResourceGroupsFlattened,
+    assignment => contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+  )
+]
+
+var umiRoleAssignmentsResourceGroupSelfFlattened = flatten(umiRoleAssignmentsResourceGroupSelf)
+
+var umiRoleAssignmentsResourceGroupNotSelf = [
+  for (item, i) in userAssignedManagedIdentities: filter(
+    umiRoleAssignmentsResourceGroupsFlattened,
+    assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+  )
+]
+
+var umiRoleAssignmentsResourceGroupNotSelfFlattened = flatten(umiRoleAssignmentsResourceGroupNotSelf)
 
 // Check hubNetworkResourceId to see if it's a virtual WAN connection instead of normal virtual network peering
 var virtualHubResourceIdChecked = (!empty(hubNetworkResourceId) && contains(
@@ -433,6 +499,22 @@ module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-
     name: virtualNetworkResourceGroupName
     location: virtualNetworkLocation
     lock: virtualNetworkResourceGroupLockEnabled
+      ? {
+          kind: 'CanNotDelete'
+          name: 'CanNotDelete'
+        }
+      : null
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module createResourceGroupForIdentities 'br/public:avm/res/resources/resource-group:0.4.0' = if (!empty(userAssignedManagedIdentities)) {
+  scope: subscription(subscriptionId)
+  name: deploymentNames.createResourceGroupForIdentities
+  params: {
+    name: userAssignedIdentityResourceGroupName
+    location: virtualNetworkLocation
+    lock: userAssignedIdentitiesResourceGroupLockEnabled
       ? {
           kind: 'CanNotDelete'
           name: 'CanNotDelete'
@@ -707,6 +789,7 @@ module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignme
       roleDefinitionIdOrName: assignment.definition
       principalType: assignment.?principalType
       subscriptionId: subscriptionId
+      description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
         : null
@@ -743,6 +826,7 @@ module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-ass
       principalType: assignment.?principalType
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
+      description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
         : null
@@ -776,6 +860,107 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
       principalType: assignment.?principalType
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
+      description: assignment.?description
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+module createLzUMIRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = [
+  for (assignment, i) in umiRoleAssignmentsSubscriptionFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsSubscriptionFlattened)) {
+    name: take(
+      '${deploymentNames.createLzUMIRoleAssignmentsSub}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      64
+    )
+    params: {
+      location: deployment().location
+      principalId: createUserAssignedManagedIdentity[i].outputs.principalId
+      roleDefinitionIdOrName: assignment.definition
+      principalType: 'ServicePrincipal'
+      subscriptionId: subscriptionId
+      description: assignment.?description
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+
+module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = [
+  for (assignment, i) in umiRoleAssignmentsResourceGroupSelfFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsResourceGroupSelfFlattened)) {
+    name: take(
+      '${deploymentNames.createLzUMIRoleAssignmentsRsgsSelf}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      64
+    )
+    params: {
+      location: deployment().location
+      principalId: createUserAssignedManagedIdentity[i].outputs.principalId
+      roleDefinitionIdOrName: assignment.definition
+      principalType: 'ServicePrincipal'
+      subscriptionId: subscriptionId
+      resourceGroupName: split(assignment.relativeScope, '/')[2]
+      description: assignment.?description
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+
+module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = [
+  for (assignment, i) in umiRoleAssignmentsResourceGroupNotSelfFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsResourceGroupNotSelfFlattened)) {
+    name: take(
+      '${deploymentNames.createLzUMIRoleAssignmentsRsgsNotSelf}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      64
+    )
+    params: {
+      location: deployment().location
+      principalId: createUserAssignedManagedIdentity[i].outputs.principalId
+      roleDefinitionIdOrName: assignment.definition
+      principalType: 'ServicePrincipal'
+      subscriptionId: subscriptionId
+      resourceGroupName: split(assignment.relativeScope, '/')[2]
+      description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
         : null
@@ -1276,6 +1461,24 @@ module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (vi
   }
 }
 
+module createUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = [
+  for (identity, i) in userAssignedManagedIdentities: if (!empty(userAssignedManagedIdentities)) {
+    scope: resourceGroup(subscriptionId, userAssignedIdentityResourceGroupName)
+    dependsOn: [
+      createResourceGroupForIdentities
+    ]
+    name: '${deploymentNames.createUserAssignedIdentities}-${i}'
+    params: {
+      name: identity.?name ?? 'lz-identity-${deployment().location}-${i}'
+      location: identity.?location ?? deployment().location
+      tags: identity.?tags ?? {}
+      federatedIdentityCredentials: identity.?federatedIdentityCredentials ?? []
+      lock: identity.?lock ?? null
+      enableTelemetry: enableTelemetry
+    }
+  }
+]
+
 // OUTPUTS
 output failedProviders string = !empty(resourceProviders)
   ? registerResourceProviders.outputs.outputs.failedProvidersRegistrations
@@ -1338,6 +1541,9 @@ type roleAssignmentType = {
 
   @description('Optional. The principal type of the user, group, or service principal.')
   principalType: 'User' | 'Group' | 'ServicePrincipal'?
+
+  @description('Optional. The role assignment description.')
+  description: string?
 }
 
 // "Constrain Roles" - Condition template
@@ -1598,4 +1804,56 @@ type timeBoundDateTimeRoleAssignmentScheduleType = {
 
   @description('Required. The start date and time for the role assignment.')
   startTime: string
+}
+
+@export()
+type roleAssignmentUMIType = {
+  @description('Required. The role definition ID or name.')
+  definition: string
+
+  @description('Required. The relative scope of the role assignment.')
+  relativeScope: string
+
+  @description('Optional. The condition for the role assignment.')
+  roleAssignmentCondition: roleAssignmentConditionType?
+
+  @description('Optional. The role assignment description.')
+  description: string?
+}
+
+@export()
+@description('Optional. The type of the user assigned managed identity.')
+type userAssignedIdentityType = {
+  @description('Required. The name of the user assigned managed identity.')
+  name: string
+
+  @description('Optional. The location of the user assigned managed identity.')
+  location: string?
+
+  @description('Optional. The locks for the user assigned managed identity.')
+  lock: object?
+
+  @description('Optional. The tags for the user assigned managed identity.')
+  tags: object?
+
+  @description('Optional. The role assignments for the user assigned managed identity.')
+  roleAssignments: roleAssignmentUMIType[]?
+
+  @description('Optional. The federated identity credentials for the user assigned managed identity.')
+  federatedIdentityCredentials: federatedIdentityCredentialType[]?
+}
+
+@description('The type for the federated identity credential.')
+type federatedIdentityCredentialType = {
+  @description('Required. The name of the federated identity credential.')
+  name: string
+
+  @description('Required. The list of audiences that can appear in the issued token.')
+  audiences: string[]
+
+  @description('Required. The URL of the issuer to be trusted.')
+  issuer: string
+
+  @description('Required. The identifier of the external identity.')
+  subject: string
 }
