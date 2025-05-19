@@ -1440,7 +1440,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     }
     subscriptionWorkload: 'Production'
     userAssignedIdentitiesResourceGroupLockEnabled: false
-    userAssignedIdentityResourceGroupName: '<userAssignedIdentityResourceGroupName>'
+    userAssignedIdentityResourceGroupName: 'rg-identity-ssid'
     userAssignedManagedIdentities: [
       {
         federatedIdentityCredentials: [
@@ -1454,7 +1454,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           }
         ]
         location: '<location>'
-        name: '<name>'
+        name: 'test-identity-ssid'
         roleAssignments: [
           {
             definition: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
@@ -1534,7 +1534,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": false
     },
     "userAssignedIdentityResourceGroupName": {
-      "value": "<userAssignedIdentityResourceGroupName>"
+      "value": "rg-identity-ssid"
     },
     "userAssignedManagedIdentities": {
       "value": [
@@ -1550,7 +1550,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
             }
           ],
           "location": "<location>",
-          "name": "<name>",
+          "name": "test-identity-ssid",
           "roleAssignments": [
             {
               "definition": "/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c",
@@ -1618,7 +1618,7 @@ param subscriptionTags = {
 }
 param subscriptionWorkload = 'Production'
 param userAssignedIdentitiesResourceGroupLockEnabled = false
-param userAssignedIdentityResourceGroupName = '<userAssignedIdentityResourceGroupName>'
+param userAssignedIdentityResourceGroupName = 'rg-identity-ssid'
 param userAssignedManagedIdentities = [
   {
     federatedIdentityCredentials: [
@@ -1632,7 +1632,7 @@ param userAssignedManagedIdentities = [
       }
     ]
     location: '<location>'
-    name: '<name>'
+    name: 'test-identity-ssid'
     roleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
