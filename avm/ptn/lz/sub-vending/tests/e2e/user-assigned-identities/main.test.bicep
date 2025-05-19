@@ -12,8 +12,7 @@ param resourceLocation string = deployment().location
 param subscriptionBillingScope string = ''
 
 @description('Optional. A token to inject into the name of each resource.')
-//param namePrefix string = '#_namePrefix_#'
-param namePrefix string = 'sba'
+param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'ssid'
