@@ -9,20 +9,17 @@ metadata description = 'This instance deploys the module with the minimum set of
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-sql.servers-${serviceShort}-rg'
-
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+param resourceGroupName string = 'dep-${namePrefix}-devcenter.networkconnection-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssmin'
-
-@description('Optional. The password to leverage for the login.')
-@secure()
-param password string = newGuid()
+param serviceShort string = 'dcncmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+// Hardcoded because service not available in all regions
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'uksouth'
 
 // ============ //
 // Dependencies //
@@ -32,7 +29,15 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
+}
+
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  params: {
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+  }
 }
 
 // ============== //
@@ -43,16 +48,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
-      administrators: {
-        azureADOnlyAuthentication: true
-        login: deployer().objectId
-        sid: deployer().objectId
-        principalType: 'Application'
-      }
+      subnetResourceId: nestedDependencies.outputs.subnetResourceId
     }
   }
 ]
