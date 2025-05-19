@@ -1611,6 +1611,7 @@ List of volumes to create in the capacity pool.
 | [`smbContinuouslyAvailable`](#parameter-capacitypoolsvolumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-capacitypoolsvolumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-capacitypoolsvolumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`throughputMibps`](#parameter-capacitypoolsvolumesthroughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`volumeType`](#parameter-capacitypoolsvolumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 
 ### Parameter: `capacityPools.volumes.name`
@@ -2203,6 +2204,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+
+### Parameter: `capacityPools.volumes.throughputMibps`
+
+The throughput in MiBps for the NetApp account.
+
+- Required: No
+- Type: int
 
 ### Parameter: `capacityPools.volumes.volumeType`
 
