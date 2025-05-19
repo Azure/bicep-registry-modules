@@ -1,0 +1,81 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.34.44.8038",
+      "templateHash": "9900728480246932111"
+    },
+    "name": "Redis Cache Access Policy Assignment",
+    "description": "This module deploys an access policy assignment for Redis Cache."
+  },
+  "parameters": {
+    "redisCacheName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the Redis cache."
+      }
+    },
+    "objectId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Object ID to which the access policy will be assigned."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "[parameters('objectId')]",
+      "metadata": {
+        "description": "Optional. The name of the assignment. By default uses the Object ID to which the access policy will be assigned."
+      }
+    },
+    "objectIdAlias": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Alias for the target object ID."
+      }
+    },
+    "accessPolicyName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of the access policy to be assigned."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Cache/redis/accessPolicyAssignments",
+      "apiVersion": "2024-11-01",
+      "name": "[format('{0}/{1}', parameters('redisCacheName'), parameters('name'))]",
+      "properties": {
+        "objectId": "[parameters('objectId')]",
+        "objectIdAlias": "[parameters('objectIdAlias')]",
+        "accessPolicyName": "[parameters('accessPolicyName')]"
+      }
+    }
+  ],
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the access policy assignment."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the access policy assignment."
+      },
+      "value": "[resourceId('Microsoft.Cache/redis/accessPolicyAssignments', parameters('redisCacheName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the access policy assignment was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

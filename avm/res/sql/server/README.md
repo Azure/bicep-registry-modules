@@ -277,7 +277,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
   }
 }
 ```
@@ -324,8 +324,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
       }
     },
-    "primaryUserAssignedIdentityId": {
-      "value": "<primaryUserAssignedIdentityId>"
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
     }
   }
 }
@@ -363,7 +363,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 ```
 
 </details>
@@ -385,8 +385,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     // Required parameters
     name: 'ssmin001'
     // Non-required parameters
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: '<administratorLoginPassword>'
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: '<login>'
+      principalType: 'Application'
+      sid: '<sid>'
+    }
     location: '<location>'
   }
 }
@@ -409,11 +413,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": "ssmin001"
     },
     // Non-required parameters
-    "administratorLogin": {
-      "value": "adminUserName"
-    },
-    "administratorLoginPassword": {
-      "value": "<administratorLoginPassword>"
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "<login>",
+        "principalType": "Application",
+        "sid": "<sid>"
+      }
     },
     "location": {
       "value": "<location>"
@@ -435,8 +441,12 @@ using 'br/public:avm/res/sql/server:<version>'
 // Required parameters
 param name = 'ssmin001'
 // Non-required parameters
-param administratorLogin = 'adminUserName'
-param administratorLoginPassword = '<administratorLoginPassword>'
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: '<login>'
+  principalType: 'Application'
+  sid: '<sid>'
+}
 param location = '<location>'
 ```
 
@@ -463,10 +473,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     administratorLoginPassword: '<administratorLoginPassword>'
     elasticPools: [
       {
+        availabilityZone: -1
         name: 'ssep-ep-001'
         zoneRedundant: false
       }
       {
+        availabilityZone: -1
         name: 'ssep-ep-002'
         perDatabaseSettings: {
           maxCapacity: '4'
@@ -511,10 +523,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
+          "availabilityZone": -1,
           "name": "ssep-ep-001",
           "zoneRedundant": false
         },
         {
+          "availabilityZone": -1,
           "name": "ssep-ep-002",
           "perDatabaseSettings": {
             "maxCapacity": "4",
@@ -553,10 +567,12 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param elasticPools = [
   {
+    availabilityZone: -1
     name: 'ssep-ep-001'
     zoneRedundant: false
   }
   {
+    availabilityZone: -1
     name: 'ssep-ep-002'
     perDatabaseSettings: {
       maxCapacity: '4'
@@ -596,6 +612,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     administratorLoginPassword: '<administratorLoginPassword>'
     databases: [
       {
+        availabilityZone: -1
         maxSizeBytes: 2147483648
         name: 'ssfog-db1'
         sku: {
@@ -605,6 +622,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         zoneRedundant: false
       }
       {
+        availabilityZone: -1
         maxSizeBytes: 2147483648
         name: 'ssfog-db2'
         sku: {
@@ -615,6 +633,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         zoneRedundant: false
       }
       {
+        availabilityZone: -1
         maxSizeBytes: 2147483648
         name: 'ssfog-db3'
         sku: {
@@ -701,6 +720,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "databases": {
       "value": [
         {
+          "availabilityZone": -1,
           "maxSizeBytes": 2147483648,
           "name": "ssfog-db1",
           "sku": {
@@ -710,6 +730,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "zoneRedundant": false
         },
         {
+          "availabilityZone": -1,
           "maxSizeBytes": 2147483648,
           "name": "ssfog-db2",
           "sku": {
@@ -720,6 +741,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           "zoneRedundant": false
         },
         {
+          "availabilityZone": -1,
           "maxSizeBytes": 2147483648,
           "name": "ssfog-db3",
           "sku": {
@@ -802,6 +824,7 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param databases = [
   {
+    availabilityZone: -1
     maxSizeBytes: 2147483648
     name: 'ssfog-db1'
     sku: {
@@ -811,6 +834,7 @@ param databases = [
     zoneRedundant: false
   }
   {
+    availabilityZone: -1
     maxSizeBytes: 2147483648
     name: 'ssfog-db2'
     sku: {
@@ -821,6 +845,7 @@ param databases = [
     zoneRedundant: false
   }
   {
+    availabilityZone: -1
     maxSizeBytes: 2147483648
     name: 'ssfog-db3'
     sku: {
@@ -902,6 +927,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     administratorLoginPassword: '<administratorLoginPassword>'
     databases: [
       {
+        availabilityZone: -1
         name: 'myDatabase'
         zoneRedundant: false
       }
@@ -942,6 +968,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "databases": {
       "value": [
         {
+          "availabilityZone": -1,
           "name": "myDatabase",
           "zoneRedundant": false
         }
@@ -978,6 +1005,7 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param databases = [
   {
+    availabilityZone: -1
     name: 'myDatabase'
     zoneRedundant: false
   }
@@ -1019,6 +1047,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     }
     databases: [
       {
+        availabilityZone: -1
         backupLongTermRetentionPolicy: {
           monthlyRetention: 'P6M'
         }
@@ -1053,6 +1082,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     ]
     elasticPools: [
       {
+        availabilityZone: -1
         name: 'sqlsmax-ep-001'
         sku: {
           capacity: 10
@@ -1079,7 +1109,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         '<serverIdentityResourceId>'
       ]
     }
-    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -1143,7 +1173,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       {
         ignoreMissingVnetServiceEndpoint: true
         name: 'newVnetRule1'
-        virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+        virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
       }
     ]
     vulnerabilityAssessmentsObj: {
@@ -1196,6 +1226,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "databases": {
       "value": [
         {
+          "availabilityZone": -1,
           "backupLongTermRetentionPolicy": {
             "monthlyRetention": "P6M"
           },
@@ -1232,6 +1263,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
+          "availabilityZone": -1,
           "name": "sqlsmax-ep-001",
           "sku": {
             "capacity": 10,
@@ -1267,8 +1299,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
       }
     },
-    "primaryUserAssignedIdentityId": {
-      "value": "<primaryUserAssignedIdentityId>"
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
     },
     "privateEndpoints": {
       "value": [
@@ -1344,7 +1376,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         {
           "ignoreMissingVnetServiceEndpoint": true,
           "name": "newVnetRule1",
-          "virtualNetworkSubnetId": "<virtualNetworkSubnetId>"
+          "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
         }
       ]
     },
@@ -1389,6 +1421,7 @@ param customerManagedKey = {
 }
 param databases = [
   {
+    availabilityZone: -1
     backupLongTermRetentionPolicy: {
       monthlyRetention: 'P6M'
     }
@@ -1423,6 +1456,7 @@ param databases = [
 ]
 param elasticPools = [
   {
+    availabilityZone: -1
     name: 'sqlsmax-ep-001'
     sku: {
       capacity: 10
@@ -1449,7 +1483,7 @@ param managedIdentities = {
     '<serverIdentityResourceId>'
   ]
 }
-param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -1513,7 +1547,7 @@ param virtualNetworkRules = [
   {
     ignoreMissingVnetServiceEndpoint: true
     name: 'newVnetRule1'
-    virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+    virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
   }
 ]
 param vulnerabilityAssessmentsObj = {
@@ -1553,6 +1587,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     administratorLoginPassword: '<administratorLoginPassword>'
     databases: [
       {
+        availabilityZone: -1
         createMode: 'Secondary'
         maxSizeBytes: 2147483648
         name: '<name>'
@@ -1600,6 +1635,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "databases": {
       "value": [
         {
+          "availabilityZone": -1,
           "createMode": "Secondary",
           "maxSizeBytes": 2147483648,
           "name": "<name>",
@@ -1643,6 +1679,7 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param databases = [
   {
+    availabilityZone: -1
     createMode: 'Secondary'
     maxSizeBytes: 2147483648
     name: '<name>'
@@ -1690,7 +1727,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     securityAlertPolicies: [
       {
         emailAccountAdmins: true
@@ -1755,8 +1792,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
       }
     },
-    "primaryUserAssignedIdentityId": {
-      "value": "<primaryUserAssignedIdentityId>"
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
     },
     "securityAlertPolicies": {
       "value": [
@@ -1816,7 +1853,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param securityAlertPolicies = [
   {
     emailAccountAdmins: true
@@ -1879,6 +1916,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     }
     databases: [
       {
+        availabilityZone: 1
         backupLongTermRetentionPolicy: {
           monthlyRetention: 'P6M'
         }
@@ -1908,6 +1946,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     ]
     elasticPools: [
       {
+        availabilityZone: -1
         maintenanceConfigurationId: '<maintenanceConfigurationId>'
         name: 'sqlswaf-ep-001'
         sku: {
@@ -1924,7 +1963,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         '<managedIdentityResourceId>'
       ]
     }
-    primaryUserAssignedIdentityId: '<primaryUserAssignedIdentityId>'
+    primaryUserAssignedIdentityResourceId: '<primaryUserAssignedIdentityResourceId>'
     privateEndpoints: [
       {
         privateDnsZoneGroup: {
@@ -1960,7 +1999,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       {
         ignoreMissingVnetServiceEndpoint: true
         name: 'newVnetRule1'
-        virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+        virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
       }
     ]
     vulnerabilityAssessmentsObj: {
@@ -2016,6 +2055,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "databases": {
       "value": [
         {
+          "availabilityZone": 1,
           "backupLongTermRetentionPolicy": {
             "monthlyRetention": "P6M"
           },
@@ -2047,6 +2087,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     "elasticPools": {
       "value": [
         {
+          "availabilityZone": -1,
           "maintenanceConfigurationId": "<maintenanceConfigurationId>",
           "name": "sqlswaf-ep-001",
           "sku": {
@@ -2068,8 +2109,8 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
       }
     },
-    "primaryUserAssignedIdentityId": {
-      "value": "<primaryUserAssignedIdentityId>"
+    "primaryUserAssignedIdentityResourceId": {
+      "value": "<primaryUserAssignedIdentityResourceId>"
     },
     "privateEndpoints": {
       "value": [
@@ -2115,7 +2156,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         {
           "ignoreMissingVnetServiceEndpoint": true,
           "name": "newVnetRule1",
-          "virtualNetworkSubnetId": "<virtualNetworkSubnetId>"
+          "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
         }
       ]
     },
@@ -2165,6 +2206,7 @@ param customerManagedKey = {
 }
 param databases = [
   {
+    availabilityZone: 1
     backupLongTermRetentionPolicy: {
       monthlyRetention: 'P6M'
     }
@@ -2194,6 +2236,7 @@ param databases = [
 ]
 param elasticPools = [
   {
+    availabilityZone: -1
     maintenanceConfigurationId: '<maintenanceConfigurationId>'
     name: 'sqlswaf-ep-001'
     sku: {
@@ -2210,7 +2253,7 @@ param managedIdentities = {
     '<managedIdentityResourceId>'
   ]
 }
-param primaryUserAssignedIdentityId = '<primaryUserAssignedIdentityId>'
+param primaryUserAssignedIdentityResourceId = '<primaryUserAssignedIdentityResourceId>'
 param privateEndpoints = [
   {
     privateDnsZoneGroup: {
@@ -2246,7 +2289,7 @@ param virtualNetworkRules = [
   {
     ignoreMissingVnetServiceEndpoint: true
     name: 'newVnetRule1'
-    virtualNetworkSubnetId: '<virtualNetworkSubnetId>'
+    virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
   }
 ]
 param vulnerabilityAssessmentsObj = {
@@ -2281,7 +2324,7 @@ param vulnerabilityAssessmentsObj = {
 | [`administratorLogin`](#parameter-administratorlogin) | string | The administrator username for the server. Required if no `administrators` object for AAD authentication is provided. |
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. Required if no `administrators` object for AAD authentication is provided. |
 | [`administrators`](#parameter-administrators) | object | The Azure Active Directory (AAD) administrator authentication. Required if no `administratorLogin` & `administratorLoginPassword` is provided. |
-| [`primaryUserAssignedIdentityId`](#parameter-primaryuserassignedidentityid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
+| [`primaryUserAssignedIdentityResourceId`](#parameter-primaryuserassignedidentityresourceid) | string | The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty. |
 
 **Optional parameters**
 
@@ -2324,7 +2367,6 @@ The administrator username for the server. Required if no `administrators` objec
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `administratorLoginPassword`
 
@@ -2332,7 +2374,6 @@ The administrator login password. Required if no `administrators` object for AAD
 
 - Required: No
 - Type: securestring
-- Default: `''`
 
 ### Parameter: `administrators`
 
@@ -2413,13 +2454,12 @@ Tenant ID of the administrator.
 - Required: No
 - Type: string
 
-### Parameter: `primaryUserAssignedIdentityId`
+### Parameter: `primaryUserAssignedIdentityResourceId`
 
 The resource ID of a user assigned identity to be used by default. Required if "userAssignedIdentities" is not empty.
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `auditSettings`
 
@@ -2589,12 +2629,12 @@ The databases to create in the server.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-databasesavailabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-databasesname) | string | The name of the Elastic Pool. |
 
 **Optional parameters**
@@ -2602,7 +2642,6 @@ The databases to create in the server.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-databasesautopausedelay) | int | Time in minutes after which database is automatically paused. A value of -1 means that automatic pause is disabled. |
-| [`availabilityZone`](#parameter-databasesavailabilityzone) | string | Specifies the availability zone the database is pinned to. |
 | [`backupLongTermRetentionPolicy`](#parameter-databasesbackuplongtermretentionpolicy) | object | The long term backup retention policy for the database. |
 | [`backupShortTermRetentionPolicy`](#parameter-databasesbackupshorttermretentionpolicy) | object | The short term backup retention policy for the database. |
 | [`catalogCollation`](#parameter-databasescatalogcollation) | string | Collation of the metadata catalog. |
@@ -2641,6 +2680,22 @@ The databases to create in the server.
 | [`useFreeLimit`](#parameter-databasesusefreelimit) | bool | Whether or not the database uses free monthly limits. Allowed on one database in a subscription. |
 | [`zoneRedundant`](#parameter-databaseszoneredundant) | bool | Whether or not this database is zone redundant, which means the replicas of this database will be spread across multiple availability zones. |
 
+### Parameter: `databases.availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
+
 ### Parameter: `databases.name`
 
 The name of the Elastic Pool.
@@ -2654,22 +2709,6 @@ Time in minutes after which database is automatically paused. A value of -1 mean
 
 - Required: No
 - Type: int
-
-### Parameter: `databases.availabilityZone`
-
-Specifies the availability zone the database is pinned to.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '1'
-    '2'
-    '3'
-    'NoPreference'
-  ]
-  ```
 
 ### Parameter: `databases.backupLongTermRetentionPolicy`
 
@@ -3279,12 +3318,12 @@ The Elastic Pools to create in the server.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-elasticpoolsavailabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-elasticpoolsname) | string | The name of the Elastic Pool. |
 
 **Optional parameters**
@@ -3292,7 +3331,6 @@ The Elastic Pools to create in the server.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`autoPauseDelay`](#parameter-elasticpoolsautopausedelay) | int | Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled. |
-| [`availabilityZone`](#parameter-elasticpoolsavailabilityzone) | string | Specifies the availability zone the pool's primary replica is pinned to. |
 | [`highAvailabilityReplicaCount`](#parameter-elasticpoolshighavailabilityreplicacount) | int | The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools. |
 | [`licenseType`](#parameter-elasticpoolslicensetype) | string | The license type to apply for this elastic pool. |
 | [`maintenanceConfigurationId`](#parameter-elasticpoolsmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur. |
@@ -3303,6 +3341,22 @@ The Elastic Pools to create in the server.
 | [`sku`](#parameter-elasticpoolssku) | object | The elastic pool SKU. |
 | [`tags`](#parameter-elasticpoolstags) | object | Tags of the resource. |
 | [`zoneRedundant`](#parameter-elasticpoolszoneredundant) | bool | Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones. |
+
+### Parameter: `elasticPools.availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `elasticPools.name`
 
@@ -3317,22 +3371,6 @@ Time in minutes after which elastic pool is automatically paused. A value of -1 
 
 - Required: No
 - Type: int
-
-### Parameter: `elasticPools.availabilityZone`
-
-Specifies the availability zone the pool's primary replica is pinned to.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '1'
-    '2'
-    '3'
-    'NoPreference'
-  ]
-  ```
 
 ### Parameter: `elasticPools.highAvailabilityReplicaCount`
 
@@ -3533,7 +3571,6 @@ The failover groups configuration.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -3682,7 +3719,6 @@ The firewall rules to create in the server.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -3739,7 +3775,6 @@ The keys to configure.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Optional parameters**
 
@@ -4300,11 +4335,9 @@ Whether or not to restrict outbound network access for this server.
 
 - Required: No
 - Type: string
-- Default: `''`
 - Allowed:
   ```Bicep
   [
-    ''
     'Disabled'
     'Enabled'
   ]
@@ -4467,7 +4500,6 @@ The security alert policies to create in the server.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
@@ -4574,14 +4606,13 @@ The virtual network rules to create in the server.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-virtualnetworkrulesname) | string | The name of the Server Virtual Network Rule. |
-| [`virtualNetworkSubnetId`](#parameter-virtualnetworkrulesvirtualnetworksubnetid) | string | The resource ID of the virtual network subnet. |
+| [`virtualNetworkSubnetResourceId`](#parameter-virtualnetworkrulesvirtualnetworksubnetresourceid) | string | The resource ID of the virtual network subnet. |
 
 **Optional parameters**
 
@@ -4596,7 +4627,7 @@ The name of the Server Virtual Network Rule.
 - Required: Yes
 - Type: string
 
-### Parameter: `virtualNetworkRules.virtualNetworkSubnetId`
+### Parameter: `virtualNetworkRules.virtualNetworkSubnetResourceId`
 
 The resource ID of the virtual network subnet.
 

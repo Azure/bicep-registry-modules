@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -85,6 +85,7 @@ module testDeployment '../../../main.bicep' = [
         name: 'myCustomLockName'
       }
       networkRuleSet: {
+        bypass: 'AzureServices'
         ipRules: [
           {
             value: '40.74.28.0/23'
@@ -114,9 +115,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-      diagnosticDependencies
-    ]
   }
 ]
