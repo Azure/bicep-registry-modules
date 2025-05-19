@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "27759724821220232"
+      "version": "0.35.1.17967",
+      "templateHash": "16823789450473750373"
     },
     "name": "Virtual Machines",
     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs."
@@ -128,7 +128,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The disk name."
+            "description": "Optional. The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used."
           }
         },
         "lun": {
@@ -140,8 +140,9 @@
         },
         "diskSizeGB": {
           "type": "int",
+          "nullable": true,
           "metadata": {
-            "description": "Required. Specifies the size of an empty data disk in gigabytes."
+            "description": "Optional. Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk."
           }
         },
         "createOption": {
@@ -153,7 +154,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies how the virtual machine should be created."
+            "description": "Optional. Specifies how the virtual machine should be created. This property is automatically set to 'Attach' when attaching a pre-existing disk."
           }
         },
         "deleteOption": {
@@ -164,7 +165,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies whether data disk should be deleted or detached upon VM deletion."
+            "description": "Optional. Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to 'Detach' when attaching a pre-existing disk."
           }
         },
         "caching": {
@@ -176,21 +177,21 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. Specifies the caching requirements."
+            "description": "Optional. Specifies the caching requirements. This property is automatically set to 'None' when attaching a pre-existing disk."
           }
         },
         "diskIOPSReadWrite": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes."
+            "description": "Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk."
           }
         },
         "diskMBpsReadWrite": {
           "type": "int",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10."
+            "description": "Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk."
           }
         },
         "managedDisk": {
@@ -207,8 +208,9 @@
                 "Standard_LRS",
                 "UltraSSD_LRS"
               ],
+              "nullable": true,
               "metadata": {
-                "description": "Required. Specifies the storage account type for the managed disk."
+                "description": "Optional. Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk."
               }
             },
             "diskEncryptionSetResourceId": {
@@ -222,12 +224,19 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Specifies the customer managed disk id for the managed disk."
+                "description": "Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty."
               }
             }
           },
           "metadata": {
             "description": "Required. The managed disk parameters."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags of the public IP address. Valid only when creating a new managed disk."
           }
         }
       },
@@ -691,6 +700,30 @@
         "description": "The type describing a Windows Remote Management listener."
       }
     },
+    "nicConfigurationOutputType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the NIC configuration."
+          }
+        },
+        "ipConfigurations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/networkInterfaceIPConfigurationOutputType"
+          },
+          "metadata": {
+            "description": "Required. List of IP configurations of the NIC configuration."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type describing the network interface configuration output."
+      }
+    },
     "_1.applicationGatewayBackendAddressPoolsType": {
       "type": "object",
       "properties": {
@@ -747,7 +780,7 @@
       "metadata": {
         "description": "The type for the application gateway backend address pool.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     },
@@ -786,7 +819,7 @@
       "metadata": {
         "description": "The type for the application security group.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     },
@@ -818,7 +851,7 @@
       "metadata": {
         "description": "The type for a backend address pool.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     },
@@ -920,7 +953,7 @@
       "metadata": {
         "description": "The type for the inbound NAT rule.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     },
@@ -959,7 +992,7 @@
       "metadata": {
         "description": "The type for the virtual network tap.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     },
@@ -1525,6 +1558,36 @@
         }
       }
     },
+    "networkInterfaceIPConfigurationOutputType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the IP configuration."
+          }
+        },
+        "privateIP": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The private IP address."
+          }
+        },
+        "publicIP": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The public IP address."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
+        }
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -1614,7 +1677,7 @@
       "metadata": {
         "description": "The type for the sub resource.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
         }
       }
     }
@@ -1708,6 +1771,13 @@
         "description": "Optional. The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled."
       }
     },
+    "hibernationEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. The flag that enables or disables hibernation capability on the VM."
+      }
+    },
     "adminUsername": {
       "type": "securestring",
       "metadata": {
@@ -1747,7 +1817,7 @@
     },
     "priority": {
       "type": "string",
-      "defaultValue": "Regular",
+      "nullable": true,
       "allowedValues": [
         "Regular",
         "Low",
@@ -2331,12 +2401,13 @@
         "name": "managedDataDisks",
         "count": "[length(coalesce(parameters('dataDisks'), createArray()))]"
       },
+      "condition": "[empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'id'))]",
       "type": "Microsoft.Compute/disks",
       "apiVersion": "2024-03-02",
       "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex(), 1), 2, '0')))]",
       "location": "[parameters('location')]",
       "sku": {
-        "name": "[coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk.storageAccountType]"
+        "name": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType')]"
       },
       "properties": {
         "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex()].diskSizeGB]",
@@ -2346,7 +2417,8 @@
         "diskIOPSReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskIOPSReadWrite')]",
         "diskMBpsReadWrite": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'diskMBpsReadWrite')]"
       },
-      "zones": "[if(and(not(equals(parameters('zone'), 0)), not(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk.storageAccountType, 'ZRS'))), array(string(parameters('zone'))), null())]"
+      "zones": "[if(and(not(equals(parameters('zone'), 0)), not(contains(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()].managedDisk, 'storageAccountType'), 'ZRS'))), array(string(parameters('zone'))), null())]",
+      "tags": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex()], 'tags'), parameters('tags'))]"
     },
     "vm": {
       "type": "Microsoft.Compute/virtualMachines",
@@ -2373,17 +2445,13 @@
               "count": "[length(coalesce(parameters('dataDisks'), createArray()))]",
               "input": {
                 "lun": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'lun'), copyIndex('dataDisks'))]",
-                "name": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))]",
-                "diskSizeGB": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].diskSizeGB]",
-                "createOption": "[if(not(equals(resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null())), 'Attach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty'))]",
-                "deleteOption": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'deleteOption'), 'Delete')]",
-                "caching": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly')]",
+                "name": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), last(split(coalesce(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.id, ''), '/')), coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0'))))]",
+                "createOption": "[if(or(not(equals(resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))), null())), not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id')))), 'Attach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'createoption'), 'Empty'))]",
+                "deleteOption": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), 'Detach', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'deleteOption'), 'Delete'))]",
+                "caching": "[if(not(empty(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'))), 'None', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'caching'), 'ReadOnly'))]",
                 "managedDisk": {
-                  "storageAccountType": "[coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.storageAccountType]",
-                  "id": "[resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0'))))]",
-                  "diskEncryptionSet": {
-                    "id": "[tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSetResourceId')]"
-                  }
+                  "id": "[coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'id'), resourceId('Microsoft.Compute/disks', coalesce(tryGet(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')], 'name'), format('{0}-disk-data-{1}', parameters('name'), padLeft(add(copyIndex('dataDisks'), 1), 2, '0')))))]",
+                  "diskEncryptionSet": "[if(contains(coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk, 'diskEncryptionSet'), createObject('id', coalesce(parameters('dataDisks'), createArray())[copyIndex('dataDisks')].managedDisk.diskEncryptionSet.id), null())]"
                 }
               }
             }
@@ -2405,7 +2473,8 @@
           }
         },
         "additionalCapabilities": {
-          "ultraSSDEnabled": "[parameters('ultraSSDEnabled')]"
+          "ultraSSDEnabled": "[parameters('ultraSSDEnabled')]",
+          "hibernationEnabled": "[parameters('hibernationEnabled')]"
         },
         "osProfile": {
           "computerName": "[parameters('computerName')]",
@@ -2443,7 +2512,7 @@
         "proximityPlacementGroup": "[if(not(empty(parameters('proximityPlacementGroupResourceId'))), createObject('id', parameters('proximityPlacementGroupResourceId')), null())]",
         "virtualMachineScaleSet": "[if(not(empty(parameters('virtualMachineScaleSetResourceId'))), createObject('id', parameters('virtualMachineScaleSetResourceId')), null())]",
         "priority": "[parameters('priority')]",
-        "evictionPolicy": "[if(not(equals('Regular', parameters('priority'))), parameters('evictionPolicy'), null())]",
+        "evictionPolicy": "[if(and(not(empty(parameters('priority'))), not(equals(parameters('priority'), 'Regular'))), parameters('evictionPolicy'), null())]",
         "billingProfile": "[if(and(not(empty(parameters('priority'))), not(empty(parameters('maxPriceForLowPriorityVm')))), createObject('maxPrice', json(parameters('maxPriceForLowPriorityVm'))), null())]",
         "host": "[if(not(empty(parameters('dedicatedHostId'))), createObject('id', parameters('dedicatedHostId')), null())]",
         "licenseType": "[if(not(empty(parameters('licenseType'))), parameters('licenseType'), null())]",
@@ -2525,7 +2594,7 @@
       "type": "Microsoft.GuestConfiguration/guestConfigurationAssignments",
       "apiVersion": "2020-06-25",
       "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('name'))]",
-      "name": "AzureWindowsBaseline",
+      "name": "[coalesce(tryGet(parameters('guestConfiguration'), 'name'), 'AzureWindowsBaseline')]",
       "location": "[parameters('location')]",
       "properties": {
         "guestConfiguration": "[parameters('guestConfiguration')]"
@@ -2630,8 +2699,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "5816212342950664216"
+              "version": "0.35.1.17967",
+              "templateHash": "8672724576831743385"
             }
           },
           "definitions": {
@@ -2992,7 +3061,7 @@
               "metadata": {
                 "description": "The type for the application gateway backend address pool.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3031,7 +3100,7 @@
               "metadata": {
                 "description": "The type for the application security group.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3063,7 +3132,7 @@
               "metadata": {
                 "description": "The type for a backend address pool.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3364,7 +3433,7 @@
               "metadata": {
                 "description": "The type for the inbound NAT rule.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3417,6 +3486,36 @@
                 "description": "An AVM-aligned type for a lock.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "networkInterfaceIPConfigurationOutputType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "The name of the IP configuration."
+                  }
+                },
+                "privateIP": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "The private IP address."
+                  }
+                },
+                "publicIP": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "The public IP address."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3509,7 +3608,7 @@
               "metadata": {
                 "description": "The type for the sub resource.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             },
@@ -3548,7 +3647,7 @@
               "metadata": {
                 "description": "The type for the virtual network tap.",
                 "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.0"
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/network-interface:0.5.1"
                 }
               }
             }
@@ -3655,7 +3754,7 @@
                     "value": "[coalesce(tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'name'), format('{0}{1}', parameters('virtualMachineName'), tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'publicIpNameSuffix')))]"
                   },
                   "diagnosticSettings": {
-                    "value": "[tryGet(parameters('ipConfigurations')[copyIndex()], 'diagnosticSettings')]"
+                    "value": "[coalesce(tryGet(tryGet(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration'), 'diagnosticSettings'), tryGet(parameters('ipConfigurations')[copyIndex()], 'diagnosticSettings'))]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -4432,7 +4531,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.34.44.8038",
-                      "templateHash": "14380338672835941099"
+                      "templateHash": "8196054567469390015"
                     },
                     "name": "Network Interface",
                     "description": "This module deploys a Network Interface."
@@ -4831,6 +4930,34 @@
                         "description": "The type for the virtual network tap."
                       }
                     },
+                    "networkInterfaceIPConfigurationOutputType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "The name of the IP configuration."
+                          }
+                        },
+                        "privateIP": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "The private IP address."
+                          }
+                        },
+                        "publicIP": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "The public IP address."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true
+                      }
+                    },
                     "diagnosticSettingFullType": {
                       "type": "object",
                       "properties": {
@@ -5208,11 +5335,23 @@
                     }
                   },
                   "resources": {
+                    "publicIp": {
+                      "copy": {
+                        "name": "publicIp",
+                        "count": "[length(parameters('ipConfigurations'))]"
+                      },
+                      "condition": "[and(contains(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), not(equals(tryGet(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), null())))]",
+                      "existing": true,
+                      "type": "Microsoft.Network/publicIPAddresses",
+                      "apiVersion": "2024-05-01",
+                      "resourceGroup": "[split(coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), ''), '/')[4]]",
+                      "name": "[last(split(coalesce(tryGet(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), ''), '/'))]"
+                    },
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.5.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.network-networkinterface.{0}.{1}', replace('0.5.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
@@ -5366,6 +5505,23 @@
                         "description": "The location the resource was deployed into."
                       },
                       "value": "[reference('networkInterface', '2024-05-01', 'full').location]"
+                    },
+                    "ipConfigurations": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/networkInterfaceIPConfigurationOutputType"
+                      },
+                      "metadata": {
+                        "description": "The list of IP configurations of the network interface."
+                      },
+                      "copy": {
+                        "count": "[length(parameters('ipConfigurations'))]",
+                        "input": {
+                          "name": "[reference('networkInterface').ipConfigurations[copyIndex()].name]",
+                          "privateIP": "[coalesce(tryGet(reference('networkInterface').ipConfigurations[copyIndex()].properties, 'privateIPAddress'), '')]",
+                          "publicIP": "[if(and(contains(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), not(equals(tryGet(parameters('ipConfigurations')[copyIndex()], 'publicIPAddressResourceId'), null()))), coalesce(reference(format('publicIp[{0}]', copyIndex())).ipAddress, ''), '')]"
+                        }
+                      }
                     }
                   }
                 }
@@ -5374,15 +5530,34 @@
                 "networkInterface_publicIPAddresses"
               ]
             }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the network interface."
+              },
+              "value": "[reference('networkInterface').outputs.name.value]"
+            },
+            "ipConfigurations": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/networkInterfaceIPConfigurationOutputType"
+              },
+              "metadata": {
+                "description": "The list of IP configurations of the network interface."
+              },
+              "value": "[reference('networkInterface').outputs.ipConfigurations.value]"
+            }
           }
         }
       }
     },
-    "vm_aadJoinExtension": {
-      "condition": "[parameters('extensionAadJoinConfig').enabled]",
+    "vm_domainJoinExtension": {
+      "condition": "[and(contains(parameters('extensionDomainJoinConfig'), 'enabled'), parameters('extensionDomainJoinConfig').enabled)]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-VM-AADLogin', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-VM-DomainJoin', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5393,32 +5568,39 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "AADLogin"
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'name'), 'DomainJoin')]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
           "publisher": {
-            "value": "Microsoft.Azure.ActiveDirectory"
+            "value": "Microsoft.Compute"
           },
-          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AADLoginForWindows'), createObject('value', 'AADSSHLoginforLinux'))]",
+          "type": {
+            "value": "JsonADDomainExtension"
+          },
           "typeHandlerVersion": {
-            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '2.0', '1.0'))]"
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'typeHandlerVersion'), '1.3')]"
           },
           "autoUpgradeMinorVersion": {
-            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'autoUpgradeMinorVersion'), true())]"
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'autoUpgradeMinorVersion'), true())]"
           },
           "enableAutomaticUpgrade": {
-            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'enableAutomaticUpgrade'), false())]"
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), false())]"
           },
           "settings": {
-            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'settings'), createObject())]"
+            "value": "[parameters('extensionDomainJoinConfig').settings]"
           },
           "supressFailures": {
-            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'supressFailures'), false())]"
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'supressFailures'), false())]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'tags'), parameters('tags'))]"
+            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'tags'), parameters('tags'))]"
+          },
+          "protectedSettings": {
+            "value": {
+              "Password": "[parameters('extensionDomainJoinPassword')]"
+            }
           }
         },
         "template": {
@@ -5428,8 +5610,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -5582,11 +5764,11 @@
         "vm"
       ]
     },
-    "vm_domainJoinExtension": {
-      "condition": "[and(contains(parameters('extensionDomainJoinConfig'), 'enabled'), parameters('extensionDomainJoinConfig').enabled)]",
+    "vm_aadJoinExtension": {
+      "condition": "[parameters('extensionAadJoinConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-VM-DomainJoin', uniqueString(deployment().name, parameters('location')))]",
+      "name": "[format('{0}-VM-AADLogin', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5597,39 +5779,32 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "DomainJoin"
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'name'), 'AADLogin')]"
           },
           "location": {
             "value": "[parameters('location')]"
           },
           "publisher": {
-            "value": "Microsoft.Compute"
+            "value": "Microsoft.Azure.ActiveDirectory"
           },
-          "type": {
-            "value": "JsonADDomainExtension"
-          },
+          "type": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AADLoginForWindows'), createObject('value', 'AADSSHLoginforLinux'))]",
           "typeHandlerVersion": {
-            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'typeHandlerVersion'), '1.3')]"
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'typeHandlerVersion'), if(equals(parameters('osType'), 'Windows'), '2.0', '1.0'))]"
           },
           "autoUpgradeMinorVersion": {
-            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'autoUpgradeMinorVersion'), true())]"
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'autoUpgradeMinorVersion'), true())]"
           },
           "enableAutomaticUpgrade": {
-            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'enableAutomaticUpgrade'), false())]"
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'enableAutomaticUpgrade'), false())]"
           },
           "settings": {
-            "value": "[parameters('extensionDomainJoinConfig').settings]"
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'settings'), createObject())]"
           },
           "supressFailures": {
-            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'supressFailures'), false())]"
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'supressFailures'), false())]"
           },
           "tags": {
-            "value": "[coalesce(tryGet(parameters('extensionDomainJoinConfig'), 'tags'), parameters('tags'))]"
-          },
-          "protectedSettings": {
-            "value": {
-              "Password": "[parameters('extensionDomainJoinPassword')]"
-            }
+            "value": "[coalesce(tryGet(parameters('extensionAadJoinConfig'), 'tags'), parameters('tags'))]"
           }
         },
         "template": {
@@ -5639,215 +5814,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
-            },
-            "name": "Virtual Machine Extensions",
-            "description": "This module deploys a Virtual Machine Extension."
-          },
-          "parameters": {
-            "virtualMachineName": {
-              "type": "string",
-              "metadata": {
-                "description": "Conditional. The name of the parent virtual machine that extension is provisioned for. Required if the template is used in a standalone deployment."
-              }
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the virtual machine extension."
-              }
-            },
-            "location": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().location]",
-              "metadata": {
-                "description": "Optional. The location the extension is deployed to."
-              }
-            },
-            "publisher": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the extension handler publisher."
-              }
-            },
-            "type": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
-              }
-            },
-            "typeHandlerVersion": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Specifies the version of the script handler."
-              }
-            },
-            "autoUpgradeMinorVersion": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
-              }
-            },
-            "forceUpdateTag": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
-              }
-            },
-            "settings": {
-              "type": "object",
-              "defaultValue": {},
-              "metadata": {
-                "description": "Optional. Any object that contains the extension specific settings."
-              }
-            },
-            "protectedSettings": {
-              "type": "secureObject",
-              "defaultValue": {},
-              "metadata": {
-                "description": "Optional. Any object that contains the extension specific protected settings."
-              }
-            },
-            "supressFailures": {
-              "type": "bool",
-              "defaultValue": false,
-              "metadata": {
-                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
-              }
-            },
-            "enableAutomaticUpgrade": {
-              "type": "bool",
-              "metadata": {
-                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Tags of the resource."
-              }
-            }
-          },
-          "resources": {
-            "virtualMachine": {
-              "existing": true,
-              "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2022-11-01",
-              "name": "[parameters('virtualMachineName')]"
-            },
-            "extension": {
-              "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2022-11-01",
-              "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
-              "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
-              "properties": {
-                "publisher": "[parameters('publisher')]",
-                "type": "[parameters('type')]",
-                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
-                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
-                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                "suppressFailures": "[parameters('supressFailures')]"
-              }
-            }
-          },
-          "outputs": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the extension."
-              },
-              "value": "[parameters('name')]"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the extension."
-              },
-              "value": "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('virtualMachineName'), parameters('name'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the Resource Group the extension was created in."
-              },
-              "value": "[resourceGroup().name]"
-            },
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "The location the resource was deployed into."
-              },
-              "value": "[reference('extension', '2022-11-01', 'full').location]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "vm",
-        "vm_aadJoinExtension"
-      ]
-    },
-    "vm_microsoftAntiMalwareExtension": {
-      "condition": "[parameters('extensionAntiMalwareConfig').enabled]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-VM-MicrosoftAntiMalware', uniqueString(deployment().name, parameters('location')))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "virtualMachineName": {
-            "value": "[parameters('name')]"
-          },
-          "name": {
-            "value": "MicrosoftAntiMalware"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "publisher": {
-            "value": "Microsoft.Azure.Security"
-          },
-          "type": {
-            "value": "IaaSAntimalware"
-          },
-          "typeHandlerVersion": {
-            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'typeHandlerVersion'), '1.3')]"
-          },
-          "autoUpgradeMinorVersion": {
-            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'autoUpgradeMinorVersion'), true())]"
-          },
-          "enableAutomaticUpgrade": {
-            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), false())]"
-          },
-          "settings": {
-            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'settings'), createObject('AntimalwareEnabled', 'true', 'Exclusions', createObject(), 'RealtimeProtectionEnabled', 'true', 'ScheduledScanSettings', createObject('day', '7', 'isEnabled', 'true', 'scanType', 'Quick', 'time', '120')))]"
-          },
-          "supressFailures": {
-            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'supressFailures'), false())]"
-          },
-          "tags": {
-            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'tags'), parameters('tags'))]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6001,6 +5969,213 @@
         "vm_domainJoinExtension"
       ]
     },
+    "vm_microsoftAntiMalwareExtension": {
+      "condition": "[parameters('extensionAntiMalwareConfig').enabled]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-VM-MicrosoftAntiMalware', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "virtualMachineName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'name'), 'MicrosoftAntiMalware')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "publisher": {
+            "value": "Microsoft.Azure.Security"
+          },
+          "type": {
+            "value": "IaaSAntimalware"
+          },
+          "typeHandlerVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'typeHandlerVersion'), '1.3')]"
+          },
+          "autoUpgradeMinorVersion": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'autoUpgradeMinorVersion'), true())]"
+          },
+          "enableAutomaticUpgrade": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'enableAutomaticUpgrade'), false())]"
+          },
+          "settings": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'settings'), createObject('AntimalwareEnabled', 'true', 'Exclusions', createObject(), 'RealtimeProtectionEnabled', 'true', 'ScheduledScanSettings', createObject('day', '7', 'isEnabled', 'true', 'scanType', 'Quick', 'time', '120')))]"
+          },
+          "supressFailures": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'supressFailures'), false())]"
+          },
+          "tags": {
+            "value": "[coalesce(tryGet(parameters('extensionAntiMalwareConfig'), 'tags'), parameters('tags'))]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
+            },
+            "name": "Virtual Machine Extensions",
+            "description": "This module deploys a Virtual Machine Extension."
+          },
+          "parameters": {
+            "virtualMachineName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent virtual machine that extension is provisioned for. Required if the template is used in a standalone deployment."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the virtual machine extension."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. The location the extension is deployed to."
+              }
+            },
+            "publisher": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the extension handler publisher."
+              }
+            },
+            "type": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
+              }
+            },
+            "typeHandlerVersion": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Specifies the version of the script handler."
+              }
+            },
+            "autoUpgradeMinorVersion": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
+              }
+            },
+            "forceUpdateTag": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
+              }
+            },
+            "settings": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific settings."
+              }
+            },
+            "protectedSettings": {
+              "type": "secureObject",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Any object that contains the extension specific protected settings."
+              }
+            },
+            "supressFailures": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
+              }
+            },
+            "enableAutomaticUpgrade": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            }
+          },
+          "resources": {
+            "virtualMachine": {
+              "existing": true,
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2022-11-01",
+              "name": "[parameters('virtualMachineName')]"
+            },
+            "extension": {
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2022-11-01",
+              "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "publisher": "[parameters('publisher')]",
+                "type": "[parameters('type')]",
+                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
+                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
+                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
+                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
+                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
+                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
+                "suppressFailures": "[parameters('supressFailures')]"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the extension."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the extension."
+              },
+              "value": "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('virtualMachineName'), parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Resource Group the extension was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('extension', '2022-11-01', 'full').location]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "vm",
+        "vm_aadJoinExtension"
+      ]
+    },
     "vm_azureMonitorAgentExtension": {
       "condition": "[parameters('extensionMonitoringAgentConfig').enabled]",
       "type": "Microsoft.Resources/deployments",
@@ -6016,7 +6191,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "AzureMonitorAgent"
+            "value": "[coalesce(tryGet(parameters('extensionMonitoringAgentConfig'), 'name'), 'AzureMonitorAgent')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6048,8 +6223,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6218,7 +6393,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "DependencyAgent"
+            "value": "[coalesce(tryGet(parameters('extensionDependencyAgentConfig'), 'name'), 'DependencyAgent')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6255,8 +6430,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6425,7 +6600,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "NetworkWatcherAgent"
+            "value": "[coalesce(tryGet(parameters('extensionNetworkWatcherAgentConfig'), 'name'), 'NetworkWatcherAgent')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6457,8 +6632,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6627,7 +6802,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "DesiredStateConfiguration"
+            "value": "[coalesce(tryGet(parameters('extensionDSCConfig'), 'name'), 'DesiredStateConfiguration')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6667,8 +6842,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -6837,7 +7012,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "CustomScriptExtension"
+            "value": "[coalesce(tryGet(parameters('extensionCustomScriptConfig'), 'name'), 'CustomScriptExtension')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -6881,8 +7056,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7051,7 +7226,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "AzureDiskEncryption"
+            "value": "[coalesce(tryGet(parameters('extensionAzureDiskEncryptionConfig'), 'name'), 'AzureDiskEncryption')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -7089,8 +7264,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7259,7 +7434,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "NvidiaGpuDriverWindows"
+            "value": "[coalesce(tryGet(parameters('extensionNvidiaGpuDriverWindows'), 'name'), 'NvidiaGpuDriverWindows')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -7293,8 +7468,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7463,7 +7638,7 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "HostPoolRegistration"
+            "value": "[coalesce(tryGet(parameters('extensionHostPoolRegistration'), 'name'), 'HostPoolRegistration')]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -7506,8 +7681,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7675,7 +7850,7 @@
           "virtualMachineName": {
             "value": "[parameters('name')]"
           },
-          "name": "[if(equals(parameters('osType'), 'Windows'), createObject('value', 'AzurePolicyforWindows'), createObject('value', 'AzurePolicyforLinux'))]",
+          "name": "[if(coalesce(tryGet(parameters('extensionGuestConfigurationExtension'), 'name'), equals(parameters('osType'), 'Windows')), createObject('value', 'AzurePolicyforWindows'), createObject('value', 'AzurePolicyforLinux'))]",
           "location": {
             "value": "[parameters('location')]"
           },
@@ -7715,8 +7890,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8482591295619883067"
+              "version": "0.35.1.17967",
+              "templateHash": "11010105954455348"
             },
             "name": "Virtual Machine Extensions",
             "description": "This module deploys a Virtual Machine Extension."
@@ -7910,8 +8085,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "7743264001610407207"
+              "version": "0.35.1.17967",
+              "templateHash": "1854213848782186224"
             },
             "name": "Recovery Service Vaults Protection Container Protected Item",
             "description": "This module deploys a Recovery Services Vault Protection Container Protected Item."
@@ -8053,6 +8228,22 @@
         "description": "The location the resource was deployed into."
       },
       "value": "[reference('vm', '2024-07-01', 'full').location]"
+    },
+    "nicConfigurations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/nicConfigurationOutputType"
+      },
+      "metadata": {
+        "description": "The list of NIC configurations of the virtual machine."
+      },
+      "copy": {
+        "count": "[length(parameters('nicConfigurations'))]",
+        "input": {
+          "name": "[reference(format('vm_nic[{0}]', copyIndex())).outputs.name.value]",
+          "ipConfigurations": "[reference(format('vm_nic[{0}]', copyIndex())).outputs.ipConfigurations.value]"
+        }
+      }
     }
   }
 }

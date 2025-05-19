@@ -42,6 +42,9 @@ param dataDisks dataDiskType[]?
 @description('Optional. The flag that enables or disables a capability to have one or more managed data disks with UltraSSD_LRS storage account type on the VM or VMSS. Managed disks with storage account type UltraSSD_LRS can be added to a virtual machine or virtual machine scale set only if this property is enabled.')
 param ultraSSDEnabled bool = false
 
+@description('Optional. The flag that enables or disables hibernation capability on the VM.')
+param hibernationEnabled bool = false
+
 @description('Required. Administrator username.')
 @secure()
 param adminUsername string
@@ -65,7 +68,7 @@ param certificatesToBeInstalled vaultSecretGroupType[]?
   'Low'
   'Spot'
 ])
-param priority string = 'Regular'
+param priority string?
 
 @description('Optional. Specifies the eviction policy for the low priority virtual machine.')
 @allowed([
@@ -520,11 +523,11 @@ module vm_nic 'modules/nic-configuration.bicep' = [
 ]
 
 resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
-  for (dataDisk, index) in dataDisks ?? []: {
+  for (dataDisk, index) in dataDisks ?? []: if (empty(dataDisk.managedDisk.?id)) {
     location: location
     name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
     sku: {
-      name: dataDisk.managedDisk.storageAccountType
+      name: dataDisk.managedDisk.?storageAccountType
     }
     properties: {
       diskSizeGB: dataDisk.diskSizeGB
@@ -534,7 +537,8 @@ resource managedDataDisks 'Microsoft.Compute/disks@2024-03-02' = [
       diskIOPSReadWrite: dataDisk.?diskIOPSReadWrite
       diskMBpsReadWrite: dataDisk.?diskMBpsReadWrite
     }
-    zones: zone != 0 && !contains(dataDisk.managedDisk.storageAccountType, 'ZRS') ? array(string(zone)) : null
+    zones: zone != 0 && !contains(dataDisk.managedDisk.?storageAccountType, 'ZRS') ? array(string(zone)) : null
+    tags: dataDisk.?tags ?? tags
   }
 ]
 
@@ -583,23 +587,28 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       dataDisks: [
         for (dataDisk, index) in dataDisks ?? []: {
           lun: dataDisk.?lun ?? index
-          name: dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
-          diskSizeGB: dataDisk.diskSizeGB
-          createOption: (managedDataDisks[index].?id != null) ? 'Attach' : dataDisk.?createoption ?? 'Empty'
-          deleteOption: dataDisk.?deleteOption ?? 'Delete'
-          caching: dataDisk.?caching ?? 'ReadOnly'
+          name: !empty(dataDisk.managedDisk.?id)
+            ? last(split(dataDisk.managedDisk.id ?? '', '/'))
+            : dataDisk.?name ?? '${name}-disk-data-${padLeft((index + 1), 2, '0')}'
+          createOption: (managedDataDisks[index].?id != null || !empty(dataDisk.managedDisk.?id))
+            ? 'Attach'
+            : dataDisk.?createoption ?? 'Empty'
+          deleteOption: !empty(dataDisk.managedDisk.?id) ? 'Detach' : dataDisk.?deleteOption ?? 'Delete'
+          caching: !empty(dataDisk.managedDisk.?id) ? 'None' : dataDisk.?caching ?? 'ReadOnly'
           managedDisk: {
-            storageAccountType: dataDisk.managedDisk.storageAccountType
-            id: managedDataDisks[index].?id
-            diskEncryptionSet: {
-              id: dataDisk.managedDisk.?diskEncryptionSetResourceId
-            }
+            id: dataDisk.managedDisk.?id ?? managedDataDisks[index].?id
+            diskEncryptionSet: contains(dataDisk.managedDisk, 'diskEncryptionSet')
+              ? {
+                  id: dataDisk.managedDisk.diskEncryptionSet.id
+                }
+              : null
           }
         }
       ]
     }
     additionalCapabilities: {
       ultraSSDEnabled: ultraSSDEnabled
+      hibernationEnabled: hibernationEnabled
     }
     osProfile: {
       computerName: computerName
@@ -655,7 +664,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2024-07-01' = {
         }
       : null
     priority: priority
-    evictionPolicy: 'Regular' != priority ? evictionPolicy : null
+    evictionPolicy: !empty(priority) && priority != 'Regular' ? evictionPolicy : null
     #disable-next-line BCP036
     billingProfile: !empty(priority) && !empty(maxPriceForLowPriorityVm)
       ? {
@@ -716,28 +725,11 @@ resource vm_autoShutdownConfiguration 'Microsoft.DevTestLab/schedules@2018-09-15
   }
 }
 
-module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
-  name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
-  params: {
-    virtualMachineName: vm.name
-    name: 'AADLogin'
-    location: location
-    publisher: 'Microsoft.Azure.ActiveDirectory'
-    type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
-    typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
-    autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
-    enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
-    settings: extensionAadJoinConfig.?settings ?? {}
-    supressFailures: extensionAadJoinConfig.?supressFailures ?? false
-    tags: extensionAadJoinConfig.?tags ?? tags
-  }
-}
-
 module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDomainJoinConfig, 'enabled') && extensionDomainJoinConfig.enabled) {
   name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
   params: {
     virtualMachineName: vm.name
-    name: 'DomainJoin'
+    name: extensionDomainJoinConfig.?name ?? 'DomainJoin'
     location: location
     publisher: 'Microsoft.Compute'
     type: 'JsonADDomainExtension'
@@ -751,8 +743,25 @@ module vm_domainJoinExtension 'extension/main.bicep' = if (contains(extensionDom
       Password: extensionDomainJoinPassword
     }
   }
+}
+
+module vm_aadJoinExtension 'extension/main.bicep' = if (extensionAadJoinConfig.enabled) {
+  name: '${uniqueString(deployment().name, location)}-VM-AADLogin'
+  params: {
+    virtualMachineName: vm.name
+    name: extensionAadJoinConfig.?name ?? 'AADLogin'
+    location: location
+    publisher: 'Microsoft.Azure.ActiveDirectory'
+    type: osType == 'Windows' ? 'AADLoginForWindows' : 'AADSSHLoginforLinux'
+    typeHandlerVersion: extensionAadJoinConfig.?typeHandlerVersion ?? (osType == 'Windows' ? '2.0' : '1.0')
+    autoUpgradeMinorVersion: extensionAadJoinConfig.?autoUpgradeMinorVersion ?? true
+    enableAutomaticUpgrade: extensionAadJoinConfig.?enableAutomaticUpgrade ?? false
+    settings: extensionAadJoinConfig.?settings ?? {}
+    supressFailures: extensionAadJoinConfig.?supressFailures ?? false
+    tags: extensionAadJoinConfig.?tags ?? tags
+  }
   dependsOn: [
-    vm_aadJoinExtension
+    vm_domainJoinExtension
   ]
 }
 
@@ -760,7 +769,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
   name: '${uniqueString(deployment().name, location)}-VM-MicrosoftAntiMalware'
   params: {
     virtualMachineName: vm.name
-    name: 'MicrosoftAntiMalware'
+    name: extensionAntiMalwareConfig.?name ?? 'MicrosoftAntiMalware'
     location: location
     publisher: 'Microsoft.Azure.Security'
     type: 'IaaSAntimalware'
@@ -782,7 +791,7 @@ module vm_microsoftAntiMalwareExtension 'extension/main.bicep' = if (extensionAn
     tags: extensionAntiMalwareConfig.?tags ?? tags
   }
   dependsOn: [
-    vm_domainJoinExtension
+    vm_aadJoinExtension
   ]
 }
 
@@ -790,7 +799,7 @@ module vm_azureMonitorAgentExtension 'extension/main.bicep' = if (extensionMonit
   name: '${uniqueString(deployment().name, location)}-VM-AzureMonitorAgent'
   params: {
     virtualMachineName: vm.name
-    name: 'AzureMonitorAgent'
+    name: extensionMonitoringAgentConfig.?name ?? 'AzureMonitorAgent'
     location: location
     publisher: 'Microsoft.Azure.Monitor'
     type: osType == 'Windows' ? 'AzureMonitorWindowsAgent' : 'AzureMonitorLinuxAgent'
@@ -822,7 +831,7 @@ module vm_dependencyAgentExtension 'extension/main.bicep' = if (extensionDepende
   name: '${uniqueString(deployment().name, location)}-VM-DependencyAgent'
   params: {
     virtualMachineName: vm.name
-    name: 'DependencyAgent'
+    name: extensionDependencyAgentConfig.?name ?? 'DependencyAgent'
     location: location
     publisher: 'Microsoft.Azure.Monitoring.DependencyAgent'
     type: osType == 'Windows' ? 'DependencyAgentWindows' : 'DependencyAgentLinux'
@@ -844,7 +853,7 @@ module vm_networkWatcherAgentExtension 'extension/main.bicep' = if (extensionNet
   name: '${uniqueString(deployment().name, location)}-VM-NetworkWatcherAgent'
   params: {
     virtualMachineName: vm.name
-    name: 'NetworkWatcherAgent'
+    name: extensionNetworkWatcherAgentConfig.?name ?? 'NetworkWatcherAgent'
     location: location
     publisher: 'Microsoft.Azure.NetworkWatcher'
     type: osType == 'Windows' ? 'NetworkWatcherAgentWindows' : 'NetworkWatcherAgentLinux'
@@ -863,7 +872,7 @@ module vm_desiredStateConfigurationExtension 'extension/main.bicep' = if (extens
   name: '${uniqueString(deployment().name, location)}-VM-DesiredStateConfiguration'
   params: {
     virtualMachineName: vm.name
-    name: 'DesiredStateConfiguration'
+    name: extensionDSCConfig.?name ?? 'DesiredStateConfiguration'
     location: location
     publisher: 'Microsoft.Powershell'
     type: 'DSC'
@@ -884,7 +893,7 @@ module vm_customScriptExtension 'extension/main.bicep' = if (extensionCustomScri
   name: '${uniqueString(deployment().name, location)}-VM-CustomScriptExtension'
   params: {
     virtualMachineName: vm.name
-    name: 'CustomScriptExtension'
+    name: extensionCustomScriptConfig.?name ?? 'CustomScriptExtension'
     location: location
     publisher: osType == 'Windows' ? 'Microsoft.Compute' : 'Microsoft.Azure.Extensions'
     type: osType == 'Windows' ? 'CustomScriptExtension' : 'CustomScript'
@@ -911,7 +920,7 @@ module vm_azureDiskEncryptionExtension 'extension/main.bicep' = if (extensionAzu
   name: '${uniqueString(deployment().name, location)}-VM-AzureDiskEncryption'
   params: {
     virtualMachineName: vm.name
-    name: 'AzureDiskEncryption'
+    name: extensionAzureDiskEncryptionConfig.?name ?? 'AzureDiskEncryption'
     location: location
     publisher: 'Microsoft.Azure.Security'
     type: osType == 'Windows' ? 'AzureDiskEncryption' : 'AzureDiskEncryptionForLinux'
@@ -932,7 +941,7 @@ module vm_nvidiaGpuDriverWindowsExtension 'extension/main.bicep' = if (extension
   name: '${uniqueString(deployment().name, location)}-VM-NvidiaGpuDriverWindows'
   params: {
     virtualMachineName: vm.name
-    name: 'NvidiaGpuDriverWindows'
+    name: extensionNvidiaGpuDriverWindows.?name ?? 'NvidiaGpuDriverWindows'
     location: location
     publisher: 'Microsoft.HpcCompute'
     type: 'NvidiaGpuDriverWindows'
@@ -951,7 +960,7 @@ module vm_hostPoolRegistrationExtension 'extension/main.bicep' = if (extensionHo
   name: '${uniqueString(deployment().name, location)}-VM-HostPoolRegistration'
   params: {
     virtualMachineName: vm.name
-    name: 'HostPoolRegistration'
+    name: extensionHostPoolRegistration.?name ?? 'HostPoolRegistration'
     location: location
     publisher: 'Microsoft.PowerShell'
     type: 'DSC'
@@ -979,7 +988,9 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensio
   name: '${uniqueString(deployment().name, location)}-VM-GuestConfiguration'
   params: {
     virtualMachineName: vm.name
-    name: osType == 'Windows' ? 'AzurePolicyforWindows' : 'AzurePolicyforLinux'
+    name: extensionGuestConfigurationExtension.?name ?? osType == 'Windows'
+      ? 'AzurePolicyforWindows'
+      : 'AzurePolicyforLinux'
     location: location
     publisher: 'Microsoft.GuestConfiguration'
     type: osType == 'Windows' ? 'ConfigurationforWindows' : 'ConfigurationForLinux'
@@ -998,7 +1009,7 @@ module vm_azureGuestConfigurationExtension 'extension/main.bicep' = if (extensio
 }
 
 resource AzureWindowsBaseline 'Microsoft.GuestConfiguration/guestConfigurationAssignments@2020-06-25' = if (!empty(guestConfiguration)) {
-  name: 'AzureWindowsBaseline'
+  name: guestConfiguration.?name ?? 'AzureWindowsBaseline'
   scope: vm
   dependsOn: [
     vm_azureGuestConfigurationExtension
@@ -1068,6 +1079,15 @@ output systemAssignedMIPrincipalId string? = vm.?identity.?principalId
 @description('The location the resource was deployed into.')
 output location string = vm.location
 
+import { networkInterfaceIPConfigurationOutputType } from 'br/public:avm/res/network/network-interface:0.5.1'
+@description('The list of NIC configurations of the virtual machine.')
+output nicConfigurations nicConfigurationOutputType[] = [
+  for (nicConfiguration, index) in nicConfigurations: {
+    name: vm_nic[index].outputs.name
+    ipConfigurations: vm_nic[index].outputs.ipConfigurations
+  }
+]
+
 // =============== //
 //   Definitions   //
 // =============== //
@@ -1116,33 +1136,33 @@ type osDiskType = {
 @export()
 @description('The type describing a data disk.')
 type dataDiskType = {
-  @description('Optional. The disk name.')
+  @description('Optional. The disk name. When attaching a pre-existing disk, this name is ignored and the name of the existing disk is used.')
   name: string?
 
   @description('Optional. Specifies the logical unit number of the data disk.')
   lun: int?
 
-  @description('Required. Specifies the size of an empty data disk in gigabytes.')
-  diskSizeGB: int
+  @description('Optional. Specifies the size of an empty data disk in gigabytes. This property is ignored when attaching a pre-existing disk.')
+  diskSizeGB: int?
 
-  @description('Optional. Specifies how the virtual machine should be created.')
+  @description('Optional. Specifies how the virtual machine should be created. This property is automatically set to \'Attach\' when attaching a pre-existing disk.')
   createOption: 'Attach' | 'Empty' | 'FromImage'?
 
-  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion.')
+  @description('Optional. Specifies whether data disk should be deleted or detached upon VM deletion. This property is automatically set to \'Detach\' when attaching a pre-existing disk.')
   deleteOption: 'Delete' | 'Detach'?
 
-  @description('Optional. Specifies the caching requirements.')
+  @description('Optional. Specifies the caching requirements. This property is automatically set to \'None\' when attaching a pre-existing disk.')
   caching: 'None' | 'ReadOnly' | 'ReadWrite'?
 
-  @description('Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes.')
+  @description('Optional. The number of IOPS allowed for this disk; only settable for UltraSSD disks. One operation can transfer between 4k and 256k bytes. Ignored when attaching a pre-existing disk.')
   diskIOPSReadWrite: int?
 
-  @description('Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10.')
+  @description('Optional. The bandwidth allowed for this disk; only settable for UltraSSD disks. MBps means millions of bytes per second - MB here uses the ISO notation, of powers of 10. Ignored when attaching a pre-existing disk.')
   diskMBpsReadWrite: int?
 
   @description('Required. The managed disk parameters.')
   managedDisk: {
-    @description('Required. Specifies the storage account type for the managed disk.')
+    @description('Optional. Specifies the storage account type for the managed disk. Ignored when attaching a pre-existing disk.')
     storageAccountType:
       | 'PremiumV2_LRS'
       | 'Premium_LRS'
@@ -1150,14 +1170,17 @@ type dataDiskType = {
       | 'StandardSSD_LRS'
       | 'StandardSSD_ZRS'
       | 'Standard_LRS'
-      | 'UltraSSD_LRS'
+      | 'UltraSSD_LRS'?
 
     @description('Optional. Specifies the customer managed disk encryption set resource id for the managed disk.')
     diskEncryptionSetResourceId: string?
 
-    @description('Optional. Specifies the customer managed disk id for the managed disk.')
+    @description('Optional. Specifies the resource id of a pre-existing managed disk. If the disk should be created, this property should be empty.')
     id: string?
   }
+
+  @description('Optional. The tags of the public IP address. Valid only when creating a new managed disk.')
+  tags: object?
 }
 
 type publicKeyType = {
@@ -1170,7 +1193,7 @@ type publicKeyType = {
 
 import { ipConfigurationType } from 'modules/nic-configuration.bicep'
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-import { subResourceType } from 'br/public:avm/res/network/network-interface:0.5.0'
+import { subResourceType } from 'br/public:avm/res/network/network-interface:0.5.1'
 
 @export()
 @description('The type for the NIC configuration.')
@@ -1343,4 +1366,14 @@ type winRMListenerType = {
 
   @description('Optional. Specifies the protocol of WinRM listener.')
   protocol: 'Http' | 'Https'?
+}
+
+@export()
+@description('The type describing the network interface configuration output.')
+type nicConfigurationOutputType = {
+  @description('Required. The name of the NIC configuration.')
+  name: string
+
+  @description('Required. List of IP configurations of the NIC configuration.')
+  ipConfigurations: networkInterfaceIPConfigurationOutputType[]
 }

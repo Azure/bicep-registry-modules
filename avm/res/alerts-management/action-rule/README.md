@@ -232,6 +232,11 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    schedule: {
+      effectiveFrom: '2026-01-01T00:00:00'
+      effectiveUntil: '2027-12-31T23:59:59'
+      timeZone: 'Eastern Standard Time'
+    }
     scopes: [
       '<id>'
     ]
@@ -396,6 +401,13 @@ module actionRule 'br/public:avm/res/alerts-management/action-rule:<version>' = 
         }
       ]
     },
+    "schedule": {
+      "value": {
+        "effectiveFrom": "2026-01-01T00:00:00",
+        "effectiveUntil": "2027-12-31T23:59:59",
+        "timeZone": "Eastern Standard Time"
+      }
+    },
     "scopes": {
       "value": [
         "<id>"
@@ -546,6 +558,11 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param schedule = {
+  effectiveFrom: '2026-01-01T00:00:00'
+  effectiveUntil: '2027-12-31T23:59:59'
+  timeZone: 'Eastern Standard Time'
+}
 param scopes = [
   '<id>'
 ]
