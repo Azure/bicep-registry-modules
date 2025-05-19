@@ -48,7 +48,7 @@ module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.3.0' = [
       allowBranchToBranchTraffic: virtualHub.?allowBranchToBranchTraffic
       enableTelemetry: enableTelemetry
       hubRoutingPreference: virtualHub.?hubRoutingPreference
-      hubRouteTables: virtualHub.?hubRouteTables 
+      hubRouteTables: virtualHub.?hubRouteTables
       hubVirtualNetworkConnections: virtualHub.?hubVirtualNetworkConnections
       lock: lock ?? {}
       sku: virtualHub.?sku
@@ -59,6 +59,7 @@ module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.3.0' = [
   }
 ]
 
+/*
 module newAzureFirewallPolicyModule 'br/public:avm/res/network/firewall-policy:0.3.1' = [
   for (virtualHub, i) in virtualHubParameters!: if (!empty(virtualHub.?secureHubParameters.?newFirewallPolicyName!)) {
     name: virtualHub.?secureHubParameters.?newFirewallPolicyName! // May need index name here
@@ -71,7 +72,7 @@ module newAzureFirewallPolicyModule 'br/public:avm/res/network/firewall-policy:0
       //tags:
     }
   }
-]
+]*/
 
 module firewallModule 'br/public:avm/res/network/azure-firewall:0.6.0' = [
   for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?secureHubParameters.?deploySecureHub!) {
@@ -80,24 +81,24 @@ module firewallModule 'br/public:avm/res/network/azure-firewall:0.6.0' = [
       name: virtualHub.?secureHubParameters.?azureFirewallName!
       azureSkuTier: virtualHub.?secureHubParameters.?azureFirewallSku
       virtualHubId: virtualHubModule[i].outputs.resourceId
-      firewallPolicyId: ((!empty(virtualHub.?secureHubParameters.?newFirewallPolicyName!)) ? newAzureFirewallPolicyModule[i].outputs.resourceId : virtualHub.?secureHubParameters.?existingFirewallPolicyResourceId)
+      firewallPolicyId: virtualHub.?secureHubParameters.?firewallPolicyResourceId
       location: virtualHubModule[i].outputs.location
       hubIPAddresses: {
         publicIPs: {
           count: virtualHub.?secureHubParameters.?azureFirewallPublicIPCount
         }
       }
-      /*publicIPAddressObject: virtualHub.?secureHubParameters.
-      publicIPResourceID:
-      additionalPublicIpConfigurations:
-      diagnosticSettings:
-      enableForcedTunneling:
-      lock:*/
+      publicIPAddressObject: virtualHub.?secureHubParameters.?publicIPAddressObject
+      publicIPResourceID: virtualHub.?secureHubParameters.?publicIPResourceID
+      additionalPublicIpConfigurations: virtualHub.?secureHubParameters.?additionalPublicIpConfigurationResourceIds
+      enableForcedTunneling: virtualHub.?secureHubParameters.?enableForcedTunneling
+      managementIPAddressObject: virtualHub.?secureHubParameters.?managementIPAddressObject
+      managementIPResourceID: virtualHub.?secureHubParameters.?managementIPResourceID
       enableTelemetry: enableTelemetry
-      /*managementIPAddressObject:
-      managementIPResourceID:
+      /*
+      diagnosticSettings:
       roleAssignments:
-      tags:*/ 
+      tags:*/
       lock: lock ?? {}
     }
   }
@@ -169,9 +170,29 @@ module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.1.5' = [
       bgpSettings: virtualHub.?s2sVpnParameters.?bgpSettings
       enableBgpRouteTranslationForNat: virtualHub.?s2sVpnParameters.?enableBgpRouteTranslationForNat
       isRoutingPreferenceInternet: virtualHub.?s2sVpnParameters.?isRoutingPreferenceInternet
-      natRules: []
+      natRules: virtualHub.?s2sVpnParameters.?natRules
       vpnConnections: virtualHub.?s2sVpnParameters.?vpnConnections
       vpnGatewayScaleUnit: virtualHub.?s2sVpnParameters.?vpnGatewayScaleUnit
+      enableTelemetry: enableTelemetry
+      tags: virtualHub.?tags
+      lock: lock ?? {}
+    }
+  }
+]
+
+module expressRouteGatewayModule 'br/public:avm/res/network/express-route-gateway:0.7.0' = [
+  for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?expressRouteParameters.?deployExpressRouteGateway == true) {
+      name: virtualHub.?expressRouteParameters.?expressRouteGatewayName!
+    params: {
+      // Required parameters
+      name: virtualHub.?expressRouteParameters.?expressRouteGatewayName!
+      location: virtualHubModule[i].outputs.location
+      virtualHubId: virtualHubModule[i].outputs.resourceId
+      // Optional parameters
+      allowNonVirtualWanTraffic: virtualHub.?allowBranchToBranchTraffic
+      autoScaleConfigurationBoundsMin: virtualHub.?expressRouteParameters.?autoScaleConfigurationBoundsMin
+      autoScaleConfigurationBoundsMax: virtualHub.?expressRouteParameters.?autoScaleConfigurationBoundsMax
+      expressRouteConnections: virtualHub.?expressRouteParameters.?expressRouteConnections
       enableTelemetry: enableTelemetry
       tags: virtualHub.?tags
       lock: lock ?? {}
@@ -198,11 +219,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-import {vpnClientIpsecPoliciesType} from '../../../res/network/vpn-server-configuration/main.bicep'
-import {vnetRoutesStaticRoutesType} from '../../../res/network/p2s-vpn-gateway/main.bicep'
-import {hubVirtualNetworkConnectionType } from '../../../res/network/virtual-hub/main.bicep'
-import {routingIntentType} from '../../../res/network/virtual-hub/main.bicep'
-import {hubRouteTableType } from '../../../res/network/virtual-hub/main.bicep'
+import { vpnClientIpsecPoliciesType } from '../../../res/network/vpn-server-configuration/main.bicep'
+import { vnetRoutesStaticRoutesType } from '../../../res/network/p2s-vpn-gateway/main.bicep'
+import { hubVirtualNetworkConnectionType } from '../../../res/network/virtual-hub/main.bicep'
+import { routingIntentType } from '../../../res/network/virtual-hub/main.bicep'
+import { hubRouteTableType } from '../../../res/network/virtual-hub/main.bicep'
 
 type virtualWanParameterType = {
   virtualWanName: string
@@ -267,44 +288,96 @@ type virtualHubParameterType = {
       bgpPeeringAddress: string
       bgpPeeringAddresses: [
         {
-          customBgpIpAddresses: [
-            string
-          ]
+          customBgpIpAddresses: [string]
           ipconfigurationId: string
         }
-      ]?
+      ]
       peerWeight: int
     }?
     enableBgpRouteTranslationForNat: bool?
     isRoutingPreferenceInternet: bool?
+    lock: lockType?
+    natRules: [
+      {
+        externalMappings: [
+          {
+            addressSpace: string
+          }
+        ]
+        internalMappings: [
+          {
+            addressSpace: string
+          }
+        ]
+        mode: ('EgressSnat' | 'IngressSnat')
+        name: string
+        type: ('Static' | 'Dynamic')
+      }
+    ]?
     vpnConnections: {
-      //name: string
-      //vpnGatewayName: 
-      //connectionBandwidth: int
-      //enableBgp: bool
-      //enableInternetSecurity: bool
-      //remoteVpnSiteResourceId: connection.?remoteVpnSiteResourceId
+      name: string
+      vpnGatewayName: string
+      connectionBandwidth: int?
+      enableBgp: bool?
+      enableInternetSecurity: bool?
+      remoteVpnSiteResourceId: string
       enableRateLimiting: bool?
-      //routingConfiguration: connection.?routingConfiguration
-      //routingWeight: int
-      //sharedKey: string
-      //useLocalAzureIpAddress: bool
-      //usePolicyBasedTrafficSelectors: bool
-      //vpnConnectionProtocolType: ('IKEv1' | 'IKEv2')
-      //ipsecPolicies: []
-      //trafficSelectorPolicies: []
-      //vpnLinkConnections: connection.?vpnLinkConnections
-    }[]
+      routingConfiguration: {}
+      routingWeight: int
+      sharedKey: string
+      useLocalAzureIpAddress: bool
+      usePolicyBasedTrafficSelectors: bool
+      vpnConnectionProtocolType: ('IKEv1' | 'IKEv2')
+      ipsecPolicies: []
+      trafficSelectorPolicies: []
+      vpnLinkConnections: []
+    }[]?
+  }?
+  expressRouteParameters: {
+    deployExpressRouteGateway: bool
+    expressRouteGatewayName: string
+    allowNonVirtualWanTraffic: bool?
+    autoScaleConfigurationBoundsMin: int?
+    autoScaleConfigurationBoundsMax: int?
+    expressRouteConnections: {
+      name: string
+      connectionBandwidth: int?
+      enableBgp: bool?
+      enableInternetSecurity: bool?
+      expressRouteCircuitId: string
+      routingIntent: routingIntentType
+      enableRateLimiting: bool?
+      routingWeight: int
+      sharedKey: string
+      usePolicyBasedTrafficSelectors: bool
+      ipsecPolicies: []
+      trafficSelectorPolicies: []
+    }[]?
   }?
   secureHubParameters: {
     deploySecureHub: bool
-    @description('Conditional. Existing Firewall Policy Resource ID, enter if using an existing Firewall Policy.')
-    existingFirewallPolicyResourceId: string?
-    @description('Conditional. Firewall Policy name; enter if creating a new Firewall Policy.')
-    newFirewallPolicyName: string?
+    firewallPolicyResourceId: string?
     azureFirewallName: string?
     azureFirewallSku: ('Premium' | 'Standard' | 'Basic')?
     azureFirewallPublicIPCount: int?
+    publicIPAddressObject: {
+      name: string
+      publicIPAllocationMethod: ('Static')
+      publicIPPrefixResourceId: string
+      skuName: ('Standard')
+      skuTier: ('Regional')
+    }?
+    publicIPResourceID: string?
+    additionalPublicIpConfigurationResourceIds: []?
+    enableForcedTunneling: bool?
+    managementIPAddressObject: {
+      name: string
+      publicIPAllocationMethod: ('Static')
+      publicIPPrefixResourceId: string
+      skuName: ('Standard')
+      skuTier: ('Regional')
+    }?
+    managementIPResourceID: string?
   }?
   sku: ('Standard' | 'Basic')?
   tags: object?
