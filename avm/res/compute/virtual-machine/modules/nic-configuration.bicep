@@ -8,8 +8,8 @@ param location string
 @description('Optional. Tags of the resource.')
 param tags object?
 
-param enableIPForwarding bool = false
-param enableAcceleratedNetworking bool = false
+param enableIPForwarding bool?
+param enableAcceleratedNetworking bool?
 param dnsServers string[] = []
 
 @description('Required. Enable telemetry via a Globally Unique Identifier (GUID).')
