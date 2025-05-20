@@ -50,20 +50,23 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${nestedDependencies.outputs.workspaceName}-AzureActiveDirectory'
       workspaceResourceId: nestedDependencies.outputs.workspaceResourceId
-      dataConnectorType: 'MicrosoftThreatIntelligence'
       location: resourceLocation
       // WAF-aligned parameters
-      properties: {
-        dataTypes: {
-          microsoftEmergingThreatFeed: {
-            lookbackPeriod: '2025-01-01T00:00:00Z'
-            state: 'Enabled'
+      connectors: [
+        {
+          name: 'MicrosoftThreatIntelligence'
+          properties: {
+            dataTypes: {
+              microsoftEmergingThreatFeed: {
+                lookbackPeriod: '2025-01-01T00:00:00Z'
+                state: 'Enabled'
+              }
+            }
+            tenantId: tenant().tenantId
           }
         }
-        tenantId: tenant().tenantId
-      }
+      ]
     }
   }
 ]

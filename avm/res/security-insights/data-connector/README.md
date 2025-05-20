@@ -42,20 +42,23 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   name: 'dataConnectorDeployment'
   params: {
     // Required parameters
-    dataConnectorType: 'MicrosoftThreatIntelligence'
-    name: '<name>'
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
-    location: '<location>'
-    properties: {
-      dataTypes: {
-        microsoftEmergingThreatFeed: {
-          lookbackPeriod: '2025-01-01T00:00:00Z'
-          state: 'Enabled'
+    connectors: [
+      {
+        name: 'MicrosoftThreatIntelligence'
+        properties: {
+          dataTypes: {
+            microsoftEmergingThreatFeed: {
+              lookbackPeriod: '2025-01-01T00:00:00Z'
+              state: 'Enabled'
+            }
+          }
+          tenantId: '<tenantId>'
         }
       }
-      tenantId: '<tenantId>'
-    }
+    ]
+    location: '<location>'
   }
 }
 ```
@@ -73,29 +76,28 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dataConnectorType": {
-      "value": "MicrosoftThreatIntelligence"
-    },
-    "name": {
-      "value": "<name>"
-    },
     "workspaceResourceId": {
       "value": "<workspaceResourceId>"
     },
     // Non-required parameters
+    "connectors": {
+      "value": [
+        {
+          "name": "MicrosoftThreatIntelligence",
+          "properties": {
+            "dataTypes": {
+              "microsoftEmergingThreatFeed": {
+                "lookbackPeriod": "2025-01-01T00:00:00Z",
+                "state": "Enabled"
+              }
+            },
+            "tenantId": "<tenantId>"
+          }
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
-    },
-    "properties": {
-      "value": {
-        "dataTypes": {
-          "microsoftEmergingThreatFeed": {
-            "lookbackPeriod": "2025-01-01T00:00:00Z",
-            "state": "Enabled"
-          }
-        },
-        "tenantId": "<tenantId>"
-      }
     }
   }
 }
@@ -112,20 +114,23 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
 using 'br/public:avm/res/security-insights/data-connector:<version>'
 
 // Required parameters
-param dataConnectorType = 'MicrosoftThreatIntelligence'
-param name = '<name>'
 param workspaceResourceId = '<workspaceResourceId>'
 // Non-required parameters
-param location = '<location>'
-param properties = {
-  dataTypes: {
-    microsoftEmergingThreatFeed: {
-      lookbackPeriod: '2025-01-01T00:00:00Z'
-      state: 'Enabled'
+param connectors = [
+  {
+    name: 'MicrosoftThreatIntelligence'
+    properties: {
+      dataTypes: {
+        microsoftEmergingThreatFeed: {
+          lookbackPeriod: '2025-01-01T00:00:00Z'
+          state: 'Enabled'
+        }
+      }
+      tenantId: '<tenantId>'
     }
   }
-  tenantId: '<tenantId>'
-}
+]
+param location = '<location>'
 ```
 
 </details>
@@ -145,20 +150,23 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   name: 'dataConnectorDeployment'
   params: {
     // Required parameters
-    dataConnectorType: 'MicrosoftThreatIntelligence'
-    name: '<name>'
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
-    location: '<location>'
-    properties: {
-      dataTypes: {
-        microsoftEmergingThreatFeed: {
-          lookbackPeriod: '2025-01-01T00:00:00Z'
-          state: 'Enabled'
+    connectors: [
+      {
+        name: 'MicrosoftThreatIntelligence'
+        properties: {
+          dataTypes: {
+            microsoftEmergingThreatFeed: {
+              lookbackPeriod: '2025-01-01T00:00:00Z'
+              state: 'Enabled'
+            }
+          }
+          tenantId: '<tenantId>'
         }
       }
-      tenantId: '<tenantId>'
-    }
+    ]
+    location: '<location>'
   }
 }
 ```
@@ -176,29 +184,28 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "dataConnectorType": {
-      "value": "MicrosoftThreatIntelligence"
-    },
-    "name": {
-      "value": "<name>"
-    },
     "workspaceResourceId": {
       "value": "<workspaceResourceId>"
     },
     // Non-required parameters
+    "connectors": {
+      "value": [
+        {
+          "name": "MicrosoftThreatIntelligence",
+          "properties": {
+            "dataTypes": {
+              "microsoftEmergingThreatFeed": {
+                "lookbackPeriod": "2025-01-01T00:00:00Z",
+                "state": "Enabled"
+              }
+            },
+            "tenantId": "<tenantId>"
+          }
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
-    },
-    "properties": {
-      "value": {
-        "dataTypes": {
-          "microsoftEmergingThreatFeed": {
-            "lookbackPeriod": "2025-01-01T00:00:00Z",
-            "state": "Enabled"
-          }
-        },
-        "tenantId": "<tenantId>"
-      }
     }
   }
 }
@@ -215,20 +222,23 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
 using 'br/public:avm/res/security-insights/data-connector:<version>'
 
 // Required parameters
-param dataConnectorType = 'MicrosoftThreatIntelligence'
-param name = '<name>'
 param workspaceResourceId = '<workspaceResourceId>'
 // Non-required parameters
-param location = '<location>'
-param properties = {
-  dataTypes: {
-    microsoftEmergingThreatFeed: {
-      lookbackPeriod: '2025-01-01T00:00:00Z'
-      state: 'Enabled'
+param connectors = [
+  {
+    name: 'MicrosoftThreatIntelligence'
+    properties: {
+      dataTypes: {
+        microsoftEmergingThreatFeed: {
+          lookbackPeriod: '2025-01-01T00:00:00Z'
+          state: 'Enabled'
+        }
+      }
+      tenantId: '<tenantId>'
     }
   }
-  tenantId: '<tenantId>'
-}
+]
+param location = '<location>'
 ```
 
 </details>
@@ -240,8 +250,7 @@ param properties = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataConnectorType`](#parameter-dataconnectortype) | string | The type of the Data Connector. |
-| [`name`](#parameter-name) | string | Name of the Security Insights Data Connector. |
+| [`connectors`](#parameter-connectors) | array | The type of Data Connector. |
 | [`workspaceResourceId`](#parameter-workspaceresourceid) | string | The resource ID of the Log Analytics workspace. |
 
 **Optional parameters**
@@ -250,49 +259,199 @@ param properties = {
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
-| [`properties`](#parameter-properties) | object | Properties for the Data Connector based on kind. |
 
-### Parameter: `dataConnectorType`
+### Parameter: `connectors`
 
-The type of the Data Connector.
+The type of Data Connector.
+
+- Required: No
+- Type: array
+- Discriminator: `name`
+
+<h4>The available variants are:</h4>
+
+| Variant | Description |
+| :-- | :-- |
+| [`MicrosoftThreatIntelligence`](#variant-connectorsname-microsoftthreatintelligence) | The type of MicrosoftThreatIntelligenceType configuration. |
+| [`ThreatIntelligence`](#variant-connectorsname-threatintelligence) | The type of ThreatIntelligenceType configuration. |
+
+### Variant: `connectors.name-MicrosoftThreatIntelligence`
+The type of MicrosoftThreatIntelligenceType configuration.
+
+To use this variant, set the property `name` to `MicrosoftThreatIntelligence`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-connectorsname-microsoftthreatintelligencename) | string | The type of data connector. |
+| [`properties`](#parameter-connectorsname-microsoftthreatintelligenceproperties) | object | The properties of the data connector. |
+
+### Parameter: `connectors.name-MicrosoftThreatIntelligence.name`
+
+The type of data connector.
 
 - Required: Yes
 - Type: string
 - Allowed:
   ```Bicep
   [
-    'AmazonWebServicesCloudTrail'
-    'AmazonWebServicesS3'
-    'APIPolling'
-    'AzureActiveDirectory'
-    'AzureAdvancedThreatProtection'
-    'AzureSecurityCenter'
-    'Dynamics365'
-    'GCP'
-    'GenericUI'
-    'IOT'
-    'MicrosoftCloudAppSecurity'
-    'MicrosoftDefenderAdvancedThreatProtection'
-    'MicrosoftPurviewInformationProtection'
     'MicrosoftThreatIntelligence'
-    'MicrosoftThreatProtection'
-    'Office365'
-    'Office365Project'
-    'OfficeATP'
-    'OfficeIRM'
-    'OfficePowerBI'
-    'PurviewAudit'
-    'RestApiPoller'
-    'ThreatIntelligence'
-    'ThreatIntelligenceTaxii'
   ]
   ```
 
-### Parameter: `name`
+### Parameter: `connectors.name-MicrosoftThreatIntelligence.properties`
 
-Name of the Security Insights Data Connector.
+The properties of the data connector.
 
 - Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataTypes`](#parameter-connectorsname-microsoftthreatintelligencepropertiesdatatypes) | object | The available data types for the connector. |
+| [`tenantId`](#parameter-connectorsname-microsoftthreatintelligencepropertiestenantid) | string | The tenant id to connect to, and get the data from. |
+
+### Parameter: `connectors.name-MicrosoftThreatIntelligence.properties.dataTypes`
+
+The available data types for the connector.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`microsoftEmergingThreatFeed`](#parameter-connectorsname-microsoftthreatintelligencepropertiesdatatypesmicrosoftemergingthreatfeed) | object | Data type for Microsoft Threat Intelligence Platforms data connector. |
+
+### Parameter: `connectors.name-MicrosoftThreatIntelligence.properties.dataTypes.microsoftEmergingThreatFeed`
+
+Data type for Microsoft Threat Intelligence Platforms data connector.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`lookbackPeriod`](#parameter-connectorsname-microsoftthreatintelligencepropertiesdatatypesmicrosoftemergingthreatfeedlookbackperiod) | string | The lookback period for the feed to be imported. |
+| [`state`](#parameter-connectorsname-microsoftthreatintelligencepropertiesdatatypesmicrosoftemergingthreatfeedstate) | string | Whether this data type connection is enabled or not. |
+
+### Parameter: `connectors.name-MicrosoftThreatIntelligence.properties.dataTypes.microsoftEmergingThreatFeed.lookbackPeriod`
+
+The lookback period for the feed to be imported.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectors.name-MicrosoftThreatIntelligence.properties.dataTypes.microsoftEmergingThreatFeed.state`
+
+Whether this data type connection is enabled or not.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectors.name-MicrosoftThreatIntelligence.properties.tenantId`
+
+The tenant id to connect to, and get the data from.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connectors.name-ThreatIntelligence`
+The type of ThreatIntelligenceType configuration.
+
+To use this variant, set the property `name` to `ThreatIntelligence`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-connectorsname-threatintelligencename) | string | The type of data connector. |
+| [`properties`](#parameter-connectorsname-threatintelligenceproperties) | object | The properties of the data connector. |
+
+### Parameter: `connectors.name-ThreatIntelligence.name`
+
+The type of data connector.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ThreatIntelligence'
+  ]
+  ```
+
+### Parameter: `connectors.name-ThreatIntelligence.properties`
+
+The properties of the data connector.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataTypes`](#parameter-connectorsname-threatintelligencepropertiesdatatypes) | object | The available data types for the connector. |
+| [`tenantId`](#parameter-connectorsname-threatintelligencepropertiestenantid) | string | The tenant id to connect to, and get the data from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`tipLookbackPeriod`](#parameter-connectorsname-threatintelligencepropertiestiplookbackperiod) | string | The lookback period for the feed to be imported. |
+
+### Parameter: `connectors.name-ThreatIntelligence.properties.dataTypes`
+
+The available data types for the connector.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`indicators`](#parameter-connectorsname-threatintelligencepropertiesdatatypesindicators) | object | Data type for indicators connection. |
+
+### Parameter: `connectors.name-ThreatIntelligence.properties.dataTypes.indicators`
+
+Data type for indicators connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`state`](#parameter-connectorsname-threatintelligencepropertiesdatatypesindicatorsstate) | string | Describe whether this data type connection is enabled or not. |
+
+### Parameter: `connectors.name-ThreatIntelligence.properties.dataTypes.indicators.state`
+
+Describe whether this data type connection is enabled or not.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectors.name-ThreatIntelligence.properties.tenantId`
+
+The tenant id to connect to, and get the data from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectors.name-ThreatIntelligence.properties.tipLookbackPeriod`
+
+The lookback period for the feed to be imported.
+
+- Required: No
 - Type: string
 
 ### Parameter: `workspaceResourceId`
@@ -317,14 +476,6 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `properties`
-
-Properties for the Data Connector based on kind.
-
-- Required: No
-- Type: object
-- Default: `{}`
 
 ## Outputs
 

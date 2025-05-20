@@ -6,13 +6,152 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "11759196894445604361"
+      "templateHash": "655933427687807711"
     },
     "name": "Security Insights Data Connectors",
     "description": "This module deploys a Security Insights Data Connector.",
     "owner": "Azure/module-maintainers"
   },
   "definitions": {
+    "dataConnectorType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "name",
+        "mapping": {
+          "MicrosoftThreatIntelligence": {
+            "$ref": "#/definitions/MicrosoftThreatIntelligenceType"
+          },
+          "ThreatIntelligence": {
+            "$ref": "#/definitions/ThreatIntelligenceType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a site configuration."
+      }
+    },
+    "MicrosoftThreatIntelligenceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "MicrosoftThreatIntelligence"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "microsoftEmergingThreatFeed": {
+                  "type": "object",
+                  "properties": {
+                    "lookbackPeriod": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The lookback period for the feed to be imported."
+                      }
+                    },
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Data type for Microsoft Threat Intelligence Platforms data connector."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to, and get the data from."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of MicrosoftThreatIntelligenceType configuration."
+      }
+    },
+    "ThreatIntelligenceType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "ThreatIntelligence"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "indicators": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Describe whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Data type for indicators connection."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to, and get the data from."
+              }
+            },
+            "tipLookbackPeriod": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lookback period for the feed to be imported."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of ThreatIntelligenceType configuration."
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -90,12 +229,6 @@
     }
   },
   "parameters": {
-    "name": {
-      "type": "string",
-      "metadata": {
-        "description": "Required. Name of the Security Insights Data Connector."
-      }
-    },
     "workspaceResourceId": {
       "type": "string",
       "metadata": {
@@ -116,8 +249,12 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "dataConnectorType": {
-      "type": "string",
+    "connectors": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/dataConnectorType"
+      },
+      "nullable": true,
       "allowedValues": [
         "AmazonWebServicesCloudTrail",
         "AmazonWebServicesS3",
@@ -145,14 +282,7 @@
         "ThreatIntelligenceTaxii"
       ],
       "metadata": {
-        "description": "Required. The type of the Data Connector."
-      }
-    },
-    "properties": {
-      "type": "object",
-      "defaultValue": {},
-      "metadata": {
-        "description": "Optional. Properties for the Data Connector based on kind."
+        "description": "Required. The type of Data Connector."
       }
     }
   },
@@ -184,12 +314,16 @@
       "name": "[last(split(parameters('workspaceResourceId'), '/'))]"
     },
     "dataConnector": {
+      "copy": {
+        "name": "dataConnector",
+        "count": "[length(coalesce(parameters('connectors'), createArray()))]"
+      },
       "type": "Microsoft.SecurityInsights/dataConnectors",
       "apiVersion": "2024-10-01-preview",
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', last(split(parameters('workspaceResourceId'), '/')))]",
-      "name": "[parameters('name')]",
-      "kind": "[parameters('dataConnectorType')]",
-      "properties": "[parameters('properties')]"
+      "name": "[coalesce(parameters('connectors'), createArray())[copyIndex()].name]",
+      "kind": "[coalesce(parameters('connectors'), createArray())[copyIndex()].name]",
+      "properties": "[tryGet(coalesce(parameters('connectors'), createArray())[copyIndex()], 'properties')]"
     }
   },
   "outputs": {
@@ -198,14 +332,14 @@
       "metadata": {
         "description": "The name of the Security Insights Data Connector."
       },
-      "value": "[parameters('name')]"
+      "value": "[if(greater(length(coalesce(parameters('connectors'), createArray())), 0), coalesce(parameters('connectors'), createArray())[0].name, '')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the Security Insights Data Connector."
       },
-      "value": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/dataConnectors', parameters('name'))]"
+      "value": "[if(greater(length(coalesce(parameters('connectors'), createArray())), 0), extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/dataConnectors', coalesce(parameters('connectors'), createArray())[0].name), '')]"
     },
     "resourceGroupName": {
       "type": "string",
