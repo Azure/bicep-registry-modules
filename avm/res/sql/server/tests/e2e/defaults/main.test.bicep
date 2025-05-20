@@ -47,8 +47,12 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      administratorLogin: 'adminUserName'
-      administratorLoginPassword: password
+      administrators: {
+        azureADOnlyAuthentication: true
+        login: deployer().objectId
+        sid: deployer().objectId
+        principalType: 'Application'
+      }
     }
   }
 ]
