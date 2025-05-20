@@ -19,10 +19,10 @@
         "propertyName": "name",
         "mapping": {
           "MicrosoftThreatIntelligence": {
-            "$ref": "#/definitions/MicrosoftThreatIntelligenceType"
+            "$ref": "#/definitions/microsoftThreatIntelligenceType"
           },
           "ThreatIntelligence": {
-            "$ref": "#/definitions/ThreatIntelligenceType"
+            "$ref": "#/definitions/threatIntelligenceType"
           }
         }
       },
@@ -31,7 +31,7 @@
         "description": "The type of a site configuration."
       }
     },
-    "MicrosoftThreatIntelligenceType": {
+    "microsoftThreatIntelligenceType": {
       "type": "object",
       "properties": {
         "name": {
@@ -91,7 +91,7 @@
         "description": "The type of MicrosoftThreatIntelligenceType configuration."
       }
     },
-    "ThreatIntelligenceType": {
+    "threatIntelligenceType": {
       "type": "object",
       "properties": {
         "name": {

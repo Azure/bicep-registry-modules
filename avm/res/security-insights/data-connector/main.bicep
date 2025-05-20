@@ -93,11 +93,11 @@ output location string = location
 @export()
 @description('The type of a site configuration.')
 @discriminator('name')
-type dataConnectorType = MicrosoftThreatIntelligenceType | ThreatIntelligenceType
+type dataConnectorType = microsoftThreatIntelligenceType | threatIntelligenceType
 
 @export()
 @description('The type of MicrosoftThreatIntelligenceType configuration.')
-type MicrosoftThreatIntelligenceType = {
+type microsoftThreatIntelligenceType = {
   @description('Required. The type of data connector.')
   name: 'MicrosoftThreatIntelligence'
   @description('Required. The properties of the data connector.')
@@ -119,7 +119,7 @@ type MicrosoftThreatIntelligenceType = {
 
 @export()
 @description('The type of ThreatIntelligenceType configuration.')
-type ThreatIntelligenceType = {
+type threatIntelligenceType = {
   @description('Required. The type of data connector.')
   name: 'ThreatIntelligence'
   @description('Required. The properties of the data connector.')
