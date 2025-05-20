@@ -10,7 +10,7 @@ param virtualWanParameters virtualWanParameterType
 @description('Required. The parameters for the Virtual Hubs and associated networking components.')
 param virtualHubParameters virtualHubParameterType?
 
-param diagnosticSettings diagnosticSettingFullType[]?
+//param diagnosticSettings diagnosticSettingFullType[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings for the Virtual WAN and associated components.')
@@ -61,21 +61,6 @@ module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.3.0' = [
   }
 ]
 
-/*
-module newAzureFirewallPolicyModule 'br/public:avm/res/network/firewall-policy:0.3.1' = [
-  for (virtualHub, i) in virtualHubParameters!: if (!empty(virtualHub.?secureHubParameters.?newFirewallPolicyName!)) {
-    name: virtualHub.?secureHubParameters.?newFirewallPolicyName! // May need index name here
-    params: {
-      name: virtualHub.?secureHubParameters.?newFirewallPolicyName!
-      location: location
-      ruleCollectionGroups: []
-      lock: lock ?? {}
-      enableTelemetry: enableTelemetry
-      //tags:
-    }
-  }
-]*/
-
 module firewallModule 'br/public:avm/res/network/azure-firewall:0.6.0' = [
   for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?secureHubParameters.?deploySecureHub!) {
     name: virtualHub.?secureHubParameters.?azureFirewallName!
@@ -97,7 +82,7 @@ module firewallModule 'br/public:avm/res/network/azure-firewall:0.6.0' = [
       managementIPAddressObject: virtualHub.?secureHubParameters.?managementIPAddressObject
       managementIPResourceID: virtualHub.?secureHubParameters.?managementIPResourceID
       enableTelemetry: enableTelemetry
-      diagnosticSettings:
+      diagnosticSettings: virtualHub.?secureHubParameters.?diagnosticSettings
       /*
       roleAssignments:
       tags:*/
@@ -585,6 +570,8 @@ type virtualHubParameterType = {
     @description('Optional. Additional public IP configuration resource IDs.')
     additionalPublicIpConfigurationResourceIds: []?
 
+    // Force-tunneling for Azure Firewall is not currently supported, but is currently being worked and support is expected in the near future; leaving for future use.
+    /*
     @description('Optional. Enable forced tunneling for the Azure Firewall.')
     enableForcedTunneling: bool?
 
@@ -607,7 +594,8 @@ type virtualHubParameterType = {
     }?
     @description('Optional. Resource ID of the management public IP address.')
     managementIPResourceID: string?
-
+    */
+    
     @description('Optional. Diagnostic settings for the Azure Firewall in the Secure Hub.')
     diagnosticSettings: diagnosticSettingFullType[]?
   }?

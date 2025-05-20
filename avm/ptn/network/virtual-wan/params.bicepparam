@@ -39,7 +39,6 @@ param virtualHubParameters = [
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
       firewallPolicyResourceId: '/subscriptions/dc9a7b77-f933-44c7-bf43-3bfb4e16b806/resourceGroups/erschef/providers/Microsoft.Network/firewallPolicies/erschef-eus2-fwpolicy'
-      enableForcedTunneling: true
     }
     /*p2sVpnParameters: {
       deployP2SVpnGateway: true
