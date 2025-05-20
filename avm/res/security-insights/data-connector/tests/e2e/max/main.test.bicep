@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module with WAF-aligned requirements.'
+metadata name = 'Using defaults'
+metadata description = 'This instance deploys the module with multiple data connectors.'
 
 // ========== //
 // Parameters //
@@ -14,7 +14,7 @@ param resourceGroupName string = 'dep-${namePrefix}-security.insights-${serviceS
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the bit of the deployment.')
-param serviceShort string = 'sidcwaf'
+param serviceShort string = 'sidcmax'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -63,6 +63,17 @@ module testDeployment '../../../main.bicep' = [
               }
             }
             tenantId: tenant().tenantId
+          }
+        }
+        {
+          name: 'IOT'
+          properties: {
+            dataTypes: {
+              alerts: {
+                state: 'Enabled'
+              }
+            }
+            subscriptionId: subscription().subscriptionId
           }
         }
       ]

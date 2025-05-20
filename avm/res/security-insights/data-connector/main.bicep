@@ -93,7 +93,47 @@ output location string = location
 @export()
 @description('The type of a site configuration.')
 @discriminator('name')
-type dataConnectorType = microsoftThreatIntelligenceType | threatIntelligenceType
+type dataConnectorType = azureActiveDirectoryType | iotType | microsoftThreatIntelligenceType | threatIntelligenceType
+
+@export()
+@description('The type of AzureActiveDirectory configuration.')
+type azureActiveDirectoryType = {
+  @description('Required. The type of data connector.')
+  name: 'AzureActiveDirectory'
+  @description('Required. The properties of the data connector.')
+  properties: {
+    @description('Required. The available data types for the connector.')
+    dataTypes: {
+      @description('Required. Alerts data type connection.')
+      alerts: {
+        @description('Required. Describe whether this data type connection is enabled or not.')
+        state: string
+      }
+    }
+    @description('Required. The tenant id to connect to, and get the data from.')
+    tenantId: string
+  }
+}
+
+@export()
+@description('The type of IOT configuration.')
+type iotType = {
+  @description('Required. The type of data connector.')
+  name: 'IOT'
+  @description('Required. The properties of the data connector.')
+  properties: {
+    @description('Required. The available data types for the connector.')
+    dataTypes: {
+      @description('Required. Data type for IOT data connector.')
+      alerts: {
+        @description('Required. Whether this data type connection is enabled or not.')
+        state: string
+      }
+    }
+    @description('Required. The subscription id to connect to, and get the data from.')
+    subscriptionId: string
+  }
+}
 
 @export()
 @description('The type of MicrosoftThreatIntelligenceType configuration.')
@@ -128,7 +168,7 @@ type threatIntelligenceType = {
     dataTypes: {
       @description('Required. Data type for indicators connection.')
       indicators: {
-        @description('Required. Describe whether this data type connection is enabled or not.')
+        @description('Required. Whether this data type connection is enabled or not.')
         state: string
       }
     }

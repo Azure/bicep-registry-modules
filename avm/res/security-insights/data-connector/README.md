@@ -26,7 +26,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/security-insights/data-connector:<version>`.
 
 - [Using defaults](#example-1-using-defaults)
-- [WAF-aligned](#example-2-waf-aligned)
+- [Using defaults](#example-2-using-defaults)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using defaults_
 
@@ -136,7 +137,148 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _WAF-aligned_
+### Example 2: _Using defaults_
+
+This instance deploys the module with multiple data connectors.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module dataConnector 'br/public:avm/res/security-insights/data-connector:<version>' = {
+  name: 'dataConnectorDeployment'
+  params: {
+    // Required parameters
+    workspaceResourceId: '<workspaceResourceId>'
+    // Non-required parameters
+    connectors: [
+      {
+        name: 'MicrosoftThreatIntelligence'
+        properties: {
+          dataTypes: {
+            microsoftEmergingThreatFeed: {
+              lookbackPeriod: '2025-01-01T00:00:00Z'
+              state: 'Enabled'
+            }
+          }
+          tenantId: '<tenantId>'
+        }
+      }
+      {
+        name: 'IOT'
+        properties: {
+          dataTypes: {
+            alerts: {
+              state: 'Enabled'
+            }
+          }
+          subscriptionId: '<subscriptionId>'
+        }
+      }
+    ]
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "workspaceResourceId": {
+      "value": "<workspaceResourceId>"
+    },
+    // Non-required parameters
+    "connectors": {
+      "value": [
+        {
+          "name": "MicrosoftThreatIntelligence",
+          "properties": {
+            "dataTypes": {
+              "microsoftEmergingThreatFeed": {
+                "lookbackPeriod": "2025-01-01T00:00:00Z",
+                "state": "Enabled"
+              }
+            },
+            "tenantId": "<tenantId>"
+          }
+        },
+        {
+          "name": "IOT",
+          "properties": {
+            "dataTypes": {
+              "alerts": {
+                "state": "Enabled"
+              }
+            },
+            "subscriptionId": "<subscriptionId>"
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/security-insights/data-connector:<version>'
+
+// Required parameters
+param workspaceResourceId = '<workspaceResourceId>'
+// Non-required parameters
+param connectors = [
+  {
+    name: 'MicrosoftThreatIntelligence'
+    properties: {
+      dataTypes: {
+        microsoftEmergingThreatFeed: {
+          lookbackPeriod: '2025-01-01T00:00:00Z'
+          state: 'Enabled'
+        }
+      }
+      tenantId: '<tenantId>'
+    }
+  }
+  {
+    name: 'IOT'
+    properties: {
+      dataTypes: {
+        alerts: {
+          state: 'Enabled'
+        }
+      }
+      subscriptionId: '<subscriptionId>'
+    }
+  }
+]
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
 
 This instance deploys the module with WAF-aligned requirements.
 
@@ -279,8 +421,168 @@ The type of Data Connector.
 
 | Variant | Description |
 | :-- | :-- |
+| [`AzureActiveDirectory`](#variant-connectorsname-azureactivedirectory) | The type of AzureActiveDirectory configuration. |
+| [`IOT`](#variant-connectorsname-iot) | The type of IOT configuration. |
 | [`MicrosoftThreatIntelligence`](#variant-connectorsname-microsoftthreatintelligence) | The type of MicrosoftThreatIntelligenceType configuration. |
 | [`ThreatIntelligence`](#variant-connectorsname-threatintelligence) | The type of ThreatIntelligenceType configuration. |
+
+### Variant: `connectors.name-AzureActiveDirectory`
+The type of AzureActiveDirectory configuration.
+
+To use this variant, set the property `name` to `AzureActiveDirectory`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-connectorsname-azureactivedirectoryname) | string | The type of data connector. |
+| [`properties`](#parameter-connectorsname-azureactivedirectoryproperties) | object | The properties of the data connector. |
+
+### Parameter: `connectors.name-AzureActiveDirectory.name`
+
+The type of data connector.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AzureActiveDirectory'
+  ]
+  ```
+
+### Parameter: `connectors.name-AzureActiveDirectory.properties`
+
+The properties of the data connector.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataTypes`](#parameter-connectorsname-azureactivedirectorypropertiesdatatypes) | object | The available data types for the connector. |
+| [`tenantId`](#parameter-connectorsname-azureactivedirectorypropertiestenantid) | string | The tenant id to connect to, and get the data from. |
+
+### Parameter: `connectors.name-AzureActiveDirectory.properties.dataTypes`
+
+The available data types for the connector.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`alerts`](#parameter-connectorsname-azureactivedirectorypropertiesdatatypesalerts) | object | Alerts data type connection. |
+
+### Parameter: `connectors.name-AzureActiveDirectory.properties.dataTypes.alerts`
+
+Alerts data type connection.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`state`](#parameter-connectorsname-azureactivedirectorypropertiesdatatypesalertsstate) | string | Describe whether this data type connection is enabled or not. |
+
+### Parameter: `connectors.name-AzureActiveDirectory.properties.dataTypes.alerts.state`
+
+Describe whether this data type connection is enabled or not.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectors.name-AzureActiveDirectory.properties.tenantId`
+
+The tenant id to connect to, and get the data from.
+
+- Required: Yes
+- Type: string
+
+### Variant: `connectors.name-IOT`
+The type of IOT configuration.
+
+To use this variant, set the property `name` to `IOT`.
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-connectorsname-iotname) | string | The type of data connector. |
+| [`properties`](#parameter-connectorsname-iotproperties) | object | The properties of the data connector. |
+
+### Parameter: `connectors.name-IOT.name`
+
+The type of data connector.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IOT'
+  ]
+  ```
+
+### Parameter: `connectors.name-IOT.properties`
+
+The properties of the data connector.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dataTypes`](#parameter-connectorsname-iotpropertiesdatatypes) | object | The available data types for the connector. |
+| [`subscriptionId`](#parameter-connectorsname-iotpropertiessubscriptionid) | string | The subscription id to connect to, and get the data from. |
+
+### Parameter: `connectors.name-IOT.properties.dataTypes`
+
+The available data types for the connector.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`alerts`](#parameter-connectorsname-iotpropertiesdatatypesalerts) | object | Data type for IOT data connector. |
+
+### Parameter: `connectors.name-IOT.properties.dataTypes.alerts`
+
+Data type for IOT data connector.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`state`](#parameter-connectorsname-iotpropertiesdatatypesalertsstate) | string | Whether this data type connection is enabled or not. |
+
+### Parameter: `connectors.name-IOT.properties.dataTypes.alerts.state`
+
+Whether this data type connection is enabled or not.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `connectors.name-IOT.properties.subscriptionId`
+
+The subscription id to connect to, and get the data from.
+
+- Required: Yes
+- Type: string
 
 ### Variant: `connectors.name-MicrosoftThreatIntelligence`
 The type of MicrosoftThreatIntelligenceType configuration.
@@ -438,11 +740,11 @@ Data type for indicators connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-connectorsname-threatintelligencepropertiesdatatypesindicatorsstate) | string | Describe whether this data type connection is enabled or not. |
+| [`state`](#parameter-connectorsname-threatintelligencepropertiesdatatypesindicatorsstate) | string | Whether this data type connection is enabled or not. |
 
 ### Parameter: `connectors.name-ThreatIntelligence.properties.dataTypes.indicators.state`
 
-Describe whether this data type connection is enabled or not.
+Whether this data type connection is enabled or not.
 
 - Required: Yes
 - Type: string

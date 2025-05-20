@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "12887385502067040939"
+      "templateHash": "1621728317398286867"
     },
     "name": "Security Insights Data Connectors",
     "description": "This module deploys a Security Insights Data Connector.",
@@ -18,6 +18,12 @@
       "discriminator": {
         "propertyName": "name",
         "mapping": {
+          "AzureActiveDirectory": {
+            "$ref": "#/definitions/azureActiveDirectoryType"
+          },
+          "IOT": {
+            "$ref": "#/definitions/iotType"
+          },
           "MicrosoftThreatIntelligence": {
             "$ref": "#/definitions/microsoftThreatIntelligenceType"
           },
@@ -29,6 +35,114 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type of a site configuration."
+      }
+    },
+    "azureActiveDirectoryType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "AzureActiveDirectory"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "alerts": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Describe whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Alerts data type connection."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to, and get the data from."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of AzureActiveDirectory configuration."
+      }
+    },
+    "iotType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "allowedValues": [
+            "IOT"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "alerts": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Data type for IOT data connector."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The subscription id to connect to, and get the data from."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of IOT configuration."
       }
     },
     "microsoftThreatIntelligenceType": {
@@ -115,7 +229,7 @@
                     "state": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Describe whether this data type connection is enabled or not."
+                        "description": "Required. Whether this data type connection is enabled or not."
                       }
                     }
                   },
