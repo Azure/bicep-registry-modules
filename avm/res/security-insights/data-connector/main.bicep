@@ -13,32 +13,32 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@allowed([
-  'AmazonWebServicesCloudTrail'
-  'AmazonWebServicesS3'
-  'APIPolling'
-  'AzureActiveDirectory'
-  'AzureAdvancedThreatProtection'
-  'AzureSecurityCenter'
-  'Dynamics365'
-  'GCP'
-  'GenericUI'
-  'IOT'
-  'MicrosoftCloudAppSecurity'
-  'MicrosoftDefenderAdvancedThreatProtection'
-  'MicrosoftPurviewInformationProtection'
-  'MicrosoftThreatIntelligence'
-  'MicrosoftThreatProtection'
-  'Office365'
-  'Office365Project'
-  'OfficeATP'
-  'OfficeIRM'
-  'OfficePowerBI'
-  'PurviewAudit'
-  'RestApiPoller'
-  'ThreatIntelligence'
-  'ThreatIntelligenceTaxii'
-])
+// @allowed([
+//   'AmazonWebServicesCloudTrail'
+//   'AmazonWebServicesS3'
+//   'APIPolling'
+//   'AzureActiveDirectory'
+//   'AzureAdvancedThreatProtection'
+//   'AzureSecurityCenter'
+//   'Dynamics365'
+//   'GCP'
+//   'GenericUI'
+//   'IOT'
+//   'MicrosoftCloudAppSecurity'
+//   'MicrosoftDefenderAdvancedThreatProtection'
+//   'MicrosoftPurviewInformationProtection'
+//   'MicrosoftThreatIntelligence'
+//   'MicrosoftThreatProtection'
+//   'Office365'
+//   'Office365Project'
+//   'OfficeATP'
+//   'OfficeIRM'
+//   'OfficePowerBI'
+//   'PurviewAudit'
+//   'RestApiPoller'
+//   'ThreatIntelligence'
+//   'ThreatIntelligenceTaxii'
+// ])
 @description('Optional. The type of Data Connector.')
 param connectors dataConnectorType[]?
 

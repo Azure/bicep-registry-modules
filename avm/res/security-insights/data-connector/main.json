@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "15466947202341244024"
+      "templateHash": "12887385502067040939"
     },
     "name": "Security Insights Data Connectors",
     "description": "This module deploys a Security Insights Data Connector.",
@@ -255,32 +255,6 @@
         "$ref": "#/definitions/dataConnectorType"
       },
       "nullable": true,
-      "allowedValues": [
-        "AmazonWebServicesCloudTrail",
-        "AmazonWebServicesS3",
-        "APIPolling",
-        "AzureActiveDirectory",
-        "AzureAdvancedThreatProtection",
-        "AzureSecurityCenter",
-        "Dynamics365",
-        "GCP",
-        "GenericUI",
-        "IOT",
-        "MicrosoftCloudAppSecurity",
-        "MicrosoftDefenderAdvancedThreatProtection",
-        "MicrosoftPurviewInformationProtection",
-        "MicrosoftThreatIntelligence",
-        "MicrosoftThreatProtection",
-        "Office365",
-        "Office365Project",
-        "OfficeATP",
-        "OfficeIRM",
-        "OfficePowerBI",
-        "PurviewAudit",
-        "RestApiPoller",
-        "ThreatIntelligence",
-        "ThreatIntelligenceTaxii"
-      ],
       "metadata": {
         "description": "Optional. The type of Data Connector."
       }
