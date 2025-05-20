@@ -358,7 +358,6 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
       }
     ]
   }
-  dependsOn: [ad]
 }
 
 resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
@@ -418,7 +417,6 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
       }
     ]
   }
-  dependsOn: [ad]
 }
 
 output vnetSubnetResourceId string = vnet.properties.subnets[0].id
