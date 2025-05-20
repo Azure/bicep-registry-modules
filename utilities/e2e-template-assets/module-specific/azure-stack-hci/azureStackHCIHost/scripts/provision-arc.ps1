@@ -65,9 +65,9 @@ try {
         $secureServicePrincipalSecret = ConvertTo-SecureString $Using:ServicePrincipalSecret -AsPlainText -Force
         $credential = New-Object System.Management.Automation.PSCredential -ArgumentList $Using:ServicePrincipalId, $secureServicePrincipalSecret
         Connect-AzAccount -ServicePrincipal -Credential $credential -Subscription $Using:SubscriptionId -Tenant $Using:TenantId
-        $token = (Get-AzAccessToken).Token
-        # TODO: PowerShell 7
-        # $token = ConvertFrom-SecureString -SecureString ((Get-AzAccessToken -AsSecureString).Token) -AsPlainText
+        $secureToken = (Get-AzAccessToken -AsSecureString).Token
+        $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureToken)
+        $token = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
 
         $azcmagentPath = "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe"
         & "$azcmagentPath" --version
