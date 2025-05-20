@@ -85,6 +85,9 @@ param hubNetworkResourceId string = ''
 @sys.description('Enables the use of remote gateways in the spefcified hub virtual network. If no gateways exsit in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections.')
 param virtualNetworkUseRemoteGateways bool = true
 
+@sys.description('A list of additional virtual networks to create.')
+param additionalVirtualNetworks virtualNetworkType[] = []
+
 @sys.description('Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.')
 param virtualNetworkVwanEnableInternetSecurity bool = true
 
@@ -538,7 +541,7 @@ module tagResourceGroup 'tags.bicep' = if (virtualNetworkEnabled && !empty(virtu
   }
 }
 
-module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   dependsOn: [
     createResourceGroupForLzNetworking
   ]
@@ -568,13 +571,18 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
         ]
       : null
     subnets: [
-      for subnet in virtualNetworkSubnets: (!empty(virtualNetworkSubnets))
+      for (subnet, i) in virtualNetworkSubnets: (!empty(virtualNetworkSubnets))
         ? {
             name: subnet.name
             addressPrefix: subnet.?addressPrefix
             networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
               ? createBastionNsg.outputs.resourceId
-              : createLzNsg.outputs.resourceId
+              : resourceId(
+                  subscriptionId,
+                  virtualNetworkResourceGroupName,
+                  'Microsoft.Network/networkSecurityGroups',
+                  '${createLzNsg[i].outputs.name}'
+                )
             natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
               ? createNatGateway.outputs.resourceId
               : null
@@ -585,7 +593,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
   }
 }
 
-module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (virtualNetworkDeployBastion && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkDeployBastion && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
     createResourceGroupForLzNetworking
@@ -738,18 +746,21 @@ module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.0'
   }
 }
 
-module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(virtualNetworkSubnets)) {
-  scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
-  dependsOn: [
-    createResourceGroupForLzNetworking
-  ]
-  name: deploymentNames.createLzNsg
-  params: {
-    name: 'nsg-${virtualNetworkName}'
-    location: virtualNetworkLocation
-    enableTelemetry: enableTelemetry
+module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
+  for (subnet, i) in virtualNetworkSubnets: if (!empty(virtualNetworkSubnets)) {
+    scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+    dependsOn: [
+      createResourceGroupForLzNetworking
+    ]
+    name: '${deploymentNames.createLzNsg}-${i}'
+    params: {
+      name: subnet.?networkSecurityGroup.name ?? 'nsg-${subnet.name}-${substring(guid(virtualNetworkName, virtualNetworkResourceGroupName, subnet.name, subscriptionId), 0, 5)}'
+      location: virtualNetworkLocation
+      securityRules: subnet.?networkSecurityGroup.?securityRules ?? null
+      enableTelemetry: enableTelemetry
+    }
   }
-}
+]
 
 module createLzVirtualWanConnection 'hubVirtualNetworkConnections.bicep' = if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualWanHubResourceGroupName) && !empty(virtualWanHubSubscriptionId)) {
   dependsOn: [
@@ -1264,7 +1275,7 @@ module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/au
   }
 }
 
-module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(resourceProviders)) {
+module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   dependsOn: [
     createResourceGroupForDeploymentScript
@@ -1479,6 +1490,77 @@ module createUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/use
   }
 ]
 
+module createResourceGroupForadditionalLzNetworking 'br/public:avm/res/resources/resource-group:0.4.0' = [
+  for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
+    scope: subscription(subscriptionId)
+    params: {
+      name: vnet.?resourceGroupName ?? 'rsg-vnet-${vnet.name}-${deployment().location}-${i}'
+      location: vnet.?location ?? deployment().location
+      lock: vnet.?resourceGroupLockEnabled ?? true
+        ? {
+            kind: 'CanNotDelete'
+            name: 'CanNotDelete'
+          }
+        : null
+      enableTelemetry: enableTelemetry
+    }
+  }
+]
+
+module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' = [
+  for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
+    scope: resourceGroup(
+      subscriptionId,
+      vnet.?resourceGroupName ?? 'rsg-vnet-${vnet.name}-${deployment().location}-${i}'
+    )
+    dependsOn: [
+      createResourceGroupForadditionalLzNetworking
+    ]
+    params: {
+      name: vnet.name
+      addressPrefixes: vnet.addressPrefixes
+      subnets: [
+        for subnet in (vnet.?subnets ?? []): {
+          name: subnet.name
+          addressPrefix: subnet.?addressPrefix
+          networkSecurityGroupResourceId: ((vnet.?deployBastion ?? false) || subnet.name == 'AzureBastionSubnet')
+            ? createBastionNsg.outputs.resourceId
+            : resourceId(
+                subscriptionId,
+                virtualNetworkResourceGroupName,
+                'Microsoft.Network/networkSecurityGroups',
+                '${createLzNsg[i].outputs.name}'
+              )
+          natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
+            ? createNatGateway.outputs.resourceId
+            : null
+        }
+      ]
+      location: vnet.?location ?? deployment().location
+      tags: vnet.?tags ?? {}
+      dnsServers: vnet.?dnsServers ?? []
+      ddosProtectionPlanResourceId: vnet.?ddosProtectionPlanResourceId ?? null
+      peerings: vnet.?peerToHubNetwork ?? false
+        ? [
+            {
+              remoteVirtualNetworkResourceId: hubVirtualNetworkResourceIdChecked
+              allowForwardedTraffic: true
+              allowVirtualNetworkAccess: true
+              allowGatewayTransit: false
+              useRemoteGateways: vnet.?useRemoteGateways ?? true
+              remotePeeringEnabled: true
+              remotePeeringAllowForwardedTraffic: true
+              remotePeeringAllowVirtualNetworkAccess: true
+              remotePeeringAllowGatewayTransit: true
+              remotePeeringUseRemoteGateways: false
+            }
+          ]
+        : null
+      enableTelemetry: enableTelemetry
+    }
+  }
+]
+
 // OUTPUTS
 output failedProviders string = !empty(resourceProviders)
   ? registerResourceProviders.outputs.outputs.failedProvidersRegistrations
@@ -1667,8 +1749,8 @@ type subnetType = {
   @description('Optional. Option to associate the subnet with the NAT gatway deployed by this module.')
   associateWithNatGateway: bool?
 
-  @description('Optional. The resource ID of the network security group to assign to the subnet.')
-  networkSecurityGroupResourceId: string?
+  @description('Optional. The network resource group to be associated with this subnet.')
+  networkSecurityGroup: networkSecurityGroupType?
 
   @description('Optional. enable or disable apply network policies on private endpoint in the subnet.')
   privateEndpointNetworkPolicies: ('Disabled' | 'Enabled' | 'NetworkSecurityGroupEnabled' | 'RouteTableEnabled')?
@@ -1856,4 +1938,117 @@ type federatedIdentityCredentialType = {
 
   @description('Required. The identifier of the external identity.')
   subject: string
+}
+
+@export()
+@description('Optional. The type of the virtual network.')
+type virtualNetworkType = {
+  @description('Required. The name of the virtual network resource.')
+  name: string
+
+  @description('Required. The address prefixes for the virtual network.')
+  addressPrefixes: array
+
+  @description('Required. The location of the virtual network.')
+  location: string
+
+  @description('Required. The tags for the virtual network.')
+  tags: object?
+
+  @description('Required. The subnets for the virtual network.')
+  subnets: subnetType[]?
+
+  @description('Optional. The option to peer the virtual network to the hub network.')
+  peerToHubNetwork: bool?
+
+  @description('Optional. The name of the virtual network resource group.')
+  resourceGroupName: string?
+
+  @description('Optional. Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group.')
+  resourceGroupLockEnabled: bool?
+
+  @description('Optional. Enables the use of remote gateways in the spefcified hub virtual network. If no gateways exsit in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections.')
+  useRemoteGateways: bool?
+
+  @description('Optional. The list of DNS servers for the virtual network.')
+  dnsServers: array?
+
+  @description('Optional. The resource Id of the DDOS protection plan.')
+  ddosProtectionPlanResourceId: string?
+
+  @description('Optional. The option to deploy Azure Bastion in the virtual network.')
+  deployBastion: bool?
+}
+
+@export()
+@description('Network security group type.')
+type networkSecurityGroupType = {
+  @description('Optional. The name of the network security group.')
+  name: string?
+
+  @description('Optional. The location of the network security group.')
+  location: string?
+
+  @description('Optional. The tags of the network security group.')
+  tags: object?
+
+  @description('Optional. The security rules of the network security group.')
+  securityRules: nsgSecurityRuleType[]?
+}
+
+@export()
+@description('The type of a security rule.')
+type nsgSecurityRuleType = {
+  @description('Required. The name of the security rule.')
+  name: string
+
+  @description('Required. The properties of the security rule.')
+  properties: {
+    @description('Required. Whether network traffic is allowed or denied.')
+    access: ('Allow' | 'Deny')
+
+    @description('Optional. The description of the security rule.')
+    description: string?
+
+    @description('Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.')
+    destinationAddressPrefix: string?
+
+    @description('Optional. The destination address prefixes. CIDR or destination IP ranges.')
+    destinationAddressPrefixes: string[]?
+
+    @description('Optional. The resource IDs of the application security groups specified as destination.')
+    destinationApplicationSecurityGroupResourceIds: string[]?
+
+    @description('Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.')
+    destinationPortRange: string?
+
+    @description('Optional. The destination port ranges.')
+    destinationPortRanges: string[]?
+
+    @description('Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic.')
+    direction: ('Inbound' | 'Outbound')
+
+    @minValue(100)
+    @maxValue(4096)
+    @description('Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.')
+    priority: int
+
+    @description('Required. Network protocol this rule applies to.')
+    protocol: ('Ah' | 'Esp' | 'Icmp' | 'Tcp' | 'Udp' | '*')
+
+    @description('Optional. The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from.')
+    sourceAddressPrefix: string?
+
+    @description('Optional. The CIDR or source IP ranges.')
+    sourceAddressPrefixes: string[]?
+
+    @description('Optional. The resource IDs of the application security groups specified as source.')
+    sourceApplicationSecurityGroupResourceIds: string[]?
+
+    @description('Optional. The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.')
+    sourcePortRange: string?
+
+    @description('Optional. The source port ranges.')
+    sourcePortRanges: string[]?
+  }
 }

@@ -15,6 +15,8 @@ import { natGatewayType } from 'modules/subResourceWrapper.bicep'
 import { bastionType } from 'modules/subResourceWrapper.bicep'
 import { pimRoleAssignmentTypeType } from 'modules/subResourceWrapper.bicep'
 import { userAssignedIdentityType } from 'modules/subResourceWrapper.bicep'
+import { virtualNetworkType } from 'modules/subResourceWrapper.bicep'
+import { nsgSecurityRuleType } from 'modules/subResourceWrapper.bicep'
 
 // PARAMETERS
 
@@ -169,7 +171,7 @@ param virtualNetworkNatGatewayConfiguration natGatewayType?
 @description('Optional. The configuration object for the Bastion host. Do not provide this object or keep it empty if you do not want to deploy a Bastion host.')
 param virtualNetworkBastionConfiguration bastionType?
 
-@sys.description('Optional. Whether to deploy a Bastion host to the created virtual network.')
+@description('Optional. Whether to deploy a Bastion host to the created virtual network.')
 param virtualNetworkDeployBastion bool = false
 
 @description('''Optional. The resource ID of the Virtual Network or Virtual WAN Hub in the hub to which the created Virtual Network, by this module, will be peered/connected to via Virtual Network Peering or a Virtual WAN Virtual Hub Connection.
@@ -181,6 +183,9 @@ param hubNetworkResourceId string = ''
 > **IMPORTANT:** If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create.
 ''')
 param virtualNetworkUseRemoteGateways bool = true
+
+@description('Optional. A list of additional virtual networks to create.')
+param additionalVirtualNetworks virtualNetworkType[] = []
 
 @description('''Optional. Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.
 ''')
@@ -458,6 +463,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     virtualNetworkPeeringEnabled: virtualNetworkPeeringEnabled
     hubNetworkResourceId: hubNetworkResourceId
     virtualNetworkUseRemoteGateways: virtualNetworkUseRemoteGateways
+    additionalVirtualNetworks: additionalVirtualNetworks
     virtualNetworkVwanEnableInternetSecurity: virtualNetworkVwanEnableInternetSecurity
     virtualNetworkVwanAssociatedRouteTableResourceId: virtualNetworkVwanAssociatedRouteTableResourceId
     virtualNetworkVwanPropagatedRouteTablesResourceIds: virtualNetworkVwanPropagatedRouteTablesResourceIds
