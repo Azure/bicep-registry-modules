@@ -1,0 +1,159 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "4651660997503960626"
+    },
+    "name": "Azure Cosmos DB for MongoDB (vCore) cluster user",
+    "description": "This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster. These users are used to connect to the cluster and perform operations using Microsoft Entra authentication."
+  },
+  "definitions": {
+    "targetPrincipalPropertiesType": {
+      "type": "object",
+      "properties": {
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal (object) ID of the identity to create as a user on the cluster."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "ServicePrincipal",
+            "User"
+          ],
+          "metadata": {
+            "description": "Required. The type of principal to be used for the identity provider."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties for the identity associated with the user."
+      }
+    },
+    "rolePropertiesType": {
+      "type": "object",
+      "properties": {
+        "database": {
+          "type": "string",
+          "allowedValues": [
+            "admin"
+          ],
+          "metadata": {
+            "description": "Required. The database to assign the role to."
+          }
+        },
+        "role": {
+          "type": "string",
+          "allowedValues": [
+            "dbOwner"
+          ],
+          "metadata": {
+            "description": "Required. The role to assign to the user."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Properties for the role[s] assigned to the user."
+      }
+    }
+  },
+  "parameters": {
+    "mongoClusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Azure Cosmos DB for MongoDB (vCore) cluster. Required if the template is used in a standalone deployment."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Default to current resource group scope location. Location for all resources."
+      }
+    },
+    "targetIdentity": {
+      "$ref": "#/definitions/targetPrincipalPropertiesType",
+      "metadata": {
+        "description": "Required. The principal/identity to create as a user on the cluster."
+      }
+    },
+    "targetRoles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/rolePropertiesType"
+      },
+      "defaultValue": [
+        {
+          "database": "admin",
+          "role": "dbOwner"
+        }
+      ],
+      "metadata": {
+        "description": "Optional. The roles to assign to the user per database. Defaults to the \"dbOwner\" role on the \"admin\" database."
+      }
+    }
+  },
+  "resources": {
+    "mongoCluster": {
+      "existing": true,
+      "type": "Microsoft.DocumentDB/mongoClusters",
+      "apiVersion": "2025-04-01-preview",
+      "name": "[parameters('mongoClusterName')]"
+    },
+    "user": {
+      "type": "Microsoft.DocumentDB/mongoClusters/users",
+      "apiVersion": "2025-04-01-preview",
+      "name": "[format('{0}/{1}', parameters('mongoClusterName'), parameters('targetIdentity').principalId)]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "copy": [
+          {
+            "name": "roles",
+            "count": "[length(parameters('targetRoles'))]",
+            "input": {
+              "db": "[parameters('targetRoles')[copyIndex('roles')].database]",
+              "role": "[parameters('targetRoles')[copyIndex('roles')].role]"
+            }
+          }
+        ],
+        "identityProvider": {
+          "type": "MicrosoftEntraID",
+          "properties": {
+            "principalType": "[tryGet(parameters('targetIdentity'), 'principalType')]"
+          }
+        }
+      }
+    }
+  },
+  "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the Azure Cosmos DB for MongoDB (vCore) cluster was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the user."
+      },
+      "value": "[parameters('targetIdentity').principalId]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the user."
+      },
+      "value": "[resourceId('Microsoft.DocumentDB/mongoClusters/users', parameters('mongoClusterName'), parameters('targetIdentity').principalId)]"
+    }
+  }
+}
