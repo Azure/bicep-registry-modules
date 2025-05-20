@@ -250,15 +250,22 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectors`](#parameter-connectors) | array | The type of Data Connector. |
 | [`workspaceResourceId`](#parameter-workspaceresourceid) | string | The resource ID of the Log Analytics workspace. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`connectors`](#parameter-connectors) | array | The type of Data Connector. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+
+### Parameter: `workspaceResourceId`
+
+The resource ID of the Log Analytics workspace.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `connectors`
 
@@ -452,13 +459,6 @@ The tenant id to connect to, and get the data from.
 The lookback period for the feed to be imported.
 
 - Required: No
-- Type: string
-
-### Parameter: `workspaceResourceId`
-
-The resource ID of the Log Analytics workspace.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `enableTelemetry`

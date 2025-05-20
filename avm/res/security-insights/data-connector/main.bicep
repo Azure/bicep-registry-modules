@@ -39,7 +39,7 @@ param enableTelemetry bool = true
   'ThreatIntelligence'
   'ThreatIntelligenceTaxii'
 ])
-@description('Required. The type of Data Connector.')
+@description('Optional. The type of Data Connector.')
 param connectors dataConnectorType[]?
 
 #disable-next-line no-deployments-resources

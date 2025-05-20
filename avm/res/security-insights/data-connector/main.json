@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "655933427687807711"
+      "templateHash": "15466947202341244024"
     },
     "name": "Security Insights Data Connectors",
     "description": "This module deploys a Security Insights Data Connector.",
@@ -282,7 +282,7 @@
         "ThreatIntelligenceTaxii"
       ],
       "metadata": {
-        "description": "Required. The type of Data Connector."
+        "description": "Optional. The type of Data Connector."
       }
     }
   },
