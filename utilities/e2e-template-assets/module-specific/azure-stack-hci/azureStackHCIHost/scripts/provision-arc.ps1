@@ -66,8 +66,7 @@ try {
         $credential = New-Object System.Management.Automation.PSCredential -ArgumentList $Using:ServicePrincipalId, $secureServicePrincipalSecret
         Connect-AzAccount -ServicePrincipal -Credential $credential -Subscription $Using:SubscriptionId -Tenant $Using:TenantId
         $secureToken = (Get-AzAccessToken -AsSecureString).Token
-        $BSTR = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secureToken)
-        $token = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($BSTR)
+        $token = [Net.NetworkCredential]::new('', $secureToken).Password
 
         $azcmagentPath = "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe"
         & "$azcmagentPath" --version
