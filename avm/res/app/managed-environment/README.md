@@ -31,9 +31,10 @@ The following section provides usage examples for the module, which were used to
 
 - [No App Logging](#example-1-no-app-logging)
 - [Using only defaults](#example-2-using-only-defaults)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Enable public access](#example-4-enable-public-access)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using different locations](#example-3-using-different-locations)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Enable public access](#example-5-enable-public-access)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _No App Logging_
 
@@ -276,7 +277,308 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 3: _Using different locations_
+
+This instance deploys a keyvault and certificate in a different resource group.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module managedEnvironment 'br/public:avm/res/app/managed-environment:<version>' = {
+  name: 'managedEnvironmentDeployment'
+  params: {
+    // Required parameters
+    name: 'amedrg001'
+    // Non-required parameters
+    appInsightsConnectionString: '<appInsightsConnectionString>'
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: '<customerId>'
+        sharedKey: '<sharedKey>'
+      }
+    }
+    certificate: {
+      certificateKeyVaultProperties: {
+        identityResourceId: '<identityResourceId>'
+        keyVaultUrl: '<keyVaultUrl>'
+      }
+      name: 'dep-cert-amedrg'
+    }
+    dnsSuffix: 'contoso.com'
+    dockerBridgeCidr: '172.16.0.1/28'
+    infrastructureResourceGroupName: '<infrastructureResourceGroupName>'
+    infrastructureSubnetResourceId: '<infrastructureSubnetResourceId>'
+    internal: true
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    peerTrafficEncryption: true
+    platformReservedCidr: '172.17.17.0/24'
+    platformReservedDnsIP: '172.17.17.17'
+    roleAssignments: [
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    storages: [
+      {
+        accessMode: 'ReadWrite'
+        kind: 'SMB'
+        shareName: 'smbfileshare'
+        storageAccountName: '<storageAccountName>'
+      }
+      {
+        accessMode: 'ReadWrite'
+        kind: 'NFS'
+        shareName: 'nfsfileshare'
+        storageAccountName: '<storageAccountName>'
+      }
+    ]
+    workloadProfiles: [
+      {
+        maximumCount: 3
+        minimumCount: 0
+        name: 'CAW01'
+        workloadProfileType: 'D4'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "amedrg001"
+    },
+    // Non-required parameters
+    "appInsightsConnectionString": {
+      "value": "<appInsightsConnectionString>"
+    },
+    "appLogsConfiguration": {
+      "value": {
+        "destination": "log-analytics",
+        "logAnalyticsConfiguration": {
+          "customerId": "<customerId>",
+          "sharedKey": "<sharedKey>"
+        }
+      }
+    },
+    "certificate": {
+      "value": {
+        "certificateKeyVaultProperties": {
+          "identityResourceId": "<identityResourceId>",
+          "keyVaultUrl": "<keyVaultUrl>"
+        },
+        "name": "dep-cert-amedrg"
+      }
+    },
+    "dnsSuffix": {
+      "value": "contoso.com"
+    },
+    "dockerBridgeCidr": {
+      "value": "172.16.0.1/28"
+    },
+    "infrastructureResourceGroupName": {
+      "value": "<infrastructureResourceGroupName>"
+    },
+    "infrastructureSubnetResourceId": {
+      "value": "<infrastructureSubnetResourceId>"
+    },
+    "internal": {
+      "value": true
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "peerTrafficEncryption": {
+      "value": true
+    },
+    "platformReservedCidr": {
+      "value": "172.17.17.0/24"
+    },
+    "platformReservedDnsIP": {
+      "value": "172.17.17.17"
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "storages": {
+      "value": [
+        {
+          "accessMode": "ReadWrite",
+          "kind": "SMB",
+          "shareName": "smbfileshare",
+          "storageAccountName": "<storageAccountName>"
+        },
+        {
+          "accessMode": "ReadWrite",
+          "kind": "NFS",
+          "shareName": "nfsfileshare",
+          "storageAccountName": "<storageAccountName>"
+        }
+      ]
+    },
+    "workloadProfiles": {
+      "value": [
+        {
+          "maximumCount": 3,
+          "minimumCount": 0,
+          "name": "CAW01",
+          "workloadProfileType": "D4"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/app/managed-environment:<version>'
+
+// Required parameters
+param name = 'amedrg001'
+// Non-required parameters
+param appInsightsConnectionString = '<appInsightsConnectionString>'
+param appLogsConfiguration = {
+  destination: 'log-analytics'
+  logAnalyticsConfiguration: {
+    customerId: '<customerId>'
+    sharedKey: '<sharedKey>'
+  }
+}
+param certificate = {
+  certificateKeyVaultProperties: {
+    identityResourceId: '<identityResourceId>'
+    keyVaultUrl: '<keyVaultUrl>'
+  }
+  name: 'dep-cert-amedrg'
+}
+param dnsSuffix = 'contoso.com'
+param dockerBridgeCidr = '172.16.0.1/28'
+param infrastructureResourceGroupName = '<infrastructureResourceGroupName>'
+param infrastructureSubnetResourceId = '<infrastructureSubnetResourceId>'
+param internal = true
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param peerTrafficEncryption = true
+param platformReservedCidr = '172.17.17.0/24'
+param platformReservedDnsIP = '172.17.17.17'
+param roleAssignments = [
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param storages = [
+  {
+    accessMode: 'ReadWrite'
+    kind: 'SMB'
+    shareName: 'smbfileshare'
+    storageAccountName: '<storageAccountName>'
+  }
+  {
+    accessMode: 'ReadWrite'
+    kind: 'NFS'
+    shareName: 'nfsfileshare'
+    storageAccountName: '<storageAccountName>'
+  }
+]
+param workloadProfiles = [
+  {
+    maximumCount: 3
+    minimumCount: 0
+    name: 'CAW01'
+    workloadProfileType: 'D4'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -643,7 +945,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 4: _Enable public access_
+### Example 5: _Enable public access_
 
 This instance deploys the module with public access enabled.
 
@@ -786,7 +1088,7 @@ param workloadProfiles = [
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
