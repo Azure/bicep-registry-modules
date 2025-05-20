@@ -72,6 +72,7 @@ body:
         - "avm/ptn/mgmt-groups/subscription-placement"
         - "avm/ptn/network/hub-networking"
         - "avm/ptn/network/private-link-private-dns-zones"
+        - "avm/ptn/network/virtual-wan"
         - "avm/ptn/policy-insights/remediation"
         - "avm/ptn/sa/conversation-knowledge-mining"
         - "avm/ptn/security/security-center"
