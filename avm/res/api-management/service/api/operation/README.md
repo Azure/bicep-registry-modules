@@ -1,6 +1,6 @@
-# API Management Service APIs Policies `[Microsoft.ApiManagement/service/apis/operations]`
+# API Management Service APIs Operations `[Microsoft.ApiManagement/service/apis/operations]`
 
-This module deploys an API Management Service API Policy.
+This module deploys an API Management Service API Operation.
 
 ## Navigation
 
@@ -23,7 +23,7 @@ This module deploys an API Management Service API Policy.
 | :-- | :-- | :-- |
 | [`displayName`](#parameter-displayname) | string | The display name of the operation. |
 | [`method`](#parameter-method) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
-| [`name`](#parameter-name) | string | The name of the policy. |
+| [`name`](#parameter-name) | string | The name of the operation. |
 | [`urlTemplate`](#parameter-urltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
 
 **Conditional parameters**
@@ -59,7 +59,7 @@ A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not 
 
 ### Parameter: `name`
 
-The name of the policy.
+The name of the operation.
 
 - Required: Yes
 - Type: string

@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "10915134883833707619"
+      "templateHash": "6629339591821662719"
     },
-    "name": "API Management Service APIs Policies",
-    "description": "This module deploys an API Management Service API Policy."
+    "name": "API Management Service APIs Operations",
+    "description": "This module deploys an API Management Service API Operation."
   },
   "definitions": {
     "policyType": {
@@ -62,7 +62,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the policy."
+        "description": "Required. The name of the operation."
       }
     },
     "displayName": {

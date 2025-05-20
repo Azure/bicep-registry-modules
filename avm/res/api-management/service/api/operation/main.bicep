@@ -1,5 +1,5 @@
-metadata name = 'API Management Service APIs Policies'
-metadata description = 'This module deploys an API Management Service API Policy.'
+metadata name = 'API Management Service APIs Operations'
+metadata description = 'This module deploys an API Management Service API Operation.'
 
 @sys.description('Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment.')
 param apiManagementServiceName string
@@ -7,7 +7,7 @@ param apiManagementServiceName string
 @sys.description('Conditional. The name of the parent API. Required if the template is used in a standalone deployment.')
 param apiName string
 
-@sys.description('Required. The name of the policy.')
+@sys.description('Required. The name of the operation.')
 param name string
 
 @sys.description('Required. The display name of the operation.')
