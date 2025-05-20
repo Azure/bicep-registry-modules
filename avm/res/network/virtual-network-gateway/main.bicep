@@ -150,9 +150,21 @@ var existingSecondaryPublicIPResourceIdVar = isActiveActive
   ? clusterSettings.?existingSecondaryPublicIPResourceId
   : null
 
+var existingTertiaryPublicIPResourceIdVar = isActiveActive
+  ? clusterSettings.?existingTertiaryPublicIPResourceId
+  : null
+
 var secondaryPublicIPNameVar = isActiveActive ? (clusterSettings.?secondPipName ?? '${name}-pip2') : null
 
-var arrayPipNameVar = isActiveActive
+var tertiaryPublicIPNameVar = isActiveActive && !empty(vpnClientAddressPoolPrefix) ? '${name}-pip3' : null
+
+var arrayPipNameVar = isActiveActive && !empty(vpnClientAddressPoolPrefix)
+  ? concat(
+      !empty(existingPrimaryPublicIPResourceId) ? [] : [primaryPublicIPName],
+      !empty(existingSecondaryPublicIPResourceIdVar) ? [] : [secondaryPublicIPNameVar],
+      !empty(existingTertiaryPublicIPResourceIdVar) ? [] : [tertiaryPublicIPNameVar]
+    )
+  : isActiveActive
   ? concat(
       !empty(existingPrimaryPublicIPResourceId) ? [] : [primaryPublicIPName],
       !empty(existingSecondaryPublicIPResourceIdVar) ? [] : [secondaryPublicIPNameVar]
@@ -185,7 +197,7 @@ var bgpSettingsVar = isActiveActive
     }
 
 // Potential IP configurations (Active-Active vs Active-Passive)
-var ipConfiguration = isActiveActive
+var ipConfiguration = isActiveActive && !empty(vpnClientAddressPoolPrefix)
   ? [
       {
         properties: {
@@ -220,6 +232,55 @@ var ipConfiguration = isActiveActive
         }
         name: 'vNetGatewayConfig2'
       }
+      {
+        properties: {
+          privateIPAllocationMethod: 'Dynamic'
+          subnet: {
+            id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
+          }
+          publicIPAddress: {
+            id: !empty(existingTertiaryPublicIPResourceIdVar)
+                  ? existingTertiaryPublicIPResourceIdVar
+                  : az.resourceId('Microsoft.Network/publicIPAddresses', tertiaryPublicIPNameVar!)
+          }
+        }
+        name: 'vNetGatewayConfig3'
+      }
+    ]
+  : isActiveActive
+    ? [
+        {
+          properties: {
+            privateIPAllocationMethod: 'Dynamic'
+            subnet: {
+              id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
+            }
+            publicIPAddress: {
+              id: !empty(existingPrimaryPublicIPResourceId)
+                ? existingPrimaryPublicIPResourceId
+                : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
+            }
+          }
+          name: 'vNetGatewayConfig1'
+        }
+        {
+          properties: {
+            privateIPAllocationMethod: 'Dynamic'
+            subnet: {
+              id: '${virtualNetworkResourceId}/subnets/GatewaySubnet'
+            }
+            publicIPAddress: {
+              id: isActiveActive
+                ? !empty(existingSecondaryPublicIPResourceIdVar)
+                    ? existingSecondaryPublicIPResourceIdVar
+                    : az.resourceId('Microsoft.Network/publicIPAddresses', secondaryPublicIPNameVar)
+                : !empty(existingPrimaryPublicIPResourceId)
+                    ? existingPrimaryPublicIPResourceId
+                    : az.resourceId('Microsoft.Network/publicIPAddresses', primaryPublicIPName)
+            }
+          }
+          name: 'vNetGatewayConfig2'
+        }      
     ]
   : [
       {
@@ -324,6 +385,14 @@ resource secondaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' exis
   )
 }
 
+resource tertiaryPublicIP 'Microsoft.Network/publicIPAddresses@2024-05-01' existing = if (!empty(clusterSettings.?existingTertiaryPublicIPResourceId)) {
+  name: last(split(clusterSettings.?existingTertiaryPublicIPResourceId, '/'))
+  scope: resourceGroup(
+    split(clusterSettings.?existingTertiaryPublicIPResourceId, '/')[2],
+    split(clusterSettings.?existingTertiaryPublicIPResourceId, '/')[4]
+  )
+}
+
 // ================//
 // Deployments     //
 // ================//
@@ -351,6 +420,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 // Public IPs
+var isAzSku = contains(skuName, 'AZ')
+var publicIpZonesToApply = isAzSku ? publicIpZones : []
+
 @batchSize(1)
 module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = [
   for (virtualGatewayPublicIpName, index) in arrayPipNameVar: {
@@ -364,7 +436,7 @@ module publicIPAddress 'br/public:avm/res/network/public-ip-address:0.5.1' = [
       publicIpPrefixResourceId: !empty(publicIPPrefixResourceId) ? publicIPPrefixResourceId : ''
       tags: tags
       skuName: skuName == 'Basic' ? 'Basic' : 'Standard'
-      zones: skuName != 'Basic' ? publicIpZones : []
+      zones: publicIpZonesToApply
       dnsSettings: {
         domainNameLabel: length(arrayPipNameVar) == length(domainNameLabel)
           ? domainNameLabel[index]
@@ -535,6 +607,14 @@ output secondaryPublicIpAddress string? = isActiveActive
       : publicIPAddress[1].outputs.ipAddress)
   : null // 'Not applicable (Active-Passive mode)'
 
+  // Add for tertiary public IP address (Active-Active with P2S mode)
+@description('The tertiary public IP address of the virtual network gateway (Active-Active with P2S mode).')
+output tertiaryPublicIpAddress string? = isActiveActive && !empty(vpnClientAddressPoolPrefix)
+  ? (!empty(existingTertiaryPublicIPResourceIdVar)
+      ? tertiaryPublicIP.properties.ipAddress
+      : publicIPAddress[2].outputs.ipAddress)
+  : null // 'Not applicable (Active-Passive mode) or no P2S'
+
 @description('The secondary default Azure BGP peer IP address (Active-Active mode).')
 output secondaryDefaultBgpIpAddress string? = join(
   virtualNetworkGateway.properties.?bgpSettings.?bgpPeeringAddresses[?1].?defaultBgpIpAddresses ?? [],
@@ -593,6 +673,9 @@ type activeActiveNoBgpType = {
 
   @description('Optional. The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.')
   existingSecondaryPublicIPResourceId: string?
+  
+  @description('Optional. The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway.')
+  existingTertiaryPublicIPResourceId: string?
 
   @description('Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway\'s name with the \'-pip2\' suffix.')
   secondPipName: string?
@@ -622,6 +705,9 @@ type activeActiveBgpType = {
 
   @description('Optional. Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway\'s name with the \'-pip2\' suffix.')
   secondPipName: string?
+
+  @description('Optional. The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway.')
+  existingTertiaryPublicIPResourceId: string?
 
   @description('Optional. The Autonomous System Number value. If it\'s not provided, a default \'65515\' value will be assigned to the ASN.')
   @minValue(0)
