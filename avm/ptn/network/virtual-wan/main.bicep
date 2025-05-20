@@ -7,10 +7,8 @@ param location string = resourceGroup().location
 @description('Required. The parameters for the Virtual WAN.')
 param virtualWanParameters virtualWanParameterType
 
-@description('Required. The parameters for the Virtual Hubs and associated networking components.')
+@description('Optional. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs.')
 param virtualHubParameters virtualHubParameterType?
-
-//param diagnosticSettings diagnosticSettingFullType[]?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings for the Virtual WAN and associated components.')
@@ -78,9 +76,9 @@ module firewallModule 'br/public:avm/res/network/azure-firewall:0.6.0' = [
       publicIPAddressObject: virtualHub.?secureHubParameters.?publicIPAddressObject
       publicIPResourceID: virtualHub.?secureHubParameters.?publicIPResourceID
       additionalPublicIpConfigurations: virtualHub.?secureHubParameters.?additionalPublicIpConfigurationResourceIds
-      enableForcedTunneling: virtualHub.?secureHubParameters.?enableForcedTunneling
-      managementIPAddressObject: virtualHub.?secureHubParameters.?managementIPAddressObject
-      managementIPResourceID: virtualHub.?secureHubParameters.?managementIPResourceID
+      //enableForcedTunneling: virtualHub.?secureHubParameters.?enableForcedTunneling
+      //managementIPAddressObject: virtualHub.?secureHubParameters.?managementIPAddressObject
+      //managementIPResourceID: virtualHub.?secureHubParameters.?managementIPResourceID
       enableTelemetry: enableTelemetry
       diagnosticSettings: virtualHub.?secureHubParameters.?diagnosticSettings
       /*
@@ -169,7 +167,7 @@ module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.1.5' = [
 
 module expressRouteGatewayModule 'br/public:avm/res/network/express-route-gateway:0.7.0' = [
   for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?expressRouteParameters.?deployExpressRouteGateway == true) {
-      name: virtualHub.?expressRouteParameters.?expressRouteGatewayName!
+    name: virtualHub.?expressRouteParameters.?expressRouteGatewayName!
     params: {
       // Required parameters
       name: virtualHub.?expressRouteParameters.?expressRouteGatewayName!
@@ -205,6 +203,25 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
     }
   }
 }
+// ============ //
+// Outputs      //
+// ============ //
+
+@description('Object containing the Virtual WAN information')
+output virtualWan object = {
+  name: virtualWan.outputs.name
+  resourceId: virtualWan.outputs.resourceId
+  resourceGroupName: virtualWan.outputs.resourceGroupName
+}
+
+@description('The array containing the Virtual Hub information')
+output virtualHubs object[] = [
+  for (virtualHub, index) in virtualHubParameters!: {
+    name: virtualHubModule[index].outputs.name
+    resourceId: virtualHubModule[index].outputs.resourceId
+    resourceGroupName: virtualHubModule[index].outputs.resourceGroupName
+  }
+]
 
 @description('Imports the VPN client IPsec policies type from the VPN server configuration module.')
 import { vpnClientIpsecPoliciesType } from '../../../res/network/vpn-server-configuration/main.bicep'
@@ -247,34 +264,49 @@ type virtualWanParameterType = {
   p2sVpnParameters: {
     @description('Required. Whether to create a new P2S VPN server configuration.')
     createP2sVpnServerConfiguration: bool
+
     @description('Optional. Name of the P2S VPN server configuration.')
     p2sVpnServerConfigurationName: string?
+
     @description('Optional. Azure AD audience for VPN authentication.')
     aadAudience: string?
+
     @description('Optional. Azure AD issuer for VPN authentication.')
     aadIssuer: string?
+
     @description('Optional. Azure AD tenant for VPN authentication.')
     aadTenant: string?
+
     @description('Optional. Policy groups for P2S VPN configuration.')
     p2sConfigurationPolicyGroups: array?
+
     @description('Optional. List of RADIUS client root certificates.')
     radiusClientRootCertificates: array?
+
     @description('Optional. RADIUS server address.')
     radiusServerAddress: string?
+
     @description('Optional. List of RADIUS server root certificates.')
     radiusServerRootCertificates: array?
+
     @description('Optional. RADIUS server secret.')
     radiusServerSecret: string?
+
     @description('Optional. List of RADIUS servers.')
     radiusServers: array?
+
     @description('Optional. VPN authentication types supported.')
     vpnAuthenticationTypes: ['AAD' | 'Certificate' | 'Radius']?
+
     @description('Optional. List of VPN client IPsec policies.')
     vpnClientIpsecPolicies: vpnClientIpsecPoliciesType[]?
+    
     @description('Optional. List of revoked VPN client certificates.')
     vpnClientRevokedCertificates: array?
+
     @description('Optional. List of VPN client root certificates.')
     vpnClientRootCertificates: array?
+    
     @description('Optional. Supported VPN protocols.')
     vpnProtocols: ('IkeV2' | 'OpenVPN')?
   }?
@@ -595,7 +627,7 @@ type virtualHubParameterType = {
     @description('Optional. Resource ID of the management public IP address.')
     managementIPResourceID: string?
     */
-    
+
     @description('Optional. Diagnostic settings for the Azure Firewall in the Secure Hub.')
     diagnosticSettings: diagnosticSettingFullType[]?
   }?
