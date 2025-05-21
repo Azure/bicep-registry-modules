@@ -1,5 +1,5 @@
-metadata name = 'avm/ptn/network/virtual-wan'
-metadata description = 'Azure Virtual WAN'
+metadata name = 'Azure Virtual WAN'
+metadata description = 'This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.'
 
 @description('Option. Azure region where the Virtual WAN will be created.')
 param location string = resourceGroup().location
