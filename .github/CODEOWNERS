@@ -37,7 +37,7 @@
 /avm/ptn/mgmt-groups/subscription-placement/ @Azure/avm-ptn-mgmtgroups-subscriptionplacement-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/network/hub-networking/ @Azure/avm-ptn-network-hubnetworking-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/network/private-link-private-dns-zones/ @Azure/avm-ptn-network-privatelinkprivatednszones-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/network/virtual-wan/ @Azure/avm-ptn-network-virtualwan-module-owners-bicep @Azure/avm-ptn-network-virtualwan-module-reviewers-bicep
+/avm/ptn/network/virtual-wan/ @Azure/avm-ptn-network-virtualwan-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/sa/conversation-knowledge-mining/ @Azure/avm-ptn-sa-conversationknowledgemining-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-module-reviewers-bicep
