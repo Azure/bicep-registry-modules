@@ -2681,7 +2681,7 @@ The log analytics diagnostic information for a container group.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`metadata`](#parameter-loganalyticsmetadata) | object | Metadata for log analytics. |
-| [`workspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | securestring | The workspace resource ID for log analytics. |
+| [`workspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The workspace resource id for log analytics. |
 
 ### Parameter: `logAnalytics.logType`
 
@@ -2720,10 +2720,10 @@ Metadata for log analytics.
 
 ### Parameter: `logAnalytics.workspaceResourceId`
 
-The workspace resource ID for log analytics.
+The workspace resource id for log analytics.
 
 - Required: No
-- Type: securestring
+- Type: string
 
 ### Parameter: `managedIdentities`
 

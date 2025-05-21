@@ -175,15 +175,17 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
         }
       }
     ]
-    diagnostics: !empty(logAnalytics) ? {
-      logAnalytics: {
-        logType: logAnalytics!.logType
-        workspaceId: logAnalytics!.workspaceId
-        workspaceKey: logAnalytics!.workspaceKey
-        workspaceResourceId: logAnalytics!.?workspaceResourceId
-        metadata: logAnalytics!.?metadata
-      }
-    } : null
+    diagnostics: !empty(logAnalytics)
+      ? {
+          logAnalytics: {
+            logType: logAnalytics!.logType
+            workspaceId: logAnalytics!.workspaceId
+            workspaceKey: logAnalytics!.workspaceKey
+            workspaceResourceId: logAnalytics!.?workspaceResourceId
+            metadata: logAnalytics!.?metadata
+          }
+        }
+      : null
     encryptionProperties: !empty(customerManagedKey)
       ? {
           identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
@@ -417,7 +419,7 @@ type containerType = {
 
 @export()
 @description('The type for the log analytics diagnostics.')
-type  logAnalyticsType = {
+type logAnalyticsType = {
   @description('Required. The log type to be used.')
   logType: ('ContainerInsights' | 'ContainerInstanceLogs')
 
@@ -428,8 +430,8 @@ type  logAnalyticsType = {
   @secure()
   workspaceKey: string
 
-    @description('Optional. The workspace resource id for log analytics.')
-    workspaceResourceId: string?
+  @description('Optional. The workspace resource id for log analytics.')
+  workspaceResourceId: string?
 
   @description('Optional. Metadata for log analytics.')
   metadata: object?

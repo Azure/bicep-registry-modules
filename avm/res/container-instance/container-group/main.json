@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11998538476528412731"
+      "templateHash": "13685782625271176470"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
@@ -432,10 +432,10 @@
           }
         },
         "workspaceResourceId": {
-          "type": "securestring",
+          "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The workspace resource ID for log analytics."
+            "description": "Optional. The workspace resource id for log analytics."
           }
         },
         "metadata": {
@@ -447,7 +447,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for the log analytics diagnostics."
       }
     },
     "imageRegistryCredentialType": {
