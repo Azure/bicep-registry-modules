@@ -109,7 +109,7 @@ param capacity int = 2
   'MemoryOptimized_M1500'
   'MemoryOptimized_M2000'
 ])
-@description('Optional. The type of cluster to deploy.')
+@description('Optional. The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION.')
 param skuName string = 'Balanced_B5'
 
 @allowed([

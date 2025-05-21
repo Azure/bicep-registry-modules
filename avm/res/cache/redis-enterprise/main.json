@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "11597511930598805697"
+      "templateHash": "12442957992373307822"
     },
     "name": "Redis Enterprise and Azure Managed Redis",
     "description": "This module deploys a Redis Enterprise or Azure Managed Redis cache.",
@@ -1272,7 +1272,7 @@
         "MemoryOptimized_M2000"
       ],
       "metadata": {
-        "description": "Optional. The type of cluster to deploy."
+        "description": "Optional. The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION."
       }
     },
     "zones": {

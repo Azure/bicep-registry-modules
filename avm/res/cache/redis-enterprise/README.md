@@ -1247,7 +1247,7 @@ param zones = [
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | The minimum TLS version for the Redis cluster to support. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`skuName`](#parameter-skuname) | string | The type of cluster to deploy. |
+| [`skuName`](#parameter-skuname) | string | The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`zones`](#parameter-zones) | array | The Availability Zones to place the resources in. Currently only supported on Enterprise and EnterpriseFlash SKUs. |
 
@@ -2611,7 +2611,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `skuName`
 
-The type of cluster to deploy.
+The type of cluster to deploy. Some Azure Managed Redis SKUs ARE IN PREVIEW, MICROSOFT MAY NOT PROVIDE SUPPORT FOR THIS, PLEASE CHECK THE [PRODUCT DOCS](https://learn.microsoft.com/azure/redis/overview#choosing-the-right-tier) FOR CLARIFICATION.
 
 - Required: No
 - Type: string
