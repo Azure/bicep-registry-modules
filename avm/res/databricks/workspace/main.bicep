@@ -175,6 +175,10 @@ var formattedRoleAssignments = [
   })
 ]
 
+var defaultStorageFirewallValue = privateStorageAccount == 'Enabled'
+  ? 'Enabled'
+  : privateStorageAccount == 'Disabled' ? 'Disabled' : ''
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.databricks-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -358,11 +362,15 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
       : null
     ...(!empty(privateStorageAccount)
       ? {
-          defaultStorageFirewall: privateStorageAccount
-          accessConnector: {
-            id: accessConnectorResourceId
-            identityType: 'SystemAssigned'
-          }
+          defaultStorageFirewall: defaultStorageFirewallValue
+          ...(!empty(accessConnectorResourceId)
+            ? {
+                accessConnector: {
+                  id: accessConnectorResourceId
+                  identityType: 'SystemAssigned'
+                }
+              }
+            : {})
         }
       : {})
     ...(!empty(defaultCatalog)
