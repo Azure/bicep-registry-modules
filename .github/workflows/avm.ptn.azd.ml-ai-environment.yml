@@ -28,7 +28,7 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.azd.ml-ai-environment"
+      - ".github/workflows/avm.ptn.azd.ml-ai-environment.yml"
       - "avm/ptn/azd/ml-ai-environment/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
