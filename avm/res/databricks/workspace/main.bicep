@@ -219,11 +219,11 @@ resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing 
   }
 }
 
-// Map privateStorageAccount to the correct firewall value
+// Map privateStorageAccount to the correct firewall value per documentation
 var defaultStorageFirewallValue = privateStorageAccount == 'Enabled'
-  ? 'EnabledFromSelectedVirtualNetworksAndIpAddresses'
+  ? 'Enabled'
   : privateStorageAccount == 'Disabled'
-    ? 'EnabledFromAllNetworks'
+    ? 'Disabled'
     : ''
 
 resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
