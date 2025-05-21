@@ -2692,10 +2692,9 @@ Location for all resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `deployments` | array | Array of deployed Security Insights Data Connectors with their basic information. |
 | `location` | string | The location the resource was deployed into. |
-| `name` | string | The name of the Security Insights Data Connector. |
 | `resourceGroupName` | string | The resource group where the Security Insights Data Connector is deployed. |
-| `resourceId` | string | The resource ID of the Security Insights Data Connector. |
 
 ## Cross-referenced modules
 

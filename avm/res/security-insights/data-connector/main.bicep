@@ -74,11 +74,15 @@ resource dataConnector 'Microsoft.SecurityInsights/dataConnectors@2024-10-01-pre
   }
 ]
 
-@description('The name of the Security Insights Data Connector.')
-output name string = length(connectors ?? []) > 0 ? dataConnector[0].name : ''
-
-@description('The resource ID of the Security Insights Data Connector.')
-output resourceId string = length(connectors ?? []) > 0 ? dataConnector[0].id : ''
+@description('Array of deployed Security Insights Data Connectors with their basic information.')
+output deployments array = [
+  for (connector, i) in (connectors ?? []): {
+    name: dataConnector[i].name
+    resourceId: dataConnector[i].id
+    dataConnectorType: connector.name
+    systemAssignedIdentity: contains(dataConnector[i], 'identity') ? dataConnector[i].identity.principalId : null
+  }
+]
 
 @description('The resource group where the Security Insights Data Connector is deployed.')
 output resourceGroupName string = resourceGroup().name

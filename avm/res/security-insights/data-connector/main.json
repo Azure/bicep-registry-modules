@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "10115575168338606295"
+      "templateHash": "9444915734039253687"
     },
     "name": "Security Insights Data Connectors",
     "description": "This module deploys a Security Insights Data Connector.",
@@ -1774,19 +1774,20 @@
     }
   },
   "outputs": {
-    "name": {
-      "type": "string",
+    "deployments": {
+      "type": "array",
       "metadata": {
-        "description": "The name of the Security Insights Data Connector."
+        "description": "Array of deployed Security Insights Data Connectors with their basic information."
       },
-      "value": "[if(greater(length(coalesce(parameters('connectors'), createArray())), 0), coalesce(parameters('connectors'), createArray())[0].name, '')]"
-    },
-    "resourceId": {
-      "type": "string",
-      "metadata": {
-        "description": "The resource ID of the Security Insights Data Connector."
-      },
-      "value": "[if(greater(length(coalesce(parameters('connectors'), createArray())), 0), extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/dataConnectors', coalesce(parameters('connectors'), createArray())[0].name), '')]"
+      "copy": {
+        "count": "[length(coalesce(parameters('connectors'), createArray()))]",
+        "input": {
+          "name": "[coalesce(parameters('connectors'), createArray())[copyIndex()].name]",
+          "resourceId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/dataConnectors', coalesce(parameters('connectors'), createArray())[copyIndex()].name)]",
+          "dataConnectorType": "[coalesce(parameters('connectors'), createArray())[copyIndex()].name]",
+          "systemAssignedIdentity": "[if(contains(reference(format('dataConnector[{0}]', copyIndex()), '2024-10-01-preview', 'full'), 'identity'), reference(format('dataConnector[{0}]', copyIndex()), '2024-10-01-preview', 'full').identity.principalId, null())]"
+        }
+      }
     },
     "resourceGroupName": {
       "type": "string",
