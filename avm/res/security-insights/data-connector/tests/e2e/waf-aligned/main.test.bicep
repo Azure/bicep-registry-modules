@@ -50,8 +50,9 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
+      name: 'MicrosoftThreatIntelligence'
       workspaceResourceId: nestedDependencies.outputs.workspaceResourceId
-      connectors: {
+      properties: {
         name: 'MicrosoftThreatIntelligence'
         properties: {
           dataTypes: {

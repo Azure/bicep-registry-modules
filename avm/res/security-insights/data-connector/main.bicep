@@ -13,8 +13,11 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Required. The Data Connector configuration.')
-param connectors dataConnectorType
+@description('Required. The name of the data connector.')
+param name string
+
+@description('Required. The data connector configuration.')
+param properties dataConnectorType
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -41,9 +44,9 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existin
 
 resource dataConnector 'Microsoft.SecurityInsights/dataConnectors@2025-03-01' = {
   scope: workspace
-  name: connectors.?name
-  kind: connectors.?name
-  properties: connectors.?properties
+  name: name
+  kind: name
+  properties: properties
 }
 
 @description('The name of the deployed data connector.')
@@ -53,7 +56,7 @@ output name string = dataConnector.name
 output resourceId string = dataConnector.id
 
 @description('The resource type of the deployed data connector.')
-output resourceType string = '${dataConnector.type}/${connectors.?name}'
+output resourceType string = '${dataConnector.type}/${properties.?name}'
 
 @description('The principal ID of the system assigned identity of the deployed data connector.')
 output systemAssignedPrincipalId string = contains(dataConnector, 'identity') ? dataConnector.identity.principalId : ''
