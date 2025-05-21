@@ -366,10 +366,14 @@ resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
     ...(!empty(privateStorageAccount)
       ? {
           defaultStorageFirewall: defaultStorageFirewallValue
-          accessConnector: {
-            id: accessConnectorResourceId
-            identityType: 'SystemAssigned'
-          }
+          ...(!empty(accessConnectorResourceId)
+            ? {
+                accessConnector: {
+                  id: accessConnectorResourceId
+                  identityType: 'SystemAssigned'
+                }
+              }
+            : {})
         }
       : {})
     ...(!empty(defaultCatalog)
