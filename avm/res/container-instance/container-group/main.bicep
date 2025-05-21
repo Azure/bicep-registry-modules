@@ -94,6 +94,15 @@ var identity = !empty(managedIdentities)
     }
   : null
 
+#disable-next-line BCP081
+resource law 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (!empty(logAnalytics.?workspaceResourceId)) {
+  name: last(split(logAnalytics.?workspaceResourceId!, '/'))
+  scope: resourceGroup(
+    split(logAnalytics.?workspaceResourceId!, '/')[2],
+    split(logAnalytics.?workspaceResourceId!, '/')[4]
+  )
+}
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.containerinstance-containergroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -179,8 +188,14 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
       ? {
           logAnalytics: {
             logType: logAnalytics!.logType
-            workspaceId: logAnalytics!.workspaceId
-            workspaceKey: logAnalytics!.workspaceKey
+            workspaceId: logAnalytics!.?workspaceId ?? (!empty(logAnalytics.?workspaceResourceId)
+              ? law.properties.customerId
+              : fail('Either the workspaceId or the workspaceResourceId must be provided.'))
+            #disable-next-line use-secure-value-for-secure-inputs // False-positive - Is declared as secure()
+            workspaceKey: logAnalytics!.?workspaceKey ?? (!empty(logAnalytics.?workspaceResourceId)
+              ? law.listKeys().primarySharedKey
+              : fail('Either the workspaceKey or the workspaceResourceId must be provided.'))
+            #disable-next-line use-secure-value-for-secure-inputs use-resource-id-functions // Not a secret
             workspaceResourceId: logAnalytics!.?workspaceResourceId
             metadata: logAnalytics!.?metadata
           }
@@ -225,7 +240,6 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
 
     // TODO Add support for the following properties:
     // confidentialComputeProperties:
-    // diagnostics:
     // extensions:
   }
 }
@@ -423,14 +437,14 @@ type logAnalyticsType = {
   @description('Required. The log type to be used.')
   logType: ('ContainerInsights' | 'ContainerInstanceLogs')
 
-  @description('Required. The workspace ID for log analytics.')
-  workspaceId: string
+  @description('Conditional. The workspace ID for log analytics. Required if `workspaceResourceId` is not provided.')
+  workspaceId: string?
 
-  @description('Required. The workspace key for log analytics.')
+  @description('Conditional. The workspace key for log analytics. Required if `workspaceResourceId` is not provided.')
   @secure()
-  workspaceKey: string
+  workspaceKey: string?
 
-  @description('Optional. The workspace resource id for log analytics.')
+  @description('Conditional. The workspace resource ID for log analytics. Required if `workspaceId` or `workspaceId` is not provided.')
   workspaceResourceId: string?
 
   @description('Optional. Metadata for log analytics.')

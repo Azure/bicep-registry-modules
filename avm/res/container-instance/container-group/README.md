@@ -2673,15 +2673,20 @@ The log analytics diagnostic information for a container group.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`logType`](#parameter-loganalyticslogtype) | string | The log type to be used. |
-| [`workspaceId`](#parameter-loganalyticsworkspaceid) | string | The workspace ID for log analytics. |
-| [`workspaceKey`](#parameter-loganalyticsworkspacekey) | securestring | The workspace key for log analytics. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`workspaceId`](#parameter-loganalyticsworkspaceid) | string | The workspace ID for log analytics. Required if `workspaceResourceId` is not provided. |
+| [`workspaceKey`](#parameter-loganalyticsworkspacekey) | securestring | The workspace key for log analytics. Required if `workspaceResourceId` is not provided. |
+| [`workspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The workspace resource ID for log analytics. Required if `workspaceId` or `workspaceId` is not provided. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`metadata`](#parameter-loganalyticsmetadata) | object | Metadata for log analytics. |
-| [`workspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The workspace resource id for log analytics. |
 
 ### Parameter: `logAnalytics.logType`
 
@@ -2699,17 +2704,24 @@ The log type to be used.
 
 ### Parameter: `logAnalytics.workspaceId`
 
-The workspace ID for log analytics.
+The workspace ID for log analytics. Required if `workspaceResourceId` is not provided.
 
-- Required: Yes
+- Required: No
 - Type: string
 
 ### Parameter: `logAnalytics.workspaceKey`
 
-The workspace key for log analytics.
+The workspace key for log analytics. Required if `workspaceResourceId` is not provided.
 
-- Required: Yes
+- Required: No
 - Type: securestring
+
+### Parameter: `logAnalytics.workspaceResourceId`
+
+The workspace resource ID for log analytics. Required if `workspaceId` or `workspaceId` is not provided.
+
+- Required: No
+- Type: string
 
 ### Parameter: `logAnalytics.metadata`
 
@@ -2717,13 +2729,6 @@ Metadata for log analytics.
 
 - Required: No
 - Type: object
-
-### Parameter: `logAnalytics.workspaceResourceId`
-
-The workspace resource id for log analytics.
-
-- Required: No
-- Type: string
 
 ### Parameter: `managedIdentities`
 
