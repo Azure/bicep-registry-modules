@@ -416,6 +416,7 @@ type containerType = {
 }
 
 @export()
+@description('The type for the log analytics diagnostics.')
 type  logAnalyticsType = {
   @description('Required. The log type to be used.')
   logType: ('ContainerInsights' | 'ContainerInstanceLogs')
@@ -427,9 +428,8 @@ type  logAnalyticsType = {
   @secure()
   workspaceKey: string
 
-  @description('Optional. The workspace resource ID for log analytics.')
-  @secure()
-  workspaceResourceId: string?
+    @description('Optional. The workspace resource id for log analytics.')
+    workspaceResourceId: string?
 
   @description('Optional. Metadata for log analytics.')
   metadata: object?
