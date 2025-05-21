@@ -120,16 +120,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $file.Name | Should -BeExactly 'README.md'
         }
 
-        It '[<moduleFolderName>] A [` version.json `] file must only have a major & minor version.' -TestCases ($moduleFolderTestCases | Where-Object { Test-Path (Join-Path $_.moduleFolderPath 'version.json') }) {
-
-            param (
-                [string] $moduleFolderPath
-            )
-
-            $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
-            $versionFileContent.version | Should -Match '^[0-9]+\.[0-9]+$' -Because 'only the major.minor version may be specified in the version.json file.'
-        }
-
         # (Pilot for child module publishing) Only a subset of child modules is allowed to have a version.json file
         It '[<moduleFolderName>] child module should not contain a [` version.json `] file unless explicitly allowed for publishing.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
 
@@ -143,74 +133,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
             if ($pathExisting) {
                 $childModuleAllowedList | Should -Contain $moduleFullName -Because "only the child modules listed in the [./$childModuleAllowedListRelativePath] list may have a version.json file."
-            }
-        }
-
-        # If the child modules version has been increased, the main modules version should be increased as well
-        It '[<moduleFolderName>] main module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
-
-            param (
-                [string] $moduleFolderPath
-            )
-
-            $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            if ($pathExisting) {
-                $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
-                $parentFolderPath = Split-Path -Path $moduleFolderPath -Parent
-                $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
-
-                # The first release of a child module does not require the parent module to be updated
-                ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
-            }
-        }
-
-        It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
-
-            param(
-                [string] $moduleFolderPath,
-                [string] $moduleType
-            )
-
-            $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
-
-            # Use correct telemetry link based on file path
-            switch ($moduleType) {
-                'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
-                'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
-                'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
-                Default {}
-            }
-
-            # Fetch CSV
-            # =========
-            try {
-                $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-            } catch {
-                $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-                Write-Error $errorMessage
-                Set-ItResult -Skipped -Because $errorMessage
-            }
-            $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
-
-            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
-            $relevantCSVRow = $csvData | Where-Object {
-                $_.ModuleName -eq $moduleName
-            }
-
-            if (-not $relevantCSVRow) {
-                $errorMessage = "Failed to identify module [$moduleName]."
-                Write-Error $errorMessage
-                Set-ItResult -Skipped -Because $errorMessage
-            }
-            $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
-
-            $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
-            if ($isOrphaned) {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $true -Because 'The module is orphaned.'
-            } else {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
             }
         }
     }
@@ -300,6 +222,56 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $filePath = Join-Path -Path $e2eTestFolderPath 'main.test.bicep'
                 $pathExisting = Test-Path $filePath
                 $pathExisting | Should -Be $true -Because "path [$filePath] is expected to exist."
+            }
+        }
+
+        It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases $topLevelModuleTestCases {
+
+            param(
+                [string] $moduleFolderPath,
+                [string] $moduleType
+            )
+
+            $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
+
+            # Use correct telemetry link based on file path
+            switch ($moduleType) {
+                'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
+                'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
+                'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
+                Default {}
+            }
+
+            # Fetch CSV
+            # =========
+            try {
+                $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
+            } catch {
+                $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
+                Write-Error $errorMessage
+                Set-ItResult -Skipped -Because $errorMessage
+            }
+            $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
+
+            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
+            $relevantCSVRow = $csvData | Where-Object {
+                $_.ModuleName -eq $moduleName
+            }
+
+            if (-not $relevantCSVRow) {
+                $errorMessage = "Failed to identify module [$moduleName]."
+                Write-Error $errorMessage
+                Set-ItResult -Skipped -Because $errorMessage
+            }
+            $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
+
+            $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
+            if ($isOrphaned) {
+                $pathExisting = Test-Path $orphanedFilePath
+                $pathExisting | Should -Be $true -Because 'The module is orphaned.'
+            } else {
+                $pathExisting = Test-Path $orphanedFilePath
+                $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
             }
         }
     }
@@ -1314,15 +1286,7 @@ Describe 'Module tests' -Tag 'Module' {
                     }
                 }
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('No user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
-
-                    Write-Output @{
-                        Warning = $warningMessage
-                    }
-                }
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
 
             It '[<moduleFolderName>] A UDT should not be nullable, but instead the parameter that uses it. AVM-Spec-Ref: BCPNFR18.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
@@ -1344,15 +1308,7 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('No user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
-
-                    Write-Output @{
-                        Warning = $warningMessage
-                    }
-                }
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
 
             It '[<moduleFolderName>] A UDT should always be camel-cased and end with the suffix "Type". AVM-Spec-Ref: BCPNFR19.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
@@ -1380,16 +1336,93 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('Every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
+            }
+        }
+    }
 
-                    Write-Output @{
-                        Warning = $warningMessage
+    Context 'Version tests' -Tag 'Versioning' {
+
+        BeforeDiscovery {
+            $moduleFolderTestCases = [System.Collections.ArrayList] @()
+
+            foreach ($moduleFolderPath in $moduleFolderPaths) {
+                $null, $moduleType, $resourceTypeIdentifier = ($moduleFolderPath -split '[\/|\\]avm[\/|\\](res|ptn|utl)[\/|\\]') # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+
+                $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
+                $moduleFolderTestCases += @{
+                    moduleFullName    = "avm/$moduleType/$resourceTypeIdentifier"
+                    moduleType        = $moduleType
+                    moduleFolderName  = $resourceTypeIdentifier
+                    moduleFolderPath  = $moduleFolderPath
+                    isTopLevelModule  = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                    versionFileExists = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+                }
+            }
+        }
+
+        It '[<moduleFolderName>] A [` version.json `] file must only have a major & minor version.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
+
+            param (
+                [string] $moduleFolderPath
+            )
+
+            $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
+            $versionFileContent.version | Should -Match '^[0-9]+\.[0-9]+$' -Because 'only the major.minor version may be specified in the version.json file.'
+        }
+
+        # Temporary test, before v1.0 release
+        It '[<moduleFolderName>] A [` version.json `] file must not yet contain a major version greater than 0.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
+
+            param (
+                [string] $moduleFolderPath,
+                [string] $moduleType,
+                [string] $moduleFolderName
+            )
+
+            if ($moduleType -eq 'res' -and $moduleFolderName -eq 'network/nat-gateway') {
+                # Using a warning and skip, since nat-gateway has already been released with version 1.x.
+                Write-Warning "[avm/$moduleType/$moduleFolderName] has already been released with version 1.x"
+                Set-ItResult -Skipped -Because 'the module has already been released with version 1.x.'
+                return
+            }
+
+            $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
+            $major, $minor = $versionFileContent.version -split '\.'
+            $major | Should -Be 0 -Because 'module version must be incremented via minor and patch (automatic) versions only for the time being.'
+        }
+
+        # If the child modules version has been increased, all versioned parent modules up the chain should increase their version as well
+        It '[<moduleFolderName>] parent module versions should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule -and $_.versionFileExists }) {
+
+            param (
+                [string] $moduleFolderPath,
+                [string] $moduleType
+            )
+
+            $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
+
+            # If the child module version is not 0.1.0 and ends with .0 (i.e., if the child module version.json has been updated), check if the parent module version(s) have been updated
+            # Note: The first release of a child module does not require the parent module to be updated
+            if ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0')) {
+                $upperBoundPath = Join-Path $repoRootPath 'avm' $moduleType
+                $moduleDirectParentPath = Split-Path $moduleFolderPath -Parent
+
+                # Get the list of all versioned parent folders
+                $versionedParentFolderPaths = @()
+                $versionedParentFolderPaths = Get-ParentFolderPathList -Path $moduleDirectParentPath -UpperBoundPath $upperBoundPath -Filter 'OnlyVersionedModules'
+                $incorrectVersionedParents = @()
+
+                # Check if the parent module version(s) have been updated
+                foreach ($parentFolderPath in $versionedParentFolderPaths) {
+                    $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
+                    if (-not $moduleVersion.EndsWith('.0')) {
+                        $null, $null, $parentResourceTypeIdentifier = ($parentFolderPath -split "[\/|\\]avm[\/|\\]($moduleType)[\/|\\]") # 'avm/res|ptn|utl/<provider>/<resourceType>' would return 'avm', 'res|ptn|utl', '<provider>/<resourceType>'
+                        $incorrectVersionedParents += $parentResourceTypeIdentifier
                     }
                 }
             }
+            $incorrectVersionedParents | Should -BeNullOrEmpty -Because ('The child module version [{0}] has been increased, but the parent module version(s) [{1}] have not been updated.' -f $childModuleVersion, ($incorrectVersionedParents -join ', '))
         }
     }
 }
@@ -1433,10 +1466,10 @@ Describe 'Governance tests' {
         $expectedEntry = '/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-module-reviewers-bicep' -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
 
         # Line should exist
-        $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/spec/snfr20/#codeowners-file) file as [/$expectedEntry]. Please ensure there is a forward slash (/) at the beginning and end of the module path at the start of the line."
+        $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/spec/SNFR20/#codeowners-file) file as [/$expectedEntry]. Please ensure there is a forward slash (/) at the beginning and end of the module path at the start of the line."
 
         # Line should be correct
-        $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/spec/snfr20/#codeowners-file).'
+        $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/spec/SNFR20/#codeowners-file).'
     }
 
     It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {

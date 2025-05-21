@@ -3956,8 +3956,10 @@ Tags of the resource.
 | `location` | string | The location the resource was deployed into. |
 | `logAnalyticsWorkspaceId` | string | The ID associated with the workspace. |
 | `name` | string | The name of the deployed log analytics workspace. |
+| `primarySharedKey` | securestring | The primary shared key of the log analytics workspace. |
 | `resourceGroupName` | string | The resource group of the deployed log analytics workspace. |
 | `resourceId` | string | The resource ID of the deployed log analytics workspace. |
+| `secondarySharedKey` | securestring | The secondary shared key of the log analytics workspace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules

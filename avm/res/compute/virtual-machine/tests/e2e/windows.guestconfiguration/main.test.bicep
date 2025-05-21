@@ -96,7 +96,7 @@ module testDeployment '../../../main.bicep' = [
         enabled: true
       }
       guestConfiguration: {
-        name: 'AzureWindowsBaseline'
+        name: 'myAzureWindowsBaseline'
         version: '1.*'
         assignmentType: 'ApplyAndMonitor'
         configurationParameter: [

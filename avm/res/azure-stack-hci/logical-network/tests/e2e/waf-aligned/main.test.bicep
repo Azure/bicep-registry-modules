@@ -67,13 +67,12 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
     deploymentUserPassword: localAdminAndDeploymentUserPass
-    hciResourceProviderObjectId: hciResourceProviderObjectId
     localAdminPassword: localAdminAndDeploymentUserPass
     location: enforcedLocation
   }
 }
 
-module azlocal '../../../../cluster/main.bicep' = {
+module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-clustermodule-${serviceShort}'
   scope: resourceGroup
   params: {
@@ -191,6 +190,7 @@ module azlocal '../../../../cluster/main.bicep' = {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
     }
+    hciResourceProviderObjectId: hciResourceProviderObjectId
   }
 }
 
