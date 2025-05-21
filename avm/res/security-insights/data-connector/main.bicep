@@ -13,8 +13,8 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. The Data Connector configuration.')
-param connectors dataConnectorType?
+@description('Required. The Data Connector configuration.')
+param connectors dataConnectorType
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {

@@ -43,8 +43,6 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   name: 'dataConnectorDeployment'
   params: {
     // Required parameters
-    workspaceResourceId: '<workspaceResourceId>'
-    // Non-required parameters
     connectors: {
       name: 'MicrosoftThreatIntelligence'
       properties: {
@@ -57,6 +55,7 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
         tenantId: '<tenantId>'
       }
     }
+    workspaceResourceId: '<workspaceResourceId>'
   }
 }
 ```
@@ -74,10 +73,6 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "workspaceResourceId": {
-      "value": "<workspaceResourceId>"
-    },
-    // Non-required parameters
     "connectors": {
       "value": {
         "name": "MicrosoftThreatIntelligence",
@@ -91,6 +86,9 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
           "tenantId": "<tenantId>"
         }
       }
+    },
+    "workspaceResourceId": {
+      "value": "<workspaceResourceId>"
     }
   }
 }
@@ -107,8 +105,6 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
 using 'br/public:avm/res/security-insights/data-connector:<version>'
 
 // Required parameters
-param workspaceResourceId = '<workspaceResourceId>'
-// Non-required parameters
 param connectors = {
   name: 'MicrosoftThreatIntelligence'
   properties: {
@@ -121,6 +117,7 @@ param connectors = {
     tenantId: '<tenantId>'
   }
 }
+param workspaceResourceId = '<workspaceResourceId>'
 ```
 
 </details>
@@ -140,8 +137,6 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   name: 'dataConnectorDeployment'
   params: {
     // Required parameters
-    workspaceResourceId: '<workspaceResourceId>'
-    // Non-required parameters
     connectors: {
       name: 'MicrosoftThreatIntelligence'
       properties: {
@@ -154,6 +149,8 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
         tenantId: '<tenantId>'
       }
     }
+    workspaceResourceId: '<workspaceResourceId>'
+    // Non-required parameters
     location: '<location>'
   }
 }
@@ -172,10 +169,6 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "workspaceResourceId": {
-      "value": "<workspaceResourceId>"
-    },
-    // Non-required parameters
     "connectors": {
       "value": {
         "name": "MicrosoftThreatIntelligence",
@@ -190,6 +183,10 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
         }
       }
     },
+    "workspaceResourceId": {
+      "value": "<workspaceResourceId>"
+    },
+    // Non-required parameters
     "location": {
       "value": "<location>"
     }
@@ -208,8 +205,6 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
 using 'br/public:avm/res/security-insights/data-connector:<version>'
 
 // Required parameters
-param workspaceResourceId = '<workspaceResourceId>'
-// Non-required parameters
 param connectors = {
   name: 'MicrosoftThreatIntelligence'
   properties: {
@@ -222,6 +217,8 @@ param connectors = {
     tenantId: '<tenantId>'
   }
 }
+param workspaceResourceId = '<workspaceResourceId>'
+// Non-required parameters
 param location = '<location>'
 ```
 
@@ -242,8 +239,6 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   name: 'dataConnectorDeployment'
   params: {
     // Required parameters
-    workspaceResourceId: '<workspaceResourceId>'
-    // Non-required parameters
     connectors: {
       name: 'MicrosoftThreatIntelligence'
       properties: {
@@ -256,6 +251,7 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
         tenantId: '<tenantId>'
       }
     }
+    workspaceResourceId: '<workspaceResourceId>'
   }
 }
 ```
@@ -273,10 +269,6 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "workspaceResourceId": {
-      "value": "<workspaceResourceId>"
-    },
-    // Non-required parameters
     "connectors": {
       "value": {
         "name": "MicrosoftThreatIntelligence",
@@ -290,6 +282,9 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
           "tenantId": "<tenantId>"
         }
       }
+    },
+    "workspaceResourceId": {
+      "value": "<workspaceResourceId>"
     }
   }
 }
@@ -306,8 +301,6 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
 using 'br/public:avm/res/security-insights/data-connector:<version>'
 
 // Required parameters
-param workspaceResourceId = '<workspaceResourceId>'
-// Non-required parameters
 param connectors = {
   name: 'MicrosoftThreatIntelligence'
   properties: {
@@ -320,6 +313,7 @@ param connectors = {
     tenantId: '<tenantId>'
   }
 }
+param workspaceResourceId = '<workspaceResourceId>'
 ```
 
 </details>
@@ -331,28 +325,21 @@ param connectors = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`connectors`](#parameter-connectors) | object | The Data Connector configuration. |
 | [`workspaceResourceId`](#parameter-workspaceresourceid) | string | The resource ID of the Log Analytics workspace. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectors`](#parameter-connectors) | object | The Data Connector configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
-
-### Parameter: `workspaceResourceId`
-
-The resource ID of the Log Analytics workspace.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `connectors`
 
 The Data Connector configuration.
 
-- Required: No
+- Required: Yes
 - Type: object
 - Discriminator: `name`
 
@@ -2609,6 +2596,13 @@ The password for authentication.
 The username for authentication.
 
 - Required: No
+- Type: string
+
+### Parameter: `workspaceResourceId`
+
+The resource ID of the Log Analytics workspace.
+
+- Required: Yes
 - Type: string
 
 ### Parameter: `enableTelemetry`
