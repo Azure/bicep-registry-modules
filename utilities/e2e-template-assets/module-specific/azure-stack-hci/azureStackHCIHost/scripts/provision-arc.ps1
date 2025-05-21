@@ -65,9 +65,8 @@ try {
         $secureServicePrincipalSecret = ConvertTo-SecureString $Using:ServicePrincipalSecret -AsPlainText -Force
         $credential = New-Object System.Management.Automation.PSCredential -ArgumentList $Using:ServicePrincipalId, $secureServicePrincipalSecret
         Connect-AzAccount -ServicePrincipal -Credential $credential -Subscription $Using:SubscriptionId -Tenant $Using:TenantId
-        $token = (Get-AzAccessToken).Token
-        # TODO: PowerShell 7
-        # $token = ConvertFrom-SecureString -SecureString ((Get-AzAccessToken -AsSecureString).Token) -AsPlainText
+        $secureToken = (Get-AzAccessToken -AsSecureString).Token
+        $token = [Net.NetworkCredential]::new('', $secureToken).Password
 
         $azcmagentPath = "$env:ProgramW6432\AzureConnectedMachineAgent\azcmagent.exe"
         & "$azcmagentPath" --version
@@ -94,7 +93,7 @@ try {
         Write-Output 'Waiting for Edge device resource to be ready'
         Start-Sleep -Seconds 600
         $waitInterval = 60
-        $maxWaitCount = 10
+        $maxWaitCount = 15
         $ready = $false
         for ($waitCount = 0; $job.JobState -ne 'Transferred' -and $waitCount -lt $maxWaitCount; $waitCount++) {
             Connect-AzAccount -ServicePrincipal -Credential $credential -Subscription $Using:SubscriptionId -Tenant $Using:TenantId | Out-Null
