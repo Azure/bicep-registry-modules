@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "3968497209047568273"
+      "templateHash": "5884703224512637133"
     },
     "name": "Security Insights Data Connectors",
     "description": "This module deploys a Security Insights Data Connector.",
@@ -1761,9 +1761,9 @@
       "type": "Microsoft.SecurityInsights/dataConnectors",
       "apiVersion": "2025-03-01",
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', last(split(parameters('workspaceResourceId'), '/')))]",
-      "name": "[parameters('connectors').name]",
-      "kind": "[parameters('connectors').name]",
-      "properties": "[parameters('connectors').properties]"
+      "name": "[tryGet(parameters('connectors'), 'name')]",
+      "kind": "[tryGet(parameters('connectors'), 'name')]",
+      "properties": "[tryGet(parameters('connectors'), 'properties')]"
     }
   },
   "outputs": {
@@ -1772,21 +1772,21 @@
       "metadata": {
         "description": "The name of the deployed data connector."
       },
-      "value": "[parameters('connectors').name]"
+      "value": "[tryGet(parameters('connectors'), 'name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the deployed data connector."
       },
-      "value": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/dataConnectors', parameters('connectors').name)]"
+      "value": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/dataConnectors', tryGet(parameters('connectors'), 'name'))]"
     },
     "resourceType": {
       "type": "string",
       "metadata": {
         "description": "The resource type of the deployed data connector."
       },
-      "value": "[format('{0}/{1}', 'Microsoft.SecurityInsights/dataConnectors', parameters('connectors').name)]"
+      "value": "[format('{0}/{1}', 'Microsoft.SecurityInsights/dataConnectors', tryGet(parameters('connectors'), 'name'))]"
     },
     "systemAssignedPrincipalId": {
       "type": "string",

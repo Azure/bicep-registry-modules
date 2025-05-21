@@ -41,9 +41,9 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existin
 
 resource dataConnector 'Microsoft.SecurityInsights/dataConnectors@2025-03-01' = {
   scope: workspace
-  name: connectors.name
-  kind: connectors.name
-  properties: connectors.properties
+  name: connectors.?name
+  kind: connectors.?name
+  properties: connectors.?properties
 }
 
 @description('The name of the deployed data connector.')
@@ -53,7 +53,7 @@ output name string = dataConnector.name
 output resourceId string = dataConnector.id
 
 @description('The resource type of the deployed data connector.')
-output resourceType string = '${dataConnector.type}/${connectors.name}'
+output resourceType string = '${dataConnector.type}/${connectors.?name}'
 
 @description('The principal ID of the system assigned identity of the deployed data connector.')
 output systemAssignedPrincipalId string = contains(dataConnector, 'identity') ? dataConnector.identity.principalId : ''
