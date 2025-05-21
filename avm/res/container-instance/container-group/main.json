@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "2599214217617310422"
+      "version": "0.35.1.17967",
+      "templateHash": "7244397890948473442"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
@@ -1023,7 +1023,7 @@
             }
           }
         ],
-        "diagnostics": "[if(not(empty(parameters('logAnalytics'))), createObject('logAnalytics', createObject('logType', parameters('logAnalytics').logType, 'workspaceId', coalesce(tryGet(parameters('logAnalytics'), 'workspaceId'), if(not(empty(tryGet(parameters('logAnalytics'), 'workspaceResourceId'))), reference('law').customerId, fail('Either the workspaceId or the workspaceResourceId must be provided.'))), 'workspaceKey', coalesce(tryGet(parameters('logAnalytics'), 'workspaceKey'), if(not(empty(tryGet(parameters('logAnalytics'), 'workspaceResourceId'))), listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('logAnalytics'), 'workspaceResourceId'), '/')[2], split(tryGet(parameters('logAnalytics'), 'workspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(tryGet(parameters('logAnalytics'), 'workspaceResourceId'), '/'))), '2025-02-01').primarySharedKey, fail('Either the workspaceKey or the workspaceResourceId must be provided.'))), 'workspaceResourceId', tryGet(parameters('logAnalytics'), 'workspaceResourceId'), 'metadata', tryGet(parameters('logAnalytics'), 'metadata'))), null())]",
+        "diagnostics": "[if(not(empty(parameters('logAnalytics'))), createObject('logAnalytics', createObject('logType', parameters('logAnalytics').logType, 'workspaceId', coalesce(tryGet(parameters('logAnalytics'), 'workspaceId'), if(not(empty(tryGet(parameters('logAnalytics'), 'workspaceResourceId'))), reference('law').customerId, fail('Either the workspaceId or the workspaceResourceId must be provided.'))), 'workspaceKey', coalesce(tryGet(parameters('logAnalytics'), 'workspaceKey'), if(not(empty(tryGet(parameters('logAnalytics'), 'workspaceResourceId'))), listKeys('law', '2025-02-01').primarySharedKey, fail('Either the workspaceKey or the workspaceResourceId must be provided.'))), 'workspaceResourceId', tryGet(parameters('logAnalytics'), 'workspaceResourceId'), 'metadata', tryGet(parameters('logAnalytics'), 'metadata'))), null())]",
         "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())]",
         "imageRegistryCredentials": "[parameters('imageRegistryCredentials')]",
         "initContainers": "[parameters('initContainers')]",
@@ -1036,8 +1036,8 @@
         "priority": "[parameters('priority')]"
       },
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
         "cMKKeyVault",
+        "cMKKeyVault::cMKKey",
         "law"
       ]
     },
