@@ -2,7 +2,7 @@
 param location string = resourceGroup().location
 
 @description('Required. The name of the Workspace to create.')
-param name string
+param logAnalyticsWorkspaceName string
 
 @description('Required. The name of the managed identity to create.')
 param managedIdentityName string
@@ -13,18 +13,18 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
 }
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
-  name: name
+  name: logAnalyticsWorkspaceName
   location: location
 }
 
 resource sentinel 'Microsoft.OperationsManagement/solutions@2015-11-01-preview' = {
-  name: 'SecurityInsights(${name})'
+  name: 'SecurityInsights(${logAnalyticsWorkspaceName})'
   location: location
   properties: {
     workspaceResourceId: logAnalyticsWorkspace.id
   }
   plan: {
-    name: 'SecurityInsights(${name})'
+    name: 'SecurityInsights(${logAnalyticsWorkspaceName})'
     product: 'OMSGallery/SecurityInsights'
     promotionCode: ''
     publisher: 'Microsoft'

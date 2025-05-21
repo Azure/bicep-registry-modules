@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "9444915734039253687"
+      "templateHash": "653082823578713391"
     },
     "name": "Security Insights Data Connectors",
     "description": "This module deploys a Security Insights Data Connector.",
@@ -1723,13 +1723,10 @@
       }
     },
     "connectors": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/dataConnectorType"
-      },
+      "$ref": "#/definitions/dataConnectorType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The type of Data Connector."
+        "description": "Required. The Data Connector configuration."
       }
     }
   },
@@ -1761,33 +1758,42 @@
       "name": "[last(split(parameters('workspaceResourceId'), '/'))]"
     },
     "dataConnector": {
-      "copy": {
-        "name": "dataConnector",
-        "count": "[length(coalesce(parameters('connectors'), createArray()))]"
-      },
       "type": "Microsoft.SecurityInsights/dataConnectors",
-      "apiVersion": "2024-10-01-preview",
+      "apiVersion": "2025-03-01",
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', last(split(parameters('workspaceResourceId'), '/')))]",
-      "name": "[coalesce(parameters('connectors'), createArray())[copyIndex()].name]",
-      "kind": "[coalesce(parameters('connectors'), createArray())[copyIndex()].name]",
-      "properties": "[tryGet(coalesce(parameters('connectors'), createArray())[copyIndex()], 'properties')]"
+      "name": "[parameters('connectors').name]",
+      "kind": "[parameters('connectors').name]",
+      "properties": "[parameters('connectors').properties]"
     }
   },
   "outputs": {
-    "deployments": {
-      "type": "array",
+    "name": {
+      "type": "string",
       "metadata": {
-        "description": "Array of deployed Security Insights Data Connectors with their basic information."
+        "description": "The name of the deployed data connector."
       },
-      "copy": {
-        "count": "[length(coalesce(parameters('connectors'), createArray()))]",
-        "input": {
-          "name": "[coalesce(parameters('connectors'), createArray())[copyIndex()].name]",
-          "resourceId": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/dataConnectors', coalesce(parameters('connectors'), createArray())[copyIndex()].name)]",
-          "dataConnectorType": "[coalesce(parameters('connectors'), createArray())[copyIndex()].name]",
-          "systemAssignedIdentity": "[if(contains(reference(format('dataConnector[{0}]', copyIndex()), '2024-10-01-preview', 'full'), 'identity'), reference(format('dataConnector[{0}]', copyIndex()), '2024-10-01-preview', 'full').identity.principalId, null())]"
-        }
-      }
+      "value": "[parameters('connectors').name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed data connector."
+      },
+      "value": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/dataConnectors', parameters('connectors').name)]"
+    },
+    "resourceType": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource type of the deployed data connector."
+      },
+      "value": "[format('{0}/{1}', 'Microsoft.SecurityInsights/dataConnectors', parameters('connectors').name)]"
+    },
+    "systemAssignedPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity of the deployed data connector."
+      },
+      "value": "[if(contains(reference('dataConnector', '2025-03-01', 'full'), 'identity'), reference('dataConnector', '2025-03-01', 'full').identity.principalId, '')]"
     },
     "resourceGroupName": {
       "type": "string",

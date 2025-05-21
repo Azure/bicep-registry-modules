@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using defaults'
-metadata description = 'This instance deploys the module with multiple data connectors.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 // ========== //
 // Parameters //
@@ -36,7 +36,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-dependencies'
   params: {
     location: resourceLocation
-    name: 'dep-${namePrefix}-law-${serviceShort}'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
@@ -52,31 +52,18 @@ module testDeployment '../../../main.bicep' = [
     params: {
       workspaceResourceId: nestedDependencies.outputs.workspaceResourceId
       location: resourceLocation
-      connectors: [
-        {
-          name: 'MicrosoftThreatIntelligence'
-          properties: {
-            dataTypes: {
-              microsoftEmergingThreatFeed: {
-                lookbackPeriod: '2025-01-01T00:00:00Z'
-                state: 'Enabled'
-              }
+      connectors: {
+        name: 'MicrosoftThreatIntelligence'
+        properties: {
+          dataTypes: {
+            microsoftEmergingThreatFeed: {
+              lookbackPeriod: '2025-01-01T00:00:00Z'
+              state: 'Enabled'
             }
-            tenantId: tenant().tenantId
           }
+          tenantId: tenant().tenantId
         }
-        {
-          name: 'IOT'
-          properties: {
-            dataTypes: {
-              alerts: {
-                state: 'Enabled'
-              }
-            }
-            subscriptionId: subscription().subscriptionId
-          }
-        }
-      ]
+      }
     }
   }
 ]

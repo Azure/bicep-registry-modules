@@ -13,34 +13,8 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-// @allowed([
-//   'AmazonWebServicesCloudTrail'
-//   'AmazonWebServicesS3'
-//   'APIPolling'
-//   'AzureActiveDirectory'
-//   'AzureAdvancedThreatProtection'
-//   'AzureSecurityCenter'
-//   'Dynamics365'
-//   'GCP'
-//   'GenericUI'
-//   'IOT'
-//   'MicrosoftCloudAppSecurity'
-//   'MicrosoftDefenderAdvancedThreatProtection'
-//   'MicrosoftPurviewInformationProtection'
-//   'MicrosoftThreatIntelligence'
-//   'MicrosoftThreatProtection'
-//   'Office365'
-//   'Office365Project'
-//   'OfficeATP'
-//   'OfficeIRM'
-//   'OfficePowerBI'
-//   'PurviewAudit'
-//   'RestApiPoller'
-//   'ThreatIntelligence'
-//   'ThreatIntelligenceTaxii'
-// ])
-@description('Optional. The type of Data Connector.')
-param connectors dataConnectorType[]?
+@description('Required. The Data Connector configuration.')
+param connectors dataConnectorType?
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -65,24 +39,24 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existin
   name: last(split(workspaceResourceId, '/'))
 }
 
-resource dataConnector 'Microsoft.SecurityInsights/dataConnectors@2024-10-01-preview' = [
-  for (connector, index) in (connectors ?? []): {
-    scope: workspace
-    name: connector.name
-    kind: connector.name
-    properties: connector.?properties
-  }
-]
+resource dataConnector 'Microsoft.SecurityInsights/dataConnectors@2025-03-01' = {
+  scope: workspace
+  name: connectors.name
+  kind: connectors.name
+  properties: connectors.properties
+}
 
-@description('Array of deployed Security Insights Data Connectors with their basic information.')
-output deployments array = [
-  for (connector, i) in (connectors ?? []): {
-    name: dataConnector[i].name
-    resourceId: dataConnector[i].id
-    dataConnectorType: connector.name
-    systemAssignedIdentity: contains(dataConnector[i], 'identity') ? dataConnector[i].identity.principalId : null
-  }
-]
+@description('The name of the deployed data connector.')
+output name string = dataConnector.name
+
+@description('The resource ID of the deployed data connector.')
+output resourceId string = dataConnector.id
+
+@description('The resource type of the deployed data connector.')
+output resourceType string = '${dataConnector.type}/${connectors.name}'
+
+@description('The principal ID of the system assigned identity of the deployed data connector.')
+output systemAssignedPrincipalId string = contains(dataConnector, 'identity') ? dataConnector.identity.principalId : ''
 
 @description('The resource group where the Security Insights Data Connector is deployed.')
 output resourceGroupName string = resourceGroup().name

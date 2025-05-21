@@ -15,7 +15,7 @@ This module deploys a Security Insights Data Connector.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.SecurityInsights/dataConnectors` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-10-01-preview/dataConnectors) |
+| `Microsoft.SecurityInsights/dataConnectors` | [2025-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2025-03-01/dataConnectors) |
 
 ## Usage examples
 
@@ -26,7 +26,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/security-insights/data-connector:<version>`.
 
 - [Using defaults](#example-1-using-defaults)
-- [Using defaults](#example-2-using-defaults)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 - [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using defaults_
@@ -42,24 +42,7 @@ This instance deploys the module with minimal required parameters.
 module dataConnector 'br/public:avm/res/security-insights/data-connector:<version>' = {
   name: 'dataConnectorDeployment'
   params: {
-    // Required parameters
     workspaceResourceId: '<workspaceResourceId>'
-    // Non-required parameters
-    connectors: [
-      {
-        name: 'MicrosoftThreatIntelligence'
-        properties: {
-          dataTypes: {
-            microsoftEmergingThreatFeed: {
-              lookbackPeriod: '2025-01-01T00:00:00Z'
-              state: 'Enabled'
-            }
-          }
-          tenantId: '<tenantId>'
-        }
-      }
-    ]
-    location: '<location>'
   }
 }
 ```
@@ -76,29 +59,8 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    // Required parameters
     "workspaceResourceId": {
       "value": "<workspaceResourceId>"
-    },
-    // Non-required parameters
-    "connectors": {
-      "value": [
-        {
-          "name": "MicrosoftThreatIntelligence",
-          "properties": {
-            "dataTypes": {
-              "microsoftEmergingThreatFeed": {
-                "lookbackPeriod": "2025-01-01T00:00:00Z",
-                "state": "Enabled"
-              }
-            },
-            "tenantId": "<tenantId>"
-          }
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -114,32 +76,15 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
 ```bicep-params
 using 'br/public:avm/res/security-insights/data-connector:<version>'
 
-// Required parameters
 param workspaceResourceId = '<workspaceResourceId>'
-// Non-required parameters
-param connectors = [
-  {
-    name: 'MicrosoftThreatIntelligence'
-    properties: {
-      dataTypes: {
-        microsoftEmergingThreatFeed: {
-          lookbackPeriod: '2025-01-01T00:00:00Z'
-          state: 'Enabled'
-        }
-      }
-      tenantId: '<tenantId>'
-    }
-  }
-]
-param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 2: _Using defaults_
+### Example 2: _Using large parameter set_
 
-This instance deploys the module with multiple data connectors.
+This instance deploys the module with most of its features enabled.
 
 
 <details>
@@ -153,31 +98,18 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
     // Required parameters
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
-    connectors: [
-      {
-        name: 'MicrosoftThreatIntelligence'
-        properties: {
-          dataTypes: {
-            microsoftEmergingThreatFeed: {
-              lookbackPeriod: '2025-01-01T00:00:00Z'
-              state: 'Enabled'
-            }
+    connectors: {
+      name: 'MicrosoftThreatIntelligence'
+      properties: {
+        dataTypes: {
+          microsoftEmergingThreatFeed: {
+            lookbackPeriod: '2025-01-01T00:00:00Z'
+            state: 'Enabled'
           }
-          tenantId: '<tenantId>'
         }
+        tenantId: '<tenantId>'
       }
-      {
-        name: 'IOT'
-        properties: {
-          dataTypes: {
-            alerts: {
-              state: 'Enabled'
-            }
-          }
-          subscriptionId: '<subscriptionId>'
-        }
-      }
-    ]
+    }
     location: '<location>'
   }
 }
@@ -201,31 +133,18 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
     },
     // Non-required parameters
     "connectors": {
-      "value": [
-        {
-          "name": "MicrosoftThreatIntelligence",
-          "properties": {
-            "dataTypes": {
-              "microsoftEmergingThreatFeed": {
-                "lookbackPeriod": "2025-01-01T00:00:00Z",
-                "state": "Enabled"
-              }
-            },
-            "tenantId": "<tenantId>"
-          }
-        },
-        {
-          "name": "IOT",
-          "properties": {
-            "dataTypes": {
-              "alerts": {
-                "state": "Enabled"
-              }
-            },
-            "subscriptionId": "<subscriptionId>"
-          }
+      "value": {
+        "name": "MicrosoftThreatIntelligence",
+        "properties": {
+          "dataTypes": {
+            "microsoftEmergingThreatFeed": {
+              "lookbackPeriod": "2025-01-01T00:00:00Z",
+              "state": "Enabled"
+            }
+          },
+          "tenantId": "<tenantId>"
         }
-      ]
+      }
     },
     "location": {
       "value": "<location>"
@@ -247,31 +166,18 @@ using 'br/public:avm/res/security-insights/data-connector:<version>'
 // Required parameters
 param workspaceResourceId = '<workspaceResourceId>'
 // Non-required parameters
-param connectors = [
-  {
-    name: 'MicrosoftThreatIntelligence'
-    properties: {
-      dataTypes: {
-        microsoftEmergingThreatFeed: {
-          lookbackPeriod: '2025-01-01T00:00:00Z'
-          state: 'Enabled'
-        }
+param connectors = {
+  name: 'MicrosoftThreatIntelligence'
+  properties: {
+    dataTypes: {
+      microsoftEmergingThreatFeed: {
+        lookbackPeriod: '2025-01-01T00:00:00Z'
+        state: 'Enabled'
       }
-      tenantId: '<tenantId>'
     }
+    tenantId: '<tenantId>'
   }
-  {
-    name: 'IOT'
-    properties: {
-      dataTypes: {
-        alerts: {
-          state: 'Enabled'
-        }
-      }
-      subscriptionId: '<subscriptionId>'
-    }
-  }
-]
+}
 param location = '<location>'
 ```
 
@@ -294,21 +200,18 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
     // Required parameters
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
-    connectors: [
-      {
-        name: 'MicrosoftThreatIntelligence'
-        properties: {
-          dataTypes: {
-            microsoftEmergingThreatFeed: {
-              lookbackPeriod: '2025-01-01T00:00:00Z'
-              state: 'Enabled'
-            }
+    connectors: {
+      name: 'MicrosoftThreatIntelligence'
+      properties: {
+        dataTypes: {
+          microsoftEmergingThreatFeed: {
+            lookbackPeriod: '2025-01-01T00:00:00Z'
+            state: 'Enabled'
           }
-          tenantId: '<tenantId>'
         }
+        tenantId: '<tenantId>'
       }
-    ]
-    location: '<location>'
+    }
   }
 }
 ```
@@ -331,23 +234,18 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
     },
     // Non-required parameters
     "connectors": {
-      "value": [
-        {
-          "name": "MicrosoftThreatIntelligence",
-          "properties": {
-            "dataTypes": {
-              "microsoftEmergingThreatFeed": {
-                "lookbackPeriod": "2025-01-01T00:00:00Z",
-                "state": "Enabled"
-              }
-            },
-            "tenantId": "<tenantId>"
-          }
+      "value": {
+        "name": "MicrosoftThreatIntelligence",
+        "properties": {
+          "dataTypes": {
+            "microsoftEmergingThreatFeed": {
+              "lookbackPeriod": "2025-01-01T00:00:00Z",
+              "state": "Enabled"
+            }
+          },
+          "tenantId": "<tenantId>"
         }
-      ]
-    },
-    "location": {
-      "value": "<location>"
+      }
     }
   }
 }
@@ -366,21 +264,18 @@ using 'br/public:avm/res/security-insights/data-connector:<version>'
 // Required parameters
 param workspaceResourceId = '<workspaceResourceId>'
 // Non-required parameters
-param connectors = [
-  {
-    name: 'MicrosoftThreatIntelligence'
-    properties: {
-      dataTypes: {
-        microsoftEmergingThreatFeed: {
-          lookbackPeriod: '2025-01-01T00:00:00Z'
-          state: 'Enabled'
-        }
+param connectors = {
+  name: 'MicrosoftThreatIntelligence'
+  properties: {
+    dataTypes: {
+      microsoftEmergingThreatFeed: {
+        lookbackPeriod: '2025-01-01T00:00:00Z'
+        state: 'Enabled'
       }
-      tenantId: '<tenantId>'
     }
+    tenantId: '<tenantId>'
   }
-]
-param location = '<location>'
+}
 ```
 
 </details>
@@ -392,29 +287,22 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`connectors`](#parameter-connectors) | object | The Data Connector configuration. |
 | [`workspaceResourceId`](#parameter-workspaceresourceid) | string | The resource ID of the Log Analytics workspace. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectors`](#parameter-connectors) | array | The type of Data Connector. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 
-### Parameter: `workspaceResourceId`
-
-The resource ID of the Log Analytics workspace.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `connectors`
 
-The type of Data Connector.
+The Data Connector configuration.
 
 - Required: No
-- Type: array
+- Type: object
 - Discriminator: `name`
 
 <h4>The available variants are:</h4>
@@ -2672,6 +2560,13 @@ The username for authentication.
 - Required: No
 - Type: string
 
+### Parameter: `workspaceResourceId`
+
+The resource ID of the Log Analytics workspace.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -2692,9 +2587,12 @@ Location for all resources.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `deployments` | array | Array of deployed Security Insights Data Connectors with their basic information. |
 | `location` | string | The location the resource was deployed into. |
+| `name` | string | The name of the deployed data connector. |
 | `resourceGroupName` | string | The resource group where the Security Insights Data Connector is deployed. |
+| `resourceId` | string | The resource ID of the deployed data connector. |
+| `resourceType` | string | The resource type of the deployed data connector. |
+| `systemAssignedPrincipalId` | string | The principal ID of the system assigned identity of the deployed data connector. |
 
 ## Cross-referenced modules
 
