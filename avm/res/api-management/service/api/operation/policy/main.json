@@ -5,10 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "17954633540696938037"
+      "templateHash": "15561539799762283135"
     },
-    "name": "API Management Service APIs Policies",
-    "description": "This module deploys an API Management Service API Policy."
+    "name": "API Management Service API Operation Policies",
+    "description": "This module deploys an API Management Service API Operation Policy."
   },
   "parameters": {
     "apiManagementServiceName": {
@@ -23,16 +23,20 @@
         "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
       }
     },
+    "operationName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent operation. Required if the template is used in a standalone deployment."
+      }
+    },
     "name": {
       "type": "string",
-      "defaultValue": "policy",
       "metadata": {
-        "description": "Optional. The name of the policy."
+        "description": "Required. The name of the policy."
       }
     },
     "format": {
       "type": "string",
-      "defaultValue": "xml",
       "allowedValues": [
         "rawxml",
         "rawxml-link",
@@ -40,7 +44,7 @@
         "xml-link"
       ],
       "metadata": {
-        "description": "Optional. Format of the policyContent."
+        "description": "Required. Format of the policyContent."
       }
     },
     "value": {
@@ -52,12 +56,12 @@
   },
   "resources": [
     {
-      "type": "Microsoft.ApiManagement/service/apis/policies",
-      "apiVersion": "2024-05-01",
-      "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
+      "type": "Microsoft.ApiManagement/service/apis/operations/policies",
+      "apiVersion": "2022-08-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('operationName'), parameters('name'))]",
       "properties": {
-        "format": "[parameters('format')]",
-        "value": "[parameters('value')]"
+        "value": "[parameters('value')]",
+        "format": "[parameters('format')]"
       }
     }
   ],
@@ -65,21 +69,21 @@
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the API policy."
+        "description": "The resource ID of the policy."
       },
-      "value": "[resourceId('Microsoft.ApiManagement/service/apis/policies', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]"
+      "value": "[resourceId('Microsoft.ApiManagement/service/apis/operations/policies', parameters('apiManagementServiceName'), parameters('apiName'), parameters('operationName'), parameters('name'))]"
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the API policy."
+        "description": "The name of the policy."
       },
       "value": "[parameters('name')]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The resource group the API policy was deployed into."
+        "description": "The resource group the policy was deployed into."
       },
       "value": "[resourceGroup().name]"
     }

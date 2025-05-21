@@ -22,15 +22,15 @@ param format string = 'xml'
 @description('Required. Contents of the Policy as defined by the format.')
 param value string
 
-resource service 'Microsoft.ApiManagement/service@2023-05-01-preview' existing = {
+resource service 'Microsoft.ApiManagement/service@2024-05-01' existing = {
   name: apiManagementServiceName
 
-  resource api 'apis@2022-08-01' existing = {
+  resource api 'apis@2024-05-01' existing = {
     name: apiName
   }
 }
 
-resource policy 'Microsoft.ApiManagement/service/apis/policies@2022-08-01' = {
+resource policy 'Microsoft.ApiManagement/service/apis/policies@2024-05-01' = {
   name: name
   parent: service::api
   properties: {
