@@ -175,6 +175,10 @@ var formattedRoleAssignments = [
   })
 ]
 
+var defaultStorageFirewallValue = privateStorageAccount == 'Enabled'
+  ? 'Enabled'
+  : privateStorageAccount == 'Disabled' ? 'Disabled' : ''
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.databricks-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -218,13 +222,6 @@ resource cMKManagedDiskKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing 
     name: customerManagedKeyManagedDisk.?keyName ?? 'dummyKey'
   }
 }
-
-// Map privateStorageAccount to the correct firewall value per documentation
-var defaultStorageFirewallValue = privateStorageAccount == 'Enabled'
-  ? 'Enabled'
-  : privateStorageAccount == 'Disabled'
-    ? 'Disabled'
-    : ''
 
 resource workspace 'Microsoft.Databricks/workspaces@2024-05-01' = {
   name: name
