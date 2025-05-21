@@ -51,6 +51,18 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       workspaceResourceId: nestedDependencies.outputs.workspaceResourceId
+      connectors: {
+        name: 'MicrosoftThreatIntelligence'
+        properties: {
+          dataTypes: {
+            microsoftEmergingThreatFeed: {
+              lookbackPeriod: '2025-01-01T00:00:00Z'
+              state: 'Enabled'
+            }
+          }
+          tenantId: tenant().tenantId
+        }
+      }
     }
   }
 ]

@@ -42,7 +42,21 @@ This instance deploys the module with minimal required parameters.
 module dataConnector 'br/public:avm/res/security-insights/data-connector:<version>' = {
   name: 'dataConnectorDeployment'
   params: {
+    // Required parameters
     workspaceResourceId: '<workspaceResourceId>'
+    // Non-required parameters
+    connectors: {
+      name: 'MicrosoftThreatIntelligence'
+      properties: {
+        dataTypes: {
+          microsoftEmergingThreatFeed: {
+            lookbackPeriod: '2025-01-01T00:00:00Z'
+            state: 'Enabled'
+          }
+        }
+        tenantId: '<tenantId>'
+      }
+    }
   }
 }
 ```
@@ -59,8 +73,24 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    // Required parameters
     "workspaceResourceId": {
       "value": "<workspaceResourceId>"
+    },
+    // Non-required parameters
+    "connectors": {
+      "value": {
+        "name": "MicrosoftThreatIntelligence",
+        "properties": {
+          "dataTypes": {
+            "microsoftEmergingThreatFeed": {
+              "lookbackPeriod": "2025-01-01T00:00:00Z",
+              "state": "Enabled"
+            }
+          },
+          "tenantId": "<tenantId>"
+        }
+      }
     }
   }
 }
@@ -76,7 +106,21 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
 ```bicep-params
 using 'br/public:avm/res/security-insights/data-connector:<version>'
 
+// Required parameters
 param workspaceResourceId = '<workspaceResourceId>'
+// Non-required parameters
+param connectors = {
+  name: 'MicrosoftThreatIntelligence'
+  properties: {
+    dataTypes: {
+      microsoftEmergingThreatFeed: {
+        lookbackPeriod: '2025-01-01T00:00:00Z'
+        state: 'Enabled'
+      }
+    }
+    tenantId: '<tenantId>'
+  }
+}
 ```
 
 </details>
