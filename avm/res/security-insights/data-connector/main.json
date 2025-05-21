@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "653082823578713391"
+      "templateHash": "3968497209047568273"
     },
     "name": "Security Insights Data Connectors",
     "description": "This module deploys a Security Insights Data Connector.",
@@ -1726,7 +1726,7 @@
       "$ref": "#/definitions/dataConnectorType",
       "nullable": true,
       "metadata": {
-        "description": "Required. The Data Connector configuration."
+        "description": "Optional. The Data Connector configuration."
       }
     }
   },

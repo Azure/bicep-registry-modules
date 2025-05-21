@@ -287,15 +287,22 @@ param connectors = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectors`](#parameter-connectors) | object | The Data Connector configuration. |
 | [`workspaceResourceId`](#parameter-workspaceresourceid) | string | The resource ID of the Log Analytics workspace. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`connectors`](#parameter-connectors) | object | The Data Connector configuration. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+
+### Parameter: `workspaceResourceId`
+
+The resource ID of the Log Analytics workspace.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `connectors`
 
@@ -2558,13 +2565,6 @@ The password for authentication.
 The username for authentication.
 
 - Required: No
-- Type: string
-
-### Parameter: `workspaceResourceId`
-
-The resource ID of the Log Analytics workspace.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `enableTelemetry`

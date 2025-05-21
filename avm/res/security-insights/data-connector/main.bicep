@@ -13,7 +13,7 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Required. The Data Connector configuration.')
+@description('Optional. The Data Connector configuration.')
 param connectors dataConnectorType?
 
 #disable-next-line no-deployments-resources
