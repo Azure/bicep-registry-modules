@@ -1606,6 +1606,7 @@ param tags = {
 | [`ipAddress`](#parameter-ipaddress) | object | The IP address type of the container group. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`logAnalytics`](#parameter-loganalytics) | object | The log analytics diagnostic information for a container group. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`osType`](#parameter-ostype) | string | The operating system type required by the containers in the container group. - Windows or Linux. |
 | [`priority`](#parameter-priority) | string | The priority of the container group. |
@@ -2659,6 +2660,75 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `logAnalytics`
+
+The log analytics diagnostic information for a container group.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`logType`](#parameter-loganalyticslogtype) | string | The log type to be used. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`workspaceId`](#parameter-loganalyticsworkspaceid) | string | The workspace ID for log analytics. Required if `workspaceResourceId` is not provided. |
+| [`workspaceKey`](#parameter-loganalyticsworkspacekey) | securestring | The workspace key for log analytics. Required if `workspaceResourceId` is not provided. |
+| [`workspaceResourceId`](#parameter-loganalyticsworkspaceresourceid) | string | The workspace resource ID for log analytics. Required if `workspaceId` or `workspaceId` is not provided. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`metadata`](#parameter-loganalyticsmetadata) | object | Metadata for log analytics. |
+
+### Parameter: `logAnalytics.logType`
+
+The log type to be used.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ContainerInsights'
+    'ContainerInstanceLogs'
+  ]
+  ```
+
+### Parameter: `logAnalytics.workspaceId`
+
+The workspace ID for log analytics. Required if `workspaceResourceId` is not provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `logAnalytics.workspaceKey`
+
+The workspace key for log analytics. Required if `workspaceResourceId` is not provided.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `logAnalytics.workspaceResourceId`
+
+The workspace resource ID for log analytics. Required if `workspaceId` or `workspaceId` is not provided.
+
+- Required: No
+- Type: string
+
+### Parameter: `logAnalytics.metadata`
+
+Metadata for log analytics.
+
+- Required: No
+- Type: object
 
 ### Parameter: `managedIdentities`
 
