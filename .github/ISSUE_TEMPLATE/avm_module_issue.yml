@@ -205,6 +205,7 @@ body:
         - "avm/res/network/vpn-gateway"
         - "avm/res/network/vpn-server-configuration"
         - "avm/res/network/vpn-site"
+        - "avm/res/operational-insights/cluster"
         - "avm/res/operational-insights/workspace"
         - "avm/res/operations-management/solution"
         - "avm/res/portal/dashboard"
