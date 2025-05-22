@@ -186,6 +186,11 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             addressPrefix: '<addressPrefix>'
             name: 'AzureBastionSubnet'
           }
+          {
+            addressPrefix: '<addressPrefix>'
+            delegation: 'Microsoft.Network/dnsResolvers'
+            name: 'DNSResolver'
+          }
         ]
         tags: {
           Environment: 'Non-Prod'
@@ -368,6 +373,11 @@ module hubNetworking 'br/public:avm/ptn/network/hub-networking:<version>' = {
             {
               "addressPrefix": "<addressPrefix>",
               "name": "AzureBastionSubnet"
+            },
+            {
+              "addressPrefix": "<addressPrefix>",
+              "delegation": "Microsoft.Network/dnsResolvers",
+              "name": "DNSResolver"
             }
           ],
           "tags": {
@@ -551,6 +561,11 @@ param hubVirtualNetworks = {
       {
         addressPrefix: '<addressPrefix>'
         name: 'AzureBastionSubnet'
+      }
+      {
+        addressPrefix: '<addressPrefix>'
+        delegation: 'Microsoft.Network/dnsResolvers'
+        name: 'DNSResolver'
       }
     ]
     tags: {
