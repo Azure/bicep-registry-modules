@@ -1,7 +1,7 @@
 metadata name = 'Azure Virtual WAN'
 metadata description = 'This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.'
 
-@description('Option. Azure region where the Virtual WAN will be created.')
+@description('Required. Azure region where the Virtual WAN will be created.')
 param location string = resourceGroup().location
 
 @description('Required. The parameters for the Virtual WAN.')
@@ -9,12 +9,12 @@ param virtualWanParameters virtualWanParameterType
 
 @description('Optional. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs.')
 param virtualHubParameters virtualHubParameterType?
-
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
+
 @description('Optional. The lock settings for the Virtual WAN and associated components.')
 param lock lockType?
 
-@description('Optional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable or disable usage telemetry for the module.')
 param enableTelemetry bool = true
 
 module virtualWan 'br/public:avm/res/network/virtual-wan:0.3.1' = {
@@ -207,14 +207,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 // Outputs      //
 // ============ //
 
-@description('Object containing the Virtual WAN information')
+@description('Object containing the Virtual WAN information.')
 output virtualWan object = {
   name: virtualWan.outputs.name
   resourceId: virtualWan.outputs.resourceId
   resourceGroupName: virtualWan.outputs.resourceGroupName
 }
 
-@description('The array containing the Virtual Hub information')
+@description('The array containing the Virtual Hub information.')
 output virtualHubs object[] = [
   for (virtualHub, index) in virtualHubParameters!: {
     name: virtualHubModule[index].outputs.name
@@ -241,6 +241,7 @@ import { hubRouteTableType } from '../../../res/network/virtual-hub/main.bicep'
 @description('Imports the full diagnostic setting type from the AVM common types module.')
 import { diagnosticSettingFullType } from '../../../utl/types/avm-common-types/main.bicep'
 
+@description('Required. The parameters required to create a Virtual WAN.')
 type virtualWanParameterType = {
   @description('Required. The name of the Virtual WAN.')
   virtualWanName: string
@@ -321,6 +322,7 @@ type virtualWanParameterType = {
   type: ('Standard' | 'Basic')?
 }
 
+@description('Required. The parameters required to create a Virtual Hub.')
 type virtualHubParameterType = {
   @description('Required. The name of the Virtual Hub.')
   hubName: string

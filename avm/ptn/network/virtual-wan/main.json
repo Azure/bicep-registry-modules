@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "8232197323271386731"
+      "templateHash": "9597714605974208713"
     },
-    "name": "avm/ptn/network/virtual-wan",
-    "description": "Azure Virtual WAN"
+    "name": "Azure Virtual WAN",
+    "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
   },
   "definitions": {
     "virtualWanParameterType": {
@@ -219,6 +219,9 @@
             "description": "Optional. The type of Virtual WAN. Allowed values are Standard or Basic."
           }
         }
+      },
+      "metadata": {
+        "description": "Required. The parameters required to create a Virtual WAN."
       }
     },
     "virtualHubParameterType": {
@@ -993,6 +996,9 @@
             }
           }
         }
+      },
+      "metadata": {
+        "description": "Required. The parameters required to create a Virtual Hub."
       }
     },
     "roleAssignmentType": {
@@ -1492,7 +1498,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Option. Azure region where the Virtual WAN will be created."
+        "description": "Required. Azure region where the Virtual WAN will be created."
       }
     },
     "virtualWanParameters": {
@@ -1519,7 +1525,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
+        "description": "Optional. Enable or disable usage telemetry for the module."
       }
     }
   },
@@ -7298,7 +7304,7 @@
     "virtualWan": {
       "type": "object",
       "metadata": {
-        "description": "Object containing the Virtual WAN information"
+        "description": "Object containing the Virtual WAN information."
       },
       "value": {
         "name": "[reference('virtualWan').outputs.name.value]",
@@ -7312,7 +7318,7 @@
         "type": "object"
       },
       "metadata": {
-        "description": "The array containing the Virtual Hub information"
+        "description": "The array containing the Virtual Hub information."
       },
       "copy": {
         "count": "[length(parameters('virtualHubParameters'))]",

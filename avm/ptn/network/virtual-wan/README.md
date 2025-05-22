@@ -1,6 +1,6 @@
-# avm/ptn/network/virtual-wan `[Network/VirtualWan]`
+# Azure Virtual WAN `[Network/VirtualWan]`
 
-Azure Virtual WAN
+This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.
 
 ## Navigation
 
@@ -323,21 +323,24 @@ param virtualHubParameters = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`location`](#parameter-location) | string | Azure region where the Virtual WAN will be created. |
 | [`virtualWanParameters`](#parameter-virtualwanparameters) | object | The parameters for the Virtual WAN. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable or disable usage telemetry for the module. |
 | [`lock`](#parameter-lock) | object | The lock settings for the Virtual WAN and associated components. |
 | [`virtualHubParameters`](#parameter-virtualhubparameters) | array | The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs. |
 
-**Option parameters**
+### Parameter: `location`
 
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | Azure region where the Virtual WAN will be created. |
+Azure region where the Virtual WAN will be created.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `virtualWanParameters`
 
@@ -778,7 +781,7 @@ The type of Virtual WAN. Allowed values are Standard or Basic.
 
 ### Parameter: `enableTelemetry`
 
-Enable/Disable usage telemetry for module.
+Enable or disable usage telemetry for the module.
 
 - Required: No
 - Type: bool
@@ -2067,20 +2070,12 @@ IP addresses for the Virtual Router.
 - Required: No
 - Type: array
 
-### Parameter: `location`
-
-Azure region where the Virtual WAN will be created.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
-
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `virtualHubs` | array | The array containing the Virtual Hub information |
-| `virtualWan` | object | Object containing the Virtual WAN information |
+| `virtualHubs` | array | The array containing the Virtual Hub information. |
+| `virtualWan` | object | Object containing the Virtual WAN information. |
 
 ## Cross-referenced modules
 
