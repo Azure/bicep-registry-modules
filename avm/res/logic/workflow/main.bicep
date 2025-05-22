@@ -170,7 +170,7 @@ resource logicApp 'Microsoft.Logic/workflows@2019-05-01' = {
     integrationServiceEnvironment: integrationServiceEnvironment
     definition: {
       '$schema': 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'
-      ...(!empty(workflowActions) ? { actions: workflowActions } : { actions: {} })
+      ...(!empty(workflowActions) ? { actions: workflowActions } : {})
       contentVersion: '1.0.0.0'
       outputs: workflowOutputs
       parameters: workflowParameters
