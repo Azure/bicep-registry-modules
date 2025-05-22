@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "1594935000201620529"
+      "templateHash": "3474530161120912819"
     },
     "name": "Logic Apps (Workflows)",
     "description": "This module deploys a Logic App (Workflow)."
@@ -522,7 +522,15 @@
         },
         "integrationAccount": "[parameters('integrationAccount')]",
         "integrationServiceEnvironment": "[parameters('integrationServiceEnvironment')]",
-        "definition": "[shallowMerge(createArray(createObject('$schema', 'https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#'), if(not(empty(parameters('workflowActions'))), createObject('actions', parameters('workflowActions')), createObject('actions', createObject())), createObject('contentVersion', '1.0.0.0', 'outputs', parameters('workflowOutputs'), 'parameters', parameters('workflowParameters'), 'staticResults', parameters('workflowStaticResults'), 'triggers', parameters('workflowTriggers'))))]",
+        "definition": {
+          "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+          "actions": "[parameters('workflowActions')]",
+          "contentVersion": "1.0.0.0",
+          "outputs": "[parameters('workflowOutputs')]",
+          "parameters": "[parameters('workflowParameters')]",
+          "staticResults": "[parameters('workflowStaticResults')]",
+          "triggers": "[parameters('workflowTriggers')]"
+        },
         "parameters": "[parameters('definitionParameters')]"
       }
     },
