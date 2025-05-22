@@ -42,7 +42,7 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existin
 
 resource dataConnector 'Microsoft.SecurityInsights/dataConnectors@2025-03-01' = {
   scope: workspace
-  name: name
+  name: name ?? properties.kind
   kind: properties.kind
   properties: properties.properties
 }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "16531579688011183812"
+      "templateHash": "3012483961730299706"
     },
     "name": "Security Insights Data Connectors",
     "description": "This module deploys a Security Insights Data Connector.",
@@ -1692,7 +1692,7 @@
       "type": "Microsoft.SecurityInsights/dataConnectors",
       "apiVersion": "2025-03-01",
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', last(split(parameters('workspaceResourceId'), '/')))]",
-      "name": "[parameters('name')]",
+      "name": "[coalesce(parameters('name'), parameters('properties').kind)]",
       "kind": "[parameters('properties').kind]",
       "properties": "[parameters('properties').properties]"
     }
@@ -1703,14 +1703,14 @@
       "metadata": {
         "description": "The name of the deployed data connector."
       },
-      "value": "[parameters('name')]"
+      "value": "[coalesce(parameters('name'), parameters('properties').kind)]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "The resource ID of the deployed data connector."
       },
-      "value": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/dataConnectors', parameters('name'))]"
+      "value": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/dataConnectors', coalesce(parameters('name'), parameters('properties').kind))]"
     },
     "resourceType": {
       "type": "string",
