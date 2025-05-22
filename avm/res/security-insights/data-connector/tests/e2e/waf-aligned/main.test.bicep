@@ -53,7 +53,7 @@ module testDeployment '../../../main.bicep' = [
       name: 'MicrosoftThreatIntelligence'
       workspaceResourceId: nestedDependencies.outputs.workspaceResourceId
       properties: {
-        name: 'MicrosoftThreatIntelligence'
+        kind: 'MicrosoftThreatIntelligence'
         properties: {
           dataTypes: {
             microsoftEmergingThreatFeed: {

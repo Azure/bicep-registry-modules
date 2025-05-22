@@ -8,7 +8,6 @@ This module deploys a Security Insights Data Connector.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -43,9 +42,8 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   name: 'dataConnectorDeployment'
   params: {
     // Required parameters
-    name: 'MicrosoftThreatIntelligence'
     properties: {
-      name: 'MicrosoftThreatIntelligence'
+      kind: 'MicrosoftThreatIntelligence'
       properties: {
         dataTypes: {
           microsoftEmergingThreatFeed: {
@@ -57,6 +55,8 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
       }
     }
     workspaceResourceId: '<workspaceResourceId>'
+    // Non-required parameters
+    name: 'MicrosoftThreatIntelligence'
   }
 }
 ```
@@ -74,12 +74,9 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "MicrosoftThreatIntelligence"
-    },
     "properties": {
       "value": {
-        "name": "MicrosoftThreatIntelligence",
+        "kind": "MicrosoftThreatIntelligence",
         "properties": {
           "dataTypes": {
             "microsoftEmergingThreatFeed": {
@@ -93,6 +90,10 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
     },
     "workspaceResourceId": {
       "value": "<workspaceResourceId>"
+    },
+    // Non-required parameters
+    "name": {
+      "value": "MicrosoftThreatIntelligence"
     }
   }
 }
@@ -109,9 +110,8 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
 using 'br/public:avm/res/security-insights/data-connector:<version>'
 
 // Required parameters
-param name = 'MicrosoftThreatIntelligence'
 param properties = {
-  name: 'MicrosoftThreatIntelligence'
+  kind: 'MicrosoftThreatIntelligence'
   properties: {
     dataTypes: {
       microsoftEmergingThreatFeed: {
@@ -123,6 +123,8 @@ param properties = {
   }
 }
 param workspaceResourceId = '<workspaceResourceId>'
+// Non-required parameters
+param name = 'MicrosoftThreatIntelligence'
 ```
 
 </details>
@@ -142,9 +144,8 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   name: 'dataConnectorDeployment'
   params: {
     // Required parameters
-    name: 'MicrosoftThreatIntelligence'
     properties: {
-      name: 'MicrosoftThreatIntelligence'
+      kind: 'MicrosoftThreatIntelligence'
       properties: {
         dataTypes: {
           microsoftEmergingThreatFeed: {
@@ -158,6 +159,7 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
     workspaceResourceId: '<workspaceResourceId>'
     // Non-required parameters
     location: '<location>'
+    name: 'MicrosoftThreatIntelligence'
   }
 }
 ```
@@ -175,12 +177,9 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "MicrosoftThreatIntelligence"
-    },
     "properties": {
       "value": {
-        "name": "MicrosoftThreatIntelligence",
+        "kind": "MicrosoftThreatIntelligence",
         "properties": {
           "dataTypes": {
             "microsoftEmergingThreatFeed": {
@@ -198,6 +197,9 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "name": {
+      "value": "MicrosoftThreatIntelligence"
     }
   }
 }
@@ -214,9 +216,8 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
 using 'br/public:avm/res/security-insights/data-connector:<version>'
 
 // Required parameters
-param name = 'MicrosoftThreatIntelligence'
 param properties = {
-  name: 'MicrosoftThreatIntelligence'
+  kind: 'MicrosoftThreatIntelligence'
   properties: {
     dataTypes: {
       microsoftEmergingThreatFeed: {
@@ -230,6 +231,7 @@ param properties = {
 param workspaceResourceId = '<workspaceResourceId>'
 // Non-required parameters
 param location = '<location>'
+param name = 'MicrosoftThreatIntelligence'
 ```
 
 </details>
@@ -249,9 +251,8 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   name: 'dataConnectorDeployment'
   params: {
     // Required parameters
-    name: 'MicrosoftThreatIntelligence'
     properties: {
-      name: 'MicrosoftThreatIntelligence'
+      kind: 'MicrosoftThreatIntelligence'
       properties: {
         dataTypes: {
           microsoftEmergingThreatFeed: {
@@ -263,6 +264,8 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
       }
     }
     workspaceResourceId: '<workspaceResourceId>'
+    // Non-required parameters
+    name: 'MicrosoftThreatIntelligence'
   }
 }
 ```
@@ -280,12 +283,9 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "name": {
-      "value": "MicrosoftThreatIntelligence"
-    },
     "properties": {
       "value": {
-        "name": "MicrosoftThreatIntelligence",
+        "kind": "MicrosoftThreatIntelligence",
         "properties": {
           "dataTypes": {
             "microsoftEmergingThreatFeed": {
@@ -299,6 +299,10 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
     },
     "workspaceResourceId": {
       "value": "<workspaceResourceId>"
+    },
+    // Non-required parameters
+    "name": {
+      "value": "MicrosoftThreatIntelligence"
     }
   }
 }
@@ -315,9 +319,8 @@ module dataConnector 'br/public:avm/res/security-insights/data-connector:<versio
 using 'br/public:avm/res/security-insights/data-connector:<version>'
 
 // Required parameters
-param name = 'MicrosoftThreatIntelligence'
 param properties = {
-  name: 'MicrosoftThreatIntelligence'
+  kind: 'MicrosoftThreatIntelligence'
   properties: {
     dataTypes: {
       microsoftEmergingThreatFeed: {
@@ -329,6 +332,8 @@ param properties = {
   }
 }
 param workspaceResourceId = '<workspaceResourceId>'
+// Non-required parameters
+param name = 'MicrosoftThreatIntelligence'
 ```
 
 </details>
@@ -340,7 +345,6 @@ param workspaceResourceId = '<workspaceResourceId>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the data connector. |
 | [`properties`](#parameter-properties) | object | The data connector configuration. |
 | [`workspaceResourceId`](#parameter-workspaceresourceid) | string | The resource ID of the Log Analytics workspace. |
 
@@ -350,13 +354,7 @@ param workspaceResourceId = '<workspaceResourceId>'
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all resources. |
-
-### Parameter: `name`
-
-The name of the data connector.
-
-- Required: Yes
-- Type: string
+| [`name`](#parameter-name) | string | The name of the data connector. |
 
 ### Parameter: `properties`
 
@@ -364,50 +362,50 @@ The data connector configuration.
 
 - Required: Yes
 - Type: object
-- Discriminator: `name`
+- Discriminator: `kind`
 
 <h4>The available variants are:</h4>
 
 | Variant | Description |
 | :-- | :-- |
-| [`AmazonWebServicesCloudTrail`](#variant-propertiesname-amazonwebservicescloudtrail) | The type of AmazonWebServicesCloudTrail configuration. |
-| [`AmazonWebServicesS3`](#variant-propertiesname-amazonwebservicess3) | The type of AmazonWebServicesS3 configuration. |
-| [`APIPolling`](#variant-propertiesname-apipolling) | The type of API Polling configuration. |
-| [`AzureActiveDirectory`](#variant-propertiesname-azureactivedirectory) | The type of AzureActiveDirectory configuration. |
-| [`AzureAdvancedThreatProtection`](#variant-propertiesname-azureadvancedthreatprotection) | The type of AzureAdvancedThreatProtection configuration. |
-| [`AzureSecurityCenter`](#variant-propertiesname-azuresecuritycenter) | The type of AzureSecurityCenter configuration. |
-| [`Dynamics365`](#variant-propertiesname-dynamics365) | The type of Dynamics365 configuration. |
-| [`GCP`](#variant-propertiesname-gcp) | The type of GCP configuration. |
-| [`GenericUI`](#variant-propertiesname-genericui) | The type of Generic UI configuration. |
-| [`IOT`](#variant-propertiesname-iot) | The type of IOT configuration. |
-| [`MicrosoftCloudAppSecurity`](#variant-propertiesname-microsoftcloudappsecurity) | The type of Microsoft Cloud App Security configuration. |
-| [`MicrosoftDefenderAdvancedThreatProtection`](#variant-propertiesname-microsoftdefenderadvancedthreatprotection) | The type of Microsoft Defender Advanced Threat Protection configuration. |
-| [`MicrosoftPurviewInformationProtection`](#variant-propertiesname-microsoftpurviewinformationprotection) | The type of Microsoft Purview Information Protection configuration. |
-| [`MicrosoftThreatIntelligence`](#variant-propertiesname-microsoftthreatintelligence) | The type of MicrosoftThreatIntelligenceType configuration. |
-| [`MicrosoftThreatProtection`](#variant-propertiesname-microsoftthreatprotection) | The type of Microsoft Threat Protection configuration. |
-| [`Office365`](#variant-propertiesname-office365) | The type of Office 365 configuration. |
-| [`Office365Project`](#variant-propertiesname-office365project) | The type of Office 365 Project configuration. |
-| [`OfficeATP`](#variant-propertiesname-officeatp) | The type of Office ATP configuration. |
-| [`OfficeIRM`](#variant-propertiesname-officeirm) | The type of Office IRM configuration. |
-| [`OfficePowerBI`](#variant-propertiesname-officepowerbi) | The type of Office Power BI configuration. |
-| [`PurviewAudit`](#variant-propertiesname-purviewaudit) | The type of Purview Audit configuration. |
-| [`RestApiPoller`](#variant-propertiesname-restapipoller) | The type of REST API Poller configuration. |
-| [`ThreatIntelligence`](#variant-propertiesname-threatintelligence) | The type of ThreatIntelligenceType configuration. |
-| [`ThreatIntelligenceTaxii`](#variant-propertiesname-threatintelligencetaxii) | The type of Threat Intelligence TAXII configuration. |
+| [`AmazonWebServicesCloudTrail`](#variant-propertieskind-amazonwebservicescloudtrail) | The type of AmazonWebServicesCloudTrail configuration. |
+| [`AmazonWebServicesS3`](#variant-propertieskind-amazonwebservicess3) | The type of AmazonWebServicesS3 configuration. |
+| [`APIPolling`](#variant-propertieskind-apipolling) | The type of API Polling configuration. |
+| [`AzureActiveDirectory`](#variant-propertieskind-azureactivedirectory) | The type of AzureActiveDirectory configuration. |
+| [`AzureAdvancedThreatProtection`](#variant-propertieskind-azureadvancedthreatprotection) | The type of AzureAdvancedThreatProtection configuration. |
+| [`AzureSecurityCenter`](#variant-propertieskind-azuresecuritycenter) | The type of AzureSecurityCenter configuration. |
+| [`Dynamics365`](#variant-propertieskind-dynamics365) | The type of Dynamics365 configuration. |
+| [`GCP`](#variant-propertieskind-gcp) | The type of GCP configuration. |
+| [`GenericUI`](#variant-propertieskind-genericui) | The type of Generic UI configuration. |
+| [`IOT`](#variant-propertieskind-iot) | The type of IOT configuration. |
+| [`MicrosoftCloudAppSecurity`](#variant-propertieskind-microsoftcloudappsecurity) | The type of Microsoft Cloud App Security configuration. |
+| [`MicrosoftDefenderAdvancedThreatProtection`](#variant-propertieskind-microsoftdefenderadvancedthreatprotection) | The type of Microsoft Defender Advanced Threat Protection configuration. |
+| [`MicrosoftPurviewInformationProtection`](#variant-propertieskind-microsoftpurviewinformationprotection) | The type of Microsoft Purview Information Protection configuration. |
+| [`MicrosoftThreatIntelligence`](#variant-propertieskind-microsoftthreatintelligence) | The type of MicrosoftThreatIntelligenceType configuration. |
+| [`MicrosoftThreatProtection`](#variant-propertieskind-microsoftthreatprotection) | The type of Microsoft Threat Protection configuration. |
+| [`Office365`](#variant-propertieskind-office365) | The type of Office 365 configuration. |
+| [`Office365Project`](#variant-propertieskind-office365project) | The type of Office 365 Project configuration. |
+| [`OfficeATP`](#variant-propertieskind-officeatp) | The type of Office ATP configuration. |
+| [`OfficeIRM`](#variant-propertieskind-officeirm) | The type of Office IRM configuration. |
+| [`OfficePowerBI`](#variant-propertieskind-officepowerbi) | The type of Office Power BI configuration. |
+| [`PurviewAudit`](#variant-propertieskind-purviewaudit) | The type of Purview Audit configuration. |
+| [`RestApiPoller`](#variant-propertieskind-restapipoller) | The type of REST API Poller configuration. |
+| [`ThreatIntelligence`](#variant-propertieskind-threatintelligence) | The type of ThreatIntelligenceType configuration. |
+| [`ThreatIntelligenceTaxii`](#variant-propertieskind-threatintelligencetaxii) | The type of Threat Intelligence TAXII configuration. |
 
-### Variant: `properties.name-AmazonWebServicesCloudTrail`
+### Variant: `properties.kind-AmazonWebServicesCloudTrail`
 The type of AmazonWebServicesCloudTrail configuration.
 
-To use this variant, set the property `name` to `AmazonWebServicesCloudTrail`.
+To use this variant, set the property `kind` to `AmazonWebServicesCloudTrail`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-amazonwebservicescloudtrailname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-amazonwebservicescloudtrailproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-amazonwebservicescloudtrailkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-amazonwebservicescloudtrailproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-AmazonWebServicesCloudTrail.name`
+### Parameter: `properties.kind-AmazonWebServicesCloudTrail.kind`
 
 The type of data connector.
 
@@ -420,7 +418,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-AmazonWebServicesCloudTrail.properties`
+### Parameter: `properties.kind-AmazonWebServicesCloudTrail.properties`
 
 The properties of the data connector.
 
@@ -431,17 +429,17 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`awsRoleArn`](#parameter-propertiesname-amazonwebservicescloudtrailpropertiesawsrolearn) | string | The AWS Role Arn (with CloudTrailReadOnly policy) that is used to access the AWS account. |
-| [`dataTypes`](#parameter-propertiesname-amazonwebservicescloudtrailpropertiesdatatypes) | object | The available data types for the connector. |
+| [`awsRoleArn`](#parameter-propertieskind-amazonwebservicescloudtrailpropertiesawsrolearn) | string | The AWS Role Arn (with CloudTrailReadOnly policy) that is used to access the AWS account. |
+| [`dataTypes`](#parameter-propertieskind-amazonwebservicescloudtrailpropertiesdatatypes) | object | The available data types for the connector. |
 
-### Parameter: `properties.name-AmazonWebServicesCloudTrail.properties.awsRoleArn`
+### Parameter: `properties.kind-AmazonWebServicesCloudTrail.properties.awsRoleArn`
 
 The AWS Role Arn (with CloudTrailReadOnly policy) that is used to access the AWS account.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-AmazonWebServicesCloudTrail.properties.dataTypes`
+### Parameter: `properties.kind-AmazonWebServicesCloudTrail.properties.dataTypes`
 
 The available data types for the connector.
 
@@ -452,9 +450,9 @@ The available data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`logs`](#parameter-propertiesname-amazonwebservicescloudtrailpropertiesdatatypeslogs) | object | Data type for Amazon Web Services Cloud Trail data connector. |
+| [`logs`](#parameter-propertieskind-amazonwebservicescloudtrailpropertiesdatatypeslogs) | object | Data type for Amazon Web Services Cloud Trail data connector. |
 
-### Parameter: `properties.name-AmazonWebServicesCloudTrail.properties.dataTypes.logs`
+### Parameter: `properties.kind-AmazonWebServicesCloudTrail.properties.dataTypes.logs`
 
 Data type for Amazon Web Services Cloud Trail data connector.
 
@@ -465,28 +463,28 @@ Data type for Amazon Web Services Cloud Trail data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-amazonwebservicescloudtrailpropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled or not. |
+| [`state`](#parameter-propertieskind-amazonwebservicescloudtrailpropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled or not. |
 
-### Parameter: `properties.name-AmazonWebServicesCloudTrail.properties.dataTypes.logs.state`
+### Parameter: `properties.kind-AmazonWebServicesCloudTrail.properties.dataTypes.logs.state`
 
 Whether this data type connection is enabled or not.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-AmazonWebServicesS3`
+### Variant: `properties.kind-AmazonWebServicesS3`
 The type of AmazonWebServicesS3 configuration.
 
-To use this variant, set the property `name` to `AmazonWebServicesS3`.
+To use this variant, set the property `kind` to `AmazonWebServicesS3`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-amazonwebservicess3name) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-amazonwebservicess3properties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-amazonwebservicess3kind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-amazonwebservicess3properties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-AmazonWebServicesS3.name`
+### Parameter: `properties.kind-AmazonWebServicesS3.kind`
 
 The type of data connector.
 
@@ -499,7 +497,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-AmazonWebServicesS3.properties`
+### Parameter: `properties.kind-AmazonWebServicesS3.properties`
 
 The properties of the data connector.
 
@@ -510,12 +508,12 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-amazonwebservicess3propertiesdatatypes) | object | The available data types for the connector. |
-| [`destinationTable`](#parameter-propertiesname-amazonwebservicess3propertiesdestinationtable) | string | The logs destination table name in LogAnalytics. |
-| [`roleArn`](#parameter-propertiesname-amazonwebservicess3propertiesrolearn) | string | The AWS Role Arn that is used to access the Aws account. |
-| [`sqsUrls`](#parameter-propertiesname-amazonwebservicess3propertiessqsurls) | array | The AWS sqs urls for the connector. |
+| [`dataTypes`](#parameter-propertieskind-amazonwebservicess3propertiesdatatypes) | object | The available data types for the connector. |
+| [`destinationTable`](#parameter-propertieskind-amazonwebservicess3propertiesdestinationtable) | string | The logs destination table name in LogAnalytics. |
+| [`roleArn`](#parameter-propertieskind-amazonwebservicess3propertiesrolearn) | string | The AWS Role Arn that is used to access the Aws account. |
+| [`sqsUrls`](#parameter-propertieskind-amazonwebservicess3propertiessqsurls) | array | The AWS sqs urls for the connector. |
 
-### Parameter: `properties.name-AmazonWebServicesS3.properties.dataTypes`
+### Parameter: `properties.kind-AmazonWebServicesS3.properties.dataTypes`
 
 The available data types for the connector.
 
@@ -526,9 +524,9 @@ The available data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`logs`](#parameter-propertiesname-amazonwebservicess3propertiesdatatypeslogs) | object | Data type for Amazon Web Services S3 data connector. |
+| [`logs`](#parameter-propertieskind-amazonwebservicess3propertiesdatatypeslogs) | object | Data type for Amazon Web Services S3 data connector. |
 
-### Parameter: `properties.name-AmazonWebServicesS3.properties.dataTypes.logs`
+### Parameter: `properties.kind-AmazonWebServicesS3.properties.dataTypes.logs`
 
 Data type for Amazon Web Services S3 data connector.
 
@@ -539,49 +537,49 @@ Data type for Amazon Web Services S3 data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-amazonwebservicess3propertiesdatatypeslogsstate) | string | Whether this data type connection is enabled or not. |
+| [`state`](#parameter-propertieskind-amazonwebservicess3propertiesdatatypeslogsstate) | string | Whether this data type connection is enabled or not. |
 
-### Parameter: `properties.name-AmazonWebServicesS3.properties.dataTypes.logs.state`
+### Parameter: `properties.kind-AmazonWebServicesS3.properties.dataTypes.logs.state`
 
 Whether this data type connection is enabled or not.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-AmazonWebServicesS3.properties.destinationTable`
+### Parameter: `properties.kind-AmazonWebServicesS3.properties.destinationTable`
 
 The logs destination table name in LogAnalytics.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-AmazonWebServicesS3.properties.roleArn`
+### Parameter: `properties.kind-AmazonWebServicesS3.properties.roleArn`
 
 The AWS Role Arn that is used to access the Aws account.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-AmazonWebServicesS3.properties.sqsUrls`
+### Parameter: `properties.kind-AmazonWebServicesS3.properties.sqsUrls`
 
 The AWS sqs urls for the connector.
 
 - Required: Yes
 - Type: array
 
-### Variant: `properties.name-APIPolling`
+### Variant: `properties.kind-APIPolling`
 The type of API Polling configuration.
 
-To use this variant, set the property `name` to `APIPolling`.
+To use this variant, set the property `kind` to `APIPolling`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-apipollingname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-apipollingproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-apipollingkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-apipollingproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-APIPolling.name`
+### Parameter: `properties.kind-APIPolling.kind`
 
 The type of data connector.
 
@@ -594,7 +592,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-APIPolling.properties`
+### Parameter: `properties.kind-APIPolling.properties`
 
 The properties of the data connector.
 
@@ -605,23 +603,23 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`parseMappings`](#parameter-propertiesname-apipollingpropertiesparsemappings) | array | The parsing rules for the response. |
-| [`pollingConfig`](#parameter-propertiesname-apipollingpropertiespollingconfig) | object | The polling configuration for the data connector. |
+| [`parseMappings`](#parameter-propertieskind-apipollingpropertiesparsemappings) | array | The parsing rules for the response. |
+| [`pollingConfig`](#parameter-propertieskind-apipollingpropertiespollingconfig) | object | The polling configuration for the data connector. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`lookbackPeriod`](#parameter-propertiesname-apipollingpropertieslookbackperiod) | string | The lookback period for historical data. |
+| [`lookbackPeriod`](#parameter-propertieskind-apipollingpropertieslookbackperiod) | string | The lookback period for historical data. |
 
-### Parameter: `properties.name-APIPolling.properties.parseMappings`
+### Parameter: `properties.kind-APIPolling.properties.parseMappings`
 
 The parsing rules for the response.
 
 - Required: Yes
 - Type: array
 
-### Parameter: `properties.name-APIPolling.properties.pollingConfig`
+### Parameter: `properties.kind-APIPolling.properties.pollingConfig`
 
 The polling configuration for the data connector.
 
@@ -632,17 +630,17 @@ The polling configuration for the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`auth`](#parameter-propertiesname-apipollingpropertiespollingconfigauth) | object | The authentication configuration. |
-| [`request`](#parameter-propertiesname-apipollingpropertiespollingconfigrequest) | object | The request configuration. |
+| [`auth`](#parameter-propertieskind-apipollingpropertiespollingconfigauth) | object | The authentication configuration. |
+| [`request`](#parameter-propertieskind-apipollingpropertiespollingconfigrequest) | object | The request configuration. |
 
-### Parameter: `properties.name-APIPolling.properties.pollingConfig.auth`
+### Parameter: `properties.kind-APIPolling.properties.pollingConfig.auth`
 
 The authentication configuration.
 
 - Required: Yes
 - Type: object
 
-### Parameter: `properties.name-APIPolling.properties.pollingConfig.request`
+### Parameter: `properties.kind-APIPolling.properties.pollingConfig.request`
 
 The request configuration.
 
@@ -653,72 +651,72 @@ The request configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`endpoint`](#parameter-propertiesname-apipollingpropertiespollingconfigrequestendpoint) | string | The API endpoint to poll. |
-| [`method`](#parameter-propertiesname-apipollingpropertiespollingconfigrequestmethod) | string | The HTTP method to use. |
-| [`rateLimitQps`](#parameter-propertiesname-apipollingpropertiespollingconfigrequestratelimitqps) | int | Rate limit in queries per second. |
-| [`timeout`](#parameter-propertiesname-apipollingpropertiespollingconfigrequesttimeout) | string | Request timeout duration. |
+| [`endpoint`](#parameter-propertieskind-apipollingpropertiespollingconfigrequestendpoint) | string | The API endpoint to poll. |
+| [`method`](#parameter-propertieskind-apipollingpropertiespollingconfigrequestmethod) | string | The HTTP method to use. |
+| [`rateLimitQps`](#parameter-propertieskind-apipollingpropertiespollingconfigrequestratelimitqps) | int | Rate limit in queries per second. |
+| [`timeout`](#parameter-propertieskind-apipollingpropertiespollingconfigrequesttimeout) | string | Request timeout duration. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`queryParameters`](#parameter-propertiesname-apipollingpropertiespollingconfigrequestqueryparameters) | object | Query parameters to include in the request. |
+| [`queryParameters`](#parameter-propertieskind-apipollingpropertiespollingconfigrequestqueryparameters) | object | Query parameters to include in the request. |
 
-### Parameter: `properties.name-APIPolling.properties.pollingConfig.request.endpoint`
+### Parameter: `properties.kind-APIPolling.properties.pollingConfig.request.endpoint`
 
 The API endpoint to poll.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-APIPolling.properties.pollingConfig.request.method`
+### Parameter: `properties.kind-APIPolling.properties.pollingConfig.request.method`
 
 The HTTP method to use.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-APIPolling.properties.pollingConfig.request.rateLimitQps`
+### Parameter: `properties.kind-APIPolling.properties.pollingConfig.request.rateLimitQps`
 
 Rate limit in queries per second.
 
 - Required: Yes
 - Type: int
 
-### Parameter: `properties.name-APIPolling.properties.pollingConfig.request.timeout`
+### Parameter: `properties.kind-APIPolling.properties.pollingConfig.request.timeout`
 
 Request timeout duration.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-APIPolling.properties.pollingConfig.request.queryParameters`
+### Parameter: `properties.kind-APIPolling.properties.pollingConfig.request.queryParameters`
 
 Query parameters to include in the request.
 
 - Required: No
 - Type: object
 
-### Parameter: `properties.name-APIPolling.properties.lookbackPeriod`
+### Parameter: `properties.kind-APIPolling.properties.lookbackPeriod`
 
 The lookback period for historical data.
 
 - Required: No
 - Type: string
 
-### Variant: `properties.name-AzureActiveDirectory`
+### Variant: `properties.kind-AzureActiveDirectory`
 The type of AzureActiveDirectory configuration.
 
-To use this variant, set the property `name` to `AzureActiveDirectory`.
+To use this variant, set the property `kind` to `AzureActiveDirectory`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-azureactivedirectoryname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-azureactivedirectoryproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-azureactivedirectorykind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-azureactivedirectoryproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-AzureActiveDirectory.name`
+### Parameter: `properties.kind-AzureActiveDirectory.kind`
 
 The type of data connector.
 
@@ -731,7 +729,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-AzureActiveDirectory.properties`
+### Parameter: `properties.kind-AzureActiveDirectory.properties`
 
 The properties of the data connector.
 
@@ -742,10 +740,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-azureactivedirectorypropertiesdatatypes) | object | The available data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-azureactivedirectorypropertiestenantid) | string | The tenant id to connect to, and get the data from. |
+| [`dataTypes`](#parameter-propertieskind-azureactivedirectorypropertiesdatatypes) | object | The available data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-azureactivedirectorypropertiestenantid) | string | The tenant id to connect to, and get the data from. |
 
-### Parameter: `properties.name-AzureActiveDirectory.properties.dataTypes`
+### Parameter: `properties.kind-AzureActiveDirectory.properties.dataTypes`
 
 The available data types for the connector.
 
@@ -756,9 +754,9 @@ The available data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`alerts`](#parameter-propertiesname-azureactivedirectorypropertiesdatatypesalerts) | object | Alerts data type connection. |
+| [`alerts`](#parameter-propertieskind-azureactivedirectorypropertiesdatatypesalerts) | object | Alerts data type connection. |
 
-### Parameter: `properties.name-AzureActiveDirectory.properties.dataTypes.alerts`
+### Parameter: `properties.kind-AzureActiveDirectory.properties.dataTypes.alerts`
 
 Alerts data type connection.
 
@@ -769,35 +767,35 @@ Alerts data type connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-azureactivedirectorypropertiesdatatypesalertsstate) | string | Describe whether this data type connection is enabled or not. |
+| [`state`](#parameter-propertieskind-azureactivedirectorypropertiesdatatypesalertsstate) | string | Describe whether this data type connection is enabled or not. |
 
-### Parameter: `properties.name-AzureActiveDirectory.properties.dataTypes.alerts.state`
+### Parameter: `properties.kind-AzureActiveDirectory.properties.dataTypes.alerts.state`
 
 Describe whether this data type connection is enabled or not.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-AzureActiveDirectory.properties.tenantId`
+### Parameter: `properties.kind-AzureActiveDirectory.properties.tenantId`
 
 The tenant id to connect to, and get the data from.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-AzureAdvancedThreatProtection`
+### Variant: `properties.kind-AzureAdvancedThreatProtection`
 The type of AzureAdvancedThreatProtection configuration.
 
-To use this variant, set the property `name` to `AzureAdvancedThreatProtection`.
+To use this variant, set the property `kind` to `AzureAdvancedThreatProtection`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-azureadvancedthreatprotectionname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-azureadvancedthreatprotectionproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-azureadvancedthreatprotectionkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-azureadvancedthreatprotectionproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-AzureAdvancedThreatProtection.name`
+### Parameter: `properties.kind-AzureAdvancedThreatProtection.kind`
 
 The type of data connector.
 
@@ -810,7 +808,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-AzureAdvancedThreatProtection.properties`
+### Parameter: `properties.kind-AzureAdvancedThreatProtection.properties`
 
 The properties of the data connector.
 
@@ -821,10 +819,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-azureadvancedthreatprotectionpropertiesdatatypes) | object | The available data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-azureadvancedthreatprotectionpropertiestenantid) | string | The tenant id to connect to, and get the data from. |
+| [`dataTypes`](#parameter-propertieskind-azureadvancedthreatprotectionpropertiesdatatypes) | object | The available data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-azureadvancedthreatprotectionpropertiestenantid) | string | The tenant id to connect to, and get the data from. |
 
-### Parameter: `properties.name-AzureAdvancedThreatProtection.properties.dataTypes`
+### Parameter: `properties.kind-AzureAdvancedThreatProtection.properties.dataTypes`
 
 The available data types for the connector.
 
@@ -835,9 +833,9 @@ The available data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`alerts`](#parameter-propertiesname-azureadvancedthreatprotectionpropertiesdatatypesalerts) | object | Alerts data type connection. |
+| [`alerts`](#parameter-propertieskind-azureadvancedthreatprotectionpropertiesdatatypesalerts) | object | Alerts data type connection. |
 
-### Parameter: `properties.name-AzureAdvancedThreatProtection.properties.dataTypes.alerts`
+### Parameter: `properties.kind-AzureAdvancedThreatProtection.properties.dataTypes.alerts`
 
 Alerts data type connection.
 
@@ -848,35 +846,35 @@ Alerts data type connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-azureadvancedthreatprotectionpropertiesdatatypesalertsstate) | string | Describe whether this data type connection is enabled or not. |
+| [`state`](#parameter-propertieskind-azureadvancedthreatprotectionpropertiesdatatypesalertsstate) | string | Describe whether this data type connection is enabled or not. |
 
-### Parameter: `properties.name-AzureAdvancedThreatProtection.properties.dataTypes.alerts.state`
+### Parameter: `properties.kind-AzureAdvancedThreatProtection.properties.dataTypes.alerts.state`
 
 Describe whether this data type connection is enabled or not.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-AzureAdvancedThreatProtection.properties.tenantId`
+### Parameter: `properties.kind-AzureAdvancedThreatProtection.properties.tenantId`
 
 The tenant id to connect to, and get the data from.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-AzureSecurityCenter`
+### Variant: `properties.kind-AzureSecurityCenter`
 The type of AzureSecurityCenter configuration.
 
-To use this variant, set the property `name` to `AzureSecurityCenter`.
+To use this variant, set the property `kind` to `AzureSecurityCenter`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-azuresecuritycentername) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-azuresecuritycenterproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-azuresecuritycenterkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-azuresecuritycenterproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-AzureSecurityCenter.name`
+### Parameter: `properties.kind-AzureSecurityCenter.kind`
 
 The type of data connector.
 
@@ -889,7 +887,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-AzureSecurityCenter.properties`
+### Parameter: `properties.kind-AzureSecurityCenter.properties`
 
 The properties of the data connector.
 
@@ -900,10 +898,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-azuresecuritycenterpropertiesdatatypes) | object | The available data types for the connector. |
-| [`subscriptionId`](#parameter-propertiesname-azuresecuritycenterpropertiessubscriptionid) | string | The subscription id to connect to, and get the data from. |
+| [`dataTypes`](#parameter-propertieskind-azuresecuritycenterpropertiesdatatypes) | object | The available data types for the connector. |
+| [`subscriptionId`](#parameter-propertieskind-azuresecuritycenterpropertiessubscriptionid) | string | The subscription id to connect to, and get the data from. |
 
-### Parameter: `properties.name-AzureSecurityCenter.properties.dataTypes`
+### Parameter: `properties.kind-AzureSecurityCenter.properties.dataTypes`
 
 The available data types for the connector.
 
@@ -914,9 +912,9 @@ The available data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`alerts`](#parameter-propertiesname-azuresecuritycenterpropertiesdatatypesalerts) | object | Data type for IOT data connector. |
+| [`alerts`](#parameter-propertieskind-azuresecuritycenterpropertiesdatatypesalerts) | object | Data type for IOT data connector. |
 
-### Parameter: `properties.name-AzureSecurityCenter.properties.dataTypes.alerts`
+### Parameter: `properties.kind-AzureSecurityCenter.properties.dataTypes.alerts`
 
 Data type for IOT data connector.
 
@@ -927,35 +925,35 @@ Data type for IOT data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-azuresecuritycenterpropertiesdatatypesalertsstate) | string | Whether this data type connection is enabled or not. |
+| [`state`](#parameter-propertieskind-azuresecuritycenterpropertiesdatatypesalertsstate) | string | Whether this data type connection is enabled or not. |
 
-### Parameter: `properties.name-AzureSecurityCenter.properties.dataTypes.alerts.state`
+### Parameter: `properties.kind-AzureSecurityCenter.properties.dataTypes.alerts.state`
 
 Whether this data type connection is enabled or not.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-AzureSecurityCenter.properties.subscriptionId`
+### Parameter: `properties.kind-AzureSecurityCenter.properties.subscriptionId`
 
 The subscription id to connect to, and get the data from.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-Dynamics365`
+### Variant: `properties.kind-Dynamics365`
 The type of Dynamics365 configuration.
 
-To use this variant, set the property `name` to `Dynamics365`.
+To use this variant, set the property `kind` to `Dynamics365`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-dynamics365name) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-dynamics365properties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-dynamics365kind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-dynamics365properties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-Dynamics365.name`
+### Parameter: `properties.kind-Dynamics365.kind`
 
 The type of data connector.
 
@@ -968,7 +966,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-Dynamics365.properties`
+### Parameter: `properties.kind-Dynamics365.properties`
 
 The properties of the data connector.
 
@@ -979,10 +977,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-dynamics365propertiesdatatypes) | object | The available data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-dynamics365propertiestenantid) | string | The tenant id to connect to, and get the data from. |
+| [`dataTypes`](#parameter-propertieskind-dynamics365propertiesdatatypes) | object | The available data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-dynamics365propertiestenantid) | string | The tenant id to connect to, and get the data from. |
 
-### Parameter: `properties.name-Dynamics365.properties.dataTypes`
+### Parameter: `properties.kind-Dynamics365.properties.dataTypes`
 
 The available data types for the connector.
 
@@ -993,9 +991,9 @@ The available data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dynamics365CdsActivities`](#parameter-propertiesname-dynamics365propertiesdatatypesdynamics365cdsactivities) | object | Common Data Service data type connection. |
+| [`dynamics365CdsActivities`](#parameter-propertieskind-dynamics365propertiesdatatypesdynamics365cdsactivities) | object | Common Data Service data type connection. |
 
-### Parameter: `properties.name-Dynamics365.properties.dataTypes.dynamics365CdsActivities`
+### Parameter: `properties.kind-Dynamics365.properties.dataTypes.dynamics365CdsActivities`
 
 Common Data Service data type connection.
 
@@ -1006,35 +1004,35 @@ Common Data Service data type connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-dynamics365propertiesdatatypesdynamics365cdsactivitiesstate) | string | Describe whether this data type connection is enabled or not. |
+| [`state`](#parameter-propertieskind-dynamics365propertiesdatatypesdynamics365cdsactivitiesstate) | string | Describe whether this data type connection is enabled or not. |
 
-### Parameter: `properties.name-Dynamics365.properties.dataTypes.dynamics365CdsActivities.state`
+### Parameter: `properties.kind-Dynamics365.properties.dataTypes.dynamics365CdsActivities.state`
 
 Describe whether this data type connection is enabled or not.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-Dynamics365.properties.tenantId`
+### Parameter: `properties.kind-Dynamics365.properties.tenantId`
 
 The tenant id to connect to, and get the data from.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-GCP`
+### Variant: `properties.kind-GCP`
 The type of GCP configuration.
 
-To use this variant, set the property `name` to `GCP`.
+To use this variant, set the property `kind` to `GCP`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-gcpname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-gcpproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-gcpkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-gcpproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-GCP.name`
+### Parameter: `properties.kind-GCP.kind`
 
 The type of data connector.
 
@@ -1047,7 +1045,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-GCP.properties`
+### Parameter: `properties.kind-GCP.properties`
 
 The properties of the data connector.
 
@@ -1058,12 +1056,12 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`auth`](#parameter-propertiesname-gcppropertiesauth) | object | The authentication configuration for GCP. |
-| [`connectorDefinitionName`](#parameter-propertiesname-gcppropertiesconnectordefinitionname) | string | The name of the connector definition. |
-| [`dcrConfig`](#parameter-propertiesname-gcppropertiesdcrconfig) | object | The Data Collection Rule configuration. |
-| [`request`](#parameter-propertiesname-gcppropertiesrequest) | object | The request configuration. |
+| [`auth`](#parameter-propertieskind-gcppropertiesauth) | object | The authentication configuration for GCP. |
+| [`connectorDefinitionName`](#parameter-propertieskind-gcppropertiesconnectordefinitionname) | string | The name of the connector definition. |
+| [`dcrConfig`](#parameter-propertieskind-gcppropertiesdcrconfig) | object | The Data Collection Rule configuration. |
+| [`request`](#parameter-propertieskind-gcppropertiesrequest) | object | The request configuration. |
 
-### Parameter: `properties.name-GCP.properties.auth`
+### Parameter: `properties.kind-GCP.properties.auth`
 
 The authentication configuration for GCP.
 
@@ -1074,39 +1072,39 @@ The authentication configuration for GCP.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`projectNumber`](#parameter-propertiesname-gcppropertiesauthprojectnumber) | string | The GCP project number. |
-| [`serviceAccountEmail`](#parameter-propertiesname-gcppropertiesauthserviceaccountemail) | string | The service account email address. |
-| [`workloadIdentityProviderId`](#parameter-propertiesname-gcppropertiesauthworkloadidentityproviderid) | string | The workload identity provider ID. |
+| [`projectNumber`](#parameter-propertieskind-gcppropertiesauthprojectnumber) | string | The GCP project number. |
+| [`serviceAccountEmail`](#parameter-propertieskind-gcppropertiesauthserviceaccountemail) | string | The service account email address. |
+| [`workloadIdentityProviderId`](#parameter-propertieskind-gcppropertiesauthworkloadidentityproviderid) | string | The workload identity provider ID. |
 
-### Parameter: `properties.name-GCP.properties.auth.projectNumber`
+### Parameter: `properties.kind-GCP.properties.auth.projectNumber`
 
 The GCP project number.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-GCP.properties.auth.serviceAccountEmail`
+### Parameter: `properties.kind-GCP.properties.auth.serviceAccountEmail`
 
 The service account email address.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-GCP.properties.auth.workloadIdentityProviderId`
+### Parameter: `properties.kind-GCP.properties.auth.workloadIdentityProviderId`
 
 The workload identity provider ID.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-GCP.properties.connectorDefinitionName`
+### Parameter: `properties.kind-GCP.properties.connectorDefinitionName`
 
 The name of the connector definition.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-GCP.properties.dcrConfig`
+### Parameter: `properties.kind-GCP.properties.dcrConfig`
 
 The Data Collection Rule configuration.
 
@@ -1117,32 +1115,32 @@ The Data Collection Rule configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataCollectionEndpoint`](#parameter-propertiesname-gcppropertiesdcrconfigdatacollectionendpoint) | string | The data collection endpoint. |
-| [`dataCollectionRuleImmutableId`](#parameter-propertiesname-gcppropertiesdcrconfigdatacollectionruleimmutableid) | string | The immutable ID of the data collection rule. |
-| [`streamName`](#parameter-propertiesname-gcppropertiesdcrconfigstreamname) | string | The name of the data stream. |
+| [`dataCollectionEndpoint`](#parameter-propertieskind-gcppropertiesdcrconfigdatacollectionendpoint) | string | The data collection endpoint. |
+| [`dataCollectionRuleImmutableId`](#parameter-propertieskind-gcppropertiesdcrconfigdatacollectionruleimmutableid) | string | The immutable ID of the data collection rule. |
+| [`streamName`](#parameter-propertieskind-gcppropertiesdcrconfigstreamname) | string | The name of the data stream. |
 
-### Parameter: `properties.name-GCP.properties.dcrConfig.dataCollectionEndpoint`
+### Parameter: `properties.kind-GCP.properties.dcrConfig.dataCollectionEndpoint`
 
 The data collection endpoint.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-GCP.properties.dcrConfig.dataCollectionRuleImmutableId`
+### Parameter: `properties.kind-GCP.properties.dcrConfig.dataCollectionRuleImmutableId`
 
 The immutable ID of the data collection rule.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-GCP.properties.dcrConfig.streamName`
+### Parameter: `properties.kind-GCP.properties.dcrConfig.streamName`
 
 The name of the data stream.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-GCP.properties.request`
+### Parameter: `properties.kind-GCP.properties.request`
 
 The request configuration.
 
@@ -1153,36 +1151,36 @@ The request configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`projectId`](#parameter-propertiesname-gcppropertiesrequestprojectid) | string | The GCP project ID. |
-| [`subscriptionNames`](#parameter-propertiesname-gcppropertiesrequestsubscriptionnames) | array | The list of subscription names. |
+| [`projectId`](#parameter-propertieskind-gcppropertiesrequestprojectid) | string | The GCP project ID. |
+| [`subscriptionNames`](#parameter-propertieskind-gcppropertiesrequestsubscriptionnames) | array | The list of subscription names. |
 
-### Parameter: `properties.name-GCP.properties.request.projectId`
+### Parameter: `properties.kind-GCP.properties.request.projectId`
 
 The GCP project ID.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-GCP.properties.request.subscriptionNames`
+### Parameter: `properties.kind-GCP.properties.request.subscriptionNames`
 
 The list of subscription names.
 
 - Required: Yes
 - Type: array
 
-### Variant: `properties.name-GenericUI`
+### Variant: `properties.kind-GenericUI`
 The type of Generic UI configuration.
 
-To use this variant, set the property `name` to `GenericUI`.
+To use this variant, set the property `kind` to `GenericUI`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-genericuiname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-genericuiproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-genericuikind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-genericuiproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-GenericUI.name`
+### Parameter: `properties.kind-GenericUI.kind`
 
 The type of data connector.
 
@@ -1195,7 +1193,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-GenericUI.properties`
+### Parameter: `properties.kind-GenericUI.properties`
 
 The properties of the data connector.
 
@@ -1206,17 +1204,17 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectivityCriteria`](#parameter-propertiesname-genericuipropertiesconnectivitycriteria) | array | The criteria for connector connectivity validation. |
-| [`dataTypes`](#parameter-propertiesname-genericuipropertiesdatatypes) | object | The data types for the connector. |
+| [`connectivityCriteria`](#parameter-propertieskind-genericuipropertiesconnectivitycriteria) | array | The criteria for connector connectivity validation. |
+| [`dataTypes`](#parameter-propertieskind-genericuipropertiesdatatypes) | object | The data types for the connector. |
 
-### Parameter: `properties.name-GenericUI.properties.connectivityCriteria`
+### Parameter: `properties.kind-GenericUI.properties.connectivityCriteria`
 
 The criteria for connector connectivity validation.
 
 - Required: Yes
 - Type: array
 
-### Parameter: `properties.name-GenericUI.properties.dataTypes`
+### Parameter: `properties.kind-GenericUI.properties.dataTypes`
 
 The data types for the connector.
 
@@ -1227,9 +1225,9 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`logs`](#parameter-propertiesname-genericuipropertiesdatatypeslogs) | object | The logs configuration. |
+| [`logs`](#parameter-propertieskind-genericuipropertiesdatatypeslogs) | object | The logs configuration. |
 
-### Parameter: `properties.name-GenericUI.properties.dataTypes.logs`
+### Parameter: `properties.kind-GenericUI.properties.dataTypes.logs`
 
 The logs configuration.
 
@@ -1240,28 +1238,28 @@ The logs configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-genericuipropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled. |
+| [`state`](#parameter-propertieskind-genericuipropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled. |
 
-### Parameter: `properties.name-GenericUI.properties.dataTypes.logs.state`
+### Parameter: `properties.kind-GenericUI.properties.dataTypes.logs.state`
 
 Whether this data type connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-IOT`
+### Variant: `properties.kind-IOT`
 The type of IOT configuration.
 
-To use this variant, set the property `name` to `IOT`.
+To use this variant, set the property `kind` to `IOT`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-iotname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-iotproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-iotkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-iotproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-IOT.name`
+### Parameter: `properties.kind-IOT.kind`
 
 The type of data connector.
 
@@ -1274,7 +1272,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-IOT.properties`
+### Parameter: `properties.kind-IOT.properties`
 
 The properties of the data connector.
 
@@ -1285,10 +1283,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-iotpropertiesdatatypes) | object | The available data types for the connector. |
-| [`subscriptionId`](#parameter-propertiesname-iotpropertiessubscriptionid) | string | The subscription id to connect to, and get the data from. |
+| [`dataTypes`](#parameter-propertieskind-iotpropertiesdatatypes) | object | The available data types for the connector. |
+| [`subscriptionId`](#parameter-propertieskind-iotpropertiessubscriptionid) | string | The subscription id to connect to, and get the data from. |
 
-### Parameter: `properties.name-IOT.properties.dataTypes`
+### Parameter: `properties.kind-IOT.properties.dataTypes`
 
 The available data types for the connector.
 
@@ -1299,9 +1297,9 @@ The available data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`alerts`](#parameter-propertiesname-iotpropertiesdatatypesalerts) | object | Data type for IOT data connector. |
+| [`alerts`](#parameter-propertieskind-iotpropertiesdatatypesalerts) | object | Data type for IOT data connector. |
 
-### Parameter: `properties.name-IOT.properties.dataTypes.alerts`
+### Parameter: `properties.kind-IOT.properties.dataTypes.alerts`
 
 Data type for IOT data connector.
 
@@ -1312,35 +1310,35 @@ Data type for IOT data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-iotpropertiesdatatypesalertsstate) | string | Whether this data type connection is enabled or not. |
+| [`state`](#parameter-propertieskind-iotpropertiesdatatypesalertsstate) | string | Whether this data type connection is enabled or not. |
 
-### Parameter: `properties.name-IOT.properties.dataTypes.alerts.state`
+### Parameter: `properties.kind-IOT.properties.dataTypes.alerts.state`
 
 Whether this data type connection is enabled or not.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-IOT.properties.subscriptionId`
+### Parameter: `properties.kind-IOT.properties.subscriptionId`
 
 The subscription id to connect to, and get the data from.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-MicrosoftCloudAppSecurity`
+### Variant: `properties.kind-MicrosoftCloudAppSecurity`
 The type of Microsoft Cloud App Security configuration.
 
-To use this variant, set the property `name` to `MicrosoftCloudAppSecurity`.
+To use this variant, set the property `kind` to `MicrosoftCloudAppSecurity`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-microsoftcloudappsecurityname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-microsoftcloudappsecurityproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-microsoftcloudappsecuritykind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-microsoftcloudappsecurityproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-MicrosoftCloudAppSecurity.name`
+### Parameter: `properties.kind-MicrosoftCloudAppSecurity.kind`
 
 The type of data connector.
 
@@ -1353,7 +1351,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-MicrosoftCloudAppSecurity.properties`
+### Parameter: `properties.kind-MicrosoftCloudAppSecurity.properties`
 
 The properties of the data connector.
 
@@ -1364,10 +1362,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-microsoftcloudappsecuritypropertiesdatatypes) | object | The data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-microsoftcloudappsecuritypropertiestenantid) | string | The tenant id to connect to. |
+| [`dataTypes`](#parameter-propertieskind-microsoftcloudappsecuritypropertiesdatatypes) | object | The data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-microsoftcloudappsecuritypropertiestenantid) | string | The tenant id to connect to. |
 
-### Parameter: `properties.name-MicrosoftCloudAppSecurity.properties.dataTypes`
+### Parameter: `properties.kind-MicrosoftCloudAppSecurity.properties.dataTypes`
 
 The data types for the connector.
 
@@ -1378,10 +1376,10 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`alerts`](#parameter-propertiesname-microsoftcloudappsecuritypropertiesdatatypesalerts) | object | The alerts configuration. |
-| [`discovery`](#parameter-propertiesname-microsoftcloudappsecuritypropertiesdatatypesdiscovery) | object | The discovery configuration. |
+| [`alerts`](#parameter-propertieskind-microsoftcloudappsecuritypropertiesdatatypesalerts) | object | The alerts configuration. |
+| [`discovery`](#parameter-propertieskind-microsoftcloudappsecuritypropertiesdatatypesdiscovery) | object | The discovery configuration. |
 
-### Parameter: `properties.name-MicrosoftCloudAppSecurity.properties.dataTypes.alerts`
+### Parameter: `properties.kind-MicrosoftCloudAppSecurity.properties.dataTypes.alerts`
 
 The alerts configuration.
 
@@ -1392,16 +1390,16 @@ The alerts configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-microsoftcloudappsecuritypropertiesdatatypesalertsstate) | string | Whether this data type connection is enabled. |
+| [`state`](#parameter-propertieskind-microsoftcloudappsecuritypropertiesdatatypesalertsstate) | string | Whether this data type connection is enabled. |
 
-### Parameter: `properties.name-MicrosoftCloudAppSecurity.properties.dataTypes.alerts.state`
+### Parameter: `properties.kind-MicrosoftCloudAppSecurity.properties.dataTypes.alerts.state`
 
 Whether this data type connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-MicrosoftCloudAppSecurity.properties.dataTypes.discovery`
+### Parameter: `properties.kind-MicrosoftCloudAppSecurity.properties.dataTypes.discovery`
 
 The discovery configuration.
 
@@ -1412,35 +1410,35 @@ The discovery configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-microsoftcloudappsecuritypropertiesdatatypesdiscoverystate) | string | Whether this data type connection is enabled. |
+| [`state`](#parameter-propertieskind-microsoftcloudappsecuritypropertiesdatatypesdiscoverystate) | string | Whether this data type connection is enabled. |
 
-### Parameter: `properties.name-MicrosoftCloudAppSecurity.properties.dataTypes.discovery.state`
+### Parameter: `properties.kind-MicrosoftCloudAppSecurity.properties.dataTypes.discovery.state`
 
 Whether this data type connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-MicrosoftCloudAppSecurity.properties.tenantId`
+### Parameter: `properties.kind-MicrosoftCloudAppSecurity.properties.tenantId`
 
 The tenant id to connect to.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-MicrosoftDefenderAdvancedThreatProtection`
+### Variant: `properties.kind-MicrosoftDefenderAdvancedThreatProtection`
 The type of Microsoft Defender Advanced Threat Protection configuration.
 
-To use this variant, set the property `name` to `MicrosoftDefenderAdvancedThreatProtection`.
+To use this variant, set the property `kind` to `MicrosoftDefenderAdvancedThreatProtection`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-microsoftdefenderadvancedthreatprotectionname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-microsoftdefenderadvancedthreatprotectionproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-microsoftdefenderadvancedthreatprotectionkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-microsoftdefenderadvancedthreatprotectionproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-MicrosoftDefenderAdvancedThreatProtection.name`
+### Parameter: `properties.kind-MicrosoftDefenderAdvancedThreatProtection.kind`
 
 The type of data connector.
 
@@ -1453,7 +1451,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-MicrosoftDefenderAdvancedThreatProtection.properties`
+### Parameter: `properties.kind-MicrosoftDefenderAdvancedThreatProtection.properties`
 
 The properties of the data connector.
 
@@ -1464,10 +1462,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-microsoftdefenderadvancedthreatprotectionpropertiesdatatypes) | object | The data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-microsoftdefenderadvancedthreatprotectionpropertiestenantid) | string | The tenant id to connect to. |
+| [`dataTypes`](#parameter-propertieskind-microsoftdefenderadvancedthreatprotectionpropertiesdatatypes) | object | The data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-microsoftdefenderadvancedthreatprotectionpropertiestenantid) | string | The tenant id to connect to. |
 
-### Parameter: `properties.name-MicrosoftDefenderAdvancedThreatProtection.properties.dataTypes`
+### Parameter: `properties.kind-MicrosoftDefenderAdvancedThreatProtection.properties.dataTypes`
 
 The data types for the connector.
 
@@ -1478,9 +1476,9 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`alerts`](#parameter-propertiesname-microsoftdefenderadvancedthreatprotectionpropertiesdatatypesalerts) | object | The alerts configuration. |
+| [`alerts`](#parameter-propertieskind-microsoftdefenderadvancedthreatprotectionpropertiesdatatypesalerts) | object | The alerts configuration. |
 
-### Parameter: `properties.name-MicrosoftDefenderAdvancedThreatProtection.properties.dataTypes.alerts`
+### Parameter: `properties.kind-MicrosoftDefenderAdvancedThreatProtection.properties.dataTypes.alerts`
 
 The alerts configuration.
 
@@ -1491,35 +1489,35 @@ The alerts configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-microsoftdefenderadvancedthreatprotectionpropertiesdatatypesalertsstate) | string | Whether this data type connection is enabled. |
+| [`state`](#parameter-propertieskind-microsoftdefenderadvancedthreatprotectionpropertiesdatatypesalertsstate) | string | Whether this data type connection is enabled. |
 
-### Parameter: `properties.name-MicrosoftDefenderAdvancedThreatProtection.properties.dataTypes.alerts.state`
+### Parameter: `properties.kind-MicrosoftDefenderAdvancedThreatProtection.properties.dataTypes.alerts.state`
 
 Whether this data type connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-MicrosoftDefenderAdvancedThreatProtection.properties.tenantId`
+### Parameter: `properties.kind-MicrosoftDefenderAdvancedThreatProtection.properties.tenantId`
 
 The tenant id to connect to.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-MicrosoftPurviewInformationProtection`
+### Variant: `properties.kind-MicrosoftPurviewInformationProtection`
 The type of Microsoft Purview Information Protection configuration.
 
-To use this variant, set the property `name` to `MicrosoftPurviewInformationProtection`.
+To use this variant, set the property `kind` to `MicrosoftPurviewInformationProtection`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-microsoftpurviewinformationprotectionname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-microsoftpurviewinformationprotectionproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-microsoftpurviewinformationprotectionkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-microsoftpurviewinformationprotectionproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-MicrosoftPurviewInformationProtection.name`
+### Parameter: `properties.kind-MicrosoftPurviewInformationProtection.kind`
 
 The type of data connector.
 
@@ -1532,7 +1530,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-MicrosoftPurviewInformationProtection.properties`
+### Parameter: `properties.kind-MicrosoftPurviewInformationProtection.properties`
 
 The properties of the data connector.
 
@@ -1543,10 +1541,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-microsoftpurviewinformationprotectionpropertiesdatatypes) | object | The data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-microsoftpurviewinformationprotectionpropertiestenantid) | string | The tenant id to connect to. |
+| [`dataTypes`](#parameter-propertieskind-microsoftpurviewinformationprotectionpropertiesdatatypes) | object | The data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-microsoftpurviewinformationprotectionpropertiestenantid) | string | The tenant id to connect to. |
 
-### Parameter: `properties.name-MicrosoftPurviewInformationProtection.properties.dataTypes`
+### Parameter: `properties.kind-MicrosoftPurviewInformationProtection.properties.dataTypes`
 
 The data types for the connector.
 
@@ -1557,9 +1555,9 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`incidents`](#parameter-propertiesname-microsoftpurviewinformationprotectionpropertiesdatatypesincidents) | object | The incidents configuration. |
+| [`incidents`](#parameter-propertieskind-microsoftpurviewinformationprotectionpropertiesdatatypesincidents) | object | The incidents configuration. |
 
-### Parameter: `properties.name-MicrosoftPurviewInformationProtection.properties.dataTypes.incidents`
+### Parameter: `properties.kind-MicrosoftPurviewInformationProtection.properties.dataTypes.incidents`
 
 The incidents configuration.
 
@@ -1570,35 +1568,35 @@ The incidents configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-microsoftpurviewinformationprotectionpropertiesdatatypesincidentsstate) | string | Whether this data type connection is enabled. |
+| [`state`](#parameter-propertieskind-microsoftpurviewinformationprotectionpropertiesdatatypesincidentsstate) | string | Whether this data type connection is enabled. |
 
-### Parameter: `properties.name-MicrosoftPurviewInformationProtection.properties.dataTypes.incidents.state`
+### Parameter: `properties.kind-MicrosoftPurviewInformationProtection.properties.dataTypes.incidents.state`
 
 Whether this data type connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-MicrosoftPurviewInformationProtection.properties.tenantId`
+### Parameter: `properties.kind-MicrosoftPurviewInformationProtection.properties.tenantId`
 
 The tenant id to connect to.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-MicrosoftThreatIntelligence`
+### Variant: `properties.kind-MicrosoftThreatIntelligence`
 The type of MicrosoftThreatIntelligenceType configuration.
 
-To use this variant, set the property `name` to `MicrosoftThreatIntelligence`.
+To use this variant, set the property `kind` to `MicrosoftThreatIntelligence`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-microsoftthreatintelligencename) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-microsoftthreatintelligenceproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-microsoftthreatintelligencekind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-microsoftthreatintelligenceproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-MicrosoftThreatIntelligence.name`
+### Parameter: `properties.kind-MicrosoftThreatIntelligence.kind`
 
 The type of data connector.
 
@@ -1611,7 +1609,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-MicrosoftThreatIntelligence.properties`
+### Parameter: `properties.kind-MicrosoftThreatIntelligence.properties`
 
 The properties of the data connector.
 
@@ -1622,10 +1620,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-microsoftthreatintelligencepropertiesdatatypes) | object | The available data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-microsoftthreatintelligencepropertiestenantid) | string | The tenant id to connect to, and get the data from. |
+| [`dataTypes`](#parameter-propertieskind-microsoftthreatintelligencepropertiesdatatypes) | object | The available data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-microsoftthreatintelligencepropertiestenantid) | string | The tenant id to connect to, and get the data from. |
 
-### Parameter: `properties.name-MicrosoftThreatIntelligence.properties.dataTypes`
+### Parameter: `properties.kind-MicrosoftThreatIntelligence.properties.dataTypes`
 
 The available data types for the connector.
 
@@ -1636,9 +1634,9 @@ The available data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`microsoftEmergingThreatFeed`](#parameter-propertiesname-microsoftthreatintelligencepropertiesdatatypesmicrosoftemergingthreatfeed) | object | Data type for Microsoft Threat Intelligence Platforms data connector. |
+| [`microsoftEmergingThreatFeed`](#parameter-propertieskind-microsoftthreatintelligencepropertiesdatatypesmicrosoftemergingthreatfeed) | object | Data type for Microsoft Threat Intelligence Platforms data connector. |
 
-### Parameter: `properties.name-MicrosoftThreatIntelligence.properties.dataTypes.microsoftEmergingThreatFeed`
+### Parameter: `properties.kind-MicrosoftThreatIntelligence.properties.dataTypes.microsoftEmergingThreatFeed`
 
 Data type for Microsoft Threat Intelligence Platforms data connector.
 
@@ -1649,43 +1647,43 @@ Data type for Microsoft Threat Intelligence Platforms data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`lookbackPeriod`](#parameter-propertiesname-microsoftthreatintelligencepropertiesdatatypesmicrosoftemergingthreatfeedlookbackperiod) | string | The lookback period for the feed to be imported. |
-| [`state`](#parameter-propertiesname-microsoftthreatintelligencepropertiesdatatypesmicrosoftemergingthreatfeedstate) | string | Whether this data type connection is enabled or not. |
+| [`lookbackPeriod`](#parameter-propertieskind-microsoftthreatintelligencepropertiesdatatypesmicrosoftemergingthreatfeedlookbackperiod) | string | The lookback period for the feed to be imported. |
+| [`state`](#parameter-propertieskind-microsoftthreatintelligencepropertiesdatatypesmicrosoftemergingthreatfeedstate) | string | Whether this data type connection is enabled or not. |
 
-### Parameter: `properties.name-MicrosoftThreatIntelligence.properties.dataTypes.microsoftEmergingThreatFeed.lookbackPeriod`
+### Parameter: `properties.kind-MicrosoftThreatIntelligence.properties.dataTypes.microsoftEmergingThreatFeed.lookbackPeriod`
 
 The lookback period for the feed to be imported.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-MicrosoftThreatIntelligence.properties.dataTypes.microsoftEmergingThreatFeed.state`
+### Parameter: `properties.kind-MicrosoftThreatIntelligence.properties.dataTypes.microsoftEmergingThreatFeed.state`
 
 Whether this data type connection is enabled or not.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-MicrosoftThreatIntelligence.properties.tenantId`
+### Parameter: `properties.kind-MicrosoftThreatIntelligence.properties.tenantId`
 
 The tenant id to connect to, and get the data from.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-MicrosoftThreatProtection`
+### Variant: `properties.kind-MicrosoftThreatProtection`
 The type of Microsoft Threat Protection configuration.
 
-To use this variant, set the property `name` to `MicrosoftThreatProtection`.
+To use this variant, set the property `kind` to `MicrosoftThreatProtection`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-microsoftthreatprotectionname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-microsoftthreatprotectionproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-microsoftthreatprotectionkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-microsoftthreatprotectionproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-MicrosoftThreatProtection.name`
+### Parameter: `properties.kind-MicrosoftThreatProtection.kind`
 
 The type of data connector.
 
@@ -1698,7 +1696,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-MicrosoftThreatProtection.properties`
+### Parameter: `properties.kind-MicrosoftThreatProtection.properties`
 
 The properties of the data connector.
 
@@ -1709,10 +1707,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-microsoftthreatprotectionpropertiesdatatypes) | object | The data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-microsoftthreatprotectionpropertiestenantid) | string | The tenant id to connect to. |
+| [`dataTypes`](#parameter-propertieskind-microsoftthreatprotectionpropertiesdatatypes) | object | The data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-microsoftthreatprotectionpropertiestenantid) | string | The tenant id to connect to. |
 
-### Parameter: `properties.name-MicrosoftThreatProtection.properties.dataTypes`
+### Parameter: `properties.kind-MicrosoftThreatProtection.properties.dataTypes`
 
 The data types for the connector.
 
@@ -1723,9 +1721,9 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`incidents`](#parameter-propertiesname-microsoftthreatprotectionpropertiesdatatypesincidents) | object | The incidents configuration. |
+| [`incidents`](#parameter-propertieskind-microsoftthreatprotectionpropertiesdatatypesincidents) | object | The incidents configuration. |
 
-### Parameter: `properties.name-MicrosoftThreatProtection.properties.dataTypes.incidents`
+### Parameter: `properties.kind-MicrosoftThreatProtection.properties.dataTypes.incidents`
 
 The incidents configuration.
 
@@ -1736,35 +1734,35 @@ The incidents configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-microsoftthreatprotectionpropertiesdatatypesincidentsstate) | string | Whether this data type connection is enabled. |
+| [`state`](#parameter-propertieskind-microsoftthreatprotectionpropertiesdatatypesincidentsstate) | string | Whether this data type connection is enabled. |
 
-### Parameter: `properties.name-MicrosoftThreatProtection.properties.dataTypes.incidents.state`
+### Parameter: `properties.kind-MicrosoftThreatProtection.properties.dataTypes.incidents.state`
 
 Whether this data type connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-MicrosoftThreatProtection.properties.tenantId`
+### Parameter: `properties.kind-MicrosoftThreatProtection.properties.tenantId`
 
 The tenant id to connect to.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-Office365`
+### Variant: `properties.kind-Office365`
 The type of Office 365 configuration.
 
-To use this variant, set the property `name` to `Office365`.
+To use this variant, set the property `kind` to `Office365`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-office365name) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-office365properties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-office365kind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-office365properties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-Office365.name`
+### Parameter: `properties.kind-Office365.kind`
 
 The type of data connector.
 
@@ -1777,7 +1775,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-Office365.properties`
+### Parameter: `properties.kind-Office365.properties`
 
 The properties of the data connector.
 
@@ -1788,10 +1786,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-office365propertiesdatatypes) | object | The data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-office365propertiestenantid) | string | The tenant id to connect to. |
+| [`dataTypes`](#parameter-propertieskind-office365propertiesdatatypes) | object | The data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-office365propertiestenantid) | string | The tenant id to connect to. |
 
-### Parameter: `properties.name-Office365.properties.dataTypes`
+### Parameter: `properties.kind-Office365.properties.dataTypes`
 
 The data types for the connector.
 
@@ -1802,11 +1800,11 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`exchange`](#parameter-propertiesname-office365propertiesdatatypesexchange) | object | The Exchange configuration. |
-| [`sharePoint`](#parameter-propertiesname-office365propertiesdatatypessharepoint) | object | The SharePoint configuration. |
-| [`teams`](#parameter-propertiesname-office365propertiesdatatypesteams) | object | The Teams configuration. |
+| [`exchange`](#parameter-propertieskind-office365propertiesdatatypesexchange) | object | The Exchange configuration. |
+| [`sharePoint`](#parameter-propertieskind-office365propertiesdatatypessharepoint) | object | The SharePoint configuration. |
+| [`teams`](#parameter-propertieskind-office365propertiesdatatypesteams) | object | The Teams configuration. |
 
-### Parameter: `properties.name-Office365.properties.dataTypes.exchange`
+### Parameter: `properties.kind-Office365.properties.dataTypes.exchange`
 
 The Exchange configuration.
 
@@ -1817,16 +1815,16 @@ The Exchange configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-office365propertiesdatatypesexchangestate) | string | Whether the Exchange connection is enabled. |
+| [`state`](#parameter-propertieskind-office365propertiesdatatypesexchangestate) | string | Whether the Exchange connection is enabled. |
 
-### Parameter: `properties.name-Office365.properties.dataTypes.exchange.state`
+### Parameter: `properties.kind-Office365.properties.dataTypes.exchange.state`
 
 Whether the Exchange connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-Office365.properties.dataTypes.sharePoint`
+### Parameter: `properties.kind-Office365.properties.dataTypes.sharePoint`
 
 The SharePoint configuration.
 
@@ -1837,16 +1835,16 @@ The SharePoint configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-office365propertiesdatatypessharepointstate) | string | Whether the SharePoint connection is enabled. |
+| [`state`](#parameter-propertieskind-office365propertiesdatatypessharepointstate) | string | Whether the SharePoint connection is enabled. |
 
-### Parameter: `properties.name-Office365.properties.dataTypes.sharePoint.state`
+### Parameter: `properties.kind-Office365.properties.dataTypes.sharePoint.state`
 
 Whether the SharePoint connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-Office365.properties.dataTypes.teams`
+### Parameter: `properties.kind-Office365.properties.dataTypes.teams`
 
 The Teams configuration.
 
@@ -1857,35 +1855,35 @@ The Teams configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-office365propertiesdatatypesteamsstate) | string | Whether the Teams connection is enabled. |
+| [`state`](#parameter-propertieskind-office365propertiesdatatypesteamsstate) | string | Whether the Teams connection is enabled. |
 
-### Parameter: `properties.name-Office365.properties.dataTypes.teams.state`
+### Parameter: `properties.kind-Office365.properties.dataTypes.teams.state`
 
 Whether the Teams connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-Office365.properties.tenantId`
+### Parameter: `properties.kind-Office365.properties.tenantId`
 
 The tenant id to connect to.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-Office365Project`
+### Variant: `properties.kind-Office365Project`
 The type of Office 365 Project configuration.
 
-To use this variant, set the property `name` to `Office365Project`.
+To use this variant, set the property `kind` to `Office365Project`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-office365projectname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-office365projectproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-office365projectkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-office365projectproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-Office365Project.name`
+### Parameter: `properties.kind-Office365Project.kind`
 
 The type of data connector.
 
@@ -1898,7 +1896,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-Office365Project.properties`
+### Parameter: `properties.kind-Office365Project.properties`
 
 The properties of the data connector.
 
@@ -1909,10 +1907,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-office365projectpropertiesdatatypes) | object | The data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-office365projectpropertiestenantid) | string | The tenant id to connect to. |
+| [`dataTypes`](#parameter-propertieskind-office365projectpropertiesdatatypes) | object | The data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-office365projectpropertiestenantid) | string | The tenant id to connect to. |
 
-### Parameter: `properties.name-Office365Project.properties.dataTypes`
+### Parameter: `properties.kind-Office365Project.properties.dataTypes`
 
 The data types for the connector.
 
@@ -1923,9 +1921,9 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`logs`](#parameter-propertiesname-office365projectpropertiesdatatypeslogs) | object | The logs configuration. |
+| [`logs`](#parameter-propertieskind-office365projectpropertiesdatatypeslogs) | object | The logs configuration. |
 
-### Parameter: `properties.name-Office365Project.properties.dataTypes.logs`
+### Parameter: `properties.kind-Office365Project.properties.dataTypes.logs`
 
 The logs configuration.
 
@@ -1936,35 +1934,35 @@ The logs configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-office365projectpropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled. |
+| [`state`](#parameter-propertieskind-office365projectpropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled. |
 
-### Parameter: `properties.name-Office365Project.properties.dataTypes.logs.state`
+### Parameter: `properties.kind-Office365Project.properties.dataTypes.logs.state`
 
 Whether this data type connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-Office365Project.properties.tenantId`
+### Parameter: `properties.kind-Office365Project.properties.tenantId`
 
 The tenant id to connect to.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-OfficeATP`
+### Variant: `properties.kind-OfficeATP`
 The type of Office ATP configuration.
 
-To use this variant, set the property `name` to `OfficeATP`.
+To use this variant, set the property `kind` to `OfficeATP`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-officeatpname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-officeatpproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-officeatpkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-officeatpproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-OfficeATP.name`
+### Parameter: `properties.kind-OfficeATP.kind`
 
 The type of data connector.
 
@@ -1977,7 +1975,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-OfficeATP.properties`
+### Parameter: `properties.kind-OfficeATP.properties`
 
 The properties of the data connector.
 
@@ -1988,10 +1986,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-officeatppropertiesdatatypes) | object | The data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-officeatppropertiestenantid) | string | The tenant id to connect to. |
+| [`dataTypes`](#parameter-propertieskind-officeatppropertiesdatatypes) | object | The data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-officeatppropertiestenantid) | string | The tenant id to connect to. |
 
-### Parameter: `properties.name-OfficeATP.properties.dataTypes`
+### Parameter: `properties.kind-OfficeATP.properties.dataTypes`
 
 The data types for the connector.
 
@@ -2002,9 +2000,9 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`alerts`](#parameter-propertiesname-officeatppropertiesdatatypesalerts) | object | The alerts configuration. |
+| [`alerts`](#parameter-propertieskind-officeatppropertiesdatatypesalerts) | object | The alerts configuration. |
 
-### Parameter: `properties.name-OfficeATP.properties.dataTypes.alerts`
+### Parameter: `properties.kind-OfficeATP.properties.dataTypes.alerts`
 
 The alerts configuration.
 
@@ -2015,35 +2013,35 @@ The alerts configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-officeatppropertiesdatatypesalertsstate) | string | Whether this data type connection is enabled. |
+| [`state`](#parameter-propertieskind-officeatppropertiesdatatypesalertsstate) | string | Whether this data type connection is enabled. |
 
-### Parameter: `properties.name-OfficeATP.properties.dataTypes.alerts.state`
+### Parameter: `properties.kind-OfficeATP.properties.dataTypes.alerts.state`
 
 Whether this data type connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-OfficeATP.properties.tenantId`
+### Parameter: `properties.kind-OfficeATP.properties.tenantId`
 
 The tenant id to connect to.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-OfficeIRM`
+### Variant: `properties.kind-OfficeIRM`
 The type of Office IRM configuration.
 
-To use this variant, set the property `name` to `OfficeIRM`.
+To use this variant, set the property `kind` to `OfficeIRM`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-officeirmname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-officeirmproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-officeirmkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-officeirmproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-OfficeIRM.name`
+### Parameter: `properties.kind-OfficeIRM.kind`
 
 The type of data connector.
 
@@ -2056,7 +2054,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-OfficeIRM.properties`
+### Parameter: `properties.kind-OfficeIRM.properties`
 
 The properties of the data connector.
 
@@ -2067,10 +2065,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-officeirmpropertiesdatatypes) | object | The data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-officeirmpropertiestenantid) | string | The tenant id to connect to. |
+| [`dataTypes`](#parameter-propertieskind-officeirmpropertiesdatatypes) | object | The data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-officeirmpropertiestenantid) | string | The tenant id to connect to. |
 
-### Parameter: `properties.name-OfficeIRM.properties.dataTypes`
+### Parameter: `properties.kind-OfficeIRM.properties.dataTypes`
 
 The data types for the connector.
 
@@ -2081,9 +2079,9 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`logs`](#parameter-propertiesname-officeirmpropertiesdatatypeslogs) | object | The logs configuration. |
+| [`logs`](#parameter-propertieskind-officeirmpropertiesdatatypeslogs) | object | The logs configuration. |
 
-### Parameter: `properties.name-OfficeIRM.properties.dataTypes.logs`
+### Parameter: `properties.kind-OfficeIRM.properties.dataTypes.logs`
 
 The logs configuration.
 
@@ -2094,35 +2092,35 @@ The logs configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-officeirmpropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled. |
+| [`state`](#parameter-propertieskind-officeirmpropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled. |
 
-### Parameter: `properties.name-OfficeIRM.properties.dataTypes.logs.state`
+### Parameter: `properties.kind-OfficeIRM.properties.dataTypes.logs.state`
 
 Whether this data type connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-OfficeIRM.properties.tenantId`
+### Parameter: `properties.kind-OfficeIRM.properties.tenantId`
 
 The tenant id to connect to.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-OfficePowerBI`
+### Variant: `properties.kind-OfficePowerBI`
 The type of Office Power BI configuration.
 
-To use this variant, set the property `name` to `OfficePowerBI`.
+To use this variant, set the property `kind` to `OfficePowerBI`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-officepowerbiname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-officepowerbiproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-officepowerbikind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-officepowerbiproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-OfficePowerBI.name`
+### Parameter: `properties.kind-OfficePowerBI.kind`
 
 The type of data connector.
 
@@ -2135,7 +2133,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-OfficePowerBI.properties`
+### Parameter: `properties.kind-OfficePowerBI.properties`
 
 The properties of the data connector.
 
@@ -2146,10 +2144,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-officepowerbipropertiesdatatypes) | object | The data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-officepowerbipropertiestenantid) | string | The tenant id to connect to. |
+| [`dataTypes`](#parameter-propertieskind-officepowerbipropertiesdatatypes) | object | The data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-officepowerbipropertiestenantid) | string | The tenant id to connect to. |
 
-### Parameter: `properties.name-OfficePowerBI.properties.dataTypes`
+### Parameter: `properties.kind-OfficePowerBI.properties.dataTypes`
 
 The data types for the connector.
 
@@ -2160,9 +2158,9 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`logs`](#parameter-propertiesname-officepowerbipropertiesdatatypeslogs) | object | The logs configuration. |
+| [`logs`](#parameter-propertieskind-officepowerbipropertiesdatatypeslogs) | object | The logs configuration. |
 
-### Parameter: `properties.name-OfficePowerBI.properties.dataTypes.logs`
+### Parameter: `properties.kind-OfficePowerBI.properties.dataTypes.logs`
 
 The logs configuration.
 
@@ -2173,35 +2171,35 @@ The logs configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-officepowerbipropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled. |
+| [`state`](#parameter-propertieskind-officepowerbipropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled. |
 
-### Parameter: `properties.name-OfficePowerBI.properties.dataTypes.logs.state`
+### Parameter: `properties.kind-OfficePowerBI.properties.dataTypes.logs.state`
 
 Whether this data type connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-OfficePowerBI.properties.tenantId`
+### Parameter: `properties.kind-OfficePowerBI.properties.tenantId`
 
 The tenant id to connect to.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-PurviewAudit`
+### Variant: `properties.kind-PurviewAudit`
 The type of Purview Audit configuration.
 
-To use this variant, set the property `name` to `PurviewAudit`.
+To use this variant, set the property `kind` to `PurviewAudit`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-purviewauditname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-purviewauditproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-purviewauditkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-purviewauditproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-PurviewAudit.name`
+### Parameter: `properties.kind-PurviewAudit.kind`
 
 The type of data connector.
 
@@ -2214,7 +2212,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-PurviewAudit.properties`
+### Parameter: `properties.kind-PurviewAudit.properties`
 
 The properties of the data connector.
 
@@ -2225,10 +2223,10 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-purviewauditpropertiesdatatypes) | object | The data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-purviewauditpropertiestenantid) | string | The tenant id to connect to. |
+| [`dataTypes`](#parameter-propertieskind-purviewauditpropertiesdatatypes) | object | The data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-purviewauditpropertiestenantid) | string | The tenant id to connect to. |
 
-### Parameter: `properties.name-PurviewAudit.properties.dataTypes`
+### Parameter: `properties.kind-PurviewAudit.properties.dataTypes`
 
 The data types for the connector.
 
@@ -2239,9 +2237,9 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`logs`](#parameter-propertiesname-purviewauditpropertiesdatatypeslogs) | object | The logs configuration. |
+| [`logs`](#parameter-propertieskind-purviewauditpropertiesdatatypeslogs) | object | The logs configuration. |
 
-### Parameter: `properties.name-PurviewAudit.properties.dataTypes.logs`
+### Parameter: `properties.kind-PurviewAudit.properties.dataTypes.logs`
 
 The logs configuration.
 
@@ -2252,35 +2250,35 @@ The logs configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-purviewauditpropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled. |
+| [`state`](#parameter-propertieskind-purviewauditpropertiesdatatypeslogsstate) | string | Whether this data type connection is enabled. |
 
-### Parameter: `properties.name-PurviewAudit.properties.dataTypes.logs.state`
+### Parameter: `properties.kind-PurviewAudit.properties.dataTypes.logs.state`
 
 Whether this data type connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-PurviewAudit.properties.tenantId`
+### Parameter: `properties.kind-PurviewAudit.properties.tenantId`
 
 The tenant id to connect to.
 
 - Required: Yes
 - Type: string
 
-### Variant: `properties.name-RestApiPoller`
+### Variant: `properties.kind-RestApiPoller`
 The type of REST API Poller configuration.
 
-To use this variant, set the property `name` to `RestApiPoller`.
+To use this variant, set the property `kind` to `RestApiPoller`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-restapipollername) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-restapipollerproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-restapipollerkind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-restapipollerproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-RestApiPoller.name`
+### Parameter: `properties.kind-RestApiPoller.kind`
 
 The type of data connector.
 
@@ -2293,7 +2291,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-RestApiPoller.properties`
+### Parameter: `properties.kind-RestApiPoller.properties`
 
 The properties of the data connector.
 
@@ -2304,23 +2302,23 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`parseMappings`](#parameter-propertiesname-restapipollerpropertiesparsemappings) | array | The parsing rules for the response. |
-| [`pollingConfig`](#parameter-propertiesname-restapipollerpropertiespollingconfig) | object | The polling configuration for the data connector. |
+| [`parseMappings`](#parameter-propertieskind-restapipollerpropertiesparsemappings) | array | The parsing rules for the response. |
+| [`pollingConfig`](#parameter-propertieskind-restapipollerpropertiespollingconfig) | object | The polling configuration for the data connector. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`lookbackPeriod`](#parameter-propertiesname-restapipollerpropertieslookbackperiod) | string | The lookback period for historical data. |
+| [`lookbackPeriod`](#parameter-propertieskind-restapipollerpropertieslookbackperiod) | string | The lookback period for historical data. |
 
-### Parameter: `properties.name-RestApiPoller.properties.parseMappings`
+### Parameter: `properties.kind-RestApiPoller.properties.parseMappings`
 
 The parsing rules for the response.
 
 - Required: Yes
 - Type: array
 
-### Parameter: `properties.name-RestApiPoller.properties.pollingConfig`
+### Parameter: `properties.kind-RestApiPoller.properties.pollingConfig`
 
 The polling configuration for the data connector.
 
@@ -2331,17 +2329,17 @@ The polling configuration for the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`auth`](#parameter-propertiesname-restapipollerpropertiespollingconfigauth) | object | The authentication configuration. |
-| [`request`](#parameter-propertiesname-restapipollerpropertiespollingconfigrequest) | object | The request configuration. |
+| [`auth`](#parameter-propertieskind-restapipollerpropertiespollingconfigauth) | object | The authentication configuration. |
+| [`request`](#parameter-propertieskind-restapipollerpropertiespollingconfigrequest) | object | The request configuration. |
 
-### Parameter: `properties.name-RestApiPoller.properties.pollingConfig.auth`
+### Parameter: `properties.kind-RestApiPoller.properties.pollingConfig.auth`
 
 The authentication configuration.
 
 - Required: Yes
 - Type: object
 
-### Parameter: `properties.name-RestApiPoller.properties.pollingConfig.request`
+### Parameter: `properties.kind-RestApiPoller.properties.pollingConfig.request`
 
 The request configuration.
 
@@ -2352,80 +2350,80 @@ The request configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`endpoint`](#parameter-propertiesname-restapipollerpropertiespollingconfigrequestendpoint) | string | The API endpoint to poll. |
-| [`method`](#parameter-propertiesname-restapipollerpropertiespollingconfigrequestmethod) | string | The HTTP method to use. |
-| [`rateLimitQps`](#parameter-propertiesname-restapipollerpropertiespollingconfigrequestratelimitqps) | int | Rate limit in queries per second. |
-| [`timeout`](#parameter-propertiesname-restapipollerpropertiespollingconfigrequesttimeout) | string | Request timeout duration. |
+| [`endpoint`](#parameter-propertieskind-restapipollerpropertiespollingconfigrequestendpoint) | string | The API endpoint to poll. |
+| [`method`](#parameter-propertieskind-restapipollerpropertiespollingconfigrequestmethod) | string | The HTTP method to use. |
+| [`rateLimitQps`](#parameter-propertieskind-restapipollerpropertiespollingconfigrequestratelimitqps) | int | Rate limit in queries per second. |
+| [`timeout`](#parameter-propertieskind-restapipollerpropertiespollingconfigrequesttimeout) | string | Request timeout duration. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`headers`](#parameter-propertiesname-restapipollerpropertiespollingconfigrequestheaders) | object | Additional headers to include in the request. |
-| [`queryParameters`](#parameter-propertiesname-restapipollerpropertiespollingconfigrequestqueryparameters) | object | Query parameters to include in the request. |
+| [`headers`](#parameter-propertieskind-restapipollerpropertiespollingconfigrequestheaders) | object | Additional headers to include in the request. |
+| [`queryParameters`](#parameter-propertieskind-restapipollerpropertiespollingconfigrequestqueryparameters) | object | Query parameters to include in the request. |
 
-### Parameter: `properties.name-RestApiPoller.properties.pollingConfig.request.endpoint`
+### Parameter: `properties.kind-RestApiPoller.properties.pollingConfig.request.endpoint`
 
 The API endpoint to poll.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-RestApiPoller.properties.pollingConfig.request.method`
+### Parameter: `properties.kind-RestApiPoller.properties.pollingConfig.request.method`
 
 The HTTP method to use.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-RestApiPoller.properties.pollingConfig.request.rateLimitQps`
+### Parameter: `properties.kind-RestApiPoller.properties.pollingConfig.request.rateLimitQps`
 
 Rate limit in queries per second.
 
 - Required: Yes
 - Type: int
 
-### Parameter: `properties.name-RestApiPoller.properties.pollingConfig.request.timeout`
+### Parameter: `properties.kind-RestApiPoller.properties.pollingConfig.request.timeout`
 
 Request timeout duration.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-RestApiPoller.properties.pollingConfig.request.headers`
+### Parameter: `properties.kind-RestApiPoller.properties.pollingConfig.request.headers`
 
 Additional headers to include in the request.
 
 - Required: No
 - Type: object
 
-### Parameter: `properties.name-RestApiPoller.properties.pollingConfig.request.queryParameters`
+### Parameter: `properties.kind-RestApiPoller.properties.pollingConfig.request.queryParameters`
 
 Query parameters to include in the request.
 
 - Required: No
 - Type: object
 
-### Parameter: `properties.name-RestApiPoller.properties.lookbackPeriod`
+### Parameter: `properties.kind-RestApiPoller.properties.lookbackPeriod`
 
 The lookback period for historical data.
 
 - Required: No
 - Type: string
 
-### Variant: `properties.name-ThreatIntelligence`
+### Variant: `properties.kind-ThreatIntelligence`
 The type of ThreatIntelligenceType configuration.
 
-To use this variant, set the property `name` to `ThreatIntelligence`.
+To use this variant, set the property `kind` to `ThreatIntelligence`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-threatintelligencename) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-threatintelligenceproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-threatintelligencekind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-threatintelligenceproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-ThreatIntelligence.name`
+### Parameter: `properties.kind-ThreatIntelligence.kind`
 
 The type of data connector.
 
@@ -2438,7 +2436,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-ThreatIntelligence.properties`
+### Parameter: `properties.kind-ThreatIntelligence.properties`
 
 The properties of the data connector.
 
@@ -2449,16 +2447,16 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-threatintelligencepropertiesdatatypes) | object | The available data types for the connector. |
-| [`tenantId`](#parameter-propertiesname-threatintelligencepropertiestenantid) | string | The tenant id to connect to, and get the data from. |
+| [`dataTypes`](#parameter-propertieskind-threatintelligencepropertiesdatatypes) | object | The available data types for the connector. |
+| [`tenantId`](#parameter-propertieskind-threatintelligencepropertiestenantid) | string | The tenant id to connect to, and get the data from. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`tipLookbackPeriod`](#parameter-propertiesname-threatintelligencepropertiestiplookbackperiod) | string | The lookback period for the feed to be imported. |
+| [`tipLookbackPeriod`](#parameter-propertieskind-threatintelligencepropertiestiplookbackperiod) | string | The lookback period for the feed to be imported. |
 
-### Parameter: `properties.name-ThreatIntelligence.properties.dataTypes`
+### Parameter: `properties.kind-ThreatIntelligence.properties.dataTypes`
 
 The available data types for the connector.
 
@@ -2469,9 +2467,9 @@ The available data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`indicators`](#parameter-propertiesname-threatintelligencepropertiesdatatypesindicators) | object | Data type for indicators connection. |
+| [`indicators`](#parameter-propertieskind-threatintelligencepropertiesdatatypesindicators) | object | Data type for indicators connection. |
 
-### Parameter: `properties.name-ThreatIntelligence.properties.dataTypes.indicators`
+### Parameter: `properties.kind-ThreatIntelligence.properties.dataTypes.indicators`
 
 Data type for indicators connection.
 
@@ -2482,42 +2480,42 @@ Data type for indicators connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`state`](#parameter-propertiesname-threatintelligencepropertiesdatatypesindicatorsstate) | string | Whether this data type connection is enabled or not. |
+| [`state`](#parameter-propertieskind-threatintelligencepropertiesdatatypesindicatorsstate) | string | Whether this data type connection is enabled or not. |
 
-### Parameter: `properties.name-ThreatIntelligence.properties.dataTypes.indicators.state`
+### Parameter: `properties.kind-ThreatIntelligence.properties.dataTypes.indicators.state`
 
 Whether this data type connection is enabled or not.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-ThreatIntelligence.properties.tenantId`
+### Parameter: `properties.kind-ThreatIntelligence.properties.tenantId`
 
 The tenant id to connect to, and get the data from.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-ThreatIntelligence.properties.tipLookbackPeriod`
+### Parameter: `properties.kind-ThreatIntelligence.properties.tipLookbackPeriod`
 
 The lookback period for the feed to be imported.
 
 - Required: No
 - Type: string
 
-### Variant: `properties.name-ThreatIntelligenceTaxii`
+### Variant: `properties.kind-ThreatIntelligenceTaxii`
 The type of Threat Intelligence TAXII configuration.
 
-To use this variant, set the property `name` to `ThreatIntelligenceTaxii`.
+To use this variant, set the property `kind` to `ThreatIntelligenceTaxii`.
 
 **Required parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-propertiesname-threatintelligencetaxiiname) | string | The type of data connector. |
-| [`properties`](#parameter-propertiesname-threatintelligencetaxiiproperties) | object | The properties of the data connector. |
+| [`kind`](#parameter-propertieskind-threatintelligencetaxiikind) | string | The type of data connector. |
+| [`properties`](#parameter-propertieskind-threatintelligencetaxiiproperties) | object | The properties of the data connector. |
 
-### Parameter: `properties.name-ThreatIntelligenceTaxii.name`
+### Parameter: `properties.kind-ThreatIntelligenceTaxii.kind`
 
 The type of data connector.
 
@@ -2530,7 +2528,7 @@ The type of data connector.
   ]
   ```
 
-### Parameter: `properties.name-ThreatIntelligenceTaxii.properties`
+### Parameter: `properties.kind-ThreatIntelligenceTaxii.properties`
 
 The properties of the data connector.
 
@@ -2541,9 +2539,9 @@ The properties of the data connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dataTypes`](#parameter-propertiesname-threatintelligencetaxiipropertiesdatatypes) | object | The data types for the connector. |
+| [`dataTypes`](#parameter-propertieskind-threatintelligencetaxiipropertiesdatatypes) | object | The data types for the connector. |
 
-### Parameter: `properties.name-ThreatIntelligenceTaxii.properties.dataTypes`
+### Parameter: `properties.kind-ThreatIntelligenceTaxii.properties.dataTypes`
 
 The data types for the connector.
 
@@ -2554,9 +2552,9 @@ The data types for the connector.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`taxiiClient`](#parameter-propertiesname-threatintelligencetaxiipropertiesdatatypestaxiiclient) | object | The TAXII client configuration. |
+| [`taxiiClient`](#parameter-propertieskind-threatintelligencetaxiipropertiesdatatypestaxiiclient) | object | The TAXII client configuration. |
 
-### Parameter: `properties.name-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient`
+### Parameter: `properties.kind-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient`
 
 The TAXII client configuration.
 
@@ -2567,54 +2565,54 @@ The TAXII client configuration.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`collectionId`](#parameter-propertiesname-threatintelligencetaxiipropertiesdatatypestaxiiclientcollectionid) | string | The collection ID to fetch from. |
-| [`state`](#parameter-propertiesname-threatintelligencetaxiipropertiesdatatypestaxiiclientstate) | string | Whether this connection is enabled. |
-| [`taxiiServer`](#parameter-propertiesname-threatintelligencetaxiipropertiesdatatypestaxiiclienttaxiiserver) | string | The TAXII server URL. |
-| [`workspaceId`](#parameter-propertiesname-threatintelligencetaxiipropertiesdatatypestaxiiclientworkspaceid) | string | The workspace ID for the connector. |
+| [`collectionId`](#parameter-propertieskind-threatintelligencetaxiipropertiesdatatypestaxiiclientcollectionid) | string | The collection ID to fetch from. |
+| [`state`](#parameter-propertieskind-threatintelligencetaxiipropertiesdatatypestaxiiclientstate) | string | Whether this connection is enabled. |
+| [`taxiiServer`](#parameter-propertieskind-threatintelligencetaxiipropertiesdatatypestaxiiclienttaxiiserver) | string | The TAXII server URL. |
+| [`workspaceId`](#parameter-propertieskind-threatintelligencetaxiipropertiesdatatypestaxiiclientworkspaceid) | string | The workspace ID for the connector. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`password`](#parameter-propertiesname-threatintelligencetaxiipropertiesdatatypestaxiiclientpassword) | string | The password for authentication. |
-| [`username`](#parameter-propertiesname-threatintelligencetaxiipropertiesdatatypestaxiiclientusername) | string | The username for authentication. |
+| [`password`](#parameter-propertieskind-threatintelligencetaxiipropertiesdatatypestaxiiclientpassword) | string | The password for authentication. |
+| [`username`](#parameter-propertieskind-threatintelligencetaxiipropertiesdatatypestaxiiclientusername) | string | The username for authentication. |
 
-### Parameter: `properties.name-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.collectionId`
+### Parameter: `properties.kind-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.collectionId`
 
 The collection ID to fetch from.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.state`
+### Parameter: `properties.kind-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.state`
 
 Whether this connection is enabled.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.taxiiServer`
+### Parameter: `properties.kind-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.taxiiServer`
 
 The TAXII server URL.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.workspaceId`
+### Parameter: `properties.kind-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.workspaceId`
 
 The workspace ID for the connector.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `properties.name-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.password`
+### Parameter: `properties.kind-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.password`
 
 The password for authentication.
 
 - Required: No
 - Type: string
 
-### Parameter: `properties.name-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.username`
+### Parameter: `properties.kind-ThreatIntelligenceTaxii.properties.dataTypes.taxiiClient.username`
 
 The username for authentication.
 
@@ -2644,6 +2642,13 @@ Location for all resources.
 - Type: string
 - Default: `[resourceGroup().location]`
 
+### Parameter: `name`
+
+The name of the data connector.
+
+- Required: No
+- Type: string
+
 ## Outputs
 
 | Output | Type | Description |
@@ -2654,14 +2659,6 @@ Location for all resources.
 | `resourceId` | string | The resource ID of the deployed data connector. |
 | `resourceType` | string | The resource type of the deployed data connector. |
 | `systemAssignedPrincipalId` | string | The principal ID of the system assigned identity of the deployed data connector. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

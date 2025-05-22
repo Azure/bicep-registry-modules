@@ -2,8 +2,6 @@ metadata name = 'Security Insights Data Connectors'
 metadata description = 'This module deploys a Security Insights Data Connector.'
 metadata owner = 'Azure/module-maintainers'
 
-import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-
 @description('Required. The resource ID of the Log Analytics workspace.')
 param workspaceResourceId string
 
@@ -13,8 +11,8 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Required. The name of the data connector.')
-param name string
+@description('Optional. The name of the data connector.')
+param name string?
 
 @description('Required. The data connector configuration.')
 param properties dataConnectorType
@@ -45,8 +43,8 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existin
 resource dataConnector 'Microsoft.SecurityInsights/dataConnectors@2025-03-01' = {
   scope: workspace
   name: name
-  kind: name
-  properties: properties
+  kind: properties.kind
+  properties: properties.properties
 }
 
 @description('The name of the deployed data connector.')
@@ -73,7 +71,7 @@ output location string = location
 
 @export()
 @description('The type of a site configuration.')
-@discriminator('name')
+@discriminator('kind')
 type dataConnectorType =
   | amazonWebServicesCloudTrailType
   | amazonWebServicesS3Type
@@ -104,7 +102,7 @@ type dataConnectorType =
 @description('The type of API Polling configuration.')
 type apiPollingType = {
   @description('Required. The type of data connector.')
-  name: 'APIPolling'
+  kind: 'APIPolling'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The polling configuration for the data connector.')
@@ -136,7 +134,7 @@ type apiPollingType = {
 @description('The type of Generic UI configuration.')
 type genericUiType = {
   @description('Required. The type of data connector.')
-  name: 'GenericUI'
+  kind: 'GenericUI'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -156,7 +154,7 @@ type genericUiType = {
 @description('The type of Microsoft Cloud App Security configuration.')
 type microsoftCloudAppSecurityType = {
   @description('Required. The type of data connector.')
-  name: 'MicrosoftCloudAppSecurity'
+  kind: 'MicrosoftCloudAppSecurity'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -181,7 +179,7 @@ type microsoftCloudAppSecurityType = {
 @description('The type of Microsoft Defender Advanced Threat Protection configuration.')
 type microsoftDefenderAdvancedThreatProtectionType = {
   @description('Required. The type of data connector.')
-  name: 'MicrosoftDefenderAdvancedThreatProtection'
+  kind: 'MicrosoftDefenderAdvancedThreatProtection'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -201,7 +199,7 @@ type microsoftDefenderAdvancedThreatProtectionType = {
 @description('The type of Microsoft Purview Information Protection configuration.')
 type microsoftPurviewInformationProtectionType = {
   @description('Required. The type of data connector.')
-  name: 'MicrosoftPurviewInformationProtection'
+  kind: 'MicrosoftPurviewInformationProtection'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -221,7 +219,7 @@ type microsoftPurviewInformationProtectionType = {
 @description('The type of Microsoft Threat Protection configuration.')
 type microsoftThreatProtectionType = {
   @description('Required. The type of data connector.')
-  name: 'MicrosoftThreatProtection'
+  kind: 'MicrosoftThreatProtection'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -241,7 +239,7 @@ type microsoftThreatProtectionType = {
 @description('The type of Office 365 configuration.')
 type office365Type = {
   @description('Required. The type of data connector.')
-  name: 'Office365'
+  kind: 'Office365'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -271,7 +269,7 @@ type office365Type = {
 @description('The type of Office 365 Project configuration.')
 type office365ProjectType = {
   @description('Required. The type of data connector.')
-  name: 'Office365Project'
+  kind: 'Office365Project'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -291,7 +289,7 @@ type office365ProjectType = {
 @description('The type of Office ATP configuration.')
 type officeATPType = {
   @description('Required. The type of data connector.')
-  name: 'OfficeATP'
+  kind: 'OfficeATP'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -311,7 +309,7 @@ type officeATPType = {
 @description('The type of Office IRM configuration.')
 type officeIRMType = {
   @description('Required. The type of data connector.')
-  name: 'OfficeIRM'
+  kind: 'OfficeIRM'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -331,7 +329,7 @@ type officeIRMType = {
 @description('The type of Office Power BI configuration.')
 type officePowerBIType = {
   @description('Required. The type of data connector.')
-  name: 'OfficePowerBI'
+  kind: 'OfficePowerBI'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -351,7 +349,7 @@ type officePowerBIType = {
 @description('The type of Purview Audit configuration.')
 type purviewAuditType = {
   @description('Required. The type of data connector.')
-  name: 'PurviewAudit'
+  kind: 'PurviewAudit'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -371,7 +369,7 @@ type purviewAuditType = {
 @description('The type of REST API Poller configuration.')
 type restApiPollerType = {
   @description('Required. The type of data connector.')
-  name: 'RestApiPoller'
+  kind: 'RestApiPoller'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The polling configuration for the data connector.')
@@ -405,7 +403,7 @@ type restApiPollerType = {
 @description('The type of Threat Intelligence TAXII configuration.')
 type threatIntelligenceTaxiiType = {
   @description('Required. The type of data connector.')
-  name: 'ThreatIntelligenceTaxii'
+  kind: 'ThreatIntelligenceTaxii'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The data types for the connector.')
@@ -433,7 +431,7 @@ type threatIntelligenceTaxiiType = {
 @description('The type of AmazonWebServicesCloudTrail configuration.')
 type amazonWebServicesCloudTrailType = {
   @description('Required. The type of data connector.')
-  name: 'AmazonWebServicesCloudTrail'
+  kind: 'AmazonWebServicesCloudTrail'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The AWS Role Arn (with CloudTrailReadOnly policy) that is used to access the AWS account.')
@@ -453,7 +451,7 @@ type amazonWebServicesCloudTrailType = {
 @description('The type of AmazonWebServicesS3 configuration.')
 type amazonWebServicesS3Type = {
   @description('Required. The type of data connector.')
-  name: 'AmazonWebServicesS3'
+  kind: 'AmazonWebServicesS3'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The available data types for the connector.')
@@ -477,7 +475,7 @@ type amazonWebServicesS3Type = {
 @description('The type of AzureActiveDirectory configuration.')
 type azureActiveDirectoryType = {
   @description('Required. The type of data connector.')
-  name: 'AzureActiveDirectory'
+  kind: 'AzureActiveDirectory'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The available data types for the connector.')
@@ -497,7 +495,7 @@ type azureActiveDirectoryType = {
 @description('The type of AzureAdvancedThreatProtection configuration.')
 type azureAdvancedThreatProtectionType = {
   @description('Required. The type of data connector.')
-  name: 'AzureAdvancedThreatProtection'
+  kind: 'AzureAdvancedThreatProtection'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The available data types for the connector.')
@@ -517,7 +515,7 @@ type azureAdvancedThreatProtectionType = {
 @description('The type of AzureSecurityCenter configuration.')
 type azureSecurityCenterType = {
   @description('Required. The type of data connector.')
-  name: 'AzureSecurityCenter'
+  kind: 'AzureSecurityCenter'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The available data types for the connector.')
@@ -537,7 +535,7 @@ type azureSecurityCenterType = {
 @description('The type of Dynamics365 configuration.')
 type dynamics365Type = {
   @description('Required. The type of data connector.')
-  name: 'Dynamics365'
+  kind: 'Dynamics365'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The available data types for the connector.')
@@ -557,7 +555,7 @@ type dynamics365Type = {
 @description('The type of GCP configuration.')
 type gcpType = {
   @description('Required. The type of data connector.')
-  name: 'GCP'
+  kind: 'GCP'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The authentication configuration for GCP.')
@@ -594,7 +592,7 @@ type gcpType = {
 @description('The type of IOT configuration.')
 type iotType = {
   @description('Required. The type of data connector.')
-  name: 'IOT'
+  kind: 'IOT'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The available data types for the connector.')
@@ -614,7 +612,7 @@ type iotType = {
 @description('The type of MicrosoftThreatIntelligenceType configuration.')
 type microsoftThreatIntelligenceType = {
   @description('Required. The type of data connector.')
-  name: 'MicrosoftThreatIntelligence'
+  kind: 'MicrosoftThreatIntelligence'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The available data types for the connector.')
@@ -636,7 +634,7 @@ type microsoftThreatIntelligenceType = {
 @description('The type of ThreatIntelligenceType configuration.')
 type threatIntelligenceType = {
   @description('Required. The type of data connector.')
-  name: 'ThreatIntelligence'
+  kind: 'ThreatIntelligence'
   @description('Required. The properties of the data connector.')
   properties: {
     @description('Required. The available data types for the connector.')

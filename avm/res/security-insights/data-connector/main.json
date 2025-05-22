@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "8543294716633154801"
+      "templateHash": "16531579688011183812"
     },
     "name": "Security Insights Data Connectors",
     "description": "This module deploys a Security Insights Data Connector.",
@@ -16,7 +16,7 @@
     "dataConnectorType": {
       "type": "object",
       "discriminator": {
-        "propertyName": "name",
+        "propertyName": "kind",
         "mapping": {
           "AmazonWebServicesCloudTrail": {
             "$ref": "#/definitions/amazonWebServicesCloudTrailType"
@@ -100,7 +100,7 @@
     "apiPollingType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "APIPolling"
@@ -192,7 +192,7 @@
     "genericUiType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "GenericUI"
@@ -246,7 +246,7 @@
     "microsoftCloudAppSecurityType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "MicrosoftCloudAppSecurity"
@@ -314,7 +314,7 @@
     "microsoftDefenderAdvancedThreatProtectionType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "MicrosoftDefenderAdvancedThreatProtection"
@@ -368,7 +368,7 @@
     "microsoftPurviewInformationProtectionType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "MicrosoftPurviewInformationProtection"
@@ -422,7 +422,7 @@
     "microsoftThreatProtectionType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "MicrosoftThreatProtection"
@@ -476,7 +476,7 @@
     "office365Type": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "Office365"
@@ -558,7 +558,7 @@
     "office365ProjectType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "Office365Project"
@@ -612,7 +612,7 @@
     "officeATPType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "OfficeATP"
@@ -666,7 +666,7 @@
     "officeIRMType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "OfficeIRM"
@@ -720,7 +720,7 @@
     "officePowerBIType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "OfficePowerBI"
@@ -774,7 +774,7 @@
     "purviewAuditType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "PurviewAudit"
@@ -828,7 +828,7 @@
     "restApiPollerType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "RestApiPoller"
@@ -927,7 +927,7 @@
     "threatIntelligenceTaxiiType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "ThreatIntelligenceTaxii"
@@ -1007,7 +1007,7 @@
     "amazonWebServicesCloudTrailType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "AmazonWebServicesCloudTrail"
@@ -1061,7 +1061,7 @@
     "amazonWebServicesS3Type": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "AmazonWebServicesS3"
@@ -1130,7 +1130,7 @@
     "azureActiveDirectoryType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "AzureActiveDirectory"
@@ -1184,7 +1184,7 @@
     "azureAdvancedThreatProtectionType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "AzureAdvancedThreatProtection"
@@ -1238,7 +1238,7 @@
     "azureSecurityCenterType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "AzureSecurityCenter"
@@ -1292,7 +1292,7 @@
     "dynamics365Type": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "Dynamics365"
@@ -1346,7 +1346,7 @@
     "gcpType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "GCP"
@@ -1453,7 +1453,7 @@
     "iotType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "IOT"
@@ -1507,7 +1507,7 @@
     "microsoftThreatIntelligenceType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "MicrosoftThreatIntelligence"
@@ -1567,7 +1567,7 @@
     "threatIntelligenceType": {
       "type": "object",
       "properties": {
-        "name": {
+        "kind": {
           "type": "string",
           "allowedValues": [
             "ThreatIntelligence"
@@ -1624,81 +1624,6 @@
         "__bicep_export!": true,
         "description": "The type of ThreatIntelligenceType configuration."
       }
-    },
-    "roleAssignmentType": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-          }
-        },
-        "roleDefinitionIdOrName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-          }
-        },
-        "principalId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-          }
-        },
-        "principalType": {
-          "type": "string",
-          "allowedValues": [
-            "Device",
-            "ForeignGroup",
-            "Group",
-            "ServicePrincipal",
-            "User"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The principal type of the assigned principal ID."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The description of the role assignment."
-          }
-        },
-        "condition": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-          }
-        },
-        "conditionVersion": {
-          "type": "string",
-          "allowedValues": [
-            "2.0"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Version of the condition."
-          }
-        },
-        "delegatedManagedIdentityResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The Resource Id of the delegated managed identity resource."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a role assignment.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-        }
-      }
     }
   },
   "parameters": {
@@ -1724,8 +1649,9 @@
     },
     "name": {
       "type": "string",
+      "nullable": true,
       "metadata": {
-        "description": "Required. The name of the data connector."
+        "description": "Optional. The name of the data connector."
       }
     },
     "properties": {
@@ -1767,8 +1693,8 @@
       "apiVersion": "2025-03-01",
       "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', last(split(parameters('workspaceResourceId'), '/')))]",
       "name": "[parameters('name')]",
-      "kind": "[parameters('name')]",
-      "properties": "[parameters('properties')]"
+      "kind": "[parameters('properties').kind]",
+      "properties": "[parameters('properties').properties]"
     }
   },
   "outputs": {
