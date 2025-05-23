@@ -21,7 +21,7 @@ param serviceShort string = 'ivcosmin'
 param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'avmptn'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //

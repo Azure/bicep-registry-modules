@@ -1,23 +1,23 @@
 metadata name = 'IaaS VM with CosmosDB Tier 4'
 metadata description = 'Creates an IaaS VM with CosmosDB Tier 4 configuration.'
 
-@description('Name of the solution which is used to generate unique resource names')
+@description('(Required) General. Name of the solution which is used to generate unique resource names.')
 param name string
 
-@description('Location for all resources')
+@description('General. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Tags for all resources')
+@description('General. Tags for all resources.')
 param tags object = {}
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 // Network security group parameters
-@description('Network security group rules for the ApplicationSubnet')
+@description('Security. Network security group rules for the ApplicationSubnet.')
 param applicationNsgRules array = []
 
-@description('Network security group rules for the VM')
+@description('Security. Network security group rules for the VM.')
 param vmNsgRules array = [
   {
     name: 'HTTP'
@@ -35,10 +35,10 @@ param vmNsgRules array = [
 ]
 
 // Virtual network parameters
-@description('Address prefix for the virtual network')
+@description('Networking. Address prefix for the virtual network.')
 param vnetAddressPrefix string = '10.0.0.0/16'
 
-@description('Subnet configuration for the virtual network')
+@description('Networking. Subnet configuration for the virtual network.')
 param subnets array = [
   {
     name: 'ApplicationSubnet'
@@ -59,29 +59,29 @@ param subnets array = [
 ]
 
 // Virtual machine parameters
-@description('Size of the virtual machine')
+@description('Compute. Size of the virtual machine.')
 param vmSize string = 'Standard_D2s_v3'
 
-@description('Admin username for the virtual machine')
+@description('Security. Admin username for the virtual machine.')
 param adminUsername string = 'azureuser'
 
 // Storage account parameters
-@description('Storage account SKU')
+@description('Storage. Storage account SKU.')
 param storageAccountSku object = {
   name: 'Standard_LRS'
   tier: 'Standard'
 }
 
 // Load balancer parameters
-@description('Load balancer frontend port')
+@description('Networking. Load balancer frontend port.')
 param lbFrontendPort int = 80
 
-@description('Load balancer backend port')
+@description('Networking. Load balancer backend port.')
 param lbBackendPort int = 80
 
 // Module telemetry
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.azd-acrcontainerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.iaas-vm-cosmosdb-tier4.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -584,20 +584,23 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.2.0' = {
 }
 
 // Outputs
-@description('The resource ID of the virtual machine')
+@description('Resource. The resource ID of the virtual machine.')
 output virtualMachineResourceId string = virtualMachine.outputs.resourceId
 
-@description('The resource ID of the CosmosDB MongoDB vCore cluster')
+@description('Resource. The resource ID of the CosmosDB MongoDB vCore cluster.')
 output cosmosDbResourceId string = cosmosdbAccount.outputs.resourceId
 
-@description('The resource ID of the virtual network')
+@description('Resource. The resource ID of the virtual network.')
 output virtualNetworkResourceId string = virtualNetwork.outputs.resourceId
 
-@description('The resource ID of the load balancer')
+@description('Resource. The resource ID of the load balancer.')
 output loadBalancerResourceId string = loadBalancer.outputs.resourceId
 
-@description('The resource ID')
+@description('Resource. The resource ID.')
 output resourceId string = virtualMachine.outputs.resourceId
 
-@description('Resource Group Name')
-output ResourceGroupName string = resourceGroup().name
+@description('Resource. Resource Group Name.')
+output resourceGroupName string = resourceGroup().name
+
+@description('Resource. The name of the virtual machine.')
+output name string = virtualMachine.outputs.name
