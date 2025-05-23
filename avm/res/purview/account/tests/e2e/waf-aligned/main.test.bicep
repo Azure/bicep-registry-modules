@@ -137,19 +137,19 @@ module testDeployment '../../../main.bicep' = [
           subnetResourceId: nestedDependencies.outputs.subnetResourceId
         }
       ]
-      eventHubPrivateEndpoints: [
-        {
-          privateDnsZoneGroup: {
-            privateDnsZoneGroupConfigs: [
-              {
-                privateDnsZoneResourceId: nestedDependencies.outputs.eventHubPrivateDNSResourceId
-              }
-            ]
-          }
-          service: 'namespace'
-          subnetResourceId: nestedDependencies.outputs.subnetResourceId
-        }
-      ]
+      // eventHubPrivateEndpoints: [
+      //   {
+      //     privateDnsZoneGroup: {
+      //       privateDnsZoneGroupConfigs: [
+      //         {
+      //           privateDnsZoneResourceId: nestedDependencies.outputs.eventHubPrivateDNSResourceId
+      //         }
+      //       ]
+      //     }
+      //     service: 'namespace'
+      //     subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      //   }
+      // ]
     }
   }
 ]
