@@ -8,9 +8,9 @@
 /avm/ptn/alz/empty/ @Azure/avm-ptn-alz-empty-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/app-service-lza/hosting-environment/ @Azure/avm-ptn-appservicelza-hostingenvironment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/app/container-job-toolkit/ @Azure/avm-ptn-app-containerjobtoolkit-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/app/iaas-vm-cosmosdb-tier4/ @Azure/avm-ptn-app-iaas-vm-cosmosdb-tier4-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/app/paas-ase-cosmosdb-tier4/ @Azure/avm-ptn-app-paas-ase-cosmosdb-tier4-module-owners-bicep @Azure/avm-module-reviewers-bicep
-/avm/ptn/app/paas-asp-cognitivesearch-tier4/ @Azure/avm-ptn-app-paas-asp-cognitivesearch-tier4-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/app/iaas-vm-cosmosdb-tier4/ @Azure/avm-ptn-app-iaasvmcosmosdbtier4-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/app/paas-ase-cosmosdb-tier4/ @Azure/avm-ptn-app-paasasecosmosdbtier4-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/app/paas-asp-cognitivesearch-tier4/ @Azure/avm-ptn-app-paasaspcognitivesearchtier4-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/pim-role-assignment/ @Azure/avm-ptn-authorization-pimroleassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/policy-assignment/ @Azure/avm-ptn-authorization-policyassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/authorization/policy-exemption/ @Azure/avm-ptn-authorization-policyexemption-module-owners-bicep @Azure/avm-module-reviewers-bicep
