@@ -1,0 +1,475 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.25.53.49325",
+      "templateHash": "3166785857056164697"
+    },
+    "name": "Azure ML Registry",
+    "description": "This module deploys an Azure Machine Learning Registry."
+  },
+  "parameters": {
+    "registryName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 24,
+      "metadata": {
+        "description": "Name of the Azure ML Registry."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for the Azure ML Registry."
+      }
+    },
+    "kind": {
+      "type": "string",
+      "defaultValue": "Custom",
+      "metadata": {
+        "description": "Kind of the resource. Example: \"Custom\"."
+      }
+    },
+    "discoveryUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Discovery URL of the registry (e.g., https://myregistry.region.azureml.ms)."
+      }
+    },
+    "mlFlowRegistryUri": {
+      "type": "string",
+      "metadata": {
+        "description": "MLFlow URI of the registry (e.g., https://myregistry.region.azureml.ms/mlflow)."
+      }
+    },
+    "intellectualPropertyPublisher": {
+      "type": "string",
+      "metadata": {
+        "description": "Intellectual property publisher for the registry."
+      }
+    },
+    "managedResourceGroupId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the managed resource group."
+      }
+    },
+    "identityType": {
+      "type": "string",
+      "defaultValue": "UserAssigned",
+      "allowedValues": [
+        "None",
+        "SystemAssigned",
+        "UserAssigned",
+        "SystemAssigned,UserAssigned"
+      ],
+      "metadata": {
+        "description": "Type of managed service identity."
+      }
+    },
+    "userAssignedIdentityId": {
+      "type": "string",
+      "metadata": {
+        "description": "User-assigned identity resource ID."
+      }
+    },
+    "publicNetworkAccess": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Whether public network access is enabled or disabled."
+      }
+    },
+    "acrAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "ACR account name."
+      }
+    },
+    "acrAccountSku": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "ACR SKU."
+      }
+    },
+    "acrResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "ACR ARM resource ID."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage account name."
+      }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "defaultValue": "Standard_LRS",
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Standard_ZRS",
+        "Premium_LRS"
+      ],
+      "metadata": {
+        "description": "Storage account type."
+      }
+    },
+    "storageAccountHnsEnabled": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable hierarchical namespace on the storage account."
+      }
+    },
+    "allowBlobPublicAccess": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Allow public blob access on the storage account."
+      }
+    },
+    "storageAccountResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage account ARM resource ID."
+      }
+    },
+    "subnetArmId": {
+      "type": "string",
+      "metadata": {
+        "description": "Virtual network subnet resource ID for private endpoint."
+      }
+    },
+    "privateEndpointConnectionId": {
+      "type": "string",
+      "metadata": {
+        "description": "Private endpoint connection ID."
+      }
+    },
+    "provisioningState": {
+      "type": "string",
+      "defaultValue": "Succeeded",
+      "allowedValues": [
+        "Succeeded",
+        "Provisioning",
+        "Failed",
+        "Canceled",
+        "Deleting",
+        "Creating",
+        "Updating"
+      ],
+      "metadata": {
+        "description": "Provisioning state of the private endpoint."
+      }
+    },
+    "privateLinkStatus": {
+      "type": "string",
+      "defaultValue": "Approved",
+      "allowedValues": [
+        "Approved",
+        "Rejected",
+        "Pending",
+        "Disconnected",
+        "Timeout"
+      ],
+      "metadata": {
+        "description": "Private link service connection status."
+      }
+    },
+    "privateLinkDescription": {
+      "type": "string",
+      "metadata": {
+        "description": "Description for the private link service connection."
+      }
+    },
+    "actionsRequired": {
+      "type": "string",
+      "defaultValue": "None",
+      "metadata": {
+        "description": "Actions required for the private link service connection."
+      }
+    },
+    "skuName": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "SKU name."
+      }
+    },
+    "skuTier": {
+      "type": "string",
+      "defaultValue": "Basic",
+      "allowedValues": [
+        "Free",
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "metadata": {
+        "description": "SKU tier."
+      }
+    },
+    "skuSize": {
+      "type": "string",
+      "defaultValue": "Standard",
+      "metadata": {
+        "description": "SKU size."
+      }
+    },
+    "skuFamily": {
+      "type": "string",
+      "defaultValue": "None",
+      "metadata": {
+        "description": "SKU family."
+      }
+    },
+    "skuCapacity": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "SKU capacity."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional tags for the resource."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.MachineLearningServices/registries",
+      "apiVersion": "2024-10-01",
+      "name": "[parameters('registryName')]",
+      "location": "[parameters('location')]",
+      "kind": "[parameters('kind')]",
+      "identity": {
+        "type": "[parameters('identityType')]",
+        "userAssignedIdentities": {
+          "[format('{0}', parameters('userAssignedIdentityId'))]": {}
+        }
+      },
+      "sku": {
+        "name": "[parameters('skuName')]",
+        "tier": "[parameters('skuTier')]",
+        "size": "[parameters('skuSize')]",
+        "family": "[parameters('skuFamily')]",
+        "capacity": "[parameters('skuCapacity')]"
+      },
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "discoveryUrl": "[parameters('discoveryUrl')]",
+        "intellectualPropertyPublisher": "[parameters('intellectualPropertyPublisher')]",
+        "managedResourceGroup": {
+          "resourceId": "[parameters('managedResourceGroupId')]"
+        },
+        "mlFlowRegistryUri": "[parameters('mlFlowRegistryUri')]",
+        "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+        "regionDetails": [
+          {
+            "location": "[parameters('location')]",
+            "acrDetails": [
+              {
+                "systemCreatedAcrAccount": {
+                  "acrAccountName": "[parameters('acrAccountName')]",
+                  "acrAccountSku": "[parameters('acrAccountSku')]",
+                  "armResourceId": {
+                    "resourceId": "[parameters('acrResourceId')]"
+                  }
+                }
+              }
+            ],
+            "storageAccountDetails": [
+              {
+                "systemCreatedStorageAccount": {
+                  "storageAccountName": "[parameters('storageAccountName')]",
+                  "storageAccountType": "[parameters('storageAccountType')]",
+                  "storageAccountHnsEnabled": "[parameters('storageAccountHnsEnabled')]",
+                  "allowBlobPublicAccess": "[parameters('allowBlobPublicAccess')]",
+                  "armResourceId": {
+                    "resourceId": "[parameters('storageAccountResourceId')]"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "registryPrivateEndpointConnections": [
+          {
+            "id": "[parameters('privateEndpointConnectionId')]",
+            "location": "[parameters('location')]",
+            "properties": {
+              "groupIds": [
+                "registry"
+              ],
+              "privateEndpoint": {
+                "subnetArmId": "[parameters('subnetArmId')]"
+              },
+              "provisioningState": "[parameters('provisioningState')]",
+              "registryPrivateLinkServiceConnectionState": {
+                "status": "[parameters('privateLinkStatus')]",
+                "description": "[parameters('privateLinkDescription')]",
+                "actionsRequired": "[parameters('actionsRequired')]"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+The name of the Azure container registry."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Azure container registry."
+      },
+      "value": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[tryGet(tryGet(reference('registry', '2023-06-01-preview', 'full'), 'identity'), 'principalId')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('registry', '2023-06-01-preview', 'full').location]"
+    },
+    "credentialSetsSystemAssignedMIPrincipalIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The Principal IDs of the ACR Credential Sets system-assigned identities."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('credentialSets'), createArray()))))]",
+        "input": "[tryGet(tryGet(reference(format('registry_credentialSets[{0}]', range(0, length(coalesce(parameters('credentialSets'), createArray())))[copyIndex()])).outputs, 'systemAssignedMIPrincipalId'), 'value')]"
+      }
+    },
+    "credentialSetsResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The Resource IDs of the ACR Credential Sets."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('credentialSets'), createArray()))))]",
+        "input": "[reference(format('registry_credentialSets[{0}]', range(0, length(coalesce(parameters('credentialSets'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+      }
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
+      "metadata": {
+        "description": "The private endpoints of the Azure container registry."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "input": {
+          "name": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[tryGet(tryGet(reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
+          "customDnsConfigs": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
+          "networkInterfaceResourceIds": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
+        }
+      }
+    }
+  }
+The name of the Azure container registry."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Azure container registry."
+      },
+      "value": "[resourceId('Microsoft.ContainerRegistry/registries', parameters('name'))]"
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[tryGet(tryGet(reference('registry', '2023-06-01-preview', 'full'), 'identity'), 'principalId')]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('registry', '2023-06-01-preview', 'full').location]"
+    },
+    "credentialSetsSystemAssignedMIPrincipalIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The Principal IDs of the ACR Credential Sets system-assigned identities."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('credentialSets'), createArray()))))]",
+        "input": "[tryGet(tryGet(reference(format('registry_credentialSets[{0}]', range(0, length(coalesce(parameters('credentialSets'), createArray())))[copyIndex()])).outputs, 'systemAssignedMIPrincipalId'), 'value')]"
+      }
+    },
+    "credentialSetsResourceIds": {
+      "type": "array",
+      "metadata": {
+        "description": "The Resource IDs of the ACR Credential Sets."
+      },
+      "copy": {
+        "count": "[length(range(0, length(coalesce(parameters('credentialSets'), createArray()))))]",
+        "input": "[reference(format('registry_credentialSets[{0}]', range(0, length(coalesce(parameters('credentialSets'), createArray())))[copyIndex()])).outputs.resourceId.value]"
+      }
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
+      "metadata": {
+        "description": "The private endpoints of the Azure container registry."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "input": {
+          "name": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[tryGet(tryGet(reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
+          "customDnsConfigs": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
+          "networkInterfaceResourceIds": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
+        }
+      }
+    }
+  }
+}
