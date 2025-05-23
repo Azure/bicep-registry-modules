@@ -47,9 +47,9 @@ module testDeployment '../../../main.bicep' = [
       }
       virtualHubParameters: [
         {
-          hubAddressPrefix: '10.0.0.0/24'
-          hubLocation: resourceLocation
           hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
+          hubLocation: resourceLocation
+          hubAddressPrefix: '10.0.0.0/24'
         }
       ]
     }

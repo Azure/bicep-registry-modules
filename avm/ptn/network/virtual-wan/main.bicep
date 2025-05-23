@@ -14,7 +14,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 @description('Optional. The lock settings for the Virtual WAN and associated components.')
 param lock lockType?
 
-@description('Optional. Enable or disable usage telemetry for the module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 module virtualWan 'br/public:avm/res/network/virtual-wan:0.3.1' = {
@@ -539,11 +539,11 @@ type virtualHubParameterType = {
       @description('Optional. Enable internet security for the connection.')
       enableInternetSecurity: bool?
 
-      @description('Required. Resource ID of the ExpressRoute circuit.')
-      expressRouteCircuitId: string
+      @description('Optional. Resource ID of the ExpressRoute circuit.')
+      expressRouteCircuitId: string?
 
-      @description('Required. Routing intent for the connection.')
-      routingIntent: routingIntentType
+      @description('Optional. Routing intent for the connection.')
+      routingIntent: routingIntentType?
 
       @description('Optional. Enable rate limiting.')
       enableRateLimiting: bool?
@@ -554,14 +554,14 @@ type virtualHubParameterType = {
       @description('Required. Shared key for the connection.')
       sharedKey: string
 
-      @description('Required. Use policy-based traffic selectors.')
-      usePolicyBasedTrafficSelectors: bool
+      @description('Optional. Use policy-based traffic selectors.')
+      usePolicyBasedTrafficSelectors: bool?
 
       @description('Optional. IPsec policies for the connection.')
-      ipsecPolicies: []
+      ipsecPolicies: []?
 
       @description('Optional. Traffic selector policies for the connection.')
-      trafficSelectorPolicies: []
+      trafficSelectorPolicies: []?
     }[]?
   }?
   @description('Optional. Secure Hub parameters for the Virtual Hub.')
