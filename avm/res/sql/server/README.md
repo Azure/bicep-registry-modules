@@ -1066,6 +1066,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
         elasticPoolResourceId: '<elasticPoolResourceId>'
         licenseType: 'LicenseIncluded'
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
         managedIdentities: {
           userAssignedResourceIds: [
             '<databaseIdentityResourceId>'
@@ -1083,6 +1087,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     elasticPools: [
       {
         availabilityZone: -1
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
         name: 'sqlsmax-ep-001'
         sku: {
           capacity: 10
@@ -1245,6 +1253,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ],
           "elasticPoolResourceId": "<elasticPoolResourceId>",
           "licenseType": "LicenseIncluded",
+          "lock": {
+            "kind": "CanNotDelete",
+            "name": "myCustomLockName"
+          },
           "managedIdentities": {
             "userAssignedResourceIds": [
               "<databaseIdentityResourceId>"
@@ -1264,6 +1276,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": [
         {
           "availabilityZone": -1,
+          "lock": {
+            "kind": "CanNotDelete",
+            "name": "myCustomLockName"
+          },
           "name": "sqlsmax-ep-001",
           "sku": {
             "capacity": 10,
@@ -1440,6 +1456,10 @@ param databases = [
     ]
     elasticPoolResourceId: '<elasticPoolResourceId>'
     licenseType: 'LicenseIncluded'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     managedIdentities: {
       userAssignedResourceIds: [
         '<databaseIdentityResourceId>'
@@ -1457,6 +1477,10 @@ param databases = [
 param elasticPools = [
   {
     availabilityZone: -1
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     name: 'sqlsmax-ep-001'
     sku: {
       capacity: 10
@@ -2656,6 +2680,7 @@ The databases to create in the server.
 | [`highAvailabilityReplicaCount`](#parameter-databaseshighavailabilityreplicacount) | int | The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool. |
 | [`isLedgerOn`](#parameter-databasesisledgeron) | bool | Whether or not this database is a ledger database, which means all tables in the database are ledger tables. |
 | [`licenseType`](#parameter-databaseslicensetype) | string | The license type to apply for this database. |
+| [`lock`](#parameter-databaseslock) | object | The lock settings of the database. |
 | [`longTermRetentionBackupResourceId`](#parameter-databaseslongtermretentionbackupresourceid) | string | The resource identifier of the long term retention backup associated with create operation of this database. |
 | [`maintenanceConfigurationId`](#parameter-databasesmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the database. This configuration defines the period when the maintenance updates will occur. |
 | [`managedIdentities`](#parameter-databasesmanagedidentities) | object | The managed identities for the database. |
@@ -3057,6 +3082,42 @@ The license type to apply for this database.
   ]
   ```
 
+### Parameter: `databases.lock`
+
+The lock settings of the database.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-databaseslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-databaseslockname) | string | Specify the name of lock. |
+
+### Parameter: `databases.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `databases.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
 ### Parameter: `databases.longTermRetentionBackupResourceId`
 
 The resource identifier of the long term retention backup associated with create operation of this database.
@@ -3333,6 +3394,7 @@ The Elastic Pools to create in the server.
 | [`autoPauseDelay`](#parameter-elasticpoolsautopausedelay) | int | Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled. |
 | [`highAvailabilityReplicaCount`](#parameter-elasticpoolshighavailabilityreplicacount) | int | The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools. |
 | [`licenseType`](#parameter-elasticpoolslicensetype) | string | The license type to apply for this elastic pool. |
+| [`lock`](#parameter-elasticpoolslock) | object | The lock settings of the elastic pool. |
 | [`maintenanceConfigurationId`](#parameter-elasticpoolsmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur. |
 | [`maxSizeBytes`](#parameter-elasticpoolsmaxsizebytes) | int | The storage limit for the database elastic pool in bytes. |
 | [`minCapacity`](#parameter-elasticpoolsmincapacity) | int | Minimal capacity that serverless pool will not shrink below, if not paused. |
@@ -3392,6 +3454,42 @@ The license type to apply for this elastic pool.
     'LicenseIncluded'
   ]
   ```
+
+### Parameter: `elasticPools.lock`
+
+The lock settings of the elastic pool.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-elasticpoolslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-elasticpoolslockname) | string | Specify the name of lock. |
+
+### Parameter: `elasticPools.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `elasticPools.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `elasticPools.maintenanceConfigurationId`
 

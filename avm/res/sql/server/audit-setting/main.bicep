@@ -79,7 +79,7 @@ resource auditSettings 'Microsoft.Sql/servers/auditingSettings@2023-08-01-previe
     retentionDays: retentionDays
     storageAccountAccessKey: !empty(storageAccountResourceId) && !isManagedIdentityInUse
       ? listKeys(storageAccountResourceId, '2019-06-01').keys[0].value
-      : any(null)
+      : null
     storageAccountSubscriptionId: !empty(storageAccountResourceId) ? split(storageAccountResourceId, '/')[2] : any(null)
     storageEndpoint: !empty(storageAccountResourceId)
       ? 'https://${last(split(storageAccountResourceId, '/'))}.blob.${environment().suffixes.storage}'

@@ -127,6 +127,10 @@ module testDeployment '../../../main.bicep' = [
             capacity: 10
           }
           availabilityZone: -1
+          lock: {
+            kind: 'CanNotDelete'
+            name: 'myCustomLockName'
+          }
         }
       ]
       databases: [
@@ -162,6 +166,10 @@ module testDeployment '../../../main.bicep' = [
             monthlyRetention: 'P6M'
           }
           availabilityZone: -1
+          lock: {
+            kind: 'CanNotDelete'
+            name: 'myCustomLockName'
+          }
         }
       ]
       customerManagedKey: {

@@ -297,6 +297,7 @@ module server_databases 'database/main.bicep' = [
       highAvailabilityReplicaCount: database.?highAvailabilityReplicaCount
       isLedgerOn: database.?isLedgerOn
       licenseType: database.?licenseType
+      lock: database.?lock
       longTermRetentionBackupResourceId: database.?longTermRetentionBackupResourceId
       maintenanceConfigurationId: database.?maintenanceConfigurationId
       manualCutover: database.?manualCutover
@@ -346,6 +347,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
       availabilityZone: elasticPool.?availabilityZone
       highAvailabilityReplicaCount: elasticPool.?highAvailabilityReplicaCount
       licenseType: elasticPool.?licenseType
+      lock: elasticPool.?lock
       maintenanceConfigurationId: elasticPool.?maintenanceConfigurationId
       maxSizeBytes: elasticPool.?maxSizeBytes
       minCapacity: elasticPool.?minCapacity
@@ -715,6 +717,9 @@ type databaseType = {
   @description('Optional. Tags of the resource.')
   tags: object?
 
+  @description('Optional. The lock settings of the database.')
+  lock: lockType?
+
   @description('Optional. The managed identities for the database.')
   managedIdentities: managedIdentityOnlyUserAssignedType?
 
@@ -852,6 +857,9 @@ type elasticPoolType = {
 
   @description('Optional. Tags of the resource.')
   tags: object?
+
+  @description('Optional. The lock settings of the elastic pool.')
+  lock: lockType?
 
   @description('Optional. The elastic pool SKU.')
   sku: skuType?
