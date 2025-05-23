@@ -330,7 +330,7 @@ param virtualHubParameters = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable or disable usage telemetry for the module. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lock`](#parameter-lock) | object | The lock settings for the Virtual WAN and associated components. |
 | [`virtualHubParameters`](#parameter-virtualhubparameters) | array | The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs. |
 
@@ -781,7 +781,7 @@ The type of Virtual WAN. Allowed values are Standard or Basic.
 
 ### Parameter: `enableTelemetry`
 
-Enable or disable usage telemetry for the module.
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -945,12 +945,9 @@ ExpressRoute connections.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`expressRouteCircuitId`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsexpressroutecircuitid) | string | Resource ID of the ExpressRoute circuit. |
 | [`name`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsname) | string | Name of the ExpressRoute connection. |
-| [`routingIntent`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintent) | object | Routing intent for the connection. |
 | [`routingWeight`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingweight) | int | Routing weight for the connection. |
 | [`sharedKey`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionssharedkey) | string | Shared key for the connection. |
-| [`usePolicyBasedTrafficSelectors`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsusepolicybasedtrafficselectors) | bool | Use policy-based traffic selectors. |
 
 **Optional parameters**
 
@@ -960,15 +957,11 @@ ExpressRoute connections.
 | [`enableBgp`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsenablebgp) | bool | Enable BGP for the connection. |
 | [`enableInternetSecurity`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsenableinternetsecurity) | bool | Enable internet security for the connection. |
 | [`enableRateLimiting`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsenableratelimiting) | bool | Enable rate limiting. |
+| [`expressRouteCircuitId`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsexpressroutecircuitid) | string | Resource ID of the ExpressRoute circuit. |
 | [`ipsecPolicies`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsipsecpolicies) | array | IPsec policies for the connection. |
+| [`routingIntent`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintent) | object | Routing intent for the connection. |
 | [`trafficSelectorPolicies`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionstrafficselectorpolicies) | array | Traffic selector policies for the connection. |
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.expressRouteCircuitId`
-
-Resource ID of the ExpressRoute circuit.
-
-- Required: Yes
-- Type: string
+| [`usePolicyBasedTrafficSelectors`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsusepolicybasedtrafficselectors) | bool | Use policy-based traffic selectors. |
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.name`
 
@@ -976,34 +969,6 @@ Name of the ExpressRoute connection.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent`
-
-Routing intent for the connection.
-
-- Required: Yes
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`internetToFirewall`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintentinternettofirewall) | bool | Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0). |
-| [`privateToFirewall`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintentprivatetofirewall) | bool | Configures Routing Intent to forward Private traffic to the firewall (RFC1918). |
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent.internetToFirewall`
-
-Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).
-
-- Required: No
-- Type: bool
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent.privateToFirewall`
-
-Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
-
-- Required: No
-- Type: bool
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingWeight`
 
@@ -1018,13 +983,6 @@ Shared key for the connection.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.usePolicyBasedTrafficSelectors`
-
-Use policy-based traffic selectors.
-
-- Required: Yes
-- Type: bool
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.connectionBandwidth`
 
@@ -1054,19 +1012,61 @@ Enable rate limiting.
 - Required: No
 - Type: bool
 
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.expressRouteCircuitId`
+
+Resource ID of the ExpressRoute circuit.
+
+- Required: No
+- Type: string
+
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.ipsecPolicies`
 
 IPsec policies for the connection.
 
-- Required: Yes
+- Required: No
 - Type: array
+
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent`
+
+Routing intent for the connection.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`internetToFirewall`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintentinternettofirewall) | bool | Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0). |
+| [`privateToFirewall`](#parameter-virtualhubparametersexpressrouteparametersexpressrouteconnectionsroutingintentprivatetofirewall) | bool | Configures Routing Intent to forward Private traffic to the firewall (RFC1918). |
+
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent.internetToFirewall`
+
+Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.routingIntent.privateToFirewall`
+
+Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
+
+- Required: No
+- Type: bool
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.trafficSelectorPolicies`
 
 Traffic selector policies for the connection.
 
-- Required: Yes
+- Required: No
 - Type: array
+
+### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteConnections.usePolicyBasedTrafficSelectors`
+
+Use policy-based traffic selectors.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `virtualHubParameters.expressRouteParameters.expressRouteGatewayName`
 

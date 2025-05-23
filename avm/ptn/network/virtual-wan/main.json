@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "9597714605974208713"
+      "templateHash": "9860383058203964667"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -777,14 +777,16 @@
                     },
                     "expressRouteCircuitId": {
                       "type": "string",
+                      "nullable": true,
                       "metadata": {
-                        "description": "Required. Resource ID of the ExpressRoute circuit."
+                        "description": "Optional. Resource ID of the ExpressRoute circuit."
                       }
                     },
                     "routingIntent": {
                       "$ref": "#/definitions/routingIntentType",
+                      "nullable": true,
                       "metadata": {
-                        "description": "Required. Routing intent for the connection."
+                        "description": "Optional. Routing intent for the connection."
                       }
                     },
                     "enableRateLimiting": {
@@ -808,14 +810,16 @@
                     },
                     "usePolicyBasedTrafficSelectors": {
                       "type": "bool",
+                      "nullable": true,
                       "metadata": {
-                        "description": "Required. Use policy-based traffic selectors."
+                        "description": "Optional. Use policy-based traffic selectors."
                       }
                     },
                     "ipsecPolicies": {
                       "type": "array",
                       "prefixItems": [],
                       "items": false,
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. IPsec policies for the connection."
                       }
@@ -824,6 +828,7 @@
                       "type": "array",
                       "prefixItems": [],
                       "items": false,
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Traffic selector policies for the connection."
                       }
@@ -1525,7 +1530,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Optional. Enable or disable usage telemetry for the module."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
