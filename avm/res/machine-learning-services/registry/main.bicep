@@ -6,9 +6,6 @@ metadata description = 'This module deploys an Azure Machine Learning Registry.'
 @maxLength(50)
 param name string
 
-// @description('Optional. The description of this registry.')
-// param description string?
-
 @description('Required. Location for the Azure ML Registry.')
 param location string = resourceGroup().location
 
@@ -108,39 +105,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 var allLocations = union([location], locations)
 
-
-// resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
-//   name: name
-//   location: location
-//   tags: tags
-//   identity: {
-//     type: 'SystemAssigned'
-//   }
-//   kind: 'registry'
-//   properties: {
-//     publicNetworkAccess: publicNetworkAccess ?? (
-//       (privateEndpoints != null && length(privateEndpoints) > 0) ? 'Disabled' : 'Enabled'
-//     )
-//     regionDetails: [
-//       for loc in locations: {
-//         location: loc
-//         storageAccountDetails: [
-//           {
-//             systemCreatedStorageAccount: {}
-//           }
-//         ]
-//         acrDetails: [
-//           {
-//             systemCreatedAcrAccount: {
-//               acrAccountSku: 'Premium'
-//             }
-//           }
-//         ]
-//       }
-//     ]
-//   }
-// }
-
 var resolvedPublicNetworkAccess = !empty(publicNetworkAccess)
   ? any(publicNetworkAccess)
   : (!empty(privateEndpoints) ? 'Disabled' : null)
@@ -174,10 +138,6 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
     ]
   }
 }
-
-
-
-
 
 module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
