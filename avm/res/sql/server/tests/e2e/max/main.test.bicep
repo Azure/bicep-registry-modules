@@ -170,12 +170,18 @@ module testDeployment '../../../main.bicep' = [
             kind: 'CanNotDelete'
             name: 'myCustomLockName'
           }
+          customerManagedKey: {
+            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+            keyName: nestedDependencies.outputs.databaseKeyVaultKeyName
+            keyVersion: last(split(nestedDependencies.outputs.databaseKeyVaultEncryptionKeyUrl, '/'))
+            autoRotationEnabled: true
+          }
         }
       ]
       customerManagedKey: {
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        keyName: nestedDependencies.outputs.keyVaultKeyName
-        keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
+        keyName: nestedDependencies.outputs.serverKeyVaultKeyName
+        keyVersion: last(split(nestedDependencies.outputs.serverKeyVaultEncryptionKeyUrl, '/'))
         autoRotationEnabled: true
       }
       firewallRules: [

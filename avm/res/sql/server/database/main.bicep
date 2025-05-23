@@ -49,11 +49,11 @@ param createMode
 @description('Optional. The resource ID of the elastic pool containing this database.')
 param elasticPoolResourceId string?
 
-@description('Optional. The azure key vault URI of the database if it\'s configured with per Database Customer Managed Keys.')
-param encryptionProtector string?
+// @description('Optional. The azure key vault URI of the database if it\'s configured with per Database Customer Managed Keys.')
+// param encryptionProtector string?
 
-@description('Optional. The flag to enable or disable auto rotation of database encryption protector AKV key.')
-param encryptionProtectorAutoRotation bool?
+// @description('Optional. The flag to enable or disable auto rotation of database encryption protector AKV key.')
+// param encryptionProtectorAutoRotation bool?
 
 @description('Optional. The Client id used for cross tenant per database CMK scenario.')
 @minLength(36)
@@ -158,6 +158,10 @@ import { managedIdentityOnlyUserAssignedType } from 'br/public:avm/utl/types/avm
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityOnlyUserAssignedType?
 
+import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The customer managed key definition for database TDE.')
+param customerManagedKey customerManagedKeyWithAutoRotateType?
+
 resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
   name: serverName
 }
@@ -175,6 +179,18 @@ var identity = !empty(managedIdentities)
     }
   : null
 
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+  name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
+  scope: resourceGroup(
+    split(customerManagedKey.?keyVaultResourceId!, '/')[2],
+    split(customerManagedKey.?keyVaultResourceId!, '/')[4]
+  )
+
+  resource cMKKey 'keys@2023-07-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+    name: customerManagedKey.?keyName!
+  }
+}
+
 resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
   name: name
   parent: server
@@ -189,8 +205,12 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
     collation: collation
     createMode: createMode
     elasticPoolId: elasticPoolResourceId
-    encryptionProtector: encryptionProtector
-    encryptionProtectorAutoRotation: encryptionProtectorAutoRotation
+    encryptionProtector: customerManagedKey != null
+      ? !empty(customerManagedKey.?keyVersion)
+          ? '${cMKKeyVault::cMKKey.properties.keyUri}/${customerManagedKey!.?keyVersion}'
+          : cMKKeyVault::cMKKey.properties.keyUriWithVersion
+      : null
+    encryptionProtectorAutoRotation: customerManagedKey.?autoRotationEnabled
     federatedClientId: federatedClientId
     freeLimitExhaustionBehavior: freeLimitExhaustionBehavior
     highAvailabilityReplicaCount: highAvailabilityReplicaCount
@@ -217,6 +237,12 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
     sourceResourceId: sourceResourceId
     useFreeLimit: useFreeLimit
     zoneRedundant: zoneRedundant
+    // keys: [
+    //   {
+    //     databaseKeyType: ''
+    //     uri: ''
+    //   }
+    // ]
   }
 }
 

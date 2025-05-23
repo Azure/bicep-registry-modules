@@ -271,6 +271,29 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       keyVersion: '<keyVersion>'
     }
+    databases: [
+      {
+        availabilityZone: -1
+        customerManagedKey: {
+          autoRotationEnabled: true
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          keyVersion: '<keyVersion>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<databaseIdentityResourceId>'
+          ]
+        }
+        maxSizeBytes: 2147483648
+        name: 'sscmk-db'
+        sku: {
+          name: 'Basic'
+          tier: 'Basic'
+        }
+        zoneRedundant: false
+      }
+    ]
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -316,6 +339,31 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         "keyVersion": "<keyVersion>"
       }
     },
+    "databases": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "customerManagedKey": {
+            "autoRotationEnabled": true,
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "keyVersion": "<keyVersion>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<databaseIdentityResourceId>"
+            ]
+          },
+          "maxSizeBytes": 2147483648,
+          "name": "sscmk-db",
+          "sku": {
+            "name": "Basic",
+            "tier": "Basic"
+          },
+          "zoneRedundant": false
+        }
+      ]
+    },
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
@@ -357,6 +405,29 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   keyVersion: '<keyVersion>'
 }
+param databases = [
+  {
+    availabilityZone: -1
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<databaseIdentityResourceId>'
+      ]
+    }
+    maxSizeBytes: 2147483648
+    name: 'sscmk-db'
+    sku: {
+      name: 'Basic'
+      tier: 'Basic'
+    }
+    zoneRedundant: false
+  }
+]
 param managedIdentities = {
   systemAssigned: false
   userAssignedResourceIds: [
@@ -1055,6 +1126,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           retentionDays: 14
         }
         collation: 'SQL_Latin1_General_CP1_CI_AS'
+        customerManagedKey: {
+          autoRotationEnabled: true
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          keyVersion: '<keyVersion>'
+        }
         diagnosticSettings: [
           {
             eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1242,6 +1319,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "retentionDays": 14
           },
           "collation": "SQL_Latin1_General_CP1_CI_AS",
+          "customerManagedKey": {
+            "autoRotationEnabled": true,
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "keyVersion": "<keyVersion>"
+          },
           "diagnosticSettings": [
             {
               "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1445,6 +1528,12 @@ param databases = [
       retentionDays: 14
     }
     collation: 'SQL_Latin1_General_CP1_CI_AS'
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -2671,10 +2760,9 @@ The databases to create in the server.
 | [`catalogCollation`](#parameter-databasescatalogcollation) | string | Collation of the metadata catalog. |
 | [`collation`](#parameter-databasescollation) | string | The collation of the database. |
 | [`createMode`](#parameter-databasescreatemode) | string | Specifies the mode of database creation. |
+| [`customerManagedKey`](#parameter-databasescustomermanagedkey) | object | The customer managed key definition for database TDE. |
 | [`diagnosticSettings`](#parameter-databasesdiagnosticsettings) | array | The diagnostic settings of the service. |
 | [`elasticPoolResourceId`](#parameter-databaseselasticpoolresourceid) | string | The resource identifier of the elastic pool containing this database. |
-| [`encryptionProtector`](#parameter-databasesencryptionprotector) | string | The azure key vault URI of the database if it's configured with per Database Customer Managed Keys. |
-| [`encryptionProtectorAutoRotation`](#parameter-databasesencryptionprotectorautorotation) | bool | The flag to enable or disable auto rotation of database encryption protector AKV key. |
 | [`federatedClientId`](#parameter-databasesfederatedclientid) | string | The Client id used for cross tenant per database CMK scenario. |
 | [`freeLimitExhaustionBehavior`](#parameter-databasesfreelimitexhaustionbehavior) | string | Specifies the behavior when monthly free limits are exhausted for the free database. |
 | [`highAvailabilityReplicaCount`](#parameter-databaseshighavailabilityreplicacount) | int | The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool. |
@@ -2866,6 +2954,63 @@ Specifies the mode of database creation.
   ]
   ```
 
+### Parameter: `databases.customerManagedKey`
+
+The customer managed key definition for database TDE.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-databasescustomermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-databasescustomermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRotationEnabled`](#parameter-databasescustomermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-databasescustomermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
+| [`userAssignedIdentityResourceId`](#parameter-databasescustomermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `databases.customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `databases.customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `databases.customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
+### Parameter: `databases.customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
+
 ### Parameter: `databases.diagnosticSettings`
 
 The diagnostic settings of the service.
@@ -3018,20 +3163,6 @@ The resource identifier of the elastic pool containing this database.
 
 - Required: No
 - Type: string
-
-### Parameter: `databases.encryptionProtector`
-
-The azure key vault URI of the database if it's configured with per Database Customer Managed Keys.
-
-- Required: No
-- Type: string
-
-### Parameter: `databases.encryptionProtectorAutoRotation`
-
-The flag to enable or disable auto rotation of database encryption protector AKV key.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `databases.federatedClientId`
 
