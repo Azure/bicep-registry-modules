@@ -1,7 +1,7 @@
 metadata name = 'IaaS VM with CosmosDB Tier 4'
 metadata description = 'Creates an IaaS VM with CosmosDB Tier 4 configuration.'
 
-@description('(Required) General. Name of the solution which is used to generate unique resource names.')
+@description('Required. Name of the solution which is used to generate unique resource names.')
 param name string
 
 @description('General. Location for all resources.')
@@ -81,7 +81,7 @@ param lbBackendPort int = 80
 
 // Module telemetry
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.iaas-vm-cosmosdb-tier4.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.app-iaas-vm-cosmosdb-tier4.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {

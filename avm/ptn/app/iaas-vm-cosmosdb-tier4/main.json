@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "14555805941237286125"
+      "templateHash": "14305624413463297273"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -15,7 +15,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "(Required) General. Name of the solution which is used to generate unique resource names."
+        "description": "Required. Name of the solution which is used to generate unique resource names."
       }
     },
     "location": {
@@ -142,7 +142,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.iaas-vm-cosmosdb-tier4.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.app-iaas-vm-cosmosdb-tier4.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
         "template": {
