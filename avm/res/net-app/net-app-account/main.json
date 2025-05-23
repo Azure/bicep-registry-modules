@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "12755541408903684479"
+      "version": "0.35.1.17967",
+      "templateHash": "5518796103912948527"
     },
     "name": "Azure NetApp Files",
-    "description": "This module deploys an Azure NetApp File."
+    "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
   },
   "definitions": {
     "backupVaultType": {
@@ -217,21 +217,25 @@
           "minValue": 2,
           "maxValue": 1019,
           "metadata": {
-            "description": "Optional. The daily backups to keep."
+            "description": "Optional. The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
           }
         },
         "monthlyBackupsToKeep": {
           "type": "int",
           "nullable": true,
+          "minValue": 0,
+          "maxValue": 1019,
           "metadata": {
-            "description": "Optional. The monthly backups to keep."
+            "description": "Optional. The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
           }
         },
         "weeklyBackupsToKeep": {
           "type": "int",
           "nullable": true,
+          "minValue": 0,
+          "maxValue": 1019,
           "metadata": {
-            "description": "Optional. The weekly backups to keep."
+            "description": "Optional. The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
           }
         },
         "enabled": {
@@ -1472,8 +1476,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "5685295510343035237"
+              "version": "0.35.1.17967",
+              "templateHash": "2156559268018649056"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -1505,21 +1509,25 @@
               "minValue": 2,
               "maxValue": 1019,
               "metadata": {
-                "description": "Optional. The daily backups to keep."
+                "description": "Optional. The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
               }
             },
             "monthlyBackupsToKeep": {
               "type": "int",
               "defaultValue": 0,
+              "minValue": 0,
+              "maxValue": 1019,
               "metadata": {
-                "description": "Optional. The monthly backups to keep."
+                "description": "Optional. The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
               }
             },
             "weeklyBackupsToKeep": {
               "type": "int",
               "defaultValue": 0,
+              "minValue": 0,
+              "maxValue": 1019,
               "metadata": {
-                "description": "Optional. The weekly backups to keep."
+                "description": "Optional. The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
               }
             },
             "enabled": {
@@ -1619,8 +1627,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "10770394726791174694"
+              "version": "0.35.1.17967",
+              "templateHash": "5277243266260311517"
             },
             "name": "Azure NetApp Files Snapshot Policy",
             "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
@@ -1935,8 +1943,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14413490968843992443"
+              "version": "0.35.1.17967",
+              "templateHash": "17170510390783455734"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -2074,8 +2082,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "15429195500404839384"
+                      "version": "0.35.1.17967",
+                      "templateHash": "17444120099448473770"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
@@ -2284,8 +2292,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3803279347306956054"
+              "version": "0.35.1.17967",
+              "templateHash": "3741253607249063141"
             },
             "name": "Azure NetApp Files Capacity Pools",
             "description": "This module deploys an Azure NetApp Files Capacity Pool."
@@ -3113,8 +3121,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "18265666096420894984"
+                      "version": "0.35.1.17967",
+                      "templateHash": "18208711298950274755"
                     },
                     "name": "Azure NetApp Files Capacity Pool Volumes",
                     "description": "This module deploys an Azure NetApp Files Capacity Pool Volume."
@@ -3932,8 +3940,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14413490968843992443"
+              "version": "0.35.1.17967",
+              "templateHash": "17170510390783455734"
             },
             "name": "Azure NetApp Files Volume Backup Vault",
             "description": "This module deploys a NetApp Files Backup Vault."
@@ -4071,8 +4079,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "15429195500404839384"
+                      "version": "0.35.1.17967",
+                      "templateHash": "17444120099448473770"
                     },
                     "name": "Azure NetApp Files Volume Backup",
                     "description": "This module deploys a backup of a NetApp Files Volume."
