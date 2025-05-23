@@ -460,8 +460,8 @@ type acceptedAudienceType = {
 @export()
 @description('The type for the language extension.')
 type languageExtensionType = {
-  @description('Required. The name of the language extension custom image.')
-  languageExtensionCustomImageName: string
+  @description('Optional. The name of the language extension custom image.')
+  languageExtensionCustomImageName: string?
 
   @description('Required. The name of the language extension image.')
   languageExtensionImageName: 'Python3_10_8' | 'Python3_10_8_DL' | 'Python3_6_5' | 'PythonCustomImage' | 'R'

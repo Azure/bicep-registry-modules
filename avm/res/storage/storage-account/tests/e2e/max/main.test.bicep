@@ -166,7 +166,7 @@ module testDeployment '../../../main.bicep' = [
         resourceAccessRules: [
           {
             tenantId: subscription().tenantId
-            resourceId: '/subscriptions/${subscription().subscriptionId}/resourceGroups/*/providers/Microsoft.ContainerRegistry/registries/*'
+            resourceId: '${subscription().id}/resourcegroups/*/providers/Microsoft.CognitiveServices/accounts/*'
           }
         ]
         bypass: 'AzureServices'

@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'With EC key type'
+metadata description = 'This instance deploys the module with the parameters needed for an EC key.'
 
 // ========== //
 // Parameters //

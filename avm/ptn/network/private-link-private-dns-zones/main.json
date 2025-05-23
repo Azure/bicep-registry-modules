@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "248313507400838211"
+      "version": "0.35.1.17967",
+      "templateHash": "18239098103515203256"
     },
     "name": "avm/ptn/network/private-link-private-dns-zones",
     "description": "Private Link Private DNS Zones"
@@ -191,7 +191,6 @@
         "privatelink.attest.azure.net",
         "privatelink.search.windows.net",
         "privatelink.azurewebsites.net",
-        "scm.privatelink.azurewebsites.net",
         "privatelink.service.signalr.net",
         "privatelink.azurestaticapps.net",
         "privatelink.azuresynapse.net",
@@ -474,8 +473,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "16258048003053729823"
+              "version": "0.35.1.17967",
+              "templateHash": "6420876829061947385"
             },
             "name": "Private DNS Zone Virtual Network Link Child Module",
             "description": "This module deploys a Private DNS Zone Virtual Network Link."

@@ -19,8 +19,8 @@ This module deploys a Virtual Network (vNet).
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 
 ## Usage examples
@@ -32,10 +32,11 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/virtual-network:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using an IPv6 address space](#example-2-using-an-ipv6-address-space)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [Deploying a bi-directional peering](#example-4-deploying-a-bi-directional-peering)
-- [WAF-aligned](#example-5-waf-aligned)
+- [Using IPAM Pool Prefix Allocations](#example-2-using-ipam-pool-prefix-allocations)
+- [Using an IPv6 address space](#example-3-using-an-ipv6-address-space)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [Deploying a bi-directional peering](#example-5-deploying-a-bi-directional-peering)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -112,7 +113,194 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using an IPv6 address space_
+### Example 2: _Using IPAM Pool Prefix Allocations_
+
+This instance deploys the module with IP Addresses allocated from the IPAM Pool
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetwork 'br/public:avm/res/network/virtual-network:<version>' = {
+  name: 'virtualNetworkDeployment'
+  params: {
+    // Required parameters
+    addressPrefixes: [
+      '<networkManagerIpamPoolId>'
+    ]
+    name: 'nvnipam001'
+    // Non-required parameters
+    ipamPoolNumberOfIpAddresses: '254'
+    location: '<location>'
+    subnets: [
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '64'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'subnet-1'
+      }
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '16'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'subnet-2'
+      }
+      {
+        ipamPoolPrefixAllocations: [
+          {
+            numberOfIpAddresses: '8'
+            pool: {
+              id: '<id>'
+            }
+          }
+        ]
+        name: 'subnet-3'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "addressPrefixes": {
+      "value": [
+        "<networkManagerIpamPoolId>"
+      ]
+    },
+    "name": {
+      "value": "nvnipam001"
+    },
+    // Non-required parameters
+    "ipamPoolNumberOfIpAddresses": {
+      "value": "254"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "subnets": {
+      "value": [
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "64",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "subnet-1"
+        },
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "16",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "subnet-2"
+        },
+        {
+          "ipamPoolPrefixAllocations": [
+            {
+              "numberOfIpAddresses": "8",
+              "pool": {
+                "id": "<id>"
+              }
+            }
+          ],
+          "name": "subnet-3"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network:<version>'
+
+// Required parameters
+param addressPrefixes = [
+  '<networkManagerIpamPoolId>'
+]
+param name = 'nvnipam001'
+// Non-required parameters
+param ipamPoolNumberOfIpAddresses = '254'
+param location = '<location>'
+param subnets = [
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '64'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'subnet-1'
+  }
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '16'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'subnet-2'
+  }
+  {
+    ipamPoolPrefixAllocations: [
+      {
+        numberOfIpAddresses: '8'
+        pool: {
+          id: '<id>'
+        }
+      }
+    ]
+    name: 'subnet-3'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 3: _Using an IPv6 address space_
 
 This instance deploys the module using an IPv6 address space.
 
@@ -219,7 +407,7 @@ param subnets = [
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -635,7 +823,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Deploying a bi-directional peering_
+### Example 5: _Deploying a bi-directional peering_
 
 This instance deploys the module with both an inbound and outbound peering.
 
@@ -815,7 +1003,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned_
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework.
 
@@ -1113,7 +1301,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes for the Virtual Network. |
+| [`addressPrefixes`](#parameter-addressprefixes) | array | An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`. |
 | [`name`](#parameter-name) | string | The name of the Virtual Network (vNet). |
 
 **Optional parameters**
@@ -1126,6 +1314,7 @@ param tags = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`enableVmProtection`](#parameter-enablevmprotection) | bool | Indicates if VM protection is enabled for all the subnets in the virtual network. |
 | [`flowTimeoutInMinutes`](#parameter-flowtimeoutinminutes) | int | The flow timeout in minutes for the Virtual Network, which is used to enable connection tracking for intra-VM flows. Possible values are between 4 and 30 minutes. Default value 0 will set the property to null. |
+| [`ipamPoolNumberOfIpAddresses`](#parameter-ipampoolnumberofipaddresses) | string | Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`peerings`](#parameter-peerings) | array | Virtual Network Peering configurations. |
@@ -1138,7 +1327,7 @@ param tags = {
 
 ### Parameter: `addressPrefixes`
 
-An Array of 1 or more IP Address Prefixes for the Virtual Network.
+An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`.
 
 - Required: Yes
 - Type: array
@@ -1333,6 +1522,13 @@ The flow timeout in minutes for the Virtual Network, which is used to enable con
 - Type: int
 - Default: `0`
 - MaxValue: 30
+
+### Parameter: `ipamPoolNumberOfIpAddresses`
+
+Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool.
+
+- Required: No
+- Type: string
 
 ### Parameter: `location`
 
@@ -1630,6 +1826,7 @@ An Array of subnets to deploy to the Virtual Network.
 | :-- | :-- | :-- |
 | [`addressPrefix`](#parameter-subnetsaddressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
 | [`addressPrefixes`](#parameter-subnetsaddressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
+| [`ipamPoolPrefixAllocations`](#parameter-subnetsipampoolprefixallocations) | array | The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool. |
 
 **Optional parameters**
 
@@ -1665,6 +1862,13 @@ The address prefix for the subnet. Required if `addressPrefixes` is empty.
 ### Parameter: `subnets.addressPrefixes`
 
 List of address prefixes for the subnet. Required if `addressPrefix` is empty.
+
+- Required: No
+- Type: array
+
+### Parameter: `subnets.ipamPoolPrefixAllocations`
+
+The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool.
 
 - Required: No
 - Type: array

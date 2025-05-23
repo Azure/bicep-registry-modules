@@ -12,7 +12,7 @@ param blobServiceName string = 'default'
 param name string
 
 @description('Optional. Default the container to use specified encryption scope for all writes.')
-param defaultEncryptionScope string = ''
+param defaultEncryptionScope string?
 
 @description('Optional. Block override of encryption scope from the container default.')
 param denyEncryptionScopeOverride bool?
@@ -33,7 +33,7 @@ param immutabilityPolicyName string = 'default'
 param immutabilityPolicyProperties object?
 
 @description('Optional. A name-value pair to associate with the container as metadata.')
-param metadata object = {}
+param metadata resourceInput<'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01'>.properties.metadata = {}
 
 @allowed([
   'Container'
@@ -104,19 +104,19 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 
-  resource blobServices 'blobServices@2022-09-01' existing = {
+  resource blobServices 'blobServices@2024-01-01' existing = {
     name: blobServiceName
   }
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2022-09-01' = {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2024-01-01' = {
   name: name
   parent: storageAccount::blobServices
   properties: {
-    defaultEncryptionScope: !empty(defaultEncryptionScope) ? defaultEncryptionScope : null
+    defaultEncryptionScope: defaultEncryptionScope
     denyEncryptionScopeOverride: denyEncryptionScopeOverride
     enableNfsV3AllSquash: enableNfsV3AllSquash == true ? enableNfsV3AllSquash : null
     enableNfsV3RootSquash: enableNfsV3RootSquash == true ? enableNfsV3RootSquash : null

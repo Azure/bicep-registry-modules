@@ -7,29 +7,30 @@ param appName string
 @description('Required. The name of the App Service Plan to create.')
 param appServicePlanName string
 
-resource appServicePlan 'Microsoft.Web/serverfarms@2022-03-01' = {
+resource plan 'Microsoft.Web/serverfarms@2022-03-01' = {
   name: appServicePlanName
   location: location
-  sku: {
-    name: 'B3'
-  }
+  kind: 'linux'
   properties: {
     reserved: true
+  }
+  sku: {
+    name: 'B1'
   }
 }
 
 resource app 'Microsoft.Web/sites@2022-09-01' = {
   name: appName
   location: location
-  kind: 'app,linux'
+  identity: {
+    type: 'SystemAssigned'
+  }
   properties: {
-    serverFarmId: appServicePlan.id
+    serverFarmId: plan.id
     siteConfig: {
-      linuxFxVersion: 'dotnetcore|8.0'
-      alwaysOn: true
+      linuxFxVersion: 'DOTNETCORE|9.0'
     }
   }
-  identity: { type: 'SystemAssigned' }
 }
 
 @description('The app identity Principal Id.')

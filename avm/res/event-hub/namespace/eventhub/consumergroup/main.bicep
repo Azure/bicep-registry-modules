@@ -16,7 +16,7 @@ param userMetadata string = ''
 resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
   name: namespaceName
 
-  resource eventhub 'eventhubs@2022-10-01-preview' existing = {
+  resource eventhub 'eventhubs@2024-01-01' existing = {
     name: eventHubName
   }
 }

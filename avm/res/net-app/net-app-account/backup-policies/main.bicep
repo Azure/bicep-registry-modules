@@ -10,15 +10,19 @@ param name string = 'backupPolicy'
 @description('Optional. The location of the backup policy.')
 param location string = resourceGroup().location
 
-@description('Optional. The daily backups to keep.')
+@description('Optional. The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
 @minValue(2)
 @maxValue(1019)
 param dailyBackupsToKeep int = 2
 
-@description('Optional. The monthly backups to keep.')
+@description('Optional. The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
+@minValue(0)
+@maxValue(1019)
 param monthlyBackupsToKeep int = 0
 
-@description('Optional. The weekly backups to keep.')
+@description('Optional. The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
+@minValue(0)
+@maxValue(1019)
 param weeklyBackupsToKeep int = 0
 
 @description('Optional. Indicates whether the backup policy is enabled.')

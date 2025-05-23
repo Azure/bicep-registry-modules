@@ -70,7 +70,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      availabilityZone: -1
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       skuName: 'Standard_D2s_v3'

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "956420421248843753"
+      "version": "0.35.1.17967",
+      "templateHash": "16978206902562336432"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -499,39 +499,6 @@
         }
       }
     },
-    "KeyVaultSecretNames": {
-      "type": "object",
-      "properties": {
-        "azureStackLCMUserCredential": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the Azure Stack HCI LCM user credential secret."
-          }
-        },
-        "localAdminCredential": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the Azure Stack HCI local admin credential secret."
-          }
-        },
-        "defaultARBApplication": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the Azure Stack HCI default ARB application secret."
-          }
-        },
-        "witnessStorageKey": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The name of the Azure Stack HCI witness storage key secret."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "Key vault secret names interface"
-      }
-    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -973,8 +940,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "13439816736266620515"
+              "version": "0.35.1.17967",
+              "templateHash": "17734334454941239273"
             }
           },
           "parameters": {
@@ -1192,7 +1159,7 @@
               "name": "[format('{0}/{1}', parameters('keyVaultName'), format('{0}-WitnessStorageKey-{1}', parameters('clusterName'), parameters('cloudId')))]",
               "properties": {
                 "contentType": "[parameters('witnessStoragekeyContentType')]",
-                "value": "[base64(listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('witnessStorageAccountSubscriptionId'), parameters('witnessStorageAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2023-01-01').keys[0].value)]",
+                "value": "[base64(listKeys('witnessStorageAccount', '2023-01-01').keys[0].value)]",
                 "attributes": {
                   "enabled": true
                 }
@@ -1350,8 +1317,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12398547587936092834"
+              "version": "0.35.1.17967",
+              "templateHash": "15018461677267759264"
             },
             "name": "Azure Stack HCI Cluster Deployment Settings",
             "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."

@@ -56,6 +56,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'dfpsmin001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
@@ -84,6 +85,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "dfpsmin001"
     },
@@ -118,6 +122,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'dfpsmin001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
@@ -148,6 +153,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'dfpfmax001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
@@ -161,6 +167,8 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
     }
     geoRedundantBackup: 'Disabled'
+    highAvailability: 'ZoneRedundant'
+    highAvailabilityZone: 2
     location: '<location>'
     managedIdentities: {
       userAssignedResourceIds: [
@@ -185,6 +193,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "dfpfmax001"
     },
@@ -214,6 +225,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "geoRedundantBackup": {
       "value": "Disabled"
     },
+    "highAvailability": {
+      "value": "ZoneRedundant"
+    },
+    "highAvailabilityZone": {
+      "value": 2
+    },
     "location": {
       "value": "<location>"
     },
@@ -242,6 +259,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'dfpfmax001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
@@ -255,6 +273,8 @@ param customerManagedKey = {
   userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
 }
 param geoRedundantBackup = 'Disabled'
+param highAvailability = 'ZoneRedundant'
+param highAvailabilityZone = 2
 param location = '<location>'
 param managedIdentities = {
   userAssignedResourceIds: [
@@ -281,6 +301,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'dfpspvt001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
@@ -325,7 +346,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     ]
     geoRedundantBackup: 'Enabled'
-    location: '<location>'
     privateDnsZoneArmResourceId: '<privateDnsZoneArmResourceId>'
     roleAssignments: [
       {
@@ -366,6 +386,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "dfpspvt001"
     },
@@ -430,9 +453,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "geoRedundantBackup": {
       "value": "Enabled"
     },
-    "location": {
-      "value": "<location>"
-    },
     "privateDnsZoneArmResourceId": {
       "value": "<privateDnsZoneArmResourceId>"
     },
@@ -477,6 +497,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'dfpspvt001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
@@ -521,7 +542,6 @@ param diagnosticSettings = [
   }
 ]
 param geoRedundantBackup = 'Enabled'
-param location = '<location>'
 param privateDnsZoneArmResourceId = '<privateDnsZoneArmResourceId>'
 param roleAssignments = [
   {
@@ -564,6 +584,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: -1
     name: 'dfpspe001'
     skuName: 'Standard_D2ds_v5'
     tier: 'GeneralPurpose'
@@ -572,12 +593,11 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     administratorLoginPassword: '<administratorLoginPassword>'
     geoRedundantBackup: 'Enabled'
     highAvailability: 'ZoneRedundant'
-    location: '<location>'
     maintenanceWindow: {
       customWindow: 'Enabled'
-      dayOfWeek: '0'
-      startHour: '1'
-      startMinute: '0'
+      dayOfWeek: 0
+      startHour: 1
+      startMinute: 0
     }
     privateEndpoints: [
       {
@@ -613,6 +633,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": -1
+    },
     "name": {
       "value": "dfpspe001"
     },
@@ -635,15 +658,12 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "highAvailability": {
       "value": "ZoneRedundant"
     },
-    "location": {
-      "value": "<location>"
-    },
     "maintenanceWindow": {
       "value": {
         "customWindow": "Enabled",
-        "dayOfWeek": "0",
-        "startHour": "1",
-        "startMinute": "0"
+        "dayOfWeek": 0,
+        "startHour": 1,
+        "startMinute": 0
       }
     },
     "privateEndpoints": {
@@ -680,6 +700,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = -1
 param name = 'dfpspe001'
 param skuName = 'Standard_D2ds_v5'
 param tier = 'GeneralPurpose'
@@ -688,12 +709,11 @@ param administratorLogin = 'adminUserName'
 param administratorLoginPassword = '<administratorLoginPassword>'
 param geoRedundantBackup = 'Enabled'
 param highAvailability = 'ZoneRedundant'
-param location = '<location>'
 param maintenanceWindow = {
   customWindow: 'Enabled'
-  dayOfWeek: '0'
-  startHour: '1'
-  startMinute: '0'
+  dayOfWeek: 0
+  startHour: 1
+  startMinute: 0
 }
 param privateEndpoints = [
   {
@@ -731,6 +751,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'dfpspub001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
@@ -836,6 +857,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "dfpspub001"
     },
@@ -973,6 +997,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'dfpspub001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
@@ -1080,6 +1105,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   name: 'flexibleServerDeployment'
   params: {
     // Required parameters
+    availabilityZone: 1
     name: 'dfpswaf001'
     skuName: 'Standard_D2s_v3'
     tier: 'GeneralPurpose'
@@ -1123,7 +1149,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
       }
     ]
     highAvailability: 'ZoneRedundant'
-    location: '<location>'
     maintenanceWindow: {
       customWindow: 'Enabled'
       dayOfWeek: 0
@@ -1153,6 +1178,9 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
+    "availabilityZone": {
+      "value": 1
+    },
     "name": {
       "value": "dfpswaf001"
     },
@@ -1214,9 +1242,6 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
     "highAvailability": {
       "value": "ZoneRedundant"
     },
-    "location": {
-      "value": "<location>"
-    },
     "maintenanceWindow": {
       "value": {
         "customWindow": "Enabled",
@@ -1250,6 +1275,7 @@ module flexibleServer 'br/public:avm/res/db-for-postgre-sql/flexible-server:<ver
 using 'br/public:avm/res/db-for-postgre-sql/flexible-server:<version>'
 
 // Required parameters
+param availabilityZone = 1
 param name = 'dfpswaf001'
 param skuName = 'Standard_D2s_v3'
 param tier = 'GeneralPurpose'
@@ -1293,7 +1319,6 @@ param diagnosticSettings = [
   }
 ]
 param highAvailability = 'ZoneRedundant'
-param location = '<location>'
 param maintenanceWindow = {
   customWindow: 'Enabled'
   dayOfWeek: 0
@@ -1317,6 +1342,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`availabilityZone`](#parameter-availabilityzone) | int | If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones). |
 | [`name`](#parameter-name) | string | The name of the PostgreSQL flexible server. |
 | [`skuName`](#parameter-skuname) | string | The name of the sku, typically, tier + family + cores, e.g. Standard_D4s_v3. |
 | [`tier`](#parameter-tier) | string | The tier of the particular SKU. Tier must align with the 'skuName' property. Example, tier cannot be 'Burstable' if skuName is 'Standard_D4s_v3'. |
@@ -1337,7 +1363,6 @@ param tags = {
 | [`administratorLoginPassword`](#parameter-administratorloginpassword) | securestring | The administrator login password. |
 | [`administrators`](#parameter-administrators) | array | The Azure AD administrators when AAD authentication enabled. |
 | [`autoGrow`](#parameter-autogrow) | string | Flag to enable / disable Storage Auto grow for flexible server. |
-| [`availabilityZone`](#parameter-availabilityzone) | string | Availability zone information of the server. Default will have no preference set. |
 | [`backupRetentionDays`](#parameter-backupretentiondays) | int | Backup retention days for the server. |
 | [`configurations`](#parameter-configurations) | array | The configurations to create in the server. |
 | [`createMode`](#parameter-createmode) | string | The mode to create a new PostgreSQL server. |
@@ -1350,6 +1375,7 @@ param tags = {
 | [`firewallRules`](#parameter-firewallrules) | array | The firewall rules to create in the PostgreSQL flexible server. |
 | [`geoRedundantBackup`](#parameter-georedundantbackup) | string | A value indicating whether Geo-Redundant backup is enabled on the server. Should be disabled if 'cMKKeyName' is not empty. |
 | [`highAvailability`](#parameter-highavailability) | string | The mode for high availability. |
+| [`highAvailabilityZone`](#parameter-highavailabilityzone) | int | Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maintenanceWindow`](#parameter-maintenancewindow) | object | Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'. |
@@ -1363,6 +1389,22 @@ param tags = {
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`tenantId`](#parameter-tenantid) | string | Tenant id of the server. |
 | [`version`](#parameter-version) | string | PostgreSQL Server version. |
+
+### Parameter: `availabilityZone`
+
+If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).
+
+- Required: Yes
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `name`
 
@@ -1462,23 +1504,6 @@ Flag to enable / disable Storage Auto grow for flexible server.
   [
     'Disabled'
     'Enabled'
-  ]
-  ```
-
-### Parameter: `availabilityZone`
-
-Availability zone information of the server. Default will have no preference set.
-
-- Required: No
-- Type: string
-- Default: `''`
-- Allowed:
-  ```Bicep
-  [
-    ''
-    '1'
-    '2'
-    '3'
   ]
   ```
 
@@ -1582,7 +1607,6 @@ Delegated subnet arm resource ID. Used when the desired connectivity mode is 'Pr
 
 - Required: No
 - Type: string
-- Default: `''`
 
 ### Parameter: `diagnosticSettings`
 
@@ -1782,6 +1806,23 @@ The mode for high availability.
     'Disabled'
     'SameZone'
     'ZoneRedundant'
+  ]
+  ```
+
+### Parameter: `highAvailabilityZone`
+
+Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set.
+
+- Required: No
+- Type: int
+- Default: `-1`
+- Allowed:
+  ```Bicep
+  [
+    -1
+    1
+    2
+    3
   ]
   ```
 
@@ -2290,13 +2331,13 @@ The replication settings for the server. Can only be set on existing flexible se
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`promoteMode`](#parameter-replicapromotemode) | string | Sets the promote mode for a replica server. This is a write only property. 'standalone'<p>'switchover'. Required if enabling replication. |
-| [`promoteOption`](#parameter-replicapromoteoption) | string | Sets the promote options for a replica server. This is a write only property.	'forced'<p>'planned'. Required if enabling replication. |
-| [`role`](#parameter-replicarole) | string | Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication. |
+| [`promoteMode`](#parameter-replicapromotemode) | string | Sets the promote mode for a replica server. This is a write only property. Required if enabling replication. |
+| [`promoteOption`](#parameter-replicapromoteoption) | string | Sets the promote options for a replica server. This is a write only property. Required if enabling replication. |
+| [`role`](#parameter-replicarole) | string | Used to indicate role of the server in replication set. Required if enabling replication. |
 
 ### Parameter: `replica.promoteMode`
 
-Sets the promote mode for a replica server. This is a write only property. 'standalone'<p>'switchover'. Required if enabling replication.
+Sets the promote mode for a replica server. This is a write only property. Required if enabling replication.
 
 - Required: Yes
 - Type: string
@@ -2310,7 +2351,7 @@ Sets the promote mode for a replica server. This is a write only property. 'stan
 
 ### Parameter: `replica.promoteOption`
 
-Sets the promote options for a replica server. This is a write only property.	'forced'<p>'planned'. Required if enabling replication.
+Sets the promote options for a replica server. This is a write only property. Required if enabling replication.
 
 - Required: Yes
 - Type: string
@@ -2324,7 +2365,7 @@ Sets the promote options for a replica server. This is a write only property.	'f
 
 ### Parameter: `replica.role`
 
-Used to indicate role of the server in replication set.	'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication.
+Used to indicate role of the server in replication set. Required if enabling replication.
 
 - Required: Yes
 - Type: string
@@ -2499,7 +2540,7 @@ PostgreSQL Server version.
 
 - Required: No
 - Type: string
-- Default: `'16'`
+- Default: `'17'`
 - Allowed:
   ```Bicep
   [
@@ -2509,6 +2550,7 @@ PostgreSQL Server version.
     '14'
     '15'
     '16'
+    '17'
   ]
   ```
 

@@ -513,16 +513,3 @@ type deploymentSettingsType = {
   @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')
   keyVaultName: string
 }
-
-@export()
-@description('Key vault secret names interface')
-type KeyVaultSecretNames = {
-  @description('Required. The name of the Azure Stack HCI LCM user credential secret.')
-  azureStackLCMUserCredential: string
-  @description('Required. The name of the Azure Stack HCI local admin credential secret.')
-  localAdminCredential: string
-  @description('Required. The name of the Azure Stack HCI default ARB application secret.')
-  defaultARBApplication: string
-  @description('Required. The name of the Azure Stack HCI witness storage key secret.')
-  witnessStorageKey: string
-}

@@ -57,7 +57,6 @@ Collections in the mongodb database.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 

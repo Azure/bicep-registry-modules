@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "17977303735857570817"
+      "version": "0.35.1.17967",
+      "templateHash": "9868040144347773619"
     },
-    "name": "Azure Cosmos DB MongoDB vCore cluster",
-    "description": "This module deploys a Azure Cosmos DB MongoDB vCore cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
+    "name": "Azure Cosmos DB for MongoDB (vCore) cluster",
+    "description": "This module deploys a Azure Cosmos DB for MongoDB (vCore) cluster.\n\n**Note:** This module is not intended for broad, generic use, as it was designed to cater for the requirements of the AZD CLI product. Feature requests and bug fix requests are welcome if they support the development of the AZD CLI but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case."
   },
   "definitions": {
     "privateEndpointOutputType": {
@@ -151,40 +151,30 @@
         "description": "The type for a network ACLs configuration"
       }
     },
-    "secretsExportConfigurationType": {
+    "authIdentityType": {
       "type": "object",
       "properties": {
-        "keyVaultResourceId": {
+        "principalId": {
           "type": "string",
           "metadata": {
-            "description": "Required. The resource ID of the key vault where to store the secrets of this module."
+            "description": "Required. The principal (object) ID of the identity to create as a user on the cluster."
           }
         },
-        "connectionStringSecretName": {
+        "principalType": {
           "type": "string",
+          "allowedValues": [
+            "ServicePrincipal",
+            "User"
+          ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The name to use when creating the primary write connection string secret."
+            "description": "Optional. The type of principal to be used for the identity provider. Defaults to \"ServicePrincipal\"."
           }
         }
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for the secrets export configuration"
-      }
-    },
-    "secretsOutputType": {
-      "type": "object",
-      "properties": {},
-      "additionalProperties": {
-        "$ref": "#/definitions/secretSetType",
-        "metadata": {
-          "description": "An exported secret's references."
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The type for the secrets output"
+        "description": "The type for identities that can be used for Microsoft Entra ID authentication."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -664,35 +654,13 @@
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
-    },
-    "secretSetType": {
-      "type": "object",
-      "properties": {
-        "secretResourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "The resourceId of the exported secret."
-          }
-        },
-        "secretUri": {
-          "type": "string",
-          "metadata": {
-            "description": "The secret URI of the exported secret."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_imported_from!": {
-          "sourceTemplate": "modules/keyVaultExport.bicep"
-        }
-      }
     }
   },
   "parameters": {
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the Azure Cosmos DB MongoDB vCore cluster."
+        "description": "Required. Name of the Azure Cosmos DB for MongoDB (vCore) cluster."
       }
     },
     "location": {
@@ -727,7 +695,7 @@
       "type": "string",
       "defaultValue": "Default",
       "metadata": {
-        "description": "Optional. Mode to create the azure cosmos db mongodb vCore cluster."
+        "description": "Optional. Mode to create the Azure Cosmos DB for MongoDB (vCore) cluster."
       }
     },
     "diagnosticSettings": {
@@ -748,8 +716,13 @@
       }
     },
     "highAvailabilityMode": {
-      "type": "bool",
-      "defaultValue": false,
+      "type": "string",
+      "defaultValue": "ZoneRedundantPreferred",
+      "allowedValues": [
+        "Disabled",
+        "SameZone",
+        "ZoneRedundantPreferred"
+      ],
       "metadata": {
         "description": "Optional. Whether high availability is enabled on the node group."
       }
@@ -774,13 +747,6 @@
         "description": "Required. Number of nodes in the node group."
       }
     },
-    "nodeType": {
-      "type": "string",
-      "defaultValue": "Shard",
-      "metadata": {
-        "description": "Optional. Deployed Node type in the node group."
-      }
-    },
     "privateEndpoints": {
       "type": "array",
       "items": {
@@ -801,13 +767,6 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
-    "secretsExportConfiguration": {
-      "$ref": "#/definitions/secretsExportConfigurationType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. Key vault reference and secret settings for the module's secrets export."
-      }
-    },
     "sku": {
       "type": "string",
       "metadata": {
@@ -818,6 +777,23 @@
       "type": "int",
       "metadata": {
         "description": "Required. Disk storage size for the node group in GB."
+      }
+    },
+    "enableMicrosoftEntraAuth": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. The type of the secrets export configuration."
+      }
+    },
+    "entraAuthIdentities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/authIdentityType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Microsoft Entra ID authentication identity assignments to be created for the cluster."
       }
     }
   },
@@ -862,23 +838,31 @@
     },
     "mongoCluster": {
       "type": "Microsoft.DocumentDB/mongoClusters",
-      "apiVersion": "2024-02-15-preview",
+      "apiVersion": "2025-04-01-preview",
       "name": "[parameters('name')]",
       "tags": "[parameters('tags')]",
       "location": "[parameters('location')]",
       "properties": {
-        "administratorLogin": "[parameters('administratorLogin')]",
-        "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
+        "administrator": {
+          "userName": "[parameters('administratorLogin')]",
+          "password": "[parameters('administratorLoginPassword')]"
+        },
         "createMode": "[parameters('createMode')]",
-        "nodeGroupSpecs": [
-          {
-            "diskSizeGB": "[parameters('storage')]",
-            "enableHa": "[parameters('highAvailabilityMode')]",
-            "kind": "[parameters('nodeType')]",
-            "nodeCount": "[parameters('nodeCount')]",
-            "sku": "[parameters('sku')]"
-          }
-        ]
+        "compute": {
+          "tier": "[parameters('sku')]"
+        },
+        "sharding": {
+          "shardCount": "[parameters('nodeCount')]"
+        },
+        "storage": {
+          "sizeGb": "[parameters('storage')]"
+        },
+        "highAvailability": {
+          "targetMode": "[parameters('highAvailabilityMode')]"
+        },
+        "authConfig": {
+          "allowedModes": "[union(createArray('NativeAuth'), if(parameters('enableMicrosoftEntraAuth'), createArray('MicrosoftEntraID'), createArray()))]"
+        }
       }
     },
     "mongoCluster_diagnosticSettings": {
@@ -977,17 +961,17 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "4427483613542642631"
+              "version": "0.35.1.17967",
+              "templateHash": "16764717011313154043"
             },
-            "name": "Azure Cosmos DB MongoDB vCore Cluster Config FireWall Rules",
-            "description": "This module config firewall rules for the Azure Cosmos DB MongoDB vCore cluster."
+            "name": "Azure Cosmos DB for MongoDB (vCore) cluster Config FireWall Rules",
+            "description": "This module config firewall rules for the Azure Cosmos DB for MongoDB (vCore) cluster."
           },
           "parameters": {
             "mongoClusterName": {
               "type": "string",
               "metadata": {
-                "description": "Conditional. The name of the parent Azure Cosmos DB MongoDB vCore cluster. Required if the template is used in a standalone deployment."
+                "description": "Conditional. The name of the parent Azure Cosmos DB for MongoDB (vCore) cluster. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
@@ -999,20 +983,20 @@
             "startIpAddress": {
               "type": "string",
               "metadata": {
-                "description": "Required. The start IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format."
+                "description": "Required. The start IP address of the Azure Cosmos DB for MongoDB (vCore) cluster firewall rule. Must be IPv4 format."
               }
             },
             "endIpAddress": {
               "type": "string",
               "metadata": {
-                "description": "Required. The end IP address of the Azure Cosmos DB MongoDB vCore cluster firewall rule. Must be IPv4 format."
+                "description": "Required. The end IP address of the Azure Cosmos DB for MongoDB (vCore) cluster firewall rule. Must be IPv4 format."
               }
             }
           },
           "resources": [
             {
               "type": "Microsoft.DocumentDB/mongoClusters/firewallRules",
-              "apiVersion": "2024-02-15-preview",
+              "apiVersion": "2024-10-01-preview",
               "name": "[format('{0}/{1}', parameters('mongoClusterName'), if(not(contains(parameters('name'), '.')), parameters('name'), fail('The firewall rule name must match the pattern `^[a-zA-Z0-9][-_a-zA-Z0-9]*`. A `.` is **not** allowed.')))]",
               "properties": {
                 "startIpAddress": "[parameters('startIpAddress')]",
@@ -1024,7 +1008,7 @@
             "resourceGroupName": {
               "type": "string",
               "metadata": {
-                "description": "The name of the resource group the Azure Cosmos DB MongoDB vCore cluster was created in."
+                "description": "The name of the resource group the Azure Cosmos DB for MongoDB (vCore) cluster was created in."
               },
               "value": "[resourceGroup().name]"
             },
@@ -1049,24 +1033,31 @@
         "mongoCluster"
       ]
     },
-    "secretsExport": {
-      "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
+    "mongoCluster_users": {
+      "copy": {
+        "name": "mongoCluster_users",
+        "count": "[length(coalesce(parameters('entraAuthIdentities'), createArray()))]"
+      },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-      "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}-user-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
         },
         "mode": "Incremental",
         "parameters": {
-          "keyVaultName": {
-            "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
+          "mongoClusterName": {
+            "value": "[parameters('name')]"
           },
-          "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'connectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'connectionStringSecretName'), 'value', reference('mongoCluster').connectionString)), createArray()))]"
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "targetIdentity": {
+            "value": {
+              "principalId": "[coalesce(parameters('entraAuthIdentities'), createArray())[copyIndex()].principalId]",
+              "principalType": "[coalesce(coalesce(parameters('entraAuthIdentities'), createArray())[copyIndex()].principalType, 'ServicePrincipal')]"
+            }
           }
         },
         "template": {
@@ -1076,102 +1067,155 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "162520627816225036"
-            }
+              "version": "0.35.1.17967",
+              "templateHash": "4651660997503960626"
+            },
+            "name": "Azure Cosmos DB for MongoDB (vCore) cluster user",
+            "description": "This module creates a user within an Azure Cosmos DB for MongoDB (vCore) cluster. These users are used to connect to the cluster and perform operations using Microsoft Entra authentication."
           },
           "definitions": {
-            "secretSetType": {
+            "targetPrincipalPropertiesType": {
               "type": "object",
               "properties": {
-                "secretResourceId": {
+                "principalId": {
                   "type": "string",
                   "metadata": {
-                    "description": "The resourceId of the exported secret."
+                    "description": "Required. The principal (object) ID of the identity to create as a user on the cluster."
                   }
                 },
-                "secretUri": {
+                "principalType": {
                   "type": "string",
+                  "allowedValues": [
+                    "ServicePrincipal",
+                    "User"
+                  ],
                   "metadata": {
-                    "description": "The secret URI of the exported secret."
+                    "description": "Required. The type of principal to be used for the identity provider."
                   }
                 }
               },
               "metadata": {
-                "__bicep_export!": true
+                "__bicep_export!": true,
+                "description": "Properties for the identity associated with the user."
               }
             },
-            "secretToSetType": {
+            "rolePropertiesType": {
               "type": "object",
               "properties": {
-                "name": {
+                "database": {
                   "type": "string",
+                  "allowedValues": [
+                    "admin"
+                  ],
                   "metadata": {
-                    "description": "Required. The name of the secret to set."
+                    "description": "Required. The database to assign the role to."
                   }
                 },
-                "value": {
-                  "type": "securestring",
+                "role": {
+                  "type": "string",
+                  "allowedValues": [
+                    "dbOwner"
+                  ],
                   "metadata": {
-                    "description": "Required. The value of the secret to set."
+                    "description": "Required. The role to assign to the user."
                   }
                 }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "Properties for the role[s] assigned to the user."
               }
             }
           },
           "parameters": {
-            "keyVaultName": {
+            "mongoClusterName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the Key Vault to set the secrets in."
+                "description": "Conditional. The name of the parent Azure Cosmos DB for MongoDB (vCore) cluster. Required if the template is used in a standalone deployment."
               }
             },
-            "secretsToSet": {
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Default to current resource group scope location. Location for all resources."
+              }
+            },
+            "targetIdentity": {
+              "$ref": "#/definitions/targetPrincipalPropertiesType",
+              "metadata": {
+                "description": "Required. The principal/identity to create as a user on the cluster."
+              }
+            },
+            "targetRoles": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/secretToSetType"
+                "$ref": "#/definitions/rolePropertiesType"
               },
+              "defaultValue": [
+                {
+                  "database": "admin",
+                  "role": "dbOwner"
+                }
+              ],
               "metadata": {
-                "description": "Required. The secrets to set in the Key Vault."
+                "description": "Optional. The roles to assign to the user per database. Defaults to the \"dbOwner\" role on the \"admin\" database."
               }
             }
           },
           "resources": {
-            "keyVault": {
+            "mongoCluster": {
               "existing": true,
-              "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
-              "name": "[parameters('keyVaultName')]"
+              "type": "Microsoft.DocumentDB/mongoClusters",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[parameters('mongoClusterName')]"
             },
-            "secrets": {
-              "copy": {
-                "name": "secrets",
-                "count": "[length(parameters('secretsToSet'))]"
-              },
-              "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2023-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
+            "user": {
+              "type": "Microsoft.DocumentDB/mongoClusters/users",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}', parameters('mongoClusterName'), parameters('targetIdentity').principalId)]",
+              "location": "[parameters('location')]",
               "properties": {
-                "value": "[parameters('secretsToSet')[copyIndex()].value]"
+                "copy": [
+                  {
+                    "name": "roles",
+                    "count": "[length(parameters('targetRoles'))]",
+                    "input": {
+                      "db": "[parameters('targetRoles')[copyIndex('roles')].database]",
+                      "role": "[parameters('targetRoles')[copyIndex('roles')].role]"
+                    }
+                  }
+                ],
+                "identityProvider": {
+                  "type": "MicrosoftEntraID",
+                  "properties": {
+                    "principalType": "[tryGet(parameters('targetIdentity'), 'principalType')]"
+                  }
+                }
               }
             }
           },
           "outputs": {
-            "secretsSet": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/secretSetType"
-              },
+            "resourceGroupName": {
+              "type": "string",
               "metadata": {
-                "description": "The references to the secrets exported to the provided Key Vault."
+                "description": "The name of the resource group the Azure Cosmos DB for MongoDB (vCore) cluster was created in."
               },
-              "copy": {
-                "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
-                "input": {
-                  "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
-                  "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]"
-                }
-              }
+              "value": "[resourceGroup().name]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the user."
+              },
+              "value": "[parameters('targetIdentity').principalId]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the user."
+              },
+              "value": "[resourceId('Microsoft.DocumentDB/mongoClusters/users', parameters('mongoClusterName'), parameters('targetIdentity').principalId)]"
             }
           }
         }
@@ -1942,14 +1986,14 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the Azure Cosmos DB MongoDB vCore cluster."
+        "description": "The name of the Azure Cosmos DB for MongoDB (vCore) cluster."
       },
       "value": "[parameters('name')]"
     },
     "mongoClusterResourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the Azure Cosmos DB MongoDB vCore cluster."
+        "description": "The resource ID of the Azure Cosmos DB for MongoDB (vCore) cluster."
       },
       "value": "[resourceId('Microsoft.DocumentDB/mongoClusters', parameters('name'))]"
     },
@@ -1966,13 +2010,6 @@
         "description": "The name of the resource group the firewall rule was created in."
       },
       "value": "[resourceGroup().name]"
-    },
-    "connectionStringKey": {
-      "type": "string",
-      "metadata": {
-        "description": "The connection string key of the mongo cluster."
-      },
-      "value": "[reference('mongoCluster').connectionString]"
     },
     "firewallRules": {
       "type": "array",
@@ -2009,12 +2046,19 @@
         }
       }
     },
-    "exportedSecrets": {
-      "$ref": "#/definitions/secretsOutputType",
+    "obscuredConnectionString": {
+      "type": "securestring",
       "metadata": {
-        "description": "The references to the secrets exported to the provided Key Vault."
+        "description": "The connection string of the Azure Cosmos DB for MongoDB (vCore) cluster with the username and password obscured. This variant contains the `<user>` and `<password>` placeholders in place of the actual credentials."
       },
-      "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
+      "value": "[reference('mongoCluster').connectionString]"
+    },
+    "connectionString": {
+      "type": "securestring",
+      "metadata": {
+        "description": "The connection string of the Azure Cosmos DB for MongoDB (vCore) cluster. This variant contains the actual username and password credentials."
+      },
+      "value": "[replace(replace(reference('mongoCluster').connectionString, '<user>', parameters('administratorLogin')), '<password>', parameters('administratorLoginPassword'))]"
     }
   }
 }

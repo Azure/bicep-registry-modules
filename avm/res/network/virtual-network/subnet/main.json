@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "15641525953184589207"
+      "version": "0.32.4.45862",
+      "templateHash": "6928993269407282230"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet."
@@ -106,6 +106,16 @@
       "nullable": true,
       "metadata": {
         "description": "Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty."
+      }
+    },
+    "ipamPoolPrefixAllocations": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty."
       }
     },
     "networkSecurityGroupResourceId": {
@@ -276,7 +286,7 @@
     },
     "subnet": {
       "type": "Microsoft.Network/virtualNetworks/subnets",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
       "properties": {
         "copy": [
@@ -290,6 +300,7 @@
         ],
         "addressPrefix": "[parameters('addressPrefix')]",
         "addressPrefixes": "[parameters('addressPrefixes')]",
+        "ipamPoolPrefixAllocations": "[parameters('ipamPoolPrefixAllocations')]",
         "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
         "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
         "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
@@ -360,6 +371,13 @@
         "description": "List of address prefixes for the subnet."
       },
       "value": "[coalesce(tryGet(reference('subnet'), 'addressPrefixes'), createArray())]"
+    },
+    "ipamPoolPrefixAllocations": {
+      "type": "array",
+      "metadata": {
+        "description": "The IPAM pool prefix allocations for the subnet."
+      },
+      "value": "[coalesce(tryGet(reference('subnet'), 'ipamPoolPrefixAllocations'), createArray())]"
     }
   }
 }

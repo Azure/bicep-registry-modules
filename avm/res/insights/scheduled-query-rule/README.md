@@ -22,7 +22,7 @@ This module deploys a Scheduled Query Rule.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.Insights/scheduledQueryRules` | [2023-03-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-15-preview/scheduledQueryRules) |
+| `Microsoft.Insights/scheduledQueryRules` | [2025-01-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2025-01-01-preview/scheduledQueryRules) |
 
 ## Usage examples
 
@@ -1171,7 +1171,6 @@ List of resource type of the target resource(s) on which the alert is created/up
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ## Outputs
 

@@ -18,11 +18,11 @@ param diagnosticSettings diagnosticSettingFullType[]?
 // The name of the table service
 var name = 'default'
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 }
 
-resource tableServices 'Microsoft.Storage/storageAccounts/tableServices@2023-04-01' = {
+resource tableServices 'Microsoft.Storage/storageAccounts/tableServices@2024-01-01' = {
   name: name
   parent: storageAccount
   properties: {

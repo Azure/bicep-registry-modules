@@ -7,15 +7,9 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-//
-// Add your parameters here
-//
-
 @description('Optional. A map of the hub virtual networks to create.')
-param hubVirtualNetworks hubVirtualNetworkType
+param hubVirtualNetworks hubVirtualNetworkType?
 
-//
-// Add your variables here
 var hubVirtualNetworkPeerings = [for (hub, index) in items(hubVirtualNetworks ?? {}): hub.value.?peeringSettings ?? []]
 
 // ============== //
@@ -42,7 +36,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 // Create hub virtual networks
-module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.5.0' = [
+module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nvn'
     params: {
@@ -84,13 +78,13 @@ module hubVirtualNetworkPeer_remote 'modules/vnets.bicep' = [
 //   }
 // ]
 
-resource hubVirtualNetworkPeer_local 'Microsoft.Network/virtualNetworks@2024-01-01' existing = [
+resource hubVirtualNetworkPeer_local 'Microsoft.Network/virtualNetworks@2024-05-01' existing = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enablePeering) {
     name: hub.key
   }
 ]
 
-resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-01-01' = [
+resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-05-01' = [
   for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
     name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${peer.remoteVirtualNetworkName}-peering'
     properties: {
@@ -125,7 +119,7 @@ module hubRouteTable 'br/public:avm/res/network/route-table:0.4.0' = [
 ]
 
 // Create hub virtual network route table route
-resource hubRoute 'Microsoft.Network/routeTables/routes@2024-01-01' = [
+resource hubRoute 'Microsoft.Network/routeTables/routes@2024-05-01' = [
   for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
     name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${peer.remoteVirtualNetworkName}-route'
     properties: {
@@ -140,7 +134,7 @@ resource hubRoute 'Microsoft.Network/routeTables/routes@2024-01-01' = [
 // Create Bastion host if enabled
 // AzureBastionSubnet is required to deploy Bastion service. This subnet must exist in the parsubnets array if you enable Bastion Service.
 // There is a minimum subnet requirement of /27 prefix.
-module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
+module hubBastion 'br/public:avm/res/network/bastion-host:0.6.1' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableBastion) {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nbh'
     params: {
@@ -168,7 +162,7 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
 
 // Create Azure Firewall if enabled
 // AzureFirewallSubnet is required to deploy Azure Firewall service. This subnet must exist in the subnets array if you enable Azure Firewall.
-module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.1' = [
+module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.6.1' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-naf'
     params: {
@@ -227,10 +221,6 @@ module hubAzureFirewallSubnetAssociation 'modules/subnets.bicep' = [
   }
 ]
 
-//
-// Add your resources here
-//
-
 // ============ //
 // Outputs      //
 // ============ //
@@ -285,84 +275,10 @@ output resourceGroupName string = resourceGroup().name
 // Add your User-defined-types here, if any
 //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
+import { lockType, roleAssignmentType, diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.value.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?
-
+@export()
+@description('The type of a hub virtual network.')
 type hubVirtualNetworkType = {
   @description('Required. The hub virtual networks to create.')
   *: {
@@ -412,7 +328,7 @@ type hubVirtualNetworkType = {
     lock: lockType?
 
     @description('Optional. The diagnostic settings of the virtual network.')
-    diagnosticSettings: diagnosticSettingType?
+    diagnosticSettings: diagnosticSettingFullType[]?
 
     @description('Optional. The DDoS protection plan resource ID.')
     ddosProtectionPlanResourceId: string?
@@ -427,10 +343,10 @@ type hubVirtualNetworkType = {
     enablePeering: bool?
 
     @description('Optional. The peerings of the virtual network.')
-    peeringSettings: peeringSettingsType?
+    peeringSettings: peeringSettingType[]?
 
     @description('Optional. The role assignments to create.')
-    roleAssignments: roleAssignmentType?
+    roleAssignments: roleAssignmentType[]?
 
     @description('Optional. Routes to add to the virtual network route table.')
     routes: array?
@@ -450,9 +366,10 @@ type hubVirtualNetworkType = {
     @description('Optional. The VNet encryption enforcement settings of the virtual network.')
     vnetEncryptionEnforcement: string?
   }
-}?
+}
 
-type peeringSettingsType = {
+@description('The type of a peering setting.')
+type peeringSettingType = {
   @description('Optional. Allow forwarded traffic.')
   allowForwardedTraffic: bool?
 
@@ -467,8 +384,9 @@ type peeringSettingsType = {
 
   @description('Optional. Remote virtual network name.')
   remoteVirtualNetworkName: string?
-}[]?
+}
 
+@description('The type of an Azure Firewall configuration.')
 type azureFirewallType = {
   @description('Optional. The name of the Azure Firewall.')
   azureFirewallName: string?
@@ -489,7 +407,7 @@ type azureFirewallType = {
   azureSkuTier: 'Basic' | 'Standard' | 'Premium'?
 
   @description('Optional. Diagnostic settings.')
-  diagnosticSettings: diagnosticSettingType?
+  diagnosticSettings: diagnosticSettingFullType?
 
   @description('Optional. Firewall policy ID.')
   firewallPolicyId: string?
@@ -519,7 +437,7 @@ type azureFirewallType = {
   publicIPResourceID: string?
 
   @description('Optional. Role assignments.')
-  roleAssignments: roleAssignmentType?
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags of the resource.')
   tags: object?
@@ -529,4 +447,4 @@ type azureFirewallType = {
 
   @description('Optional. Zones.')
   zones: int[]?
-}?
+}

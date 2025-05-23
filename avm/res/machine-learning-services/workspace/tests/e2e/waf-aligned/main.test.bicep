@@ -102,7 +102,6 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      provisionNetworkNow: true
       managedNetworkSettings: {
         isolationMode: 'AllowOnlyApprovedOutbound'
         outboundRules: {

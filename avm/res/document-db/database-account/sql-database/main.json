@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "16080632612286518435"
+      "version": "0.35.1.17967",
+      "templateHash": "6801379641184405078"
     },
     "name": "DocumentDB Database Account SQL Databases",
     "description": "This module deploys a SQL Database in a CosmosDB Account."
@@ -29,7 +29,7 @@
       "items": {
         "type": "object"
       },
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of containers to deploy in the SQL database."
       }
@@ -81,11 +81,11 @@
     "container": {
       "copy": {
         "name": "container",
-        "count": "[length(parameters('containers'))]"
+        "count": "[length(coalesce(parameters('containers'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('name')), parameters('containers')[copyIndex()].name)]",
+      "name": "[format('{0}-sqldb-{1}', uniqueString(deployment().name, parameters('name')), coalesce(parameters('containers'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -99,35 +99,35 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('containers')[copyIndex()].name]"
+            "value": "[coalesce(parameters('containers'), createArray())[copyIndex()].name]"
           },
           "analyticalStorageTtl": {
-            "value": "[tryGet(parameters('containers')[copyIndex()], 'analyticalStorageTtl')]"
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'analyticalStorageTtl')]"
           },
           "autoscaleSettingsMaxThroughput": {
-            "value": "[tryGet(parameters('containers')[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'autoscaleSettingsMaxThroughput')]"
           },
           "conflictResolutionPolicy": {
-            "value": "[tryGet(parameters('containers')[copyIndex()], 'conflictResolutionPolicy')]"
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'conflictResolutionPolicy')]"
           },
           "defaultTtl": {
-            "value": "[tryGet(parameters('containers')[copyIndex()], 'defaultTtl')]"
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'defaultTtl')]"
           },
           "indexingPolicy": {
-            "value": "[tryGet(parameters('containers')[copyIndex()], 'indexingPolicy')]"
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'indexingPolicy')]"
           },
           "kind": {
-            "value": "[tryGet(parameters('containers')[copyIndex()], 'kind')]"
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'kind')]"
           },
           "version": {
-            "value": "[tryGet(parameters('containers')[copyIndex()], 'version')]"
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'version')]"
           },
           "paths": {
-            "value": "[tryGet(parameters('containers')[copyIndex()], 'paths')]"
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'paths')]"
           },
-          "throughput": "[if(and(or(not(equals(parameters('throughput'), null())), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), equals(tryGet(parameters('containers')[copyIndex()], 'throughput'), null())), createObject('value', -1), createObject('value', tryGet(parameters('containers')[copyIndex()], 'throughput')))]",
+          "throughput": "[if(and(or(not(equals(parameters('throughput'), null())), not(equals(parameters('autoscaleSettingsMaxThroughput'), null()))), equals(tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'throughput'), null())), createObject('value', -1), createObject('value', tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'throughput')))]",
           "uniqueKeyPolicyKeys": {
-            "value": "[tryGet(parameters('containers')[copyIndex()], 'uniqueKeyPolicyKeys')]"
+            "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'uniqueKeyPolicyKeys')]"
           }
         },
         "template": {
@@ -137,8 +137,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "8834615293032195419"
+              "version": "0.35.1.17967",
+              "templateHash": "5467755913632158534"
             },
             "name": "DocumentDB Database Account SQL Database Containers",
             "description": "This module deploys a SQL Database Container in a CosmosDB Account."

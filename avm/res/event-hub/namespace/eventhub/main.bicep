@@ -93,6 +93,9 @@ param captureDescriptionSizeLimitInBytes int = 314572800
 @description('Optional. A value that indicates whether to Skip Empty Archives.')
 param captureDescriptionSkipEmptyArchives bool = false
 
+@description('Optional. A value that indicates whether to enable retention description properties. If it is set to true the messageRetentionInDays property is ignored.')
+param retentionDescriptionEnabled bool = false
+
 @allowed([
   'Compact'
   'Delete'
@@ -102,7 +105,7 @@ param retentionDescriptionCleanupPolicy string = 'Delete'
 
 @minValue(1)
 @maxValue(168)
-@description('Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.')
+@description('Optional. Retention time in hours. Number of hours to retain the events for this Event Hub. This value is only used when cleanupPolicy is Delete and it overrides the messageRetentionInDays. If cleanupPolicy is Compact the returned value of this property is Long.MaxValue.')
 param retentionDescriptionRetentionTimeInHours int = 1
 
 @minValue(1)
@@ -111,18 +114,20 @@ param retentionDescriptionRetentionTimeInHours int = 1
 param retentionDescriptionTombstoneRetentionTimeInHours int = 1
 
 var eventHubProperties = {
-  messageRetentionInDays: messageRetentionInDays
+  messageRetentionInDays: retentionDescriptionEnabled ? null : messageRetentionInDays
   partitionCount: partitionCount
   status: status
-  retentionDescription: {
-    cleanupPolicy: retentionDescriptionCleanupPolicy
-    retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete'
-      ? retentionDescriptionRetentionTimeInHours
-      : null
-    tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact'
-      ? retentionDescriptionTombstoneRetentionTimeInHours
-      : null
-  }
+  retentionDescription: retentionDescriptionEnabled
+    ? {
+        cleanupPolicy: retentionDescriptionCleanupPolicy
+        retentionTimeInHours: retentionDescriptionCleanupPolicy == 'Delete'
+          ? retentionDescriptionRetentionTimeInHours
+          : null
+        tombstoneRetentionTimeInHours: retentionDescriptionCleanupPolicy == 'Compact'
+          ? retentionDescriptionTombstoneRetentionTimeInHours
+          : null
+      }
+    : null
 }
 
 var eventHubPropertiesCapture = {
@@ -184,7 +189,7 @@ resource namespace 'Microsoft.EventHub/namespaces@2024-01-01' existing = {
   name: namespaceName
 }
 
-resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2022-10-01-preview' = {
+resource eventHub 'Microsoft.EventHub/namespaces/eventhubs@2024-01-01' = {
   name: name
   parent: namespace
   properties: captureDescriptionEnabled ? union(eventHubProperties, eventHubPropertiesCapture) : eventHubProperties

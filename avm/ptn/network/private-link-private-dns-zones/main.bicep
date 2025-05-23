@@ -113,7 +113,6 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.attest.azure.net'
   'privatelink.search.windows.net'
   'privatelink.azurewebsites.net'
-  'scm.privatelink.azurewebsites.net'
   'privatelink.service.signalr.net'
   'privatelink.azurestaticapps.net'
   'privatelink.azuresynapse.net'

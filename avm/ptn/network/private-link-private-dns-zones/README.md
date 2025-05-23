@@ -538,7 +538,6 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.webpubsub.azure.com'
     'privatelink.workspace.azurehealthcareapis.com'
     'privatelink.wvd.microsoft.com'
-    'scm.privatelink.azurewebsites.net'
   ]
   ```
 

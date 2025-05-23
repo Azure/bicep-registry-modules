@@ -181,7 +181,7 @@ output outboundEndpointsObject endpointDetailsType[] = [
   }
 ]
 
-@description('The outbound endpoints object.')
+@description('The inbound endpoints object.')
 output inboundEndpointsObject endpointDetailsType[] = [
   for index in range(0, length(inboundEndpoints ?? [])): {
     name: dnsResolver_inboundEndpoints[index].outputs.name

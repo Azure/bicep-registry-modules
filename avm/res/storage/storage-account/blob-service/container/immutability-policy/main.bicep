@@ -17,19 +17,19 @@ param allowProtectedAppendWrites bool = true
 @description('Optional. This property can only be changed for unlocked time-based retention policies. When enabled, new blocks can be written to both "Append and Block Blobs" while maintaining immutability protection and compliance. Only new blocks can be added and any existing blocks cannot be modified or deleted. This property cannot be changed with ExtendImmutabilityPolicy API. The "allowProtectedAppendWrites" and "allowProtectedAppendWritesAll" properties are mutually exclusive.')
 param allowProtectedAppendWritesAll bool = true
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 
-  resource blobServices 'blobServices@2022-09-01' existing = {
+  resource blobServices 'blobServices@2024-01-01' existing = {
     name: 'default'
 
-    resource container 'containers@2022-09-01' existing = {
+    resource container 'containers@2024-01-01' existing = {
       name: containerName
     }
   }
 }
 
-resource immutabilityPolicy 'Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies@2022-09-01' = {
+resource immutabilityPolicy 'Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies@2024-01-01' = {
   name: 'default'
   parent: storageAccount::blobServices::container
   properties: {

@@ -385,8 +385,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     // Required parameters
     name: 'ssmin001'
     // Non-required parameters
-    administratorLogin: 'adminUserName'
-    administratorLoginPassword: '<administratorLoginPassword>'
+    administrators: {
+      azureADOnlyAuthentication: true
+      login: '<login>'
+      principalType: 'Application'
+      sid: '<sid>'
+    }
     location: '<location>'
   }
 }
@@ -409,11 +413,13 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": "ssmin001"
     },
     // Non-required parameters
-    "administratorLogin": {
-      "value": "adminUserName"
-    },
-    "administratorLoginPassword": {
-      "value": "<administratorLoginPassword>"
+    "administrators": {
+      "value": {
+        "azureADOnlyAuthentication": true,
+        "login": "<login>",
+        "principalType": "Application",
+        "sid": "<sid>"
+      }
     },
     "location": {
       "value": "<location>"
@@ -435,8 +441,12 @@ using 'br/public:avm/res/sql/server:<version>'
 // Required parameters
 param name = 'ssmin001'
 // Non-required parameters
-param administratorLogin = 'adminUserName'
-param administratorLoginPassword = '<administratorLoginPassword>'
+param administrators = {
+  azureADOnlyAuthentication: true
+  login: '<login>'
+  principalType: 'Application'
+  sid: '<sid>'
+}
 param location = '<location>'
 ```
 
