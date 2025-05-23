@@ -1,5 +1,5 @@
-// Azure Verified Module pattern for IaaS VM with CosmosDB MongoDB vCore solution
-// Created: May 22, 2025
+metadata name = 'IaaS VM with CosmosDB Tier 4'
+metadata description = 'Creates an IaaS VM with CosmosDB Tier 4 configuration.'
 
 @description('Name of the solution which is used to generate unique resource names')
 param name string
@@ -10,8 +10,8 @@ param location string = resourceGroup().location
 @description('Tags for all resources')
 param tags object = {}
 
-@description('Enable telemetry via the Customer Usage Attribution ID (GUID)')
-param enableDefaultTelemetry bool = true
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
 
 // Network security group parameters
 @description('Network security group rules for the ApplicationSubnet')
@@ -80,14 +80,20 @@ param lbFrontendPort int = 80
 param lbBackendPort int = 80
 
 // Module telemetry
-resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
-  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.ptn.azd-acrcontainerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
       contentVersion: '1.0.0.0'
       resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
     }
   }
 }
@@ -100,7 +106,7 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
     location: location
     tags: tags
     securityRules: vmNsgRules
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -112,7 +118,7 @@ module applicationNsg 'br/public:avm/res/network/network-security-group:0.4.0' =
     location: location
     tags: tags
     securityRules: applicationNsgRules
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -123,7 +129,7 @@ module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.4.
     location: location
     tags: tags
     securityRules: []
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -134,7 +140,7 @@ module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.4.
     location: location
     tags: tags
     securityRules: []
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -288,7 +294,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.4.0' = {
         }
       }
     ]
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -324,7 +330,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
         networkSecurityGroupResourceId: bastionNsg.outputs.resourceId
       }
     ]
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -339,7 +345,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.6.2' = {
     allowBlobPublicAccess: false
     defaultToOAuthAuthentication: true
     minimumTlsVersion: 'TLS1_2'
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -350,7 +356,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:0.4.3' = {
     name: '${name}-vm-key'
     location: location
     tags: tags
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -398,7 +404,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.0' = {
         probeThreshold: 1
       }
     ]
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -421,7 +427,7 @@ module networkInterface 'br/public:avm/res/network/network-interface:0.2.1' = {
       }
     ]
     networkSecurityGroupResourceId: vmNetworkSecurityGroup.outputs.resourceId
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -479,7 +485,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     ]
     bootDiagnostics: true
     bootDiagnosticStorageAccountName: storageAccount.outputs.name
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -491,7 +497,7 @@ module recoveryServicesVault 'br/public:avm/res/recovery-services/vault:0.5.0' =
     location: location
     tags: tags
     publicNetworkAccess: 'Disabled'
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -553,7 +559,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
         registrationEnabled: false
       }
     ]
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -573,7 +579,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.2.0' = {
     groupIds: [
       'MongoCluster'
     ]
-    enableTelemetry: enableDefaultTelemetry
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -589,3 +595,9 @@ output virtualNetworkResourceId string = virtualNetwork.outputs.resourceId
 
 @description('The resource ID of the load balancer')
 output loadBalancerResourceId string = loadBalancer.outputs.resourceId
+
+@description('The resource ID')
+output resourceId string = virtualMachine.outputs.resourceId
+
+@description('Resource Group Name')
+output ResourceGroupName string = resourceGroup().name
