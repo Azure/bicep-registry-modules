@@ -1410,7 +1410,7 @@ Describe 'Module tests' -Tag 'Module' {
 
                 $changelogExists = Test-Path (Join-Path -Path $moduleFolderPath 'CHANGELOG.md')
                 if ($changelogExists) {
-                    $changelogContent.Length | Should -BeGreaterThan 0 -Because 'the changelog should not be empty'
+                    $changelogContent | Should -Not -BeNullOrEmpty -Because 'the changelog must not be empty'
                 } else {
                     Set-ItResult -Skipped -Because 'the CHANGELOG.md file does not exist.'
                 }
@@ -1425,10 +1425,8 @@ Describe 'Module tests' -Tag 'Module' {
                 [string[]] $changelogContent
             )
 
-            if ($changelogContent.Count -le 4) {
-                Set-ItResult -Skipped -Because "The CHANGELOG.md file's header is either missing or incorrect. You can find an example of the header [here](https://azure.github.io/Azure-Verified-Modules/spec/BCPNRF22/#example-content-of-the-changelogmd)."
-                return
-            }
+            # need at least 4 lines to pass the test
+            $changelogContent.Count | Should -BeGreaterThan 4 -Because "the CHANGELOG.md file's header is either missing or incorrect. You can find an example of the header [here](https://azure.github.io/Azure-Verified-Modules/spec/BCPNRF22/#example-content-of-the-changelogmd)."
 
             # the changelog should start with '# Changelog'
             $changelogContent[0] | Should -Be '# Changelog' -Because 'the changelog should start with `# Changelog`'
@@ -1449,10 +1447,7 @@ Describe 'Module tests' -Tag 'Module' {
                 [string[]] $changelogContent
             )
 
-            if ($changelogContent.Count -le 4) {
-                Set-ItResult -Skipped -Because 'CHANGELOG.md file not found or uncomplete.'
-                return
-            }
+            $changelogContent | Should -Not -BeNullOrEmpty -Because 'CHANGELOG.md file not found or uncomplete.'
 
             if ((Get-ModulesToPublish -ModuleFolderPath $moduleFolderPath) -ge 1) {
                 # the module will be published. Use the new version
@@ -1482,29 +1477,23 @@ Describe 'Module tests' -Tag 'Module' {
                 [string[]] $changelogContent
             )
 
-            if ($changelogContent.Count -le 4) {
-                Set-ItResult -Skipped -Because 'CHANGELOG.md file not found or uncomplete.'
-                return
-            }
+            $changelogContent | Should -Not -BeNullOrEmpty -Because 'CHANGELOG.md file not found or uncomplete.'
 
             # check for the order of the versions
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
             ($sections | Sort-Object -Descending) | Should -BeExactly $sections 'the versions in the changelog should appear in descending order'
         }
 
-        It '[<moduleFolderName>] `CHANGELOG.md` versions must contain valid `Changes` and `Breaking Changes` sections.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists -and $_.includeInTestPhase }) {
+        It '[<moduleFolderName>] `CHANGELOG.md` versions must contain exactly one valid `Changes` section.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists -and $_.includeInTestPhase }) {
 
             param(
                 [string[]] $changelogContent
             )
 
-            if ($changelogContent.Count -le 4) {
-                Set-ItResult -Skipped -Because 'CHANGELOG.md file not found or uncomplete.'
-                return
-            }
+            $changelogContent | Should -Not -BeNullOrEmpty -Because 'CHANGELOG.md file not found or uncomplete.'
 
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
-            # check each section for the presence of the `### Changes` and `### Breaking Changes` sections and non-empty content
+            # check each section for the presence of the `### Changes` sections
             $sectionContents = @{}
             if ($sections -is [array]) {
                 for ($i = 0; $i -lt $sections.Count; $i++) {
@@ -1518,35 +1507,123 @@ Describe 'Module tests' -Tag 'Module' {
             }
 
             $invalidChanges = [System.Collections.ArrayList]@()
-            $invalidBreakingChanges = [System.Collections.ArrayList]@()
-            $emptySections = [System.Collections.ArrayList]@()
-            $wrongOrder = [System.Collections.ArrayList]@()
             foreach ($key in $sectionContents.Keys) {
                 $versionContent = Join-String -InputObject $sectionContents[$key] -Separator "`n"
 
                 if ((Select-String -InputObject $versionContent -Pattern '\n### Changes\n' -AllMatches).Matches.Count -ne 1) {
                     $invalidChanges += $key
                 }
+            }
+
+            $invalidChanges | Should -BeNullOrEmpty -Because ('all versions should contain exactly one `### Changes` section. Found invalid versions: [{0}].' -f ($invalidChanges -join ', '))
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` versions must contain exactly one valid `Breaking Changes` section.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists -and $_.includeInTestPhase }) {
+
+            param(
+                [string[]] $changelogContent
+            )
+
+            $changelogContent | Should -Not -BeNullOrEmpty -Because 'CHANGELOG.md file not found or uncomplete.'
+
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
+            # check each section for the presence of the `### Breaking Changes` sections
+            $sectionContents = @{}
+            if ($sections -is [array]) {
+                for ($i = 0; $i -lt $sections.Count; $i++) {
+                    $startIndex = $changelogContent.IndexOf($sections[$i]) + 1 # skip the heading
+                    $endIndex = $i + 1 -ne $sections.Count ? $changelogContent.IndexOf($sections[$i + 1]) : $changelogContent.Count # if it's the last section, take everything until the end
+                    $sectionContents[$sections[$i]] = $changelogContent[$startIndex..($endIndex - 1)]
+                }
+            } else {
+                # special treatment, if there is only one section
+                $sectionContents['## ${newModuleVersion}'] += $changelogContent
+            }
+
+            $invalidBreakingChanges = [System.Collections.ArrayList]@()
+            foreach ($key in $sectionContents.Keys) {
+                $versionContent = Join-String -InputObject $sectionContents[$key] -Separator "`n"
+
+                if ((Select-String -InputObject $versionContent -Pattern '\n### Breaking Changes\n' -AllMatches).Matches.Count -ne 1) {
+                    $invalidBreakingChanges += $key
+                }
+            }
+
+            $invalidBreakingChanges | Should -BeNullOrEmpty -Because ('all versions should contain exactly one `### Breaking Changes` section. Found invalid versions: [{0}].' -f ($invalidBreakingChanges -join ', '))
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` sections `Changes` and `Breaking Changes` must not be empty.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists -and $_.includeInTestPhase }) {
+
+            param(
+                [string[]] $changelogContent
+            )
+
+            $changelogContent | Should -Not -BeNullOrEmpty -Because 'CHANGELOG.md file not found or uncomplete.'
+
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
+            # check each section for non-empty content
+            $sectionContents = @{}
+            if ($sections -is [array]) {
+                for ($i = 0; $i -lt $sections.Count; $i++) {
+                    $startIndex = $changelogContent.IndexOf($sections[$i]) + 1 # skip the heading
+                    $endIndex = $i + 1 -ne $sections.Count ? $changelogContent.IndexOf($sections[$i + 1]) : $changelogContent.Count # if it's the last section, take everything until the end
+                    $sectionContents[$sections[$i]] = $changelogContent[$startIndex..($endIndex - 1)]
+                }
+            } else {
+                # special treatment, if there is only one section
+                $sectionContents['## ${newModuleVersion}'] += $changelogContent
+            }
+
+            $emptySections = [System.Collections.ArrayList]@()
+            foreach ($key in $sectionContents.Keys) {
+                $versionContent = Join-String -InputObject $sectionContents[$key] -Separator "`n"
+
                 if ((Select-String -InputObject $versionContent -Pattern '\n### Breaking Changes\n' -AllMatches).Matches.Count -ne 1) {
                     if (($versionContent -split "`n")[-1] -eq '### Breaking Changes') {
                         # the last line of the changelog section needs special treatment, as it is not followed by a new section or line
                         $emptySections += $key
-                    } else {
-                        $invalidBreakingChanges += $key
                     }
                 }
                 # the $newModuleVersion section must contain content and not only the headings and empty lines. The check for changelog and 0.1.0 is necessary for only one section in the file
                 if (($sectionContents[$key] | Where-Object { $_ -notmatch '^\s*$' -and $_ -notmatch '^(### Changes|### Breaking Changes|# Changelog|## 0.1.0)$' }).Count -eq 0) {
                     $emptySections += $key
                 }
+            }
+
+            $emptySections | Should -BeNullOrEmpty -Because ('all versions should contain actual content and not just headers or empty lines. Found invalid versions: [{0}].' -f ($emptySections -join ', '))
+        }
+
+        It '[<moduleFolderName>] `CHANGELOG.md` versions must contain the `Changes` section before the `Breaking Changes` section.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists -and $_.includeInTestPhase }) {
+
+            param(
+                [string[]] $changelogContent
+            )
+
+            $changelogContent | Should -Not -BeNullOrEmpty -Because 'CHANGELOG.md file not found or uncomplete.'
+
+            $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
+            # check each section for the presence of the `### Changes` and `### Breaking Changes` sections
+            $sectionContents = @{}
+            if ($sections -is [array]) {
+                for ($i = 0; $i -lt $sections.Count; $i++) {
+                    $startIndex = $changelogContent.IndexOf($sections[$i]) + 1 # skip the heading
+                    $endIndex = $i + 1 -ne $sections.Count ? $changelogContent.IndexOf($sections[$i + 1]) : $changelogContent.Count # if it's the last section, take everything until the end
+                    $sectionContents[$sections[$i]] = $changelogContent[$startIndex..($endIndex - 1)]
+                }
+            } else {
+                # special treatment, if there is only one section
+                $sectionContents['## ${newModuleVersion}'] += $changelogContent
+            }
+
+            $wrongOrder = [System.Collections.ArrayList]@()
+            foreach ($key in $sectionContents.Keys) {
+                $versionContent = Join-String -InputObject $sectionContents[$key] -Separator "`n"
+
                 if (-not ($versionContent.IndexOf('### Changes') -lt $versionContent.IndexOf('### Breaking Changes'))) {
                     $wrongOrder += $key
                 }
             }
 
-            $invalidChanges | Should -BeNullOrEmpty -Because ('all versions should contain exactly one `### Changes` section. Found invalid versions: [{0}].' -f ($invalidChanges -join ', '))
-            $invalidBreakingChanges | Should -BeNullOrEmpty -Because ('all versions should contain exactly one `### Breaking Changes` section. Found invalid versions: [{0}].' -f ($invalidBreakingChanges -join ', '))
-            $emptySections | Should -BeNullOrEmpty -Because ('all versions should contain actual content and not just headers or empty lines. Found invalid versions: [{0}].' -f ($emptySections -join ', '))
             $wrongOrder | Should -BeNullOrEmpty -Because ('all versions should contain the `### Changes` section before the `### Breaking Changes` section. Found invalid versions: [{0}].' -f ($wrongOrder -join ', '))
         }
 
@@ -1559,10 +1636,7 @@ Describe 'Module tests' -Tag 'Module' {
                 [string[]] $changelogContent
             )
 
-            if ($changelogContent.Count -le 4) {
-                Set-ItResult -Skipped -Because 'CHANGELOG.md file not found or uncomplete.'
-                return
-            }
+            $changelogContent | Should -Not -BeNullOrEmpty -Because 'CHANGELOG.md file not found or uncomplete.'
 
             # all versions, that are mentioned in the changelog
             $sections = $changelogContent | Where-Object { $_ -match '^##\s+' }
