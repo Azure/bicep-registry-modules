@@ -1,0 +1,591 @@
+// Azure Verified Module pattern for IaaS VM with CosmosDB MongoDB vCore solution
+// Created: May 22, 2025
+
+@description('Name of the solution which is used to generate unique resource names')
+param name string
+
+@description('Location for all resources')
+param location string = resourceGroup().location
+
+@description('Tags for all resources')
+param tags object = {}
+
+@description('Enable telemetry via the Customer Usage Attribution ID (GUID)')
+param enableDefaultTelemetry bool = true
+
+// Network security group parameters
+@description('Network security group rules for the ApplicationSubnet')
+param applicationNsgRules array = []
+
+@description('Network security group rules for the VM')
+param vmNsgRules array = [
+  {
+    name: 'HTTP'
+    properties: {
+      protocol: 'TCP'
+      sourcePortRange: '*'
+      destinationPortRange: '80'
+      sourceAddressPrefix: '*'
+      destinationAddressPrefix: '*'
+      access: 'Allow'
+      priority: 300
+      direction: 'Inbound'
+    }
+  }
+]
+
+// Virtual network parameters
+@description('Address prefix for the virtual network')
+param vnetAddressPrefix string = '10.0.0.0/16'
+
+@description('Subnet configuration for the virtual network')
+param subnets array = [
+  {
+    name: 'ApplicationSubnet'
+    addressPrefix: '10.0.0.0/24'
+  }
+  {
+    name: 'PrivateEndpointsSubnet'
+    addressPrefix: '10.0.1.0/24'
+  }
+  {
+    name: 'BootDiagnosticsSubnet'
+    addressPrefix: '10.0.2.0/24'
+  }
+  {
+    name: 'AzureBastionSubnet'
+    addressPrefix: '10.0.3.0/26'
+  }
+]
+
+// Virtual machine parameters
+@description('Size of the virtual machine')
+param vmSize string = 'Standard_D2s_v3'
+
+@description('Admin username for the virtual machine')
+param adminUsername string = 'azureuser'
+
+// Storage account parameters
+@description('Storage account SKU')
+param storageAccountSku object = {
+  name: 'Standard_LRS'
+  tier: 'Standard'
+}
+
+// Load balancer parameters
+@description('Load balancer frontend port')
+param lbFrontendPort int = 80
+
+@description('Load balancer backend port')
+param lbBackendPort int = 80
+
+// Module telemetry
+resource defaultTelemetry 'Microsoft.Resources/deployments@2022-09-01' = if (enableDefaultTelemetry) {
+  name: 'pid-47ed15a6-730a-4827-bcb4-0fd963ffbd82-${uniqueString(deployment().name, location)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+    }
+  }
+}
+
+// Network security group for VM
+module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.4.0' = {
+  name: '${name}-vm-nsg'
+  params: {
+    name: '${name}-vm-nsg'
+    location: location
+    tags: tags
+    securityRules: vmNsgRules
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+// Network security groups for subnets
+module applicationNsg 'br/public:avm/res/network/network-security-group:0.4.0' = {
+  name: '${name}-application-nsg'
+  params: {
+    name: 'ApplicationSubnet'
+    location: location
+    tags: tags
+    securityRules: applicationNsgRules
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.4.0' = {
+  name: '${name}-privateendpoint-nsg'
+  params: {
+    name: 'PrivateEndpointSubnet'
+    location: location
+    tags: tags
+    securityRules: []
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.4.0' = {
+  name: '${name}-bootdiagnostics-nsg'
+  params: {
+    name: 'BootDiagnosticsSubnet'
+    location: location
+    tags: tags
+    securityRules: []
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+module bastionNsg 'br/public:avm/res/network/network-security-group:0.4.0' = {
+  name: '${name}-bastion-nsg'
+  params: {
+    name: 'AzureBastionSubnet'
+    location: location
+    tags: tags
+    securityRules: [
+      {
+        name: 'AllowHttpsInBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: 'Internet'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 100
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'AllowGatewayManagerInBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: 'GatewayManager'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 110
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'AllowLoadBalancerInBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: 'AzureLoadBalancer'
+          destinationAddressPrefix: '*'
+          access: 'Allow'
+          priority: 120
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'AllowBastionHostCommunicationInBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 130
+          direction: 'Inbound'
+          destinationPortRanges: [
+            '8080'
+            '5701'
+          ]
+        }
+      }
+      {
+        name: 'DenyAllInBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          access: 'Deny'
+          priority: 1000
+          direction: 'Inbound'
+        }
+      }
+      {
+        name: 'AllowSshRdpOutBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 100
+          direction: 'Outbound'
+          destinationPortRanges: [
+            '22'
+            '3389'
+          ]
+        }
+      }
+      {
+        name: 'AllowAzureCloudCommunicationOutBound'
+        properties: {
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: 'AzureCloud'
+          access: 'Allow'
+          priority: 110
+          direction: 'Outbound'
+        }
+      }
+      {
+        name: 'AllowBastionHostCommunicationOutBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: 'VirtualNetwork'
+          access: 'Allow'
+          priority: 120
+          direction: 'Outbound'
+          destinationPortRanges: [
+            '8080'
+            '5701'
+          ]
+        }
+      }
+      {
+        name: 'AllowGetSessionInformationOutBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: 'Internet'
+          access: 'Allow'
+          priority: 130
+          direction: 'Outbound'
+          destinationPortRanges: [
+            '80'
+            '443'
+          ]
+        }
+      }
+      {
+        name: 'DenyAllOutBound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          access: 'Deny'
+          priority: 1000
+          direction: 'Outbound'
+        }
+      }
+    ]
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+// Virtual network with subnets
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
+  name: '${name}-vnet'
+  params: {
+    name: '${name}-vnet'
+    location: location
+    tags: tags
+    addressPrefixes: [
+      vnetAddressPrefix
+    ]
+    subnets: [
+      {
+        name: 'ApplicationSubnet'
+        addressPrefix: subnets[0].addressPrefix
+        networkSecurityGroupResourceId: applicationNsg.outputs.resourceId
+      }
+      {
+        name: 'PrivateEndpointsSubnet'
+        addressPrefix: subnets[1].addressPrefix
+        networkSecurityGroupResourceId: privateEndpointNsg.outputs.resourceId
+      }
+      {
+        name: 'BootDiagnosticsSubnet'
+        addressPrefix: subnets[2].addressPrefix
+        networkSecurityGroupResourceId: bootDiagnosticsNsg.outputs.resourceId
+      }
+      {
+        name: 'AzureBastionSubnet'
+        addressPrefix: subnets[3].addressPrefix
+        networkSecurityGroupResourceId: bastionNsg.outputs.resourceId
+      }
+    ]
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+// Storage account for boot diagnostics
+module storageAccount 'br/public:avm/res/storage/storage-account:0.6.2' = {
+  name: '${name}-storage'
+  params: {
+    name: replace('${name}stdiag', '-', '')
+    location: location
+    tags: tags
+    skuName: storageAccountSku.name
+    allowBlobPublicAccess: false
+    defaultToOAuthAuthentication: true
+    minimumTlsVersion: 'TLS1_2'
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+// SSH public key for VM
+module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:0.4.3' = {
+  name: '${name}-ssh-key'
+  params: {
+    name: '${name}-vm-key'
+    location: location
+    tags: tags
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+// Load balancer
+module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.0' = {
+  name: '${name}-lb'
+  params: {
+    name: '${name}-lb'
+    location: location
+    tags: tags
+    frontendIPConfigurations: [
+      {
+        name: '${name}-lb-frontendconfig01'
+        subnetId: virtualNetwork.outputs.subnetResourceIds[0]
+      }
+    ]
+    backendAddressPools: [
+      {
+        name: '${name}-lb-backendpool01'
+      }
+    ]
+    loadBalancingRules: [
+      {
+        name: '${name}-lb-lbrule01'
+        frontendIPConfigurationName: '${name}-lb-frontendconfig01'
+        frontendPort: lbFrontendPort
+        backendPort: lbBackendPort
+        enableFloatingIP: false
+        idleTimeoutInMinutes: 15
+        protocol: 'Tcp'
+        loadDistribution: 'Default'
+        disableOutboundSnat: true
+        backendAddressPoolName: '${name}-lb-backendpool01'
+        probeEnabled: true
+        probeName: '${name}-lb-probe01'
+      }
+    ]
+    probes: [
+      {
+        name: '${name}-lb-probe01'
+        protocol: 'Tcp'
+        port: lbBackendPort
+        intervalInSeconds: 15
+        numberOfProbes: 2
+        probeThreshold: 1
+      }
+    ]
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+// Network interface for VM
+module networkInterface 'br/public:avm/res/network/network-interface:0.2.1' = {
+  name: '${name}-vm-nic'
+  params: {
+    name: '${name}-vm-nic'
+    location: location
+    tags: tags
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
+        loadBalancerBackendAddressPools: [
+          {
+            id: loadBalancer.outputs.backendpools[0].id
+          }
+        ]
+      }
+    ]
+    networkSecurityGroupResourceId: vmNetworkSecurityGroup.outputs.resourceId
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+// Virtual machine
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
+  name: '${name}-vm'
+  params: {
+    name: '${name}-vm'
+    location: location
+    tags: tags
+    zone: 1
+    managedIdentities: {
+      systemAssigned: true
+    }
+    osType: 'Linux'
+    vmSize: vmSize
+    adminUsername: adminUsername
+    disablePasswordAuthentication: true
+    publicKeys: [
+      {
+        keyData: sshPublicKey.outputs.resourceId
+        path: '/home/${adminUsername}/.ssh/authorized_keys'
+      }
+    ]
+    imageReference: {
+      publisher: 'canonical'
+      offer: 'ubuntu-24_04-lts'
+      sku: 'server'
+      version: 'latest'
+    }
+    osDisk: {
+      createOption: 'FromImage'
+      diskSizeGB: 30
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    nicConfigurations: [
+      {
+        name: 'primary-nic'
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
+            loadBalancerBackendAddressPools: [
+              {
+                id: loadBalancer.outputs.backendpools[0].id
+              }
+            ]
+          }
+        ]
+        networkSecurityGroupResourceId: vmNetworkSecurityGroup.outputs.resourceId
+        deleteOption: 'Delete'
+      }
+    ]
+    bootDiagnostics: true
+    bootDiagnosticStorageAccountName: storageAccount.outputs.name
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+// Recovery Services Vault
+module recoveryServicesVault 'br/public:avm/res/recovery-services/vault:0.5.0' = {
+  name: '${name}-rsv'
+  params: {
+    name: '${name}-rsv'
+    location: location
+    tags: tags
+    publicNetworkAccess: 'Disabled'
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+// CosmosDB MongoDB
+module cosmosdbAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
+  name: 'cosmosdbAccount-${uniqueString(deployment().name, location)}'
+  params: {
+    name: '${name}-cosmos'
+    location: location
+    tags: tags
+    defaultConsistencyLevel: 'Session'
+
+    capabilitiesToAdd: [
+      'EnableServerless'
+    ]
+
+    failoverLocations: [
+      {
+        locationName: location
+        failoverPriority: 0
+        isZoneRedundant: false
+      }
+    ]
+
+    maxStalenessPrefix: 100
+    maxIntervalInSeconds: 5
+
+    networkRestrictions: {
+      publicNetworkAccess: 'Disabled'
+    }
+
+    sqlDatabases: [
+      {
+        name: '${name}-cosmosdb'
+        containers: [
+          {
+            name: 'defaultContainer'
+            paths: [
+              '/partitionKey'
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
+
+// Private DNS Zone for CosmosDB
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
+  name: '${name}-dns'
+  params: {
+    name: 'privatelink.mongocluster.cosmos.azure.com'
+    location: 'global'
+    tags: tags
+    virtualNetworkLinks: [
+      {
+        name: uniqueString(virtualNetwork.outputs.resourceId)
+        virtualNetworkResourceId: virtualNetwork.outputs.resourceId
+        registrationEnabled: false
+      }
+    ]
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+// Private Endpoint for CosmosDB
+module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.2.0' = {
+  name: '${name}-cosmos-pe'
+  params: {
+    name: '${name}-cosmos-pe'
+    location: location
+    tags: tags
+    serviceResourceId: cosmosdbAccount.outputs.resourceId
+    subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+    privateDnsZoneResourceIds: [
+      privateDnsZone.outputs.resourceId
+    ]
+    privateDnsZoneGroupName: 'default'
+    groupIds: [
+      'MongoCluster'
+    ]
+    enableTelemetry: enableDefaultTelemetry
+  }
+}
+
+// Outputs
+@description('The resource ID of the virtual machine')
+output virtualMachineResourceId string = virtualMachine.outputs.resourceId
+
+@description('The resource ID of the CosmosDB MongoDB vCore cluster')
+output cosmosDbResourceId string = cosmosdbAccount.outputs.resourceId
+
+@description('The resource ID of the virtual network')
+output virtualNetworkResourceId string = virtualNetwork.outputs.resourceId
+
+@description('The resource ID of the load balancer')
+output loadBalancerResourceId string = loadBalancer.outputs.resourceId

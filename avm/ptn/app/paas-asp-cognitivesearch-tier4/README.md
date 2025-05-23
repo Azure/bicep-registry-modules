@@ -1,8 +1,20 @@
-# AI Platform Baseline `[AiPlatform/Baseline]`
+# PaaS ASP Cognitive Search Tier 4
 
-This module provides a secure and scalable environment for deploying AI applications on Azure.
-The module encompasses all essential components required for building, managing, and observing AI solutions, including a machine learning workspace, observability tools, and necessary data management services.
-By integrating with Microsoft Entra ID for secure identity management and utilizing private endpoints for services like Key Vault and Blob Storage, the module ensures secure communication and data access.
+This Bicep module deploys a tier 4 PaaS architecture with App Service Plan and Azure Cognitive Search using Azure Verified Modules (AVM).
+
+## Resources Deployed
+
+- Virtual Network with subnets
+- Network Security Groups
+- Private DNS Zones
+- App Service Plan
+- Web Apps
+- API Management
+- Azure OpenAI
+- Document Intelligence
+- Azure Cognitive Search
+- Application Insights
+- Private Endpoints for secure connectivity
 
 ## Navigation
 
@@ -487,7 +499,7 @@ param virtualMachineConfiguration = {
   }
   maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
   name: '<name>'
-  nicConfigurationConfiguration: {
+  nicConfigurationConfiguration = {
     ipConfigName: 'ipcfg-aipbmax'
     name: 'nic-aipbmax'
     networkSecurityGroupResourceId: '<networkSecurityGroupResourceId>'
@@ -1914,3 +1926,66 @@ This section gives you an overview of all local-referenced module files (i.e., o
 ## Data Collection
 
 The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the [repository](https://aka.ms/avm/telemetry). There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at <https://go.microsoft.com/fwlink/?LinkID=824704>. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+
+## Prerequisites
+
+- Azure CLI installed
+- Bicep CLI installed
+- Sufficient permissions to deploy resources in your Azure subscription
+
+## Deployment Instructions
+
+1. Login to Azure:
+
+```bash
+az login
+az account set --subscription <subscription-id>
+```
+
+2. Create a resource group (if not already existing):
+
+```bash
+az group create --name <resource-group-name> --location <location>
+```
+
+3. Deploy the Bicep template:
+
+```bash
+az deployment group create \
+  --resource-group <resource-group-name> \
+  --template-file main.bicep \
+
+  --parameters name=<solution-name>
+```
+
+You can also create a parameters file (see the provided parameters.json file in the repository) and reference it:
+
+```bash
+az deployment group create \
+  --resource-group <resource-group-name> \
+  --template-file main.bicep \
+  --parameters @parameters.json
+```
+
+## Sample Parameters File
+
+A sample parameters.json file is included in the repository. You can modify it according to your needs:
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "paasasp001"
+    },
+    "location": {
+      "value": "eastus"
+    },
+    "environment": {
+      "value": "prod"
+    }
+    // Add other parameters as needed
+  }
+}
+```
