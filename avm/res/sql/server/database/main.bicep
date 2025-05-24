@@ -49,12 +49,6 @@ param createMode
 @description('Optional. The resource ID of the elastic pool containing this database.')
 param elasticPoolResourceId string?
 
-// @description('Optional. The azure key vault URI of the database if it\'s configured with per Database Customer Managed Keys.')
-// param encryptionProtector string?
-
-// @description('Optional. The flag to enable or disable auto rotation of database encryption protector AKV key.')
-// param encryptionProtectorAutoRotation bool?
-
 @description('Optional. The Client id used for cross tenant per database CMK scenario.')
 @minLength(36)
 @maxLength(36)
