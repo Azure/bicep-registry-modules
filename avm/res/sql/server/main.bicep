@@ -290,13 +290,13 @@ module server_databases 'database/main.bicep' = [
       collation: database.?collation
       createMode: database.?createMode
       elasticPoolResourceId: database.?elasticPoolResourceId
-      encryptionProtector: database.?encryptionProtector
-      encryptionProtectorAutoRotation: database.?encryptionProtectorAutoRotation
+      customerManagedKey: database.?customerManagedKey
       federatedClientId: database.?federatedClientId
       freeLimitExhaustionBehavior: database.?freeLimitExhaustionBehavior
       highAvailabilityReplicaCount: database.?highAvailabilityReplicaCount
       isLedgerOn: database.?isLedgerOn
       licenseType: database.?licenseType
+      lock: database.?lock
       longTermRetentionBackupResourceId: database.?longTermRetentionBackupResourceId
       maintenanceConfigurationId: database.?maintenanceConfigurationId
       manualCutover: database.?manualCutover
@@ -346,6 +346,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
       availabilityZone: elasticPool.?availabilityZone
       highAvailabilityReplicaCount: elasticPool.?highAvailabilityReplicaCount
       licenseType: elasticPool.?licenseType
+      lock: elasticPool.?lock
       maintenanceConfigurationId: elasticPool.?maintenanceConfigurationId
       maxSizeBytes: elasticPool.?maxSizeBytes
       minCapacity: elasticPool.?minCapacity
@@ -715,6 +716,9 @@ type databaseType = {
   @description('Optional. Tags of the resource.')
   tags: object?
 
+  @description('Optional. The lock settings of the database.')
+  lock: lockType?
+
   @description('Optional. The managed identities for the database.')
   managedIdentities: managedIdentityOnlyUserAssignedType?
 
@@ -749,11 +753,8 @@ type databaseType = {
   @description('Optional. The resource identifier of the elastic pool containing this database.')
   elasticPoolResourceId: string?
 
-  @description('Optional. The azure key vault URI of the database if it\'s configured with per Database Customer Managed Keys.')
-  encryptionProtector: string?
-
-  @description('Optional. The flag to enable or disable auto rotation of database encryption protector AKV key.')
-  encryptionProtectorAutoRotation: bool?
+  @description('Optional. The customer managed key definition for database TDE.')
+  customerManagedKey: customerManagedKeyWithAutoRotateType?
 
   @description('Optional. The Client id used for cross tenant per database CMK scenario.')
   @minLength(36)
@@ -852,6 +853,9 @@ type elasticPoolType = {
 
   @description('Optional. Tags of the resource.')
   tags: object?
+
+  @description('Optional. The lock settings of the elastic pool.')
+  lock: lockType?
 
   @description('Optional. The elastic pool SKU.')
   sku: skuType?
