@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'dsiitawaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'xyrh'
 
 // ============ //
 // Dependencies //
@@ -28,7 +28,7 @@ module dependencies 'dependencies.bicep' = {
   name: 'dependencies'
   scope: resourceGroup
   params: {
-    acrName: uniqueString('dep${namePrefix}acr${serviceShort}', subscription().subscriptionId, resourceGroupName)
+    acrName: 'dep${namePrefix}acr${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 10)}'
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
   }
 }

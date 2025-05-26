@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "9077539838544402103"
+      "version": "0.35.1.17967",
+      "templateHash": "17405367241837152123"
     },
     "name": "import-image-to-acr",
     "description": "This modules deployes an image to an Azure Container Registry."
@@ -74,6 +74,8 @@
     },
     "acrName": {
       "type": "string",
+      "minLength": 5,
+      "maxLength": 50,
       "metadata": {
         "description": "Required. The name of the Azure Container Registry."
       }

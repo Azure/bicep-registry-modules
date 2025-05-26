@@ -29,7 +29,7 @@ module dependencies 'dependencies.bicep' = {
   scope: resourceGroup
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    acrName: uniqueString('dep${namePrefix}acr${serviceShort}', subscription().subscriptionId, resourceGroupName)
+    acrName: 'dep${namePrefix}acr${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 10)}'
     storageAccountName: uniqueString(
       'dep${namePrefix}sa${serviceShort}',
       subscription().subscriptionId,

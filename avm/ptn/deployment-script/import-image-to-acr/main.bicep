@@ -11,6 +11,8 @@ param location string = resourceGroup().location
 param enableTelemetry bool = true
 
 @description('Required. The name of the Azure Container Registry.')
+@minLength(5)
+@maxLength(50)
 param acrName string
 
 @description('Optional. How the deployment script should be forced to execute. Default is to force the script to deploy the image to run every time.')

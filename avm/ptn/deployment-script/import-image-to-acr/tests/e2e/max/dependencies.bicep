@@ -63,7 +63,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2023-11-01' = {
   }
 }
 
-module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.7.0' = {
+module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
   name: '${uniqueString(deployment().name, location)}-dnsZone-ACR'
   params: {
     name: 'privatelink.azurecr.io'
@@ -77,7 +77,7 @@ module dnsZoneContainerRegistry 'br/public:avm/res/network/private-dns-zone:0.7.
   }
 }
 
-module storage 'br/public:avm/res/storage/storage-account:0.19.0' = {
+module storage 'br/public:avm/res/storage/storage-account:0.20.0' = {
   name: '${uniqueString(resourceGroup().name, location)}-storage'
   params: {
     name: storageAccountName

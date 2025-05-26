@@ -28,7 +28,7 @@ module dependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-dependencies'
   scope: resourceGroup
   params: {
-    acrName: uniqueString('dep${namePrefix}acr${serviceShort}', subscription().subscriptionId, resourceGroupName)
+    acrName: 'dep${namePrefix}acr${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 10)}'
   }
 }
 
