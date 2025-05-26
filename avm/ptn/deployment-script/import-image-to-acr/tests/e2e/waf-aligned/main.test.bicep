@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'dsiitawaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = 'xyrh'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //

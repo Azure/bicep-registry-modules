@@ -30,12 +30,8 @@ module dependencies 'dependencies.bicep' = {
   params: {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     acrName: 'dep${namePrefix}acr${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 10)}'
-    storageAccountName: uniqueString(
-      'dep${namePrefix}sa${serviceShort}',
-      subscription().subscriptionId,
-      resourceGroupName
-    )
-    keyVaultName: uniqueString('dep${namePrefix}kv${serviceShort}', subscription().subscriptionId, resourceGroupName)
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 6)}'
+    keyVaultName: 'dep${namePrefix}kv${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 6)}'
     managedIdentityName: 'dep-${namePrefix}-mi-${serviceShort}'
   }
 }
