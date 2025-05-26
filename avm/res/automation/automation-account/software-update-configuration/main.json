@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "936883737895017732"
+      "version": "0.35.1.17967",
+      "templateHash": "11441162397143219769"
     },
     "name": "Automation Account Software Update Configurations",
     "description": "This module deploys an Azure Automation Account Software Update Configuration."
