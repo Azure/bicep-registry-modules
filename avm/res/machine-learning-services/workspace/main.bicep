@@ -70,6 +70,9 @@ param computes array?
 @sys.description('Optional. Connections to create in the workspace.')
 param connections connectionType[] = []
 
+@sys.description('Optional. Datastores to create in the workspace.')
+param datastores datastoreType[] = []
+
 @sys.description('Optional. Resource tags.')
 param tags object?
 
@@ -341,6 +344,17 @@ module workspace_connections 'connection/main.bicep' = [
       target: connection.target
       value: connection.?value
       connectionProperties: connection.connectionProperties
+    }
+  }
+]
+
+module workspace_datastores 'datastores/main.bicep' = [
+  for datastore in datastores: {
+    name: '${workspace.name}-${datastore.name}-datastore'
+    params: {
+      machineLearningWorkspaceName: workspace.name
+      name: datastore.name
+      properties: datastore.properties
     }
   }
 ]
@@ -663,4 +677,14 @@ type connectionType = {
 
   @sys.description('Required. The properties of the connection, specific to the auth type.')
   connectionProperties: connectionPropertyType
+}
+
+@export()
+@sys.description('The type for the workspace connection.')
+type datastoreType = {
+  @sys.description('Required. Name of the datastore to create.')
+  name: string
+
+  @sys.description('Required. The properties of the datastore.')
+  properties: resourceInput<'Microsoft.MachineLearningServices/workspaces/datastores@2024-10-01'>.properties
 }
