@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "9739873752143909726"
+      "version": "0.35.1.17967",
+      "templateHash": "7244397890948473442"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
@@ -406,6 +406,53 @@
         "__bicep_export!": true
       }
     },
+    "logAnalyticsType": {
+      "type": "object",
+      "properties": {
+        "logType": {
+          "type": "string",
+          "allowedValues": [
+            "ContainerInsights",
+            "ContainerInstanceLogs"
+          ],
+          "metadata": {
+            "description": "Required. The log type to be used."
+          }
+        },
+        "workspaceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The workspace ID for log analytics. Required if `workspaceResourceId` is not provided."
+          }
+        },
+        "workspaceKey": {
+          "type": "securestring",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The workspace key for log analytics. Required if `workspaceResourceId` is not provided."
+          }
+        },
+        "workspaceResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The workspace resource ID for log analytics. Required if `workspaceId` or `workspaceId` is not provided."
+          }
+        },
+        "metadata": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Metadata for log analytics."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the log analytics diagnostics."
+      }
+    },
     "imageRegistryCredentialType": {
       "type": "object",
       "properties": {
@@ -763,6 +810,13 @@
         "description": "Optional. Location for all Resources."
       }
     },
+    "logAnalytics": {
+      "$ref": "#/definitions/logAnalyticsType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The log analytics diagnostic information for a container group."
+      }
+    },
     "dnsConfig": {
       "$ref": "#/definitions/dnsConfigType",
       "nullable": true,
@@ -878,6 +932,15 @@
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
     },
+    "law": {
+      "condition": "[not(empty(tryGet(parameters('logAnalytics'), 'workspaceResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2025-02-01",
+      "subscriptionId": "[split(tryGet(parameters('logAnalytics'), 'workspaceResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('logAnalytics'), 'workspaceResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('logAnalytics'), 'workspaceResourceId'), '/'))]"
+    },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
@@ -960,6 +1023,7 @@
             }
           }
         ],
+        "diagnostics": "[if(not(empty(parameters('logAnalytics'))), createObject('logAnalytics', createObject('logType', parameters('logAnalytics').logType, 'workspaceId', coalesce(tryGet(parameters('logAnalytics'), 'workspaceId'), if(not(empty(tryGet(parameters('logAnalytics'), 'workspaceResourceId'))), reference('law').customerId, fail('Either the workspaceId or the workspaceResourceId must be provided.'))), 'workspaceKey', coalesce(tryGet(parameters('logAnalytics'), 'workspaceKey'), if(not(empty(tryGet(parameters('logAnalytics'), 'workspaceResourceId'))), listKeys('law', '2025-02-01').primarySharedKey, fail('Either the workspaceKey or the workspaceResourceId must be provided.'))), 'workspaceResourceId', tryGet(parameters('logAnalytics'), 'workspaceResourceId'), 'metadata', tryGet(parameters('logAnalytics'), 'metadata'))), null())]",
         "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())]",
         "imageRegistryCredentials": "[parameters('imageRegistryCredentials')]",
         "initContainers": "[parameters('initContainers')]",
@@ -973,7 +1037,8 @@
       },
       "dependsOn": [
         "cMKKeyVault",
-        "cMKKeyVault::cMKKey"
+        "cMKKeyVault::cMKKey",
+        "law"
       ]
     },
     "containergroup_lock": {

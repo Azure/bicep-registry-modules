@@ -27,6 +27,9 @@ param imageRegistryCredentials imageRegistryCredentialType[]?
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+@description('Optional. The log analytics diagnostic information for a container group.')
+param logAnalytics logAnalyticsType?
+
 @description('Optional. The DNS config information for a container group.')
 param dnsConfig dnsConfigType?
 
@@ -90,6 +93,15 @@ var identity = !empty(managedIdentities)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
+
+#disable-next-line BCP081
+resource law 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (!empty(logAnalytics.?workspaceResourceId)) {
+  name: last(split(logAnalytics.?workspaceResourceId!, '/'))
+  scope: resourceGroup(
+    split(logAnalytics.?workspaceResourceId!, '/')[2],
+    split(logAnalytics.?workspaceResourceId!, '/')[4]
+  )
+}
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -172,6 +184,23 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
         }
       }
     ]
+    diagnostics: !empty(logAnalytics)
+      ? {
+          logAnalytics: {
+            logType: logAnalytics!.logType
+            workspaceId: logAnalytics!.?workspaceId ?? (!empty(logAnalytics.?workspaceResourceId)
+              ? law.properties.customerId
+              : fail('Either the workspaceId or the workspaceResourceId must be provided.'))
+            #disable-next-line use-secure-value-for-secure-inputs // False-positive - Is declared as secure()
+            workspaceKey: logAnalytics!.?workspaceKey ?? (!empty(logAnalytics.?workspaceResourceId)
+              ? law.listKeys().primarySharedKey
+              : fail('Either the workspaceKey or the workspaceResourceId must be provided.'))
+            #disable-next-line use-secure-value-for-secure-inputs use-resource-id-functions // Not a secret
+            workspaceResourceId: logAnalytics!.?workspaceResourceId
+            metadata: logAnalytics!.?metadata
+          }
+        }
+      : null
     encryptionProperties: !empty(customerManagedKey)
       ? {
           identity: !empty(customerManagedKey.?userAssignedIdentityResourceId) ? cMKUserAssignedIdentity.id : null
@@ -211,7 +240,6 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
 
     // TODO Add support for the following properties:
     // confidentialComputeProperties:
-    // diagnostics:
     // extensions:
   }
 }
@@ -401,6 +429,26 @@ type containerType = {
       value: string?
     }[]?
   }
+}
+
+@export()
+@description('The type for the log analytics diagnostics.')
+type logAnalyticsType = {
+  @description('Required. The log type to be used.')
+  logType: ('ContainerInsights' | 'ContainerInstanceLogs')
+
+  @description('Conditional. The workspace ID for log analytics. Required if `workspaceResourceId` is not provided.')
+  workspaceId: string?
+
+  @description('Conditional. The workspace key for log analytics. Required if `workspaceResourceId` is not provided.')
+  @secure()
+  workspaceKey: string?
+
+  @description('Conditional. The workspace resource ID for log analytics. Required if `workspaceId` or `workspaceId` is not provided.')
+  workspaceResourceId: string?
+
+  @description('Optional. Metadata for log analytics.')
+  metadata: object?
 }
 
 @export()
