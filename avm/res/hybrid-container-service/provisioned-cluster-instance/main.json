@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "3751112123649509527"
+      "version": "0.35.1.17967",
+      "templateHash": "13787889442475501981"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -737,8 +737,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "11097658599960058650"
+              "version": "0.35.1.17967",
+              "templateHash": "10780007379279172631"
             }
           },
           "parameters": {
