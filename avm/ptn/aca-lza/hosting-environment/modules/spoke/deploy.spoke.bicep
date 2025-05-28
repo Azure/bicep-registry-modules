@@ -180,14 +180,13 @@ module vnetSpoke 'br/public:avm/res/network/virtual-network:0.5.2' = {
 }
 
 @description('The log sink for Azure Diagnostics')
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.9.1' = {
+module logAnalyticsWorkspace 'logAnalytics.bicep' = {
   name: take('deploy-logAnalyticsWs-${deployment().name}', 64)
   scope: resourceGroup(resourcesNames.resourceGroup)
   params: {
-    name: resourcesNames.logAnalyticsWorkspace
+    resourcesNames: resourcesNames
     location: location
     tags: tags
-    enableTelemetry: enableTelemetry
   }
 }
 
