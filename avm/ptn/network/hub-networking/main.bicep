@@ -36,7 +36,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 }
 
 // Create hub virtual networks
-module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.5.0' = [
+module hubVirtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nvn'
     params: {
@@ -78,13 +78,13 @@ module hubVirtualNetworkPeer_remote 'modules/vnets.bicep' = [
 //   }
 // ]
 
-resource hubVirtualNetworkPeer_local 'Microsoft.Network/virtualNetworks@2024-01-01' existing = [
+resource hubVirtualNetworkPeer_local 'Microsoft.Network/virtualNetworks@2024-05-01' existing = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enablePeering) {
     name: hub.key
   }
 ]
 
-resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-01-01' = [
+resource hubVirtualNetworkPeering 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-05-01' = [
   for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
     name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${peer.remoteVirtualNetworkName}-peering'
     properties: {
@@ -119,7 +119,7 @@ module hubRouteTable 'br/public:avm/res/network/route-table:0.4.0' = [
 ]
 
 // Create hub virtual network route table route
-resource hubRoute 'Microsoft.Network/routeTables/routes@2024-01-01' = [
+resource hubRoute 'Microsoft.Network/routeTables/routes@2024-05-01' = [
   for (peer, index) in (flatten(hubVirtualNetworkPeerings) ?? []): {
     name: '${hubVirtualNetworkPeer_local[index].name}/${hubVirtualNetworkPeer_local[index].name}-to-${peer.remoteVirtualNetworkName}-route'
     properties: {
@@ -134,7 +134,7 @@ resource hubRoute 'Microsoft.Network/routeTables/routes@2024-01-01' = [
 // Create Bastion host if enabled
 // AzureBastionSubnet is required to deploy Bastion service. This subnet must exist in the parsubnets array if you enable Bastion Service.
 // There is a minimum subnet requirement of /27 prefix.
-module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
+module hubBastion 'br/public:avm/res/network/bastion-host:0.6.1' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableBastion) {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-nbh'
     params: {
@@ -162,7 +162,7 @@ module hubBastion 'br/public:avm/res/network/bastion-host:0.4.0' = [
 
 // Create Azure Firewall if enabled
 // AzureFirewallSubnet is required to deploy Azure Firewall service. This subnet must exist in the subnets array if you enable Azure Firewall.
-module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.5.1' = [
+module hubAzureFirewall 'br/public:avm/res/network/azure-firewall:0.6.1' = [
   for (hub, index) in items(hubVirtualNetworks ?? {}): if (hub.value.enableAzureFirewall) {
     name: '${uniqueString(deployment().name, location)}-${hub.key}-naf'
     params: {
