@@ -230,63 +230,7 @@ module testDeployment '../../../main.bicep' = [
           timeZone: 'Europe/Berlin'
         }
       ]
-      softwareUpdateConfigurations: [
-        {
-          excludeUpdates: [
-            '123456'
-          ]
-          frequency: 'Month'
-          includeUpdates: [
-            '654321'
-          ]
-          interval: 1
-          maintenanceWindow: 'PT4H'
-          monthlyOccurrences: [
-            {
-              day: 'Friday'
-              occurrence: 3
-            }
-          ]
-          name: 'Windows_ZeroDay'
-          operatingSystem: 'Windows'
-          rebootSetting: 'IfRequired'
-          scopeByTags: {
-            Update: [
-              'Automatic-Wave1'
-            ]
-          }
-          startTime: '22:00'
-          updateClassifications: [
-            'Critical'
-            'Definition'
-            'FeaturePack'
-            'Security'
-            'ServicePack'
-            'Tools'
-            'UpdateRollup'
-            'Updates'
-          ]
-        }
-        {
-          excludeUpdates: [
-            'icacls'
-          ]
-          frequency: 'OneTime'
-          includeUpdates: [
-            'kernel'
-          ]
-          maintenanceWindow: 'PT4H'
-          name: 'Linux_ZeroDay'
-          operatingSystem: 'Linux'
-          rebootSetting: 'IfRequired'
-          startTime: '22:00'
-          updateClassifications: [
-            'Critical'
-            'Other'
-            'Security'
-          ]
-        }
-      ]
+
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
