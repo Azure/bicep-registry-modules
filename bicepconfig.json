@@ -16,6 +16,9 @@
         },
         "no-unused-params": {
           "level": "warning"
+        },
+        "no-unused-vars": {
+          "level": "warning"
         }
       }
     }
