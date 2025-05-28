@@ -241,7 +241,6 @@ import { hubRouteTableType } from '../../../res/network/virtual-hub/main.bicep'
 @description('Imports the full diagnostic setting type from the AVM common types module.')
 import { diagnosticSettingFullType } from '../../../utl/types/avm-common-types/main.bicep'
 
-@description('Required. The parameters required to create a Virtual WAN.')
 type virtualWanParameterType = {
   @description('Required. The name of the Virtual WAN.')
   virtualWanName: string
@@ -322,7 +321,6 @@ type virtualWanParameterType = {
   type: ('Standard' | 'Basic')?
 }
 
-@description('Required. The parameters required to create a Virtual Hub.')
 type virtualHubParameterType = {
   @description('Required. The name of the Virtual Hub.')
   hubName: string
