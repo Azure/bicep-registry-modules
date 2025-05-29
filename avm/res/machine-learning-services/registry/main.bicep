@@ -147,15 +147,15 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.1
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
-      name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
+      name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'amlregistry'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'amlregistry'}-${index}'
               properties: {
                 privateLinkServiceId: registry.id
                 groupIds: [
-                  privateEndpoint.?service ?? 'registry'
+                  privateEndpoint.?service ?? 'amlregistry'
                 ]
               }
             }
@@ -164,11 +164,11 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.1
       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'amlregistry'}-${index}'
               properties: {
                 privateLinkServiceId: registry.id
                 groupIds: [
-                  privateEndpoint.?service ?? 'registry'
+                  privateEndpoint.?service ?? 'amlregistry'
                 ]
                 requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
               }
