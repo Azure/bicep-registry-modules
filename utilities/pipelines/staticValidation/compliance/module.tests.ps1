@@ -57,7 +57,6 @@ BeforeDiscovery {
     }
 
     # Getting the list of child modules allowed for publishing
-    $childModuleAllowedList = @()
     $childModuleAllowedListRelativePath = Join-Path 'utilities' 'pipelines' 'staticValidation' 'compliance' 'helper' 'child-module-publish-allowed-list.json'
     $childModuleAllowedListPath = Join-Path $repoRootPath $childModuleAllowedListRelativePath
     if (Test-Path $childModuleAllowedListPath) {
@@ -86,11 +85,14 @@ Describe 'File/folder tests' -Tag 'Modules' {
                     isTopLevelModule                   = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     childModuleAllowedList             = $childModuleAllowedList
                     childModuleAllowedListRelativePath = $childModuleAllowedListRelativePath
+                    versionFileExists                  = Test-Path (Join-Path $moduleFolderPath 'version.json')
+                    isMultiScopeModule                 = (Split-Path $moduleFolderPath -Leaf) -match '\/(rg|sub|mg)\-scope$'
+                    hasMultiScopeChildModules          = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '\/(rg|sub|mg)\-scope$' }).Count -gt 0
                 }
             }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` main.bicep `] file.' -TestCases $moduleFolderTestCases {
+        It '[<moduleFolderName>] Module must contain a [` main.bicep `] file.' -TestCases $moduleFolderTestCases {
 
             param( [string] $moduleFolderPath )
 
@@ -98,7 +100,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $hasBicep | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Module should contain a [` main.json `] file.' -TestCases $moduleFolderTestCases {
+        It '[<moduleFolderName>] Module must contain a [` main.json `] file.' -TestCases $moduleFolderTestCases {
 
             param( [string] $moduleFolderPath )
 
@@ -106,7 +108,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $hasARM | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Module should contain a [` README.md `] file.' -TestCases $moduleFolderTestCases {
+        It '[<moduleFolderName>] Module must contain a [` README.md `] file.' -TestCases $moduleFolderTestCases {
 
             param(
                 [string] $moduleFolderPath
@@ -146,25 +148,34 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $resourceTypeIdentifier = $resourceTypeIdentifier -replace '\\', '/'
                 if (($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2) {
                     $topLevelModuleTestCases += @{
-                        moduleFolderName = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
-                        moduleFolderPath = $moduleFolderPath
-                        moduleType       = $moduleType
+                        moduleFolderName          = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
+                        moduleFolderPath          = $moduleFolderPath
+                        moduleType                = $moduleType
+                        hasMultiScopeChildModules = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '\/(rg|sub|mg)\-scope$' }).Count -gt 0
+                        versionFileExists         = Test-Path (Join-Path $moduleFolderPath 'version.json')
+                        isMultiScopeModule        = (Split-Path $moduleFolderPath -Leaf) -match '\/(rg|sub|mg)\-scope$'
+
                     }
                 }
             }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` version.json `] file.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Top-level module must contain a [` version.json `] file, unless multi-scope.' -TestCases $topLevelModuleTestCases {
 
             param (
-                [string] $moduleFolderPath
+                [string] $moduleFolderPath,
+                [bool] $hasMultiScopeChildModules
             )
 
-            $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            $pathExisting | Should -Be $true
+            $versionFilePath = Join-Path -Path $moduleFolderPath 'version.json'
+            if ($hasMultiScopeChildModules) {
+                (Test-Path $versionFilePath) | Should -Be $false -Because 'multi-scope top-level modules must not contain a version.json file.'
+            } else {
+                (Test-Path $versionFilePath) | Should -Be $true -Because 'every top-level module should have a version.json file, unless it''s a multi-scope module.'
+            }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` tests `] folder.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests `] folder.' -TestCases $topLevelModuleTestCases {
 
             param(
                 [string] $moduleFolderPath
@@ -174,7 +185,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Module should contain a [` tests/e2e `] folder.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e `] folder.' -TestCases $topLevelModuleTestCases {
 
             param(
                 [string] $moduleFolderPath
@@ -184,7 +195,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting | Should -Be $true
         }
 
-        It '[<moduleFolderName>] Module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*waf-aligned `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
             param(
                 [string] $moduleFolderPath
@@ -194,7 +205,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $wafAlignedFolder | Should -Not -BeNullOrEmpty
         }
 
-        It '[<moduleFolderName>] Module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+        It '[<moduleFolderName>] Top-level module should contain a [` tests/e2e/*defaults `] folder.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
             param(
                 [string] $moduleFolderPath
@@ -210,7 +221,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $defaultsFolder | Should -Not -BeNullOrEmpty
         }
 
-        It '[<moduleFolderName>] Module should contain one [` main.test.bicep `] file in each e2e test folder.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Top-level module should contain one [` main.test.bicep `] file in each e2e test folder.' -TestCases $topLevelModuleTestCases {
 
             param(
                 [string] $moduleFolderName,
@@ -225,11 +236,12 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases $topLevelModuleTestCases {
+        It '[<moduleFolderName>] Top-level module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.versionFileExists }) {
 
             param(
                 [string] $moduleFolderPath,
-                [string] $moduleType
+                [string] $moduleType,
+                [bool] $isMultiScopeModule
             )
 
             $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
@@ -253,7 +265,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
             $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
 
-            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
+            $moduleName = Get-BRMRepositoryName -TemplateFilePath ($isMultiScopeModule ? (Split-Path $TemplateFilePath -Parent) : $TemplateFilePath)
             $relevantCSVRow = $csvData | Where-Object {
                 $_.ModuleName -eq $moduleName
             }
@@ -488,14 +500,17 @@ Describe 'Module tests' -Tag 'Module' {
 
                 # Test file setup
                 $moduleFolderTestCases += @{
-                    moduleFolderName       = $resourceTypeIdentifier
-                    templateFileContent    = $templateFileContent
-                    templateFilePath       = $templateFilePath
-                    templateFileParameters = Resolve-ReadMeParameterList -TemplateFileContent $templateFileContent
-                    readMeFilePath         = Join-Path (Split-Path $templateFilePath) 'README.md'
-                    isTopLevelModule       = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
-                    moduleType             = $moduleType
-                    versionFileExists      = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+                    moduleFolderName          = $resourceTypeIdentifier
+                    templateFileContent       = $templateFileContent
+                    templateFilePath          = $templateFilePath
+                    templateFileParameters    = Resolve-ReadMeParameterList -TemplateFileContent $templateFileContent
+                    readMeFilePath            = Join-Path (Split-Path $templateFilePath) 'README.md'
+                    isTopLevelModule          = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
+                    moduleType                = $moduleType
+                    versionFileExists         = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
+                    isMultiScopeModule        = (Split-Path $moduleFolderPath -Leaf) -match '\/(rg|sub|mg)\-scope$'
+                    hasMultiScopeChildModules = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '\/(rg|sub|mg)\-scope$' }).Count -gt 0
+
                 }
             }
         }
@@ -921,7 +936,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectVariables | Should -BeNullOrEmpty
             }
 
-            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry (unless multi-scoped).' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' -and -not $_.hasMultiScopeChildModules }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -1014,10 +1029,11 @@ Describe 'Module tests' -Tag 'Module' {
                 param(
                     [string] $templateFilePath,
                     [string] $moduleType,
-                    [hashtable] $templateFileContent
+                    [hashtable] $templateFileContent,
+                    [bool] $isMultiScopeModule
                 )
 
-                # With the introduction of user defined types, the way resources are configured in the schema slightly changed. We have to account for that.
+                # With the introduction of user-defined types, the way resources are configured in the schema slightly changed. We have to account for that.
                 if ($templateFileContent.resources.GetType().Name -eq 'Object[]') {
                     $templateResources = $templateFileContent.resources
                 } else {
@@ -1046,21 +1062,22 @@ Describe 'Module tests' -Tag 'Module' {
                 } catch {
                     $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
                     Write-Error $errorMessage
-                    Set-ItResult -Skipped -Because $errorMessage
+                    throw $errorMessage
                 }
                 $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
 
                 # Get correct row item & expected identifier
                 # ==========================================
-                $moduleName = Get-BRMRepositoryName -TemplateFilePath $TemplateFilePath
+                # If it's a multi-scope module, we need to get the parent folder name as telemetry is collected under its name
+                $moduleName = Get-BRMRepositoryName -TemplateFilePath ($isMultiScopeModule ? (Split-Path $TemplateFilePath -Parent) : $TemplateFilePath)
                 $relevantCSVRow = $csvData | Where-Object {
                     $_.ModuleName -eq $moduleName
                 }
 
                 if (-not $relevantCSVRow) {
-                    $errorMessage = "Failed to identify module [$moduleName]."
+                    $errorMessage = "Failed to identify module [$moduleName] in AVM CSV."
                     Write-Error $errorMessage
-                    Set-ItResult -Skipped -Because $errorMessage
+                    throw $errorMessage
                 }
                 $expectedTelemetryIdentifier = $relevantCSVRow.TelemetryIdPrefix
 
@@ -1071,7 +1088,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $telemetryDeploymentName | Should -Match "$expectedTelemetryIdentifier"
             }
 
-            It '[<moduleFolderName>] For resource modules, telemetry should be disabled for referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+            It '[<moduleFolderName>] For resource modules, telemetry should be disabled for referenced modules with dedicated telemetry (unless multi-scoped).' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' -and -not $_.hasMultiScopeChildModules }) {
 
                 param(
                     [hashtable] $templateFileContent,
@@ -1102,7 +1119,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectCrossReferences | Should -BeNullOrEmpty -Because ('cross reference modules must be referenced with the enableTelemetry parameter set to the "enableReferencedModulesTelemetry" variable. Found incorrect items: [{0}].' -f ($incorrectCrossReferences -join ', '))
             }
 
-            It '[<moduleFolderName>] For non-resource modules, telemetry configuration should be passed to referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -ne 'res' }) {
+            It '[<moduleFolderName>] For non-resource, or multi-scope modules, telemetry configuration should be passed to referenced modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -ne 'res' -or $_.hasMultiScopeChildModules }) {
 
                 param(
                     [hashtable] $templateFileContent,
