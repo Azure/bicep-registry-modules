@@ -66,6 +66,30 @@ module testDeployment '../../../main.bicep' = {
       {
         name: 'Subnet1'
         addressPrefix: '10.110.1.0/24'
+        networkSecurityGroup: {
+          name: 'nsg-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
+          location: resourceLocation
+          securityRules: [
+            {
+              name: 'Allow-HTTPS'
+              properties: {
+                access: 'Allow'
+                direction: 'Inbound'
+                priority: 100
+                protocol: 'Tcp'
+                description: 'Allow HTTPS'
+                destinationAddressPrefix: '*'
+                sourceAddressPrefix: '*'
+                sourcePortRange: '*'
+                destinationPortRange: '443'
+              }
+            }
+          ]
+        }
+      }
+      {
+        name: 'Subnet2'
+        addressPrefix: '10.110.2.0/24'
       }
     ]
     virtualNetworkResourceGroupLockEnabled: false
