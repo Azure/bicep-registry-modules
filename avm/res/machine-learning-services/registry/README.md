@@ -47,7 +47,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   name: 'registryDeployment'
   params: {
     // Required parameters
-    name: 'amlregmin001'
+    name: 'mlsrmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -68,7 +68,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   "parameters": {
     // Required parameters
     "name": {
-      "value": "amlregmin001"
+      "value": "mlsrmin001"
     },
     // Non-required parameters
     "location": {
@@ -89,7 +89,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
 using 'br/public:avm/res/machine-learning-services/registry:<version>'
 
 // Required parameters
-param name = 'amlregmin001'
+param name = 'mlsrmin001'
 // Non-required parameters
 param location = '<location>'
 ```
@@ -111,7 +111,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   name: 'registryDeployment'
   params: {
     // Required parameters
-    name: 'crrmax001'
+    name: 'mlsrmax001'
     // Non-required parameters
     location: '<location>'
     lock: {
@@ -187,7 +187,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrmax001"
+      "value": "mlsrmax001"
     },
     // Non-required parameters
     "location": {
@@ -271,7 +271,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
 using 'br/public:avm/res/machine-learning-services/registry:<version>'
 
 // Required parameters
-param name = 'crrmax001'
+param name = 'mlsrmax001'
 // Non-required parameters
 param location = '<location>'
 param lock = {
@@ -348,7 +348,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   name: 'registryDeployment'
   params: {
     // Required parameters
-    name: 'crrwaf001'
+    name: 'mlsrwaf001'
     // Non-required parameters
     location: '<location>'
     privateEndpoints: [
@@ -386,7 +386,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   "parameters": {
     // Required parameters
     "name": {
-      "value": "crrwaf001"
+      "value": "mlsrwaf001"
     },
     // Non-required parameters
     "location": {
@@ -428,7 +428,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
 using 'br/public:avm/res/machine-learning-services/registry:<version>'
 
 // Required parameters
-param name = 'crrwaf001'
+param name = 'mlsrwaf001'
 // Non-required parameters
 param location = '<location>'
 param privateEndpoints = [
