@@ -10,13 +10,13 @@ metadata description = 'This test deploys the AML Registry module with the minim
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-amlregistry-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-machinelearningservices.registries-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment.')
-param serviceShort string = 'amlregmin'
+param serviceShort string = 'mlsrmin'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
