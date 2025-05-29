@@ -154,6 +154,7 @@ body:
         - "avm/res/kusto/cluster"
         - "avm/res/load-test-service/load-test"
         - "avm/res/logic/workflow"
+        - "avm/res/machine-learning-services/registry"
         - "avm/res/machine-learning-services/workspace"
         - "avm/res/maintenance/configuration-assignment"
         - "avm/res/maintenance/maintenance-configuration"

@@ -119,6 +119,7 @@
 /avm/res/kusto/cluster/ @Azure/avm-res-kusto-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/load-test-service/load-test/ @Azure/avm-res-loadtestservice-loadtest-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/logic/workflow/ @Azure/avm-res-logic-workflow-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/machine-learning-services/registry/ @Azure/avm-res-machinelearningservices-registry-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/machine-learning-services/workspace/ @Azure/avm-res-machinelearningservices-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/maintenance/configuration-assignment/ @Azure/avm-res-maintenance-configurationassignment-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/maintenance/maintenance-configuration/ @Azure/avm-res-maintenance-maintenanceconfiguration-module-owners-bicep @Azure/avm-module-reviewers-bicep

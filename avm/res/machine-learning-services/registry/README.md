@@ -30,6 +30,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/machine-learning-services/registry:<version>`.
 
 - [Using only defaults for AML Registry](#example-1-using-only-defaults-for-aml-registry)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults for AML Registry_
 
@@ -45,7 +47,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   name: 'registryDeployment'
   params: {
     // Required parameters
-    name: 'amlreg001'
+    name: 'amlregmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -66,7 +68,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   "parameters": {
     // Required parameters
     "name": {
-      "value": "amlreg001"
+      "value": "amlregmin001"
     },
     // Non-required parameters
     "location": {
@@ -87,9 +89,365 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
 using 'br/public:avm/res/machine-learning-services/registry:<version>'
 
 // Required parameters
-param name = 'amlreg001'
+param name = 'amlregmin001'
 // Non-required parameters
 param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
+  name: 'registryDeployment'
+  params: {
+    // Required parameters
+    name: 'crrmax001'
+    // Non-required parameters
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    roleAssignments: [
+      {
+        name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrmax001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "8f8b1c39-827f-43e6-a457-98bb15b5dbdf",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/registry:<version>'
+
+// Required parameters
+param name = 'crrmax001'
+// Non-required parameters
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
+  name: 'registryDeployment'
+  params: {
+    // Required parameters
+    name: 'crrwaf001'
+    // Non-required parameters
+    location: '<location>'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "crrwaf001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/registry:<version>'
+
+// Required parameters
+param name = 'crrwaf001'
+// Non-required parameters
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
 ```
 
 </details>
@@ -101,7 +459,6 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | Location for the Azure ML Registry. |
 | [`name`](#parameter-name) | string | Name of the Azure ML Registry. |
 
 **Optional parameters**
@@ -109,20 +466,13 @@ param location = '<location>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`location`](#parameter-location) | string | Location for the Azure ML Registry. |
 | [`locations`](#parameter-locations) | array | Additional locations for the Azure ML Registry. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-tags) | object | Tags of the storage account resource. |
-
-### Parameter: `location`
-
-Location for the Azure ML Registry.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
 
@@ -138,6 +488,14 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `location`
+
+Location for the Azure ML Registry.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `locations`
 
@@ -596,7 +954,7 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 ### Parameter: `publicNetworkAccess`
 
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.
 
 - Required: No
 - Type: string
@@ -717,7 +1075,7 @@ The principal type of the assigned principal ID.
 
 ### Parameter: `tags`
 
-Tags of the storage account resource.
+Tags of the resource.
 
 - Required: No
 - Type: object
@@ -727,6 +1085,9 @@ Tags of the storage account resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The Name of the Azure ML registry. |
+| `privateEndpoints` | array | The private endpoints of the Azure container registry. |
+| `resourceGroupName` | string | The name of the Azure ML registry. |
+| `resourceId` | string | The resource ID of the Azure ML registry. |
 
 ## Cross-referenced modules
 

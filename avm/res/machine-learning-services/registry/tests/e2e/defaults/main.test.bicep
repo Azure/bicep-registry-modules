@@ -16,10 +16,10 @@ param resourceGroupName string = 'dep-${namePrefix}-amlregistry-${serviceShort}-
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment.')
-param serviceShort string = 'amlreg'
+param serviceShort string = 'amlregmin'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'test'
+param namePrefix string = '#_namePrefix_#'
 
 // ============ //
 // Dependencies //

@@ -6,13 +6,13 @@ metadata description = 'This module deploys an Azure Machine Learning Registry.'
 @maxLength(50)
 param name string
 
-@description('Required. Location for the Azure ML Registry.')
+@description('Optional. Location for the Azure ML Registry.')
 param location string = resourceGroup().location
 
 @description('Optional. Additional locations for the Azure ML Registry.')
 param locations array = []
 
-@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set')
+@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.')
 @allowed([
   'Enabled'
   'Disabled'
@@ -31,7 +31,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-@description('Optional. Tags of the storage account resource.')
+@description('Optional. Tags of the resource.')
 param tags object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -80,7 +80,7 @@ var formattedRoleAssignments = [
 ]
 
 
-var enableReferencedModulesTelemetry = enableTelemetry
+var enableReferencedModulesTelemetry = false
 
 
 #disable-next-line no-deployments-resources
@@ -191,9 +191,9 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.1
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
-    dependsOn: [
-      registry
-    ]
+    // dependsOn: [
+    //   registry
+    // ]
   }
 ]
 
@@ -207,7 +207,7 @@ resource registry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: registry
@@ -227,3 +227,49 @@ resource registry_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
 
 @description('The Name of the Azure ML registry.')
 output name string = registry.name
+
+@description('The resource ID of the Azure ML registry.')
+output resourceId string = registry.id
+
+@description('The name of the Azure ML registry.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The private endpoints of the Azure container registry.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: registry_privateEndpoints[index].outputs.name
+    resourceId: registry_privateEndpoints[index].outputs.resourceId
+    groupId: registry_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: registry_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: registry_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}

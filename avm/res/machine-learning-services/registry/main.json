@@ -6,12 +6,75 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "13497773377154017334"
+      "templateHash": "15567942650212222791"
     },
     "name": "Azure ML Registry",
     "description": "This module deploys an Azure Machine Learning Registry."
   },
   "definitions": {
+    "privateEndpointOutputType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "The name of the private endpoint."
+          }
+        },
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "The resource ID of the private endpoint."
+          }
+        },
+        "groupId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "The group Id for the private endpoint Group."
+          }
+        },
+        "customDnsConfigs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "fqdn": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "FQDN that resolves to private endpoint IP address."
+                }
+              },
+              "ipAddresses": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "metadata": {
+                  "description": "A list of private IP addresses of the private endpoint."
+                }
+              }
+            }
+          },
+          "metadata": {
+            "description": "The custom DNS configurations of the private endpoint."
+          }
+        },
+        "networkInterfaceResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "metadata": {
+            "description": "The IDs of the network interfaces associated with the private endpoint."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
     "_1.privateEndpointCustomDnsConfigType": {
       "type": "object",
       "properties": {
@@ -382,7 +445,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Required. Location for the Azure ML Registry."
+        "description": "Optional. Location for the Azure ML Registry."
       }
     },
     "locations": {
@@ -400,7 +463,7 @@
         "Disabled"
       ],
       "metadata": {
-        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set"
+        "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set."
       }
     },
     "privateEndpoints": {
@@ -434,7 +497,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Tags of the storage account resource."
+        "description": "Optional. Tags of the resource."
       }
     },
     "enableTelemetry": {
@@ -464,7 +527,7 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
-    "enableReferencedModulesTelemetry": "[parameters('enableTelemetry')]",
+    "enableReferencedModulesTelemetry": false,
     "allLocations": "[union(createArray(parameters('location')), parameters('locations'))]",
     "resolvedPublicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]"
   },
@@ -1325,6 +1388,39 @@
         "description": "The Name of the Azure ML registry."
       },
       "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Azure ML registry."
+      },
+      "value": "[resourceId('Microsoft.MachineLearningServices/registries', parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure ML registry."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "privateEndpoints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/privateEndpointOutputType"
+      },
+      "metadata": {
+        "description": "The private endpoints of the Azure container registry."
+      },
+      "copy": {
+        "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]",
+        "input": {
+          "name": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.name.value]",
+          "resourceId": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.resourceId.value]",
+          "groupId": "[tryGet(tryGet(reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs, 'groupId'), 'value')]",
+          "customDnsConfigs": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.customDnsConfigs.value]",
+          "networkInterfaceResourceIds": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
+        }
+      }
     }
   }
 }
