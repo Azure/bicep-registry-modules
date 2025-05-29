@@ -245,6 +245,11 @@ var builtInRoleNames = {
     'Microsoft.Authorization/roleDefinitions',
     'a97b65f3-24c7-4388-baec-2e87135dc908'
   )
+  //Added Azure AI Developer role to the list of built-in roles
+  'Azure AI Developer': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '64702f94-c441-49e6-a78b-ef80e0188fee'
+  )
   Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
   Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
   Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
@@ -307,8 +312,8 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
-
-resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
+//update the cognitive service account api for the Foundry FDP update
+resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   name: name
   kind: kind
   identity: identity
@@ -318,6 +323,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2023-05-01' = {
     name: sku
   }
   properties: {
+    allowProjectManagement: true // allows project management for Cognitive Services accounts in AI Foundry - FDP
     customSubDomainName: customSubDomainName
     networkAcls: !empty(networkAcls ?? {})
       ? {
