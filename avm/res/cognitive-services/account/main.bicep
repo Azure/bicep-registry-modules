@@ -312,7 +312,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[4]
   )
 }
-//update the cognitive service account api for the Foundry FDP update
+//update the cognitive service account api for the Foundry FDP updates
 resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' = {
   name: name
   kind: kind
@@ -323,7 +323,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
     name: sku
   }
   properties: {
-    allowProjectManagement: true // allows project management for Cognitive Services accounts in AI Foundry - FDP
+    allowProjectManagement: true // allows project management for Cognitive Services accounts in AI Foundry - FDP updates
     customSubDomainName: customSubDomainName
     networkAcls: !empty(networkAcls ?? {})
       ? {
