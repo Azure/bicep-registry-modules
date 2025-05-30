@@ -26,7 +26,6 @@ This module deploys Synapse Workspaces Big Data Pools.
 | :-- | :-- | :-- |
 | [`name`](#parameter-name) | string | The name of the Big Data Pool. |
 | [`nodeSize`](#parameter-nodesize) | string | The level of compute power that each node in the Big Data pool has. |
-| [`sparkVersion`](#parameter-sparkversion) | string | The Apache Spark version. |
 | [`workspaceName`](#parameter-workspacename) | string | The name of the parent Synapse Workspace. |
 
 **Optional parameters**
@@ -49,6 +48,7 @@ This module deploys Synapse Workspaces Big Data Pools.
 | [`sessionLevelPackagesEnabled`](#parameter-sessionlevelpackagesenabled) | bool | Whether session level packages enabled. Disabled if value not provided. |
 | [`sparkConfigProperties`](#parameter-sparkconfigproperties) | object | Spark configuration file to specify additional properties. |
 | [`sparkEventsFolder`](#parameter-sparkeventsfolder) | string | The Spark events folder. |
+| [`sparkVersion`](#parameter-sparkversion) | string | The Apache Spark version. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
@@ -74,21 +74,6 @@ The level of compute power that each node in the Big Data pool has.
     'XLarge'
     'XXLarge'
     'XXXLarge'
-  ]
-  ```
-
-### Parameter: `sparkVersion`
-
-The Apache Spark version.
-
-- Required: No
-- Type: string
-- Default: `'3.4'`
-- Allowed:
-  ```Bicep
-  [
-    '3.4'
-    '3.5'
   ]
   ```
 
@@ -583,6 +568,21 @@ The Spark events folder.
 
 - Required: No
 - Type: string
+
+### Parameter: `sparkVersion`
+
+The Apache Spark version.
+
+- Required: No
+- Type: string
+- Default: `'3.4'`
+- Allowed:
+  ```Bicep
+  [
+    '3.4'
+    '3.5'
+  ]
+  ```
 
 ### Parameter: `tags`
 

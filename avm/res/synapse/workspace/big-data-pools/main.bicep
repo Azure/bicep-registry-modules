@@ -51,7 +51,7 @@ param dynamicExecutorAllocation dynamicExecutorAllocationType?
 @maxValue(10080) // 7 days in minutes
 param autoPauseDelayInMinutes int = -1
 
-@description('Required. The Apache Spark version.')
+@description('Optional. The Apache Spark version.')
 @allowed([
   '3.4'
   '3.5'

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "17761309344598461112"
+      "templateHash": "7778487653745278327"
     },
     "name": "Synapse Workspaces Big Data Pools",
     "description": "This module deploys Synapse Workspaces Big Data Pools."
@@ -409,7 +409,7 @@
         "3.5"
       ],
       "metadata": {
-        "description": "Required. The Apache Spark version."
+        "description": "Optional. The Apache Spark version."
       }
     },
     "sparkConfigProperties": {
