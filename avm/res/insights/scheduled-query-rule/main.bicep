@@ -33,17 +33,21 @@ param queryTimeRange string?
 param skipQueryValidation bool = false
 
 @description('Optional. List of resource type of the target resource(s) on which the alert is created/updated. For example if the scope is a resource group and targetResourceTypes is Microsoft.Compute/virtualMachines, then a different alert will be fired for each virtual machine in the resource group which meet the alert criteria. Relevant only for rules of the kind LogAlert.')
-param targetResourceTypes array = []
+param targetResourceTypes string[]?
+
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The lock settings of the service.')
+param lock lockType?
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can\'t be used together with AutoMitigate.')
-param ruleResolveConfiguration object?
+param ruleResolveConfiguration resourceInput<'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview'>.properties.resolveConfiguration?
 
 @description('Required. The list of resource IDs that this scheduled query rule is scoped to.')
-param scopes array
+param scopes string[]
 
 @description('Optional. Severity of the alert. Should be an integer between [0-4]. Value of 0 is severest. Relevant and required only for rules of the kind LogAlert.')
 @allowed([
@@ -65,13 +69,13 @@ param windowSize string?
 param actions actionsType?
 
 @description('Required. The rule criteria that defines the conditions of the scheduled query rule.')
-param criterias object
+param criterias resourceInput<'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview'>.properties.criteria
 
 @description('Optional. Mute actions for the chosen period of time (in ISO 8601 duration format) after the alert is fired. If set, autoMitigate must be disabled. Relevant only for rules of the kind LogAlert.')
 param suppressForMinutes string?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview'>.tags?
 
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -90,7 +94,7 @@ var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
         ? (!empty(managedIdentities.?userAssignedResourceIds)
-            ? 'UserAssigned' // fail('You can only configure either a system-assigned or user-assigned identities, not both.') // Not supported by PSRule: https://github.com/microsoft/PSRule/issues/2840
+            ? fail('You can only configure either a system-assigned or user-assigned identities, not both.')
             : 'SystemAssigned')
         : (!empty(managedIdentities.?userAssignedResourceIds) ? 'UserAssigned' : 'None')
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
@@ -141,7 +145,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
+resource queryRule 'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -157,21 +161,36 @@ resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' =
     description: alertDescription
     displayName: alertDisplayName ?? name
     enabled: enabled
-    ...(kind == 'LogAlert' && empty(ruleResolveConfiguration)
+    scopes: scopes
+    ...(kind == 'LogAlert'
       ? {
-          autoMitigate: autoMitigate
-          muteActionsDuration: suppressForMinutes
+          evaluationFrequency: evaluationFrequency
+          overrideQueryTimeRange: queryTimeRange
+          severity: severity
+          skipQueryValidation: skipQueryValidation
+          targetResourceTypes: targetResourceTypes
+          windowSize: windowSize
+          resolveConfiguration: ruleResolveConfiguration
+          ...(empty(ruleResolveConfiguration)
+            ? {
+                autoMitigate: autoMitigate
+                muteActionsDuration: suppressForMinutes
+              }
+            : {})
         }
       : {})
-    resolveConfiguration: (kind == 'LogAlert') ? ruleResolveConfiguration : null
-    evaluationFrequency: (kind == 'LogAlert') ? evaluationFrequency : null
-    overrideQueryTimeRange: (kind == 'LogAlert') ? queryTimeRange : null
-    severity: (kind == 'LogAlert') ? severity : null
-    skipQueryValidation: (kind == 'LogAlert') ? skipQueryValidation : null
-    targetResourceTypes: (kind == 'LogAlert') ? targetResourceTypes : null
-    windowSize: (kind == 'LogAlert') ? windowSize : null
-    scopes: scopes
   }
+}
+
+resource queryRule_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: queryRule
 }
 
 resource queryRule_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [

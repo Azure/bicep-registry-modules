@@ -35,7 +35,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
     # Loading helper functions
     . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Get-AvmCsvData.ps1')
-    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GithubIssueToProject.ps1')
+    . (Join-Path $RepoRoot 'utilities' 'pipelines' 'platform' 'helper' 'Add-GitHubIssueToProject.ps1')
 
     $issue = gh issue view $IssueUrl.Replace('api.', '').Replace('repos/', '') --json 'author,title,url,body,comments' --repo $Repo | ConvertFrom-Json -Depth 100
 
@@ -80,7 +80,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 
         # add issue to project
         $ProjectNumber = 566 # AVM - Module Issues
-        Add-GithubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
+        Add-GitHubIssueToProject -Repo $Repo -ProjectNumber $ProjectNumber -IssueUrl $IssueUrl
 
         if ($PSCmdlet.ShouldProcess("class label to issue [$($issue.title)]", 'Add')) {
             gh issue edit $issue.url --add-label ($moduleIndex -eq 'Bicep-Resource' ? 'Class: Resource Module :package:' : 'Class: Pattern Module :package:') --repo $Repo

@@ -5,7 +5,10 @@ param location string = resourceGroup().location
 param managedIdentityName string
 
 @description('Required. The name of the managed disk to create.')
-param diskName string
+param diskNamePrefix string
+
+@description('Required. The number of managed disks to create.')
+param diskOccurrences int
 
 @description('Required. The name of the storage account to create.')
 param storageAccountName string
@@ -18,16 +21,18 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-resource computeDisk 'Microsoft.Compute/disks@2020-12-01' = {
-  name: diskName
-  location: location
-  properties: {
-    creationData: {
-      createOption: 'Empty'
+resource computeDisks 'Microsoft.Compute/disks@2020-12-01' = [
+  for instance in range(1, diskOccurrences): {
+    name: '${diskNamePrefix}-0${instance}'
+    location: location
+    properties: {
+      creationData: {
+        createOption: 'Empty'
+      }
+      diskSizeGB: 200
     }
-    diskSizeGB: 200
   }
-}
+]
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
@@ -53,7 +58,7 @@ output managedIdentityPrincipalId string = managedIdentity.properties.principalI
 output managedIdentityResourceId string = managedIdentity.id
 
 @description('The resource ID of the created Managed Disk.')
-output diskResourceId string = computeDisk.id
+output diskResourceIdList string[] = [for instance in range(0, diskOccurrences): computeDisks[instance].id]
 
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = storageAccount.id
