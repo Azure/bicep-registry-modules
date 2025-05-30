@@ -482,6 +482,10 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
               name: 'DATABASE_ENDPOINT'
             }
             {
+              knownValue: 'ManagedIdentityTenantId'
+              name: 'AZURE_TENANT_ID'
+            }
+            {
               format: '{0}/openapi/v1.json'
               name: 'RELATED_TIER_ENDPOINT'
               tierEndpoint: 'example-tier-2'
@@ -592,6 +596,10 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
                 "name": "DATABASE_ENDPOINT"
               },
               {
+                "knownValue": "ManagedIdentityTenantId",
+                "name": "AZURE_TENANT_ID"
+              },
+              {
                 "format": "{0}/openapi/v1.json",
                 "name": "RELATED_TIER_ENDPOINT",
                 "tierEndpoint": "example-tier-2"
@@ -688,6 +696,10 @@ param web = {
         {
           knownValue: 'AzureCosmosDBEndpoint'
           name: 'DATABASE_ENDPOINT'
+        }
+        {
+          knownValue: 'ManagedIdentityTenantId'
+          name: 'AZURE_TENANT_ID'
         }
         {
           format: '{0}/openapi/v1.json'

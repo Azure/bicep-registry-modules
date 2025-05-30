@@ -124,6 +124,10 @@ module testDeployment '../../../main.bicep' = [
                 knownValue: 'AzureCosmosDBEndpoint'
               }
               {
+                name: 'AZURE_TENANT_ID'
+                knownValue: 'ManagedIdentityTenantId'
+              }
+              {
                 name: 'RELATED_TIER_ENDPOINT'
                 tierEndpoint: 'example-tier-2'
                 format: '{0}/openapi/v1.json'
