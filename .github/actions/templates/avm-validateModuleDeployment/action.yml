@@ -57,6 +57,7 @@ inputs:
     required: false
   e2eIgnore:
     description: "If set to true, the test case deployment tasks will not be processed"
+    default: "false"
     required: false
 
 runs:
