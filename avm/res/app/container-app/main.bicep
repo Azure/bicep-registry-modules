@@ -41,7 +41,7 @@ param stickySessionsAffinity string = 'none'
 param ingressTransport string = 'auto'
 
 @description('Optional. Dev ContainerApp service type.')
-param service object = {}
+param service resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.configuration.service?
 
 @description('Optional. Toggle to include the service configuration.')
 param includeAddOns bool = false
@@ -82,7 +82,7 @@ param lock lockType?
 param tags object?
 
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
-param registries array = []
+param registries resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.configuration.registries?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -96,13 +96,13 @@ param roleAssignments roleAssignmentType[]?
 param enableTelemetry bool = true
 
 @description('Optional. Custom domain bindings for Container App hostnames.')
-param customDomains array = []
+param customDomains resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.configuration.ingress.customDomains?
 
 @description('Optional. Exposed Port in containers for TCP traffic from ingress.')
 param exposedPort int = 0
 
 @description('Optional. Rules to restrict incoming IP address.')
-param ipSecurityRestrictions array = []
+param ipSecurityRestrictions resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.configuration.ingress.ipSecurityRestrictions?
 
 @description('Optional. Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes.')
 param trafficLabel string = 'label-1'
@@ -117,7 +117,7 @@ param trafficRevisionName string = ''
 param trafficWeight int = 100
 
 @description('Optional. Dapr configuration for the Container App.')
-param dapr object = {}
+param dapr resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.configuration.dapr?
 
 @description('Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.')
 param identitySettings resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.configuration.identitySettings?
@@ -132,7 +132,7 @@ param runtime runtimeType?
 param containers containerType[]
 
 @description('Optional. List of specialized containers that run before app containers.')
-param initContainersTemplate array = []
+param initContainersTemplate resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.template.initContainers?
 
 @description('Optional. The secrets of the Container App.')
 param secrets secretType[]?
@@ -141,7 +141,7 @@ param secrets secretType[]?
 param revisionSuffix string = ''
 
 @description('Optional. List of volume definitions for the Container App.')
-param volumes array = []
+param volumes resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.template.volumes?
 
 @description('Optional. Workload profile name to pin for container app execution.')
 param workloadProfileName string = ''
