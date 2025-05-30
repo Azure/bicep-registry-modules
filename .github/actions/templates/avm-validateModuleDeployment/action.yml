@@ -56,7 +56,7 @@ inputs:
     description: "Custom location overwrite, if needed"
     required: false
   e2eIgnore:
-    description: "A test case will not be deployed if an .e2eignore file exists"
+    description: "If set to true, the test case deployment tasks will not be processed"
     required: false
 
 runs:
