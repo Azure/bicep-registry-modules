@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "6610882847417001360"
+      "templateHash": "10201766615281424345"
     },
     "name": "Azure Cosmos DB & Azure Container Apps - Web Application",
     "description": "This module deploys an n-teir web application to Azure Container Apps. The module also deploys a backing Azure Cosmos DB account with an account type switch. Options for Azure Cosmos DB include; NoSQL, Table, and MongoDB (RU). The web application uses the appropriate security best practices to connect the web application to the backing account."
@@ -171,7 +171,7 @@
           "type": "string",
           "allowedValues": [
             "AzureCosmosDBEndpoint",
-            "ManagedIdentityClientId"
+            "ManagedIdentityTenantId"
           ],
           "nullable": true,
           "metadata": {
@@ -423,6 +423,7 @@
       }
     ],
     "tiersList": "[map(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject('name', ''))), lambda('wt', lambdaVariables('wt').name))]",
+    "userAssignedManagedIdentityTenantId": "[subscription().tenantId]",
     "primaryLocation": {
       "failoverPriority": 0,
       "isZoneRedundant": "[coalesce(tryGet(parameters('database'), 'zoneRedundant'), true())]",
@@ -7969,7 +7970,7 @@
           "managedIdentities": "[if(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'useManagedIdentity'), false()), createObject('value', createObject('systemAssigned', false(), 'userAssignedResourceIds', createArray(reference('userAssignedManagedIdentity').outputs.resourceId.value))), createObject('value', null()))]",
           "registries": "[if(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'useManagedIdentity'), false()), createObject('value', createArray(createObject('server', reference('azureContainerRegistry').outputs.loginServer.value, 'identity', reference('userAssignedManagedIdentity').outputs.resourceId.value))), createObject('value', createArray()))]",
           "secrets": {
-            "value": "[union(if(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'useManagedIdentity'), false()), createArray(createObject('name', 'managed-identity-client-id', 'value', reference('userAssignedManagedIdentity').outputs.clientId.value)), createArray()), map(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'environment'), createArray()), lambda('env', createObject('name', __bicep.sanitizeName(lambdaVariables('env').name), 'value', if(not(equals(tryGet(lambdaVariables('env'), 'tierEndpoint'), null())), format(coalesce(tryGet(lambdaVariables('env'), 'format'), '{0}'), format('http://{0}', format('ca-{0}-{1}-{2}', parameters('name'), parameters('location'), format('{0:000}', add(indexOf(variables('tiersList'), tryGet(lambdaVariables('env'), 'tierEndpoint')), 1))))), if(not(equals(tryGet(lambdaVariables('env'), 'knownValue'), null())), createObject('AzureCosmosDBEndpoint', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('azureCosmosDBAccount-{0}', uniqueString('azureCosmosDBAccount', deployment().name))), '2022-09-01').endpoint, 'ManagedIdentityClientId', reference('userAssignedManagedIdentity').outputs.clientId.value)[lambdaVariables('env').knownValue], coalesce(lambdaVariables('env').value, '')))))))]"
+            "value": "[union(if(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'useManagedIdentity'), false()), createArray(createObject('name', 'managed-identity-client-id', 'value', reference('userAssignedManagedIdentity').outputs.clientId.value)), createArray()), map(coalesce(tryGet(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject()))[copyIndex()], 'environment'), createArray()), lambda('env', createObject('name', __bicep.sanitizeName(lambdaVariables('env').name), 'value', if(not(equals(tryGet(lambdaVariables('env'), 'tierEndpoint'), null())), format(coalesce(tryGet(lambdaVariables('env'), 'format'), '{0}'), format('http://{0}', format('ca-{0}-{1}-{2}', parameters('name'), parameters('location'), format('{0:000}', add(indexOf(variables('tiersList'), tryGet(lambdaVariables('env'), 'tierEndpoint')), 1))))), if(not(equals(tryGet(lambdaVariables('env'), 'knownValue'), null())), createObject('AzureCosmosDBEndpoint', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('azureCosmosDBAccount-{0}', uniqueString('azureCosmosDBAccount', deployment().name))), '2022-09-01').endpoint, 'ManagedIdentityTenantId', variables('userAssignedManagedIdentityTenantId'))[lambdaVariables('env').knownValue], coalesce(lambdaVariables('env').value, '')))))))]"
           },
           "containers": {
             "value": [

@@ -120,6 +120,10 @@ func sanitizeName(name string) string => toLower(replace(replace(name, '__', '_'
 
 var tiersList = map(web.?tiers ?? [{ name: '' }], wt => wt.name)
 
+var databaseEndpoint = azureCosmosDBAccount.outputs.endpoint
+
+var userAssignedManagedIdentityTenantId = subscription().tenantId
+
 module azureContainerAppsApp 'br/public:avm/res/app/container-app:0.16.0' = [
   for (tier, index) in web.?tiers ?? [{}]: {
     params: {
@@ -171,8 +175,8 @@ module azureContainerAppsApp 'br/public:avm/res/app/container-app:0.16.0' = [
               )
             : env.?knownValue != null
                 ? {
-                    AzureCosmosDBEndpoint: azureCosmosDBAccount.outputs.endpoint
-                    ManagedIdentityClientId: userAssignedManagedIdentity.outputs.clientId
+                    AzureCosmosDBEndpoint: databaseEndpoint
+                    ManagedIdentityTenantId: userAssignedManagedIdentityTenantId
                   }[env.knownValue]
                 : env.value ?? ''
         })
@@ -456,7 +460,7 @@ type azureContainerAppsTierEnvironmentType = {
   value: string?
 
   @description('Optional. Sets a well-known value for the environment variable. This property takes precedence over `value`. This property is ignored if the value is not set.')
-  knownValue: 'AzureCosmosDBEndpoint' | 'ManagedIdentityClientId'?
+  knownValue: 'AzureCosmosDBEndpoint' | 'ManagedIdentityTenantId'?
 
   @description('Optional. Selects a tier endpoint to use for the environment variable. This property takes precedence over `knownValue` and `value`. This property is ignored if the value is not set.')
   tierEndpoint: string?

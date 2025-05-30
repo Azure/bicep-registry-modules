@@ -1180,7 +1180,7 @@ Sets a well-known value for the environment variable. This property takes preced
   ```Bicep
   [
     'AzureCosmosDBEndpoint'
-    'ManagedIdentityClientId'
+    'ManagedIdentityTenantId'
   ]
   ```
 
