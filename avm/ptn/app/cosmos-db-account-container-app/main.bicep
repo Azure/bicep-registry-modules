@@ -220,7 +220,6 @@ var replicaLocations = [
 ]
 
 module azureCosmosDBAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
-  name: '${uniqueString(deployment().name, location)}-azure-cosmos-db-account'
   params: {
     name: 'cosno-${name}-${location}-001'
     location: empty(replicaLocations) ? location : null
