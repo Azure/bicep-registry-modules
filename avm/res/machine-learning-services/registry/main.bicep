@@ -44,6 +44,18 @@ param managedIdentities managedIdentityAllType?
 ])
 param storageAccountType string?
 
+@description('Optional. Storage account blob public access setting. If not specified, it will be set to false by default.')
+param storageAccountAllowBlobPublicAccess bool?
+
+@description('Optional. Storage account hierarchical namespace (HNS) enabled setting. If not specified, it will be set to true by default.')
+param storageAccountHnsEnabled bool?
+
+@description('Optional. The name of the storage account to use for the Azure ML Registry. If not specified, a default name will be generated based on the registry name and location.')
+param storageAccountName string?
+
+@description('Optional. The Azure Container Registry account name to use for the Azure ML Registry. If not specified, a default name will be automatically generated.')
+param acrAccountName string?
+
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
@@ -164,9 +176,9 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
         storageAccountDetails: [
           {
             systemCreatedStorageAccount: {
-              allowBlobPublicAccess: false
-              storageAccountHnsEnabled: true
-              storageAccountName: '${name}${replace(loc, '-', '')}storage'
+              allowBlobPublicAccess: storageAccountAllowBlobPublicAccess
+              storageAccountHnsEnabled: storageAccountHnsEnabled
+              storageAccountName: storageAccountName
               storageAccountType: !empty(storageAccountType)
                 ? storageAccountType
                 : (acrSku == 'Premium' ? 'Standard_ZRS' : 'Standard_LRS')
@@ -177,7 +189,7 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
           {
             systemCreatedAcrAccount: {
               acrAccountSku: acrSku
-              acrAccountName: '${name}${replace(loc, '-', '')}acr'
+              acrAccountName: acrAccountName
             }
           }
         ]

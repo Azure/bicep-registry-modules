@@ -113,10 +113,18 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
     // Required parameters
     name: 'mlsrmax001'
     // Non-required parameters
+    acrAccountName: '<acrAccountName>'
+    acrSku: 'Premium'
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     privateEndpoints: [
       {
@@ -164,6 +172,10 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    storageAccountAllowBlobPublicAccess: false
+    storageAccountHnsEnabled: true
+    storageAccountName: '<storageAccountName>'
+    storageAccountType: 'Standard_ZRS'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -190,6 +202,12 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
       "value": "mlsrmax001"
     },
     // Non-required parameters
+    "acrAccountName": {
+      "value": "<acrAccountName>"
+    },
+    "acrSku": {
+      "value": "Premium"
+    },
     "location": {
       "value": "<location>"
     },
@@ -197,6 +215,14 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "privateEndpoints": {
@@ -249,6 +275,18 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
         }
       ]
     },
+    "storageAccountAllowBlobPublicAccess": {
+      "value": false
+    },
+    "storageAccountHnsEnabled": {
+      "value": true
+    },
+    "storageAccountName": {
+      "value": "<storageAccountName>"
+    },
+    "storageAccountType": {
+      "value": "Standard_ZRS"
+    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -273,10 +311,18 @@ using 'br/public:avm/res/machine-learning-services/registry:<version>'
 // Required parameters
 param name = 'mlsrmax001'
 // Non-required parameters
+param acrAccountName = '<acrAccountName>'
+param acrSku = 'Premium'
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param privateEndpoints = [
   {
@@ -324,6 +370,10 @@ param roleAssignments = [
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
   }
 ]
+param storageAccountAllowBlobPublicAccess = false
+param storageAccountHnsEnabled = true
+param storageAccountName = '<storageAccountName>'
+param storageAccountType = 'Standard_ZRS'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -465,6 +515,7 @@ param tags = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`acrAccountName`](#parameter-acraccountname) | string | The Azure Container Registry account name to use for the Azure ML Registry. If not specified, a default name will be automatically generated. |
 | [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for the Azure ML Registry. |
@@ -474,6 +525,9 @@ param tags = {
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
 | [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`storageAccountAllowBlobPublicAccess`](#parameter-storageaccountallowblobpublicaccess) | bool | Storage account blob public access setting. If not specified, it will be set to false by default. |
+| [`storageAccountHnsEnabled`](#parameter-storageaccounthnsenabled) | bool | Storage account hierarchical namespace (HNS) enabled setting. If not specified, it will be set to true by default. |
+| [`storageAccountName`](#parameter-storageaccountname) | string | The name of the storage account to use for the Azure ML Registry. If not specified, a default name will be generated based on the registry name and location. |
 | [`storageAccountType`](#parameter-storageaccounttype) | string | The type of storage account to use for the Azure ML Registry. Default is Standard_LRS. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -482,6 +536,13 @@ param tags = {
 Name of the Azure ML Registry.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `acrAccountName`
+
+The Azure Container Registry account name to use for the Azure ML Registry. If not specified, a default name will be automatically generated.
+
+- Required: No
 - Type: string
 
 ### Parameter: `acrSku`
@@ -1118,6 +1179,27 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `storageAccountAllowBlobPublicAccess`
+
+Storage account blob public access setting. If not specified, it will be set to false by default.
+
+- Required: No
+- Type: bool
+
+### Parameter: `storageAccountHnsEnabled`
+
+Storage account hierarchical namespace (HNS) enabled setting. If not specified, it will be set to true by default.
+
+- Required: No
+- Type: bool
+
+### Parameter: `storageAccountName`
+
+The name of the storage account to use for the Azure ML Registry. If not specified, a default name will be generated based on the registry name and location.
+
+- Required: No
+- Type: string
 
 ### Parameter: `storageAccountType`
 

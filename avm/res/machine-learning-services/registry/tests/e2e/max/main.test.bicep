@@ -39,7 +39,6 @@ module nestedDependencies 'dependencies.bicep' = {
     location: resourceLocation
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-ds-${serviceShort}'
-
   }
 }
 
@@ -55,6 +54,18 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
+      acrSku: 'Premium'
+      storageAccountType: 'Standard_ZRS'
+      acrAccountName: 'acr${uniqueString(resourceLocation, namePrefix)}'
+      storageAccountName: 'st${uniqueString(resourceLocation, namePrefix)}'
+      storageAccountHnsEnabled: true
+      storageAccountAllowBlobPublicAccess: false
+      managedIdentities: {
+        systemAssigned: true
+        userAssignedResourceIds: [
+          nestedDependencies.outputs.managedIdentityResourceId
+        ]
+      }
       lock: {
         kind: 'CanNotDelete'
         name: 'myCustomLockName'

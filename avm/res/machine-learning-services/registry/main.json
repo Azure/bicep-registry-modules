@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "16518795523760719425"
+      "templateHash": "14175466626499741408"
     },
     "name": "Azure ML Registry",
     "description": "This module deploys an Azure Machine Learning Registry."
@@ -530,6 +530,34 @@
         "description": "Optional. The type of storage account to use for the Azure ML Registry. Default is Standard_LRS."
       }
     },
+    "storageAccountAllowBlobPublicAccess": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Storage account blob public access setting. If not specified, it will be set to false by default."
+      }
+    },
+    "storageAccountHnsEnabled": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Storage account hierarchical namespace (HNS) enabled setting. If not specified, it will be set to true by default."
+      }
+    },
+    "storageAccountName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The name of the storage account to use for the Azure ML Registry. If not specified, a default name will be generated based on the registry name and location."
+      }
+    },
+    "acrAccountName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Azure Container Registry account name to use for the Azure ML Registry. If not specified, a default name will be automatically generated."
+      }
+    },
     "privateEndpoints": {
       "type": "array",
       "items": {
@@ -639,9 +667,9 @@
               "storageAccountDetails": [
                 {
                   "systemCreatedStorageAccount": {
-                    "allowBlobPublicAccess": false,
-                    "storageAccountHnsEnabled": true,
-                    "storageAccountName": "[format('{0}{1}storage', parameters('name'), replace(variables('allLocations')[copyIndex('regionDetails')], '-', ''))]",
+                    "allowBlobPublicAccess": "[parameters('storageAccountAllowBlobPublicAccess')]",
+                    "storageAccountHnsEnabled": "[parameters('storageAccountHnsEnabled')]",
+                    "storageAccountName": "[parameters('storageAccountName')]",
                     "storageAccountType": "[if(not(empty(parameters('storageAccountType'))), parameters('storageAccountType'), if(equals(parameters('acrSku'), 'Premium'), 'Standard_ZRS', 'Standard_LRS'))]"
                   }
                 }
@@ -650,7 +678,7 @@
                 {
                   "systemCreatedAcrAccount": {
                     "acrAccountSku": "[parameters('acrSku')]",
-                    "acrAccountName": "[format('{0}{1}acr', parameters('name'), replace(variables('allLocations')[copyIndex('regionDetails')], '-', ''))]"
+                    "acrAccountName": "[parameters('acrAccountName')]"
                   }
                 }
               ]
