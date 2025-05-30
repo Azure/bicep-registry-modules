@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "764444428633484381"
+      "version": "0.34.44.8038",
+      "templateHash": "5214703706417305741"
     },
     "name": "Virtual Hub Virtual Network Connections",
     "description": "This module deploys a Virtual Hub Virtual Network Connection."
@@ -54,7 +54,7 @@
     },
     "hubVirtualNetworkConnection": {
       "type": "Microsoft.Network/virtualHubs/hubVirtualNetworkConnections",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
       "properties": {
         "enableInternetSecurity": "[parameters('enableInternetSecurity')]",

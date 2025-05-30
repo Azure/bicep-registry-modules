@@ -46,12 +46,12 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
       administratorLogin: 'Admin001'
       administratorLoginPassword: password
-      nodeCount: 2
-      sku: 'M30'
-      storage: 256
+      nodeCount: 1
+      sku: 'M10'
+      storage: 32
+      highAvailabilityMode: 'Disabled'
     }
   }
 ]

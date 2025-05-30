@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "918699205331356852"
+      "version": "0.35.1.17967",
+      "templateHash": "16911349070369924403"
     },
     "name": "DocumentDB Database Account MongoDB Databases",
     "description": "This module deploys a MongoDB Database within a CosmosDB Account."
@@ -33,7 +33,7 @@
     },
     "collections": {
       "type": "array",
-      "defaultValue": [],
+      "nullable": true,
       "metadata": {
         "description": "Optional. Collections in the mongodb database."
       }
@@ -71,11 +71,11 @@
     "mongodbDatabase_collections": {
       "copy": {
         "name": "mongodbDatabase_collections",
-        "count": "[length(parameters('collections'))]"
+        "count": "[length(coalesce(parameters('collections'), createArray()))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-collection-{1}', uniqueString(deployment().name, parameters('name')), parameters('collections')[copyIndex()].name)]",
+      "name": "[format('{0}-collection-{1}', uniqueString(deployment().name, parameters('name')), coalesce(parameters('collections'), createArray())[copyIndex()].name)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -89,16 +89,16 @@
             "value": "[parameters('name')]"
           },
           "name": {
-            "value": "[parameters('collections')[copyIndex()].name]"
+            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].name]"
           },
           "indexes": {
-            "value": "[parameters('collections')[copyIndex()].indexes]"
+            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].indexes]"
           },
           "shardKey": {
-            "value": "[parameters('collections')[copyIndex()].shardKey]"
+            "value": "[coalesce(parameters('collections'), createArray())[copyIndex()].shardKey]"
           },
           "throughput": {
-            "value": "[tryGet(parameters('collections')[copyIndex()], 'throughput')]"
+            "value": "[tryGet(coalesce(parameters('collections'), createArray())[copyIndex()], 'throughput')]"
           }
         },
         "template": {
@@ -107,8 +107,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "5747070610235343863"
+              "version": "0.35.1.17967",
+              "templateHash": "7802955893269337475"
             },
             "name": "DocumentDB Database Account MongoDB Database Collections",
             "description": "This module deploys a MongoDB Database Collection."

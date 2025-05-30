@@ -1,5 +1,8 @@
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
+@description('Required. The name of the managed identity to create for the server.')
+param serverIdentityName string
+
+@description('Required. The name of the managed identity to create for the database.')
+param databaseIdentityName string
 
 @description('Required. The name of the Virtual Network to create.')
 param virtualNetworkName string
@@ -12,8 +15,13 @@ param keyVaultName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
-  name: managedIdentityName
+resource serverIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: serverIdentityName
+  location: location
+}
+
+resource databaseIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+  name: databaseIdentityName
   location: location
 }
 
@@ -77,10 +85,10 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Vault-Crypto-Service-Encryption-User-RoleAssignment')
+  name: guid('msi-${keyVault::key.id}-${location}-${serverIdentity.id}-Key-Vault-Crypto-Service-Encryption-User-RoleAssignment')
   scope: keyVault::key
   properties: {
-    principalId: managedIdentity.properties.principalId
+    principalId: serverIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'e147488a-f6f5-4113-8e2d-b22465e65bf6'
@@ -89,11 +97,14 @@ resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-@description('The principal ID of the created managed identity.')
-output managedIdentityPrincipalId string = managedIdentity.properties.principalId
+@description('The principal ID of the created server managed identity.')
+output serverIdentityPrincipalId string = serverIdentity.properties.principalId
 
-@description('The resource ID of the created managed identity.')
-output managedIdentityResourceId string = managedIdentity.id
+@description('The resource ID of the created server managed identity.')
+output serverIdentityResourceId string = serverIdentity.id
+
+@description('The resource ID of the created database managed identity.')
+output databaseIdentityResourceId string = databaseIdentity.id
 
 @description('The resource ID of the created virtual network subnet for a Private Endpoint.')
 output privateEndpointSubnetResourceId string = virtualNetwork.properties.subnets[0].id
