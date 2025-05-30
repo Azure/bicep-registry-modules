@@ -28,7 +28,7 @@ Optional. A switch parameter that triggers the deployment of the module
 Optional. A switch parameter that triggers the validation of the module only without deployment
 
 .PARAMETER RespectE2eIgnoreFlag
-Optional. A switch parameter that enables you to respect the e2eIgnore file in the test cases. If set to $true, the deployment tasks will not be executed, if a test-case is excluded by an .e2eignore file.
+Optional. A switch parameter that enables you to consider the existence of any .e2eignore file in the test case module folders. If set to $true (default), the deployment tasks will be skipped if a test-case is excluded by an .e2eignore file. If set to $false, the existence of an .e2eignore file in the module test root folder will be ignored, and the deployment tasks will run nevertheless.
 
 .PARAMETER SkipParameterFileTokens
 Optional. A switch parameter that enables you to skip the search for local custom parameter file tokens.
