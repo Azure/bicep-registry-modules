@@ -54,7 +54,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = 
         userAssignedManagedIdentity.outputs.resourceId
       ]
     }
-    scriptContent: loadTextContent('../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
+    scriptContent: loadTextContent('../../../../../../../utilities/e2e-template-assets/scripts/Get-PairedRegion.ps1')
     arguments: '-Location \\"${location}\\"'
     retentionInterval: 'P1D'
   }
