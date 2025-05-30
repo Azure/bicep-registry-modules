@@ -26,7 +26,6 @@ This module deploys an Azure Automation Account.
 | `Microsoft.Automation/automationAccounts/python3Packages` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/python3Packages) |
 | `Microsoft.Automation/automationAccounts/runbooks` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2023-11-01/automationAccounts/runbooks) |
 | `Microsoft.Automation/automationAccounts/schedules` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/schedules) |
-| `Microsoft.Automation/automationAccounts/softwareUpdateConfigurations` | [2019-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2019-06-01/automationAccounts/softwareUpdateConfigurations) |
 | `Microsoft.Automation/automationAccounts/variables` | [2022-08-08](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automation/2022-08-08/automationAccounts/variables) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
@@ -375,63 +374,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         timeZone: 'Europe/Berlin'
       }
     ]
-    softwareUpdateConfigurations: [
-      {
-        excludeUpdates: [
-          '123456'
-        ]
-        frequency: 'Month'
-        includeUpdates: [
-          '654321'
-        ]
-        interval: 1
-        maintenanceWindow: 'PT4H'
-        monthlyOccurrences: [
-          {
-            day: 'Friday'
-            occurrence: 3
-          }
-        ]
-        name: 'Windows_ZeroDay'
-        operatingSystem: 'Windows'
-        rebootSetting: 'IfRequired'
-        scopeByTags: {
-          Update: [
-            'Automatic-Wave1'
-          ]
-        }
-        startTime: '22:00'
-        updateClassifications: [
-          'Critical'
-          'Definition'
-          'FeaturePack'
-          'Security'
-          'ServicePack'
-          'Tools'
-          'UpdateRollup'
-          'Updates'
-        ]
-      }
-      {
-        excludeUpdates: [
-          'icacls'
-        ]
-        frequency: 'OneTime'
-        includeUpdates: [
-          'kernel'
-        ]
-        maintenanceWindow: 'PT4H'
-        name: 'Linux_ZeroDay'
-        operatingSystem: 'Linux'
-        rebootSetting: 'IfRequired'
-        startTime: '22:00'
-        updateClassifications: [
-          'Critical'
-          'Other'
-          'Security'
-        ]
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -686,65 +628,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         }
       ]
     },
-    "softwareUpdateConfigurations": {
-      "value": [
-        {
-          "excludeUpdates": [
-            "123456"
-          ],
-          "frequency": "Month",
-          "includeUpdates": [
-            "654321"
-          ],
-          "interval": 1,
-          "maintenanceWindow": "PT4H",
-          "monthlyOccurrences": [
-            {
-              "day": "Friday",
-              "occurrence": 3
-            }
-          ],
-          "name": "Windows_ZeroDay",
-          "operatingSystem": "Windows",
-          "rebootSetting": "IfRequired",
-          "scopeByTags": {
-            "Update": [
-              "Automatic-Wave1"
-            ]
-          },
-          "startTime": "22:00",
-          "updateClassifications": [
-            "Critical",
-            "Definition",
-            "FeaturePack",
-            "Security",
-            "ServicePack",
-            "Tools",
-            "UpdateRollup",
-            "Updates"
-          ]
-        },
-        {
-          "excludeUpdates": [
-            "icacls"
-          ],
-          "frequency": "OneTime",
-          "includeUpdates": [
-            "kernel"
-          ],
-          "maintenanceWindow": "PT4H",
-          "name": "Linux_ZeroDay",
-          "operatingSystem": "Linux",
-          "rebootSetting": "IfRequired",
-          "startTime": "22:00",
-          "updateClassifications": [
-            "Critical",
-            "Other",
-            "Security"
-          ]
-        }
-      ]
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -965,63 +848,6 @@ param schedules = [
     timeZone: 'Europe/Berlin'
   }
 ]
-param softwareUpdateConfigurations = [
-  {
-    excludeUpdates: [
-      '123456'
-    ]
-    frequency: 'Month'
-    includeUpdates: [
-      '654321'
-    ]
-    interval: 1
-    maintenanceWindow: 'PT4H'
-    monthlyOccurrences: [
-      {
-        day: 'Friday'
-        occurrence: 3
-      }
-    ]
-    name: 'Windows_ZeroDay'
-    operatingSystem: 'Windows'
-    rebootSetting: 'IfRequired'
-    scopeByTags: {
-      Update: [
-        'Automatic-Wave1'
-      ]
-    }
-    startTime: '22:00'
-    updateClassifications: [
-      'Critical'
-      'Definition'
-      'FeaturePack'
-      'Security'
-      'ServicePack'
-      'Tools'
-      'UpdateRollup'
-      'Updates'
-    ]
-  }
-  {
-    excludeUpdates: [
-      'icacls'
-    ]
-    frequency: 'OneTime'
-    includeUpdates: [
-      'kernel'
-    ]
-    maintenanceWindow: 'PT4H'
-    name: 'Linux_ZeroDay'
-    operatingSystem: 'Linux'
-    rebootSetting: 'IfRequired'
-    startTime: '22:00'
-    updateClassifications: [
-      'Critical'
-      'Other'
-      'Security'
-    ]
-  }
-]
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1169,63 +995,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         name: 'TestSchedule'
         startTime: ''
         timeZone: 'Europe/Berlin'
-      }
-    ]
-    softwareUpdateConfigurations: [
-      {
-        excludeUpdates: [
-          '123456'
-        ]
-        frequency: 'Month'
-        includeUpdates: [
-          '654321'
-        ]
-        interval: 1
-        maintenanceWindow: 'PT4H'
-        monthlyOccurrences: [
-          {
-            day: 'Friday'
-            occurrence: 3
-          }
-        ]
-        name: 'Windows_ZeroDay'
-        operatingSystem: 'Windows'
-        rebootSetting: 'IfRequired'
-        scopeByTags: {
-          Update: [
-            'Automatic-Wave1'
-          ]
-        }
-        startTime: '22:00'
-        updateClassifications: [
-          'Critical'
-          'Definition'
-          'FeaturePack'
-          'Security'
-          'ServicePack'
-          'Tools'
-          'UpdateRollup'
-          'Updates'
-        ]
-      }
-      {
-        excludeUpdates: [
-          'icacls'
-        ]
-        frequency: 'OneTime'
-        includeUpdates: [
-          'kernel'
-        ]
-        maintenanceWindow: 'PT4H'
-        name: 'Linux_ZeroDay'
-        operatingSystem: 'Linux'
-        rebootSetting: 'IfRequired'
-        startTime: '22:00'
-        updateClassifications: [
-          'Critical'
-          'Other'
-          'Security'
-        ]
       }
     ]
     tags: {
@@ -1398,65 +1167,6 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
         }
       ]
     },
-    "softwareUpdateConfigurations": {
-      "value": [
-        {
-          "excludeUpdates": [
-            "123456"
-          ],
-          "frequency": "Month",
-          "includeUpdates": [
-            "654321"
-          ],
-          "interval": 1,
-          "maintenanceWindow": "PT4H",
-          "monthlyOccurrences": [
-            {
-              "day": "Friday",
-              "occurrence": 3
-            }
-          ],
-          "name": "Windows_ZeroDay",
-          "operatingSystem": "Windows",
-          "rebootSetting": "IfRequired",
-          "scopeByTags": {
-            "Update": [
-              "Automatic-Wave1"
-            ]
-          },
-          "startTime": "22:00",
-          "updateClassifications": [
-            "Critical",
-            "Definition",
-            "FeaturePack",
-            "Security",
-            "ServicePack",
-            "Tools",
-            "UpdateRollup",
-            "Updates"
-          ]
-        },
-        {
-          "excludeUpdates": [
-            "icacls"
-          ],
-          "frequency": "OneTime",
-          "includeUpdates": [
-            "kernel"
-          ],
-          "maintenanceWindow": "PT4H",
-          "name": "Linux_ZeroDay",
-          "operatingSystem": "Linux",
-          "rebootSetting": "IfRequired",
-          "startTime": "22:00",
-          "updateClassifications": [
-            "Critical",
-            "Other",
-            "Security"
-          ]
-        }
-      ]
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -1605,63 +1315,6 @@ param schedules = [
     timeZone: 'Europe/Berlin'
   }
 ]
-param softwareUpdateConfigurations = [
-  {
-    excludeUpdates: [
-      '123456'
-    ]
-    frequency: 'Month'
-    includeUpdates: [
-      '654321'
-    ]
-    interval: 1
-    maintenanceWindow: 'PT4H'
-    monthlyOccurrences: [
-      {
-        day: 'Friday'
-        occurrence: 3
-      }
-    ]
-    name: 'Windows_ZeroDay'
-    operatingSystem: 'Windows'
-    rebootSetting: 'IfRequired'
-    scopeByTags: {
-      Update: [
-        'Automatic-Wave1'
-      ]
-    }
-    startTime: '22:00'
-    updateClassifications: [
-      'Critical'
-      'Definition'
-      'FeaturePack'
-      'Security'
-      'ServicePack'
-      'Tools'
-      'UpdateRollup'
-      'Updates'
-    ]
-  }
-  {
-    excludeUpdates: [
-      'icacls'
-    ]
-    frequency: 'OneTime'
-    includeUpdates: [
-      'kernel'
-    ]
-    maintenanceWindow: 'PT4H'
-    name: 'Linux_ZeroDay'
-    operatingSystem: 'Linux'
-    rebootSetting: 'IfRequired'
-    startTime: '22:00'
-    updateClassifications: [
-      'Critical'
-      'Other'
-      'Security'
-    ]
-  }
-]
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1732,7 +1385,6 @@ param variables = [
 | [`runbooks`](#parameter-runbooks) | array | List of runbooks to be created in the automation account. |
 | [`schedules`](#parameter-schedules) | array | List of schedules to be created in the automation account. |
 | [`skuName`](#parameter-skuname) | string | SKU name of the account. |
-| [`softwareUpdateConfigurations`](#parameter-softwareupdateconfigurations) | array | List of softwareUpdateConfigurations to be created in the automation account. |
 | [`tags`](#parameter-tags) | object | Tags of the Automation Account resource. |
 | [`variables`](#parameter-variables) | array | List of variables to be created in the automation account. |
 
@@ -2880,14 +2532,6 @@ SKU name of the account.
     'Free'
   ]
   ```
-
-### Parameter: `softwareUpdateConfigurations`
-
-List of softwareUpdateConfigurations to be created in the automation account.
-
-- Required: No
-- Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 
