@@ -170,6 +170,7 @@
 /avm/res/network/vpn-gateway/ @Azure/avm-res-network-vpngateway-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/vpn-server-configuration/ @Azure/avm-res-network-vpnserverconfiguration-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/network/vpn-site/ @Azure/avm-res-network-vpnsite-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/operational-insights/cluster/ @Azure/avm-res-operationalinsights-cluster-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/operational-insights/workspace/ @Azure/avm-res-operationalinsights-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/operations-management/solution/ @Azure/avm-res-operationsmanagement-solution-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/portal/dashboard/ @Azure/avm-res-portal-dashboard-module-owners-bicep @Azure/avm-module-reviewers-bicep
