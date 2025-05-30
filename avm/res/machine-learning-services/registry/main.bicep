@@ -19,6 +19,31 @@ param locations array = []
 ])
 param publicNetworkAccess string?
 
+@description('Optional. Tier of your Azure container registry.')
+@allowed([
+  'Basic'
+  'Premium'
+  'Standard'
+])
+param acrSku string?
+
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityAllType?
+
+@description('Optional. The type of storage account to use for the Azure ML Registry. Default is Standard_LRS.')
+@allowed([
+  'Standard_LRS'
+  'Standard_GRS'
+  'Standard_RAGRS'
+  'Standard_ZRS'
+  'Standard_GZRS'
+  'Standard_RAGZRS'
+  'Premium_LRS'
+  'Premium_ZRS'
+])
+param storageAccountType string?
+
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
 param privateEndpoints privateEndpointSingleServiceType[]?
@@ -36,7 +61,6 @@ param tags object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
-
 
 var builtInRoleNames = {
   'AzureML Compute Operator': subscriptionResourceId(
@@ -79,9 +103,24 @@ var formattedRoleAssignments = [
   })
 ]
 
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
+
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : {
+      type: 'SystemAssigned'
+    }
 
 var enableReferencedModulesTelemetry = false
-
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -102,7 +141,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-
 var allLocations = union([location], locations)
 
 var resolvedPublicNetworkAccess = !empty(publicNetworkAccess)
@@ -114,7 +152,8 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
   location: location
   tags: tags
   identity: {
-    type: 'SystemAssigned'
+    type: identity.type
+    userAssignedIdentities: identity.?userAssignedIdentities
   }
   kind: 'registry'
   properties: {
@@ -124,13 +163,21 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
         location: loc
         storageAccountDetails: [
           {
-            systemCreatedStorageAccount: {}
+            systemCreatedStorageAccount: {
+              allowBlobPublicAccess: false
+              storageAccountHnsEnabled: true
+              storageAccountName: '${name}${replace(loc, '-', '')}storage'
+              storageAccountType: !empty(storageAccountType)
+                ? storageAccountType
+                : (acrSku == 'Premium' ? 'Standard_ZRS' : 'Standard_LRS')
+            }
           }
         ]
         acrDetails: [
           {
             systemCreatedAcrAccount: {
-              acrAccountSku: 'Premium'
+              acrAccountSku: acrSku
+              acrAccountName: '${name}${replace(loc, '-', '')}acr'
             }
           }
         ]
@@ -197,7 +244,6 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.1
   }
 ]
 
-
 resource registry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
     name: roleAssignment.?name ?? guid(registry.id, roleAssignment.principalId, roleAssignment.roleDefinitionId)
@@ -245,6 +291,8 @@ output privateEndpoints privateEndpointOutputType[] = [
   }
 ]
 
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string? = registry.?identity.?principalId
 
 // =============== //
 //   Definitions   //

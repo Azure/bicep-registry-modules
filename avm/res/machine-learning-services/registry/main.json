@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "15543386440599425612"
+      "templateHash": "16518795523760719425"
     },
     "name": "Azure ML Registry",
     "description": "This module deploys an Azure Machine Learning Registry."
@@ -209,6 +209,34 @@
       },
       "metadata": {
         "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
+    "managedIdentityAllType": {
+      "type": "object",
+      "properties": {
+        "systemAssigned": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enables system assigned managed identity on the resource."
+          }
+        },
+        "userAssignedResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
         "__bicep_imported_from!": {
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
@@ -466,6 +494,42 @@
         "description": "Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set."
       }
     },
+    "acrSku": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Basic",
+        "Premium",
+        "Standard"
+      ],
+      "metadata": {
+        "description": "Optional. Tier of your Azure container registry."
+      }
+    },
+    "managedIdentities": {
+      "$ref": "#/definitions/managedIdentityAllType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The managed identity definition for this resource."
+      }
+    },
+    "storageAccountType": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Standard_LRS",
+        "Standard_GRS",
+        "Standard_RAGRS",
+        "Standard_ZRS",
+        "Standard_GZRS",
+        "Standard_RAGZRS",
+        "Premium_LRS",
+        "Premium_ZRS"
+      ],
+      "metadata": {
+        "description": "Optional. The type of storage account to use for the Azure ML Registry. Default is Standard_LRS."
+      }
+    },
     "privateEndpoints": {
       "type": "array",
       "items": {
@@ -527,6 +591,8 @@
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
       "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
     },
+    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned, UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), createObject('type', 'SystemAssigned'))]",
     "enableReferencedModulesTelemetry": false,
     "allLocations": "[union(createArray(parameters('location')), parameters('locations'))]",
     "resolvedPublicNetworkAccess": "[if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(not(empty(parameters('privateEndpoints'))), 'Disabled', null()))]"
@@ -559,7 +625,8 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": {
-        "type": "SystemAssigned"
+        "type": "[variables('identity').type]",
+        "userAssignedIdentities": "[tryGet(variables('identity'), 'userAssignedIdentities')]"
       },
       "kind": "registry",
       "properties": {
@@ -571,13 +638,19 @@
               "location": "[variables('allLocations')[copyIndex('regionDetails')]]",
               "storageAccountDetails": [
                 {
-                  "systemCreatedStorageAccount": {}
+                  "systemCreatedStorageAccount": {
+                    "allowBlobPublicAccess": false,
+                    "storageAccountHnsEnabled": true,
+                    "storageAccountName": "[format('{0}{1}storage', parameters('name'), replace(variables('allLocations')[copyIndex('regionDetails')], '-', ''))]",
+                    "storageAccountType": "[if(not(empty(parameters('storageAccountType'))), parameters('storageAccountType'), if(equals(parameters('acrSku'), 'Premium'), 'Standard_ZRS', 'Standard_LRS'))]"
+                  }
                 }
               ],
               "acrDetails": [
                 {
                   "systemCreatedAcrAccount": {
-                    "acrAccountSku": "Premium"
+                    "acrAccountSku": "[parameters('acrSku')]",
+                    "acrAccountName": "[format('{0}{1}acr', parameters('name'), replace(variables('allLocations')[copyIndex('regionDetails')], '-', ''))]"
                   }
                 }
               ]
@@ -1421,6 +1494,14 @@
           "networkInterfaceResourceIds": "[reference(format('registry_privateEndpoints[{0}]', copyIndex())).outputs.networkInterfaceResourceIds.value]"
         }
       }
+    },
+    "systemAssignedMIPrincipalId": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "The principal ID of the system assigned identity."
+      },
+      "value": "[tryGet(tryGet(reference('registry', '2024-10-01', 'full'), 'identity'), 'principalId')]"
     }
   }
 }
