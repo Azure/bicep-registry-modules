@@ -11,7 +11,7 @@ param location string = resourceGroup().location
 param tags object = {}
 
 @description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
+param enableTelemetry bool = false //true
 
 // Network security group parameters
 @description('Security. Network security group rules for the ApplicationSubnet.')
