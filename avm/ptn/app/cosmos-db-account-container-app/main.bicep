@@ -11,6 +11,9 @@ param name string
 @description('The location where to deploy all resources.')
 param location string = resourceGroup().location
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 @description('The settings for Azure Container Apps.')
 param web azureContainerAppsEnvType?
 
@@ -20,10 +23,34 @@ param database azureCosmosDBAccountType?
 @description('Optional. Resource tags.')
 param tags object?
 
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: take(
+    '46d3xbcp.res.compute-virtualmachine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    64
+  )
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
 module userAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   params: {
     name: 'id-${name}-${location}-001'
     location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -32,6 +59,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     name: 'log-${name}-${location}-001'
     location: location
     tags: tags != null ? union(tags ?? {}, web.?tags ?? {}) : web.?tags ?? null
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -40,6 +68,7 @@ module azureContainerAppsEnvironment 'br/public:avm/res/app/managed-environment:
     name: 'cae-${name}-${location}-001'
     location: location
     tags: tags != null ? union(tags ?? {}, web.?tags ?? {}) : web.?tags ?? null
+    enableTelemetry: enableTelemetry
     zoneRedundant: web.?zoneRedundant ?? false
     internal: web.?virtualNetworkSubnetResourceId != null
     infrastructureSubnetResourceId: web.?virtualNetworkSubnetResourceId ?? null
@@ -60,6 +89,8 @@ module azureContainerRegistry 'br/public:avm/res/container-registry/registry:0.9
   params: {
     name: 'cr${name}${location}001'
     location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
     publicNetworkAccess: web.?publicNetworkAccessEnabled ?? true ? 'Enabled' : 'Disabled'
     acrSku: 'Standard'
     roleAssignments: union(
@@ -87,6 +118,7 @@ module azureContainerAppsApp 'br/public:avm/res/app/container-app:0.16.0' = [
       name: 'ca-${name}-${location}-${format('{0:000}', index + 1)}'
       location: location
       tags: tags != null ? union(tags ?? {}, tier.?tags ?? {}) : tier.?tags ?? null
+      enableTelemetry: enableTelemetry
       environmentResourceId: azureContainerAppsEnvironment.outputs.resourceId
       ingressTargetPort: tier.?port ?? 80
       ingressExternal: tier.?allowIngress ?? false
@@ -186,6 +218,7 @@ module azureCosmosDBAccount 'br/public:avm/res/document-db/database-account:0.15
     location: empty(replicaLocations) ? location : null
     failoverLocations: !empty(replicaLocations) ? union([primaryLocation], replicaLocations) : null
     tags: tags != null ? union(tags ?? {}, database.?tags ?? {}) : database.?tags ?? null
+    enableTelemetry: enableTelemetry
     capabilitiesToAdd: union(
       database.?serverless ?? true
         ? [
@@ -275,6 +308,9 @@ module azureCosmosDBAccount 'br/public:avm/res/document-db/database-account:0.15
 module deploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = if (database.?type == 'NoSQL') {
   params: {
     name: 'ds-${name}-${location}-001'
+    location: location
+    tags: tags
+    enableTelemetry: enableTelemetry
     kind: 'AzurePowerShell'
     azPowerShellVersion: '13.4'
     managedIdentities: {
