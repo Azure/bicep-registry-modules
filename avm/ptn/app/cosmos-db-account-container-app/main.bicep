@@ -63,7 +63,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-module azureContainerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.1' = {
+module azureContainerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.2' = {
   params: {
     name: 'cae-${name}-${location}-001'
     location: location
