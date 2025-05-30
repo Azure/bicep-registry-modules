@@ -900,7 +900,7 @@ The settings for the Azure Cosmos DB account. If not specified, the pattern will
 | [`publicNetworkAccessEnabled`](#parameter-databasepublicnetworkaccessenabled) | bool | Whether requests from the public network are allowed. Defaults to true. |
 | [`serverless`](#parameter-databaseserverless) | bool | Indicates if the account is serverless. Defaults to true. |
 | [`tags`](#parameter-databasetags) | object | Resource tags specific to the Azure Cosmos DB account. |
-| [`zoneRedundant`](#parameter-databasezoneredundant) | bool | Indicates whether the single-region account is zone redundant. Defaults to false. This property is ignored for multi-region accounts. |
+| [`zoneRedundant`](#parameter-databasezoneredundant) | bool | Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts. |
 
 ### Parameter: `database.type`
 
@@ -1024,7 +1024,7 @@ Resource tags specific to the Azure Cosmos DB account.
 
 ### Parameter: `database.zoneRedundant`
 
-Indicates whether the single-region account is zone redundant. Defaults to false. This property is ignored for multi-region accounts.
+Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts.
 
 - Required: No
 - Type: bool
@@ -1069,7 +1069,7 @@ The settings for the Azure Container Apps and Azure Container Registry resources
 | [`tags`](#parameter-webtags) | object | Resource tags specific to the Azure Container Apps environment. |
 | [`tiers`](#parameter-webtiers) | array | The settings for the tiers/apps in the environment. Defaults to a single default web application tier. |
 | [`virtualNetworkSubnetResourceId`](#parameter-webvirtualnetworksubnetresourceid) | string | The resource ID of the virtual network subnet to use for the environment. Is not set by default. This property is required if zoneRedundant is set to true. |
-| [`zoneRedundant`](#parameter-webzoneredundant) | bool | Indicates whether the environment is zone redundant. Defaults to false. If this property is set to true, the environment must be configured with a virtual network. |
+| [`zoneRedundant`](#parameter-webzoneredundant) | bool | Indicates whether the environment is zone redundant. Defaults to true. If this property is set to true, the environment must be configured with a virtual network. |
 
 ### Parameter: `web.additionalRoleBasedAccessControlPrincipals`
 
@@ -1249,7 +1249,7 @@ The resource ID of the virtual network subnet to use for the environment. Is not
 
 ### Parameter: `web.zoneRedundant`
 
-Indicates whether the environment is zone redundant. Defaults to false. If this property is set to true, the environment must be configured with a virtual network.
+Indicates whether the environment is zone redundant. Defaults to true. If this property is set to true, the environment must be configured with a virtual network.
 
 - Required: No
 - Type: bool

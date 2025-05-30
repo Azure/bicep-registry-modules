@@ -207,14 +207,14 @@ module azureContainerAppsApp 'br/public:avm/res/app/container-app:0.16.0' = [
 
 var primaryLocation = {
   failoverPriority: 0
-  isZoneRedundant: database.?zoneRedundant ?? false
+  isZoneRedundant: database.?zoneRedundant ?? true
   locationName: location
 }
 
 var replicaLocations = [
   for (addditionalLocation, index) in database.?additionalLocations ?? []: {
     failoverPriority: index + 1
-    isZoneRedundant: database.?zoneRedundant ?? false
+    isZoneRedundant: database.?zoneRedundant ?? true
     locationName: addditionalLocation
   }
 ]
@@ -400,7 +400,7 @@ type azureContainerAppsEnvType = {
   @description('Optional. The settings for the tiers/apps in the environment. Defaults to a single default web application tier.')
   tiers: azureContainerAppsTierType[]?
 
-  @description('Optional. Indicates whether the environment is zone redundant. Defaults to false. If this property is set to true, the environment must be configured with a virtual network.')
+  @description('Optional. Indicates whether the environment is zone redundant. Defaults to true. If this property is set to true, the environment must be configured with a virtual network.')
   zoneRedundant: bool?
 
   @description('Optional. Indicates whether the environment is configured with a paired Azure Log Analytics workspace. Defaults to false. If true, the workspace will be automatically created.')
@@ -484,7 +484,7 @@ type azureCosmosDBAccountType = {
   @description('Optional. Indicates if the account is serverless. Defaults to true.')
   serverless: bool?
 
-  @description('Optional. Indicates whether the single-region account is zone redundant. Defaults to false. This property is ignored for multi-region accounts.')
+  @description('Optional. Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts.')
   zoneRedundant: bool?
 
   @description('Optional. Whether requests from the public network are allowed. Defaults to true.')

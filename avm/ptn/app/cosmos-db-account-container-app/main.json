@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "1081574929040633102"
+      "templateHash": "7108437306420115507"
     },
     "name": "Azure Cosmos DB & Azure Container Apps - Web Application",
     "description": "This module deploys an n-teir web application to Azure Container Apps. The module also deploys a backing Azure Cosmos DB account with an account type switch. Options for Azure Cosmos DB include; NoSQL, Table, and MongoDB (RU). The web application uses the appropriate security best practices to connect the web application to the backing account."
@@ -36,7 +36,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Indicates whether the environment is zone redundant. Defaults to false. If this property is set to true, the environment must be configured with a virtual network."
+            "description": "Optional. Indicates whether the environment is zone redundant. Defaults to true. If this property is set to true, the environment must be configured with a virtual network."
           }
         },
         "enableLogAnalytics": {
@@ -249,7 +249,7 @@
           "type": "bool",
           "nullable": true,
           "metadata": {
-            "description": "Optional. Indicates whether the single-region account is zone redundant. Defaults to false. This property is ignored for multi-region accounts."
+            "description": "Optional. Indicates whether the single-region account is zone redundant. Defaults to true. This property is ignored for multi-region accounts."
           }
         },
         "publicNetworkAccessEnabled": {
@@ -417,7 +417,7 @@
         "count": "[length(coalesce(tryGet(parameters('database'), 'additionalLocations'), createArray()))]",
         "input": {
           "failoverPriority": "[add(copyIndex('replicaLocations'), 1)]",
-          "isZoneRedundant": "[coalesce(tryGet(parameters('database'), 'zoneRedundant'), false())]",
+          "isZoneRedundant": "[coalesce(tryGet(parameters('database'), 'zoneRedundant'), true())]",
           "locationName": "[coalesce(tryGet(parameters('database'), 'additionalLocations'), createArray())[copyIndex('replicaLocations')]]"
         }
       }
@@ -425,7 +425,7 @@
     "tiersList": "[map(coalesce(tryGet(parameters('web'), 'tiers'), createArray(createObject('name', ''))), lambda('wt', lambdaVariables('wt').name))]",
     "primaryLocation": {
       "failoverPriority": 0,
-      "isZoneRedundant": "[coalesce(tryGet(parameters('database'), 'zoneRedundant'), false())]",
+      "isZoneRedundant": "[coalesce(tryGet(parameters('database'), 'zoneRedundant'), true())]",
       "locationName": "[parameters('location')]"
     }
   },
