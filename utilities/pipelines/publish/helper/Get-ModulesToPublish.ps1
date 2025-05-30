@@ -17,11 +17,15 @@ Get modified files between previous and current commit depending on if you are r
 #>
 function Get-ModifiedFileList {
 
-    if ((Get-GitBranchName) -eq 'main') {
-        Write-Verbose 'Gathering modified files from the previous head' -Verbose
-        $Diff = git diff --name-only --diff-filter=AM HEAD^ HEAD
+    $CurrentBranch = Get-GitBranchName
+    if ($CurrentBranch -eq 'main') {
+        Write-Verbose 'Gathering modified files from the pull request' -Verbose
+        $Diff = git diff --name-only --diff-filter=AM 'HEAD^' 'HEAD'
+    } else {
+        Write-Verbose 'Gathering modified files between current branch and main' -Verbose
+        $Diff = git diff --name-only --diff-filter=AM 'origin/main'
     }
-    $ModifiedFiles = $Diff ? ($Diff | Get-Item -Force) : @()
+    $ModifiedFiles = $Diff | Get-Item -Force
 
     return $ModifiedFiles
 }
@@ -86,8 +90,11 @@ function Get-TemplateFileToPublish {
         [Parameter(Mandatory)]
         [string] $ModuleFolderPath,
 
-        [Parameter(Mandatory)]
-        [string[]] $PathsToInclude = @(),
+        [Parameter(Mandatory = $false)]
+        [string[]] $PathsToInclude = @(
+            './main.json',
+            './version.json'
+        ),
 
         [Parameter(Mandatory = $false)]
         [switch] $SkipNotVersionedModules
@@ -99,7 +106,6 @@ function Get-TemplateFileToPublish {
     $modifiedModuleFiles = $ModifiedFiles.FullName | Where-Object { $_ -like "*$ModuleFolderPath*" }
 
     $relevantPaths = @()
-    $PathsToInclude += './version.json' # Add the file itself to be considered too
     foreach ($modifiedFile in $modifiedModuleFiles) {
 
         foreach ($path in  $PathsToInclude) {
@@ -125,9 +131,14 @@ function Get-TemplateFileToPublish {
     }
 
     if ($SkipNotVersionedModules) {
-        Write-Verbose 'Skipping modules that are not versioned.' -Verbose
-        $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
-            Test-Path (Join-Path (Split-Path $_) 'version.json')
+        $toSkip = $TemplateFilesToPublish | Where-Object {
+            -not (Test-Path (Join-Path (Split-Path $_) 'version.json'))
+        }
+        if ($toSkip.Count -gt 0) {
+            Write-Verbose ('Skipping [{0}] modules that are not versioned.' -f $toSkip.Count) -Verbose
+            $TemplateFilesToPublish = $TemplateFilesToPublish | Where-Object {
+                $_ -notin $toSkip
+            }
         }
     }
 
@@ -220,11 +231,8 @@ function Get-ModulesToPublish {
         [switch] $SkipNotVersionedModules
     )
 
-    $versionFile = (Get-Content (Join-Path $ModuleFolderPath 'version.json') -Raw) | ConvertFrom-Json
-    $PathsToInclude = $versionFile.PathFilters
-
     # Check as per a `diff` with head^-1 if there was a change in any file that would justify a publish
-    $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -PathsToInclude $PathsToInclude -SkipNotVersionedModules
+    $TemplateFilesToPublish = Get-TemplateFileToPublish -ModuleFolderPath $ModuleFolderPath -SkipNotVersionedModules
 
     # Return the remaining template file(s)
     return $TemplateFilesToPublish
