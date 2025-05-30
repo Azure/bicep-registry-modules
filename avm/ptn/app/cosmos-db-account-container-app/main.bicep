@@ -8,20 +8,20 @@ metadata description = 'This module deploys an n-teir web application to Azure C
 @maxLength(15)
 param name string
 
-@description('The location where to deploy all resources.')
+@description('Optional. The location where to deploy all resources.')
 param location string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('The settings for Azure Container Apps.')
-param web azureContainerAppsEnvType?
-
-@description('The settings for Azure Cosmos DB.')
-param database azureCosmosDBAccountType?
-
 @description('Optional. Resource tags.')
 param tags object?
+
+@description('Optional. The settings for the Azure Cosmos DB account. If not specified, the pattern will deploy a single Azure Cosmos DB for NoSQL account with a database and container.')
+param database azureCosmosDBAccountType?
+
+@description('Optional. The settings for the Azure Container Apps and Azure Container Registry resources. If not specified, the pattern will deploy a single web application as a default.')
+param web azureContainerAppsEnvType?
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {

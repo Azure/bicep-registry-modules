@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Test with WAF-aligned parameters.'
-metadata description = 'This test deploys the pattern using WAF-aligned parameters. For more informaation, see https://learn.microsoft.com/azure/well-architected/.'
+metadata name = 'Test with all (max) parameters.'
+metadata description = 'This test deploys the pattern using all parameters. This test performs bulk parameter validation.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-cosmos-db-account-container-
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'cdaawaf'
+param serviceShort string = 'cdaamax'
 
 @description('Generated. Used as a basis for unique resource names.')
 param baseTime string = utcNow('u')
@@ -55,29 +55,83 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
+      location: resourceLocation
+      enableTelemetry: true
+      tags: {
+        test: 'max'
+      }
       database: {
         type: 'NoSQL'
-        zoneRedundant: true
-        publicNetworkAccessEnabled: false
-        enableLogAnalytics: true
+        tags: {
+          type: 'nosql'
+        }
         additionalLocations: [
           nestedDependencies.outputs.pairedRegionName
         ]
-      }
-      web: {
-        zoneRedundant: true
-        publicNetworkAccessEnabled: false
-        enableLogAnalytics: true
-        virtualNetworkSubnetResourceId: nestedDependencies.outputs.virtualNetworkSubnetResourceId
-        tiers: [
+        serverless: true
+        zoneRedundant: false
+        publicNetworkAccessEnabled: true
+        enableLogAnalytics: false
+        additionalRoleBasedAccessControlPrincipals: [
+          nestedDependencies.outputs.userAssignedManagedIdentityResourceId
+        ]
+        databases: [
           {
-            useManagedIdentity: true
-            environment: [
+            name: 'example-database'
+            containers: [
               {
-                name: 'AZURE_COSMOS_DB_ENDPOINT'
-                knownValue: 'AzureCosmosDBEndpoint'
+                name: 'example-container'
+                partitionKeys: [
+                  '/id'
+                ]
+                seed: 'cosmicworks-employees'
               }
             ]
+          }
+        ]
+      }
+      web: {
+        tags: {
+          host: 'azure-container-apps'
+          platform: 'docker'
+        }
+        zoneRedundant: false
+        publicNetworkAccessEnabled: false
+        enableLogAnalytics: false
+        virtualNetworkSubnetResourceId: nestedDependencies.outputs.virtualNetworkSubnetResourceId
+        additionalRoleBasedAccessControlPrincipals: [
+          nestedDependencies.outputs.userAssignedManagedIdentityResourceId
+        ]
+        tiers: [
+          {
+            tags: {
+              description: 'Example web application tier.'
+            }
+            name: 'example-tier-1'
+            port: 80
+            image: 'nginx:latest'
+            allowIngress: false
+            useManagedIdentity: true
+            cpu: '0.25'
+            memory: '0.5Gi'
+            environment: [
+              {
+                name: 'LABELS_HEADER'
+                value: 'Example Tier Header'
+              }
+              {
+                name: 'DATABASE_ENDPOINT'
+                knownValue: 'AzureCosmosDBEndpoint'
+              }
+              {
+                name: 'RELATED_TIER_ENDPOINT'
+                tierEndpoint: 'example-tier-2'
+                format: '{0}/openapi/v1.json'
+              }
+            ]
+          }
+          {
+            name: 'example-tier-2'
           }
         ]
       }

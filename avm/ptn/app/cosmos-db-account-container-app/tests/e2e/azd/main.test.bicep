@@ -27,7 +27,7 @@ param namePrefix string = '#_namePrefix_#'
 // Dependencies //
 // ============ //
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-03-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -43,7 +43,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
-      location: location
+      location: resourceLocation
       database: {
         type: 'NoSQL'
         additionalRoleBasedAccessControlPrincipals: [
