@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "8053907866646849813"
+      "version": "0.35.1.17967",
+      "templateHash": "18223104159903775973"
     },
     "name": "Private Link Services",
     "description": "This module deploys a Private Link Service."
@@ -252,7 +252,7 @@
     },
     "privateLinkService": {
       "type": "Microsoft.Network/privateLinkServices",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -330,7 +330,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('privateLinkService', '2023-04-01', 'full').location]"
+      "value": "[reference('privateLinkService', '2024-05-01', 'full').location]"
     }
   }
 }

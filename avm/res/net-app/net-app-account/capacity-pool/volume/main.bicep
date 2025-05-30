@@ -111,6 +111,9 @@ param securityStyle string?
 @description('Optional. Unix Permissions for NFS volume.')
 param unixPermissions string?
 
+@description('Optional. The throughput in MiBps for the NetApp account.')
+param throughputMibps int?
+
 var remoteCapacityPoolName = !empty(dataProtection.?replication.?remoteVolumeResourceId)
   ? split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
   : ''
@@ -143,23 +146,23 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' existing = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existing = {
   name: netAppAccountName
 
   //cp-na-anfs-swc-y01
-  resource capacityPool 'capacityPools@2024-09-01' existing = {
+  resource capacityPool 'capacityPools@2025-01-01' existing = {
     name: capacityPoolName
   }
 
-  resource backupVault 'backupVaults@2024-09-01' existing = if (!empty(dataProtection.?backup)) {
+  resource backupVault 'backupVaults@2025-01-01' existing = if (!empty(dataProtection.?backup)) {
     name: dataProtection.?backup!.backupVaultName
   }
 
-  resource backupPolicy 'backupPolicies@2024-09-01' existing = if (!empty(dataProtection.?backup)) {
+  resource backupPolicy 'backupPolicies@2025-01-01' existing = if (!empty(dataProtection.?backup)) {
     name: dataProtection.?backup!.backupPolicyName
   }
 
-  resource snapshotPolicy 'snapshotPolicies@2024-09-01' existing = if (!empty(dataProtection.?snapshot)) {
+  resource snapshotPolicy 'snapshotPolicies@2025-01-01' existing = if (!empty(dataProtection.?snapshot)) {
     name: dataProtection.?snapshot!.snapshotPolicyName
   }
 }
@@ -172,7 +175,7 @@ resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2024-03-01'
   )
 }
 
-resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteNetAppName != netAppAccountName)) {
+resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteNetAppName != netAppAccountName)) {
   name: split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[8]
   scope: resourceGroup(
     split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[2],
@@ -180,10 +183,10 @@ resource remoteNetAppAccount 'Microsoft.NetApp/netAppAccounts@2024-09-01' existi
   )
 
   //cp-na-anfs-swc-y01
-  resource remoteCapacityPool 'capacityPools@2024-09-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteCapacityPoolName != capacityPoolName)) {
+  resource remoteCapacityPool 'capacityPools@2025-01-01' existing = if (!empty(dataProtection.?replication.?remoteVolumeResourceId) && (remoteCapacityPoolName != capacityPoolName)) {
     name: split(dataProtection.?replication.?remoteVolumeResourceId!, '/')[10]
 
-    resource remoteVolume 'volumes@2024-09-01' existing = if (!empty(dataProtection.?replication)) {
+    resource remoteVolume 'volumes@2025-01-01' existing = if (!empty(dataProtection.?replication)) {
       name: last(split(dataProtection.?replication.?remoteVolumeResourceId!, '/'))
     }
   }
@@ -198,7 +201,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' existing = {
   }
 }
 
-resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-09-01' = {
+resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2025-01-01' = {
   name: name
   parent: netAppAccount::capacityPool
   location: location
@@ -225,11 +228,19 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-09-0
             ? {
                 endpointType: dataProtection.?replication!.endpointType
                 remoteVolumeRegion: !empty(dataProtection.?replication.?remoteVolumeRegion)
-                  ? dataProtection.?replication.?remoteVolumeRegion
+                  ? dataProtection.?replication!.?remoteVolumeRegion
                   : null
                 remoteVolumeResourceId: dataProtection.?replication!.?remoteVolumeResourceId
-                replicationSchedule: dataProtection.?replication!.replicationSchedule
-                remotePath: dataProtection.?replication!.?remotePath
+                ...(dataProtection.?replication!.?endpointType == 'dst')
+                  ? {
+                      replicationSchedule: dataProtection.?replication!.?replicationSchedule
+                    }
+                  : {}
+                ...(volumeType == 'Migration')
+                  ? {
+                      remotePath: dataProtection.?replication!.?remotePath
+                    }
+                  : {}
               }
             : null
           backup: !empty(dataProtection.?backup)
@@ -252,11 +263,18 @@ resource volume 'Microsoft.NetApp/netAppAccounts/capacityPools/volumes@2024-09-0
     usageThreshold: usageThreshold
     protocolTypes: protocolTypes
     subnetId: vnet::subnet.id
-    exportPolicy: exportPolicy
+    exportPolicy: exportPolicy ?? {
+      rules: []
+    }
     smbContinuouslyAvailable: smbContinuouslyAvailable
     smbEncryption: smbEncryption
     smbNonBrowsable: smbNonBrowsable
     kerberosEnabled: kerberosEnabled
+    ...(throughputMibps != null
+      ? {
+          throughputMibps: throughputMibps
+        }
+      : {})
   }
   zones: zone != 0 ? [string(zone)] : null
 }
@@ -316,8 +334,8 @@ type replicationType = {
   @description('Optional. The resource ID of the remote volume. Required for Data Protection volumes.')
   remoteVolumeResourceId: string?
 
-  @description('Required. The replication schedule for the volume.')
-  replicationSchedule: ('_10minutely' | 'daily' | 'hourly')
+  @description('Optional. The replication schedule for the volume (to only be set on the destination (dst)).')
+  replicationSchedule: ('_10minutely' | 'daily' | 'hourly')?
 
   @description('Optional. The full path to a volume that is to be migrated into ANF. Required for Migration volumes.')
   remotePath: {

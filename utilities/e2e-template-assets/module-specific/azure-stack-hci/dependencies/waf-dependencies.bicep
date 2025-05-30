@@ -30,10 +30,6 @@ param keyVaultDiagnosticStorageAccountName string
 @description('Required. The name of the Key Vault to create.')
 param keyVaultName string
 
-@description('Required. The service principal ID of the Azure Stack HCI Resource Provider in this tenant.')
-@secure()
-param hciResourceProviderObjectId string
-
 @description('Required. The name of the Azure Stack HCI cluster.')
 param clusterName string
 
@@ -75,7 +71,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
     domainOUPath: domainOUPath
     hciISODownloadURL: 'https://azurestackreleases.download.prss.microsoft.com/dbazure/AzureStackHCI/OS-Composition/10.2408.0.3061/AZURESTACKHci23H2.25398.469.LCM.10.2408.0.3061.x64.en-us.iso'
     hciNodeCount: length(clusterNodeNames)
-    hostVMSize: 'Standard_E16bds_v5'
+    hostVMSize: 'Standard_E32bds_v5'
     localAdminPassword: localAdminPassword
     location: location
     switchlessStorageConfig: false
@@ -109,14 +105,10 @@ module hciClusterPreqs '../azureStackHCIClusterPreqs/ashciPrereqs.bicep' = {
     arbDeploymentAppId: arbDeploymentAppId
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
-    arcNodeResourceIds: [
-      for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
-    ]
     clusterWitnessStorageAccountName: clusterWitnessStorageAccountName
     keyVaultDiagnosticStorageAccountName: keyVaultDiagnosticStorageAccountName
     deploymentUsername: 'deployUser'
     deploymentUserPassword: deploymentUserPassword
-    hciResourceProviderObjectId: hciResourceProviderObjectId
     keyVaultName: keyVaultName
     localAdminPassword: localAdminPassword
     localAdminUsername: 'admin-hci'

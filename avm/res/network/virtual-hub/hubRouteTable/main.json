@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "8923325353506893806"
+      "version": "0.34.44.8038",
+      "templateHash": "11078107057030391561"
     },
     "name": "Virtual Hub Route Tables",
     "description": "This module deploys a Virtual Hub Route Table."
@@ -48,7 +48,7 @@
     },
     "hubRouteTable": {
       "type": "Microsoft.Network/virtualHubs/hubRouteTables",
-      "apiVersion": "2022-11-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('virtualHubName'), parameters('name'))]",
       "properties": {
         "labels": "[parameters('labels')]",

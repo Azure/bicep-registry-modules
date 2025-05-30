@@ -157,6 +157,11 @@ module testDeployment '../../../main.bicep' = [
           actionType: 'AddActionGroups'
         }
       ]
+      schedule: {
+        effectiveFrom: '2026-01-01T00:00:00'
+        effectiveUntil: '2027-12-31T23:59:59'
+        timeZone: 'Eastern Standard Time'
+      }
       roleAssignments: [
         {
           name: 'a66da6bc-b3ee-484e-9bdb-9294938bb327'
