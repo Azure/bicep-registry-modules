@@ -76,7 +76,6 @@ module testDeployment '../../../main.bicep' = [
             cpu: json('0.25')
             memory: '0.5Gi'
           }
-          imageType: 'CloudBuild'
         }
       ]
 

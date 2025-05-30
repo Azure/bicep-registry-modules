@@ -303,7 +303,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     initContainersTemplate: [
       {
         image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-        imageType: 'CloudBuild'
         name: 'init-container'
         resources: {
           cpu: '<cpu>'
@@ -460,7 +459,6 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": [
         {
           "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
-          "imageType": "CloudBuild",
           "name": "init-container",
           "resources": {
             "cpu": "<cpu>",
@@ -621,7 +619,6 @@ param identitySettings = [
 param initContainersTemplate = [
   {
     image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
-    imageType: 'CloudBuild'
     name: 'init-container'
     resources: {
       cpu: '<cpu>'
