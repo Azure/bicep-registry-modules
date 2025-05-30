@@ -30,6 +30,8 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/machine-learning-services/registry:<version>`.
 
 - [Using only defaults for AML Registry](#example-1-using-only-defaults-for-aml-registry)
+- [Using large parameter set](#example-2-using-large-parameter-set)
+- [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults for AML Registry_
 
@@ -45,7 +47,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   name: 'registryDeployment'
   params: {
     // Required parameters
-    name: 'amlreg001'
+    name: 'mlsrmin001'
     // Non-required parameters
     location: '<location>'
   }
@@ -66,7 +68,7 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
   "parameters": {
     // Required parameters
     "name": {
-      "value": "amlreg001"
+      "value": "mlsrmin001"
     },
     // Non-required parameters
     "location": {
@@ -87,9 +89,415 @@ module registry 'br/public:avm/res/machine-learning-services/registry:<version>'
 using 'br/public:avm/res/machine-learning-services/registry:<version>'
 
 // Required parameters
-param name = 'amlreg001'
+param name = 'mlsrmin001'
 // Non-required parameters
 param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
+  name: 'registryDeployment'
+  params: {
+    // Required parameters
+    name: 'mlsrmax001'
+    // Non-required parameters
+    acrAccountName: '<acrAccountName>'
+    acrSku: 'Premium'
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          'hidden-title': 'This is visible in the resource name'
+          Role: 'DeploymentValidation'
+        }
+      }
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    roleAssignments: [
+      {
+        name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'Owner'
+      }
+      {
+        name: '<name>'
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+      }
+      {
+        principalId: '<principalId>'
+        principalType: 'ServicePrincipal'
+        roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+      }
+    ]
+    storageAccountAllowBlobPublicAccess: false
+    storageAccountHnsEnabled: true
+    storageAccountName: '<storageAccountName>'
+    storageAccountType: 'Standard_ZRS'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "mlsrmax001"
+    },
+    // Non-required parameters
+    "acrAccountName": {
+      "value": "<acrAccountName>"
+    },
+    "acrSku": {
+      "value": "Premium"
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "lock": {
+      "value": {
+        "kind": "CanNotDelete",
+        "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "hidden-title": "This is visible in the resource name",
+            "Role": "DeploymentValidation"
+          }
+        },
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "roleAssignments": {
+      "value": [
+        {
+          "name": "8f8b1c39-827f-43e6-a457-98bb15b5dbdf",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "Owner"
+        },
+        {
+          "name": "<name>",
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
+        },
+        {
+          "principalId": "<principalId>",
+          "principalType": "ServicePrincipal",
+          "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
+        }
+      ]
+    },
+    "storageAccountAllowBlobPublicAccess": {
+      "value": false
+    },
+    "storageAccountHnsEnabled": {
+      "value": true
+    },
+    "storageAccountName": {
+      "value": "<storageAccountName>"
+    },
+    "storageAccountType": {
+      "value": "Standard_ZRS"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/registry:<version>'
+
+// Required parameters
+param name = 'mlsrmax001'
+// Non-required parameters
+param acrAccountName = '<acrAccountName>'
+param acrSku = 'Premium'
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param roleAssignments = [
+  {
+    name: '8f8b1c39-827f-43e6-a457-98bb15b5dbdf'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'Owner'
+  }
+  {
+    name: '<name>'
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+  }
+  {
+    principalId: '<principalId>'
+    principalType: 'ServicePrincipal'
+    roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+  }
+]
+param storageAccountAllowBlobPublicAccess = false
+param storageAccountHnsEnabled = true
+param storageAccountName = '<storageAccountName>'
+param storageAccountType = 'Standard_ZRS'
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module registry 'br/public:avm/res/machine-learning-services/registry:<version>' = {
+  name: 'registryDeployment'
+  params: {
+    // Required parameters
+    name: 'mlsrwaf001'
+    // Non-required parameters
+    location: '<location>'
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    tags: {
+      Environment: 'Non-Prod'
+      'hidden-title': 'This is visible in the resource name'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "mlsrwaf001"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "hidden-title": "This is visible in the resource name",
+        "Role": "DeploymentValidation"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/machine-learning-services/registry:<version>'
+
+// Required parameters
+param name = 'mlsrwaf001'
+// Non-required parameters
+param location = '<location>'
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param tags = {
+  Environment: 'Non-Prod'
+  'hidden-title': 'This is visible in the resource name'
+  Role: 'DeploymentValidation'
+}
 ```
 
 </details>
@@ -101,28 +509,27 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | Location for the Azure ML Registry. |
 | [`name`](#parameter-name) | string | Name of the Azure ML Registry. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`acrAccountName`](#parameter-acraccountname) | string | The Azure Container Registry account name to use for the Azure ML Registry. If not specified, a default name will be automatically generated. |
+| [`acrSku`](#parameter-acrsku) | string | Tier of your Azure container registry. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`location`](#parameter-location) | string | Location for the Azure ML Registry. |
 | [`locations`](#parameter-locations) | array | Additional locations for the Azure ML Registry. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
 | [`privateEndpoints`](#parameter-privateendpoints) | array | Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible. |
-| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set |
+| [`publicNetworkAccess`](#parameter-publicnetworkaccess) | string | Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
-| [`tags`](#parameter-tags) | object | Tags of the storage account resource. |
-
-### Parameter: `location`
-
-Location for the Azure ML Registry.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
+| [`storageAccountAllowBlobPublicAccess`](#parameter-storageaccountallowblobpublicaccess) | bool | Storage account blob public access setting. If not specified, it will be set to false by default. |
+| [`storageAccountHnsEnabled`](#parameter-storageaccounthnsenabled) | bool | Storage account hierarchical namespace (HNS) enabled setting. If not specified, it will be set to true by default. |
+| [`storageAccountName`](#parameter-storageaccountname) | string | The name of the storage account to use for the Azure ML Registry. If not specified, a default name will be generated based on the registry name and location. |
+| [`storageAccountType`](#parameter-storageaccounttype) | string | The type of storage account to use for the Azure ML Registry. Default is Standard_LRS. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `name`
 
@@ -131,6 +538,28 @@ Name of the Azure ML Registry.
 - Required: Yes
 - Type: string
 
+### Parameter: `acrAccountName`
+
+The Azure Container Registry account name to use for the Azure ML Registry. If not specified, a default name will be automatically generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `acrSku`
+
+Tier of your Azure container registry.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Premium'
+    'Standard'
+  ]
+  ```
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -138,6 +567,14 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `location`
+
+Location for the Azure ML Registry.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `locations`
 
@@ -182,6 +619,34 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedIdentities`
+
+The managed identity definition for this resource.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentities.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentities.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `privateEndpoints`
 
@@ -596,7 +1061,7 @@ Tags to be applied on all resources/Resource Groups in this deployment.
 
 ### Parameter: `publicNetworkAccess`
 
-Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set
+Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.
 
 - Required: No
 - Type: string
@@ -715,9 +1180,50 @@ The principal type of the assigned principal ID.
   ]
   ```
 
+### Parameter: `storageAccountAllowBlobPublicAccess`
+
+Storage account blob public access setting. If not specified, it will be set to false by default.
+
+- Required: No
+- Type: bool
+
+### Parameter: `storageAccountHnsEnabled`
+
+Storage account hierarchical namespace (HNS) enabled setting. If not specified, it will be set to true by default.
+
+- Required: No
+- Type: bool
+
+### Parameter: `storageAccountName`
+
+The name of the storage account to use for the Azure ML Registry. If not specified, a default name will be generated based on the registry name and location.
+
+- Required: No
+- Type: string
+
+### Parameter: `storageAccountType`
+
+The type of storage account to use for the Azure ML Registry. Default is Standard_LRS.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Premium_LRS'
+    'Premium_ZRS'
+    'Standard_GRS'
+    'Standard_GZRS'
+    'Standard_LRS'
+    'Standard_RAGRS'
+    'Standard_RAGZRS'
+    'Standard_ZRS'
+  ]
+  ```
+
 ### Parameter: `tags`
 
-Tags of the storage account resource.
+Tags of the resource.
 
 - Required: No
 - Type: object
@@ -727,6 +1233,10 @@ Tags of the storage account resource.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `name` | string | The Name of the Azure ML registry. |
+| `privateEndpoints` | array | The private endpoints of the Azure container registry. |
+| `resourceGroupName` | string | The name of the Azure ML registry. |
+| `resourceId` | string | The resource ID of the Azure ML registry. |
+| `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules
 

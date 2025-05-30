@@ -6,18 +6,55 @@ metadata description = 'This module deploys an Azure Machine Learning Registry.'
 @maxLength(50)
 param name string
 
-@description('Required. Location for the Azure ML Registry.')
+@description('Optional. Location for the Azure ML Registry.')
 param location string = resourceGroup().location
 
 @description('Optional. Additional locations for the Azure ML Registry.')
 param locations array = []
 
-@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set')
+@description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set and networkRuleSetIpRules are not set.')
 @allowed([
   'Enabled'
   'Disabled'
 ])
 param publicNetworkAccess string?
+
+@description('Optional. Tier of your Azure container registry.')
+@allowed([
+  'Basic'
+  'Premium'
+  'Standard'
+])
+param acrSku string?
+
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The managed identity definition for this resource.')
+param managedIdentities managedIdentityAllType?
+
+@description('Optional. The type of storage account to use for the Azure ML Registry. Default is Standard_LRS.')
+@allowed([
+  'Standard_LRS'
+  'Standard_GRS'
+  'Standard_RAGRS'
+  'Standard_ZRS'
+  'Standard_GZRS'
+  'Standard_RAGZRS'
+  'Premium_LRS'
+  'Premium_ZRS'
+])
+param storageAccountType string?
+
+@description('Optional. Storage account blob public access setting. If not specified, it will be set to false by default.')
+param storageAccountAllowBlobPublicAccess bool?
+
+@description('Optional. Storage account hierarchical namespace (HNS) enabled setting. If not specified, it will be set to true by default.')
+param storageAccountHnsEnabled bool?
+
+@description('Optional. The name of the storage account to use for the Azure ML Registry. If not specified, a default name will be generated based on the registry name and location.')
+param storageAccountName string?
+
+@description('Optional. The Azure Container Registry account name to use for the Azure ML Registry. If not specified, a default name will be automatically generated.')
+param acrAccountName string?
 
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Configuration details for private endpoints. For security reasons, it is recommended to use private endpoints whenever possible.')
@@ -31,12 +68,11 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
-@description('Optional. Tags of the storage account resource.')
+@description('Optional. Tags of the resource.')
 param tags object?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
-
 
 var builtInRoleNames = {
   'AzureML Compute Operator': subscriptionResourceId(
@@ -79,9 +115,24 @@ var formattedRoleAssignments = [
   })
 ]
 
+var formattedUserAssignedIdentities = reduce(
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
+  {},
+  (cur, next) => union(cur, next)
+) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
 
-var enableReferencedModulesTelemetry = enableTelemetry
+var identity = !empty(managedIdentities)
+  ? {
+      type: (managedIdentities.?systemAssigned ?? false)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned, UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : 'None')
+      userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
+    }
+  : {
+      type: 'SystemAssigned'
+    }
 
+var enableReferencedModulesTelemetry = false
 
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
@@ -102,7 +153,6 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-
 var allLocations = union([location], locations)
 
 var resolvedPublicNetworkAccess = !empty(publicNetworkAccess)
@@ -114,7 +164,8 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
   location: location
   tags: tags
   identity: {
-    type: 'SystemAssigned'
+    type: identity.type
+    userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
   }
   kind: 'registry'
   properties: {
@@ -124,13 +175,23 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
         location: loc
         storageAccountDetails: [
           {
-            systemCreatedStorageAccount: {}
+            systemCreatedStorageAccount: {
+              allowBlobPublicAccess: storageAccountAllowBlobPublicAccess ?? false
+              storageAccountHnsEnabled: storageAccountHnsEnabled ?? true
+              storageAccountName: empty(storageAccountName)
+                ? 'st${uniqueString(resourceGroup().id)}'
+                : storageAccountName
+              storageAccountType: !empty(storageAccountType)
+                ? storageAccountType
+                : (acrSku == 'Premium' ? 'Standard_ZRS' : 'Standard_LRS')
+            }
           }
         ]
         acrDetails: [
           {
             systemCreatedAcrAccount: {
-              acrAccountSku: 'Premium'
+              acrAccountSku: !empty(acrSku) ? acrSku : 'Premium'
+              acrAccountName: empty(acrAccountName) ? 'acr${uniqueString(resourceGroup().id)}' : acrAccountName
             }
           }
         ]
@@ -147,15 +208,15 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.1
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
     )
     params: {
-      name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
+      name: privateEndpoint.?name ?? 'pep-${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'amlregistry'}-${index}'
       privateLinkServiceConnections: privateEndpoint.?isManualConnection != true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'amlregistry'}-${index}'
               properties: {
                 privateLinkServiceId: registry.id
                 groupIds: [
-                  privateEndpoint.?service ?? 'registry'
+                  privateEndpoint.?service ?? 'amlregistry'
                 ]
               }
             }
@@ -164,11 +225,11 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.1
       manualPrivateLinkServiceConnections: privateEndpoint.?isManualConnection == true
         ? [
             {
-              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'registry'}-${index}'
+              name: privateEndpoint.?privateLinkServiceConnectionName ?? '${last(split(registry.id, '/'))}-${privateEndpoint.?service ?? 'amlregistry'}-${index}'
               properties: {
                 privateLinkServiceId: registry.id
                 groupIds: [
-                  privateEndpoint.?service ?? 'registry'
+                  privateEndpoint.?service ?? 'amlregistry'
                 ]
                 requestMessage: privateEndpoint.?manualConnectionRequestMessage ?? 'Manual approval required.'
               }
@@ -191,12 +252,11 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.1
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
-    dependsOn: [
-      registry
-    ]
+    // dependsOn: [
+    //   registry
+    // ]
   }
 ]
-
 
 resource registry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
@@ -207,7 +267,7 @@ resource registry_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType
       condition: roleAssignment.?condition
-      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condtion is set
+      conditionVersion: !empty(roleAssignment.?condition) ? (roleAssignment.?conditionVersion ?? '2.0') : null // Must only be set if condition is set
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: registry
@@ -227,3 +287,51 @@ resource registry_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(l
 
 @description('The Name of the Azure ML registry.')
 output name string = registry.name
+
+@description('The resource ID of the Azure ML registry.')
+output resourceId string = registry.id
+
+@description('The name of the Azure ML registry.')
+output resourceGroupName string = resourceGroup().name
+
+@description('The private endpoints of the Azure container registry.')
+output privateEndpoints privateEndpointOutputType[] = [
+  for (item, index) in (privateEndpoints ?? []): {
+    name: registry_privateEndpoints[index].outputs.name
+    resourceId: registry_privateEndpoints[index].outputs.resourceId
+    groupId: registry_privateEndpoints[index].outputs.?groupId!
+    customDnsConfigs: registry_privateEndpoints[index].outputs.customDnsConfigs
+    networkInterfaceResourceIds: registry_privateEndpoints[index].outputs.networkInterfaceResourceIds
+  }
+]
+
+@description('The principal ID of the system assigned identity.')
+output systemAssignedMIPrincipalId string? = registry.?identity.?principalId
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+type privateEndpointOutputType = {
+  @description('The name of the private endpoint.')
+  name: string
+
+  @description('The resource ID of the private endpoint.')
+  resourceId: string
+
+  @description('The group Id for the private endpoint Group.')
+  groupId: string?
+
+  @description('The custom DNS configurations of the private endpoint.')
+  customDnsConfigs: {
+    @description('FQDN that resolves to private endpoint IP address.')
+    fqdn: string?
+
+    @description('A list of private IP addresses of the private endpoint.')
+    ipAddresses: string[]
+  }[]
+
+  @description('The IDs of the network interfaces associated with the private endpoint.')
+  networkInterfaceResourceIds: string[]
+}
