@@ -3,6 +3,10 @@ targetScope = 'resourceGroup'
 metadata name = 'Azure Cosmos DB & Azure Container Apps - Web Application'
 metadata description = 'This module deploys an n-teir web application to Azure Container Apps. The module also deploys a backing Azure Cosmos DB account with an account type switch. Options for Azure Cosmos DB include; NoSQL, Table, and MongoDB (RU). The web application uses the appropriate security best practices to connect the web application to the backing account.'
 
+// ============== //
+// Parameters     //
+// ============== //
+
 @description('Required. Alpha-numeric component to use for resource naming. The name must be between 3 and 6 characters in length. The name of resources created by this pattern are based on the Cloud Adoption Framework baseline naming convention. Resources will be named using the following pattern: <resource-type>-<name>-<location>-<instance>. For example, if the value specified for this parameter is "demoapp", a single Azure Container App environment deployed to West US 2 would be named "cae-demoapp-westus2-001". For more information, see https://learn.microsoft.com/azure/cloud-adoption-framework/ready/azure-best-practices/resource-naming.')
 @minLength(3)
 @maxLength(15)
@@ -23,10 +27,14 @@ param database azureCosmosDBAccountType?
 @description('Optional. The settings for the Azure Container Apps and Azure Container Registry resources. If not specified, the pattern will deploy a single web application as a default.')
 param web azureContainerAppsEnvType?
 
+// ============== //
+// Resources     //
+// ============== //
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
-    '46d3xbcp.res.compute-virtualmachine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
+    '46d3xbcp.ptn.app-cosmosdbaccountcontainerapp.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
     64
   )
   properties: {
@@ -69,10 +77,10 @@ module azureContainerAppsEnvironment 'br/public:avm/res/app/managed-environment:
     location: location
     tags: tags != null ? union(tags ?? {}, web.?tags ?? {}) : web.?tags ?? null
     enableTelemetry: enableTelemetry
-    zoneRedundant: web.?zoneRedundant ?? false
+    zoneRedundant: web.?zoneRedundant ?? true
     internal: web.?virtualNetworkSubnetResourceId != null
     infrastructureSubnetResourceId: web.?virtualNetworkSubnetResourceId ?? null
-    publicNetworkAccess: web.?publicNetworkAccessEnabled ?? true ? 'Enabled' : 'Disabled'
+    publicNetworkAccess: web.?publicNetworkAccessEnabled ?? false ? 'Enabled' : 'Disabled'
     appLogsConfiguration: web.?enableLogAnalytics ?? false
       ? {
           destination: 'log-analytics'
@@ -91,7 +99,7 @@ module azureContainerRegistry 'br/public:avm/res/container-registry/registry:0.9
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    publicNetworkAccess: web.?publicNetworkAccessEnabled ?? true ? 'Enabled' : 'Disabled'
+    publicNetworkAccess: web.?publicNetworkAccessEnabled ?? false ? 'Enabled' : 'Disabled'
     acrSku: 'Standard'
     roleAssignments: union(
       [
@@ -231,10 +239,10 @@ module azureCosmosDBAccount 'br/public:avm/res/document-db/database-account:0.15
           ]
         : []
     )
-    zoneRedundant: database.?zoneRedundant ?? false
+    zoneRedundant: database.?zoneRedundant ?? true
     networkRestrictions: {
       networkAclBypass: 'None'
-      publicNetworkAccess: database.?publicNetworkAccessEnabled ?? true ? 'Enabled' : 'Disabled'
+      publicNetworkAccess: database.?publicNetworkAccessEnabled ?? false ? 'Enabled' : 'Disabled'
     }
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: true
@@ -360,11 +368,28 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:0.5.1' = 
   }
 }
 
+// ============ //
+// Outputs      //
+// ============ //
+
+@description('The resource ID of the Azure Cosmos DB account.')
+output resourceId string = azureCosmosDBAccount.outputs.resourceId
+
+@description('The name of the Azure Cosmos DB account.')
+output name string = azureCosmosDBAccount.outputs.name
+
+@description('The name of the Resource Group the resource was deployed into.')
+output resourceGroupName string = resourceGroup().name
+
 @description('The endpoint for the Azure Container Registry resource.')
 output azureContainerRegistryEndpoint string = azureContainerRegistry.outputs.loginServer
 
 @description('The endpoint for the Azure Cosmos DB account.')
 output azureCosmosDBEndpoint string = azureCosmosDBAccount.outputs.endpoint
+
+// ================ //
+// Definitions      //
+// ================ //
 
 @export()
 @description('Type that contains settings for an Azure Container Apps web application environment.')

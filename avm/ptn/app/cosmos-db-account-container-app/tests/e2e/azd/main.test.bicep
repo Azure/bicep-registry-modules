@@ -46,6 +46,8 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       database: {
         type: 'NoSQL'
+        zoneRedundant: false
+        publicNetworkAccessEnabled: true
         additionalRoleBasedAccessControlPrincipals: [
           deployer().objectId
         ]
@@ -66,6 +68,8 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       web: {
+        zoneRedundant: false
+        publicNetworkAccessEnabled: true
         additionalRoleBasedAccessControlPrincipals: [
           deployer().objectId
         ]

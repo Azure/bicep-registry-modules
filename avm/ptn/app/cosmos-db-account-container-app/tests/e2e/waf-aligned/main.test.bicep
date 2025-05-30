@@ -57,7 +57,6 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}${substring(uniqueString(baseTime), 0, 3)}'
       database: {
         type: 'NoSQL'
-        zoneRedundant: true
         publicNetworkAccessEnabled: false
         enableLogAnalytics: true
         additionalLocations: [
@@ -65,7 +64,6 @@ module testDeployment '../../../main.bicep' = [
         ]
       }
       web: {
-        zoneRedundant: true
         publicNetworkAccessEnabled: false
         enableLogAnalytics: true
         virtualNetworkSubnetResourceId: nestedDependencies.outputs.virtualNetworkSubnetResourceId

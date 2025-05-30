@@ -102,13 +102,16 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
           name: 'cosmicworks'
         }
       ]
+      publicNetworkAccessEnabled: true
       type: 'NoSQL'
+      zoneRedundant: false
     }
     location: '<location>'
     web: {
       additionalRoleBasedAccessControlPrincipals: [
         '<objectId>'
       ]
+      publicNetworkAccessEnabled: true
       tiers: [
         {
           allowIngress: true
@@ -152,6 +155,7 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
           useManagedIdentity: true
         }
       ]
+      zoneRedundant: false
     }
   }
 }
@@ -194,7 +198,9 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
             "name": "cosmicworks"
           }
         ],
-        "type": "NoSQL"
+        "publicNetworkAccessEnabled": true,
+        "type": "NoSQL",
+        "zoneRedundant": false
       }
     },
     "location": {
@@ -205,6 +211,7 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
         "additionalRoleBasedAccessControlPrincipals": [
           "<objectId>"
         ],
+        "publicNetworkAccessEnabled": true,
         "tiers": [
           {
             "allowIngress": true,
@@ -247,7 +254,8 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
             },
             "useManagedIdentity": true
           }
-        ]
+        ],
+        "zoneRedundant": false
       }
     }
   }
@@ -286,13 +294,16 @@ param database = {
       name: 'cosmicworks'
     }
   ]
+  publicNetworkAccessEnabled: true
   type: 'NoSQL'
+  zoneRedundant: false
 }
 param location = '<location>'
 param web = {
   additionalRoleBasedAccessControlPrincipals: [
     '<objectId>'
   ]
+  publicNetworkAccessEnabled: true
   tiers: [
     {
       allowIngress: true
@@ -336,6 +347,7 @@ param web = {
       useManagedIdentity: true
     }
   ]
+  zoneRedundant: false
 }
 ```
 
@@ -727,7 +739,6 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
       enableLogAnalytics: true
       publicNetworkAccessEnabled: false
       type: 'NoSQL'
-      zoneRedundant: true
     }
     web: {
       enableLogAnalytics: true
@@ -744,7 +755,6 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
         }
       ]
       virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
-      zoneRedundant: true
     }
   }
 }
@@ -774,8 +784,7 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
         ],
         "enableLogAnalytics": true,
         "publicNetworkAccessEnabled": false,
-        "type": "NoSQL",
-        "zoneRedundant": true
+        "type": "NoSQL"
       }
     },
     "web": {
@@ -793,8 +802,7 @@ module cosmosDbAccountContainerApp 'br/public:avm/ptn/app/cosmos-db-account-cont
             "useManagedIdentity": true
           }
         ],
-        "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>",
-        "zoneRedundant": true
+        "virtualNetworkSubnetResourceId": "<virtualNetworkSubnetResourceId>"
       }
     }
   }
@@ -821,7 +829,6 @@ param database = {
   enableLogAnalytics: true
   publicNetworkAccessEnabled: false
   type: 'NoSQL'
-  zoneRedundant: true
 }
 param web = {
   enableLogAnalytics: true
@@ -838,7 +845,6 @@ param web = {
     }
   ]
   virtualNetworkSubnetResourceId: '<virtualNetworkSubnetResourceId>'
-  zoneRedundant: true
 }
 ```
 
@@ -1254,6 +1260,9 @@ Indicates whether the environment is zone redundant. Defaults to false. If this 
 | :-- | :-- | :-- |
 | `azureContainerRegistryEndpoint` | string | The endpoint for the Azure Container Registry resource. |
 | `azureCosmosDBEndpoint` | string | The endpoint for the Azure Cosmos DB account. |
+| `name` | string | The name of the Azure Cosmos DB account. |
+| `resourceGroupName` | string | The name of the Resource Group the resource was deployed into. |
+| `resourceId` | string | The resource ID of the Azure Cosmos DB account. |
 
 ## Data Collection
 

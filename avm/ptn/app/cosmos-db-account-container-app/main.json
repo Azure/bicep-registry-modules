@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "13393475904739159910"
+      "templateHash": "1081574929040633102"
     },
     "name": "Azure Cosmos DB & Azure Container Apps - Web Application",
     "description": "This module deploys an n-teir web application to Azure Container Apps. The module also deploys a backing Azure Cosmos DB account with an account type switch. Options for Azure Cosmos DB include; NoSQL, Table, and MongoDB (RU). The web application uses the appropriate security best practices to connect the web application to the backing account."
@@ -434,7 +434,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+      "name": "[take(format('46d3xbcp.ptn.app-cosmosdbaccountcontainerapp.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -3988,7 +3988,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "zoneRedundant": {
-            "value": "[coalesce(tryGet(parameters('web'), 'zoneRedundant'), false())]"
+            "value": "[coalesce(tryGet(parameters('web'), 'zoneRedundant'), true())]"
           },
           "internal": {
             "value": "[not(equals(tryGet(parameters('web'), 'virtualNetworkSubnetResourceId'), null()))]"
@@ -3996,7 +3996,7 @@
           "infrastructureSubnetResourceId": {
             "value": "[coalesce(tryGet(parameters('web'), 'virtualNetworkSubnetResourceId'), null())]"
           },
-          "publicNetworkAccess": "[if(coalesce(tryGet(parameters('web'), 'publicNetworkAccessEnabled'), true()), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
+          "publicNetworkAccess": "[if(coalesce(tryGet(parameters('web'), 'publicNetworkAccessEnabled'), false()), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
           "appLogsConfiguration": "[if(coalesce(tryGet(parameters('web'), 'enableLogAnalytics'), false()), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('logAnalyticsWorkspace-{0}', uniqueString('logAnalyticsWorkspace', deployment().name))), '2022-09-01').logAnalyticsWorkspaceId, 'sharedKey', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('logAnalyticsWorkspace-{0}', uniqueString('logAnalyticsWorkspace', deployment().name))), '2022-09-01').primarySharedKey))), createObject('value', null()))]"
         },
         "template": {
@@ -4895,7 +4895,7 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "publicNetworkAccess": "[if(coalesce(tryGet(parameters('web'), 'publicNetworkAccessEnabled'), true()), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
+          "publicNetworkAccess": "[if(coalesce(tryGet(parameters('web'), 'publicNetworkAccessEnabled'), false()), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
           "acrSku": {
             "value": "Standard"
           },
@@ -9502,12 +9502,12 @@
             "value": "[union(if(coalesce(tryGet(parameters('database'), 'serverless'), true()), createArray('EnableServerless'), createArray()), if(equals(tryGet(parameters('database'), 'type'), 'Table'), createArray('EnableTable'), createArray()))]"
           },
           "zoneRedundant": {
-            "value": "[coalesce(tryGet(parameters('database'), 'zoneRedundant'), false())]"
+            "value": "[coalesce(tryGet(parameters('database'), 'zoneRedundant'), true())]"
           },
           "networkRestrictions": {
             "value": {
               "networkAclBypass": "None",
-              "publicNetworkAccess": "[if(coalesce(tryGet(parameters('database'), 'publicNetworkAccessEnabled'), true()), 'Enabled', 'Disabled')]"
+              "publicNetworkAccess": "[if(coalesce(tryGet(parameters('database'), 'publicNetworkAccessEnabled'), false()), 'Enabled', 'Disabled')]"
             }
           },
           "disableKeyBasedMetadataWriteAccess": {
@@ -13894,6 +13894,27 @@
     }
   },
   "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the Azure Cosmos DB account."
+      },
+      "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('{0}-azure-cosmos-db-account', uniqueString(deployment().name, parameters('location')))), '2022-09-01').resourceId]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Azure Cosmos DB account."
+      },
+      "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('{0}-azure-cosmos-db-account', uniqueString(deployment().name, parameters('location')))), '2022-09-01').name]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the resource was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
     "azureContainerRegistryEndpoint": {
       "type": "string",
       "metadata": {
