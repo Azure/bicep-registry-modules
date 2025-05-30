@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "2788306097180809572"
+      "version": "0.35.1.17967",
+      "templateHash": "5153208721682721448"
     },
     "name": "Container Apps",
     "description": "This module deploys a Container App."
@@ -841,10 +841,13 @@
     },
     "service": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/containerApps@2024-10-02-preview#properties/properties/properties/configuration/properties/service"
+        },
         "description": "Optional. Dev ContainerApp service type."
-      }
+      },
+      "nullable": true
     },
     "includeAddOns": {
       "type": "bool",
@@ -930,10 +933,13 @@
     },
     "registries": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/containerApps@2024-10-02-preview#properties/properties/properties/configuration/properties/registries"
+        },
         "description": "Optional. Collection of private container registry credentials for containers used by the Container app."
-      }
+      },
+      "nullable": true
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentityAllType",
@@ -961,10 +967,13 @@
     },
     "customDomains": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/containerApps@2024-10-02-preview#properties/properties/properties/configuration/properties/ingress/properties/customDomains"
+        },
         "description": "Optional. Custom domain bindings for Container App hostnames."
-      }
+      },
+      "nullable": true
     },
     "exposedPort": {
       "type": "int",
@@ -975,10 +984,13 @@
     },
     "ipSecurityRestrictions": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/containerApps@2024-10-02-preview#properties/properties/properties/configuration/properties/ingress/properties/ipSecurityRestrictions"
+        },
         "description": "Optional. Rules to restrict incoming IP address."
-      }
+      },
+      "nullable": true
     },
     "trafficLabel": {
       "type": "string",
@@ -1010,10 +1022,13 @@
     },
     "dapr": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/containerApps@2024-10-02-preview#properties/properties/properties/configuration/properties/dapr"
+        },
         "description": "Optional. Dapr configuration for the Container App."
-      }
+      },
+      "nullable": true
     },
     "identitySettings": {
       "type": "array",
@@ -1050,10 +1065,13 @@
     },
     "initContainersTemplate": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/containerApps@2024-10-02-preview#properties/properties/properties/template/properties/initContainers"
+        },
         "description": "Optional. List of specialized containers that run before app containers."
-      }
+      },
+      "nullable": true
     },
     "secrets": {
       "type": "array",
@@ -1074,10 +1092,13 @@
     },
     "volumes": {
       "type": "array",
-      "defaultValue": [],
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.App/containerApps@2024-10-02-preview#properties/properties/properties/template/properties/volumes"
+        },
         "description": "Optional. List of volume definitions for the Container App."
-      }
+      },
+      "nullable": true
     },
     "workloadProfileName": {
       "type": "string",

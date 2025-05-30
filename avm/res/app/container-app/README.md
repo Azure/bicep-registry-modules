@@ -281,10 +281,22 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentResourceId: '<environmentResourceId>'
     name: 'acamax001'
     // Non-required parameters
+    activeRevisionsMode: 'Single'
     identitySettings: [
       {
         identity: '<identity>'
         lifecycle: 'None'
+      }
+    ]
+    initContainersTemplate: [
+      {
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        imageType: 'CloudBuild'
+        name: 'init-container'
+        resources: {
+          cpu: '<cpu>'
+          memory: '0.5Gi'
+        }
       }
     ]
     location: '<location>'
@@ -345,6 +357,9 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         name: 'keyvaultstoredsecret'
       }
     ]
+    service: {
+      type: 'Web'
+    }
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -412,11 +427,27 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acamax001"
     },
     // Non-required parameters
+    "activeRevisionsMode": {
+      "value": "Single"
+    },
     "identitySettings": {
       "value": [
         {
           "identity": "<identity>",
           "lifecycle": "None"
+        }
+      ]
+    },
+    "initContainersTemplate": {
+      "value": [
+        {
+          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "imageType": "CloudBuild",
+          "name": "init-container",
+          "resources": {
+            "cpu": "<cpu>",
+            "memory": "0.5Gi"
+          }
         }
       ]
     },
@@ -492,6 +523,11 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         }
       ]
     },
+    "service": {
+      "value": {
+        "type": "Web"
+      }
+    },
     "tags": {
       "value": {
         "Env": "test",
@@ -553,10 +589,22 @@ param containers = [
 param environmentResourceId = '<environmentResourceId>'
 param name = 'acamax001'
 // Non-required parameters
+param activeRevisionsMode = 'Single'
 param identitySettings = [
   {
     identity: '<identity>'
     lifecycle: 'None'
+  }
+]
+param initContainersTemplate = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    imageType: 'CloudBuild'
+    name: 'init-container'
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
   }
 ]
 param location = '<location>'
@@ -617,6 +665,9 @@ param secrets = [
     name: 'keyvaultstoredsecret'
   }
 ]
+param service = {
+  type: 'Web'
+}
 param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
@@ -1507,7 +1558,6 @@ Custom domain bindings for Container App hostnames.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `dapr`
 
@@ -1515,7 +1565,6 @@ Dapr configuration for the Container App.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `disableIngress`
 
@@ -1603,7 +1652,6 @@ List of specialized containers that run before app containers.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `ipSecurityRestrictions`
 
@@ -1611,7 +1659,6 @@ Rules to restrict incoming IP address.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -1699,7 +1746,6 @@ Collection of private container registry credentials for containers used by the 
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `revisionSuffix`
 
@@ -2089,7 +2135,6 @@ Dev ContainerApp service type.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `serviceBinds`
 
@@ -2179,7 +2224,6 @@ List of volume definitions for the Container App.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `workloadProfileName`
 
