@@ -43,6 +43,7 @@ body:
         - "avm/ptn/alz/empty"
         - "avm/ptn/app-service-lza/hosting-environment"
         - "avm/ptn/app/container-job-toolkit"
+        - "avm/ptn/app/cosmos-db-account-container-app"
         - "avm/ptn/authorization/pim-role-assignment"
         - "avm/ptn/authorization/policy-assignment"
         - "avm/ptn/authorization/policy-exemption"
