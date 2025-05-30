@@ -56,7 +56,8 @@ inputs:
     description: "Custom location overwrite, if needed"
     required: false
   e2eIgnore:
-    description: "A test case will not be deployed if an .e2eignore file exists"
+    description: "If set to true, the test case deployment tasks will not be processed"
+    default: "false"
     required: false
 
 runs:
@@ -70,8 +71,6 @@ runs:
         azPSVersion: "latest"
         errorActionPreference: "SilentlyContinue"
         inlineScript: |
-          # the first step is to check, if the deployment should be bypassed
-
           # Resolve template file path
           $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
 
@@ -80,7 +79,7 @@ runs:
             Write-Warning -Message "File '.e2eignore' exists in the folder: $moduleTestFilePath"
             Write-Output 'skip_deployment_ci=true' >> $env:GITHUB_ENV
 
-            # get the reason for skipping the deployment
+            # Get the reason for skipping the deployment
             $excludeReason = Get-Content Join-Path $moduleTestFilePath '.e2eignore'
             excludeMessage = "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeReason"
 
