@@ -5,32 +5,32 @@ metadata description = 'This module deploys Container App Auth Configs.'
 param containerAppName string
 
 @description('Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.')
-param encryptionSettings resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.encryptionSettings?
+param encryptionSettings resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.encryptionSettings?
 
 @description('Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization.')
-param globalValidation resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.globalValidation?
+param globalValidation resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.globalValidation?
 
 @description('Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization.')
-param httpSettings resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.httpSettings?
+param httpSettings resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.httpSettings?
 
 @description('Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization.')
-param identityProviders resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.identityProviders?
+param identityProviders resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.identityProviders?
 
 @description('Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization.')
-param login resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.login?
+param login resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.login?
 
 @description('Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization.')
-param platform resourceInput<'Microsoft.App/containerApps/authConfigs@2024-10-02-preview'>.properties.platform?
+param platform resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.platform?
 
 // =============== //
 //    Resources    //
 // =============== //
 
-resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' existing = {
+resource containerApp 'Microsoft.App/containerApps@2025-01-01' existing = {
   name: containerAppName
 }
 
-resource containerAppAuthConfigs 'Microsoft.App/containerApps/authConfigs@2024-10-02-preview' = {
+resource containerAppAuthConfigs 'Microsoft.App/containerApps/authConfigs@2025-01-01' = {
   name: 'current'
   parent: containerApp
   properties: {
@@ -42,6 +42,7 @@ resource containerAppAuthConfigs 'Microsoft.App/containerApps/authConfigs@2024-1
     platform: platform
   }
 }
+
 
 
 // =============== //
