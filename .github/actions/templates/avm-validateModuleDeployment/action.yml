@@ -71,8 +71,6 @@ runs:
         azPSVersion: "latest"
         errorActionPreference: "SilentlyContinue"
         inlineScript: |
-          # the first step is to check, if the deployment should be bypassed
-
           # Resolve template file path
           $moduleTestFilePath = Join-Path $env:GITHUB_WORKSPACE '${{ inputs.templateFilePath }}'
 
