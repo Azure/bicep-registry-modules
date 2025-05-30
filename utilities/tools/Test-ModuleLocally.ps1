@@ -19,7 +19,7 @@ Optional. A string array that can be specified to run only Pester tests with the
 Optional. A switch parameter that triggers a Pester test for the module
 
 .PARAMETER ValidateOrDeployParameters
-Optional. An object consisting of the components that are required when using the Validate test or DeploymentTest switch parameter. Mandatory if the DeploymentTest/ValidationTest switches are set.
+Optional. An object consisting of the components that are required when using the Validate test or DeploymentTest switch parameter. Mandatory if the DeploymentTest/ValidationTest switches are set. The e2eIgnore file in test cases will not execute a deployment.
 
 .PARAMETER DeploymentTest
 Optional. A switch parameter that triggers the deployment of the module
@@ -27,8 +27,8 @@ Optional. A switch parameter that triggers the deployment of the module
 .PARAMETER ValidationTest
 Optional. A switch parameter that triggers the validation of the module only without deployment
 
-.PARAMETER RespectE2eIgnoreFlag
-Optional. A switch parameter that enables you to consider the existence of any .e2eignore file in the test case module folders. If set to $true (default), the deployment tasks will be skipped if a test-case is excluded by an .e2eignore file. If set to $false, the existence of an .e2eignore file in the module test root folder will be ignored, and the deployment tasks will run nevertheless.
+.PARAMETER SkipE2eIgnoreLogic
+Optional. A switch parameter that enables you to skip the e2eIgnore logic in the test cases. If set to $true, the deployment tasks will be executed, even if a test-case is excluded by an .e2eignore file.
 
 .PARAMETER SkipParameterFileTokens
 Optional. A switch parameter that enables you to skip the search for local custom parameter file tokens.
@@ -118,7 +118,7 @@ $TestModuleLocallyInput = @{
     AdditionalTokens           = @{
         tenantId = '00000000-0000-0000-0000-000000000000'
     }
-    RespectE2eIgnoreFlag       = $true
+    SkipE2eIgnoreLogic       = $true
 }
 Test-ModuleLocally @TestModuleLocallyInput -Verbose
 Get What-If deployment result using a test file with the provided tokens
@@ -166,7 +166,7 @@ function Test-ModuleLocally {
         [switch] $ValidationTest,
 
         [Parameter(Mandatory = $false)]
-        [switch] $RespectE2eIgnoreFlag,
+        [switch] $SkipE2eIgnoreLogic,
 
         [Parameter(Mandatory = $false)]
         [switch] $WhatIfTest
@@ -293,7 +293,7 @@ function Test-ModuleLocally {
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         $ignoreFilePath = Join-Path (Split-Path $moduleTestFile) '.e2eignore'
-                        if ((Test-Path $ignoreFilePath) -and ($RespectE2eIgnoreFlag -eq $true)) {
+                        if ((Test-Path $ignoreFilePath) -and -not $SkipE2eIgnoreLogic) {
                             Write-Verbose "The module folder [$moduleTestFile] contains an [.e2eignore] file and is skipped." -Verbose
                         } else {
                             Write-Verbose ('Validating module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
@@ -308,7 +308,7 @@ function Test-ModuleLocally {
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         $ignoreFilePath = Join-Path (Split-Path $moduleTestFile) '.e2eignore'
-                        if ((Test-Path $ignoreFilePath) -and ($RespectE2eIgnoreFlag -eq $true)) {
+                        if ((Test-Path $ignoreFilePath) -and -not $SkipE2eIgnoreLogic) {
                             Write-Verbose "The module folder [$moduleTestFile] contains an [.e2eignore] file and is skipped." -Verbose
                         } else {
                             Write-Verbose ('Get Deployment What-If result for module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
@@ -324,7 +324,7 @@ function Test-ModuleLocally {
                     # Loop through test files
                     foreach ($moduleTestFile in $moduleTestFiles) {
                         $ignoreFilePath = Join-Path (Split-Path $moduleTestFile) '.e2eignore'
-                        if ((Test-Path $ignoreFilePath) -and ($RespectE2eIgnoreFlag -eq $true)) {
+                        if ((Test-Path $ignoreFilePath) -and -not $SkipE2eIgnoreLogic) {
                             Write-Verbose "The module folder [$moduleTestFile] contains an [.e2eignore] file and is skipped." -Verbose
                         } else {
                             Write-Verbose ('Deploy Module [{0}] with test file [{1}]' -f $ModuleName, (Split-Path $moduleTestFile -Leaf)) -Verbose
