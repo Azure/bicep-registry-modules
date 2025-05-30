@@ -505,14 +505,11 @@ runs:
         Write-Output '::group::Output to GitHub job summaries'
 
         $mdPesterOutputFilePath = '${{ steps.pester_run_step.outputs.formattedPesterResultsPath }}'
-        $validateTestExecutionResult = $env:VALIDATE_TEST_EXECUTION_RESULT
 
         if (-not (Test-Path $mdPesterOutputFilePath)) {
           Write-Warning ('Input file [{0}] not found. Please check if the previous task threw an error and try again.' -f $mdPesterOutputFilePath)
-          $validateTestExecutionResult >> $env:GITHUB_STEP_SUMMARY
         } else {
-          $jobOutput = Get-Content $mdPesterOutputFilePath '\n' $validateTestExecutionResult
-          $jobOutput >> $env:GITHUB_STEP_SUMMARY
+          Get-Content $mdPesterOutputFilePath >> $env:GITHUB_STEP_SUMMARY
           Write-Verbose ('Successfully printed out file [{0}] to Job Summaries' -f $mdPesterOutputFilePath) -Verbose
         }
 
