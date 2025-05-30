@@ -69,6 +69,9 @@ param publicNetworkAccess string = 'Enabled'
 @description('Optional. List of firewall rules to be created in the workspace.')
 param firewallRules firewallRuleType[]?
 
+@description('Optional. List of Big Data Pools to be created in the workspace.')
+param bigDataPools bigDataPoolType[]?
+
 @description('Optional. Purview Resource ID.')
 param purviewResourceID string = ''
 
@@ -176,19 +179,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -284,7 +287,7 @@ module workspace_cmk_rbac 'modules/nested_cmkRbac.bicep' = if (encryptionActivat
 
 // - Workspace encryption - Activate Workspace
 module workspace_key 'key/main.bicep' = if (encryptionActivateWorkspace) {
-  name: '${workspace.name}-cmk-activation'
+  name: take('${workspace.name}-cmk-activation', 64)
   params: {
     name: customerManagedKey!.keyName
     isActiveCMK: true
@@ -350,8 +353,38 @@ module workspace_firewallRules 'firewall-rules/main.bicep' = [
   }
 ]
 
+// Big Data Pools
+module workspace_bigDataPools 'big-data-pools/main.bicep' = [
+  for (bigDataPool, index) in (bigDataPools ?? []): {
+    name: '${uniqueString(deployment().name, location)}-workspace-bdp-${index}'
+    params: {
+      name: bigDataPool.name
+      workspaceName: workspace.name
+      location: location
+      tags: bigDataPool.?tags ?? tags
+      autoPauseDelayInMinutes: bigDataPool.?autoPauseDelayInMinutes
+      autoScale: bigDataPool.?autoScale
+      cacheSize: bigDataPool.?cacheSize
+      dynamicExecutorAllocation: bigDataPool.?dynamicExecutorAllocation
+      autotuneEnabled: bigDataPool.?autotuneEnabled
+      computeIsolationEnabled: bigDataPool.?computeIsolationEnabled
+      nodeCount: bigDataPool.?nodeCount
+      nodeSize: bigDataPool.nodeSize
+      nodeSizeFamily: bigDataPool.nodeSizeFamily
+      sessionLevelPackagesEnabled: bigDataPool.?sessionLevelPackagesEnabled
+      sparkConfigProperties: bigDataPool.?sparkConfigProperties
+      defaultSparkLogFolder: bigDataPool.?defaultSparkLogFolder
+      sparkEventsFolder: bigDataPool.?sparkEventsFolder
+      sparkVersion: bigDataPool.?sparkVersion
+      lock: bigDataPool.?lock ?? lock
+      diagnosticSettings: bigDataPool.?diagnosticSettings ?? []
+      roleAssignments: bigDataPool.?roleAssignments ?? []
+    }
+  }
+]
+
 // Endpoints
-module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-workspace-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -517,4 +550,67 @@ type firewallRuleType = {
 
   @description('Required. The end IP address of the firewall rule. Must be IPv4 format. Must be greater than or equal to startIpAddress.')
   endIpAddress: string
+}
+
+import { autoScaleType, dynamicExecutorAllocationType, sparkConfigPropertiesType } from 'big-data-pools/main.bicep'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@export()
+@description('The synapse workspace Big Data Pool definition.')
+type bigDataPoolType = {
+  @description('Required. The name of the Big Data Pool.')
+  name: string
+
+  @description('Optional. The node size family of the pool.')
+  nodeSizeFamily: string?
+
+  @description('Optional. The node size of the pool.')
+  nodeSize: string?
+
+  @description('Optional. The auto scale configuration.')
+  autoScale: autoScaleType?
+
+  @description('Optional. The number of nodes in the Big Data pool if Auto-scaling is disabled.')
+  nodeCount: int?
+
+  @description('Optional. The dynamic executor allocation configuration.')
+  dynamicExecutorAllocation: dynamicExecutorAllocationType?
+
+  @description('Optional. Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided.')
+  autoPauseDelayInMinutes: int?
+
+  @description('Optional. The Spark version.')
+  sparkVersion: string?
+
+  @description('Optional. The Spark configuration properties.')
+  sparkConfigProperties: sparkConfigPropertiesType?
+
+  @description('Optional. Enable or disable session level packages.')
+  sessionLevelPackagesEnabled: bool?
+
+  @description('Optional. The cache size of the pool.')
+  cacheSize: int?
+
+  @description('Optional. The default Spark log folder.')
+  defaultSparkLogFolder: string?
+
+  @description('Optional. Enable or disable autotune.')
+  autotuneEnabled: bool?
+
+  @description('Optional. Enable or disable compute isolation.')
+  computeIsolationEnabled: bool?
+
+  @description('Optional. The Spark events folder.')
+  sparkEventsFolder: string?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
 }
