@@ -165,7 +165,7 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
   tags: tags
   identity: {
     type: identity.type
-    userAssignedIdentities: identity.?userAssignedIdentities
+    userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
   }
   kind: 'registry'
   properties: {
@@ -176,9 +176,11 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
         storageAccountDetails: [
           {
             systemCreatedStorageAccount: {
-              allowBlobPublicAccess: storageAccountAllowBlobPublicAccess
-              storageAccountHnsEnabled: storageAccountHnsEnabled
-              storageAccountName: storageAccountName
+              allowBlobPublicAccess: storageAccountAllowBlobPublicAccess ?? false
+              storageAccountHnsEnabled: storageAccountHnsEnabled ?? true
+              storageAccountName: empty(storageAccountName)
+                ? 'st${uniqueString(resourceGroup().id)}'
+                : storageAccountName
               storageAccountType: !empty(storageAccountType)
                 ? storageAccountType
                 : (acrSku == 'Premium' ? 'Standard_ZRS' : 'Standard_LRS')
@@ -188,8 +190,8 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
         acrDetails: [
           {
             systemCreatedAcrAccount: {
-              acrAccountSku: acrSku
-              acrAccountName: acrAccountName
+              acrAccountSku: !empty(acrSku) ? acrSku : 'Premium'
+              acrAccountName: empty(acrAccountName) ? 'acr${uniqueString(resourceGroup().id)}' : acrAccountName
             }
           }
         ]

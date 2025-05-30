@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "14175466626499741408"
+      "templateHash": "4742162063566522477"
     },
     "name": "Azure ML Registry",
     "description": "This module deploys an Azure Machine Learning Registry."
@@ -654,7 +654,7 @@
       "tags": "[parameters('tags')]",
       "identity": {
         "type": "[variables('identity').type]",
-        "userAssignedIdentities": "[tryGet(variables('identity'), 'userAssignedIdentities')]"
+        "userAssignedIdentities": "[if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())]"
       },
       "kind": "registry",
       "properties": {
@@ -667,9 +667,9 @@
               "storageAccountDetails": [
                 {
                   "systemCreatedStorageAccount": {
-                    "allowBlobPublicAccess": "[parameters('storageAccountAllowBlobPublicAccess')]",
-                    "storageAccountHnsEnabled": "[parameters('storageAccountHnsEnabled')]",
-                    "storageAccountName": "[parameters('storageAccountName')]",
+                    "allowBlobPublicAccess": "[coalesce(parameters('storageAccountAllowBlobPublicAccess'), false())]",
+                    "storageAccountHnsEnabled": "[coalesce(parameters('storageAccountHnsEnabled'), true())]",
+                    "storageAccountName": "[if(empty(parameters('storageAccountName')), format('st{0}', uniqueString(resourceGroup().id)), parameters('storageAccountName'))]",
                     "storageAccountType": "[if(not(empty(parameters('storageAccountType'))), parameters('storageAccountType'), if(equals(parameters('acrSku'), 'Premium'), 'Standard_ZRS', 'Standard_LRS'))]"
                   }
                 }
@@ -677,8 +677,8 @@
               "acrDetails": [
                 {
                   "systemCreatedAcrAccount": {
-                    "acrAccountSku": "[parameters('acrSku')]",
-                    "acrAccountName": "[parameters('acrAccountName')]"
+                    "acrAccountSku": "[if(not(empty(parameters('acrSku'))), parameters('acrSku'), 'Premium')]",
+                    "acrAccountName": "[if(empty(parameters('acrAccountName')), format('acr{0}', uniqueString(resourceGroup().id)), parameters('acrAccountName'))]"
                   }
                 }
               ]
