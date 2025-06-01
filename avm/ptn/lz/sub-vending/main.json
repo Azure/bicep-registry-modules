@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2410943986697922503"
+      "templateHash": "7109516898642783732"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1984,7 +1984,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "12116694397382873344"
+              "templateHash": "12086475999664297562"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -42702,7 +42702,7 @@
                   "ddosProtectionPlanResourceId": {
                     "value": "[coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'ddosProtectionPlanResourceId'), null())]"
                   },
-                  "peerings": "[if(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'peerToHubNetwork'), false()), createObject('value', createArray(createObject('remoteVirtualNetworkResourceId', variables('hubVirtualNetworkResourceIdChecked'), 'allowForwardedTraffic', true(), 'allowVirtualNetworkAccess', true(), 'allowGatewayTransit', false(), 'useRemoteGateways', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'useRemoteGateways'), true()), 'remotePeeringEnabled', true(), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringAllowGatewayTransit', true(), 'remotePeeringUseRemoteGateways', false()))), createObject('value', null()))]",
+                  "peerings": "[if(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'peerToHubNetwork'), false()), createObject('value', createArray(createObject('remoteVirtualNetworkResourceId', variables('hubVirtualNetworkResourceIdChecked'), 'allowForwardedTraffic', true(), 'allowVirtualNetworkAccess', true(), 'allowGatewayTransit', false(), 'useRemoteGateways', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'useRemoteGateways'), false()), 'remotePeeringEnabled', true(), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringAllowGatewayTransit', true(), 'remotePeeringUseRemoteGateways', false()))), createObject('value', null()))]",
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   }

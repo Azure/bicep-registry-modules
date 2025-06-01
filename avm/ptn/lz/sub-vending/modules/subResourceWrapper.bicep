@@ -1562,7 +1562,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
               allowForwardedTraffic: true
               allowVirtualNetworkAccess: true
               allowGatewayTransit: false
-              useRemoteGateways: vnet.?useRemoteGateways ?? true
+              useRemoteGateways: vnet.?useRemoteGateways ?? false
               remotePeeringEnabled: true
               remotePeeringAllowForwardedTraffic: true
               remotePeeringAllowVirtualNetworkAccess: true
