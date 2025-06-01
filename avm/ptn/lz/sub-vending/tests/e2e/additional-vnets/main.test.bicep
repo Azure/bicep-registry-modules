@@ -29,10 +29,6 @@ param vnetHubResourceGroup string = 'rsg-blzv-perm-hubs-001'
 @description('Optional. The name of the existing hub virtual network.')
 param hubVirtualNetworkName string = 'vnet-uksouth-hub-blzv'
 
-@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectId\'.')
-@secure()
-param testUserObjectId string = ''
-
 // Provide a reference to an existing hub virtual network.
 module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'

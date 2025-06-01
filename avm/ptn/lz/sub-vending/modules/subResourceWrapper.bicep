@@ -751,6 +751,7 @@ module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
     scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
     dependsOn: [
       createResourceGroupForLzNetworking
+      createResourceGroupForadditionalLzNetworking
     ]
     name: '${deploymentNames.createLzNsg}-${i}'
     params: {
