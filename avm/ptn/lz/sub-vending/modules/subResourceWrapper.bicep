@@ -1952,10 +1952,10 @@ type virtualNetworkType = {
   @description('Required. The location of the virtual network.')
   location: string
 
-  @description('Required. The tags for the virtual network.')
+  @description('Optional. The tags for the virtual network.')
   tags: object?
 
-  @description('Required. The subnets for the virtual network.')
+  @description('Optional. The subnets for the virtual network.')
   subnets: subnetType[]?
 
   @description('Optional. The option to peer the virtual network to the hub network.')

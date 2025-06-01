@@ -2325,8 +2325,6 @@ A list of additional virtual networks to create.
 | [`addressPrefixes`](#parameter-additionalvirtualnetworksaddressprefixes) | array | The address prefixes for the virtual network. |
 | [`location`](#parameter-additionalvirtualnetworkslocation) | string | The location of the virtual network. |
 | [`name`](#parameter-additionalvirtualnetworksname) | string | The name of the virtual network resource. |
-| [`subnets`](#parameter-additionalvirtualnetworkssubnets) | array | The subnets for the virtual network. |
-| [`tags`](#parameter-additionalvirtualnetworkstags) | object | The tags for the virtual network. |
 
 **Optional parameters**
 
@@ -2338,6 +2336,8 @@ A list of additional virtual networks to create.
 | [`peerToHubNetwork`](#parameter-additionalvirtualnetworkspeertohubnetwork) | bool | The option to peer the virtual network to the hub network. |
 | [`resourceGroupLockEnabled`](#parameter-additionalvirtualnetworksresourcegrouplockenabled) | bool | Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group. |
 | [`resourceGroupName`](#parameter-additionalvirtualnetworksresourcegroupname) | string | The name of the virtual network resource group. |
+| [`subnets`](#parameter-additionalvirtualnetworkssubnets) | array | The subnets for the virtual network. |
+| [`tags`](#parameter-additionalvirtualnetworkstags) | object | The tags for the virtual network. |
 | [`useRemoteGateways`](#parameter-additionalvirtualnetworksuseremotegateways) | bool | Enables the use of remote gateways in the spefcified hub virtual network. If no gateways exsit in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections. |
 
 ### Parameter: `additionalVirtualNetworks.addressPrefixes`
@@ -2359,6 +2359,48 @@ The location of the virtual network.
 The name of the virtual network resource.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `additionalVirtualNetworks.ddosProtectionPlanResourceId`
+
+The resource Id of the DDOS protection plan.
+
+- Required: No
+- Type: string
+
+### Parameter: `additionalVirtualNetworks.deployBastion`
+
+The option to deploy Azure Bastion in the virtual network.
+
+- Required: No
+- Type: bool
+
+### Parameter: `additionalVirtualNetworks.dnsServers`
+
+The list of DNS servers for the virtual network.
+
+- Required: No
+- Type: array
+
+### Parameter: `additionalVirtualNetworks.peerToHubNetwork`
+
+The option to peer the virtual network to the hub network.
+
+- Required: No
+- Type: bool
+
+### Parameter: `additionalVirtualNetworks.resourceGroupLockEnabled`
+
+Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group.
+
+- Required: No
+- Type: bool
+
+### Parameter: `additionalVirtualNetworks.resourceGroupName`
+
+The name of the virtual network resource group.
+
+- Required: No
 - Type: string
 
 ### Parameter: `additionalVirtualNetworks.subnets`
@@ -2747,48 +2789,6 @@ The tags for the virtual network.
 
 - Required: No
 - Type: object
-
-### Parameter: `additionalVirtualNetworks.ddosProtectionPlanResourceId`
-
-The resource Id of the DDOS protection plan.
-
-- Required: No
-- Type: string
-
-### Parameter: `additionalVirtualNetworks.deployBastion`
-
-The option to deploy Azure Bastion in the virtual network.
-
-- Required: No
-- Type: bool
-
-### Parameter: `additionalVirtualNetworks.dnsServers`
-
-The list of DNS servers for the virtual network.
-
-- Required: No
-- Type: array
-
-### Parameter: `additionalVirtualNetworks.peerToHubNetwork`
-
-The option to peer the virtual network to the hub network.
-
-- Required: No
-- Type: bool
-
-### Parameter: `additionalVirtualNetworks.resourceGroupLockEnabled`
-
-Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group.
-
-- Required: No
-- Type: bool
-
-### Parameter: `additionalVirtualNetworks.resourceGroupName`
-
-The name of the virtual network resource group.
-
-- Required: No
-- Type: string
 
 ### Parameter: `additionalVirtualNetworks.useRemoteGateways`
 

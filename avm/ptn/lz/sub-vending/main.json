@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5164112596643368272"
+      "templateHash": "12335094864664793900"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1140,7 +1140,7 @@
           "type": "object",
           "nullable": true,
           "metadata": {
-            "description": "Required. The tags for the virtual network."
+            "description": "Optional. The tags for the virtual network."
           }
         },
         "subnets": {
@@ -1150,7 +1150,7 @@
           },
           "nullable": true,
           "metadata": {
-            "description": "Required. The subnets for the virtual network."
+            "description": "Optional. The subnets for the virtual network."
           }
         },
         "peerToHubNetwork": {
@@ -1984,7 +1984,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10320952273883038685"
+              "templateHash": "11698333163113233281"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2853,7 +2853,7 @@
                   "type": "object",
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. The tags for the virtual network."
+                    "description": "Optional. The tags for the virtual network."
                   }
                 },
                 "subnets": {
@@ -2863,7 +2863,7 @@
                   },
                   "nullable": true,
                   "metadata": {
-                    "description": "Required. The subnets for the virtual network."
+                    "description": "Optional. The subnets for the virtual network."
                   }
                 },
                 "peerToHubNetwork": {
