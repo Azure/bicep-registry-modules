@@ -1542,7 +1542,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
             ? createBastionNsg.outputs.resourceId
             : resourceId(
                 subscriptionId,
-                virtualNetworkResourceGroupName,
+                vnet.?resourceGroupName ?? 'rsg-vnet-${vnet.name}-${deployment().location}-${i}',
                 'Microsoft.Network/networkSecurityGroups',
                 '${createAdditionalVnetNsgs[i].outputs.name}'
               )
