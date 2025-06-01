@@ -16,7 +16,6 @@ import { bastionType } from 'modules/subResourceWrapper.bicep'
 import { pimRoleAssignmentTypeType } from 'modules/subResourceWrapper.bicep'
 import { userAssignedIdentityType } from 'modules/subResourceWrapper.bicep'
 import { virtualNetworkType } from 'modules/subResourceWrapper.bicep'
-import { nsgSecurityRuleType } from 'modules/subResourceWrapper.bicep'
 
 // PARAMETERS
 

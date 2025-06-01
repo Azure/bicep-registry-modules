@@ -22,11 +22,9 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
 | `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities/federatedIdentityCredentials) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities/federatedIdentityCredentials` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities/federatedIdentityCredentials) |
-| `Microsoft.Management/managementGroups/subscriptions` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2021-04-01/managementGroups/subscriptions) |
-| `Microsoft.Network/bastionHosts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/bastionHosts) |
+| `Microsoft.Management/managementGroups/subscriptions` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Management/2023-04-01/managementGroups/subscriptions) |
+| `Microsoft.Network/bastionHosts` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/bastionHosts) |
 | `Microsoft.Network/natGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/natGateways) |
 | `Microsoft.Network/networkSecurityGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/networkSecurityGroups) |
 | `Microsoft.Network/privateDnsZones` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones) |
@@ -39,31 +37,30 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
 | `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
+| `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
 | `Microsoft.Network/publicIPPrefixes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPPrefixes) |
 | `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/hubVirtualNetworkConnections) |
-| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Resources/resourceGroups` | [2021-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2021-04-01/resourceGroups) |
-| `Microsoft.Resources/tags` | [2019-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2019-10-01/tags) |
-| `Microsoft.Storage/storageAccounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-05-01/storageAccounts) |
-| `Microsoft.Storage/storageAccounts/blobServices` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices) |
-| `Microsoft.Storage/storageAccounts/blobServices/containers` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers) |
-| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2022-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2022-09-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
-| `Microsoft.Storage/storageAccounts/fileServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/fileServices) |
-| `Microsoft.Storage/storageAccounts/fileServices/shares` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/fileServices/shares) |
-| `Microsoft.Storage/storageAccounts/localUsers` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/localUsers) |
-| `Microsoft.Storage/storageAccounts/managementPolicies` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-01-01/storageAccounts/managementPolicies) |
-| `Microsoft.Storage/storageAccounts/queueServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices) |
-| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/queueServices/queues) |
-| `Microsoft.Storage/storageAccounts/tableServices` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices) |
-| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2023-04-01/storageAccounts/tableServices/tables) |
+| `Microsoft.Resources/tags` | [2025-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2025-03-01/tags) |
+| `Microsoft.Storage/storageAccounts` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts) |
+| `Microsoft.Storage/storageAccounts/blobServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices) |
+| `Microsoft.Storage/storageAccounts/blobServices/containers` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers) |
+| `Microsoft.Storage/storageAccounts/blobServices/containers/immutabilityPolicies` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/blobServices/containers/immutabilityPolicies) |
+| `Microsoft.Storage/storageAccounts/fileServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices) |
+| `Microsoft.Storage/storageAccounts/fileServices/shares` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/fileServices/shares) |
+| `Microsoft.Storage/storageAccounts/localUsers` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/localUsers) |
+| `Microsoft.Storage/storageAccounts/managementPolicies` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/managementPolicies) |
+| `Microsoft.Storage/storageAccounts/queueServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices) |
+| `Microsoft.Storage/storageAccounts/queueServices/queues` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/queueServices/queues) |
+| `Microsoft.Storage/storageAccounts/tableServices` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices) |
+| `Microsoft.Storage/storageAccounts/tableServices/tables` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Storage/2024-01-01/storageAccounts/tableServices/tables) |
 | `Microsoft.Subscription/aliases` | [2021-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Subscription/2021-10-01/aliases) |
 
 ## Usage examples
@@ -74,17 +71,325 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/lz/sub-vending:<version>`.
 
-- [Deploy subscription with Bastion.](#example-1-deploy-subscription-with-bastion)
-- [Using only defaults.](#example-2-using-only-defaults)
-- [Hub and spoke topology.](#example-3-hub-and-spoke-topology)
-- [Hub and spoke topology with NAT gateway.](#example-4-hub-and-spoke-topology-with-nat-gateway)
-- [Using PIM Active Role assignments.](#example-5-using-pim-active-role-assignments)
-- [Using PIM Eligible Role assignments.](#example-6-using-pim-eligible-role-assignments)
-- [Using RBAC conditions.](#example-7-using-rbac-conditions)
-- [Using user-assigned managed identities.](#example-8-using-user-assigned-managed-identities)
-- [Vwan topology.](#example-9-vwan-topology)
+- [Multiple virtual networks.](#example-1-multiple-virtual-networks)
+- [Deploy subscription with Bastion.](#example-2-deploy-subscription-with-bastion)
+- [Using only defaults.](#example-3-using-only-defaults)
+- [Hub and spoke topology.](#example-4-hub-and-spoke-topology)
+- [Hub and spoke topology with NAT gateway.](#example-5-hub-and-spoke-topology-with-nat-gateway)
+- [Using PIM Active Role assignments.](#example-6-using-pim-active-role-assignments)
+- [Using PIM Eligible Role assignments.](#example-7-using-pim-eligible-role-assignments)
+- [Using RBAC conditions.](#example-8-using-rbac-conditions)
+- [Using user-assigned managed identities.](#example-9-using-user-assigned-managed-identities)
+- [Vwan topology.](#example-10-vwan-topology)
 
-### Example 1: _Deploy subscription with Bastion._
+### Example 1: _Multiple virtual networks._
+
+This instance deploys a subscription with a multiple virtual networks.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
+  name: 'subVendingDeployment'
+  params: {
+    additionalVirtualNetworks: [
+      {
+        addressPrefixes: [
+          '10.120.0.0/16'
+        ]
+        location: '<location>'
+        name: '<name>'
+        resourceGroupName: '<resourceGroupName>'
+        subnets: [
+          {
+            addressPrefix: '10.120.1.0/24'
+            name: 'Subnet1'
+            networkSecurityGroup: {
+              location: '<location>'
+              name: '<name>'
+              securityRules: [
+                {
+                  name: 'Allow-HTTPS'
+                  properties: {
+                    access: 'Allow'
+                    description: 'Allow HTTPS'
+                    destinationAddressPrefix: '*'
+                    destinationPortRange: '443'
+                    direction: 'Inbound'
+                    priority: 100
+                    protocol: 'Tcp'
+                    sourceAddressPrefix: '*'
+                    sourcePortRange: '*'
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+      {
+        addressPrefixes: [
+          '10.90.0.0/16'
+        ]
+        location: '<location>'
+        name: '<name>'
+        peerToHubNetwork: true
+      }
+    ]
+    hubNetworkResourceId: '<hubNetworkResourceId>'
+    resourceProviders: {}
+    subscriptionAliasEnabled: true
+    subscriptionAliasName: '<subscriptionAliasName>'
+    subscriptionBillingScope: '<subscriptionBillingScope>'
+    subscriptionDisplayName: '<subscriptionDisplayName>'
+    subscriptionManagementGroupAssociationEnabled: true
+    subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
+    subscriptionTags: {
+      namePrefix: '<namePrefix>'
+      serviceShort: '<serviceShort>'
+    }
+    subscriptionWorkload: 'Production'
+    virtualNetworkAddressSpace: [
+      '10.110.0.0/16'
+    ]
+    virtualNetworkEnabled: true
+    virtualNetworkLocation: '<virtualNetworkLocation>'
+    virtualNetworkName: '<virtualNetworkName>'
+    virtualNetworkPeeringEnabled: true
+    virtualNetworkResourceGroupLockEnabled: false
+    virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
+    virtualNetworkSubnets: [
+      {
+        addressPrefix: '10.110.1.0/24'
+        name: 'Subnet1'
+      }
+    ]
+    virtualNetworkUseRemoteGateways: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "additionalVirtualNetworks": {
+      "value": [
+        {
+          "addressPrefixes": [
+            "10.120.0.0/16"
+          ],
+          "location": "<location>",
+          "name": "<name>",
+          "resourceGroupName": "<resourceGroupName>",
+          "subnets": [
+            {
+              "addressPrefix": "10.120.1.0/24",
+              "name": "Subnet1",
+              "networkSecurityGroup": {
+                "location": "<location>",
+                "name": "<name>",
+                "securityRules": [
+                  {
+                    "name": "Allow-HTTPS",
+                    "properties": {
+                      "access": "Allow",
+                      "description": "Allow HTTPS",
+                      "destinationAddressPrefix": "*",
+                      "destinationPortRange": "443",
+                      "direction": "Inbound",
+                      "priority": 100,
+                      "protocol": "Tcp",
+                      "sourceAddressPrefix": "*",
+                      "sourcePortRange": "*"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "addressPrefixes": [
+            "10.90.0.0/16"
+          ],
+          "location": "<location>",
+          "name": "<name>",
+          "peerToHubNetwork": true
+        }
+      ]
+    },
+    "hubNetworkResourceId": {
+      "value": "<hubNetworkResourceId>"
+    },
+    "resourceProviders": {
+      "value": {}
+    },
+    "subscriptionAliasEnabled": {
+      "value": true
+    },
+    "subscriptionAliasName": {
+      "value": "<subscriptionAliasName>"
+    },
+    "subscriptionBillingScope": {
+      "value": "<subscriptionBillingScope>"
+    },
+    "subscriptionDisplayName": {
+      "value": "<subscriptionDisplayName>"
+    },
+    "subscriptionManagementGroupAssociationEnabled": {
+      "value": true
+    },
+    "subscriptionManagementGroupId": {
+      "value": "bicep-lz-vending-automation-child"
+    },
+    "subscriptionTags": {
+      "value": {
+        "namePrefix": "<namePrefix>",
+        "serviceShort": "<serviceShort>"
+      }
+    },
+    "subscriptionWorkload": {
+      "value": "Production"
+    },
+    "virtualNetworkAddressSpace": {
+      "value": [
+        "10.110.0.0/16"
+      ]
+    },
+    "virtualNetworkEnabled": {
+      "value": true
+    },
+    "virtualNetworkLocation": {
+      "value": "<virtualNetworkLocation>"
+    },
+    "virtualNetworkName": {
+      "value": "<virtualNetworkName>"
+    },
+    "virtualNetworkPeeringEnabled": {
+      "value": true
+    },
+    "virtualNetworkResourceGroupLockEnabled": {
+      "value": false
+    },
+    "virtualNetworkResourceGroupName": {
+      "value": "<virtualNetworkResourceGroupName>"
+    },
+    "virtualNetworkSubnets": {
+      "value": [
+        {
+          "addressPrefix": "10.110.1.0/24",
+          "name": "Subnet1"
+        }
+      ]
+    },
+    "virtualNetworkUseRemoteGateways": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/lz/sub-vending:<version>'
+
+param additionalVirtualNetworks = [
+  {
+    addressPrefixes: [
+      '10.120.0.0/16'
+    ]
+    location: '<location>'
+    name: '<name>'
+    resourceGroupName: '<resourceGroupName>'
+    subnets: [
+      {
+        addressPrefix: '10.120.1.0/24'
+        name: 'Subnet1'
+        networkSecurityGroup: {
+          location: '<location>'
+          name: '<name>'
+          securityRules: [
+            {
+              name: 'Allow-HTTPS'
+              properties: {
+                access: 'Allow'
+                description: 'Allow HTTPS'
+                destinationAddressPrefix: '*'
+                destinationPortRange: '443'
+                direction: 'Inbound'
+                priority: 100
+                protocol: 'Tcp'
+                sourceAddressPrefix: '*'
+                sourcePortRange: '*'
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+  {
+    addressPrefixes: [
+      '10.90.0.0/16'
+    ]
+    location: '<location>'
+    name: '<name>'
+    peerToHubNetwork: true
+  }
+]
+param hubNetworkResourceId = '<hubNetworkResourceId>'
+param resourceProviders = {}
+param subscriptionAliasEnabled = true
+param subscriptionAliasName = '<subscriptionAliasName>'
+param subscriptionBillingScope = '<subscriptionBillingScope>'
+param subscriptionDisplayName = '<subscriptionDisplayName>'
+param subscriptionManagementGroupAssociationEnabled = true
+param subscriptionManagementGroupId = 'bicep-lz-vending-automation-child'
+param subscriptionTags = {
+  namePrefix: '<namePrefix>'
+  serviceShort: '<serviceShort>'
+}
+param subscriptionWorkload = 'Production'
+param virtualNetworkAddressSpace = [
+  '10.110.0.0/16'
+]
+param virtualNetworkEnabled = true
+param virtualNetworkLocation = '<virtualNetworkLocation>'
+param virtualNetworkName = '<virtualNetworkName>'
+param virtualNetworkPeeringEnabled = true
+param virtualNetworkResourceGroupLockEnabled = false
+param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
+param virtualNetworkSubnets = [
+  {
+    addressPrefix: '10.110.1.0/24'
+    name: 'Subnet1'
+  }
+]
+param virtualNetworkUseRemoteGateways = false
+```
+
+</details>
+<p>
+
+### Example 2: _Deploy subscription with Bastion._
 
 This instance deploys a subscription with a bastion host.
 
@@ -273,7 +578,7 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 2: _Using only defaults._
+### Example 3: _Using only defaults._
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -375,7 +680,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 3: _Hub and spoke topology._
+### Example 4: _Hub and spoke topology._
 
 This instance deploys a subscription with a hub-spoke network topology.
 
@@ -409,6 +714,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+        description: 'Network contributor role'
         principalId: '<principalId>'
         principalType: 'User'
         relativeScope: '<relativeScope>'
@@ -519,6 +825,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+          "description": "Network contributor role",
           "principalId": "<principalId>",
           "principalType": "User",
           "relativeScope": "<relativeScope>"
@@ -641,6 +948,7 @@ param roleAssignmentEnabled = true
 param roleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+    description: 'Network contributor role'
     principalId: '<principalId>'
     principalType: 'User'
     relativeScope: '<relativeScope>'
@@ -698,7 +1006,7 @@ param virtualNetworkUseRemoteGateways = false
 </details>
 <p>
 
-### Example 4: _Hub and spoke topology with NAT gateway._
+### Example 5: _Hub and spoke topology with NAT gateway._
 
 This instance deploys a subscription with a hub-spoke network topology with NAT gateway.
 
@@ -942,7 +1250,7 @@ param virtualNetworkSubnets = [
 </details>
 <p>
 
-### Example 5: _Using PIM Active Role assignments._
+### Example 6: _Using PIM Active Role assignments._
 
 This instance deploys the module with PIM Active Role assignments.
 
@@ -1138,7 +1446,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 6: _Using PIM Eligible Role assignments._
+### Example 7: _Using PIM Eligible Role assignments._
 
 This instance deploys the module with PIM Eligible Role assignments.
 
@@ -1312,7 +1620,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 7: _Using RBAC conditions._
+### Example 8: _Using RBAC conditions._
 
 This instance deploys the module with RBAC conditions for the role assignments.
 
@@ -1481,7 +1789,7 @@ param subscriptionWorkload = 'Production'
 </details>
 <p>
 
-### Example 8: _Using user-assigned managed identities._
+### Example 9: _Using user-assigned managed identities._
 
 This instance deploys the module with user-assigned managed identities.
 
@@ -1732,7 +2040,7 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 </details>
 <p>
 
-### Example 9: _Vwan topology._
+### Example 10: _Vwan topology._
 
 This instance deploys a subscription with a vwan network topology.
 
@@ -4595,20 +4903,17 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/pim-role-assignment:0.1.0` | Remote reference |
-| `br/public:avm/ptn/authorization/role-assignment:0.2.0` | Remote reference |
-| `br/public:avm/ptn/authorization/role-assignment:0.2.1` | Remote reference |
-| `br/public:avm/res/managed-identity/user-assigned-identity:0.4.0` | Remote reference |
+| `br/public:avm/ptn/authorization/pim-role-assignment:0.1.1` | Remote reference |
+| `br/public:avm/ptn/authorization/role-assignment:0.2.2` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
-| `br/public:avm/res/network/bastion-host:0.5.0` | Remote reference |
-| `br/public:avm/res/network/nat-gateway:1.2.1` | Remote reference |
+| `br/public:avm/res/network/bastion-host:0.6.1` | Remote reference |
+| `br/public:avm/res/network/nat-gateway:1.2.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
-| `br/public:avm/res/network/private-dns-zone:0.7.0` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.5.1` | Remote reference |
+| `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
-| `br/public:avm/res/resources/resource-group:0.4.0` | Remote reference |
-| `br/public:avm/res/storage/storage-account:0.15.0` | Remote reference |
+| `br/public:avm/res/resources/resource-group:0.4.1` | Remote reference |
+| `br/public:avm/res/storage/storage-account:0.20.0` | Remote reference |
 
 ## Data Collection
 
