@@ -19,7 +19,7 @@ Optional. A string array that can be specified to run only Pester tests with the
 Optional. A switch parameter that triggers a Pester test for the module
 
 .PARAMETER ValidateOrDeployParameters
-Optional. An object consisting of the components that are required when using the Validate test or DeploymentTest switch parameter. Mandatory if the DeploymentTest/ValidationTest switches are set. The e2eIgnore file in test cases will not execute a deployment.
+Optional. An object consisting of the components that are required when using the Validate test or DeploymentTest switch parameter. Mandatory if the DeploymentTest/ValidationTest switches are set.
 
 .PARAMETER DeploymentTest
 Optional. A switch parameter that triggers the deployment of the module
