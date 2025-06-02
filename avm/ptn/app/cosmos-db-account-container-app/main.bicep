@@ -120,10 +120,6 @@ func sanitizeName(name string) string => toLower(replace(replace(name, '__', '_'
 
 var tiersList = map(web.?tiers ?? [{ name: '' }], wt => wt.name)
 
-var databaseEndpoint = azureCosmosDBAccount.outputs.endpoint
-
-var userAssignedManagedIdentityTenantId = subscription().tenantId
-
 module azureContainerAppsApp 'br/public:avm/res/app/container-app:0.16.0' = [
   for (tier, index) in web.?tiers ?? [{}]: {
     params: {
@@ -175,8 +171,8 @@ module azureContainerAppsApp 'br/public:avm/res/app/container-app:0.16.0' = [
               )
             : env.?knownValue != null
                 ? {
-                    AzureCosmosDBEndpoint: databaseEndpoint
-                    ManagedIdentityTenantId: userAssignedManagedIdentityTenantId
+                    AzureCosmosDBEndpoint: azureCosmosDBAccount.outputs.endpoint
+                    ManagedIdentityTenantId: subscription().tenantId
                   }[env.knownValue]
                 : env.value ?? ''
         })
