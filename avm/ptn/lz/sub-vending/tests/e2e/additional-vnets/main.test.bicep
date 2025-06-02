@@ -50,16 +50,16 @@ module testDeployment '../../../main.bicep' = {
     virtualNetworkResourceGroupLockEnabled: false
     additionalVirtualNetworks: [
       {
-        name: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}-2'
+        name: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}-1'
         location: resourceLocation
         addressPrefixes: ['10.120.0.0/16']
-        resourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}-2'
+        resourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}-1'
         subnets: [
           {
             name: 'Subnet1'
             addressPrefix: '10.120.1.0/24'
             networkSecurityGroup: {
-              name: 'nsg-${resourceLocation}-hs-${namePrefix}-${serviceShort}-2'
+              name: 'nsg-${resourceLocation}-hs-${namePrefix}-${serviceShort}-1'
               location: resourceLocation
               securityRules: [
                 {
@@ -82,7 +82,7 @@ module testDeployment '../../../main.bicep' = {
         ]
       }
       {
-        name: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}-3'
+        name: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}-2'
         location: resourceLocation
         addressPrefixes: ['10.90.0.0/16']
         peerToHubNetwork: false

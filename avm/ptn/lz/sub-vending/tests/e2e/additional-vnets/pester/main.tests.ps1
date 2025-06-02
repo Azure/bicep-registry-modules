@@ -62,8 +62,8 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     Context 'Networking - Hub Spoke Tests' {
         BeforeAll {
             $vnetHs = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -Name "vnet-$location-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
-            Select-AzSubscription -SubscriptionId $subscriptionId
-            $allVnets = Get-AzVirtualNetwork -Name "vnet-$location-hs-$namePrefix-$serviceShort-*" -ErrorAction SilentlyContinue
+            $additionalVnet1 = Get-AzVirtualNetwork -Name "vnet-$location-hs-$namePrefix-$serviceShort-1" -ErrorAction SilentlyContinue
+            $additionalVnet2 = Get-AzVirtualNetwork -Name "vnet-$location-hs-$namePrefix-$serviceShort-2" -ErrorAction SilentlyContinue
         }
 
         It "Should have a Virtual Network in the correct Resource Group (rsg-$location-net-hs-$namePrefix-$serviceShort)" {
@@ -72,6 +72,8 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
 
         It "Should have a Virtual Network with the correct name (vnet-$location-hs-$namePrefix-$serviceShort)" {
             $vnetHs.Name | Should -Be "vnet-$location-hs-$namePrefix-$serviceShort"
+            $additionalVnet1.Name | Should -Be "vnet-$location-hs-$namePrefix-$serviceShort-1"
+            $additionalVnet2.Name | Should -Be "vnet-$location-hs-$namePrefix-$serviceShort-2"
         }
 
         It 'Should have a Virtual Network with the correct location' {
@@ -80,6 +82,8 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
 
         It 'Should have a Virtual Network with the correct address space (10.110.0.0/16)' {
             $vnetHs.AddressSpace.AddressPrefixes | Should -Be '10.110.0.0/16'
+            $additionalVnet1.AddressSpace.AddressPrefixes | Should -Be '10.120.0.0/16'
+            $additionalVnet2.AddressSpace.AddressPrefixes | Should -Be '10.90.0.0/16'
         }
 
         It 'Should have a Virtual Network with DDoS protection disabled' {

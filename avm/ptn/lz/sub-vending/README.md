@@ -2039,6 +2039,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     roleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+        description: 'Network contributor role'
         principalId: '<principalId>'
         relativeScope: '<relativeScope>'
       }
@@ -2113,6 +2114,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "definition": "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+          "description": "Network contributor role",
           "principalId": "<principalId>",
           "relativeScope": "<relativeScope>"
         }
@@ -2195,6 +2197,7 @@ param roleAssignmentEnabled = true
 param roleAssignments = [
   {
     definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
+    description: 'Network contributor role'
     principalId: '<principalId>'
     relativeScope: '<relativeScope>'
   }
