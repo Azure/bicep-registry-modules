@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-Creates the moduleIndex.json file for the AVM modules that is used by Visual Studio Code and other IDEs to provide the intellisense list of modules from the Bicep public registry.
+Creates the moduleIndex.json file for the AVM modules that is used by Visual Studio Code and other IDEs to provide the intellisense list of modules from the Bicep public registry. Modules marked as deprecated with a DEPRECATED.md file will be excluded.
 
 .PARAMETER storageAccountName
 The name of the Azure Storage Account where the moduleIndex.json file is stored. Default is 'biceplivedatasaprod'.
@@ -26,7 +26,9 @@ If specified, the last version of the moduleIndex.json file that is downloaded f
 .DESCRIPTION
 Creates the moduleIndex.json file for the AVM modules that is used by Visual Studio Code and other IDEs to provide the intellisense list of modules from the Bicep public registry.
 
-Also has error handling to cope with a module not being published fully but will not prevent the script from completeing each time.
+Modules are excluded from the moduleIndex.json file if they are marked as deprecated with a DEPRECATED.md file in the module's root directory. This applies to both main modules and child modules.
+
+Also has error handling to cope with a module not being published fully but will not prevent the script from completing each time.
 
 The script uses a merging strategy with the previous version of moduleIndex.json to ensure that the file is always up to date with the latest modules but previous versions are not removed, this can be changed by specifying the $doNotMergeWithLastModuleIndexJsonFileVersion parameter.
 
@@ -83,6 +85,19 @@ function Invoke-AvmJsonModuleIndexGeneration {
 
             foreach ($moduleName in $moduleNames) {
                 $modulePath = "$moduleGroupPath/$moduleName"
+
+                # Check if the module is deprecated by looking for a DEPRECATED.md file
+                if (Test-Path -Path "$modulePath/DEPRECATED.md") {
+                    Write-Verbose "Module '$modulePath' is marked as DEPRECATED. Skipping..." -Verbose
+                    continue
+                }
+
+                # Only proceed if the module has necessary files
+                if (-not (Test-Path -Path "$modulePath/main.json")) {
+                    Write-Verbose "Module '$modulePath' does not have main.json. Skipping..." -Verbose
+                    continue
+                }
+
                 $mainJsonPath = "$modulePath/main.json"
                 $tagListUrl = "https://mcr.microsoft.com/v2/bicep/$modulePath/tags/list"
 
@@ -96,6 +111,13 @@ function Invoke-AvmJsonModuleIndexGeneration {
                     Write-Verbose "  Possible child modules: $possibleChildModules" -Verbose
                     foreach ($possibleChildModule in $possibleChildModules) {
                         Write-Verbose "    Processing possible child module: $possibleChildModule" -Verbose
+
+                        # Check if child module is deprecated
+                        $childModuleIsDeprecated = Test-Path -Path "$modulePath/$possibleChildModule/DEPRECATED.md"
+                        if ($childModuleIsDeprecated) {
+                            Write-Verbose "      Child module '$possibleChildModule' is marked as DEPRECATED. Skipping..." -Verbose
+                            continue
+                        }
 
                         $checkChildModuleContainsRequiredFilesForPublishing = (Test-Path -Path "$modulePath/$possibleChildModule/main.bicep") -and (Test-Path -Path "$modulePath/$possibleChildModule/main.json") -and (Test-Path -Path "$modulePath/$possibleChildModule/README.md") -and (Test-Path -Path "$modulePath/$possibleChildModule/version.json")
                         Write-Verbose "      Child module contains required files for publishing?: $checkChildModuleContainsRequiredFilesForPublishing" -Verbose
@@ -111,8 +133,21 @@ function Invoke-AvmJsonModuleIndexGeneration {
 
                 foreach ($verifiedChildModule in $verifiedChildModules) {
                     $childModulePath = "$modulePath/$verifiedChildModule"
+
+                    # Double-check if the child module is deprecated (should already be filtered, but just to be safe)
+                    if (Test-Path -Path "$childModulePath/DEPRECATED.md") {
+                        Write-Verbose "  Child module '$childModulePath' is marked as DEPRECATED. Skipping..." -Verbose
+                        continue
+                    }
+
+                    # Double-check that the required files exist
+                    if (-not (Test-Path -Path "$childModulePath/main.json")) {
+                        Write-Verbose "  Child module '$childModulePath' does not have main.json. Skipping..." -Verbose
+                        continue
+                    }
+
                     $childModuleMainJsonPath = "$childModulePath/main.json"
-                    $childModuleTagListUrl = "https://mcr.microsoft.com/v2/bicep/$childModulePath$mod/tags/list"
+                    $childModuleTagListUrl = "https://mcr.microsoft.com/v2/bicep/$childModulePath/tags/list"
 
                     Add-ModuleToAvmJsonModuleIndex -modulePath $childModulePath -mainJsonPath $childModuleMainJsonPath -tagListUrl $childModuleTagListUrl
                 }
@@ -205,6 +240,29 @@ function Invoke-AvmJsonModuleIndexGeneration {
 }
 
 function Add-ModuleToAvmJsonModuleIndex {
+    <#
+    .SYNOPSIS
+    Adds a module to the module index data.
+
+    .DESCRIPTION
+    Processes a module to add to the AVM JSON module index. Retrieves the module's
+    tags and description and adds it to the module index data.
+
+    Note: The calling code already checks for DEPRECATED.md and ensures that main.json exists
+    before calling this function.
+
+    .PARAMETER modulePath
+    The path to the module.
+
+    .PARAMETER mainJsonPath
+    The path to the module's main.json file. Default is "$modulePath/main.json".
+
+    .PARAMETER tagListUrl
+    The URL to retrieve the module's tags. Default is "https://mcr.microsoft.com/v2/bicep/$modulePath/tags/list".
+
+    .OUTPUTS
+    Returns $true if no errors occurred, $false otherwise.
+    #>
     param (
         [Parameter(Mandatory = $true)]
         [string] $modulePath,
@@ -215,6 +273,9 @@ function Add-ModuleToAvmJsonModuleIndex {
         [Parameter(Mandatory = $false)]
         [string] $tagListUrl = "https://mcr.microsoft.com/v2/bicep/$modulePath/tags/list"
     )
+
+    # Note: We've already checked for DEPRECATED.md in the main script
+    # and verified that main.json exists, so we don't need to check again here
 
     try {
         Write-Verbose "Processing AVM Module '$modulePath'..." -Verbose
