@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "7549684289568509889"
+      "version": "0.36.1.42791",
+      "templateHash": "14230053369568529055"
     },
     "name": "Dev Center Project",
     "description": "This module deploys a Dev Center Project."
@@ -302,7 +302,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here. For example, \"general_i_v2\" or "
+                "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here. For example, \"general_i_v2\"."
               }
             },
             "name": {
@@ -880,8 +880,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "12343089474921387310"
+              "version": "0.36.1.42791",
+              "templateHash": "10376094136031250793"
             },
             "name": "Dev Center Project Environment Type",
             "description": "This module deploys a Dev Center Project Environment Type."
@@ -1261,8 +1261,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "4469995674450843452"
+              "version": "0.36.1.42791",
+              "templateHash": "13819882242836998242"
             },
             "name": "Dev Center Project Catalog",
             "description": "This module deploys a Dev Center Project Catalog."
@@ -1485,8 +1485,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "276996415619613909"
+              "version": "0.36.1.42791",
+              "templateHash": "10233674627917705989"
             },
             "name": "Dev Center Project Pool",
             "description": "This module deploys a Dev Center Project Pool."
@@ -1565,7 +1565,7 @@
                       "type": "string",
                       "nullable": true,
                       "metadata": {
-                        "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here. For example, \"general_i_v2\" or "
+                        "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here. For example, \"general_i_v2\"."
                       }
                     },
                     "name": {
@@ -1813,8 +1813,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "11800040437490436241"
+                      "version": "0.36.1.42791",
+                      "templateHash": "13472426796772435774"
                     },
                     "name": "Dev Center Project Pool Schedule",
                     "description": "This module deploys a Dev Center Project Pool Schedule."

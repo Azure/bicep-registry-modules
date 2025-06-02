@@ -1508,7 +1508,7 @@ The SKU configuration for the dev box definition. See "https://learn.microsoft.c
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`capacity`](#parameter-poolsdevboxdefinitionskucapacity) | int | If the SKU supports scale out/in then the capacity integer should be included. If scale out/in is not possible for the resource this may be omitted. |
-| [`family`](#parameter-poolsdevboxdefinitionskufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. For example, "general_i_v2" or  |
+| [`family`](#parameter-poolsdevboxdefinitionskufamily) | string | If the service has different generations of hardware, for the same SKU, then that can be captured here. For example, "general_i_v2". |
 | [`size`](#parameter-poolsdevboxdefinitionskusize) | string | The SKU size. When the name field is the combination of tier and some other value, this would be the standalone code. |
 
 ### Parameter: `pools.devBoxDefinition.sku.name`
@@ -1527,7 +1527,7 @@ If the SKU supports scale out/in then the capacity integer should be included. I
 
 ### Parameter: `pools.devBoxDefinition.sku.family`
 
-If the service has different generations of hardware, for the same SKU, then that can be captured here. For example, "general_i_v2" or 
+If the service has different generations of hardware, for the same SKU, then that can be captured here. For example, "general_i_v2".
 
 - Required: No
 - Type: string

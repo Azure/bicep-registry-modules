@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "12343089474921387310"
+      "version": "0.36.1.42791",
+      "templateHash": "10376094136031250793"
     },
     "name": "Dev Center Project Environment Type",
     "description": "This module deploys a Dev Center Project Environment Type."
