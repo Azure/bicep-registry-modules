@@ -83,7 +83,7 @@ runs:
             $excludeReason = Get-Content Join-Path $moduleTestFilePath '.e2eignore'
             excludeMessage = "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeReason"
 
-            Write-Output "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeMessage" >> $env:VALIDATE_TEST_EXECUTION_RESULT
+            Write-Output "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeMessage"
             Write-Warning "Skipping deployment for ${{ inputs.templateFilePath }}: $excludeMessage"
           } else {
             Write-Output "File '.e2eignore' does not exist in the folder: $moduleTestFilePath" -Verbose
