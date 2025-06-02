@@ -323,7 +323,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
     name: sku
   }
   properties: {
-    allowProjectManagement: true // allows project management for Cognitive Services accounts in AI Foundry - FDP updates
+    allowProjectManagement: false // allows project management for Cognitive Services accounts in AI Foundry - FDP updates
     customSubDomainName: customSubDomainName
     networkAcls: !empty(networkAcls ?? {})
       ? {
