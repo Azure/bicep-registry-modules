@@ -187,7 +187,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
   name: name
   location: location
   tags: tags
@@ -265,6 +265,7 @@ module keyVault_accessPolicies 'access-policy/main.bicep' = if (!empty(accessPol
   params: {
     keyVaultName: keyVault.name
     accessPolicies: accessPolicies
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -281,6 +282,7 @@ module keyVault_secrets 'secret/main.bicep' = [
       contentType: secret.?contentType
       tags: secret.?tags ?? tags
       roleAssignments: secret.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -302,11 +304,12 @@ module keyVault_keys 'key/main.bicep' = [
       tags: key.?tags ?? tags
       roleAssignments: key.?roleAssignments
       rotationPolicy: key.?rotationPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
 
-module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-keyVault-PrivateEndpoint-${index}'
     scope: resourceGroup(
