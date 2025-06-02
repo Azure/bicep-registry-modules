@@ -1982,8 +1982,8 @@ function Initialize-ReadMe {
     $initialContent = @(
         "# $moduleName ``[$headerType]``",
         '',
-        ((Test-Path $deprecatedModuleFileContent) ? $deprecatedModuleFileContent : $null),
-        ((Test-Path $deprecatedModuleFileContent) ? '' : $null),
+        ((Test-Path $deprecatedModuleFilePath) ? $deprecatedModuleFileContent : $null),
+        ((Test-Path $deprecatedModuleFilePath) ? '' : $null),
         ((Test-Path $orphanedReadMeFilePath) ? $orphanedReadMeContent : $null),
         ((Test-Path $orphanedReadMeFilePath) ? '' : $null),
         ((Test-Path $movedReadMeFilePath) ? $movedReadMeContent : $null),
