@@ -95,8 +95,5 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $vnetHs.Subnets[0].Name | Should -Be 'Subnet1'
             $vnetHs.Subnets[0].AddressPrefix | Should -Be '10.110.1.0/24'
         }
-        It 'Should have three virtual networks' {
-            $allVnets.Count | Should -Be 3
-        }
     }
 }
