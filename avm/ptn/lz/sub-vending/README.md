@@ -136,10 +136,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         ]
         location: '<location>'
         name: '<name>'
-        peerToHubNetwork: true
+        peerToHubNetwork: false
       }
     ]
-    hubNetworkResourceId: '<hubNetworkResourceId>'
     resourceProviders: {}
     subscriptionAliasEnabled: true
     subscriptionAliasName: '<subscriptionAliasName>'
@@ -158,7 +157,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     virtualNetworkEnabled: true
     virtualNetworkLocation: '<virtualNetworkLocation>'
     virtualNetworkName: '<virtualNetworkName>'
-    virtualNetworkPeeringEnabled: true
     virtualNetworkResourceGroupLockEnabled: false
     virtualNetworkResourceGroupName: '<virtualNetworkResourceGroupName>'
     virtualNetworkSubnets: [
@@ -167,7 +165,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         name: 'Subnet1'
       }
     ]
-    virtualNetworkUseRemoteGateways: false
   }
 }
 ```
@@ -226,12 +223,9 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           ],
           "location": "<location>",
           "name": "<name>",
-          "peerToHubNetwork": true
+          "peerToHubNetwork": false
         }
       ]
-    },
-    "hubNetworkResourceId": {
-      "value": "<hubNetworkResourceId>"
     },
     "resourceProviders": {
       "value": {}
@@ -277,9 +271,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     "virtualNetworkName": {
       "value": "<virtualNetworkName>"
     },
-    "virtualNetworkPeeringEnabled": {
-      "value": true
-    },
     "virtualNetworkResourceGroupLockEnabled": {
       "value": false
     },
@@ -293,9 +284,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           "name": "Subnet1"
         }
       ]
-    },
-    "virtualNetworkUseRemoteGateways": {
-      "value": false
     }
   }
 }
@@ -352,10 +340,9 @@ param additionalVirtualNetworks = [
     ]
     location: '<location>'
     name: '<name>'
-    peerToHubNetwork: true
+    peerToHubNetwork: false
   }
 ]
-param hubNetworkResourceId = '<hubNetworkResourceId>'
 param resourceProviders = {}
 param subscriptionAliasEnabled = true
 param subscriptionAliasName = '<subscriptionAliasName>'
@@ -374,7 +361,6 @@ param virtualNetworkAddressSpace = [
 param virtualNetworkEnabled = true
 param virtualNetworkLocation = '<virtualNetworkLocation>'
 param virtualNetworkName = '<virtualNetworkName>'
-param virtualNetworkPeeringEnabled = true
 param virtualNetworkResourceGroupLockEnabled = false
 param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 param virtualNetworkSubnets = [
@@ -383,7 +369,6 @@ param virtualNetworkSubnets = [
     name: 'Subnet1'
   }
 ]
-param virtualNetworkUseRemoteGateways = false
 ```
 
 </details>
@@ -1816,7 +1801,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     }
     subscriptionWorkload: 'Production'
     userAssignedIdentitiesResourceGroupLockEnabled: false
-    userAssignedIdentityResourceGroupName: 'rg-identity-ssid'
+    userAssignedIdentityResourceGroupName: 'rg-identity-ssmsi'
     userAssignedManagedIdentities: [
       {
         federatedIdentityCredentials: [
@@ -1830,7 +1815,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           }
         ]
         location: '<location>'
-        name: 'test-identity-ssid'
+        name: 'test-identity-ssmsi'
         roleAssignments: [
           {
             definition: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
@@ -1843,10 +1828,6 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
             relativeScope: '<relativeScope>'
           }
         ]
-        tags: {
-          namePrefix: '<namePrefix>'
-          serviceShort: '<serviceShort>'
-        }
       }
     ]
     virtualNetworkAddressSpace: [
@@ -1910,7 +1891,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": false
     },
     "userAssignedIdentityResourceGroupName": {
-      "value": "rg-identity-ssid"
+      "value": "rg-identity-ssmsi"
     },
     "userAssignedManagedIdentities": {
       "value": [
@@ -1926,7 +1907,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
             }
           ],
           "location": "<location>",
-          "name": "test-identity-ssid",
+          "name": "test-identity-ssmsi",
           "roleAssignments": [
             {
               "definition": "/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c",
@@ -1938,11 +1919,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
               "description": "Virtual Machine Local User Login",
               "relativeScope": "<relativeScope>"
             }
-          ],
-          "tags": {
-            "namePrefix": "<namePrefix>",
-            "serviceShort": "<serviceShort>"
-          }
+          ]
         }
       ]
     },
@@ -1994,7 +1971,7 @@ param subscriptionTags = {
 }
 param subscriptionWorkload = 'Production'
 param userAssignedIdentitiesResourceGroupLockEnabled = false
-param userAssignedIdentityResourceGroupName = 'rg-identity-ssid'
+param userAssignedIdentityResourceGroupName = 'rg-identity-ssmsi'
 param userAssignedManagedIdentities = [
   {
     federatedIdentityCredentials: [
@@ -2008,7 +1985,7 @@ param userAssignedManagedIdentities = [
       }
     ]
     location: '<location>'
-    name: 'test-identity-ssid'
+    name: 'test-identity-ssmsi'
     roleAssignments: [
       {
         definition: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
@@ -2021,10 +1998,6 @@ param userAssignedManagedIdentities = [
         relativeScope: '<relativeScope>'
       }
     ]
-    tags: {
-      namePrefix: '<namePrefix>'
-      serviceShort: '<serviceShort>'
-    }
   }
 ]
 param virtualNetworkAddressSpace = [

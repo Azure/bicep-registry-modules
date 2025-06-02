@@ -62,7 +62,8 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     Context 'Networking - Hub Spoke Tests' {
         BeforeAll {
             $vnetHs = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -Name "vnet-$location-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
-            $allVnets = Get-AzVirtualNetwork -Name "rsg-$location-net-hs-$namePrefix-$serviceShort-*" -ErrorAction SilentlyContinue
+            Select-AzSubscription -SubscriptionId $subscriptionId
+            $allVnets = Get-AzVirtualNetwork -Name "vnet-$location-hs-$namePrefix-$serviceShort-*" -ErrorAction SilentlyContinue
         }
 
         It "Should have a Virtual Network in the correct Resource Group (rsg-$location-net-hs-$namePrefix-$serviceShort)" {
@@ -90,7 +91,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $vnetHs.Subnets[0].Name | Should -Be 'Subnet1'
             $vnetHs.Subnets[0].AddressPrefix | Should -Be '10.110.1.0/24'
         }
-        It "Should have three virtual networks" {
+        It 'Should have three virtual networks' {
             $allVnets.Count | Should -Be 3
         }
     }
