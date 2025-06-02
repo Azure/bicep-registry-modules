@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "10450423548134049801"
+      "version": "0.36.1.42791",
+      "templateHash": "9991155189165523285"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic."
@@ -537,8 +537,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "1939762263992707789"
+              "version": "0.36.1.42791",
+              "templateHash": "6927939820196398915"
             },
             "name": "Event Grid System Topic Event Subscriptions",
             "description": "This module deploys an Event Grid System Topic Event Subscription."
@@ -714,7 +714,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('systemTopic', '2023-12-15-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), reference('systemTopic', '2023-12-15-preview', 'full').identity.principalId, null())]"
     },
     "location": {
       "type": "string",

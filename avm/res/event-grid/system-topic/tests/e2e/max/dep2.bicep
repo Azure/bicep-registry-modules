@@ -38,5 +38,8 @@ output queueName string = storageAccount::queueService::queue.name
 @description('The principal ID of the created Managed Identity.')
 output managedIdentityPrincipalId string = managedIdentity.properties.principalId
 
+@description('The resource ID of the created User Assigned Managed Identity.')
+output managedIdentityResourceId string = managedIdentity.id
+
 @description('The resource ID of the created Storage Account.')
 output storageAccountResourceId string = storageAccount.id

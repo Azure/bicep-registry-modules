@@ -143,3 +143,74 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
+
+// Test for issue #705: systemAssignedMIPrincipalId should be null when no managed identities are configured
+module testNoManagedIdentities '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-noMI'
+  params: {
+    name: '${namePrefix}${serviceShort}NoMI01'
+    location: resourceLocation
+    source: nestedDependencies.outputs.storageAccountResourceId
+    topicType: 'Microsoft.Storage.StorageAccounts'
+    // managedIdentities parameter is deliberately omitted to test default behavior (null)
+    tags: {
+      'test-scenario': 'no-managed-identities'
+    }
+  }
+}
+
+// Test for issue #705: systemAssignedMIPrincipalId should be null when only user-assigned MI is configured
+module testOnlyUserAssignedMI '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-onlyUserMI'
+  params: {
+    name: '${namePrefix}${serviceShort}UserMI01'
+    location: resourceLocation
+    source: nestedDependencies.outputs.storageAccountResourceId
+    topicType: 'Microsoft.Storage.StorageAccounts'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+      // systemAssigned is deliberately omitted (should be treated as false for the output's logic)
+    }
+    tags: {
+      'test-scenario': 'only-user-assigned-mi'
+    }
+  }
+}
+
+// Test for issue #705: systemAssignedMIPrincipalId should be null when systemAssigned is explicitly false
+module testSystemAssignedMIFalse '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-sysMIFalse'
+  params: {
+    name: '${namePrefix}${serviceShort}SysMIFalse01'
+    location: resourceLocation
+    source: nestedDependencies.outputs.storageAccountResourceId
+    topicType: 'Microsoft.Storage.StorageAccounts'
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        nestedDependencies.outputs.managedIdentityResourceId
+      ]
+    }
+    tags: {
+      'test-scenario': 'system-assigned-mi-false'
+    }
+  }
+}
+
+// =========== //
+//   Outputs   //
+// =========== //
+
+@description('The result of checking if systemAssignedMIPrincipalId is null when no managed identities are configured.')
+output systemAssignedMIPrincipalIdForNoMIIsNull_CheckResult bool = (testNoManagedIdentities.outputs.?systemAssignedMIPrincipalId == null)
+
+@description('The result of checking if systemAssignedMIPrincipalId is null when only user-assigned MI is configured.')
+output systemAssignedMIPrincipalIdForUserOnlyIsNull_CheckResult bool = (testOnlyUserAssignedMI.outputs.?systemAssignedMIPrincipalId == null)
+
+@description('The result of checking if systemAssignedMIPrincipalId is null when systemAssigned is explicitly false.')
+output systemAssignedMIPrincipalIdForSysMIFalseIsNull_CheckResult bool = (testSystemAssignedMIFalse.outputs.?systemAssignedMIPrincipalId == null)
