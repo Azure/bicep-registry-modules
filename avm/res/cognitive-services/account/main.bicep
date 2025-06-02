@@ -132,6 +132,9 @@ param deployments deploymentType[]?
 @description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
 param secretsExportConfiguration secretsExportConfigurationType?
 
+@description('Optional. Enable/Disable project management feature for AI Foundry.')
+param allowProjectManagement bool = false
+
 var enableReferencedModulesTelemetry = false
 
 var formattedUserAssignedIdentities = reduce(
@@ -323,7 +326,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
     name: sku
   }
   properties: {
-    allowProjectManagement: false // allows project management for Cognitive Services accounts in AI Foundry - FDP updates
+    allowProjectManagement: allowProjectManagement // allows project management for Cognitive Services accounts in AI Foundry - FDP updates
     customSubDomainName: customSubDomainName
     networkAcls: !empty(networkAcls ?? {})
       ? {
