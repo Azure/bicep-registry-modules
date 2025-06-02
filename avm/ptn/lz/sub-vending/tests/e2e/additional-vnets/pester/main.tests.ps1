@@ -62,6 +62,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     Context 'Networking - Hub Spoke Tests' {
         BeforeAll {
             $vnetHs = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -Name "vnet-$location-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
+            $vnetNsg = Get-AzNetworkSecurityGroup -Name "nsg-$location-net-hs-$namePrefix-$serviceShort-1" -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort"
             $additionalVnet1 = Get-AzVirtualNetwork -Name "vnet-$location-hs-$namePrefix-$serviceShort-1" -ErrorAction SilentlyContinue
             $additionalVnet2 = Get-AzVirtualNetwork -Name "vnet-$location-hs-$namePrefix-$serviceShort-2" -ErrorAction SilentlyContinue
         }
@@ -94,6 +95,11 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
         It "Should have a Virtual Network with a subnet created named 'Subnet1' with addressPrefix '10.110.1.0/24'" {
             $vnetHs.Subnets[0].Name | Should -Be 'Subnet1'
             $vnetHs.Subnets[0].AddressPrefix | Should -Be '10.110.1.0/24'
+        }
+
+        It 'Should have a Virtual Network with a Network Security Group (NSG) with one rule associated to Subnet1' {
+            ($additionalVnet1.Subnets[0].NetworkSecurityGroupText | ConvertFrom-Json).Id | Should -Be $vnetNsg.Id
+            ($vnetNsg.DefaultSecurityRulesText).Count | Should -Be 1
         }
     }
 }

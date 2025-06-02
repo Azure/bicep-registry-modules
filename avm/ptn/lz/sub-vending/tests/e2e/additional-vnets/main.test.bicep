@@ -86,6 +86,10 @@ module testDeployment '../../../main.bicep' = {
         location: resourceLocation
         addressPrefixes: ['10.90.0.0/16']
         peerToHubNetwork: false
+        deployNatGateway: true
+        natGatewayConfiguration: {
+          name: 'nat-gw-${resourceLocation}-hs-${namePrefix}-${serviceShort}-2'
+        }
       }
     ]
     resourceProviders: {}

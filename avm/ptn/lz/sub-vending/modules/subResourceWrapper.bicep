@@ -1463,6 +1463,54 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = if (virt
     ]
   }
 }
+module createAddiitonalNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = [
+  for (vnet, i) in additionalVirtualNetworks: if (!empty(vnet.?subnets ?? []) && (vnet.?deployNatGateway ?? false)) {
+    scope: resourceGroup(subscriptionId, vnet.?resourceGroupName ?? '')
+    dependsOn: [
+      createResourceGroupForadditionalLzNetworking
+      registerResourceProviders
+    ]
+    params: {
+      name: vnet.?natGatewayConfiguration.?name ?? 'nat-gw-${vnet.name}'
+      zone: vnet.?natGatewayConfiguration.?zones ?? 0
+      location: vnet.location
+      enableTelemetry: enableTelemetry
+      tags: vnet.?tags
+      publicIPAddressObjects: [
+        for publicIp in vnet.?natGatewayConfiguration.?publicIPAddressProperties ?? []: {
+          name: publicIp.?name ?? '${vnet.?natGatewayConfiguration.?name}-pip'
+          publicIPAddressSku: 'Standard'
+          publicIPAddressVersion: 'IPv4'
+          publicIPAllocationMethod: 'Static'
+          zones: publicIp.zones ?? (vnet.?natGatewayConfiguration.?zones != 0
+            ? [vnet.?natGatewayConfiguration.?zones]
+            : null)
+          skuTier: 'Regional'
+          ddosSettings: !empty(virtualNetworkDdosPlanResourceId)
+            ? {
+                ddosProtectionPlan: {
+                  id: virtualNetworkDdosPlanResourceId
+                }
+                protectionMode: 'Enabled'
+              }
+            : null
+          enableTelemetry: enableTelemetry
+          idleTimeoutInMinutes: 4
+        }
+      ]
+      publicIPPrefixObjects: [
+        for publicIpPrefix in vnet.?natGatewayConfiguration.?publicIPAddressPrefixesProperties ?? []: {
+          name: publicIpPrefix.?name ?? '${vnet.?natGatewayConfiguration.?name}-prefix'
+          location: vnet.location
+          prefixLength: publicIpPrefix.?prefixLength
+          customIPPrefix: publicIpPrefix.?customIPPrefix
+          tags: vnet.?tags
+          enableTelemetry: enableTelemetry
+        }
+      ]
+    }
+  }
+]
 
 module createBastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
   name: deploymentNames.createBastionHost
@@ -1546,7 +1594,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
                 'Microsoft.Network/networkSecurityGroups',
                 '${createAdditionalVnetNsgs[i].outputs.name}'
               )
-          natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
+          natGatewayResourceId: (vnet.?deployNatGateway ?? false) && (subnet.?associateWithNatGateway ?? false)
             ? createNatGateway.outputs.resourceId
             : null
         }
@@ -1993,6 +2041,12 @@ type virtualNetworkType = {
 
   @description('Optional. The option to deploy Azure Bastion in the virtual network.')
   deployBastion: bool?
+
+  @description('Optional. Flag to deploy a NAT gateway.')
+  deployNatGateway: bool?
+
+  @description('Optional. The configuration for deploying a NAT gateway.')
+  natGatewayConfiguration: natGatewayType?
 }
 
 @export()
