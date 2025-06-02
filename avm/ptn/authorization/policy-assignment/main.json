@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2126672396764471077"
+      "templateHash": "3232583895512445117"
     },
     "name": "Policy Assignments (All scopes)",
     "description": "This module deploys a Policy Assignment at a Management Group, Subscription or Resource Group scope."
@@ -171,7 +171,7 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview"
+        "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview."
       }
     },
     "enableTelemetry": {
@@ -265,7 +265,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10783625542125225559"
+              "templateHash": "16571041331828455729"
             },
             "name": "Policy Assignments (Management Group scope)",
             "description": "This module deploys a Policy Assignment at a Management Group scope."
@@ -410,7 +410,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview"
+                "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview."
               }
             }
           },
@@ -1011,7 +1011,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14101605250654342468"
+              "templateHash": "1309214929264356674"
             },
             "name": "Policy Assignments (Subscription scope)",
             "description": "This module deploys a Policy Assignment at a Subscription scope."
@@ -1135,7 +1135,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview"
+                "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview."
               }
             },
             "subscriptionId": {
@@ -1277,7 +1277,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13003023420704428336"
+              "templateHash": "11388691241992820794"
             },
             "name": "Policy Assignments (Resource Group scope)",
             "description": "This module deploys a Policy Assignment at a Resource Group scope."
@@ -1401,7 +1401,7 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview"
+                "description": "Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview."
               }
             },
             "subscriptionId": {
