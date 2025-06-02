@@ -1,10 +1,5 @@
 # Azure Compute Galleries `[Microsoft.Compute/galleries]`
 
-> This modules is Deprecated. This is important!
-> A second line needs to be added.
-> 
-> And, with an empty line separation, another line.
-
 This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).
 
 ## Navigation
