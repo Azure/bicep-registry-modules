@@ -26,23 +26,61 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
+// Dependencies for the main test (testDeployment loop)
+module depSourceForTestDeployment 'dependencies.bicep' = {
   scope: resourceGroup
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, resourceLocation)}-dep-main'
   params: {
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}'
-    storageQueueName: 'dep${namePrefix}sq${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}-main'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}main' // Unique SA name
+    storageQueueName: 'dep${namePrefix}sq${serviceShort}main'
     location: resourceLocation
   }
 }
 
-// Diagnostics
+// Dependencies for the noManagedIdentities test
+module depSourceForNoMI 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-dep-nomi'
+  params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}-nomi' // Not strictly needed by this test but part of dependencies module
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}nomi' // Unique SA name
+    storageQueueName: 'dep${namePrefix}sq${serviceShort}nomi'
+    location: resourceLocation
+  }
+}
+
+// Dependencies for the onlyUserAssignedMI test
+module depSourceForUserMI 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-dep-usermi'
+  params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}-usermi'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}usermi' // Unique SA name
+    storageQueueName: 'dep${namePrefix}sq${serviceShort}usermi'
+    location: resourceLocation
+  }
+}
+
+// Dependencies for the systemAssignedMIFalse test
+module depSourceForSysMIFalse 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-dep-sysmifalse'
+  params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}-sysmifalse'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}sysmifalse' // Unique SA name
+    storageQueueName: 'dep${namePrefix}sq${serviceShort}sysmifalse'
+    location: resourceLocation
+  }
+}
+
+
+// Diagnostics (shared)
 // ===========
 module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
   scope: resourceGroup
@@ -59,19 +97,19 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // ============== //
 // Test Execution //
 // ============== //
-@batchSize(1)
+@batchSize(1) // Serializes iterations of this specific loop
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: '${namePrefix}${serviceShort}001'
-      source: nestedDependencies.outputs.storageAccountResourceId
+      name: '${namePrefix}${serviceShort}001' // System Topic name
+      source: depSourceForTestDeployment.outputs.storageAccountResourceId // Unique source for this test
       topicType: 'Microsoft.Storage.StorageAccounts'
       location: resourceLocation
       eventSubscriptions: [
         {
-          name: '${namePrefix}${serviceShort}001'
+          name: '${namePrefix}${serviceShort}001sub' // Event Subscription name needs to be unique per topic
           expirationTimeUtc: '2099-01-01T11:00:21.715Z'
           filter: {
             isSubjectCaseSensitive: false
@@ -85,9 +123,9 @@ module testDeployment '../../../main.bicep' = [
           destination: {
             endpointType: 'StorageQueue'
             properties: {
-              resourceId: nestedDependencies.outputs.storageAccountResourceId
+              resourceId: depSourceForTestDeployment.outputs.storageAccountResourceId // Destination can be the same SA for the queue
               queueMessageTimeToLiveInSeconds: 86400
-              queueName: nestedDependencies.outputs.queueName
+              queueName: depSourceForTestDeployment.outputs.queueName
             }
           }
         }
@@ -115,23 +153,24 @@ module testDeployment '../../../main.bicep' = [
       }
       roleAssignments: [
         {
-          name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
+          name: guid(resourceGroup.id, '${namePrefix}${serviceShort}001', 'Owner')
           roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalId: depSourceForTestDeployment.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
-          name: guid('Custom seed ${namePrefix}${serviceShort}')
-          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          name: guid(resourceGroup.id, '${namePrefix}${serviceShort}001', 'Contributor')
+          roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c' // Contributor
+          principalId: depSourceForTestDeployment.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
+          name: guid(resourceGroup.id, '${namePrefix}${serviceShort}001', 'Reader')
           roleDefinitionIdOrName: subscriptionResourceId(
             'Microsoft.Authorization/roleDefinitions',
-            'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+            'acdd72a7-3385-48ef-bd42-f606fba81ae7' // Reader
           )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalId: depSourceForTestDeployment.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
       ]
@@ -144,36 +183,32 @@ module testDeployment '../../../main.bicep' = [
   }
 ]
 
-// Test for issue #705: systemAssignedMIPrincipalId should be null when no managed identities are configured
 module testNoManagedIdentities '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-noMI'
   params: {
-    name: '${namePrefix}${serviceShort}NoMI01'
+    name: '${namePrefix}${serviceShort}NoMI01' // System Topic name
     location: resourceLocation
-    source: nestedDependencies.outputs.storageAccountResourceId
+    source: depSourceForNoMI.outputs.storageAccountResourceId // Unique source
     topicType: 'Microsoft.Storage.StorageAccounts'
-    // managedIdentities parameter is deliberately omitted to test default behavior (null)
     tags: {
       'test-scenario': 'no-managed-identities'
     }
   }
 }
 
-// Test for issue #705: systemAssignedMIPrincipalId should be null when only user-assigned MI is configured
 module testOnlyUserAssignedMI '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-onlyUserMI'
   params: {
-    name: '${namePrefix}${serviceShort}UserMI01'
+    name: '${namePrefix}${serviceShort}UserMI01' // System Topic name
     location: resourceLocation
-    source: nestedDependencies.outputs.storageAccountResourceId
+    source: depSourceForUserMI.outputs.storageAccountResourceId // Unique source
     topicType: 'Microsoft.Storage.StorageAccounts'
     managedIdentities: {
       userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+        depSourceForUserMI.outputs.managedIdentityResourceId
       ]
-      // systemAssigned is deliberately omitted (should be treated as false for the output's logic)
     }
     tags: {
       'test-scenario': 'only-user-assigned-mi'
@@ -181,19 +216,18 @@ module testOnlyUserAssignedMI '../../../main.bicep' = {
   }
 }
 
-// Test for issue #705: systemAssignedMIPrincipalId should be null when systemAssigned is explicitly false
 module testSystemAssignedMIFalse '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-sysMIFalse'
   params: {
-    name: '${namePrefix}${serviceShort}SysMIFalse01'
+    name: '${namePrefix}${serviceShort}SysMIFalse01' // System Topic name
     location: resourceLocation
-    source: nestedDependencies.outputs.storageAccountResourceId
+    source: depSourceForSysMIFalse.outputs.storageAccountResourceId // Unique source
     topicType: 'Microsoft.Storage.StorageAccounts'
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
-        nestedDependencies.outputs.managedIdentityResourceId
+        depSourceForSysMIFalse.outputs.managedIdentityResourceId
       ]
     }
     tags: {

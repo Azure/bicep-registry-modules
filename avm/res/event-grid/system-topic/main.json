@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "9991155189165523285"
+      "templateHash": "12380166862385092833"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic."
@@ -395,7 +395,7 @@
     },
     "systemTopic": {
       "type": "Microsoft.EventGrid/systemTopics",
-      "apiVersion": "2023-12-15-preview",
+      "apiVersion": "2025-02-15",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
@@ -538,7 +538,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "6927939820196398915"
+              "templateHash": "3518838156342662190"
             },
             "name": "Event Grid System Topic Event Subscriptions",
             "description": "This module deploys an Event Grid System Topic Event Subscription."
@@ -629,12 +629,12 @@
             "systemTopic": {
               "existing": true,
               "type": "Microsoft.EventGrid/systemTopics",
-              "apiVersion": "2023-12-15-preview",
+              "apiVersion": "2025-02-15",
               "name": "[parameters('systemTopicName')]"
             },
             "eventSubscription": {
               "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
-              "apiVersion": "2023-12-15-preview",
+              "apiVersion": "2025-02-15",
               "name": "[format('{0}/{1}', parameters('systemTopicName'), parameters('name'))]",
               "properties": {
                 "deadLetterDestination": "[parameters('deadLetterDestination')]",
@@ -676,7 +676,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('systemTopic', '2023-12-15-preview', 'full').location]"
+              "value": "[reference('systemTopic', '2025-02-15', 'full').location]"
             }
           }
         }
@@ -714,14 +714,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), reference('systemTopic', '2023-12-15-preview', 'full').identity.principalId, null())]"
+      "value": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), reference('systemTopic', '2025-02-15', 'full').identity.principalId, null())]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('systemTopic', '2023-12-15-preview', 'full').location]"
+      "value": "[reference('systemTopic', '2025-02-15', 'full').location]"
     }
   }
 }

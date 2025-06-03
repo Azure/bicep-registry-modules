@@ -17,8 +17,8 @@ This module deploys an Event Grid System Topic.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.EventGrid/systemTopics` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/systemTopics) |
-| `Microsoft.EventGrid/systemTopics/eventSubscriptions` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/systemTopics/eventSubscriptions) |
+| `Microsoft.EventGrid/systemTopics` | [2025-02-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-02-15/systemTopics) |
+| `Microsoft.EventGrid/systemTopics/eventSubscriptions` | [2025-02-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-02-15/systemTopics/eventSubscriptions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -30,7 +30,7 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/system-topic:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Max](#example-2-max)
+- [Using large parameter set](#example-2-using-large-parameter-set)
 - [WAF-aligned](#example-3-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -107,7 +107,10 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Max_
+### Example 2: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -152,7 +155,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
           enableAdvancedFilteringOnArrays: true
           isSubjectCaseSensitive: false
         }
-        name: 'egstmax001'
+        name: 'egstmax001sub'
         retryPolicy: {
           eventTimeToLive: '120'
           maxDeliveryAttempts: 10
@@ -169,7 +172,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     }
     roleAssignments: [
       {
-        name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -181,6 +184,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
@@ -251,7 +255,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
             "enableAdvancedFilteringOnArrays": true,
             "isSubjectCaseSensitive": false
           },
-          "name": "egstmax001",
+          "name": "egstmax001sub",
           "retryPolicy": {
             "eventTimeToLive": "120",
             "maxDeliveryAttempts": 10
@@ -276,7 +280,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "c9beca28-efcf-4d1d-99aa-8f334484a2c2",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -288,6 +292,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
@@ -350,7 +355,7 @@ param eventSubscriptions = [
       enableAdvancedFilteringOnArrays: true
       isSubjectCaseSensitive: false
     }
-    name: 'egstmax001'
+    name: 'egstmax001sub'
     retryPolicy: {
       eventTimeToLive: '120'
       maxDeliveryAttempts: 10
@@ -367,7 +372,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -379,6 +384,7 @@ param roleAssignments = [
     roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
   }
   {
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
