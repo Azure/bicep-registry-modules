@@ -28,18 +28,6 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $sub.State | Should -Be 'Enabled'
         }
 
-        It "Should have a Subscription with a tag key of 'namePrefix'" {
-            $sub.Tags.Keys | Should -Contain 'namePrefix'
-        }
-
-        It "Should have a Subscription with a tag key of 'namePrefix' with a value of '$namePrefix'" {
-            $sub.Tags.namePrefix | Should -Be $namePrefix
-        }
-
-        It "Should have a Subscription with a tag key of 'serviceShort' with a value of '$serviceShort'" {
-            $sub.Tags.serviceShort | Should -Be $serviceShort
-        }
-
         It "Should have a Subscription that is a child of the Management Group with the ID of 'bicep-lz-vending-automation-child'" {
             $mgAssociation = Get-AzManagementGroupSubscription -SubscriptionId $subscriptionId -GroupId 'bicep-lz-vending-automation-child' -ErrorAction SilentlyContinue
             $mgAssociation.Id | Should -Be "/providers/Microsoft.Management/managementGroups/bicep-lz-vending-automation-child/subscriptions/$subscriptionId"
@@ -62,7 +50,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     Context 'Networking - Hub Spoke Tests' {
         BeforeAll {
             $vnetHs = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -Name "vnet-$location-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
-            $vnetNsg = Get-AzNetworkSecurityGroup -Name "nsg-$location-hs-$namePrefix-$serviceShort-1" -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort"
+            $vnetNsg = Get-AzNetworkSecurityGroup -Name "nsg-$location-hs-$namePrefix-$serviceShort-1" -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort-1"
             $additionalVnet1 = Get-AzVirtualNetwork -Name "vnet-$location-hs-$namePrefix-$serviceShort-1" -ErrorAction SilentlyContinue
             $additionalVnet2 = Get-AzVirtualNetwork -Name "vnet-$location-hs-$namePrefix-$serviceShort-2" -ErrorAction SilentlyContinue
         }

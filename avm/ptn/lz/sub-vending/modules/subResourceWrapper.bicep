@@ -1463,7 +1463,7 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = if (virt
     ]
   }
 }
-module createAddiitonalNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = [
+module createAdditonalNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = [
   for (vnet, i) in additionalVirtualNetworks: if (!empty(vnet.?subnets ?? []) && (vnet.?deployNatGateway ?? false)) {
     scope: resourceGroup(subscriptionId, vnet.?resourceGroupName ?? '')
     dependsOn: [
@@ -1595,7 +1595,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
                 '${createAdditionalVnetNsgs[i].outputs.name}'
               )
           natGatewayResourceId: (vnet.?deployNatGateway ?? false) && (subnet.?associateWithNatGateway ?? false)
-            ? createNatGateway.outputs.resourceId
+            ? createAdditonalNatGateway[i].outputs.resourceId
             : null
         }
       ]
