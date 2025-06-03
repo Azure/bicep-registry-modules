@@ -30,8 +30,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/system-topic:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using managed identity authentication](#example-2-using-managed-identity-authentication)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -107,7 +108,201 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using managed identity authentication_
+
+This instance deploys the module testing delivery with resource identity (managed identity authentication).
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
+  name: 'systemTopicDeployment'
+  params: {
+    // Required parameters
+    name: 'egstid001'
+    source: '<source>'
+    topicType: 'Microsoft.Storage.StorageAccounts'
+    // Non-required parameters
+    eventSubscriptions: [
+      {
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'ServiceBusTopic'
+            properties: {
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: '<userAssignedIdentity>'
+          }
+        }
+        eventDeliverySchema: 'CloudEventSchemaV1_0'
+        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+        filter: {
+          enableAdvancedFilteringOnArrays: true
+          isSubjectCaseSensitive: false
+        }
+        name: 'egstidSub'
+        retryPolicy: {
+          eventTimeToLive: '120'
+          maxDeliveryAttempts: 10
+        }
+      }
+    ]
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'fix-verification': 'true'
+      Role: 'DeploymentValidation'
+      'test-scenario': 'delivery-with-resource-identity'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "egstid001"
+    },
+    "source": {
+      "value": "<source>"
+    },
+    "topicType": {
+      "value": "Microsoft.Storage.StorageAccounts"
+    },
+    // Non-required parameters
+    "eventSubscriptions": {
+      "value": [
+        {
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "ServiceBusTopic",
+              "properties": {
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "UserAssigned",
+              "userAssignedIdentity": "<userAssignedIdentity>"
+            }
+          },
+          "eventDeliverySchema": "CloudEventSchemaV1_0",
+          "expirationTimeUtc": "2099-01-01T11:00:21.715Z",
+          "filter": {
+            "enableAdvancedFilteringOnArrays": true,
+            "isSubjectCaseSensitive": false
+          },
+          "name": "egstidSub",
+          "retryPolicy": {
+            "eventTimeToLive": "120",
+            "maxDeliveryAttempts": 10
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "fix-verification": "true",
+        "Role": "DeploymentValidation",
+        "test-scenario": "delivery-with-resource-identity"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/system-topic:<version>'
+
+// Required parameters
+param name = 'egstid001'
+param source = '<source>'
+param topicType = 'Microsoft.Storage.StorageAccounts'
+// Non-required parameters
+param eventSubscriptions = [
+  {
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'ServiceBusTopic'
+        properties: {
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
+      }
+    }
+    eventDeliverySchema: 'CloudEventSchemaV1_0'
+    expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+    filter: {
+      enableAdvancedFilteringOnArrays: true
+      isSubjectCaseSensitive: false
+    }
+    name: 'egstidSub'
+    retryPolicy: {
+      eventTimeToLive: '120'
+      maxDeliveryAttempts: 10
+    }
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'fix-verification': 'true'
+  Role: 'DeploymentValidation'
+  'test-scenario': 'delivery-with-resource-identity'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -155,7 +350,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
           enableAdvancedFilteringOnArrays: true
           isSubjectCaseSensitive: false
         }
-        name: 'egstmax001sub'
+        name: 'egstmax001'
         retryPolicy: {
           eventTimeToLive: '120'
           maxDeliveryAttempts: 10
@@ -172,7 +367,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     }
     roleAssignments: [
       {
-        name: '<name>'
+        name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -184,7 +379,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
       }
       {
-        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
@@ -255,7 +449,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
             "enableAdvancedFilteringOnArrays": true,
             "isSubjectCaseSensitive": false
           },
-          "name": "egstmax001sub",
+          "name": "egstmax001",
           "retryPolicy": {
             "eventTimeToLive": "120",
             "maxDeliveryAttempts": 10
@@ -280,7 +474,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     "roleAssignments": {
       "value": [
         {
-          "name": "<name>",
+          "name": "c9beca28-efcf-4d1d-99aa-8f334484a2c2",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -292,7 +486,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
           "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
         },
         {
-          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
@@ -355,7 +548,7 @@ param eventSubscriptions = [
       enableAdvancedFilteringOnArrays: true
       isSubjectCaseSensitive: false
     }
-    name: 'egstmax001sub'
+    name: 'egstmax001'
     retryPolicy: {
       eventTimeToLive: '120'
       maxDeliveryAttempts: 10
@@ -372,7 +565,7 @@ param managedIdentities = {
 }
 param roleAssignments = [
   {
-    name: '<name>'
+    name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
@@ -384,7 +577,6 @@ param roleAssignments = [
     roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
   }
   {
-    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
@@ -400,7 +592,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
