@@ -75,7 +75,7 @@ import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-co
 param privateEndpoints privateEndpointSingleServiceType[]?
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.KeyVault/vaults@2024-11-01'>.tags?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
