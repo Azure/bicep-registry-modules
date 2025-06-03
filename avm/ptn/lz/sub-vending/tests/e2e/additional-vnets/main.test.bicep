@@ -83,12 +83,20 @@ module testDeployment '../../../main.bicep' = {
       }
       {
         name: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}-2'
+        resourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}-2'
         location: resourceLocation
         addressPrefixes: ['10.90.0.0/16']
         peerToHubNetwork: false
+        subnets: [
+          {
+            name: 'Subnet1'
+            addressPrefix: '10.90.1.0/24'
+            associateWithNatGateway: true
+          }
+        ]
         deployNatGateway: true
         natGatewayConfiguration: {
-          name: 'nat-gw-${resourceLocation}-hs-${namePrefix}-${serviceShort}-2'
+          name: 'natgw-${resourceLocation}-hs-${namePrefix}-${serviceShort}-2'
         }
       }
     ]

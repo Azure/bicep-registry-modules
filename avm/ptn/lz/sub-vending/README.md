@@ -141,6 +141,14 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           name: '<name>'
         }
         peerToHubNetwork: false
+        resourceGroupName: '<resourceGroupName>'
+        subnets: [
+          {
+            addressPrefix: '10.90.1.0/24'
+            associateWithNatGateway: true
+            name: 'Subnet1'
+          }
+        ]
       }
     ]
     resourceProviders: {}
@@ -231,7 +239,15 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           "natGatewayConfiguration": {
             "name": "<name>"
           },
-          "peerToHubNetwork": false
+          "peerToHubNetwork": false,
+          "resourceGroupName": "<resourceGroupName>",
+          "subnets": [
+            {
+              "addressPrefix": "10.90.1.0/24",
+              "associateWithNatGateway": true,
+              "name": "Subnet1"
+            }
+          ]
         }
       ]
     },
@@ -353,6 +369,14 @@ param additionalVirtualNetworks = [
       name: '<name>'
     }
     peerToHubNetwork: false
+    resourceGroupName: '<resourceGroupName>'
+    subnets: [
+      {
+        addressPrefix: '10.90.1.0/24'
+        associateWithNatGateway: true
+        name: 'Subnet1'
+      }
+    ]
   }
 ]
 param resourceProviders = {}

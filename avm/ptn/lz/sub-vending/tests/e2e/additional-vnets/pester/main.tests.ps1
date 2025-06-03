@@ -50,9 +50,10 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     Context 'Networking - Hub Spoke Tests' {
         BeforeAll {
             $vnetHs = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -Name "vnet-$location-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
-            $vnetNsg = Get-AzNetworkSecurityGroup -Name "nsg-$location-hs-$namePrefix-$serviceShort-1" -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort-1"
             $additionalVnet1 = Get-AzVirtualNetwork -Name "vnet-$location-hs-$namePrefix-$serviceShort-1" -ErrorAction SilentlyContinue
             $additionalVnet2 = Get-AzVirtualNetwork -Name "vnet-$location-hs-$namePrefix-$serviceShort-2" -ErrorAction SilentlyContinue
+            $vnetNsg = Get-AzNetworkSecurityGroup -Name "nsg-$location-hs-$namePrefix-$serviceShort-1" -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort-1"
+            $natGw = Get-AzNatGateway -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort-2" -ErrorAction SilentlyContinue
         }
 
         It "Should have a Virtual Network in the correct Resource Group (rsg-$location-net-hs-$namePrefix-$serviceShort)" {
@@ -88,6 +89,17 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
         It 'Should have a Virtual Network with a Network Security Group (NSG) with one rule associated to Subnet1' {
             ($additionalVnet1.Subnets[0].NetworkSecurityGroupText | ConvertFrom-Json).Id | Should -Be $vnetNsg.Id
             ($vnetNsg.DefaultSecurityRulesText).Count | Should -Be 1
+        }
+
+        It 'Should have a NAT Gateway deployed with the correct name' {
+            $natGw | Should -Not -BeNullOrEmpty
+            $natGw.Name | Should -Be "natgw-$location-hs-$namePrefix-$serviceShort-2"
+        }
+
+        It "Should have a Virtual Network with a subnet with the correct name with addressPrefix '10.120.1.0/24' and a NAT gateway attached" {
+            $additionalVnet2.Subnets[0].Name | Should -Be 'Subnet1'
+            $additionalVnet2.Subnets[0].AddressPrefix | Should -Be '10.90.1.0/24'
+            $additionalVnet2.Subnets[0].NatGateway | Should -Not -BeNullOrEmpty
         }
     }
 }
