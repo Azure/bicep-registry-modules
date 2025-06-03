@@ -18,7 +18,7 @@ param serviceShort string = 'aaencr'
 param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'bep'
+param namePrefix string = 'bepa'
 
 // Enforce location to avoid restrictions around creating high numbers of automation accounts in too many locations
 #disable-next-line no-hardcoded-location
