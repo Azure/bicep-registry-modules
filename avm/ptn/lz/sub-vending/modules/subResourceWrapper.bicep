@@ -766,13 +766,13 @@ module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
 ]
 
 module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
-  for (vnet, i) in additionalVirtualNetworks: if (!empty(vnet.?subnets ?? [])) {
-    scope: resourceGroup(subscriptionId, vnet.?resourceGroupName ?? '')
+  for (vnet, i) in additionalVirtualNetworks: if (!empty(vnet.?subnets ?? []) && !empty(vnet.?subnets[i].?networkSecurityGroup)) {
+    scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
     dependsOn: [
       createResourceGroupForadditionalLzNetworking
     ]
     params: {
-      name: vnet.?subnets[i].?networkSecurityGroup.name ?? 'nsg-${vnet.?subnets.name}-${substring(guid(vnet.name, vnet.?resourceGroupName ?? '', vnet.?subnets[i].name ?? '', subscriptionId), 0, 5)}'
+      name: vnet.?subnets[i].?networkSecurityGroup.name ?? 'nsg-${vnet.?subnets.name}-${substring(guid(vnet.name, vnet.resourceGroupName, vnet.?subnets[i].name ?? '', subscriptionId), 0, 5)}'
       location: vnet.location
       securityRules: vnet.?subnets[i].?networkSecurityGroup.?securityRules ?? null
       enableTelemetry: enableTelemetry
@@ -1468,7 +1468,7 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = if (virt
 }
 module createAdditonalNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = [
   for (vnet, i) in additionalVirtualNetworks: if (!empty(vnet.?subnets ?? []) && (vnet.?deployNatGateway ?? false)) {
-    scope: resourceGroup(subscriptionId, vnet.?resourceGroupName ?? '')
+    scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
     dependsOn: [
       createResourceGroupForadditionalLzNetworking
       registerResourceProviders
@@ -1560,7 +1560,7 @@ module createResourceGroupForadditionalLzNetworking 'br/public:avm/res/resources
   for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
     scope: subscription(subscriptionId)
     params: {
-      name: vnet.?resourceGroupName ?? 'rsg-vnet-${vnet.name}-${deployment().location}-${i}'
+      name: vnet.resourceGroupName
       location: vnet.?location ?? deployment().location
       lock: vnet.?resourceGroupLockEnabled ?? true
         ? {
@@ -1575,10 +1575,7 @@ module createResourceGroupForadditionalLzNetworking 'br/public:avm/res/resources
 
 module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' = [
   for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
-    scope: resourceGroup(
-      subscriptionId,
-      vnet.?resourceGroupName ?? 'rsg-vnet-${vnet.name}-${deployment().location}-${i}'
-    )
+    scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
     dependsOn: [
       createResourceGroupForadditionalLzNetworking
     ]
@@ -1594,7 +1591,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
             : !empty(subnet.?networkSecurityGroup)
                 ? resourceId(
                     subscriptionId,
-                    vnet.?resourceGroupName ?? 'rsg-vnet-${vnet.name}-${deployment().location}-${i}',
+                    vnet.resourceGroupName,
                     'Microsoft.Network/networkSecurityGroups',
                     '${createAdditionalVnetNsgs[i].outputs.name}'
                   )
@@ -2029,8 +2026,8 @@ type virtualNetworkType = {
   @description('Optional. The option to peer the virtual network to the hub network.')
   peerToHubNetwork: bool?
 
-  @description('Optional. The name of the virtual network resource group.')
-  resourceGroupName: string?
+  @description('Required. The name of the virtual network resource group.')
+  resourceGroupName: string
 
   @description('Optional. Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group.')
   resourceGroupLockEnabled: bool?

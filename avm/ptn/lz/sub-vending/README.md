@@ -2337,6 +2337,7 @@ A list of additional virtual networks to create.
 | [`addressPrefixes`](#parameter-additionalvirtualnetworksaddressprefixes) | array | The address prefixes for the virtual network. |
 | [`location`](#parameter-additionalvirtualnetworkslocation) | string | The location of the virtual network. |
 | [`name`](#parameter-additionalvirtualnetworksname) | string | The name of the virtual network resource. |
+| [`resourceGroupName`](#parameter-additionalvirtualnetworksresourcegroupname) | string | The name of the virtual network resource group. |
 
 **Optional parameters**
 
@@ -2349,7 +2350,6 @@ A list of additional virtual networks to create.
 | [`natGatewayConfiguration`](#parameter-additionalvirtualnetworksnatgatewayconfiguration) | object | The configuration for deploying a NAT gateway. |
 | [`peerToHubNetwork`](#parameter-additionalvirtualnetworkspeertohubnetwork) | bool | The option to peer the virtual network to the hub network. |
 | [`resourceGroupLockEnabled`](#parameter-additionalvirtualnetworksresourcegrouplockenabled) | bool | Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group. |
-| [`resourceGroupName`](#parameter-additionalvirtualnetworksresourcegroupname) | string | The name of the virtual network resource group. |
 | [`subnets`](#parameter-additionalvirtualnetworkssubnets) | array | The subnets for the virtual network. |
 | [`tags`](#parameter-additionalvirtualnetworkstags) | object | The tags for the virtual network. |
 | [`useRemoteGateways`](#parameter-additionalvirtualnetworksuseremotegateways) | bool | Enables the use of remote gateways in the spefcified hub virtual network. If no gateways exsit in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections. |
@@ -2371,6 +2371,13 @@ The location of the virtual network.
 ### Parameter: `additionalVirtualNetworks.name`
 
 The name of the virtual network resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `additionalVirtualNetworks.resourceGroupName`
+
+The name of the virtual network resource group.
 
 - Required: Yes
 - Type: string
@@ -2518,13 +2525,6 @@ Enables the deployment of a `CanNotDelete` resource locks to the virtual network
 
 - Required: No
 - Type: bool
-
-### Parameter: `additionalVirtualNetworks.resourceGroupName`
-
-The name of the virtual network resource group.
-
-- Required: No
-- Type: string
 
 ### Parameter: `additionalVirtualNetworks.subnets`
 
