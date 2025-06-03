@@ -88,6 +88,9 @@ param virtualNetworkUseRemoteGateways bool = true
 @sys.description('A list of additional virtual networks to create.')
 param additionalVirtualNetworks virtualNetworkType[] = []
 
+@sys.description('Flag to do mesh peering of all virtual networks deployed into the new subscription.')
+param peerAllVirtualNetworks bool = false
+
 @sys.description('Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.')
 param virtualNetworkVwanEnableInternetSecurity bool = true
 
@@ -1588,12 +1591,14 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
           addressPrefix: subnet.?addressPrefix
           networkSecurityGroupResourceId: ((vnet.?deployBastion ?? false) || subnet.name == 'AzureBastionSubnet')
             ? createBastionNsg.outputs.resourceId
-            : resourceId(
-                subscriptionId,
-                vnet.?resourceGroupName ?? 'rsg-vnet-${vnet.name}-${deployment().location}-${i}',
-                'Microsoft.Network/networkSecurityGroups',
-                '${createAdditionalVnetNsgs[i].outputs.name}'
-              )
+            : !empty(subnet.?networkSecurityGroup)
+                ? resourceId(
+                    subscriptionId,
+                    vnet.?resourceGroupName ?? 'rsg-vnet-${vnet.name}-${deployment().location}-${i}',
+                    'Microsoft.Network/networkSecurityGroups',
+                    '${createAdditionalVnetNsgs[i].outputs.name}'
+                  )
+                : null
           natGatewayResourceId: (vnet.?deployNatGateway ?? false) && (subnet.?associateWithNatGateway ?? false)
             ? createAdditonalNatGateway[i].outputs.resourceId
             : null
