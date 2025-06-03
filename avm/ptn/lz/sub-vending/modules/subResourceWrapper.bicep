@@ -88,8 +88,8 @@ param virtualNetworkUseRemoteGateways bool = true
 @sys.description('A list of additional virtual networks to create.')
 param additionalVirtualNetworks virtualNetworkType[] = []
 
-@sys.description('Flag to do mesh peering of all virtual networks deployed into the new subscription.')
-param peerAllVirtualNetworks bool = false
+//@sys.description('Flag to do mesh peering of all virtual networks deployed into the new subscription.')
+//param peerAllVirtualNetworks bool = false
 
 @sys.description('Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.')
 param virtualNetworkVwanEnableInternetSecurity bool = true
