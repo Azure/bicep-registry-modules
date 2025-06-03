@@ -22,7 +22,7 @@ param baseTime string = utcNow('u')
 
 // Hardcoded because service not available in all regions
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'australiaeast'
+var enforcedLocation = 'southeastasia'
 
 // ============ //
 // Dependencies //
