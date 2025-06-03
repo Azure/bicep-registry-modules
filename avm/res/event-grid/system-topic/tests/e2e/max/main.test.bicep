@@ -39,6 +39,8 @@ module depSourceForTestDeployment 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}-main'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}main' // Unique SA name
     storageQueueName: 'dep${namePrefix}sq${serviceShort}main'
+    serviceBusNamespaceName: 'dep-${namePrefix}-sbn-${serviceShort}-main'
+    serviceBusTopicName: 'dep-${namePrefix}-sbt-${serviceShort}-main'
     location: resourceLocation
   }
 }
@@ -51,6 +53,8 @@ module depSourceForNoMI 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}-nomi' // Not strictly needed by this test but part of dependencies module
     storageAccountName: 'dep${namePrefix}sa${serviceShort}nomi' // Unique SA name
     storageQueueName: 'dep${namePrefix}sq${serviceShort}nomi'
+    serviceBusNamespaceName: 'dep-${namePrefix}-sbn-${serviceShort}-nomi'
+    serviceBusTopicName: 'dep-${namePrefix}-sbt-${serviceShort}-nomi'
     location: resourceLocation
   }
 }
@@ -63,6 +67,8 @@ module depSourceForUserMI 'dependencies.bicep' = {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}-usermi'
     storageAccountName: 'dep${namePrefix}sa${serviceShort}usermi' // Unique SA name
     storageQueueName: 'dep${namePrefix}sq${serviceShort}usermi'
+    serviceBusNamespaceName: 'dep-${namePrefix}-sbn-${serviceShort}-usermi'
+    serviceBusTopicName: 'dep-${namePrefix}-sbt-${serviceShort}-usermi'
     location: resourceLocation
   }
 }
@@ -73,8 +79,24 @@ module depSourceForSysMIFalse 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-dep-sysmifalse'
   params: {
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}-sysmifalse'
-    storageAccountName: 'dep${namePrefix}sa${serviceShort}sysmifalse' // Unique SA name
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}sysmif' // Unique SA name
     storageQueueName: 'dep${namePrefix}sq${serviceShort}sysmifalse'
+    serviceBusNamespaceName: 'dep-${namePrefix}-sbn-${serviceShort}-sysmifalse'
+    serviceBusTopicName: 'dep-${namePrefix}-sbt-${serviceShort}-sysmifalse'
+    location: resourceLocation
+  }
+}
+
+// Dependencies for the deliveryWithResourceIdentity test (Issue #705)
+module depSourceFordelwri 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-dep-delwri'
+  params: {
+    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}-delwri'
+    storageAccountName: 'dep${namePrefix}sa${serviceShort}delwri' // Unique SA name
+    storageQueueName: 'dep${namePrefix}sq${serviceShort}delwri'
+    serviceBusNamespaceName: 'dep-${namePrefix}-sbn-${serviceShort}-delwri'
+    serviceBusTopicName: 'dep-${namePrefix}-sbt-${serviceShort}-delwri'
     location: resourceLocation
   }
 }
@@ -182,7 +204,7 @@ module testDeployment '../../../main.bicep' = [
     }
   }
 ]
-
+// Test case 1: systemAssignedMIPrincipalId should be null when no managed identities are configured
 module testNoManagedIdentities '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-noMI'
@@ -196,7 +218,7 @@ module testNoManagedIdentities '../../../main.bicep' = {
     }
   }
 }
-
+// Test case 2: systemAssignedMIPrincipalId should be null when only user-assigned MI is configured
 module testOnlyUserAssignedMI '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-onlyUserMI'
@@ -215,7 +237,7 @@ module testOnlyUserAssignedMI '../../../main.bicep' = {
     }
   }
 }
-
+// Test case 3: systemAssignedMIPrincipalId should be null when systemAssigned is explicitly false
 module testSystemAssignedMIFalse '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-sysMIFalse'
@@ -236,6 +258,56 @@ module testSystemAssignedMIFalse '../../../main.bicep' = {
   }
 }
 
+// Test case 4: This test ensures that "destination" and "deliveryWithResourceIdentity" don't conflict
+module testDeliveryWithResourceIdentity '../../../main.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-delwri'
+  params: {
+    name: '${namePrefix}${serviceShort}delwri01' // System Topic name
+    location: resourceLocation
+    source: depSourceFordelwri.outputs.storageAccountResourceId // Unique source
+    topicType: 'Microsoft.Storage.StorageAccounts'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        depSourceFordelwri.outputs.managedIdentityResourceId
+      ]
+    }
+    eventSubscriptions: [
+      {
+        name: '${namePrefix}${serviceShort}delwriSub' // Event Subscription with managed identity
+        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+        filter: {
+          isSubjectCaseSensitive: false
+          enableAdvancedFilteringOnArrays: true
+        }
+        retryPolicy: {
+          maxDeliveryAttempts: 10
+          eventTimeToLive: '120'
+        }
+        eventDeliverySchema: 'CloudEventSchemaV1_0'
+
+        deliveryWithResourceIdentity: {
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: depSourceFordelwri.outputs.managedIdentityResourceId
+          }
+          destination: {
+            endpointType: 'ServiceBusTopic'
+            properties: {
+              resourceId: depSourceFordelwri.outputs.serviceBusTopicResourceId
+            }
+          }
+        }
+      }
+    ]
+    tags: {
+      'test-scenario': 'delivery-with-resource-identity'
+      issue705: 'true'
+      'fix-verification': 'true'
+    }
+  }
+}
+
 // =========== //
 //   Outputs   //
 // =========== //
@@ -248,3 +320,6 @@ output systemAssignedMIPrincipalIdForUserOnlyIsNull_CheckResult bool = (testOnly
 
 @description('The result of checking if systemAssignedMIPrincipalId is null when systemAssigned is explicitly false.')
 output systemAssignedMIPrincipalIdForSysMIFalseIsNull_CheckResult bool = (testSystemAssignedMIFalse.outputs.?systemAssignedMIPrincipalId == null)
+
+@description('The result of verifying that deliveryWithResourceIdentity works without API conflict (Issue #705).')
+output deliveryWithResourceIdentityTest_CheckResult bool = (testDeliveryWithResourceIdentity.outputs.name != null)

@@ -16,8 +16,8 @@ param deadLetterWithResourceIdentity object?
 @description('Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information).')
 param deliveryWithResourceIdentity object?
 
-@description('Required. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).')
-param destination object
+@description('Optional. The destination for the event subscription. Required when deliveryWithResourceIdentity is not used. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).')
+param destination object?
 
 @description('Optional. The event delivery schema for the event subscription.')
 @allowed([

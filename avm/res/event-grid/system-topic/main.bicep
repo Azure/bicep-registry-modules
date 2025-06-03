@@ -132,7 +132,7 @@ module systemTopics_eventSubscriptions 'event-subscription/main.bicep' = [
   for (eventSubscription, index) in eventSubscriptions ?? []: {
     name: '${uniqueString(deployment().name, location)}-EventGrid-SysTopics-EventSubs-${index}'
     params: {
-      destination: eventSubscription.destination
+      destination: eventSubscription.?deliveryWithResourceIdentity != null ? null : eventSubscription.destination
       systemTopicName: systemTopic.name
       name: eventSubscription.name
       deadLetterDestination: eventSubscription.?deadLetterDestination

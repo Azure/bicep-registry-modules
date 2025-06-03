@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12380166862385092833"
+      "templateHash": "9638402454487607318"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic."
@@ -496,9 +496,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "destination": {
-            "value": "[coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()].destination]"
-          },
+          "destination": "[if(not(equals(tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deliveryWithResourceIdentity'), null())), createObject('value', null()), createObject('value', coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()].destination))]",
           "systemTopicName": {
             "value": "[parameters('name')]"
           },
@@ -538,7 +536,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3518838156342662190"
+              "templateHash": "266421992185362595"
             },
             "name": "Event Grid System Topic Event Subscriptions",
             "description": "This module deploys an Event Grid System Topic Event Subscription."
@@ -579,8 +577,9 @@
             },
             "destination": {
               "type": "object",
+              "nullable": true,
               "metadata": {
-                "description": "Required. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
+                "description": "Optional. The destination for the event subscription. Required when deliveryWithResourceIdentity is not used. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
               }
             },
             "eventDeliverySchema": {
