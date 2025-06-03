@@ -34,10 +34,12 @@ We have also removed the following Private Link Private DNS Zones from the defau
 - `privatelink.azure.com`.
 ''')
 param privateLinkPrivateDnsZones array = [
+  'privatelink.{regionName}.azurecontainerapps.io'
   'privatelink.api.azureml.ms'
   'privatelink.notebooks.azure.net'
   'privatelink.cognitiveservices.azure.com'
   'privatelink.openai.azure.com'
+  'privatelink.services.ai.azure.com'
   'privatelink.directline.botframework.com'
   'privatelink.token.botframework.com'
   'privatelink.servicebus.windows.net'
@@ -87,6 +89,7 @@ param privateLinkPrivateDnsZones array = [
   'privatelink.dp.kubernetesconfiguration.azure.com'
   'privatelink.eventgrid.azure.net'
   'privatelink.azure-api.net'
+  'privatelink.azurehealthcareapis.com'
   'privatelink.workspace.azurehealthcareapis.com'
   'privatelink.fhir.azurehealthcareapis.com'
   'privatelink.dicom.azurehealthcareapis.com'
@@ -124,6 +127,9 @@ param privateLinkPrivateDnsZones array = [
 @description('Optional. An array of Private Link Private DNS Zones to exclude from the deployment. The DNS zone names must match what is provided as the default values or any input to the `privateLinkPrivateDnsZones` parameter e.g. `privatelink.api.azureml.ms` or `privatelink.{regionCode}.backup.windowsazure.com` or `privatelink.{regionName}.azmk8s.io` .')
 param privateLinkPrivateDnsZonesToExclude string[]?
 
+@description('Optional. An array of additional Private Link Private DNS Zones to include in the deployment on top of the defaults set in the parameter `privateLinkPrivateDnsZones`.')
+param additionalPrivateLinkPrivateDnsZonesToInclude string[]?
+
 @description('Optional. ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD AS MORE VIRTUAL NETWORK LINK PROPERTIES ARE EXPOSED. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE PROCESSED AND INPUT AND FORMATTED BY THE MODULE AND UNIOND WITH THE INPUT TO `virtualNetworkLinks`. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID.')
 param virtualNetworkResourceIdsToLinkTo array = []
 
@@ -134,8 +140,13 @@ param virtualNetworkLinks virtualNetworkLinkType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-var privateLinkPrivateDnsZonesWithExclusions = filter(
+var combinedPrivateLinkPrivateDnsZonesProvided = union(
   privateLinkPrivateDnsZones,
+  additionalPrivateLinkPrivateDnsZonesToInclude ?? []
+)
+
+var privateLinkPrivateDnsZonesWithExclusions = filter(
+  combinedPrivateLinkPrivateDnsZonesProvided,
   zone => !contains(privateLinkPrivateDnsZonesToExclude ?? [], zone)
 )
 
@@ -333,7 +344,7 @@ resource pdnsZones 'Microsoft.Network/privateDnsZones@2024-06-01' = [
   }
 ]
 
-resource pdnsZonesLock 'Microsoft.Authorization/locks@2016-09-01' = [
+resource pdnsZonesLock 'Microsoft.Authorization/locks@2020-05-01' = [
   for (zone, i) in combinedPrivateLinkPrivateDnsZonesReplacedWithVnetsToLink: if (!empty(lock ?? {}) && lock.?kind != 'None') {
     name: lock.?name ?? 'lock-${zone.pdnsZoneName}'
     properties: {
