@@ -133,7 +133,7 @@ param deployments deploymentType[]?
 param secretsExportConfiguration secretsExportConfigurationType?
 
 @description('Optional. Enable/Disable project management feature for AI Foundry.')
-param allowProjectManagement bool = false
+param allowProjectManagement bool?
 
 var enableReferencedModulesTelemetry = false
 
