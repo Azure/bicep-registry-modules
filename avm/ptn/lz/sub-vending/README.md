@@ -134,8 +134,12 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         addressPrefixes: [
           '10.90.0.0/16'
         ]
+        deployNatGateway: true
         location: '<location>'
         name: '<name>'
+        natGatewayConfiguration: {
+          name: '<name>'
+        }
         peerToHubNetwork: false
       }
     ]
@@ -221,8 +225,12 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           "addressPrefixes": [
             "10.90.0.0/16"
           ],
+          "deployNatGateway": true,
           "location": "<location>",
           "name": "<name>",
+          "natGatewayConfiguration": {
+            "name": "<name>"
+          },
           "peerToHubNetwork": false
         }
       ]
@@ -338,8 +346,12 @@ param additionalVirtualNetworks = [
     addressPrefixes: [
       '10.90.0.0/16'
     ]
+    deployNatGateway: true
     location: '<location>'
     name: '<name>'
+    natGatewayConfiguration: {
+      name: '<name>'
+    }
     peerToHubNetwork: false
   }
 ]
@@ -2308,7 +2320,9 @@ A list of additional virtual networks to create.
 | :-- | :-- | :-- |
 | [`ddosProtectionPlanResourceId`](#parameter-additionalvirtualnetworksddosprotectionplanresourceid) | string | The resource Id of the DDOS protection plan. |
 | [`deployBastion`](#parameter-additionalvirtualnetworksdeploybastion) | bool | The option to deploy Azure Bastion in the virtual network. |
+| [`deployNatGateway`](#parameter-additionalvirtualnetworksdeploynatgateway) | bool | Flag to deploy a NAT gateway. |
 | [`dnsServers`](#parameter-additionalvirtualnetworksdnsservers) | array | The list of DNS servers for the virtual network. |
+| [`natGatewayConfiguration`](#parameter-additionalvirtualnetworksnatgatewayconfiguration) | object | The configuration for deploying a NAT gateway. |
 | [`peerToHubNetwork`](#parameter-additionalvirtualnetworkspeertohubnetwork) | bool | The option to peer the virtual network to the hub network. |
 | [`resourceGroupLockEnabled`](#parameter-additionalvirtualnetworksresourcegrouplockenabled) | bool | Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group. |
 | [`resourceGroupName`](#parameter-additionalvirtualnetworksresourcegroupname) | string | The name of the virtual network resource group. |
@@ -2351,12 +2365,121 @@ The option to deploy Azure Bastion in the virtual network.
 - Required: No
 - Type: bool
 
+### Parameter: `additionalVirtualNetworks.deployNatGateway`
+
+Flag to deploy a NAT gateway.
+
+- Required: No
+- Type: bool
+
 ### Parameter: `additionalVirtualNetworks.dnsServers`
 
 The list of DNS servers for the virtual network.
 
 - Required: No
 - Type: array
+
+### Parameter: `additionalVirtualNetworks.natGatewayConfiguration`
+
+The configuration for deploying a NAT gateway.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-additionalvirtualnetworksnatgatewayconfigurationname) | string | The name of the NAT gateway. |
+| [`publicIPAddressPrefixesProperties`](#parameter-additionalvirtualnetworksnatgatewayconfigurationpublicipaddressprefixesproperties) | array | The Public IP address(es) prefixes properties to be attached to the NAT gateway. |
+| [`publicIPAddressProperties`](#parameter-additionalvirtualnetworksnatgatewayconfigurationpublicipaddressproperties) | array | The Public IP address(es) properties to be attached to the NAT gateway. |
+| [`zones`](#parameter-additionalvirtualnetworksnatgatewayconfigurationzones) | int | The availability zones of the NAT gateway. Check the availability zone guidance for NAT gateway to understand how to map NAT gateway zone to the associated Public IP address zones (https://learn.microsoft.com/azure/nat-gateway/nat-availability-zones). |
+
+### Parameter: `additionalVirtualNetworks.natGatewayConfiguration.name`
+
+The name of the NAT gateway.
+
+- Required: No
+- Type: string
+
+### Parameter: `additionalVirtualNetworks.natGatewayConfiguration.publicIPAddressPrefixesProperties`
+
+The Public IP address(es) prefixes properties to be attached to the NAT gateway.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customIPPrefix`](#parameter-additionalvirtualnetworksnatgatewayconfigurationpublicipaddressprefixespropertiescustomipprefix) | string | The custom IP prefix of the public IP address prefix. |
+| [`name`](#parameter-additionalvirtualnetworksnatgatewayconfigurationpublicipaddressprefixespropertiesname) | string | The name of the Public IP address prefix. |
+| [`prefixLength`](#parameter-additionalvirtualnetworksnatgatewayconfigurationpublicipaddressprefixespropertiesprefixlength) | int | The prefix length of the public IP address prefix.. |
+
+### Parameter: `additionalVirtualNetworks.natGatewayConfiguration.publicIPAddressPrefixesProperties.customIPPrefix`
+
+The custom IP prefix of the public IP address prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `additionalVirtualNetworks.natGatewayConfiguration.publicIPAddressPrefixesProperties.name`
+
+The name of the Public IP address prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `additionalVirtualNetworks.natGatewayConfiguration.publicIPAddressPrefixesProperties.prefixLength`
+
+The prefix length of the public IP address prefix..
+
+- Required: No
+- Type: int
+
+### Parameter: `additionalVirtualNetworks.natGatewayConfiguration.publicIPAddressProperties`
+
+The Public IP address(es) properties to be attached to the NAT gateway.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-additionalvirtualnetworksnatgatewayconfigurationpublicipaddresspropertiesname) | string | The name of the Public IP address. |
+| [`zones`](#parameter-additionalvirtualnetworksnatgatewayconfigurationpublicipaddresspropertieszones) | array | The SKU of the Public IP address. |
+
+### Parameter: `additionalVirtualNetworks.natGatewayConfiguration.publicIPAddressProperties.name`
+
+The name of the Public IP address.
+
+- Required: No
+- Type: string
+
+### Parameter: `additionalVirtualNetworks.natGatewayConfiguration.publicIPAddressProperties.zones`
+
+The SKU of the Public IP address.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+
+### Parameter: `additionalVirtualNetworks.natGatewayConfiguration.zones`
+
+The availability zones of the NAT gateway. Check the availability zone guidance for NAT gateway to understand how to map NAT gateway zone to the associated Public IP address zones (https://learn.microsoft.com/azure/nat-gateway/nat-availability-zones).
+
+- Required: No
+- Type: int
 
 ### Parameter: `additionalVirtualNetworks.peerToHubNetwork`
 

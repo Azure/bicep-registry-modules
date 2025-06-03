@@ -96,7 +96,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
     Context 'Networking - Hub Spoke Tests' {
         BeforeAll {
             $vnetHs = Get-AzVirtualNetwork -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort" -Name "vnet-$location-hs-$namePrefix-$serviceShort" -ErrorAction SilentlyContinue
-            $vnetNsg = Get-AzNetworkSecurityGroup -Name "nsg-$location-net-hs-$namePrefix-$serviceShort" -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort"
+            $vnetNsg = Get-AzNetworkSecurityGroup -Name "nsg-$location-hs-$namePrefix-$serviceShort" -ResourceGroupName "rsg-$location-net-hs-$namePrefix-$serviceShort"
         }
 
         It "Should have a Virtual Network in the correct Resource Group (rsg-$location-net-hs-$namePrefix-$serviceShort)" {
