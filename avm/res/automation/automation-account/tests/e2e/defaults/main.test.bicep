@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-automation.account-${service
 param serviceShort string = 'aamin'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'bepa'
+param namePrefix string = '#_namePrefix_#'
 
 // Enforce location to avoid restrictions around creating high numbers of automation accounts in too many locations
 #disable-next-line no-hardcoded-location

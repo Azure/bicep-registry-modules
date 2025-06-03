@@ -19,7 +19,7 @@ var enforcedLocation = 'westeurope'
 param serviceShort string = 'aamax'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = 'bepa'
+param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. The password to leverage for the login.')
 @secure()
