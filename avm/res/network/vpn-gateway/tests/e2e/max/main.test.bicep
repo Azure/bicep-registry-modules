@@ -60,7 +60,6 @@ module testDeployment '../../../main.bicep' = [
       }
       vpnConnections: [
         {
-          connectionBandwidth: 100
           enableBgp: false
           name: 'Connection-${last(split(nestedDependencies.outputs.vpnSiteResourceId, '/'))}'
           remoteVpnSiteResourceId: nestedDependencies.outputs.vpnSiteResourceId

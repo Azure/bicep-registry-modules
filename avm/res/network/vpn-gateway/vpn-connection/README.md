@@ -13,7 +13,7 @@ This module deploys a VPN Gateway VPN Connection.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/vpnGateways/vpnConnections` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways/vpnConnections) |
+| `Microsoft.Network/vpnGateways/vpnConnections` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnGateways/vpnConnections) |
 
 ## Parameters
 
@@ -33,7 +33,7 @@ This module deploys a VPN Gateway VPN Connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectionBandwidth`](#parameter-connectionbandwidth) | int | Expected bandwidth in MBPS. |
+| [`connectionBandwidth`](#parameter-connectionbandwidth) | int | Expected bandwidth in MBPS. This parameter is deprecated and should be avoided in favor of VpnSiteLinkConnection configuration. |
 | [`enableBgp`](#parameter-enablebgp) | bool | Enable BGP flag. |
 | [`enableInternetSecurity`](#parameter-enableinternetsecurity) | bool | Enable internet security. |
 | [`enableRateLimiting`](#parameter-enableratelimiting) | bool | Enable rate limiting. |
@@ -64,11 +64,10 @@ The name of the parent VPN gateway this VPN connection is associated with. Requi
 
 ### Parameter: `connectionBandwidth`
 
-Expected bandwidth in MBPS.
+Expected bandwidth in MBPS. This parameter is deprecated and should be avoided in favor of VpnSiteLinkConnection configuration.
 
 - Required: No
 - Type: int
-- Default: `10`
 
 ### Parameter: `enableBgp`
 

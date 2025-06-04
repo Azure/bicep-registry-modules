@@ -17,9 +17,9 @@ This module deploys a VPN Gateway.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/vpnGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways) |
-| `Microsoft.Network/vpnGateways/natRules` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways/natRules) |
-| `Microsoft.Network/vpnGateways/vpnConnections` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways/vpnConnections) |
+| `Microsoft.Network/vpnGateways` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnGateways) |
+| `Microsoft.Network/vpnGateways/natRules` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnGateways/natRules) |
+| `Microsoft.Network/vpnGateways/vpnConnections` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnGateways/vpnConnections) |
 
 ## Usage examples
 
@@ -144,7 +144,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     }
     vpnConnections: [
       {
-        connectionBandwidth: 100
         enableBgp: false
         enableInternetSecurity: true
         enableRateLimiting: false
@@ -224,7 +223,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     "vpnConnections": {
       "value": [
         {
-          "connectionBandwidth": 100,
           "enableBgp": false,
           "enableInternetSecurity": true,
           "enableRateLimiting": false,
@@ -288,7 +286,6 @@ param tags = {
 }
 param vpnConnections = [
   {
-    connectionBandwidth: 100
     enableBgp: false
     enableInternetSecurity: true
     enableRateLimiting: false
@@ -351,7 +348,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     }
     vpnConnections: [
       {
-        connectionBandwidth: 100
         enableBgp: false
         enableInternetSecurity: true
         enableRateLimiting: false
@@ -425,7 +421,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     "vpnConnections": {
       "value": [
         {
-          "connectionBandwidth": 100,
           "enableBgp": false,
           "enableInternetSecurity": true,
           "enableRateLimiting": false,
@@ -485,7 +480,6 @@ param tags = {
 }
 param vpnConnections = [
   {
-    connectionBandwidth: 100
     enableBgp: false
     enableInternetSecurity: true
     enableRateLimiting: false

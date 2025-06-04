@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "13461484235913765557"
+      "version": "0.36.1.42791",
+      "templateHash": "4088400713935619316"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway."
@@ -150,7 +150,7 @@
     },
     "vpnGateway": {
       "type": "Microsoft.Network/vpnGateways",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-07-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -246,8 +246,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "11380942489395706225"
+              "version": "0.36.1.42791",
+              "templateHash": "3552168388159082910"
             },
             "name": "VPN Gateway NAT Rules",
             "description": "This module deploys a VPN Gateway NAT Rule."
@@ -313,12 +313,12 @@
             "vpnGateway": {
               "existing": true,
               "type": "Microsoft.Network/vpnGateways",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-07-01",
               "name": "[parameters('vpnGatewayName')]"
             },
             "natRule": {
               "type": "Microsoft.Network/vpnGateways/natRules",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-07-01",
               "name": "[format('{0}/{1}', parameters('vpnGatewayName'), parameters('name'))]",
               "properties": {
                 "externalMappings": "[parameters('externalMappings')]",
@@ -423,12 +423,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "6343342170986309278"
+              "version": "0.36.1.42791",
+              "templateHash": "16960743724900960206"
             },
             "name": "VPN Gateway VPN Connections",
             "description": "This module deploys a VPN Gateway VPN Connection."
@@ -518,9 +519,9 @@
             },
             "connectionBandwidth": {
               "type": "int",
-              "defaultValue": 10,
+              "nullable": true,
               "metadata": {
-                "description": "Optional. Expected bandwidth in MBPS."
+                "description": "Optional. Expected bandwidth in MBPS. This parameter is deprecated and should be avoided in favor of VpnSiteLinkConnection configuration."
               }
             },
             "vpnConnectionProtocolType": {
@@ -549,10 +550,16 @@
               }
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "vpnGateway": {
+              "existing": true,
+              "type": "Microsoft.Network/vpnGateways",
+              "apiVersion": "2024-07-01",
+              "name": "[parameters('vpnGatewayName')]"
+            },
+            "vpnConnection": {
               "type": "Microsoft.Network/vpnGateways/vpnConnections",
-              "apiVersion": "2023-04-01",
+              "apiVersion": "2024-07-01",
               "name": "[format('{0}/{1}', parameters('vpnGatewayName'), parameters('name'))]",
               "properties": {
                 "connectionBandwidth": "[parameters('connectionBandwidth')]",
@@ -571,7 +578,7 @@
                 "vpnLinkConnections": "[parameters('vpnLinkConnections')]"
               }
             }
-          ],
+          },
           "outputs": {
             "name": {
               "type": "string",
@@ -629,7 +636,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('vpnGateway', '2023-04-01', 'full').location]"
+      "value": "[reference('vpnGateway', '2024-07-01', 'full').location]"
     }
   }
 }

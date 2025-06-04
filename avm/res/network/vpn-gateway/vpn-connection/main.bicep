@@ -37,8 +37,8 @@ param enableBgp bool = false
 @description('Optional. Routing weight for VPN connection.')
 param routingWeight int = 0
 
-@description('Optional. Expected bandwidth in MBPS.')
-param connectionBandwidth int = 10
+@description('Optional. Expected bandwidth in MBPS. This parameter is deprecated and should be avoided in favor of VpnSiteLinkConnection configuration.')
+param connectionBandwidth int?
 
 @description('Optional. Gateway connection protocol.')
 @allowed([
@@ -54,11 +54,11 @@ param sharedKey string = ''
 @description('Optional. Reference to a VPN site to link to.')
 param remoteVpnSiteResourceId string = ''
 
-resource vpnGateway 'Microsoft.Network/vpnGateways@2023-04-01' existing = {
+resource vpnGateway 'Microsoft.Network/vpnGateways@2024-07-01' existing = {
   name: vpnGatewayName
 }
 
-resource vpnConnection 'Microsoft.Network/vpnGateways/vpnConnections@2023-04-01' = {
+resource vpnConnection 'Microsoft.Network/vpnGateways/vpnConnections@2024-07-01' = {
   name: name
   parent: vpnGateway
   properties: {

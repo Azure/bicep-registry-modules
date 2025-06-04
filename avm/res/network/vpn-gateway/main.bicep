@@ -60,7 +60,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource vpnGateway 'Microsoft.Network/vpnGateways@2023-04-01' = {
+resource vpnGateway 'Microsoft.Network/vpnGateways@2024-07-01' = {
   name: name
   location: location
   tags: tags
