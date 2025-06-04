@@ -5,6 +5,7 @@ metadata description = 'This module deploys a Virtual Network Gateway.'
 // User Types    //
 // ============= //
 
+@export()
 @description('Configuration for Virtual Network Gateway autoscale bounds.')
 type autoScaleBoundsType = {
   @description('Required. Maximum Scale Units for autoscale configuration.')
