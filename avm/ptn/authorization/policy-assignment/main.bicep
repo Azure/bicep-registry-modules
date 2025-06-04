@@ -76,6 +76,9 @@ param overrides array = []
 @sys.description('Optional. The resource selector list to filter policies by resource properties. Facilitates safe deployment practices (SDP) by enabling gradual roll out policy assignments based on factors like resource location, resource type, or whether a resource has a location.')
 param resourceSelectors array = []
 
+@sys.description('Optional. The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview.')
+param definitionVersion string?
+
 @sys.description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -121,6 +124,7 @@ module policyAssignment_mg 'modules/management-group.bicep' = if (empty(subscrip
     location: location
     overrides: !empty(overrides) ? overrides : []
     resourceSelectors: !empty(resourceSelectors) ? resourceSelectors : []
+    definitionVersion: definitionVersion
     additionalManagementGroupsIDsToAssignRbacTo: additionalManagementGroupsIDsToAssignRbacTo
     additionalSubscriptionIDsToAssignRbacTo: additionalSubscriptionIDsToAssignRbacTo
     additionalResourceGroupResourceIDsToAssignRbacTo: additionalResourceGroupResourceIDsToAssignRbacTo
@@ -149,6 +153,7 @@ module policyAssignment_sub 'modules/subscription.bicep' = if (!empty(subscripti
     location: location
     overrides: !empty(overrides) ? overrides : []
     resourceSelectors: !empty(resourceSelectors) ? resourceSelectors : []
+    definitionVersion: definitionVersion
   }
 }
 
@@ -172,6 +177,7 @@ module policyAssignment_rg 'modules/resource-group.bicep' = if (!empty(resourceG
     location: location
     overrides: !empty(overrides) ? overrides : []
     resourceSelectors: !empty(resourceSelectors) ? resourceSelectors : []
+    definitionVersion: definitionVersion
   }
 }
 

@@ -1961,6 +1961,12 @@ function Initialize-ReadMe {
         $headerType = "$formattedParentIdentifierName/$formattedChildIdentifierName"
     }
 
+    # Deprecation file existing?
+    $deprecatedModuleFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'DEPRECATED.md'
+    if (Test-Path $deprecatedModuleFilePath) {
+        $deprecatedModuleFileContent = Get-Content -Path $deprecatedModuleFilePath | ForEach-Object { "> $_" }
+    }
+
     # Orphaned readme existing?
     $orphanedReadMeFilePath = Join-Path (Split-Path $ReadMeFilePath -Parent) 'ORPHANED.md'
     if (Test-Path $orphanedReadMeFilePath) {
@@ -1976,6 +1982,8 @@ function Initialize-ReadMe {
     $initialContent = @(
         "# $moduleName ``[$headerType]``",
         '',
+        ((Test-Path $deprecatedModuleFilePath) ? $deprecatedModuleFileContent : $null),
+        ((Test-Path $deprecatedModuleFilePath) ? '' : $null),
         ((Test-Path $orphanedReadMeFilePath) ? $orphanedReadMeContent : $null),
         ((Test-Path $orphanedReadMeFilePath) ? '' : $null),
         ((Test-Path $movedReadMeFilePath) ? $movedReadMeContent : $null),

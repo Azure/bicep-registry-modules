@@ -1,5 +1,5 @@
 metadata name = 'Azure NetApp Files'
-metadata description = 'This module deploys an Azure NetApp File.'
+metadata description = 'This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes.'
 
 @description('Required. The name of the NetApp account.')
 param name string
@@ -419,15 +419,19 @@ type backupPolicyType = {
   @description('Optional. The location of the backup policy.')
   location: string?
 
-  @description('Optional. The daily backups to keep.')
+  @description('Optional. The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
   @minValue(2)
   @maxValue(1019)
   dailyBackupsToKeep: int?
 
-  @description('Optional. The monthly backups to keep.')
+  @description('Optional. The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
+  @minValue(0)
+  @maxValue(1019)
   monthlyBackupsToKeep: int?
 
-  @description('Optional. The weekly backups to keep.')
+  @description('Optional. The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
+  @minValue(0)
+  @maxValue(1019)
   weeklyBackupsToKeep: int?
 
   @description('Optional. Indicates whether the backup policy is enabled.')
