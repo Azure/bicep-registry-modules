@@ -6,12 +6,193 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "4088400713935619316"
+      "templateHash": "13341658411569048856"
     },
     "name": "VPN Gateways",
     "description": "This module deploys a VPN Gateway."
   },
   "definitions": {
+    "bgpSettingsType": {
+      "type": "object",
+      "properties": {
+        "asn": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 4294967295,
+          "metadata": {
+            "description": "Required. The BGP speaker's ASN (Autonomous System Number)."
+          }
+        },
+        "peerWeight": {
+          "type": "int",
+          "nullable": true,
+          "minValue": 0,
+          "maxValue": 100,
+          "metadata": {
+            "description": "Optional. The weight added to routes learned from this BGP speaker."
+          }
+        },
+        "bgpPeeringAddresses": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "ipconfigurationId": {
+                "type": "string",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The IP configuration ID."
+                }
+              },
+              "customBgpIpAddresses": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The custom BGP peering addresses."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. BGP peering addresses for this VPN Gateway."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of BGP settings for VPN Gateway."
+      }
+    },
+    "routingConfigurationType": {
+      "type": "object",
+      "properties": {
+        "associatedRouteTable": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the route table."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The associated route table for this connection."
+          }
+        },
+        "propagatedRouteTables": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The resource ID of the route table."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of route table resource IDs to propagate to."
+              }
+            },
+            "labels": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of labels to propagate to."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The propagated route tables for this connection."
+          }
+        },
+        "vnetRoutes": {
+          "type": "object",
+          "properties": {
+            "staticRoutes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of the static route."
+                    }
+                  },
+                  "addressPrefixes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The address prefixes for the static route."
+                    }
+                  },
+                  "nextHopIpAddress": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The next hop IP address for the static route."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of static routes."
+              }
+            },
+            "staticRoutesConfig": {
+              "type": "object",
+              "properties": {
+                "vnetLocalRouteOverrideCriteria": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Contains",
+                    "Equal"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Static routes configuration."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The virtual network routes for this connection."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of routing configuration for VPN connections."
+      }
+    },
     "lockType": {
       "type": "object",
       "properties": {
@@ -78,8 +259,8 @@
       }
     },
     "bgpSettings": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/bgpSettingsType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. BGP settings details."
       }
@@ -107,10 +288,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/vpnGateways@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -429,10 +613,138 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "16960743724900960206"
+              "templateHash": "10719955705553689469"
             },
             "name": "VPN Gateway VPN Connections",
             "description": "This module deploys a VPN Gateway VPN Connection."
+          },
+          "definitions": {
+            "routingConfigurationType": {
+              "type": "object",
+              "properties": {
+                "associatedRouteTable": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The resource ID of the route table."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The associated route table for this connection."
+                  }
+                },
+                "propagatedRouteTables": {
+                  "type": "object",
+                  "properties": {
+                    "ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "metadata": {
+                              "description": "Required. The resource ID of the route table."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The list of route table resource IDs to propagate to."
+                      }
+                    },
+                    "labels": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The list of labels to propagate to."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The propagated route tables for this connection."
+                  }
+                },
+                "vnetRoutes": {
+                  "type": "object",
+                  "properties": {
+                    "staticRoutes": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The name of the static route."
+                            }
+                          },
+                          "addressPrefixes": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The address prefixes for the static route."
+                            }
+                          },
+                          "nextHopIpAddress": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The next hop IP address for the static route."
+                            }
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The list of static routes."
+                      }
+                    },
+                    "staticRoutesConfig": {
+                      "type": "object",
+                      "properties": {
+                        "vnetLocalRouteOverrideCriteria": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Contains",
+                            "Equal"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke."
+                          }
+                        }
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Static routes configuration."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The virtual network routes for this connection."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type of routing configuration for VPN connections."
+              }
+            }
           },
           "parameters": {
             "name": {
@@ -469,8 +781,8 @@
               }
             },
             "routingConfiguration": {
-              "type": "object",
-              "defaultValue": {},
+              "$ref": "#/definitions/routingConfigurationType",
+              "nullable": true,
               "metadata": {
                 "description": "Optional. Routing configuration indicating the associated and propagated route tables for this connection."
               }
