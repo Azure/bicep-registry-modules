@@ -461,18 +461,20 @@ var nsgArrayFormatted = !empty(additionalVirtualNetworks)
   ? flatten(map(
       additionalVirtualNetworks,
       vnet =>
-        flatten(map(
-          filter(vnet.?subnets ?? [], subnet => contains(subnet, 'networkSecurityGroup')),
-          subnet =>
-            map(subnet.networkSecurityGroup, nsg => {
-              vnetResourceGroupName: vnet.resourceGroupName
-              subnetName: subnet.name
-              nsgName: nsg.name
-              nsgLocation: nsg.?location ?? vnet.location
-              nsgRules: nsg.?securityRules
-              nsgTags: nsg.?tags
-            })
-        ))
+        map(
+          filter(
+            vnet.?subnets ?? [],
+            subnet => contains(subnet, 'networkSecurityGroup') && subnet.networkSecurityGroup != null
+          ),
+          subnet => {
+            vnetResourceGroupName: vnet.resourceGroupName
+            subnetName: subnet.name
+            nsgName: subnet.?networkSecurityGroup.?name ?? ''
+            nsgLocation: subnet.?networkSecurityGroup.?location ?? vnet.location
+            nsgRules: subnet.?networkSecurityGroup.?securityRules ?? null
+            nsgTags: subnet.?networkSecurityGroup.?tags ?? null
+          }
+        )
     ))
   : []
 
