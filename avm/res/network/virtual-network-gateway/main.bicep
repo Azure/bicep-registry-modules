@@ -15,6 +15,7 @@ type autoScaleBoundsType = {
   min: int
 }
 
+@export()
 @description('Configuration for Virtual Network Gateway autoscale.')
 type autoScaleConfigurationType = {
   @description('Required. The bounds of the autoscale configuration.')
