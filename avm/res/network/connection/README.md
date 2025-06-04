@@ -149,6 +149,16 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     connectionType: 'Vnet2Vnet'
     dpdTimeoutSeconds: 45
     enableBgp: false
+    gatewayCustomBgpIpAddresses: [
+      {
+        customBgpIpAddress: '169.254.21.1'
+        ipConfigurationId: '<ipConfigurationId>'
+      }
+      {
+        customBgpIpAddress: '169.254.22.1'
+        ipConfigurationId: '<ipConfigurationId>'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -198,6 +208,18 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     },
     "enableBgp": {
       "value": false
+    },
+    "gatewayCustomBgpIpAddresses": {
+      "value": [
+        {
+          "customBgpIpAddress": "169.254.21.1",
+          "ipConfigurationId": "<ipConfigurationId>"
+        },
+        {
+          "customBgpIpAddress": "169.254.22.1",
+          "ipConfigurationId": "<ipConfigurationId>"
+        }
+      ]
     },
     "location": {
       "value": "<location>"
@@ -249,6 +271,16 @@ virtualNetworkGateway1: {
 param connectionType = 'Vnet2Vnet'
 param dpdTimeoutSeconds = 45
 param enableBgp = false
+param gatewayCustomBgpIpAddresses = [
+  {
+    customBgpIpAddress: '169.254.21.1'
+    ipConfigurationId: '<ipConfigurationId>'
+  }
+  {
+    customBgpIpAddress: '169.254.22.1'
+    ipConfigurationId: '<ipConfigurationId>'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -446,6 +478,19 @@ The primary Virtual Network Gateway.
 - Required: Yes
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-virtualnetworkgateway1id) | string | Resource ID of the virtual network gateway. |
+
+### Parameter: `virtualNetworkGateway1.id`
+
+Resource ID of the virtual network gateway.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `authorizationKey`
 
 The Authorization Key to connect to an Express Route Circuit. Used for connection type [ExpressRoute].
@@ -511,16 +556,160 @@ The IPSec Policies to be considered by this connection.
 - Default:
   ```Bicep
   {
-      dhGroup: ''
-      ikeEncryption: ''
-      ikeIntegrity: ''
-      ipsecEncryption: ''
-      ipsecIntegrity: ''
-      pfsGroup: ''
+      dhGroup: 'None'
+      ikeEncryption: 'DES'
+      ikeIntegrity: 'MD5'
+      ipsecEncryption: 'None'
+      ipsecIntegrity: 'MD5'
+      pfsGroup: 'None'
       saDataSizeKilobytes: 0
       saLifeTimeSeconds: 0
   }
   ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dhGroup`](#parameter-customipsecpolicydhgroup) | string | The DH Group used in IKE Phase 1 for initial SA. |
+| [`ikeEncryption`](#parameter-customipsecpolicyikeencryption) | string | The IKE encryption algorithm (IKE phase 2). |
+| [`ikeIntegrity`](#parameter-customipsecpolicyikeintegrity) | string | The IKE integrity algorithm (IKE phase 2). |
+| [`ipsecEncryption`](#parameter-customipsecpolicyipsecencryption) | string | The IPSec encryption algorithm (IKE phase 1). |
+| [`ipsecIntegrity`](#parameter-customipsecpolicyipsecintegrity) | string | The IPSec integrity algorithm (IKE phase 1). |
+| [`pfsGroup`](#parameter-customipsecpolicypfsgroup) | string | The Pfs Group used in IKE Phase 2 for new child SA. |
+| [`saDataSizeKilobytes`](#parameter-customipsecpolicysadatasizekilobytes) | int | The IPSec Security Association (also called Quick Mode or Phase 2 SA) payload size in KB for a site to site VPN tunnel. |
+| [`saLifeTimeSeconds`](#parameter-customipsecpolicysalifetimeseconds) | int | The IPSec Security Association (also called Quick Mode or Phase 2 SA) lifetime in seconds for a site to site VPN tunnel. |
+
+### Parameter: `customIPSecPolicy.dhGroup`
+
+The DH Group used in IKE Phase 1 for initial SA.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'DHGroup1'
+    'DHGroup14'
+    'DHGroup2'
+    'DHGroup2048'
+    'DHGroup24'
+    'ECP256'
+    'ECP384'
+    'None'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.ikeEncryption`
+
+The IKE encryption algorithm (IKE phase 2).
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AES128'
+    'AES192'
+    'AES256'
+    'DES'
+    'DES3'
+    'GCMAES128'
+    'GCMAES256'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.ikeIntegrity`
+
+The IKE integrity algorithm (IKE phase 2).
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GCMAES128'
+    'GCMAES256'
+    'MD5'
+    'SHA1'
+    'SHA256'
+    'SHA384'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.ipsecEncryption`
+
+The IPSec encryption algorithm (IKE phase 1).
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'AES128'
+    'AES192'
+    'AES256'
+    'DES'
+    'DES3'
+    'GCMAES128'
+    'GCMAES192'
+    'GCMAES256'
+    'None'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.ipsecIntegrity`
+
+The IPSec integrity algorithm (IKE phase 1).
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'GCMAES128'
+    'GCMAES192'
+    'GCMAES256'
+    'MD5'
+    'SHA1'
+    'SHA256'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.pfsGroup`
+
+The Pfs Group used in IKE Phase 2 for new child SA.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'ECP256'
+    'ECP384'
+    'None'
+    'PFS1'
+    'PFS14'
+    'PFS2'
+    'PFS2048'
+    'PFS24'
+    'PFSMM'
+  ]
+  ```
+
+### Parameter: `customIPSecPolicy.saDataSizeKilobytes`
+
+The IPSec Security Association (also called Quick Mode or Phase 2 SA) payload size in KB for a site to site VPN tunnel.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `customIPSecPolicy.saLifeTimeSeconds`
+
+The IPSec Security Association (also called Quick Mode or Phase 2 SA) lifetime in seconds for a site to site VPN tunnel.
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `dpdTimeoutSeconds`
 
@@ -572,13 +761,52 @@ GatewayCustomBgpIpAddresses to be used for virtual network gateway Connection. E
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customBgpIpAddress`](#parameter-gatewaycustombgpipaddressescustombgpipaddress) | string | The custom BgpPeeringAddress which belongs to IpconfigurationId. |
+| [`ipConfigurationId`](#parameter-gatewaycustombgpipaddressesipconfigurationid) | string | The IpconfigurationId of ipconfiguration which belongs to gateway. |
+
+### Parameter: `gatewayCustomBgpIpAddresses.customBgpIpAddress`
+
+The custom BgpPeeringAddress which belongs to IpconfigurationId.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `gatewayCustomBgpIpAddresses.ipConfigurationId`
+
+The IpconfigurationId of ipconfiguration which belongs to gateway.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `localNetworkGateway2`
 
 The local network gateway. Used for connection type [IPsec].
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      id: ''
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-localnetworkgateway2id) | string | Resource ID of the local network gateway. |
+
+### Parameter: `localNetworkGateway2.id`
+
+Resource ID of the local network gateway.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `location`
 
@@ -630,7 +858,25 @@ The remote peer. Used for connection connectionType [ExpressRoute].
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      id: ''
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-peerid) | string | Resource ID of the peer. |
+
+### Parameter: `peer.id`
+
+Resource ID of the peer.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `routingWeight`
 
@@ -654,6 +900,27 @@ The traffic selector policies to be considered by this connection.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`localAddressRanges`](#parameter-trafficselectorpolicieslocaladdressranges) | array | A collection of local address spaces in CIDR format. |
+| [`remoteAddressRanges`](#parameter-trafficselectorpoliciesremoteaddressranges) | array | A collection of remote address spaces in CIDR format. |
+
+### Parameter: `trafficSelectorPolicies.localAddressRanges`
+
+A collection of local address spaces in CIDR format.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `trafficSelectorPolicies.remoteAddressRanges`
+
+A collection of remote address spaces in CIDR format.
+
+- Required: Yes
+- Type: array
+
 ### Parameter: `useLocalAzureIpAddress`
 
 Use private local Azure IP for the connection. Only available for IPSec Virtual Network Gateways that use the Azure Private IP Property.
@@ -676,7 +943,25 @@ The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vne
 
 - Required: No
 - Type: object
-- Default: `{}`
+- Default:
+  ```Bicep
+  {
+      id: ''
+  }
+  ```
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-virtualnetworkgateway2id) | string | Resource ID of the virtual network gateway. |
+
+### Parameter: `virtualNetworkGateway2.id`
+
+Resource ID of the virtual network gateway.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `vpnSharedKey`
 

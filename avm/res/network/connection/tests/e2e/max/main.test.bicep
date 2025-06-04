@@ -30,7 +30,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -76,6 +76,16 @@ module testDeployment '../../../main.bicep' = [
       connectionType: 'Vnet2Vnet'
       dpdTimeoutSeconds: 45
       vpnSharedKey: password
+      gatewayCustomBgpIpAddresses: [
+        {
+          customBgpIpAddress: '169.254.21.1'
+          ipConfigurationId: '${nestedDependencies.outputs.primaryVNETGatewayResourceID}/ipConfigurations/default'
+        }
+        {
+          customBgpIpAddress: '169.254.22.1'
+          ipConfigurationId: '${nestedDependencies.outputs.secondaryVNETGatewayResourceID}/ipConfigurations/default'
+        }
+      ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
