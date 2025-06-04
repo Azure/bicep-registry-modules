@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Azure Managed Redis (Preview)'
-metadata description = 'This instance deploys an Azure Managed Redis (Preview) cache with the minimum set of required parameters.'
+metadata name = 'Azure Managed Redis with non-clustered policy (Preview)'
+metadata description = 'This instance deploys an Azure Managed Redis cache in non-clustered mode (Preview).'
 
 // ========== //
 // Parameters //
@@ -12,7 +12,7 @@ metadata description = 'This instance deploys an Azure Managed Redis (Preview) c
 param resourceGroupName string = 'dep-${namePrefix}-cache-redisenterprise-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'creamr'
+param serviceShort string = 'creanc'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -43,7 +43,9 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      skuName: 'Balanced_B10'
+      database: {
+        clusteringPolicy: 'NoCluster'
+      }
     }
   }
 ]

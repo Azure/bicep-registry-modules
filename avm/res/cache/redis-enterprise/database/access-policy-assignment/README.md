@@ -1,6 +1,6 @@
-# Azure Managed Redis (Preview) Database Access Policy Assignment `[Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments]`
+# Azure Managed Redis Database Access Policy Assignment `[Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments]`
 
-This module deploys an access policy assignment for an Azure Managed Redis (Preview) database.
+This module deploys an access policy assignment for an Azure Managed Redis database.
 
 ## Navigation
 
@@ -12,7 +12,7 @@ This module deploys an access policy assignment for an Azure Managed Redis (Prev
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | [2024-09-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2024-09-01-preview/redisEnterprise/databases/accessPolicyAssignments) |
+| `Microsoft.Cache/redisEnterprise/databases/accessPolicyAssignments` | [2025-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cache/2025-05-01-preview/redisEnterprise/databases/accessPolicyAssignments) |
 
 ## Parameters
 
@@ -26,8 +26,8 @@ This module deploys an access policy assignment for an Azure Managed Redis (Prev
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`clusterName`](#parameter-clustername) | string | The name of the grandparent Azure Managed Redis (Preview) cluster. Required if the template is used in a standalone deployment. |
-| [`databaseName`](#parameter-databasename) | string | The name of the parent Azure Managed Redis (Preview) database. Required if the template is used in a standalone deployment. |
+| [`clusterName`](#parameter-clustername) | string | The name of the grandparent Azure Managed Redis cluster. Required if the template is used in a standalone deployment. |
+| [`databaseName`](#parameter-databasename) | string | The name of the parent Azure Managed Redis database. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -45,14 +45,14 @@ Object ID to which the access policy will be assigned.
 
 ### Parameter: `clusterName`
 
-The name of the grandparent Azure Managed Redis (Preview) cluster. Required if the template is used in a standalone deployment.
+The name of the grandparent Azure Managed Redis cluster. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `databaseName`
 
-The name of the parent Azure Managed Redis (Preview) database. Required if the template is used in a standalone deployment.
+The name of the parent Azure Managed Redis database. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
