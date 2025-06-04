@@ -171,7 +171,7 @@ param lock lockType?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/virtualNetworkGateways@2024-07-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
