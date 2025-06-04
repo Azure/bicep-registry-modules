@@ -337,7 +337,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     ]
     roleAssignments: [
       {
-        name: 'de334944-f952-4273-8ab3-bd523380034c'
+        name: '<name>'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
         roleDefinitionIdOrName: 'Owner'
@@ -586,7 +586,7 @@ module automationAccount 'br/public:avm/res/automation/automation-account:<versi
     "roleAssignments": {
       "value": [
         {
-          "name": "de334944-f952-4273-8ab3-bd523380034c",
+          "name": "<name>",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
           "roleDefinitionIdOrName": "Owner"
@@ -811,7 +811,7 @@ python3Packages: [
 ]
 param roleAssignments = [
   {
-    name: 'de334944-f952-4273-8ab3-bd523380034c'
+    name: '<name>'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
     roleDefinitionIdOrName: 'Owner'
