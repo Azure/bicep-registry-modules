@@ -80,6 +80,7 @@ module testDeployment '../../../main.bicep' = {
             }
           }
         ]
+        resourceGroupLockEnabled: false
       }
       {
         name: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}-2'

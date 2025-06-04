@@ -786,21 +786,6 @@ module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
   }
 ]
 
-/*module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
-  for (vnet, i) in additionalVirtualNetworks: if (!empty(vnet.?subnets ?? [])) {
-    scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
-    dependsOn: [
-      createResourceGroupForadditionalLzNetworking
-    ]
-    params: {
-      name: vnet.?subnets[i].?networkSecurityGroup.name ?? 'nsg-${vnet.?subnets.name}-${substring(guid(vnet.name, vnet.resourceGroupName, vnet.?subnets[i].name ?? '', subscriptionId), 0, 5)}'
-      location: vnet.location
-      securityRules: vnet.?subnets[i].?networkSecurityGroup.?securityRules ?? null
-      enableTelemetry: enableTelemetry
-    }
-  }
-]*/
-
 module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
   for (nsg, i) in nsgArrayFormatted: if (!empty(additionalVirtualNetworks)) {
     scope: resourceGroup(subscriptionId, nsg.vnetResourceGroupName)

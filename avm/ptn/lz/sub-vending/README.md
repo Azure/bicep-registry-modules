@@ -102,6 +102,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         ]
         location: '<location>'
         name: '<name>'
+        resourceGroupLockEnabled: false
         resourceGroupName: '<resourceGroupName>'
         subnets: [
           {
@@ -201,6 +202,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           ],
           "location": "<location>",
           "name": "<name>",
+          "resourceGroupLockEnabled": false,
           "resourceGroupName": "<resourceGroupName>",
           "subnets": [
             {
@@ -330,6 +332,7 @@ param additionalVirtualNetworks = [
     ]
     location: '<location>'
     name: '<name>'
+    resourceGroupLockEnabled: false
     resourceGroupName: '<resourceGroupName>'
     subnets: [
       {
