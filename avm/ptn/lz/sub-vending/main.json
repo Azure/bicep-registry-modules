@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5370783138910885765"
+      "templateHash": "9482723769693008049"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1997,7 +1997,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "2140201188993245490"
+              "templateHash": "17343798175904493870"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -3728,7 +3728,7 @@
             "virtualWanHubConnectionPropogatedRouteTables": "[if(not(empty(parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'))), parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'), array(variables('virutalWanHubDefaultRouteTableId')))]",
             "virtualWanHubConnectionPropogatedLabels": "[if(not(empty(parameters('virtualNetworkVwanPropagatedLabels'))), parameters('virtualNetworkVwanPropagatedLabels'), createArray('default'))]",
             "resourceProvidersFormatted": "[replace(string(parameters('resourceProviders')), '\"', '\\\"')]",
-            "nsgArrayFormatted": "[flatten(map(parameters('additionalVirtualNetworks'), lambda('vnet', flatten(map(filter(coalesce(tryGet(lambdaVariables('vnet'), 'subnets'), createArray()), lambda('subnet', contains(lambdaVariables('subnet'), 'networkSecurityGroup'))), lambda('subnet', map(lambdaVariables('subnet').networkSecurityGroup, lambda('nsg', createObject('vnetResourceGroupName', lambdaVariables('vnet').resourceGroupName, 'subnetName', lambdaVariables('subnet').name, 'nsgName', lambdaVariables('nsg').name, 'nsgLocation', coalesce(tryGet(lambdaVariables('nsg'), 'location'), lambdaVariables('vnet').location), 'nsgRules', tryGet(lambdaVariables('nsg'), 'securityRules'), 'nsgTags', tryGet(lambdaVariables('nsg'), 'tags'))))))))))]"
+            "nsgArrayFormatted": "[if(not(empty(parameters('additionalVirtualNetworks'))), flatten(map(parameters('additionalVirtualNetworks'), lambda('vnet', flatten(map(filter(coalesce(tryGet(lambdaVariables('vnet'), 'subnets'), createArray()), lambda('subnet', contains(lambdaVariables('subnet'), 'networkSecurityGroup'))), lambda('subnet', map(lambdaVariables('subnet').networkSecurityGroup, lambda('nsg', createObject('vnetResourceGroupName', lambdaVariables('vnet').resourceGroupName, 'subnetName', lambdaVariables('subnet').name, 'nsgName', lambdaVariables('nsg').name, 'nsgLocation', coalesce(tryGet(lambdaVariables('nsg'), 'location'), lambdaVariables('vnet').location), 'nsgRules', tryGet(lambdaVariables('nsg'), 'securityRules'), 'nsgTags', tryGet(lambdaVariables('nsg'), 'tags')))))))))), createArray())]"
           },
           "resources": {
             "moveSubscriptionToManagementGroupDelay": {
@@ -45900,6 +45900,7 @@
                 }
               },
               "dependsOn": [
+                "createAdditionalVnetNsgs",
                 "[format('createAdditonalNatGateway[{0}]', copyIndex())]",
                 "createBastionNsg",
                 "createResourceGroupForadditionalLzNetworking"

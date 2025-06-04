@@ -457,22 +457,24 @@ var virtualWanHubConnectionPropogatedLabels = !empty(virtualNetworkVwanPropagate
 
 var resourceProvidersFormatted = replace(string(resourceProviders), '"', '\\"')
 
-var nsgArrayFormatted = flatten(map(
-  additionalVirtualNetworks,
-  vnet =>
-    flatten(map(
-      filter(vnet.?subnets ?? [], subnet => contains(subnet, 'networkSecurityGroup')),
-      subnet =>
-        map(subnet.networkSecurityGroup, nsg => {
-          vnetResourceGroupName: vnet.resourceGroupName
-          subnetName: subnet.name
-          nsgName: nsg.name
-          nsgLocation: nsg.?location ?? vnet.location
-          nsgRules: nsg.?securityRules
-          nsgTags: nsg.?tags
-        })
+var nsgArrayFormatted = !empty(additionalVirtualNetworks)
+  ? flatten(map(
+      additionalVirtualNetworks,
+      vnet =>
+        flatten(map(
+          filter(vnet.?subnets ?? [], subnet => contains(subnet, 'networkSecurityGroup')),
+          subnet =>
+            map(subnet.networkSecurityGroup, nsg => {
+              vnetResourceGroupName: vnet.resourceGroupName
+              subnetName: subnet.name
+              nsgName: nsg.name
+              nsgLocation: nsg.?location ?? vnet.location
+              nsgRules: nsg.?securityRules
+              nsgTags: nsg.?tags
+            })
+        ))
     ))
-))
+  : []
 
 // RESOURCES & MODULES
 
