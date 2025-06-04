@@ -1611,6 +1611,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
     scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
     dependsOn: [
       createResourceGroupForadditionalLzNetworking
+      createAdditionalVnetNsgs
     ]
     params: {
       name: vnet.name
