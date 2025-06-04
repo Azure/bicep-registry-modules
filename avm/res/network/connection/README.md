@@ -17,7 +17,7 @@ This module deploys a Virtual Network Gateway Connection.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/connections` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/connections) |
+| `Microsoft.Network/connections` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/connections) |
 
 ## Usage examples
 
@@ -419,6 +419,7 @@ param vpnSharedKey = '<vpnSharedKey>'
 | [`enablePrivateLinkFastPath`](#parameter-enableprivatelinkfastpath) | bool | Bypass the ExpressRoute gateway when accessing private-links. ExpressRoute FastPath (expressRouteGatewayBypass) must be enabled. Only available when connection connectionType is Express Route. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expressRouteGatewayBypass`](#parameter-expressroutegatewaybypass) | bool | Bypass ExpressRoute Gateway for data forwarding. Only available when connection connectionType is Express Route. |
+| [`gatewayCustomBgpIpAddresses`](#parameter-gatewaycustombgpipaddresses) | array | GatewayCustomBgpIpAddresses to be used for virtual network gateway Connection. Enables APIPA (Automatic Private IP Addressing) for custom BGP IP addresses on both Azure and on-premises sides. |
 | [`localNetworkGateway2`](#parameter-localnetworkgateway2) | object | The local network gateway. Used for connection type [IPsec]. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
@@ -562,6 +563,14 @@ Bypass ExpressRoute Gateway for data forwarding. Only available when connection 
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `gatewayCustomBgpIpAddresses`
+
+GatewayCustomBgpIpAddresses to be used for virtual network gateway Connection. Enables APIPA (Automatic Private IP Addressing) for custom BGP IP addresses on both Azure and on-premises sides.
+
+- Required: No
+- Type: array
+- Default: `[]`
 
 ### Parameter: `localNetworkGateway2`
 

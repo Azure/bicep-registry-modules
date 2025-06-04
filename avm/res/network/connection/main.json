@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "5128164965296759109"
+      "version": "0.36.1.42791",
+      "templateHash": "16277762457591727576"
     },
     "name": "Virtual Network Gateway Connections",
     "description": "This module deploys a Virtual Network Gateway Connection."
@@ -183,10 +183,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/connections@2024-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -228,6 +231,13 @@
       "metadata": {
         "description": "Optional. The local network gateway. Used for connection type [IPsec]."
       }
+    },
+    "gatewayCustomBgpIpAddresses": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. GatewayCustomBgpIpAddresses to be used for virtual network gateway Connection. Enables APIPA (Automatic Private IP Addressing) for custom BGP IP addresses on both Azure and on-premises sides."
+      }
     }
   },
   "resources": {
@@ -253,7 +263,7 @@
     },
     "connection": {
       "type": "Microsoft.Network/connections",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -275,7 +285,8 @@
         "ipsecPolicies": "[if(not(empty(parameters('customIPSecPolicy').ipsecEncryption)), createArray(createObject('saLifeTimeSeconds', parameters('customIPSecPolicy').saLifeTimeSeconds, 'saDataSizeKilobytes', parameters('customIPSecPolicy').saDataSizeKilobytes, 'ipsecEncryption', parameters('customIPSecPolicy').ipsecEncryption, 'ipsecIntegrity', parameters('customIPSecPolicy').ipsecIntegrity, 'ikeEncryption', parameters('customIPSecPolicy').ikeEncryption, 'ikeIntegrity', parameters('customIPSecPolicy').ikeIntegrity, 'dhGroup', parameters('customIPSecPolicy').dhGroup, 'pfsGroup', parameters('customIPSecPolicy').pfsGroup)), parameters('customIPSecPolicy').ipsecEncryption)]",
         "routingWeight": "[parameters('routingWeight')]",
         "enableBgp": "[parameters('enableBgp')]",
-        "useLocalAzureIpAddress": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('useLocalAzureIpAddress'), null())]"
+        "useLocalAzureIpAddress": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('useLocalAzureIpAddress'), null())]",
+        "gatewayCustomBgpIpAddresses": "[if(not(empty(parameters('gatewayCustomBgpIpAddresses'))), parameters('gatewayCustomBgpIpAddresses'), null())]"
       }
     },
     "connection_lock": {
@@ -320,7 +331,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('connection', '2023-04-01', 'full').location]"
+      "value": "[reference('connection', '2024-05-01', 'full').location]"
     }
   }
 }

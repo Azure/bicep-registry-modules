@@ -78,7 +78,7 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 param lock lockType?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.Network/connections@2024-05-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -99,6 +99,9 @@ param authorizationKey string = ''
 @description('Optional. The local network gateway. Used for connection type [IPsec].')
 param localNetworkGateway2 object = {}
 
+@description('Optional. GatewayCustomBgpIpAddresses to be used for virtual network gateway Connection. Enables APIPA (Automatic Private IP Addressing) for custom BGP IP addresses on both Azure and on-premises sides.')
+param gatewayCustomBgpIpAddresses array = []
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-connection.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
@@ -118,7 +121,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource connection 'Microsoft.Network/connections@2023-04-01' = {
+resource connection 'Microsoft.Network/connections@2024-05-01' = {
   name: name
   location: location
   tags: tags
@@ -154,6 +157,7 @@ resource connection 'Microsoft.Network/connections@2023-04-01' = {
     routingWeight: routingWeight
     enableBgp: enableBgp
     useLocalAzureIpAddress: connectionType == 'IPsec' ? useLocalAzureIpAddress : null
+    gatewayCustomBgpIpAddresses: !empty(gatewayCustomBgpIpAddresses) ? gatewayCustomBgpIpAddresses : null
   }
 }
 
