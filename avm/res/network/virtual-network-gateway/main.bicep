@@ -22,6 +22,7 @@ type autoScaleConfigurationType = {
   bounds: autoScaleBoundsType
 }
 
+@export()
 @description('Configuration for VPN client AAD authentication.')
 type vpnClientAadConfigurationType = {
   @description('Required. The AAD tenant property for VPN client connection used for AAD authentication.')
