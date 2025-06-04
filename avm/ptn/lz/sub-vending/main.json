@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "16320110552561518423"
+      "templateHash": "5370783138910885765"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1997,7 +1997,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "5859056499780508982"
+              "templateHash": "2140201188993245490"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -3727,7 +3727,8 @@
             },
             "virtualWanHubConnectionPropogatedRouteTables": "[if(not(empty(parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'))), parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'), array(variables('virutalWanHubDefaultRouteTableId')))]",
             "virtualWanHubConnectionPropogatedLabels": "[if(not(empty(parameters('virtualNetworkVwanPropagatedLabels'))), parameters('virtualNetworkVwanPropagatedLabels'), createArray('default'))]",
-            "resourceProvidersFormatted": "[replace(string(parameters('resourceProviders')), '\"', '\\\"')]"
+            "resourceProvidersFormatted": "[replace(string(parameters('resourceProviders')), '\"', '\\\"')]",
+            "nsgArrayFormatted": "[flatten(map(parameters('additionalVirtualNetworks'), lambda('vnet', flatten(map(filter(coalesce(tryGet(lambdaVariables('vnet'), 'subnets'), createArray()), lambda('subnet', contains(lambdaVariables('subnet'), 'networkSecurityGroup'))), lambda('subnet', map(lambdaVariables('subnet').networkSecurityGroup, lambda('nsg', createObject('vnetResourceGroupName', lambdaVariables('vnet').resourceGroupName, 'subnetName', lambdaVariables('subnet').name, 'nsgName', lambdaVariables('nsg').name, 'nsgLocation', coalesce(tryGet(lambdaVariables('nsg'), 'location'), lambdaVariables('vnet').location), 'nsgRules', tryGet(lambdaVariables('nsg'), 'securityRules'), 'nsgTags', tryGet(lambdaVariables('nsg'), 'tags'))))))))))]"
           },
           "resources": {
             "moveSubscriptionToManagementGroupDelay": {
@@ -8662,14 +8663,14 @@
             "createAdditionalVnetNsgs": {
               "copy": {
                 "name": "createAdditionalVnetNsgs",
-                "count": "[length(parameters('additionalVirtualNetworks'))]"
+                "count": "[length(variables('nsgArrayFormatted'))]"
               },
-              "condition": "[and(not(empty(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))), not(empty(tryGet(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets', copyIndex()), 'networkSecurityGroup'))))]",
+              "condition": "[not(empty(parameters('additionalVirtualNetworks')))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('createAdditionalVnetNsgs-{0}-{1}', copyIndex(), uniqueString('createAdditionalVnetNsgs', deployment().name))]",
               "subscriptionId": "[parameters('subscriptionId')]",
-              "resourceGroup": "[parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName]",
+              "resourceGroup": "[variables('nsgArrayFormatted')[copyIndex()].vnetResourceGroupName]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -8677,13 +8678,16 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[coalesce(tryGet(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets', copyIndex()), 'networkSecurityGroup', 'name'), format('nsg-{0}-{1}', tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets', 'name'), substring(guid(parameters('additionalVirtualNetworks')[copyIndex()].name, parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets', copyIndex(), 'name'), ''), parameters('subscriptionId')), 0, 5)))]"
-                  },
-                  "location": {
-                    "value": "[parameters('additionalVirtualNetworks')[copyIndex()].location]"
+                    "value": "[variables('nsgArrayFormatted')[copyIndex()].nsgName]"
                   },
                   "securityRules": {
-                    "value": "[coalesce(tryGet(tryGet(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets', copyIndex()), 'networkSecurityGroup'), 'securityRules'), null())]"
+                    "value": "[coalesce(tryGet(variables('nsgArrayFormatted')[copyIndex()], 'nsgRules'), null())]"
+                  },
+                  "location": {
+                    "value": "[coalesce(tryGet(variables('nsgArrayFormatted')[copyIndex()], 'nsgLocation'), parameters('virtualNetworkLocation'))]"
+                  },
+                  "tags": {
+                    "value": "[coalesce(tryGet(variables('nsgArrayFormatted')[copyIndex()], 'nsgTags'), null())]"
                   },
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
@@ -44255,7 +44259,7 @@
                       {
                         "name": "value",
                         "count": "[length(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))]",
-                        "input": "[createObject('name', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'addressPrefix', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployBastion'), false()), equals(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'AzureBastionSubnet')), reference('createBastionNsg').outputs.resourceId.value, if(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup'))), resourceId(parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, 'Microsoft.Network/networkSecurityGroups', format('{0}', reference(format('createAdditionalVnetNsgs[{0}]', copyIndex())).outputs.name.value)), null())), 'natGatewayResourceId', if(and(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false()), coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'associateWithNatGateway'), false())), reference(format('createAdditonalNatGateway[{0}]', copyIndex())).outputs.resourceId.value, null()))]"
+                        "input": "[createObject('name', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'addressPrefix', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployBastion'), false()), equals(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'AzureBastionSubnet')), reference('createBastionNsg').outputs.resourceId.value, if(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup'))), resourceId(parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, 'Microsoft.Network/networkSecurityGroups', filter(variables('nsgArrayFormatted'), lambda('nsg', equals(lambdaVariables('nsg').nsgName, tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup', 'name'))))[0].nsgName), null())), 'natGatewayResourceId', if(and(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false()), coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'associateWithNatGateway'), false())), reference(format('createAdditonalNatGateway[{0}]', copyIndex())).outputs.resourceId.value, null()))]"
                       }
                     ]
                   },
@@ -45896,7 +45900,6 @@
                 }
               },
               "dependsOn": [
-                "[format('createAdditionalVnetNsgs[{0}]', copyIndex())]",
                 "[format('createAdditonalNatGateway[{0}]', copyIndex())]",
                 "createBastionNsg",
                 "createResourceGroupForadditionalLzNetworking"

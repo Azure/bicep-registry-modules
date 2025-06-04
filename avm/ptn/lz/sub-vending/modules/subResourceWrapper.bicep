@@ -457,6 +457,23 @@ var virtualWanHubConnectionPropogatedLabels = !empty(virtualNetworkVwanPropagate
 
 var resourceProvidersFormatted = replace(string(resourceProviders), '"', '\\"')
 
+var nsgArrayFormatted = flatten(map(
+  additionalVirtualNetworks,
+  vnet =>
+    flatten(map(
+      filter(vnet.?subnets ?? [], subnet => contains(subnet, 'networkSecurityGroup')),
+      subnet =>
+        map(subnet.networkSecurityGroup, nsg => {
+          vnetResourceGroupName: vnet.resourceGroupName
+          subnetName: subnet.name
+          nsgName: nsg.name
+          nsgLocation: nsg.?location ?? vnet.location
+          nsgRules: nsg.?securityRules
+          nsgTags: nsg.?tags
+        })
+    ))
+))
+
 // RESOURCES & MODULES
 
 @batchSize(1)
@@ -765,8 +782,8 @@ module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
   }
 ]
 
-module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
-  for (vnet, i) in additionalVirtualNetworks: if (!empty(vnet.?subnets ?? []) && !empty(vnet.?subnets[i].?networkSecurityGroup)) {
+/*module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
+  for (vnet, i) in additionalVirtualNetworks: if (!empty(vnet.?subnets ?? [])) {
     scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
     dependsOn: [
       createResourceGroupForadditionalLzNetworking
@@ -775,6 +792,22 @@ module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-grou
       name: vnet.?subnets[i].?networkSecurityGroup.name ?? 'nsg-${vnet.?subnets.name}-${substring(guid(vnet.name, vnet.resourceGroupName, vnet.?subnets[i].name ?? '', subscriptionId), 0, 5)}'
       location: vnet.location
       securityRules: vnet.?subnets[i].?networkSecurityGroup.?securityRules ?? null
+      enableTelemetry: enableTelemetry
+    }
+  }
+]*/
+
+module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
+  for (nsg, i) in nsgArrayFormatted: if (!empty(additionalVirtualNetworks)) {
+    scope: resourceGroup(subscriptionId, nsg.vnetResourceGroupName)
+    dependsOn: [
+      createResourceGroupForadditionalLzNetworking
+    ]
+    params: {
+      name: nsg.nsgName
+      securityRules: nsg.?nsgRules ?? null
+      location: nsg.?nsgLocation ?? virtualNetworkLocation
+      tags: nsg.?nsgTags ?? null
       enableTelemetry: enableTelemetry
     }
   }
@@ -1593,7 +1626,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
                     subscriptionId,
                     vnet.resourceGroupName,
                     'Microsoft.Network/networkSecurityGroups',
-                    '${createAdditionalVnetNsgs[i].outputs.name}'
+                    filter(nsgArrayFormatted, nsg => nsg.nsgName == subnet.?networkSecurityGroup.name)[0].nsgName
                   )
                 : null
           natGatewayResourceId: (vnet.?deployNatGateway ?? false) && (subnet.?associateWithNatGateway ?? false)
