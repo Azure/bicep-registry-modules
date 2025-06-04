@@ -2671,6 +2671,40 @@ Autoscale configuration for virtual network gateway. Only applicable for certain
 - Required: No
 - Type: object
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bounds`](#parameter-autoscaleconfigurationbounds) | object | The bounds of the autoscale configuration. |
+
+### Parameter: `autoScaleConfiguration.bounds`
+
+The bounds of the autoscale configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`max`](#parameter-autoscaleconfigurationboundsmax) | int | Maximum Scale Units for autoscale configuration. |
+| [`min`](#parameter-autoscaleconfigurationboundsmin) | int | Minimum Scale Units for autoscale configuration. |
+
+### Parameter: `autoScaleConfiguration.bounds.max`
+
+Maximum Scale Units for autoscale configuration.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `autoScaleConfiguration.bounds.min`
+
+Minimum Scale Units for autoscale configuration.
+
+- Required: Yes
+- Type: int
+
 ### Parameter: `clientRevokedCertThumbprint`
 
 Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet.
@@ -3440,6 +3474,67 @@ Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured i
 
 - Required: No
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadAudience`](#parameter-vpnclientaadconfigurationaadaudience) | string | The AAD audience property for VPN client connection used for AAD authentication. |
+| [`aadIssuer`](#parameter-vpnclientaadconfigurationaadissuer) | string | The AAD issuer property for VPN client connection used for AAD authentication. |
+| [`aadTenant`](#parameter-vpnclientaadconfigurationaadtenant) | string | The AAD tenant property for VPN client connection used for AAD authentication. |
+| [`vpnAuthenticationTypes`](#parameter-vpnclientaadconfigurationvpnauthenticationtypes) | array | VPN authentication types for the virtual network gateway. |
+| [`vpnClientProtocols`](#parameter-vpnclientaadconfigurationvpnclientprotocols) | array | VPN client protocols for Virtual network gateway. |
+
+### Parameter: `vpnClientAadConfiguration.aadAudience`
+
+The AAD audience property for VPN client connection used for AAD authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnClientAadConfiguration.aadIssuer`
+
+The AAD issuer property for VPN client connection used for AAD authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnClientAadConfiguration.aadTenant`
+
+The AAD tenant property for VPN client connection used for AAD authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnClientAadConfiguration.vpnAuthenticationTypes`
+
+VPN authentication types for the virtual network gateway.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'AAD'
+    'Certificate'
+    'Radius'
+  ]
+  ```
+
+### Parameter: `vpnClientAadConfiguration.vpnClientProtocols`
+
+VPN client protocols for Virtual network gateway.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'IkeV2'
+    'OpenVPN'
+    'SSTP'
+  ]
+  ```
 
 ### Parameter: `vpnClientAddressPoolPrefix`
 

@@ -6,12 +6,94 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12341689011895141311"
+      "templateHash": "13702025480380618169"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
   },
   "definitions": {
+    "autoScaleBoundsType": {
+      "type": "object",
+      "properties": {
+        "max": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Maximum Scale Units for autoscale configuration."
+          }
+        },
+        "min": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. Minimum Scale Units for autoscale configuration."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Configuration for Virtual Network Gateway autoscale bounds."
+      }
+    },
+    "autoScaleConfigurationType": {
+      "type": "object",
+      "properties": {
+        "bounds": {
+          "$ref": "#/definitions/autoScaleBoundsType",
+          "metadata": {
+            "description": "Required. The bounds of the autoscale configuration."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Configuration for Virtual Network Gateway autoscale."
+      }
+    },
+    "vpnClientAadConfigurationType": {
+      "type": "object",
+      "properties": {
+        "aadTenant": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The AAD tenant property for VPN client connection used for AAD authentication."
+          }
+        },
+        "aadAudience": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The AAD audience property for VPN client connection used for AAD authentication."
+          }
+        },
+        "aadIssuer": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The AAD issuer property for VPN client connection used for AAD authentication."
+          }
+        },
+        "vpnAuthenticationTypes": {
+          "type": "array",
+          "allowedValues": [
+            "AAD",
+            "Certificate",
+            "Radius"
+          ],
+          "metadata": {
+            "description": "Required. VPN authentication types for the virtual network gateway."
+          }
+        },
+        "vpnClientProtocols": {
+          "type": "array",
+          "allowedValues": [
+            "IkeV2",
+            "OpenVPN",
+            "SSTP"
+          ],
+          "metadata": {
+            "description": "Required. VPN client protocols for Virtual network gateway."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Configuration for VPN client AAD authentication."
+      }
+    },
     "clusterSettingType": {
       "type": "object",
       "discriminator": {
@@ -795,7 +877,7 @@
       }
     },
     "vpnClientAadConfiguration": {
-      "type": "object",
+      "$ref": "#/definitions/vpnClientAadConfigurationType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided."
@@ -831,7 +913,7 @@
       }
     },
     "autoScaleConfiguration": {
-      "type": "object",
+      "$ref": "#/definitions/autoScaleConfigurationType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Autoscale configuration for virtual network gateway. Only applicable for certain SKUs."

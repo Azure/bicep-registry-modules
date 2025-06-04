@@ -1,6 +1,47 @@
 metadata name = 'Virtual Network Gateways'
 metadata description = 'This module deploys a Virtual Network Gateway.'
 
+// ============= //
+// User Types    //
+// ============= //
+
+@description('Configuration for Virtual Network Gateway autoscale bounds.')
+type autoScaleBoundsType = {
+  @description('Required. Maximum Scale Units for autoscale configuration.')
+  max: int
+
+  @description('Required. Minimum Scale Units for autoscale configuration.')
+  min: int
+}
+
+@description('Configuration for Virtual Network Gateway autoscale.')
+type autoScaleConfigurationType = {
+  @description('Required. The bounds of the autoscale configuration.')
+  bounds: autoScaleBoundsType
+}
+
+@description('Configuration for VPN client AAD authentication.')
+type vpnClientAadConfigurationType = {
+  @description('Required. The AAD tenant property for VPN client connection used for AAD authentication.')
+  aadTenant: string
+
+  @description('Required. The AAD audience property for VPN client connection used for AAD authentication.')
+  aadAudience: string
+
+  @description('Required. The AAD issuer property for VPN client connection used for AAD authentication.')
+  aadIssuer: string
+
+  @description('Required. VPN authentication types for the virtual network gateway.')
+  vpnAuthenticationTypes: ('Certificate' | 'Radius' | 'AAD')[]
+
+  @description('Required. VPN client protocols for Virtual network gateway.')
+  vpnClientProtocols: ('IkeV2' | 'SSTP' | 'OpenVPN')[]
+}
+
+// ============= //
+// Parameters    //
+// ============= //
+
 @description('Required. Specifies the Virtual Network Gateway name.')
 param name string
 
@@ -133,7 +174,7 @@ param tags object?
 param enableTelemetry bool = true
 
 @description('Optional. Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured if clientRootCertData is provided.')
-param vpnClientAadConfiguration object?
+param vpnClientAadConfiguration vpnClientAadConfigurationType?
 
 @description('Optional. The managed identity definition for this resource. Supports system-assigned and user-assigned identities.')
 param managedIdentity managedIdentityAllType?
@@ -153,7 +194,7 @@ param adminState string = 'Enabled'
 param resiliencyModel string = 'SingleHomed'
 
 @description('Optional. Autoscale configuration for virtual network gateway. Only applicable for certain SKUs.')
-param autoScaleConfiguration object?
+param autoScaleConfiguration autoScaleConfigurationType?
 
 // ================//
 // Variables       //
