@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "13702025480380618169"
+      "templateHash": "11441913607220871799"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -29,6 +29,7 @@
         }
       },
       "metadata": {
+        "__bicep_export!": true,
         "description": "Configuration for Virtual Network Gateway autoscale bounds."
       }
     },
@@ -43,6 +44,7 @@
         }
       },
       "metadata": {
+        "__bicep_export!": true,
         "description": "Configuration for Virtual Network Gateway autoscale."
       }
     },
@@ -91,6 +93,7 @@
         }
       },
       "metadata": {
+        "__bicep_export!": true,
         "description": "Configuration for VPN client AAD authentication."
       }
     },
@@ -864,10 +867,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/virtualNetworkGateways@2024-07-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
