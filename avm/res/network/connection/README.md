@@ -28,8 +28,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/network/connection:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [IPSec connection with APIPA configuration](#example-2-ipsec-connection-with-apipa-configuration)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -127,7 +128,182 @@ param vpnSharedKey = '<vpnSharedKey>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _IPSec connection with APIPA configuration_
+
+This instance deploys the module with IPSec connection type and APIPA (gatewayCustomBgpIpAddresses) configuration.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module connection 'br/public:avm/res/network/connection:<version>' = {
+  name: 'connectionDeployment'
+  params: {
+    // Required parameters
+    name: 'ncapipa001'
+    virtualNetworkGateway1: {
+      id: '<id>'
+    }
+    // Non-required parameters
+    connectionType: 'IPsec'
+    customIPSecPolicy: {
+      dhGroup: 'DHGroup14'
+      ikeEncryption: 'AES256'
+      ikeIntegrity: 'SHA256'
+      ipsecEncryption: 'AES256'
+      ipsecIntegrity: 'SHA256'
+      pfsGroup: 'PFS14'
+      saDataSizeKilobytes: 102400000
+      saLifeTimeSeconds: 3600
+    }
+    enableBgp: true
+    gatewayCustomBgpIpAddresses: [
+      {
+        customBgpIpAddress: '169.254.21.1'
+        ipConfigurationId: '<ipConfigurationId>'
+      }
+    ]
+    localNetworkGateway2: {
+      id: '<id>'
+    }
+    location: '<location>'
+    tags: {
+      Environment: 'Test'
+      'hidden-title': 'IPSec APIPA Connection Test'
+      Role: 'DeploymentValidation'
+    }
+    useLocalAzureIpAddress: true
+    vpnSharedKey: '<vpnSharedKey>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "ncapipa001"
+    },
+    "virtualNetworkGateway1": {
+      "value": {
+        "id": "<id>"
+      }
+    },
+    // Non-required parameters
+    "connectionType": {
+      "value": "IPsec"
+    },
+    "customIPSecPolicy": {
+      "value": {
+        "dhGroup": "DHGroup14",
+        "ikeEncryption": "AES256",
+        "ikeIntegrity": "SHA256",
+        "ipsecEncryption": "AES256",
+        "ipsecIntegrity": "SHA256",
+        "pfsGroup": "PFS14",
+        "saDataSizeKilobytes": 102400000,
+        "saLifeTimeSeconds": 3600
+      }
+    },
+    "enableBgp": {
+      "value": true
+    },
+    "gatewayCustomBgpIpAddresses": {
+      "value": [
+        {
+          "customBgpIpAddress": "169.254.21.1",
+          "ipConfigurationId": "<ipConfigurationId>"
+        }
+      ]
+    },
+    "localNetworkGateway2": {
+      "value": {
+        "id": "<id>"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Environment": "Test",
+        "hidden-title": "IPSec APIPA Connection Test",
+        "Role": "DeploymentValidation"
+      }
+    },
+    "useLocalAzureIpAddress": {
+      "value": true
+    },
+    "vpnSharedKey": {
+      "value": "<vpnSharedKey>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/connection:<version>'
+
+// Required parameters
+param name = 'ncapipa001'
+virtualNetworkGateway1: {
+  id: '<id>'
+}
+// Non-required parameters
+param connectionType = 'IPsec'
+param customIPSecPolicy = {
+  dhGroup: 'DHGroup14'
+  ikeEncryption: 'AES256'
+  ikeIntegrity: 'SHA256'
+  ipsecEncryption: 'AES256'
+  ipsecIntegrity: 'SHA256'
+  pfsGroup: 'PFS14'
+  saDataSizeKilobytes: 102400000
+  saLifeTimeSeconds: 3600
+}
+param enableBgp = true
+param gatewayCustomBgpIpAddresses = [
+  {
+    customBgpIpAddress: '169.254.21.1'
+    ipConfigurationId: '<ipConfigurationId>'
+  }
+]
+localNetworkGateway2: {
+  id: '<id>'
+}
+param location = '<location>'
+param tags = {
+  Environment: 'Test'
+  'hidden-title': 'IPSec APIPA Connection Test'
+  Role: 'DeploymentValidation'
+}
+param useLocalAzureIpAddress = true
+param vpnSharedKey = '<vpnSharedKey>'
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -149,16 +325,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     connectionType: 'Vnet2Vnet'
     dpdTimeoutSeconds: 45
     enableBgp: false
-    gatewayCustomBgpIpAddresses: [
-      {
-        customBgpIpAddress: '169.254.21.1'
-        ipConfigurationId: '<ipConfigurationId>'
-      }
-      {
-        customBgpIpAddress: '169.254.22.1'
-        ipConfigurationId: '<ipConfigurationId>'
-      }
-    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -208,18 +374,6 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     },
     "enableBgp": {
       "value": false
-    },
-    "gatewayCustomBgpIpAddresses": {
-      "value": [
-        {
-          "customBgpIpAddress": "169.254.21.1",
-          "ipConfigurationId": "<ipConfigurationId>"
-        },
-        {
-          "customBgpIpAddress": "169.254.22.1",
-          "ipConfigurationId": "<ipConfigurationId>"
-        }
-      ]
     },
     "location": {
       "value": "<location>"
@@ -271,16 +425,6 @@ virtualNetworkGateway1: {
 param connectionType = 'Vnet2Vnet'
 param dpdTimeoutSeconds = 45
 param enableBgp = false
-param gatewayCustomBgpIpAddresses = [
-  {
-    customBgpIpAddress: '169.254.21.1'
-    ipConfigurationId: '<ipConfigurationId>'
-  }
-  {
-    customBgpIpAddress: '169.254.22.1'
-    ipConfigurationId: '<ipConfigurationId>'
-  }
-]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -301,7 +445,7 @@ param vpnSharedKey = '<vpnSharedKey>'
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
