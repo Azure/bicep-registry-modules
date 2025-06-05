@@ -80,6 +80,7 @@ param lbFrontendPort int = 80
 param lbBackendPort int = 80
 
 // Module telemetry
+#disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: '46d3xbcp.ptn.app-iaas-vm-cosmosdb-tier4.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
@@ -542,6 +543,7 @@ module cosmosdbAccount 'br/public:avm/res/document-db/database-account:0.15.0' =
         ]
       }
     ]
+    enableTelemetry: enableTelemetry
   }
 }
 
