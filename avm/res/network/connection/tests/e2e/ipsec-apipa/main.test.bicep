@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata name = 'IPSec connection with APIPA configuration'
+metadata description = 'This instance deploys the module with IPSec connection type and APIPA (gatewayCustomBgpIpAddresses) configuration.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.connections-${servic
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ncmax'
+param serviceShort string = 'ncapipa'
 
 @description('Optional. The password to leverage for the shared key.')
 @secure()
@@ -43,9 +43,7 @@ module nestedDependencies 'dependencies.bicep' = {
     primaryPublicIPName: 'dep-${namePrefix}-pip-${serviceShort}-1'
     primaryVirtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}-1'
     primaryVirtualNetworkGatewayName: 'dep-${namePrefix}-vpn-gw-${serviceShort}-1'
-    secondaryPublicIPName: 'dep-${namePrefix}-pip-${serviceShort}-2'
-    secondaryVirtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}-2'
-    secondaryVirtualNetworkGatewayName: 'dep-${namePrefix}-vpn-gw-${serviceShort}-2'
+    localNetworkGatewayName: 'dep-${namePrefix}-lng-${serviceShort}-1'
   }
 }
 
@@ -64,26 +62,35 @@ module testDeployment '../../../main.bicep' = [
       virtualNetworkGateway1: {
         id: nestedDependencies.outputs.primaryVNETGatewayResourceID
       }
-      enableBgp: false
-      usePolicyBasedTrafficSelectors: false
-      lock: {
-        kind: 'CanNotDelete'
-        name: 'myCustomLockName'
+      localNetworkGateway2: {
+        id: nestedDependencies.outputs.localNetworkGatewayResourceID
       }
-      virtualNetworkGateway2: {
-        id: nestedDependencies.outputs.secondaryVNETGatewayResourceID
-      }
-      connectionType: 'Vnet2Vnet'
-      dpdTimeoutSeconds: 45
+      connectionType: 'IPsec'
+      enableBgp: true
+      useLocalAzureIpAddress: true
       vpnSharedKey: password
+      // APIPA (Automatic Private IP Addressing) configuration for custom BGP IP addresses
+      gatewayCustomBgpIpAddresses: [
+        {
+          customBgpIpAddress: '169.254.21.1'
+          ipConfigurationId: '${nestedDependencies.outputs.primaryVNETGatewayResourceID}/ipConfigurations/default'
+        }
+      ]
+      customIPSecPolicy: {
+        saLifeTimeSeconds: 3600
+        saDataSizeKilobytes: 102400000
+        ipsecEncryption: 'AES256'
+        ipsecIntegrity: 'SHA256'
+        ikeEncryption: 'AES256'
+        ikeIntegrity: 'SHA256'
+        dhGroup: 'DHGroup14'
+        pfsGroup: 'PFS14'
+      }
       tags: {
-        'hidden-title': 'This is visible in the resource name'
-        Environment: 'Non-Prod'
+        'hidden-title': 'IPSec APIPA Connection Test'
+        Environment: 'Test'
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

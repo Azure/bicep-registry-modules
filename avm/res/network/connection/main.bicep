@@ -163,7 +163,7 @@ resource connection 'Microsoft.Network/connections@2024-05-01' = {
     routingWeight: routingWeight
     enableBgp: enableBgp
     useLocalAzureIpAddress: connectionType == 'IPsec' ? useLocalAzureIpAddress : null
-    gatewayCustomBgpIpAddresses: !empty(gatewayCustomBgpIpAddresses) ? gatewayCustomBgpIpAddresses : null
+    gatewayCustomBgpIpAddresses: connectionType == 'IPsec' && !empty(gatewayCustomBgpIpAddresses) ? gatewayCustomBgpIpAddresses : null
   }
 }
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3474935768037667821"
+      "templateHash": "17698967814935386218"
     },
     "name": "Virtual Network Gateway Connections",
     "description": "This module deploys a Virtual Network Gateway Connection."
@@ -505,7 +505,7 @@
         "routingWeight": "[parameters('routingWeight')]",
         "enableBgp": "[parameters('enableBgp')]",
         "useLocalAzureIpAddress": "[if(equals(parameters('connectionType'), 'IPsec'), parameters('useLocalAzureIpAddress'), null())]",
-        "gatewayCustomBgpIpAddresses": "[if(not(empty(parameters('gatewayCustomBgpIpAddresses'))), parameters('gatewayCustomBgpIpAddresses'), null())]"
+        "gatewayCustomBgpIpAddresses": "[if(and(equals(parameters('connectionType'), 'IPsec'), not(empty(parameters('gatewayCustomBgpIpAddresses')))), parameters('gatewayCustomBgpIpAddresses'), null())]"
       }
     },
     "connection_lock": {
