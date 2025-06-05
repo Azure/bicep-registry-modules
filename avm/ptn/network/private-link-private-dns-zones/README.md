@@ -15,7 +15,7 @@ Private Link Private DNS Zones
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Authorization/locks` | [2016-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2016-09-01/locks) |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Network/privateDnsZones` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones) |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
 
@@ -159,6 +159,9 @@ This instance deploys the module with most of its features enabled.
 module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>' = {
   name: 'privateLinkPrivateDnsZonesDeployment'
   params: {
+    additionalPrivateLinkPrivateDnsZonesToInclude: [
+      'privatelink.3.azurestaticapps.net'
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -211,6 +214,11 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "additionalPrivateLinkPrivateDnsZonesToInclude": {
+      "value": [
+        "privatelink.3.azurestaticapps.net"
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -275,6 +283,9 @@ module privateLinkPrivateDnsZones 'br/public:avm/ptn/network/private-link-privat
 ```bicep-params
 using 'br/public:avm/ptn/network/private-link-private-dns-zones:<version>'
 
+param additionalPrivateLinkPrivateDnsZonesToInclude = [
+  'privatelink.3.azurestaticapps.net'
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -390,6 +401,7 @@ param virtualNetworkLinks = [
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`additionalPrivateLinkPrivateDnsZonesToInclude`](#parameter-additionalprivatelinkprivatednszonestoinclude) | array | An array of additional Private Link Private DNS Zones to include in the deployment on top of the defaults set in the parameter `privateLinkPrivateDnsZones`. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Azure region where the each of the Private Link Private DNS Zones created will be deployed, default to Resource Group location if not specified. |
 | [`lock`](#parameter-lock) | object | The lock settings for the Private Link Private DNS Zones created. |
@@ -398,6 +410,13 @@ param virtualNetworkLinks = [
 | [`tags`](#parameter-tags) | object | Tags of the Private Link Private DNS Zones created. |
 | [`virtualNetworkLinks`](#parameter-virtualnetworklinks) | array | Array of custom objects describing vNet links of the DNS zone. Each object should contain properties 'virtualNetworkResourceId'. The 'vnetResourceId' is a resource ID of a vNet to link. |
 | [`virtualNetworkResourceIdsToLinkTo`](#parameter-virtualnetworkresourceidstolinkto) | array | ***DEPRECATED, PLEASE USE `virtualNetworkLinks` INSTEAD AS MORE VIRTUAL NETWORK LINK PROPERTIES ARE EXPOSED. IF INPUT IS PROVIDED TO `virtualNetworkLinks` THIS PARAMETERS INPUT WILL BE PROCESSED AND INPUT AND FORMATTED BY THE MODULE AND UNIOND WITH THE INPUT TO `virtualNetworkLinks`. THIS PARAMETER WILL BE REMOVED IN A FUTURE RELEASE.*** An array of Virtual Network Resource IDs to link to the Private Link Private DNS Zones. Each item must be a valid Virtual Network Resource ID. |
+
+### Parameter: `additionalPrivateLinkPrivateDnsZonesToInclude`
+
+An array of additional Private Link Private DNS Zones to include in the deployment on top of the defaults set in the parameter `privateLinkPrivateDnsZones`.
+
+- Required: No
+- Type: array
 
 ### Parameter: `enableTelemetry`
 
@@ -464,6 +483,7 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink-global.wvd.microsoft.com'
     'privatelink.{regionCode}.backup.windowsazure.com'
     'privatelink.{regionName}.azmk8s.io'
+    'privatelink.{regionName}.azurecontainerapps.io'
     'privatelink.{regionName}.kusto.windows.net'
     'privatelink.adf.azure.com'
     'privatelink.afs.azure.net'
@@ -481,6 +501,7 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.azurecr.io'
     'privatelink.azuredatabricks.net'
     'privatelink.azurehdinsight.net'
+    'privatelink.azurehealthcareapis.com'
     'privatelink.azureiotcentral.com'
     'privatelink.azurestaticapps.net'
     'privatelink.azuresynapse.net'
@@ -527,6 +548,7 @@ An array of Private Link Private DNS Zones to create. Each item must be a valid 
     'privatelink.search.windows.net'
     'privatelink.service.signalr.net'
     'privatelink.servicebus.windows.net'
+    'privatelink.services.ai.azure.com'
     'privatelink.siterecovery.windowsazure.com'
     'privatelink.sql.azuresynapse.net'
     'privatelink.table.core.windows.net'
