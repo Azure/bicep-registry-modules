@@ -13,7 +13,7 @@ This module deploys a VPN Gateway VPN Connection.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Network/vpnGateways/vpnConnections` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways/vpnConnections) |
+| `Microsoft.Network/vpnGateways/vpnConnections` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnGateways/vpnConnections) |
 
 ## Parameters
 
@@ -33,7 +33,7 @@ This module deploys a VPN Gateway VPN Connection.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`connectionBandwidth`](#parameter-connectionbandwidth) | int | Expected bandwidth in MBPS. |
+| [`connectionBandwidth`](#parameter-connectionbandwidth) | int | Expected bandwidth in MBPS. This parameter is deprecated and should be avoided in favor of VpnSiteLinkConnection configuration. |
 | [`enableBgp`](#parameter-enablebgp) | bool | Enable BGP flag. |
 | [`enableInternetSecurity`](#parameter-enableinternetsecurity) | bool | Enable internet security. |
 | [`enableRateLimiting`](#parameter-enableratelimiting) | bool | Enable rate limiting. |
@@ -64,11 +64,10 @@ The name of the parent VPN gateway this VPN connection is associated with. Requi
 
 ### Parameter: `connectionBandwidth`
 
-Expected bandwidth in MBPS.
+Expected bandwidth in MBPS. This parameter is deprecated and should be avoided in favor of VpnSiteLinkConnection configuration.
 
 - Required: No
 - Type: int
-- Default: `10`
 
 ### Parameter: `enableBgp`
 
@@ -116,7 +115,152 @@ Routing configuration indicating the associated and propagated route tables for 
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`associatedRouteTable`](#parameter-routingconfigurationassociatedroutetable) | object | The associated route table for this connection. |
+| [`propagatedRouteTables`](#parameter-routingconfigurationpropagatedroutetables) | object | The propagated route tables for this connection. |
+| [`vnetRoutes`](#parameter-routingconfigurationvnetroutes) | object | The virtual network routes for this connection. |
+
+### Parameter: `routingConfiguration.associatedRouteTable`
+
+The associated route table for this connection.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-routingconfigurationassociatedroutetableid) | string | The resource ID of the route table. |
+
+### Parameter: `routingConfiguration.associatedRouteTable.id`
+
+The resource ID of the route table.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routingConfiguration.propagatedRouteTables`
+
+The propagated route tables for this connection.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ids`](#parameter-routingconfigurationpropagatedroutetablesids) | array | The list of route table resource IDs to propagate to. |
+| [`labels`](#parameter-routingconfigurationpropagatedroutetableslabels) | array | The list of labels to propagate to. |
+
+### Parameter: `routingConfiguration.propagatedRouteTables.ids`
+
+The list of route table resource IDs to propagate to.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-routingconfigurationpropagatedroutetablesidsid) | string | The resource ID of the route table. |
+
+### Parameter: `routingConfiguration.propagatedRouteTables.ids.id`
+
+The resource ID of the route table.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routingConfiguration.propagatedRouteTables.labels`
+
+The list of labels to propagate to.
+
+- Required: No
+- Type: array
+
+### Parameter: `routingConfiguration.vnetRoutes`
+
+The virtual network routes for this connection.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`staticRoutes`](#parameter-routingconfigurationvnetroutesstaticroutes) | array | The list of static routes. |
+| [`staticRoutesConfig`](#parameter-routingconfigurationvnetroutesstaticroutesconfig) | object | Static routes configuration. |
+
+### Parameter: `routingConfiguration.vnetRoutes.staticRoutes`
+
+The list of static routes.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-routingconfigurationvnetroutesstaticroutesaddressprefixes) | array | The address prefixes for the static route. |
+| [`name`](#parameter-routingconfigurationvnetroutesstaticroutesname) | string | The name of the static route. |
+| [`nextHopIpAddress`](#parameter-routingconfigurationvnetroutesstaticroutesnexthopipaddress) | string | The next hop IP address for the static route. |
+
+### Parameter: `routingConfiguration.vnetRoutes.staticRoutes.addressPrefixes`
+
+The address prefixes for the static route.
+
+- Required: No
+- Type: array
+
+### Parameter: `routingConfiguration.vnetRoutes.staticRoutes.name`
+
+The name of the static route.
+
+- Required: No
+- Type: string
+
+### Parameter: `routingConfiguration.vnetRoutes.staticRoutes.nextHopIpAddress`
+
+The next hop IP address for the static route.
+
+- Required: No
+- Type: string
+
+### Parameter: `routingConfiguration.vnetRoutes.staticRoutesConfig`
+
+Static routes configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`vnetLocalRouteOverrideCriteria`](#parameter-routingconfigurationvnetroutesstaticroutesconfigvnetlocalrouteoverridecriteria) | string | Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke. |
+
+### Parameter: `routingConfiguration.vnetRoutes.staticRoutesConfig.vnetLocalRouteOverrideCriteria`
+
+Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Contains'
+    'Equal'
+  ]
+  ```
 
 ### Parameter: `routingWeight`
 

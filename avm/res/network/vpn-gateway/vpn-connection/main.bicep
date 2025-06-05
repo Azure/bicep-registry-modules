@@ -17,7 +17,7 @@ param trafficSelectorPolicies array = []
 param vpnLinkConnections array = []
 
 @description('Optional. Routing configuration indicating the associated and propagated route tables for this connection.')
-param routingConfiguration object = {}
+param routingConfiguration routingConfigurationType?
 
 @description('Optional. Enable policy-based traffic selectors.')
 param usePolicyBasedTrafficSelectors bool = false
@@ -37,8 +37,8 @@ param enableBgp bool = false
 @description('Optional. Routing weight for VPN connection.')
 param routingWeight int = 0
 
-@description('Optional. Expected bandwidth in MBPS.')
-param connectionBandwidth int = 10
+@description('Optional. Expected bandwidth in MBPS. This parameter is deprecated and should be avoided in favor of VpnSiteLinkConnection configuration.')
+param connectionBandwidth int?
 
 @description('Optional. Gateway connection protocol.')
 @allowed([
@@ -54,11 +54,11 @@ param sharedKey string = ''
 @description('Optional. Reference to a VPN site to link to.')
 param remoteVpnSiteResourceId string = ''
 
-resource vpnGateway 'Microsoft.Network/vpnGateways@2023-04-01' existing = {
+resource vpnGateway 'Microsoft.Network/vpnGateways@2024-07-01' existing = {
   name: vpnGatewayName
 }
 
-resource vpnConnection 'Microsoft.Network/vpnGateways/vpnConnections@2023-04-01' = {
+resource vpnConnection 'Microsoft.Network/vpnGateways/vpnConnections@2024-07-01' = {
   name: name
   parent: vpnGateway
   properties: {
@@ -91,3 +91,50 @@ output resourceId string = vpnConnection.id
 
 @description('The name of the resource group the VPN connection was deployed into.')
 output resourceGroupName string = resourceGroup().name
+
+// =============== //
+//   Definitions   //
+// =============== //
+
+@export()
+@description('The type of routing configuration for VPN connections.')
+type routingConfigurationType = {
+  @description('Optional. The associated route table for this connection.')
+  associatedRouteTable: {
+    @description('Required. The resource ID of the route table.')
+    id: string
+  }?
+
+  @description('Optional. The propagated route tables for this connection.')
+  propagatedRouteTables: {
+    @description('Optional. The list of route table resource IDs to propagate to.')
+    ids: {
+      @description('Required. The resource ID of the route table.')
+      id: string
+    }[]?
+    
+    @description('Optional. The list of labels to propagate to.')
+    labels: string[]?
+  }?
+
+  @description('Optional. The virtual network routes for this connection.')
+  vnetRoutes: {
+    @description('Optional. The list of static routes.')
+    staticRoutes: {
+      @description('Optional. The name of the static route.')
+      name: string?
+      
+      @description('Optional. The address prefixes for the static route.')
+      addressPrefixes: string[]?
+      
+      @description('Optional. The next hop IP address for the static route.')
+      nextHopIpAddress: string?
+    }[]?
+    
+    @description('Optional. Static routes configuration.')
+    staticRoutesConfig: {
+      @description('Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke.')
+      vnetLocalRouteOverrideCriteria: ('Contains' | 'Equal')?
+    }?
+  }?
+}
