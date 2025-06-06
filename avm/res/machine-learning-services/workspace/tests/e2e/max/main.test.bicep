@@ -122,6 +122,24 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      datastores: [
+        {
+          name: 'datastore'
+          properties: {
+            credentials: {
+              credentialsType: 'None'
+            }
+            subscriptionId: subscription().subscriptionId
+            resourceGroup: resourceGroupName
+            datastoreType: 'AzureBlob'
+            accountName: 'myaccount'
+            containerName: 'my-container'
+            endpoint: environment().suffixes.storage
+            protocol: 'https'
+            serviceDataAccessAuthIdentity: 'None'
+          }
+        }
+      ]
       description: 'The cake is a lie.'
       diagnosticSettings: [
         {
