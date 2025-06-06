@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "14545194761901704803"
+      "version": "0.36.1.42791",
+      "templateHash": "15011697165765272657"
     },
     "name": "Synapse Workspaces Administrators",
     "description": "This module deploys Synapse Workspaces Administrators."
