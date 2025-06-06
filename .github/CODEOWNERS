@@ -86,6 +86,7 @@
 /avm/res/desktop-virtualization/scaling-plan/ @Azure/avm-res-desktopvirtualization-scalingplan-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/desktop-virtualization/workspace/ @Azure/avm-res-desktopvirtualization-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-center/network-connection/ @Azure/avm-res-devcenter-networkconnection-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/dev-center/project/ @Azure/avm-res-devcenter-project-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-ops-infrastructure/pool/ @Azure/avm-res-devopsinfrastructure-pool-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-test-lab/lab/ @Azure/avm-res-devtestlab-lab-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-module-reviewers-bicep
