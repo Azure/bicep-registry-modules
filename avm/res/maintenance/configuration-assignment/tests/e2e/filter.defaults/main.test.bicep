@@ -59,6 +59,15 @@ module testDeployment '../../../main.bicep' = [
         resourceTypes: [
           'Virtual Machines'
         ]
+        tagSettings: {
+          filterOperator: 'All'
+          tags: {
+            sampleName: [
+              'sampleValue1'
+              'sampleValue2'
+            ]
+          }
+        }
       }
     }
   }
