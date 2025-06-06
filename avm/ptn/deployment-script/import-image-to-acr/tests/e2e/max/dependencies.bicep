@@ -158,6 +158,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
     location: location
     acrSku: 'Premium'
     acrAdminUserEnabled: false
+    trustPolicyStatus: 'disabled' // trust policy is not neede in the test environment
     // roleAssisgnments are done in the main module
     networkRuleBypassOptions: 'AzureServices'
     publicNetworkAccess: 'Disabled'

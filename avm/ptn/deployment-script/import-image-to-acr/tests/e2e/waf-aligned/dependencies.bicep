@@ -23,6 +23,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
     location: location
     acrSku: 'Premium'
     acrAdminUserEnabled: false
+    trustPolicyStatus: 'disabled' // trust policy is not neede in the test environment
     roleAssignments: [
       for registryRole in ['AcrPull', 'AcrPush']: {
         principalId: identity.outputs.principalId
