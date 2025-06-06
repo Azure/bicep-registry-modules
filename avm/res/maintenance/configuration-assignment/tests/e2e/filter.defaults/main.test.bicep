@@ -62,10 +62,7 @@ module testDeployment '../../../main.bicep' = [
         tagSettings: {
           filterOperator: 'All'
           tags: {
-            sampleName: [
-              'sampleValue1'
-              'sampleValue2'
-            ]
+            sampleName: 'sampleValue1'
           }
         }
       }
