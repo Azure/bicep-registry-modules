@@ -37,7 +37,6 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     location: enforcedLocation
     storageAccountName: 'dep${namePrefix}sa${serviceShort}01'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
   }
 }
 

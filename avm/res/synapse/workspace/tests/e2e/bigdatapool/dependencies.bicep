@@ -4,9 +4,6 @@ param location string = resourceGroup().location
 @description('Required. The name of the Storage Account to create.')
 param storageAccountName string
 
-@description('Required. The name of the Managed Identity to create.')
-param managedIdentityName string
-
 resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' = {
   name: storageAccountName
   location: location
