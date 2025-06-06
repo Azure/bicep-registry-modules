@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11040839893779742140"
+      "templateHash": "5958778915529415346"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
@@ -908,10 +908,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Network/azureFirewalls@2024-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the Azure Firewall resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
