@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "6864863344837697229"
+      "templateHash": "1105798698592936047"
     },
     "name": "Synapse Workspaces Big Data Pools",
     "description": "This module deploys a Synapse Workspaces Big Data Pool."
@@ -331,7 +331,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Conditional. The name of the Big Data Pool."
+        "description": "Required. The name of the Big Data Pool."
       }
     },
     "location": {

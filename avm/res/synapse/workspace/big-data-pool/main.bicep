@@ -8,7 +8,7 @@ metadata description = 'This module deploys a Synapse Workspaces Big Data Pool.'
 @description('Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment.')
 param workspaceName string
 
-@description('Conditional. The name of the Big Data Pool.')
+@description('Required. The name of the Big Data Pool.')
 param name string
 
 @description('Optional. The geo-location where the resource lives.')
