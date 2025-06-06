@@ -203,3 +203,4 @@
 /avm/res/web/static-site/ @Azure/avm-res-web-staticsite-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/utl/types/avm-common-types/ @Azure/avm-utl-types-avmcommontypes-module-owners-bicep @Azure/avm-module-reviewers-bicep
 *avm.core.team.tests.ps1 @Azure/avm-core-team-technical-bicep
+*.e2eignore @Azure/avm-core-team-technical-bicep
