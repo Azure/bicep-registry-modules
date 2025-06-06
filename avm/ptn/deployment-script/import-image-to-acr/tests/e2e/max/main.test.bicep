@@ -47,11 +47,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
 // Test Execution //
 // ============== //
 
-// commented out, as the user is not available in the test environment
-// resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
-//   name: last(split(dependencies.outputs.keyVaultResourceId, '/'))
-//   scope: resourceGroup
-// }
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: last(split(dependencies.outputs.keyVaultResourceId, '/'))
+  scope: resourceGroup
+}
 
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
@@ -67,9 +66,8 @@ module testDeployment '../../../main.bicep' = [
       acrName: dependencies.outputs.acrName
       location: resourceLocation
       image: 'mcr.microsoft.com/k8se/quickstart-jobs:latest' // e.g. for docker images, that will be authenticated with the below properties 'docker.io/hello-world:latest'
-      // commented out, as the user is not available in the test environment
-      // sourceRegistryUsername: 'username'
-      // sourceRegistryPassword: keyVault.getSecret(dependencies.outputs.keyVaultSecretName)
+      sourceRegistryUsername: 'username'
+      sourceRegistryPassword: keyVault.getSecret(dependencies.outputs.keyVaultSecretName)
       newImageName: 'application/your-image-name:tag'
       cleanupPreference: 'OnExpiration'
       assignRbacRole: true

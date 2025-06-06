@@ -136,6 +136,8 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     managedIdentities: '<managedIdentities>'
     newImageName: 'application/your-image-name:tag'
     overwriteExistingImage: true
+    sourceRegistryPassword: '<sourceRegistryPassword>'
+    sourceRegistryUsername: 'username'
     storageAccountResourceId: '<storageAccountResourceId>'
     subnetResourceIds: '<subnetResourceIds>'
     tags: {
@@ -187,6 +189,12 @@ module importImageToAcr 'br/public:avm/ptn/deployment-script/import-image-to-acr
     "overwriteExistingImage": {
       "value": true
     },
+    "sourceRegistryPassword": {
+      "value": "<sourceRegistryPassword>"
+    },
+    "sourceRegistryUsername": {
+      "value": "username"
+    },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
     },
@@ -224,6 +232,8 @@ param location = '<location>'
 param managedIdentities = '<managedIdentities>'
 param newImageName = 'application/your-image-name:tag'
 param overwriteExistingImage = true
+param sourceRegistryPassword = '<sourceRegistryPassword>'
+param sourceRegistryUsername = 'username'
 param storageAccountResourceId = '<storageAccountResourceId>'
 param subnetResourceIds = '<subnetResourceIds>'
 param tags = {

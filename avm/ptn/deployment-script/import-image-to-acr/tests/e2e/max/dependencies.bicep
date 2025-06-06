@@ -17,6 +17,8 @@ param storageAccountName string
 param keyVaultName string
 
 var ipRange = '10.0.0.0'
+// put the password of the source container registry here
+var sourceContainerRegistryPassword = guid(resourceGroup().id, 'sourceContainerRegistryPassword')
 
 module identity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: managedIdentityName
@@ -129,8 +131,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
   resource containerRegistrySecret 'secrets@2023-07-01' = {
     name: 'ContainerRegistryPassword'
     properties: {
-      // put the password of the source container registry here
-      value: '<password>'
+      value: sourceContainerRegistryPassword
     }
   }
 
