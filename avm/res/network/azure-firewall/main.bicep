@@ -292,6 +292,7 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
               id: firewallPolicyId
             }
           : null
+        ipConfigurations: ipConfigurations
         sku: {
           name: azureSkuName
           tier: azureSkuTier
