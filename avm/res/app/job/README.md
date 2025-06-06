@@ -36,6 +36,11 @@ The following section provides usage examples for the module, which were used to
 
 This instance deploys the module to a Container Apps Environment with a consumption plan.
 
+> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:
+```text
+Due to the size of the ARM template, this deployment will fail.
+But don't bother, it is save to use.
+```
 
 <details>
 
