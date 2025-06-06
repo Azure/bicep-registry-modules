@@ -1,0 +1,1744 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "3012483961730299706"
+    },
+    "name": "Security Insights Data Connectors",
+    "description": "This module deploys a Security Insights Data Connector.",
+    "owner": "Azure/module-maintainers"
+  },
+  "definitions": {
+    "dataConnectorType": {
+      "type": "object",
+      "discriminator": {
+        "propertyName": "kind",
+        "mapping": {
+          "AmazonWebServicesCloudTrail": {
+            "$ref": "#/definitions/amazonWebServicesCloudTrailType"
+          },
+          "AmazonWebServicesS3": {
+            "$ref": "#/definitions/amazonWebServicesS3Type"
+          },
+          "APIPolling": {
+            "$ref": "#/definitions/apiPollingType"
+          },
+          "AzureActiveDirectory": {
+            "$ref": "#/definitions/azureActiveDirectoryType"
+          },
+          "AzureAdvancedThreatProtection": {
+            "$ref": "#/definitions/azureAdvancedThreatProtectionType"
+          },
+          "AzureSecurityCenter": {
+            "$ref": "#/definitions/azureSecurityCenterType"
+          },
+          "Dynamics365": {
+            "$ref": "#/definitions/dynamics365Type"
+          },
+          "GCP": {
+            "$ref": "#/definitions/gcpType"
+          },
+          "GenericUI": {
+            "$ref": "#/definitions/genericUiType"
+          },
+          "IOT": {
+            "$ref": "#/definitions/iotType"
+          },
+          "MicrosoftCloudAppSecurity": {
+            "$ref": "#/definitions/microsoftCloudAppSecurityType"
+          },
+          "MicrosoftDefenderAdvancedThreatProtection": {
+            "$ref": "#/definitions/microsoftDefenderAdvancedThreatProtectionType"
+          },
+          "MicrosoftPurviewInformationProtection": {
+            "$ref": "#/definitions/microsoftPurviewInformationProtectionType"
+          },
+          "MicrosoftThreatIntelligence": {
+            "$ref": "#/definitions/microsoftThreatIntelligenceType"
+          },
+          "MicrosoftThreatProtection": {
+            "$ref": "#/definitions/microsoftThreatProtectionType"
+          },
+          "Office365": {
+            "$ref": "#/definitions/office365Type"
+          },
+          "Office365Project": {
+            "$ref": "#/definitions/office365ProjectType"
+          },
+          "OfficeATP": {
+            "$ref": "#/definitions/officeATPType"
+          },
+          "OfficeIRM": {
+            "$ref": "#/definitions/officeIRMType"
+          },
+          "OfficePowerBI": {
+            "$ref": "#/definitions/officePowerBIType"
+          },
+          "PurviewAudit": {
+            "$ref": "#/definitions/purviewAuditType"
+          },
+          "RestApiPoller": {
+            "$ref": "#/definitions/restApiPollerType"
+          },
+          "ThreatIntelligence": {
+            "$ref": "#/definitions/threatIntelligenceType"
+          },
+          "ThreatIntelligenceTaxii": {
+            "$ref": "#/definitions/threatIntelligenceTaxiiType"
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of a site configuration."
+      }
+    },
+    "apiPollingType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "APIPolling"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "pollingConfig": {
+              "type": "object",
+              "properties": {
+                "auth": {
+                  "type": "object",
+                  "metadata": {
+                    "description": "Required. The authentication configuration."
+                  }
+                },
+                "request": {
+                  "type": "object",
+                  "properties": {
+                    "endpoint": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The API endpoint to poll."
+                      }
+                    },
+                    "method": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The HTTP method to use."
+                      }
+                    },
+                    "queryParameters": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Query parameters to include in the request."
+                      }
+                    },
+                    "rateLimitQps": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. Rate limit in queries per second."
+                      }
+                    },
+                    "timeout": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Request timeout duration."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The request configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The polling configuration for the data connector."
+              }
+            },
+            "lookbackPeriod": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lookback period for historical data."
+              }
+            },
+            "parseMappings": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. The parsing rules for the response."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of API Polling configuration."
+      }
+    },
+    "genericUiType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "GenericUI"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "logs": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The logs configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            },
+            "connectivityCriteria": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. The criteria for connector connectivity validation."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Generic UI configuration."
+      }
+    },
+    "microsoftCloudAppSecurityType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "MicrosoftCloudAppSecurity"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "alerts": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The alerts configuration."
+                  }
+                },
+                "discovery": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The discovery configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Microsoft Cloud App Security configuration."
+      }
+    },
+    "microsoftDefenderAdvancedThreatProtectionType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "MicrosoftDefenderAdvancedThreatProtection"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "alerts": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The alerts configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Microsoft Defender Advanced Threat Protection configuration."
+      }
+    },
+    "microsoftPurviewInformationProtectionType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "MicrosoftPurviewInformationProtection"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "incidents": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The incidents configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Microsoft Purview Information Protection configuration."
+      }
+    },
+    "microsoftThreatProtectionType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "MicrosoftThreatProtection"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "incidents": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The incidents configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Microsoft Threat Protection configuration."
+      }
+    },
+    "office365Type": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Office365"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "exchange": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether the Exchange connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The Exchange configuration."
+                  }
+                },
+                "sharePoint": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether the SharePoint connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The SharePoint configuration."
+                  }
+                },
+                "teams": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether the Teams connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The Teams configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Office 365 configuration."
+      }
+    },
+    "office365ProjectType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Office365Project"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "logs": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The logs configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Office 365 Project configuration."
+      }
+    },
+    "officeATPType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "OfficeATP"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "alerts": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The alerts configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Office ATP configuration."
+      }
+    },
+    "officeIRMType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "OfficeIRM"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "logs": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The logs configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Office IRM configuration."
+      }
+    },
+    "officePowerBIType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "OfficePowerBI"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "logs": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The logs configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Office Power BI configuration."
+      }
+    },
+    "purviewAuditType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "PurviewAudit"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "logs": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The logs configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Purview Audit configuration."
+      }
+    },
+    "restApiPollerType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "RestApiPoller"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "pollingConfig": {
+              "type": "object",
+              "properties": {
+                "auth": {
+                  "type": "object",
+                  "metadata": {
+                    "description": "Required. The authentication configuration."
+                  }
+                },
+                "request": {
+                  "type": "object",
+                  "properties": {
+                    "endpoint": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The API endpoint to poll."
+                      }
+                    },
+                    "method": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The HTTP method to use."
+                      }
+                    },
+                    "headers": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Additional headers to include in the request."
+                      }
+                    },
+                    "queryParameters": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Query parameters to include in the request."
+                      }
+                    },
+                    "rateLimitQps": {
+                      "type": "int",
+                      "metadata": {
+                        "description": "Required. Rate limit in queries per second."
+                      }
+                    },
+                    "timeout": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Request timeout duration."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The request configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The polling configuration for the data connector."
+              }
+            },
+            "lookbackPeriod": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lookback period for historical data."
+              }
+            },
+            "parseMappings": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. The parsing rules for the response."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of REST API Poller configuration."
+      }
+    },
+    "threatIntelligenceTaxiiType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "ThreatIntelligenceTaxii"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "taxiiClient": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this connection is enabled."
+                      }
+                    },
+                    "taxiiServer": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The TAXII server URL."
+                      }
+                    },
+                    "collectionId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The collection ID to fetch from."
+                      }
+                    },
+                    "username": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The username for authentication."
+                      }
+                    },
+                    "password": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The password for authentication."
+                      }
+                    },
+                    "workspaceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The workspace ID for the connector."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The TAXII client configuration."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The data types for the connector."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Threat Intelligence TAXII configuration."
+      }
+    },
+    "amazonWebServicesCloudTrailType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "AmazonWebServicesCloudTrail"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "awsRoleArn": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The AWS Role Arn (with CloudTrailReadOnly policy) that is used to access the AWS account."
+              }
+            },
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "logs": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Data type for Amazon Web Services Cloud Trail data connector."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of AmazonWebServicesCloudTrail configuration."
+      }
+    },
+    "amazonWebServicesS3Type": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "AmazonWebServicesS3"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "logs": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Data type for Amazon Web Services S3 data connector."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "destinationTable": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The logs destination table name in LogAnalytics."
+              }
+            },
+            "roleArn": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The AWS Role Arn that is used to access the Aws account."
+              }
+            },
+            "sqsUrls": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "Required. The AWS sqs urls for the connector."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of AmazonWebServicesS3 configuration."
+      }
+    },
+    "azureActiveDirectoryType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "AzureActiveDirectory"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "alerts": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Describe whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Alerts data type connection."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to, and get the data from."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of AzureActiveDirectory configuration."
+      }
+    },
+    "azureAdvancedThreatProtectionType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "AzureAdvancedThreatProtection"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "alerts": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Describe whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Alerts data type connection."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to, and get the data from."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of AzureAdvancedThreatProtection configuration."
+      }
+    },
+    "azureSecurityCenterType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "AzureSecurityCenter"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "alerts": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Data type for IOT data connector."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The subscription id to connect to, and get the data from."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of AzureSecurityCenter configuration."
+      }
+    },
+    "dynamics365Type": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "Dynamics365"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "dynamics365CdsActivities": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Describe whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Common Data Service data type connection."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to, and get the data from."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of Dynamics365 configuration."
+      }
+    },
+    "gcpType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "GCP"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "auth": {
+              "type": "object",
+              "properties": {
+                "projectNumber": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The GCP project number."
+                  }
+                },
+                "serviceAccountEmail": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The service account email address."
+                  }
+                },
+                "workloadIdentityProviderId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The workload identity provider ID."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The authentication configuration for GCP."
+              }
+            },
+            "connectorDefinitionName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the connector definition."
+              }
+            },
+            "dcrConfig": {
+              "type": "object",
+              "properties": {
+                "dataCollectionEndpoint": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The data collection endpoint."
+                  }
+                },
+                "dataCollectionRuleImmutableId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The immutable ID of the data collection rule."
+                  }
+                },
+                "streamName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the data stream."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The Data Collection Rule configuration."
+              }
+            },
+            "request": {
+              "type": "object",
+              "properties": {
+                "projectId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The GCP project ID."
+                  }
+                },
+                "subscriptionNames": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "metadata": {
+                    "description": "Required. The list of subscription names."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The request configuration."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of GCP configuration."
+      }
+    },
+    "iotType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "IOT"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "alerts": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Data type for IOT data connector."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "subscriptionId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The subscription id to connect to, and get the data from."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of IOT configuration."
+      }
+    },
+    "microsoftThreatIntelligenceType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "MicrosoftThreatIntelligence"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "microsoftEmergingThreatFeed": {
+                  "type": "object",
+                  "properties": {
+                    "lookbackPeriod": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The lookback period for the feed to be imported."
+                      }
+                    },
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Data type for Microsoft Threat Intelligence Platforms data connector."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to, and get the data from."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of MicrosoftThreatIntelligenceType configuration."
+      }
+    },
+    "threatIntelligenceType": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "ThreatIntelligence"
+          ],
+          "metadata": {
+            "description": "Required. The type of data connector."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "dataTypes": {
+              "type": "object",
+              "properties": {
+                "indicators": {
+                  "type": "object",
+                  "properties": {
+                    "state": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Whether this data type connection is enabled or not."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Data type for indicators connection."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "Required. The available data types for the connector."
+              }
+            },
+            "tenantId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The tenant id to connect to, and get the data from."
+              }
+            },
+            "tipLookbackPeriod": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lookback period for the feed to be imported."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The properties of the data connector."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of ThreatIntelligenceType configuration."
+      }
+    }
+  },
+  "parameters": {
+    "workspaceResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The resource ID of the Log Analytics workspace."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "enableTelemetry": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable usage telemetry for module."
+      }
+    },
+    "name": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The name of the data connector."
+      }
+    },
+    "properties": {
+      "$ref": "#/definitions/dataConnectorType",
+      "metadata": {
+        "description": "Required. The data connector configuration."
+      }
+    }
+  },
+  "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.res.securityinsights-dataconnector.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
+    "workspace": {
+      "existing": true,
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[last(split(parameters('workspaceResourceId'), '/'))]"
+    },
+    "dataConnector": {
+      "type": "Microsoft.SecurityInsights/dataConnectors",
+      "apiVersion": "2025-03-01",
+      "scope": "[format('Microsoft.OperationalInsights/workspaces/{0}', last(split(parameters('workspaceResourceId'), '/')))]",
+      "name": "[coalesce(parameters('name'), parameters('properties').kind)]",
+      "kind": "[parameters('properties').kind]",
+      "properties": "[parameters('properties').properties]"
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed data connector."
+      },
+      "value": "[coalesce(parameters('name'), parameters('properties').kind)]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed data connector."
+      },
+      "value": "[extensionResourceId(resourceId('Microsoft.OperationalInsights/workspaces', last(split(parameters('workspaceResourceId'), '/'))), 'Microsoft.SecurityInsights/dataConnectors', coalesce(parameters('name'), parameters('properties').kind))]"
+    },
+    "resourceType": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource type of the deployed data connector."
+      },
+      "value": "[format('{0}/{1}', 'Microsoft.SecurityInsights/dataConnectors', tryGet(parameters('properties'), 'name'))]"
+    },
+    "systemAssignedPrincipalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The principal ID of the system assigned identity of the deployed data connector."
+      },
+      "value": "[if(contains(reference('dataConnector', '2025-03-01', 'full'), 'identity'), reference('dataConnector', '2025-03-01', 'full').identity.principalId, '')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group where the Security Insights Data Connector is deployed."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[parameters('location')]"
+    }
+  }
+}

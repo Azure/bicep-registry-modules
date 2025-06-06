@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "5040965717169185245"
+      "templateHash": "3966439749557114452"
     },
     "name": "Azure NetApp Files",
-    "description": "This module deploys an Azure NetApp File."
+    "description": "This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes."
   },
   "definitions": {
     "backupVaultType": {
@@ -217,21 +217,25 @@
           "minValue": 2,
           "maxValue": 1019,
           "metadata": {
-            "description": "Optional. The daily backups to keep."
+            "description": "Optional. The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
           }
         },
         "monthlyBackupsToKeep": {
           "type": "int",
           "nullable": true,
+          "minValue": 0,
+          "maxValue": 1019,
           "metadata": {
-            "description": "Optional. The monthly backups to keep."
+            "description": "Optional. The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
           }
         },
         "weeklyBackupsToKeep": {
           "type": "int",
           "nullable": true,
+          "minValue": 0,
+          "maxValue": 1019,
           "metadata": {
-            "description": "Optional. The weekly backups to keep."
+            "description": "Optional. The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
           }
         },
         "enabled": {
@@ -1473,7 +1477,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "10037870827532271817"
+              "templateHash": "2156559268018649056"
             },
             "name": "Azure NetApp Files Backup Policy",
             "description": "This module deploys a Backup Policy for Azure NetApp File."
@@ -1505,21 +1509,25 @@
               "minValue": 2,
               "maxValue": 1019,
               "metadata": {
-                "description": "Optional. The daily backups to keep."
+                "description": "Optional. The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
               }
             },
             "monthlyBackupsToKeep": {
               "type": "int",
               "defaultValue": 0,
+              "minValue": 0,
+              "maxValue": 1019,
               "metadata": {
-                "description": "Optional. The monthly backups to keep."
+                "description": "Optional. The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
               }
             },
             "weeklyBackupsToKeep": {
               "type": "int",
               "defaultValue": 0,
+              "minValue": 0,
+              "maxValue": 1019,
               "metadata": {
-                "description": "Optional. The weekly backups to keep."
+                "description": "Optional. The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max)."
               }
             },
             "enabled": {
