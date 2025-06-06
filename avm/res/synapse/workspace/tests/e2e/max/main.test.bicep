@@ -195,7 +195,7 @@ module testDeployment '../../../main.bicep' = [
           sparkConfigProperties: {
             configurationType: 'File'
             filename: 'spark-defaults.conf'
-            content: loadTextContent('./spark-defaults.conf')
+            content: loadTextContent('./src/spark-defaults.conf')
           }
           roleAssignments: [
             {

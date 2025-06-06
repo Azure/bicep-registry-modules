@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using Big Data Pools'
-metadata description = 'This instance deploys the module with the configuration of Big Data Pools.'
+metadata name = 'Using Big Data Pool'
+metadata description = 'This instance deploys the module with the configuration of Big Data Pool.'
 
 // ========== //
 // Parameters //

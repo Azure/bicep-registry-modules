@@ -1,6 +1,6 @@
 # Synapse Workspaces Big Data Pools `[Microsoft.Synapse/workspaces/bigDataPools]`
 
-This module deploys Synapse Workspaces Big Data Pools.
+This module deploys a Synapse Workspaces Big Data Pool.
 
 ## Navigation
 
@@ -24,9 +24,14 @@ This module deploys Synapse Workspaces Big Data Pools.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the Big Data Pool. |
 | [`nodeSize`](#parameter-nodesize) | string | The level of compute power that each node in the Big Data pool has. |
-| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Synapse Workspace. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-name) | string | The name of the Big Data Pool. |
+| [`workspaceName`](#parameter-workspacename) | string | The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
@@ -51,13 +56,6 @@ This module deploys Synapse Workspaces Big Data Pools.
 | [`sparkVersion`](#parameter-sparkversion) | string | The Apache Spark version. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
-### Parameter: `name`
-
-The name of the Big Data Pool.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `nodeSize`
 
 The level of compute power that each node in the Big Data pool has.
@@ -77,9 +75,16 @@ The level of compute power that each node in the Big Data pool has.
   ]
   ```
 
+### Parameter: `name`
+
+The name of the Big Data Pool.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `workspaceName`
 
-The name of the parent Synapse Workspace.
+The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string

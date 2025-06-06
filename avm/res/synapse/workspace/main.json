@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "8921999092804106115"
+      "version": "0.36.1.42791",
+      "templateHash": "8672338932571811489"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace."
@@ -416,7 +416,7 @@
       "metadata": {
         "description": "The synapse workspace Big Data Pools Auto-scaling properties.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "big-data-pools/main.bicep"
+          "sourceTemplate": "big-data-pool/main.bicep"
         }
       }
     },
@@ -699,7 +699,7 @@
       "metadata": {
         "description": "The synapse workspace Big Data Pools Dynamic Executor Allocation properties.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "big-data-pools/main.bicep"
+          "sourceTemplate": "big-data-pool/main.bicep"
         }
       }
     },
@@ -999,7 +999,7 @@
       "metadata": {
         "description": "The synapse workspace Big Data Pools Spark configuration file properties.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "big-data-pools/main.bicep"
+          "sourceTemplate": "big-data-pool/main.bicep"
         }
       }
     }
@@ -1270,7 +1270,7 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2023-02-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
@@ -1299,7 +1299,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2024-11-01",
+      "apiVersion": "2023-02-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -1308,7 +1308,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2024-11-30",
+      "apiVersion": "2023-01-31",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
@@ -1444,8 +1444,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "13089449443432241438"
+              "version": "0.36.1.42791",
+              "templateHash": "9279927566463061804"
             },
             "name": "Synapse Workspace Integration Runtimes",
             "description": "This module deploys a Synapse Workspace Integration Runtime."
@@ -1543,8 +1543,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "1230680672063294591"
+              "version": "0.36.1.42791",
+              "templateHash": "1494622020432530922"
             }
           },
           "parameters": {
@@ -1605,7 +1605,7 @@
       "condition": "[parameters('encryptionActivateWorkspace')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-cmk-activation', parameters('name')), 64)]",
+      "name": "[format('{0}-cmk-activation', parameters('name'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1631,8 +1631,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "12363592555098927487"
+              "version": "0.36.1.42791",
+              "templateHash": "6494553890280141768"
             },
             "name": "Synapse Workspaces Keys",
             "description": "This module deploys a Synapse Workspaces Key."
@@ -1670,7 +1670,7 @@
               "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
               "properties": {
                 "isActiveCMK": "[parameters('isActiveCMK')]",
-                "keyVaultUrl": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('name')), '2024-11-01').keyUri]"
+                "keyVaultUrl": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('keyVaultResourceId'), '/')[2], split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults/keys', last(split(parameters('keyVaultResourceId'), '/')), parameters('name')), '2023-02-01').keyUri]"
               }
             }
           ],
@@ -1737,8 +1737,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "7840759623175614523"
+              "version": "0.36.1.42791",
+              "templateHash": "15011697165765272657"
             },
             "name": "Synapse Workspaces Administrators",
             "description": "This module deploys Synapse Workspaces Administrators."
@@ -1851,8 +1851,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "10023249024167426437"
+              "version": "0.36.1.42791",
+              "templateHash": "12436722688789675678"
             },
             "name": "Synapse Workspaces Firewall Rules",
             "description": "This module deploys Synapse Workspaces Firewall Rules."
@@ -2008,11 +2008,11 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "7778487653745278327"
+              "version": "0.36.1.42791",
+              "templateHash": "6864863344837697229"
             },
             "name": "Synapse Workspaces Big Data Pools",
-            "description": "This module deploys Synapse Workspaces Big Data Pools."
+            "description": "This module deploys a Synapse Workspaces Big Data Pool."
           },
           "definitions": {
             "autoScaleType": {
@@ -2328,13 +2328,13 @@
             "workspaceName": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the parent Synapse Workspace."
+                "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
               }
             },
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. The name of the Big Data Pool."
+                "description": "Conditional. The name of the Big Data Pool."
               }
             },
             "location": {

@@ -36,7 +36,7 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/synapse/workspace:<version>`.
 
-- [Using Big Data Pools](#example-1-using-big-data-pools)
+- [Using Big Data Pool](#example-1-using-big-data-pool)
 - [Using only defaults](#example-2-using-only-defaults)
 - [Using encryption with Customer-Managed-Key](#example-3-using-encryption-with-customer-managed-key)
 - [Using encryption with Customer-Managed-Key](#example-4-using-encryption-with-customer-managed-key)
@@ -45,9 +45,9 @@ The following section provides usage examples for the module, which were used to
 - [Using large parameter set](#example-7-using-large-parameter-set)
 - [WAF-aligned](#example-8-waf-aligned)
 
-### Example 1: _Using Big Data Pools_
+### Example 1: _Using Big Data Pool_
 
-This instance deploys the module with the configuration of Big Data Pools.
+This instance deploys the module with the configuration of Big Data Pool.
 
 
 <details>

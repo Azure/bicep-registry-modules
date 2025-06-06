@@ -5,11 +5,11 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "7778487653745278327"
+      "version": "0.36.1.42791",
+      "templateHash": "6864863344837697229"
     },
     "name": "Synapse Workspaces Big Data Pools",
-    "description": "This module deploys Synapse Workspaces Big Data Pools."
+    "description": "This module deploys a Synapse Workspaces Big Data Pool."
   },
   "definitions": {
     "autoScaleType": {
@@ -325,13 +325,13 @@
     "workspaceName": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the parent Synapse Workspace."
+        "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the Big Data Pool."
+        "description": "Conditional. The name of the Big Data Pool."
       }
     },
     "location": {
