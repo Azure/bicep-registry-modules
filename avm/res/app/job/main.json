@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "9776873189392835414"
+      "version": "0.32.4.45862",
+      "templateHash": "12516312162606079362"
     },
     "name": "Container App Jobs",
     "description": "This module deploys a Container App Job."
