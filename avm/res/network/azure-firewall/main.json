@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12125907984162762125"
+      "templateHash": "17196267411968204507"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
@@ -1080,7 +1080,7 @@
       ]
     },
     "publicIPAddress": {
-      "condition": "[and(empty(parameters('publicIPResourceID')), equals(variables('azureSkuName'), 'AZFW_VNet'))]",
+      "condition": "[empty(parameters('publicIPResourceID'))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-Firewall-PIP', uniqueString(deployment().name, parameters('location')))]",
