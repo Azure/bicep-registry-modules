@@ -58,10 +58,10 @@ param virtualHubId string = ''
 @description('Optional. The operation mode for Threat Intel.')
 param threatIntelMode string = 'Deny'
 
-@description('Optional. The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default')
+@description('Optional. The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default.')
 param autoscaleMaxCapacity int?
 
-@description('Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default')
+@description('Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default.')
 param autoscaleMinCapacity int?
 
 @description('Optional. Zone numbers e.g. 1,2,3.')

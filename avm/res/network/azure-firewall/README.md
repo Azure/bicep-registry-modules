@@ -1827,8 +1827,8 @@ param zones = [
 | :-- | :-- | :-- |
 | [`additionalPublicIpConfigurations`](#parameter-additionalpublicipconfigurations) | array | This is to add any additional Public IP configurations on top of the Public IP with subnet IP configuration. |
 | [`applicationRuleCollections`](#parameter-applicationrulecollections) | array | Collection of application rule collections used by Azure Firewall. |
-| [`autoscaleMaxCapacity`](#parameter-autoscalemaxcapacity) | int | The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default |
-| [`autoscaleMinCapacity`](#parameter-autoscalemincapacity) | int | The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default |
+| [`autoscaleMaxCapacity`](#parameter-autoscalemaxcapacity) | int | The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default. |
+| [`autoscaleMinCapacity`](#parameter-autoscalemincapacity) | int | The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default. |
 | [`azureSkuTier`](#parameter-azureskutier) | string | Tier of an Azure Firewall. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableForcedTunneling`](#parameter-enableforcedtunneling) | bool | Enable/Disable forced tunneling. |
@@ -2109,14 +2109,14 @@ List of FQDNs for this rule.
 
 ### Parameter: `autoscaleMaxCapacity`
 
-The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default
+The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default.
 
 - Required: No
 - Type: int
 
 ### Parameter: `autoscaleMinCapacity`
 
-The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default
+The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default.
 
 - Required: No
 - Type: int

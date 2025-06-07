@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "17196267411968204507"
+      "templateHash": "2912338474094561807"
     },
     "name": "Azure Firewalls",
     "description": "This module deploys an Azure Firewall."
@@ -858,14 +858,14 @@
       "type": "int",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default"
+        "description": "Optional. The maximum number of capacity units for this azure firewall. Use null to reset the value to the service default."
       }
     },
     "autoscaleMinCapacity": {
       "type": "int",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default"
+        "description": "Optional. The minimum number of capacity units for this azure firewall. Use null to reset the value to the service default."
       }
     },
     "zones": {
