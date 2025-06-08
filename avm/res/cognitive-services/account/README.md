@@ -17,8 +17,8 @@ This module deploys a Cognitive Service.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts) |
-| `Microsoft.CognitiveServices/accounts/deployments` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts/deployments) |
+| `Microsoft.CognitiveServices/accounts` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts) |
+| `Microsoft.CognitiveServices/accounts/deployments` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/deployments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
@@ -32,18 +32,21 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/cognitive-services/account:<version>`.
 
-- [Ai-Model-Deployment-Private](#example-1-ai-model-deployment-private)
-- [Ai-Model-Deployment](#example-2-ai-model-deployment)
-- [Default-With-Key-Vault](#example-3-default-with-key-vault)
-- [Defaults](#example-4-defaults)
-- [Max](#example-5-max)
-- [Openai-Private](#example-6-openai-private)
-- [Speech](#example-7-speech)
-- [System-Assigned-Cmk-Encryption](#example-8-system-assigned-cmk-encryption)
-- [User-Assigned-Cmk-Encryption](#example-9-user-assigned-cmk-encryption)
-- [Waf-Aligned](#example-10-waf-aligned)
+- [Using `AIServices` with `deployments` in parameter set and private endpoints](#example-1-using-aiservices-with-deployments-in-parameter-set-and-private-endpoints)
+- [Using `AIServices` with `deployments` in parameter set](#example-2-using-aiservices-with-deployments-in-parameter-set)
+- [Storing keys of service in key vault](#example-3-storing-keys-of-service-in-key-vault)
+- [Using only defaults](#example-4-using-only-defaults)
+- [Using large parameter set](#example-5-using-large-parameter-set)
+- [Using `OpenAI` and `deployments` in parameter set with private endpoint](#example-6-using-openai-and-deployments-in-parameter-set-with-private-endpoint)
+- [As Speech Service](#example-7-as-speech-service)
+- [Using Customer-Managed-Keys with System-Assigned identity](#example-8-using-customer-managed-keys-with-system-assigned-identity)
+- [Using Customer-Managed-Keys with User-Assigned identity](#example-9-using-customer-managed-keys-with-user-assigned-identity)
+- [WAF-aligned](#example-10-waf-aligned)
 
-### Example 1: _Ai-Model-Deployment-Private_
+### Example 1: _Using `AIServices` with `deployments` in parameter set and private endpoints_
+
+This instance deploys the module with the AI model deployment feature and private endpoint.
+
 
 <details>
 
@@ -210,7 +213,10 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 2: _Ai-Model-Deployment_
+### Example 2: _Using `AIServices` with `deployments` in parameter set_
+
+This instance deploys the module with the AI model deployment feature.
+
 
 <details>
 
@@ -325,7 +331,10 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _Default-With-Key-Vault_
+### Example 3: _Storing keys of service in key vault_
+
+This instance deploys the module and stores its keys in a key vault.
+
 
 <details>
 
@@ -408,7 +417,10 @@ param secretsExportConfiguration = {
 </details>
 <p>
 
-### Example 4: _Defaults_
+### Example 4: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
 
 <details>
 
@@ -474,7 +486,10 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Max_
+### Example 5: _Using large parameter set_
+
+This instance deploys the module with most of its features enabled.
+
 
 <details>
 
@@ -914,7 +929,10 @@ param tags = {
 </details>
 <p>
 
-### Example 6: _Openai-Private_
+### Example 6: _Using `OpenAI` and `deployments` in parameter set with private endpoint_
+
+This instance deploys the module with the AI model deployment feature and private endpoint.
+
 
 <details>
 
@@ -1072,7 +1090,10 @@ param publicNetworkAccess = 'Disabled'
 </details>
 <p>
 
-### Example 7: _Speech_
+### Example 7: _As Speech Service_
+
+This instance deploys the module as a Speech Service.
+
 
 <details>
 
@@ -1238,7 +1259,10 @@ param tags = {
 </details>
 <p>
 
-### Example 8: _System-Assigned-Cmk-Encryption_
+### Example 8: _Using Customer-Managed-Keys with System-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a System-Assigned Identity. This required the service to be deployed twice, once as a pre-requisite to create the System-Assigned Identity, and once to use it for accessing the Customer-Managed-Key secret.
+
 
 <details>
 
@@ -1344,7 +1368,10 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 9: _User-Assigned-Cmk-Encryption_
+### Example 9: _Using Customer-Managed-Keys with User-Assigned identity_
+
+This instance deploys the module using Customer-Managed-Keys using a User-Assigned Identity to access the Customer-Managed-Key secret.
+
 
 <details>
 
@@ -1459,7 +1486,10 @@ param sku = 'S0'
 </details>
 <p>
 
-### Example 10: _Waf-Aligned_
+### Example 10: _WAF-aligned_
+
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+
 
 <details>
 
@@ -1676,6 +1706,7 @@ param tags = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`allowedFqdnList`](#parameter-allowedfqdnlist) | array | List of allowed FQDN. |
+| [`allowProjectManagement`](#parameter-allowprojectmanagement) | bool | Enable/Disable project management feature for AI Foundry. |
 | [`apiProperties`](#parameter-apiproperties) | object | The API properties for special APIs. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition. |
 | [`deployments`](#parameter-deployments) | array | Array of deployments about cognitive service accounts to create. |
@@ -1754,6 +1785,13 @@ List of allowed FQDN.
 
 - Required: No
 - Type: array
+
+### Parameter: `allowProjectManagement`
+
+Enable/Disable project management feature for AI Foundry.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `apiProperties`
 
@@ -2675,6 +2713,7 @@ Array of role assignments to create.
   - `'Cognitive Services Speech Contributor'`
   - `'Cognitive Services Speech User'`
   - `'Cognitive Services User'`
+  - `'Azure AI Developer'`
   - `'Contributor'`
   - `'Owner'`
   - `'Reader'`

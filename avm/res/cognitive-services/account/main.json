@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "13482370210272820045"
+      "version": "0.36.1.42791",
+      "templateHash": "12567224813294959218"
     },
     "name": "Cognitive Services",
     "description": "This module deploys a Cognitive Service."
@@ -1050,6 +1050,13 @@
       "metadata": {
         "description": "Optional. Key vault reference and secret settings for the module's secrets export."
       }
+    },
+    "allowProjectManagement": {
+      "type": "bool",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Enable/Disable project management feature for AI Foundry."
+      }
     }
   },
   "variables": {
@@ -1088,6 +1095,7 @@
       "Cognitive Services Speech Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0e75ca1e-0464-4b4d-8b93-68208a576181')]",
       "Cognitive Services Speech User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f2dc8367-1007-4938-bd23-fe263f013447')]",
       "Cognitive Services User": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a97b65f3-24c7-4388-baec-2e87135dc908')]",
+      "Azure AI Developer": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '64702f94-c441-49e6-a78b-ef80e0188fee')]",
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
@@ -1145,7 +1153,7 @@
     },
     "cognitiveService": {
       "type": "Microsoft.CognitiveServices/accounts",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-01-preview",
       "name": "[parameters('name')]",
       "kind": "[parameters('kind')]",
       "identity": "[variables('identity')]",
@@ -1155,6 +1163,7 @@
         "name": "[parameters('sku')]"
       },
       "properties": {
+        "allowProjectManagement": "[parameters('allowProjectManagement')]",
         "customSubDomainName": "[parameters('customSubDomainName')]",
         "networkAcls": "[if(not(empty(coalesce(parameters('networkAcls'), createObject()))), createObject('defaultAction', tryGet(parameters('networkAcls'), 'defaultAction'), 'virtualNetworkRules', coalesce(tryGet(parameters('networkAcls'), 'virtualNetworkRules'), createArray()), 'ipRules', coalesce(tryGet(parameters('networkAcls'), 'ipRules'), createArray())), null())]",
         "publicNetworkAccess": "[if(not(equals(parameters('publicNetworkAccess'), null())), parameters('publicNetworkAccess'), if(not(empty(parameters('networkAcls'))), 'Enabled', 'Disabled'))]",
@@ -1169,8 +1178,8 @@
         "dynamicThrottlingEnabled": "[parameters('dynamicThrottlingEnabled')]"
       },
       "dependsOn": [
-        "cMKKeyVault::cMKKey",
         "cMKKeyVault",
+        "cMKKeyVault::cMKKey",
         "cMKUserAssignedIdentity"
       ]
     },
@@ -1182,7 +1191,7 @@
         "batchSize": 1
       },
       "type": "Microsoft.CognitiveServices/accounts/deployments",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-01-preview",
       "name": "[format('{0}/{1}', parameters('name'), coalesce(tryGet(coalesce(parameters('deployments'), createArray())[copyIndex()], 'name'), format('{0}-deployments', parameters('name'))))]",
       "properties": {
         "model": "[coalesce(parameters('deployments'), createArray())[copyIndex()].model]",
@@ -2045,7 +2054,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '2023-05-01').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys(resourceId('Microsoft.CognitiveServices/accounts', parameters('name')), '2023-05-01').key2)), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key2)), createArray()))]"
           }
         },
         "template": {
@@ -2055,8 +2064,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2275047425860597278"
+              "version": "0.36.1.42791",
+              "templateHash": "17210397279620716997"
             }
           },
           "definitions": {
@@ -2218,14 +2227,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('cognitiveService', '2023-05-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('cognitiveService', '2025-04-01-preview', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('cognitiveService', '2023-05-01', 'full').location]"
+      "value": "[reference('cognitiveService', '2025-04-01-preview', 'full').location]"
     },
     "exportedSecrets": {
       "$ref": "#/definitions/secretsOutputType",
