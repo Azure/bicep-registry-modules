@@ -27,6 +27,8 @@ The following section provides usage examples for the module, which were used to
 - [WAF-aligned](#example-1-waf-aligned)
 - [Multi resource group](#example-2-multi-resource-group)
 - [Using only defaults](#example-3-using-only-defaults)
+- [Using filter tags](#example-4-using-filter-tags)
+- [Waf-Aligned](#example-5-waf-aligned)
 
 ### Example 1: _WAF-aligned_
 
@@ -168,7 +170,7 @@ param resourceId = '<resourceId>'
 
 ### Example 3: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters. This instance uses filters to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time. 
+This instance deploys the module with the minimum set of required parameters. This instance uses filters to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time.
 
 
 <details>
@@ -182,6 +184,99 @@ module configurationAssignment 'br/public:avm/res/maintenance/configuration-assi
     // Required parameters
     maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
     name: 'mcamin001'
+    // Non-required parameters
+    filter: {
+      osTypes: [
+        'Linux'
+        'Windows'
+      ]
+      resourceTypes: [
+        'Virtual Machines'
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "maintenanceConfigurationResourceId": {
+      "value": "<maintenanceConfigurationResourceId>"
+    },
+    "name": {
+      "value": "mcamin001"
+    },
+    // Non-required parameters
+    "filter": {
+      "value": {
+        "osTypes": [
+          "Linux",
+          "Windows"
+        ],
+        "resourceTypes": [
+          "Virtual Machines"
+        ]
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/maintenance/configuration-assignment:<version>'
+
+// Required parameters
+param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
+param name = 'mcamin001'
+// Non-required parameters
+param filter = {
+  osTypes: [
+    'Linux'
+    'Windows'
+  ]
+  resourceTypes: [
+    'Virtual Machines'
+  ]
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Using filter tags_
+
+This instance deploys the module using filters with tags to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module configurationAssignment 'br/public:avm/res/maintenance/configuration-assignment:<version>' = {
+  name: 'configurationAssignmentDeployment'
+  params: {
+    // Required parameters
+    maintenanceConfigurationResourceId: '<maintenanceConfigurationResourceId>'
+    name: 'mcatag001'
     // Non-required parameters
     filter: {
       osTypes: [
@@ -224,7 +319,7 @@ module configurationAssignment 'br/public:avm/res/maintenance/configuration-assi
       "value": "<maintenanceConfigurationResourceId>"
     },
     "name": {
-      "value": "mcamin001"
+      "value": "mcatag001"
     },
     // Non-required parameters
     "filter": {
@@ -265,7 +360,7 @@ using 'br/public:avm/res/maintenance/configuration-assignment:<version>'
 
 // Required parameters
 param maintenanceConfigurationResourceId = '<maintenanceConfigurationResourceId>'
-param name = 'mcamin001'
+param name = 'mcatag001'
 // Non-required parameters
 param filter = {
   osTypes: [
@@ -287,6 +382,64 @@ param filter = {
     }
   }
 }
+```
+
+</details>
+<p>
+
+### Example 5: _Waf-Aligned_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module configurationAssignment 'br/public:avm/res/maintenance/configuration-assignment:<version>' = {
+  name: 'configurationAssignmentDeployment'
+  params: {
+    // Required parameters
+    name: 'mcawaf001'
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "mcawaf001"
+    },
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/maintenance/configuration-assignment:<version>'
+
+// Required parameters
+param name = 'mcawaf001'
+param location = '<location>'
 ```
 
 </details>
