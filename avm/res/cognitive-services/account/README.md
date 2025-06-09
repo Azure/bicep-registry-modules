@@ -65,8 +65,8 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4'
-          version: '2025-02-27'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
         }
         name: 'gpt-4'
         sku: {
@@ -124,8 +124,8 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4",
-            "version": "2025-02-27"
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
           },
           "name": "gpt-4",
           "sku": {
@@ -181,8 +181,8 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4'
-      version: '2025-02-27'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
     }
     name: 'gpt-4'
     sku: {
@@ -235,10 +235,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4'
-          version: '2025-02-27'
+          name: 'gpt-4.1'
+          version: '2025-04-14'
         }
-        name: 'gpt-4'
+        name: 'gpt-4.1'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -278,10 +278,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4",
-            "version": "2025-02-27"
+            "name": "gpt-4.1",
+            "version": "2025-04-14"
           },
-          "name": "gpt-4",
+          "name": "gpt-4.1",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -315,10 +315,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4'
-      version: '2025-02-27'
+      name: 'gpt-4.1'
+      version: '2025-04-14'
     }
-    name: 'gpt-4'
+    name: 'gpt-4.1'
     sku: {
       capacity: 10
       name: 'Standard'
