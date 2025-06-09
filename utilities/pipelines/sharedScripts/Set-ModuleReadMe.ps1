@@ -1619,6 +1619,18 @@ function Set-UsageExamplesSection {
             )
         }
 
+        # If the deployment of the test is skipped, add a note
+        $e2eIgnoreFilePath = Join-Path (Split-Path -Path $testFilePath -Parent) '.e2eignore'
+        if (Test-Path $e2eIgnoreFilePath) {
+            $e2eIgnoreContent = (Get-Content $e2eIgnoreFilePath) -join "`n"
+            $testFilesContent += @(
+                '> **Note**: This test is skipped from the CI deployment validation due to the presence of a `.e2eignore` file in the test folder. The reason for skipping the deployment is:',
+                '```text',
+                $e2eIgnoreContent.Trim(),
+                '```'
+            )
+        }
+
         # ------------------------- #
         #   Prepare Bicep to JSON   #
         # ------------------------- #

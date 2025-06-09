@@ -6,12 +6,93 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "15821671329473870191"
+      "templateHash": "1105798698592936047"
     },
-    "name": "Event Grid System Topics",
-    "description": "This module deploys an Event Grid System Topic."
+    "name": "Synapse Workspaces Big Data Pools",
+    "description": "This module deploys a Synapse Workspaces Big Data Pool."
   },
   "definitions": {
+    "autoScaleType": {
+      "type": "object",
+      "properties": {
+        "maxNodeCount": {
+          "type": "int",
+          "minValue": 3,
+          "maxValue": 200,
+          "metadata": {
+            "description": "Required. Synapse workspace Big Data Pools Auto-scaling maximum node count."
+          }
+        },
+        "minNodeCount": {
+          "type": "int",
+          "minValue": 3,
+          "maxValue": 200,
+          "metadata": {
+            "description": "Required. Synapse workspace Big Data Pools Auto-scaling minimum node count."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The synapse workspace Big Data Pools Auto-scaling properties."
+      }
+    },
+    "dynamicExecutorAllocationType": {
+      "type": "object",
+      "properties": {
+        "minExecutors": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 10,
+          "metadata": {
+            "description": "Required. Synapse workspace Big Data Pools Dynamic Executor Allocation minimum executors."
+          }
+        },
+        "maxExecutors": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 10,
+          "metadata": {
+            "description": "Required. Synapse workspace Big Data Pools Dynamic Executor Allocation maximum executors (maxNodeCount-1)."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The synapse workspace Big Data Pools Dynamic Executor Allocation properties."
+      }
+    },
+    "sparkConfigPropertiesType": {
+      "type": "object",
+      "properties": {
+        "configurationType": {
+          "type": "string",
+          "allowedValues": [
+            "Artifact",
+            "File"
+          ],
+          "metadata": {
+            "description": "Required. The configuration type."
+          }
+        },
+        "content": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The configuration content."
+          }
+        },
+        "filename": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The configuration filename."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The synapse workspace Big Data Pools Spark configuration file properties."
+      }
+    },
     "diagnosticSettingFullType": {
       "type": "object",
       "properties": {
@@ -164,34 +245,6 @@
         }
       }
     },
-    "managedIdentityAllType": {
-      "type": "object",
-      "properties": {
-        "systemAssigned": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Enables system assigned managed identity on the resource."
-          }
-        },
-        "userAssignedResourceIds": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
-          }
-        }
-      },
-      "metadata": {
-        "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
-        "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-        }
-      }
-    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -269,36 +322,145 @@
     }
   },
   "parameters": {
+    "workspaceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent Synapse Workspace. Required if the template is used in a standalone deployment."
+      }
+    },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the Event Grid Topic."
+        "description": "Required. The name of the Big Data Pool."
       }
     },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Optional. Location for all Resources."
+        "description": "Optional. The geo-location where the resource lives."
       }
     },
-    "source": {
+    "nodeSizeFamily": {
       "type": "string",
+      "defaultValue": "MemoryOptimized",
+      "allowedValues": [
+        "HardwareAcceleratedFPGA",
+        "HardwareAcceleratedGPU",
+        "MemoryOptimized",
+        "None"
+      ],
       "metadata": {
-        "description": "Required. Source for the system topic."
+        "description": "Optional. The kind of nodes that the Big Data pool provides."
       }
     },
-    "topicType": {
+    "nodeSize": {
       "type": "string",
+      "allowedValues": [
+        "Large",
+        "Medium",
+        "None",
+        "Small",
+        "XLarge",
+        "XXLarge",
+        "XXXLarge"
+      ],
       "metadata": {
-        "description": "Required. TopicType for the system topic."
+        "description": "Required. The level of compute power that each node in the Big Data pool has."
       }
     },
-    "eventSubscriptions": {
-      "type": "array",
+    "autoScale": {
+      "$ref": "#/definitions/autoScaleType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Event subscriptions to deploy."
+        "description": "Optional. Auto-scaling properties."
+      }
+    },
+    "nodeCount": {
+      "type": "int",
+      "defaultValue": 3,
+      "minValue": 3,
+      "maxValue": 200,
+      "metadata": {
+        "description": "Optional. The number of nodes in the Big Data pool if Auto-scaling is disabled."
+      }
+    },
+    "dynamicExecutorAllocation": {
+      "$ref": "#/definitions/dynamicExecutorAllocationType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Dynamic Executor Allocation."
+      }
+    },
+    "autoPauseDelayInMinutes": {
+      "type": "int",
+      "defaultValue": -1,
+      "minValue": -1,
+      "maxValue": 10080,
+      "metadata": {
+        "description": "Optional. Synapse workspace Big Data Pools Auto-pausing delay in minutes (5-10080). Disabled if value not provided."
+      }
+    },
+    "sparkVersion": {
+      "type": "string",
+      "defaultValue": "3.4",
+      "allowedValues": [
+        "3.4",
+        "3.5"
+      ],
+      "metadata": {
+        "description": "Optional. The Apache Spark version."
+      }
+    },
+    "sparkConfigProperties": {
+      "$ref": "#/definitions/sparkConfigPropertiesType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Spark configuration file to specify additional properties."
+      }
+    },
+    "sessionLevelPackagesEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether session level packages enabled. Disabled if value not provided."
+      }
+    },
+    "cacheSize": {
+      "type": "int",
+      "defaultValue": 50,
+      "minValue": 0,
+      "maxValue": 100,
+      "metadata": {
+        "description": "Optional. The cache size."
+      }
+    },
+    "defaultSparkLogFolder": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The default folder where Spark logs will be written."
+      }
+    },
+    "autotuneEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether Auto-tune is Enabled or not. Disabled if value not provided."
+      }
+    },
+    "computeIsolationEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Whether Compute Isolation is enabled or not. Disabled if value not provided."
+      }
+    },
+    "sparkEventsFolder": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The Spark events folder."
       }
     },
     "diagnosticSettings": {
@@ -328,25 +490,11 @@
         "description": "Optional. The lock settings of the service."
       }
     },
-    "managedIdentities": {
-      "$ref": "#/definitions/managedIdentityAllType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The managed identity definition for this resource."
-      }
-    },
     "tags": {
       "type": "object",
       "nullable": true,
       "metadata": {
         "description": "Optional. Tags of the resource."
-      }
-    },
-    "enableTelemetry": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     }
   },
@@ -358,14 +506,8 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
-    "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-      "EventGrid Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1e241071-0855-49ea-94dc-649edcd759de')]",
-      "EventGrid Data Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd5a91429-5739-47e2-a06b-3470a27159e7')]",
-      "EventGrid EventSubscription Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '428e0ff0-5e57-4d9c-a221-2c70d0e0a443')]",
-      "EventGrid EventSubscription Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2414bbcf-6497-4faf-8c65-045460748405')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
       "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
       "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
@@ -373,60 +515,57 @@
     }
   },
   "resources": {
-    "avmTelemetry": {
-      "condition": "[parameters('enableTelemetry')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
-      "name": "[take(format('46d3xbcp.res.eventgrid-systemtopic.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
-      "properties": {
-        "mode": "Incremental",
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "resources": [],
-          "outputs": {
-            "telemetry": {
-              "type": "String",
-              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-            }
-          }
-        }
-      }
+    "workspace": {
+      "existing": true,
+      "type": "Microsoft.Synapse/workspaces",
+      "apiVersion": "2021-06-01",
+      "name": "[parameters('workspaceName')]"
     },
-    "systemTopic": {
-      "type": "Microsoft.EventGrid/systemTopics",
-      "apiVersion": "2025-02-15",
-      "name": "[parameters('name')]",
+    "bigDataPool": {
+      "type": "Microsoft.Synapse/workspaces/bigDataPools",
+      "apiVersion": "2021-06-01",
+      "name": "[format('{0}/{1}', parameters('workspaceName'), parameters('name'))]",
       "location": "[parameters('location')]",
-      "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "source": "[parameters('source')]",
-        "topicType": "[parameters('topicType')]"
+        "nodeSizeFamily": "[parameters('nodeSizeFamily')]",
+        "nodeSize": "[parameters('nodeSize')]",
+        "autoScale": "[if(not(empty(parameters('autoScale'))), createObject('enabled', true(), 'minNodeCount', tryGet(parameters('autoScale'), 'minNodeCount'), 'maxNodeCount', tryGet(parameters('autoScale'), 'maxNodeCount')), createObject('enabled', false()))]",
+        "nodeCount": "[if(empty(parameters('autoScale')), parameters('nodeCount'), null())]",
+        "dynamicExecutorAllocation": "[if(not(empty(parameters('dynamicExecutorAllocation'))), createObject('enabled', true(), 'minExecutors', tryGet(parameters('dynamicExecutorAllocation'), 'minExecutors'), 'maxExecutors', tryGet(parameters('dynamicExecutorAllocation'), 'maxExecutors')), createObject('enabled', false()))]",
+        "autoPause": "[if(not(equals(parameters('autoPauseDelayInMinutes'), -1)), createObject('enabled', true(), 'delayInMinutes', if(less(parameters('autoPauseDelayInMinutes'), 5), 5, parameters('autoPauseDelayInMinutes'))), createObject('enabled', false()))]",
+        "sparkVersion": "[parameters('sparkVersion')]",
+        "sparkConfigProperties": "[parameters('sparkConfigProperties')]",
+        "sessionLevelPackagesEnabled": "[parameters('sessionLevelPackagesEnabled')]",
+        "cacheSize": "[parameters('cacheSize')]",
+        "defaultSparkLogFolder": "[if(not(empty(parameters('defaultSparkLogFolder'))), parameters('defaultSparkLogFolder'), null())]",
+        "isAutotuneEnabled": "[parameters('autotuneEnabled')]",
+        "isComputeIsolationEnabled": "[parameters('computeIsolationEnabled')]",
+        "sparkEventsFolder": "[if(not(empty(parameters('sparkEventsFolder'))), parameters('sparkEventsFolder'), null())]"
       }
     },
-    "systemTopic_lock": {
+    "bigDataPool_lock": {
       "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
       "type": "Microsoft.Authorization/locks",
       "apiVersion": "2020-05-01",
-      "scope": "[format('Microsoft.EventGrid/systemTopics/{0}', parameters('name'))]",
+      "scope": "[format('Microsoft.Synapse/workspaces/{0}/bigDataPools/{1}', parameters('workspaceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
       "properties": {
         "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
         "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
       },
       "dependsOn": [
-        "systemTopic"
+        "bigDataPool"
       ]
     },
-    "systemTopic_diagnosticSettings": {
+    "bigDataPool_diagnosticSettings": {
       "copy": {
-        "name": "systemTopic_diagnosticSettings",
+        "name": "bigDataPool_diagnosticSettings",
         "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
       },
       "type": "Microsoft.Insights/diagnosticSettings",
       "apiVersion": "2021-05-01-preview",
-      "scope": "[format('Microsoft.EventGrid/systemTopics/{0}', parameters('name'))]",
+      "scope": "[format('Microsoft.Synapse/workspaces/{0}/bigDataPools/{1}', parameters('workspaceName'), parameters('name'))]",
       "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
       "properties": {
         "copy": [
@@ -457,18 +596,18 @@
         "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
       },
       "dependsOn": [
-        "systemTopic"
+        "bigDataPool"
       ]
     },
-    "systemTopic_roleAssignments": {
+    "bigDataPool_roleAssignments": {
       "copy": {
-        "name": "systemTopic_roleAssignments",
+        "name": "bigDataPool_roleAssignments",
         "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
       },
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "scope": "[format('Microsoft.EventGrid/systemTopics/{0}', parameters('name'))]",
-      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.EventGrid/systemTopics', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+      "scope": "[format('Microsoft.Synapse/workspaces/{0}/bigDataPools/{1}', parameters('workspaceName'), parameters('name'))]",
+      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Synapse/workspaces/bigDataPools', parameters('workspaceName'), parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
       "properties": {
         "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
         "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
@@ -479,209 +618,7 @@
         "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
       },
       "dependsOn": [
-        "systemTopic"
-      ]
-    },
-    "systemTopics_eventSubscriptions": {
-      "copy": {
-        "name": "systemTopics_eventSubscriptions",
-        "count": "[length(coalesce(parameters('eventSubscriptions'), createArray()))]"
-      },
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-EventGrid-SysTopics-EventSubs-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "destination": "[if(not(equals(tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deliveryWithResourceIdentity'), null())), createObject('value', null()), createObject('value', coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()].destination))]",
-          "systemTopicName": {
-            "value": "[parameters('name')]"
-          },
-          "name": {
-            "value": "[coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()].name]"
-          },
-          "deadLetterDestination": {
-            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deadLetterDestination')]"
-          },
-          "deadLetterWithResourceIdentity": {
-            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deadLetterWithResourceIdentity')]"
-          },
-          "deliveryWithResourceIdentity": {
-            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'deliveryWithResourceIdentity')]"
-          },
-          "eventDeliverySchema": {
-            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'eventDeliverySchema')]"
-          },
-          "expirationTimeUtc": {
-            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'expirationTimeUtc')]"
-          },
-          "filter": {
-            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'filter')]"
-          },
-          "labels": {
-            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'labels')]"
-          },
-          "retryPolicy": {
-            "value": "[tryGet(coalesce(parameters('eventSubscriptions'), createArray())[copyIndex()], 'retryPolicy')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "13885863756842304833"
-            },
-            "name": "Event Grid System Topic Event Subscriptions",
-            "description": "This module deploys an Event Grid System Topic Event Subscription."
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the Event Subscription."
-              }
-            },
-            "systemTopicName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Name of the Event Grid System Topic."
-              }
-            },
-            "deadLetterDestination": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information)."
-              }
-            },
-            "deadLetterWithResourceIdentity": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information)."
-              }
-            },
-            "deliveryWithResourceIdentity": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information)."
-              }
-            },
-            "destination": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Conditional. The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
-              }
-            },
-            "eventDeliverySchema": {
-              "type": "string",
-              "defaultValue": "EventGridSchema",
-              "allowedValues": [
-                "CloudEventSchemaV1_0",
-                "CustomInputSchema",
-                "EventGridSchema",
-                "EventGridEvent"
-              ],
-              "metadata": {
-                "description": "Optional. The event delivery schema for the event subscription."
-              }
-            },
-            "expirationTimeUtc": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ)."
-              }
-            },
-            "filter": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information)."
-              }
-            },
-            "labels": {
-              "type": "array",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The list of user defined labels."
-              }
-            },
-            "retryPolicy": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events."
-              }
-            }
-          },
-          "resources": {
-            "systemTopic": {
-              "existing": true,
-              "type": "Microsoft.EventGrid/systemTopics",
-              "apiVersion": "2025-02-15",
-              "name": "[parameters('systemTopicName')]"
-            },
-            "eventSubscription": {
-              "type": "Microsoft.EventGrid/systemTopics/eventSubscriptions",
-              "apiVersion": "2025-02-15",
-              "name": "[format('{0}/{1}', parameters('systemTopicName'), parameters('name'))]",
-              "properties": {
-                "deadLetterDestination": "[parameters('deadLetterDestination')]",
-                "deadLetterWithResourceIdentity": "[parameters('deadLetterWithResourceIdentity')]",
-                "deliveryWithResourceIdentity": "[parameters('deliveryWithResourceIdentity')]",
-                "destination": "[if(empty(parameters('deliveryWithResourceIdentity')), parameters('destination'), null())]",
-                "eventDeliverySchema": "[parameters('eventDeliverySchema')]",
-                "expirationTimeUtc": "[coalesce(parameters('expirationTimeUtc'), '')]",
-                "filter": "[coalesce(parameters('filter'), createObject())]",
-                "labels": "[coalesce(parameters('labels'), createArray())]",
-                "retryPolicy": "[parameters('retryPolicy')]"
-              }
-            }
-          },
-          "outputs": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the event subscription."
-              },
-              "value": "[parameters('name')]"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the event subscription."
-              },
-              "value": "[resourceId('Microsoft.EventGrid/systemTopics/eventSubscriptions', parameters('systemTopicName'), parameters('name'))]"
-            },
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the resource group the event subscription was deployed into."
-              },
-              "value": "[resourceGroup().name]"
-            },
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "The location the resource was deployed into."
-              },
-              "value": "[reference('systemTopic', '2025-02-15', 'full').location]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "systemTopic"
+        "bigDataPool"
       ]
     }
   },
@@ -689,38 +626,23 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "The name of the event grid system topic."
+        "description": "The name of the deployed Big Data Pool."
       },
       "value": "[parameters('name')]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
-        "description": "The resource ID of the event grid system topic."
+        "description": "The resource ID of the deployed Big Data Pool."
       },
-      "value": "[resourceId('Microsoft.EventGrid/systemTopics', parameters('name'))]"
+      "value": "[resourceId('Microsoft.Synapse/workspaces/bigDataPools', parameters('workspaceName'), parameters('name'))]"
     },
     "resourceGroupName": {
       "type": "string",
       "metadata": {
-        "description": "The name of the resource group the event grid system topic was deployed into."
+        "description": "The resource group of the deployed Big Data Pool."
       },
       "value": "[resourceGroup().name]"
-    },
-    "systemAssignedMIPrincipalId": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "The principal ID of the system assigned identity."
-      },
-      "value": "[if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), reference('systemTopic', '2025-02-15', 'full').identity.principalId, null())]"
-    },
-    "location": {
-      "type": "string",
-      "metadata": {
-        "description": "The location the resource was deployed into."
-      },
-      "value": "[reference('systemTopic', '2025-02-15', 'full').location]"
     }
   }
 }
