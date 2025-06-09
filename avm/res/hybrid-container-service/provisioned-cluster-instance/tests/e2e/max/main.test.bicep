@@ -13,9 +13,9 @@ param serviceShort string = 'hcpcimax'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-@description('Optional. The password of the LCM deployment user and local administrator accounts.')
+@description('Required. The password of the LCM deployment user and local administrator accounts.')
 @secure()
-param localAdminAndDeploymentUserPass string = newGuid()
+param arbLocalAdminAndDeploymentUserPass string = ''
 
 @description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
 @secure()
@@ -37,6 +37,12 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
+@description('Optional. The name of the secret in the key vault that contains the SSH private key PEM.')
+param sshPrivateKeyPemSecretName string = 'AksArcAgentSshPrivateKeyPem'
+
+@description('Optional. The name of the secret in the key vault that contains the SSH public key.')
+param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
+
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'southeastasia'
 
@@ -45,11 +51,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: enforcedLocation
 }
 
-module nestedDependencies '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/dependencies/waf-dependencies.bicep' = {
+module nestedDependencies '../../../../../../../utilities/e2e-template-assets/module-specific/azure-stack-hci/dependencies/dependencies.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
-    clusterName: '${namePrefix}${serviceShort}001'
+    clusterName: '${namePrefix}${serviceShort}1'
     clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
     keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
@@ -60,14 +66,13 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     networkSecurityGroupName: 'dep-${namePrefix}-nsg-${serviceShort}'
     networkInterfaceName: 'dep-${namePrefix}-mice-${serviceShort}'
-    diskNamePrefix: 'dep-${namePrefix}-disk-${serviceShort}'
     virtualMachineName: 'dep-${namePrefix}-vm-${serviceShort}'
-    waitDeploymentScriptPrefixName: 'dep-${namePrefix}-wds-${serviceShort}'
     arbDeploymentAppId: arbDeploymentAppId
     arbDeploymentServicePrincipalSecret: arbDeploymentServicePrincipalSecret
     arbDeploymentSPObjectId: arbDeploymentSPObjectId
-    deploymentUserPassword: localAdminAndDeploymentUserPass
-    localAdminPassword: localAdminAndDeploymentUserPass
+    deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
+    localAdminPassword: arbLocalAdminAndDeploymentUserPass
+    domainAdminPassword: arbLocalAdminAndDeploymentUserPass
     location: enforcedLocation
   }
 }
@@ -78,28 +83,32 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
   params: {
     name: nestedDependencies.outputs.clusterName
     deploymentUser: 'deployUser'
-    deploymentUserPassword: localAdminAndDeploymentUserPass
-    localAdminUser: 'admin-hci'
-    localAdminPassword: localAdminAndDeploymentUserPass
+    deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
+    localAdminUser: 'Administrator'
+    localAdminPassword: arbLocalAdminAndDeploymentUserPass
     servicePrincipalId: arbDeploymentAppId
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
+    hciResourceProviderObjectId: hciResourceProviderObjectId
     deploymentSettings: {
       customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
       clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
-      defaultGateway: '172.20.0.1'
+      defaultGateway: '192.168.1.1'
       deploymentPrefix: 'a${take(uniqueString(namePrefix, serviceShort), 7)}' // ensure deployment prefix starts with a letter to match '^(?=.{1,8}$)([a-zA-Z])(\-?[a-zA-Z\d])*$'
-      dnsServers: ['172.20.0.1']
-      domainFqdn: 'hci.local'
+      dnsServers: ['192.168.1.254']
+      domainFqdn: 'jumpstart.local'
       domainOUPath: nestedDependencies.outputs.domainOUPath
-      startingIPAddress: '172.20.0.2'
-      endingIPAddress: '172.20.0.7'
+      startingIPAddress: '192.168.1.55'
+      endingIPAddress: '192.168.1.65'
       enableStorageAutoIp: true
       keyVaultName: nestedDependencies.outputs.keyVaultName
       networkIntents: [
         {
-          adapter: ['mgmt']
-          name: 'management'
+          adapter: [
+            'FABRIC'
+            'FABRIC2'
+          ]
+          name: 'ManagementCompute'
           overrideAdapterProperty: true
           adapterPropertyOverrides: {
             jumboPacket: '9014'
@@ -117,33 +126,17 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
             enableIov: 'true'
             loadBalancingAlgorithm: 'Dynamic'
           }
-          trafficType: ['Management']
+          trafficType: [
+            'Management'
+            'Compute'
+          ]
         }
         {
-          adapter: ['comp0', 'comp1']
-          name: 'compute'
-          overrideAdapterProperty: true
-          adapterPropertyOverrides: {
-            jumboPacket: '9014'
-            networkDirect: 'Disabled'
-            networkDirectTechnology: 'iWARP'
-          }
-          overrideQosPolicy: false
-          qosPolicyOverrides: {
-            bandwidthPercentageSMB: '50'
-            priorityValue8021ActionCluster: '7'
-            priorityValue8021ActionSMB: '3'
-          }
-          overrideVirtualSwitchConfiguration: false
-          virtualSwitchConfigurationOverrides: {
-            enableIov: 'true'
-            loadBalancingAlgorithm: 'Dynamic'
-          }
-          trafficType: ['Compute']
-        }
-        {
-          adapter: ['smb0', 'smb1']
-          name: 'storage'
+          adapter: [
+            'StorageA'
+            'StorageB'
+          ]
+          name: 'Storage'
           overrideAdapterProperty: true
           adapterPropertyOverrides: {
             jumboPacket: '9014'
@@ -167,30 +160,18 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
       storageConnectivitySwitchless: false
       storageNetworks: [
         {
-          name: 'smb0'
-          adapterName: 'smb0'
+          name: 'Storage1Network'
+          adapterName: 'StorageA'
           vlan: '711'
         }
         {
-          name: 'smb1'
-          adapterName: 'smb1'
+          name: 'Storage2Network'
+          adapterName: 'StorageB'
           vlan: '712'
         }
       ]
       subnetMask: '255.255.255.0'
-      driftControlEnforced: true
-      smbSigningEnforced: true
-      smbClusterEncryption: true
-      sideChannelMitigationEnforced: true
-      bitlockerBootVolume: true
-      bitlockerDataVolumes: true
     }
-    tags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    hciResourceProviderObjectId: hciResourceProviderObjectId
   }
 }
 
@@ -202,13 +183,13 @@ resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-p
   ]
 }
 
-module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.0' = {
+module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-logicalNetwork-${serviceShort}'
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}logicalnetwork'
     location: enforcedLocation
-    customLocationId: customLocation.id
+    customLocationResourceId: customLocation.id
     vmSwitchName: 'ConvergedSwitch(management)'
     ipAllocationMethod: 'Static'
     addressPrefix: '172.20.0.1/24'
@@ -226,6 +207,18 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.0' 
   }
 }
 
+module secrets '../scripts/secrets.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-secrets'
+  scope: resourceGroup
+  params: {
+    keyVaultName: nestedDependencies.outputs.keyVaultName
+    name: '${namePrefix}${serviceShort}secrets'
+    location: enforcedLocation
+    sshPrivateKeyPemSecretName: sshPrivateKeyPemSecretName
+    sshPublicKeySecretName: sshPublicKeySecretName
+  }
+}
+
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-aks-${serviceShort}'
@@ -233,7 +226,6 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
     customLocationResourceId: customLocation.id
-    keyVaultName: nestedDependencies.outputs.keyVaultName
     enableTelemetry: true
     kubernetesVersion: '1.29.4'
     storageProfile: {
@@ -244,9 +236,16 @@ module testDeployment '../../../main.bicep' = {
         enabled: true
       }
     }
-    linuxProfile: null
+    linuxProfile: {
+      ssh: {
+        publicKeys: [
+          {
+            keyData: secrets.outputs.sshPublicKeyPemValue
+          }
+        ]
+      }
+    }
     licenseProfile: { azureHybridBenefit: 'False' }
-
     cloudProviderProfile: {
       infraNetworkProfile: {
         vnetSubnetIds: [
@@ -286,11 +285,6 @@ module testDeployment '../../../main.bicep' = {
       }
     }
     connectClustersTags: {
-      'hidden-title': 'This is visible in the resource name'
-      Environment: 'Non-Prod'
-      Role: 'DeploymentValidation'
-    }
-    tags: {
       'hidden-title': 'This is visible in the resource name'
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
