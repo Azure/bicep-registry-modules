@@ -108,7 +108,7 @@ type filterType = {
 
     @description('Required. Dictionary of tags with its list of values.')
     tags: {
-      @description('Required. A key-value pair.')
+      @description('Required. A key-value pair. Note that although the value is an array, it must be a single value for each tag.')
       *: string[]
     }
   }?

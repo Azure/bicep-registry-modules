@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters. This instance uses filters to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time.'
+metadata name = 'Using filter tags'
+metadata description = 'This instance deploys the module using filters with tags to define a dynamic scope and assign it to the input maintenance configuration. The dynamic scope will be resolved at run time.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceLocation string = deployment().location
 param resourceGroupName string = 'dep-${namePrefix}-maintenance.configurationassignments-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'mcamin'
+param serviceShort string = 'mcatag'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -62,10 +62,8 @@ module testDeployment '../../../main.bicep' = [
         tagSettings: {
           filterOperator: 'All'
           tags: {
-            sampleName: [
-              'sampleValue1'
-              'sampleValue2'
-            ]
+            foo: ['bar']
+            cake: ['lie']
           }
         }
       }
