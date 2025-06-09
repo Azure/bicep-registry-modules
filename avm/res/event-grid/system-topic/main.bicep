@@ -116,7 +116,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource systemTopic 'Microsoft.EventGrid/systemTopics@2023-12-15-preview' = {
+resource systemTopic 'Microsoft.EventGrid/systemTopics@2025-02-15' = {
   name: name
   location: location
   identity: identity
@@ -132,7 +132,7 @@ module systemTopics_eventSubscriptions 'event-subscription/main.bicep' = [
   for (eventSubscription, index) in eventSubscriptions ?? []: {
     name: '${uniqueString(deployment().name, location)}-EventGrid-SysTopics-EventSubs-${index}'
     params: {
-      destination: eventSubscription.destination
+      destination: eventSubscription.?deliveryWithResourceIdentity != null ? null : eventSubscription.destination
       systemTopicName: systemTopic.name
       name: eventSubscription.name
       deadLetterDestination: eventSubscription.?deadLetterDestination
@@ -213,7 +213,7 @@ output resourceId string = systemTopic.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = systemTopic.?identity.?principalId
+output systemAssignedMIPrincipalId string? = (managedIdentities.?systemAssigned ?? false) ? systemTopic.identity.principalId : null
 
 @description('The location the resource was deployed into.')
 output location string = systemTopic.location
