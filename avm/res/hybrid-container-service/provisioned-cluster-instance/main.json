@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "1302892525564686381"
+      "templateHash": "17329846330657197010"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -187,7 +187,7 @@
                   "type": "object",
                   "properties": {
                     "keyData": {
-                      "type": "string",
+                      "type": "securestring",
                       "metadata": {
                         "description": "Required. The SSH public key data."
                       }

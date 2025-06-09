@@ -242,6 +242,7 @@ type linuxProfileType = {
     @description('Required. SSH public keys configuration.')
     publicKeys: [
       {
+        @secure()
         @description('Required. The SSH public key data.')
         keyData: string
       }
