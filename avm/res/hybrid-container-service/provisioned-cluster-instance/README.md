@@ -53,8 +53,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
-    name: 'hcpcimin001'
-    // Non-required parameters
     linuxProfile: {
       ssh: {
         publicKeys: [
@@ -64,6 +62,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         ]
       }
     }
+    name: 'hcpcimin001'
   }
 }
 ```
@@ -93,10 +92,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
     },
-    "name": {
-      "value": "hcpcimin001"
-    },
-    // Non-required parameters
     "linuxProfile": {
       "value": {
         "ssh": {
@@ -107,6 +102,9 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
           ]
         }
       }
+    },
+    "name": {
+      "value": "hcpcimin001"
     }
   }
 }
@@ -131,8 +129,6 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
-param name = 'hcpcimin001'
-// Non-required parameters
 param linuxProfile = {
   ssh: {
     publicKeys: [
@@ -142,6 +138,7 @@ param linuxProfile = {
     ]
   }
 }
+param name = 'hcpcimin001'
 ```
 
 </details>
@@ -169,6 +166,15 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
+    linuxProfile: {
+      ssh: {
+        publicKeys: [
+          {
+            keyData: '<keyData>'
+          }
+        ]
+      }
+    }
     name: 'hcpcimax001'
     // Non-required parameters
     agentPoolProfiles: [
@@ -205,15 +211,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     kubernetesVersion: '1.29.4'
     licenseProfile: {
       azureHybridBenefit: 'False'
-    }
-    linuxProfile: {
-      ssh: {
-        publicKeys: [
-          {
-            keyData: '<keyData>'
-          }
-        ]
-      }
     }
     location: '<location>'
     oidcIssuerProfile: {
@@ -260,6 +257,17 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     },
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
+    },
+    "linuxProfile": {
+      "value": {
+        "ssh": {
+          "publicKeys": [
+            {
+              "keyData": "<keyData>"
+            }
+          ]
+        }
+      }
     },
     "name": {
       "value": "hcpcimax001"
@@ -314,17 +322,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "azureHybridBenefit": "False"
       }
     },
-    "linuxProfile": {
-      "value": {
-        "ssh": {
-          "publicKeys": [
-            {
-              "keyData": "<keyData>"
-            }
-          ]
-        }
-      }
-    },
     "location": {
       "value": "<location>"
     },
@@ -373,6 +370,15 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
+param linuxProfile = {
+  ssh: {
+    publicKeys: [
+      {
+        keyData: '<keyData>'
+      }
+    ]
+  }
+}
 param name = 'hcpcimax001'
 // Non-required parameters
 param agentPoolProfiles = [
@@ -409,15 +415,6 @@ param enableTelemetry = true
 param kubernetesVersion = '1.29.4'
 param licenseProfile = {
   azureHybridBenefit: 'False'
-}
-param linuxProfile = {
-  ssh: {
-    publicKeys: [
-      {
-        keyData: '<keyData>'
-      }
-    ]
-  }
 }
 param location = '<location>'
 param oidcIssuerProfile = {
@@ -463,6 +460,15 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
+    linuxProfile: {
+      ssh: {
+        publicKeys: [
+          {
+            keyData: '<keyData>'
+          }
+        ]
+      }
+    }
     name: 'hcpciwaf001'
     // Non-required parameters
     agentPoolProfiles: [
@@ -492,15 +498,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       count: 1
       vmSize: 'Standard_A4_v2'
     }
-    linuxProfile: {
-      ssh: {
-        publicKeys: [
-          {
-            keyData: '<keyData>'
-          }
-        ]
-      }
-    }
   }
 }
 ```
@@ -529,6 +526,17 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     },
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
+    },
+    "linuxProfile": {
+      "value": {
+        "ssh": {
+          "publicKeys": [
+            {
+              "keyData": "<keyData>"
+            }
+          ]
+        }
+      }
     },
     "name": {
       "value": "hcpciwaf001"
@@ -566,17 +574,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "count": 1,
         "vmSize": "Standard_A4_v2"
       }
-    },
-    "linuxProfile": {
-      "value": {
-        "ssh": {
-          "publicKeys": [
-            {
-              "keyData": "<keyData>"
-            }
-          ]
-        }
-      }
     }
   }
 }
@@ -601,6 +598,15 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
+param linuxProfile = {
+  ssh: {
+    publicKeys: [
+      {
+        keyData: '<keyData>'
+      }
+    ]
+  }
+}
 param name = 'hcpciwaf001'
 // Non-required parameters
 param agentPoolProfiles = [
@@ -630,15 +636,6 @@ param controlPlane = {
   count: 1
   vmSize: 'Standard_A4_v2'
 }
-param linuxProfile = {
-  ssh: {
-    publicKeys: [
-      {
-        keyData: '<keyData>'
-      }
-    ]
-  }
-}
 ```
 
 </details>
@@ -652,6 +649,7 @@ param linuxProfile = {
 | :-- | :-- | :-- |
 | [`cloudProviderProfile`](#parameter-cloudproviderprofile) | object | The profile for the underlying cloud infrastructure provider for the provisioned cluster. |
 | [`customLocationResourceId`](#parameter-customlocationresourceid) | string | The id of the Custom location that used to create hybrid aks. |
+| [`linuxProfile`](#parameter-linuxprofile) | object | The profile for Linux VMs in the provisioned cluster. |
 | [`name`](#parameter-name) | string | The name of the provisioned cluster instance. |
 
 **Optional parameters**
@@ -666,7 +664,6 @@ param linuxProfile = {
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | The Kubernetes version for the cluster. |
 | [`licenseProfile`](#parameter-licenseprofile) | object | The license profile of the provisioned cluster. |
-| [`linuxProfile`](#parameter-linuxprofile) | object | The profile for Linux VMs in the provisioned cluster. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`networkProfile`](#parameter-networkprofile) | object | The network configuration profile for the provisioned cluster. |
 | [`oidcIssuerProfile`](#parameter-oidcissuerprofile) | object | Open ID Connect (OIDC) Issuer Profile for the connected cluster. |
@@ -712,6 +709,39 @@ The id of the Custom location that used to create hybrid aks.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `linuxProfile`
+
+The profile for Linux VMs in the provisioned cluster.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ssh`](#parameter-linuxprofilessh) | object | SSH configuration for Linux nodes. |
+
+### Parameter: `linuxProfile.ssh`
+
+SSH configuration for Linux nodes.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`publicKeys`](#parameter-linuxprofilesshpublickeys) | array | SSH public keys configuration. |
+
+### Parameter: `linuxProfile.ssh.publicKeys`
+
+SSH public keys configuration.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `name`
 
@@ -1083,39 +1113,6 @@ Azure Hybrid Benefit configuration.
     'True'
   ]
   ```
-
-### Parameter: `linuxProfile`
-
-The profile for Linux VMs in the provisioned cluster.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ssh`](#parameter-linuxprofilessh) | object | SSH configuration for Linux nodes. |
-
-### Parameter: `linuxProfile.ssh`
-
-SSH configuration for Linux nodes.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`publicKeys`](#parameter-linuxprofilesshpublickeys) | array | SSH public keys configuration. |
-
-### Parameter: `linuxProfile.ssh.publicKeys`
-
-SSH public keys configuration.
-
-- Required: Yes
-- Type: array
 
 ### Parameter: `location`
 

@@ -202,7 +202,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
   }
 }
 
-module secrets '../scripts/secrets.bicep' = {
+module secrets '../secrets.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-secrets'
   scope: resourceGroup
   params: {

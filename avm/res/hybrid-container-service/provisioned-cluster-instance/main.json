@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "16429477246943649534"
+      "templateHash": "1302892525564686381"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -466,6 +466,12 @@
         "description": "Required. The id of the Custom location that used to create hybrid aks."
       }
     },
+    "linuxProfile": {
+      "$ref": "#/definitions/linuxProfileType",
+      "metadata": {
+        "description": "Required. The profile for Linux VMs in the provisioned cluster."
+      }
+    },
     "kubernetesVersion": {
       "type": "string",
       "nullable": true,
@@ -520,13 +526,6 @@
       },
       "metadata": {
         "description": "Optional. The network configuration profile for the provisioned cluster."
-      }
-    },
-    "linuxProfile": {
-      "$ref": "#/definitions/linuxProfileType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The profile for Linux VMs in the provisioned cluster."
       }
     },
     "licenseProfile": {

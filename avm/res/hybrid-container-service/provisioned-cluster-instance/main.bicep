@@ -13,6 +13,9 @@ param enableTelemetry bool = true
 @description('Required. The id of the Custom location that used to create hybrid aks.')
 param customLocationResourceId string
 
+@description('Required. The profile for Linux VMs in the provisioned cluster.')
+param linuxProfile linuxProfileType
+
 @description('Optional. The Kubernetes version for the cluster.')
 param kubernetesVersion string?
 
@@ -50,9 +53,6 @@ param networkProfile networkProfileType = {
     count: 0
   }
 }
-
-@description('Optional. The profile for Linux VMs in the provisioned cluster.')
-param linuxProfile linuxProfileType?
 
 @description('Optional. The license profile of the provisioned cluster.')
 param licenseProfile licenseProfileType = { azureHybridBenefit: 'False' }
