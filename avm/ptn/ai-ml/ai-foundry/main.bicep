@@ -98,7 +98,7 @@ param networkAcls object = {
   // ]
 }
 
-@description('Name of the first project')
+@description('Name of the AI Foundry project')
 param projectName string = '${name}proj'
 
 var defaultTags = {
@@ -109,7 +109,26 @@ var allTags = union(defaultTags, tags)
 var resourceToken = substring(uniqueString(subscription().id, location, name), 0, 5)
 var servicesUsername = take(replace(vmAdminUsername, '.', ''), 20)
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.0' = {
+#disable-next-line no-deployments-resources
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+  name: '46d3xbcp.[[REPLACE WITH TELEMETRY IDENTIFIER]].${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  properties: {
+    mode: 'Incremental'
+    template: {
+      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
+      contentVersion: '1.0.0.0'
+      resources: []
+      outputs: {
+        telemetry: {
+          type: 'String'
+          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
+        }
+      }
+    }
+  }
+}
+
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
   name: take('${name}-log-analytics-deployment', 64)
   params: {
     name: toLower('log-${name}')
@@ -331,22 +350,6 @@ module virtualMachine './modules/virtualMachine.bicep' = if (networkIsolation) {
   dependsOn: networkIsolation ? [storageAccount] : []
 }
 
-module apim 'modules/apim.bicep' = if (apiManagementEnabled) {
-  name: take('${name}-apim-deployment', 64)
-  params: {
-    name: toLower('apim-${name}${resourceToken}')
-    location: location
-    publisherEmail: apiManagementPublisherEmail
-    publisherName: '${name} API Management'
-    sku: 'Developer'
-    networkIsolation: networkIsolation
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
-    tags: allTags
-  }
-}
-
 module cosmosDb 'modules/cosmosDb.bicep' = if (cosmosDbEnabled) {
   name: take('${name}-cosmosdb-deployment', 64)
   params: {
@@ -358,40 +361,6 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (cosmosDbEnabled) {
     logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     databases: cosmosDatabases
     tags: allTags
-  }
-}
-
-module sqlServer 'modules/sqlServer.bicep' = if (sqlServerEnabled) {
-  name: take('${name}-sqlserver-deployment', 64)
-  params: {
-    name: 'sql${name}${resourceToken}'
-    administratorLogin: servicesUsername
-    administratorLoginPassword: vmAdminPasswordOrKey
-    databases: sqlServerDatabases
-    location: location
-    networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
-    tags: allTags
-  }
-}
-
-#disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.[[REPLACE WITH TELEMETRY IDENTIFIER]].${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-        }
-      }
-    }
   }
 }
 
@@ -410,9 +379,7 @@ output AZURE_APP_INSIGHTS_NAME string = applicationInsights.outputs.name
 output AZURE_CONTAINER_REGISTRY_NAME string = acrEnabled ? containerRegistry.outputs.name : ''
 output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.outputs.name
 output AZURE_STORAGE_ACCOUNT_NAME string = storageAccount.outputs.storageName
-output AZURE_API_MANAGEMENT_NAME string = apiManagementEnabled ? apim.outputs.name : ''
 output AZURE_VIRTUAL_NETWORK_NAME string = networkIsolation ? network.outputs.virtualNetworkName : ''
 output AZURE_VIRTUAL_NETWORK_SUBNET_NAME string = networkIsolation ? network.outputs.vmSubnetName : ''
-output AZURE_SQL_SERVER_NAME string = sqlServerEnabled ? sqlServer.outputs.name : ''
 output AZURE_SQL_SERVER_USERNAME string = sqlServerEnabled ? servicesUsername : ''
 output AZURE_COSMOS_ACCOUNT_NAME string = cosmosDbEnabled ? cosmosDb.outputs.cosmosDBname : ''

@@ -25,10 +25,10 @@ param searchEnabled bool
 @description('Azure Search Service Name')
 param nameFormatted string
 
-@description('Name of the first project')
+@description('Name of the AI Foundry project')
 param defaultProjectName string = name
 param defaultProjectDisplayName string = name
-param defaultProjectDescription string = 'This is a sample project for AI Foundry.'
+param defaultProjectDescription string = 'This is the default project for AI Foundry.'
 
 resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
   name: aiServicesName
