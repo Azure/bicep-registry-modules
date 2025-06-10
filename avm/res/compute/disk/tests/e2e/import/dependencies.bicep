@@ -50,7 +50,6 @@ module roleAssignment 'dependencies_rbac.bicep' = {
   scope: subscription()
   params: {
     managedIdentityPrincipalId: managedIdentity.properties.principalId
-    managedIdentityResourceId: managedIdentity.id
   }
 }
 

@@ -14,19 +14,23 @@ param source string
 param topicType string
 
 @description('Optional. Event subscriptions to deploy.')
-param eventSubscriptions array = []
+param eventSubscriptions array?
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
-param diagnosticSettings diagnosticSettingType
+param diagnosticSettings diagnosticSettingFullType[]?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource.')
-param managedIdentities managedIdentitiesType
+param managedIdentities managedIdentityAllType?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -35,7 +39,7 @@ param tags object?
 param enableTelemetry bool = true
 
 var formattedUserAssignedIdentities = reduce(
-  map((managedIdentities.?userAssignedResourcesIds ?? []), (id) => { '${id}': {} }),
+  map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
   (cur, next) => union(cur, next)
 ) // Converts the flat array to an object like { '${id1}': {}, '${id2}': {} }
@@ -43,8 +47,8 @@ var formattedUserAssignedIdentities = reduce(
 var identity = !empty(managedIdentities)
   ? {
       type: (managedIdentities.?systemAssigned ?? false)
-        ? (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
-        : (!empty(managedIdentities.?userAssignedResourcesIds ?? {}) ? 'UserAssigned' : null)
+        ? (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'SystemAssigned,UserAssigned' : 'SystemAssigned')
+        : (!empty(managedIdentities.?userAssignedResourceIds ?? {}) ? 'UserAssigned' : null)
       userAssignedIdentities: !empty(formattedUserAssignedIdentities) ? formattedUserAssignedIdentities : null
     }
   : null
@@ -112,7 +116,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource systemTopic 'Microsoft.EventGrid/systemTopics@2023-12-15-preview' = {
+resource systemTopic 'Microsoft.EventGrid/systemTopics@2025-02-15' = {
   name: name
   location: location
   identity: identity
@@ -125,28 +129,20 @@ resource systemTopic 'Microsoft.EventGrid/systemTopics@2023-12-15-preview' = {
 
 // Event subscriptions
 module systemTopics_eventSubscriptions 'event-subscription/main.bicep' = [
-  for (eventSubscription, index) in eventSubscriptions: {
-    name: '${uniqueString(deployment().name, location)}-EventGrid-SystemTopics-EventSubscriptions-${index}'
+  for (eventSubscription, index) in eventSubscriptions ?? []: {
+    name: '${uniqueString(deployment().name, location)}-EventGrid-SysTopics-EventSubs-${index}'
     params: {
-      destination: eventSubscription.destination
+      destination: eventSubscription.?deliveryWithResourceIdentity != null ? null : eventSubscription.destination
       systemTopicName: systemTopic.name
       name: eventSubscription.name
-      deadLetterDestination: contains(eventSubscription, 'deadLetterDestination')
-        ? eventSubscription.deadLetterDestination
-        : {}
-      deadLetterWithResourceIdentity: contains(eventSubscription, 'deadLetterWithResourceIdentity')
-        ? eventSubscription.deadLetterWithResourceIdentity
-        : {}
-      deliveryWithResourceIdentity: contains(eventSubscription, 'deliveryWithResourceIdentity')
-        ? eventSubscription.deliveryWithResourceIdentity
-        : {}
-      eventDeliverySchema: contains(eventSubscription, 'eventDeliverySchema')
-        ? eventSubscription.eventDeliverySchema
-        : 'EventGridSchema'
-      expirationTimeUtc: contains(eventSubscription, 'expirationTimeUtc') ? eventSubscription.expirationTimeUtc : ''
-      filter: contains(eventSubscription, 'filter') ? eventSubscription.filter : {}
-      labels: contains(eventSubscription, 'labels') ? eventSubscription.labels : []
-      retryPolicy: contains(eventSubscription, 'retryPolicy') ? eventSubscription.retryPolicy : {}
+      deadLetterDestination: eventSubscription.?deadLetterDestination
+      deadLetterWithResourceIdentity: eventSubscription.?deadLetterWithResourceIdentity
+      deliveryWithResourceIdentity: eventSubscription.?deliveryWithResourceIdentity
+      eventDeliverySchema: eventSubscription.?eventDeliverySchema
+      expirationTimeUtc: eventSubscription.?expirationTimeUtc
+      filter: eventSubscription.?filter
+      labels: eventSubscription.?labels
+      retryPolicy: eventSubscription.?retryPolicy
     }
   }
 ]
@@ -217,97 +213,7 @@ output resourceId string = systemTopic.id
 output resourceGroupName string = resourceGroup().name
 
 @description('The principal ID of the system assigned identity.')
-output systemAssignedMIPrincipalId string? = systemTopic.?identity.?principalId
+output systemAssignedMIPrincipalId string? = (managedIdentities.?systemAssigned ?? false) ? systemTopic.identity.principalId : null
 
 @description('The location the resource was deployed into.')
 output location string = systemTopic.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type managedIdentitiesType = {
-  @description('Optional. Enables system assigned managed identity on the resource.')
-  systemAssigned: bool?
-
-  @description('Optional. The resource ID(s) to assign to the resource.')
-  userAssignedResourcesIds: string[]?
-}?
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type diagnosticSettingType = {
-  @description('Optional. The name of diagnostic setting.')
-  name: string?
-
-  @description('Optional. The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection.')
-  logCategoriesAndGroups: {
-    @description('Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here.')
-    category: string?
-
-    @description('Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs.')
-    categoryGroup: string?
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection.')
-  metricCategories: {
-    @description('Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics.')
-    category: string
-
-    @description('Optional. Enable or disable the category explicitly. Default is `true`.')
-    enabled: bool?
-  }[]?
-
-  @description('Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type.')
-  logAnalyticsDestinationType: ('Dedicated' | 'AzureDiagnostics')?
-
-  @description('Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  workspaceResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  storageAccountResourceId: string?
-
-  @description('Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to.')
-  eventHubAuthorizationRuleResourceId: string?
-
-  @description('Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub.')
-  eventHubName: string?
-
-  @description('Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs.')
-  marketplacePartnerResourceId: string?
-}[]?

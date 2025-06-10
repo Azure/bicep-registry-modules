@@ -73,8 +73,9 @@ param customIPSecPolicy object = {
 @description('Optional. The weight added to routes learned from this BGP speaker.')
 param routingWeight int?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -178,15 +179,3 @@ output resourceId string = connection.id
 
 @description('The location the resource was deployed into.')
 output location string = connection.location
-
-// =============== //
-//   Definitions   //
-// =============== //
-
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?

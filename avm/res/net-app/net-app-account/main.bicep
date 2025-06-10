@@ -1,5 +1,5 @@
 metadata name = 'Azure NetApp Files'
-metadata description = 'This module deploys an Azure NetApp File.'
+metadata description = 'This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes.'
 
 @description('Required. The name of the NetApp account.')
 param name string
@@ -32,6 +32,9 @@ param dnsServers string = ''
 
 @description('Optional. Specifies whether encryption should be used for communication between SMB server and domain controller (DC). SMB3 only.')
 param encryptDCConnections bool = false
+
+@description('Optional. If enabled, NFS client local users can also (in addition to LDAP users) access the NFS volumes.')
+param allowLocalNfsUsersWithLdap bool = false
 
 @description('Optional. Required if domainName is specified. NetBIOS name of the SMB server. A computer account with this prefix will be registered in the AD and used to mount volumes.')
 param smbServerNamePrefix string = ''
@@ -96,6 +99,7 @@ var activeDirectoryConnectionProperties = [
     serverRootCACertificate: !empty(domainName) ? serverRootCACertificate : null
     smbServerName: !empty(domainName) ? smbServerNamePrefix : null
     organizationalUnit: !empty(domainJoinOU) ? domainJoinOU : null
+    allowLocalNfsUsersWithLdap: !empty(domainName) ? allowLocalNfsUsersWithLdap : false
   }
 ]
 
@@ -156,7 +160,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId!)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
@@ -176,7 +180,7 @@ resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentiti
   )
 }
 
-resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2024-07-01' = {
+resource netAppAccount 'Microsoft.NetApp/netAppAccounts@2025-01-01' = {
   name: name
   tags: tags
   identity: identity
@@ -415,15 +419,19 @@ type backupPolicyType = {
   @description('Optional. The location of the backup policy.')
   location: string?
 
-  @description('Optional. The daily backups to keep.')
+  @description('Optional. The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
   @minValue(2)
   @maxValue(1019)
   dailyBackupsToKeep: int?
 
-  @description('Optional. The monthly backups to keep.')
+  @description('Optional. The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
+  @minValue(0)
+  @maxValue(1019)
   monthlyBackupsToKeep: int?
 
-  @description('Optional. The weekly backups to keep.')
+  @description('Optional. The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter\'s max).')
+  @minValue(0)
+  @maxValue(1019)
   weeklyBackupsToKeep: int?
 
   @description('Optional. Indicates whether the backup policy is enabled.')

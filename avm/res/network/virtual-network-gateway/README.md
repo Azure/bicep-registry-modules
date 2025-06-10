@@ -18,9 +18,9 @@ This module deploys a Virtual Network Gateway.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
-| `Microsoft.Network/virtualNetworkGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworkGateways) |
-| `Microsoft.Network/virtualNetworkGateways/natRules` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/virtualNetworkGateways/natRules) |
+| `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
+| `Microsoft.Network/virtualNetworkGateways` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworkGateways) |
+| `Microsoft.Network/virtualNetworkGateways/natRules` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworkGateways/natRules) |
 
 ## Usage examples
 
@@ -2353,8 +2353,10 @@ param vpnType = 'RouteBased'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`adminState`](#parameter-adminstate) | string | Property to indicate if the Express Route Gateway serves traffic when there are multiple Express Route Gateways in the vnet. Only applicable for ExpressRoute gateways. |
 | [`allowRemoteVnetTraffic`](#parameter-allowremotevnettraffic) | bool | Configure this gateway to accept traffic from other Azure Virtual Networks. This configuration does not support connectivity to Azure Virtual WAN. |
 | [`allowVirtualWanTraffic`](#parameter-allowvirtualwantraffic) | bool | Configures this gateway to accept traffic from remote Virtual WAN networks. |
+| [`autoScaleConfiguration`](#parameter-autoscaleconfiguration) | object | Autoscale configuration for virtual network gateway. Only applicable for certain SKUs. |
 | [`clientRevokedCertThumbprint`](#parameter-clientrevokedcertthumbprint) | string | Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet. |
 | [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
@@ -2368,11 +2370,13 @@ param vpnType = 'RouteBased'
 | [`gatewayDefaultSiteLocalNetworkGatewayResourceId`](#parameter-gatewaydefaultsitelocalnetworkgatewayresourceid) | string | The reference to the LocalNetworkGateway resource which represents local network site having default routes. Assign Null value in case of removing existing default site setting. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`managedIdentity`](#parameter-managedidentity) | object | The managed identity definition for this resource. Supports system-assigned and user-assigned identities. |
 | [`natRules`](#parameter-natrules) | array | NatRules for virtual network gateway. NAT is supported on the the following SKUs: VpnGw2~5, VpnGw2AZ~5AZ and is supported for IPsec/IKE cross-premises connections only. |
 | [`primaryPublicIPName`](#parameter-primarypublicipname) | string | Specifies the name of the Public IP to be created for the Virtual Network Gateway. This will only take effect if no existing Public IP is provided. If neither an existing Public IP nor this parameter is specified, a new Public IP will be created with a default name, using the gateway's name with the '-pip1' suffix. |
 | [`publicIpDiagnosticSettings`](#parameter-publicipdiagnosticsettings) | array | The diagnostic settings of the Public IP. |
 | [`publicIPPrefixResourceId`](#parameter-publicipprefixresourceid) | string | Resource ID of the Public IP Prefix object. This is only needed if you want your Public IPs created in a PIP Prefix. |
 | [`publicIpZones`](#parameter-publicipzones) | array | Specifies the zones of the Public IP address. Basic IP SKU does not support Availability Zones. |
+| [`resiliencyModel`](#parameter-resiliencymodel) | string | Property to indicate if the Express Route Gateway has resiliency model of MultiHomed or SingleHomed. Only applicable for ExpressRoute gateways. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`skuName`](#parameter-skuname) | string | The SKU of the Gateway. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
@@ -2414,6 +2418,7 @@ To use this variant, set the property `clusterMode` to `activeActiveNoBgp`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`existingSecondaryPublicIPResourceId`](#parameter-clustersettingsclustermode-activeactivenobgpexistingsecondarypublicipresourceid) | string | The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
+| [`existingTertiaryPublicIPResourceId`](#parameter-clustersettingsclustermode-activeactivenobgpexistingtertiarypublicipresourceid) | string | The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
 | [`secondPipName`](#parameter-clustersettingsclustermode-activeactivenobgpsecondpipname) | string | Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix. |
 
 ### Parameter: `clusterSettings.clusterMode-activeActiveNoBgp.clusterMode`
@@ -2432,6 +2437,13 @@ The cluster mode deciding the configuration.
 ### Parameter: `clusterSettings.clusterMode-activeActiveNoBgp.existingSecondaryPublicIPResourceId`
 
 The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
+
+- Required: No
+- Type: string
+
+### Parameter: `clusterSettings.clusterMode-activeActiveNoBgp.existingTertiaryPublicIPResourceId`
+
+The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
 
 - Required: No
 - Type: string
@@ -2461,6 +2473,7 @@ To use this variant, set the property `clusterMode` to `activeActiveBgp`.
 | [`asn`](#parameter-clustersettingsclustermode-activeactivebgpasn) | int | The Autonomous System Number value. If it's not provided, a default '65515' value will be assigned to the ASN. |
 | [`customBgpIpAddresses`](#parameter-clustersettingsclustermode-activeactivebgpcustombgpipaddresses) | array | The list of custom BGP IP Address (APIPA) peering addresses which belong to IP configuration. |
 | [`existingSecondaryPublicIPResourceId`](#parameter-clustersettingsclustermode-activeactivebgpexistingsecondarypublicipresourceid) | string | The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
+| [`existingTertiaryPublicIPResourceId`](#parameter-clustersettingsclustermode-activeactivebgpexistingtertiarypublicipresourceid) | string | The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway. |
 | [`secondCustomBgpIpAddresses`](#parameter-clustersettingsclustermode-activeactivebgpsecondcustombgpipaddresses) | array | The list of the second custom BGP IP Address (APIPA) peering addresses which belong to IP configuration. |
 | [`secondPipName`](#parameter-clustersettingsclustermode-activeactivebgpsecondpipname) | string | Specifies the name of the secondary Public IP to be created for the Virtual Network Gateway in the Active-Active mode. This will only take effect if no existing secondary Public IP is provided. If neither an existing secondary Public IP nor this parameter is specified, a new secondary Public IP will be created with a default name, using the gateway's name with the '-pip2' suffix. |
 
@@ -2496,6 +2509,13 @@ The list of custom BGP IP Address (APIPA) peering addresses which belong to IP c
 ### Parameter: `clusterSettings.clusterMode-activeActiveBgp.existingSecondaryPublicIPResourceId`
 
 The secondary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new secondary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
+
+- Required: No
+- Type: string
+
+### Parameter: `clusterSettings.clusterMode-activeActiveBgp.existingTertiaryPublicIPResourceId`
+
+The tertiary Public IP resource ID to associate to the Virtual Network Gateway in the Active-Active mode. If empty, then a new tertiary Public IP will be created as part of this module and applied to the Virtual Network Gateway.
 
 - Required: No
 - Type: string
@@ -2613,6 +2633,21 @@ Virtual Network resource ID.
 - Required: Yes
 - Type: string
 
+### Parameter: `adminState`
+
+Property to indicate if the Express Route Gateway serves traffic when there are multiple Express Route Gateways in the vnet. Only applicable for ExpressRoute gateways.
+
+- Required: No
+- Type: string
+- Default: `'Enabled'`
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
 ### Parameter: `allowRemoteVnetTraffic`
 
 Configure this gateway to accept traffic from other Azure Virtual Networks. This configuration does not support connectivity to Azure Virtual WAN.
@@ -2628,6 +2663,47 @@ Configures this gateway to accept traffic from remote Virtual WAN networks.
 - Required: No
 - Type: bool
 - Default: `False`
+
+### Parameter: `autoScaleConfiguration`
+
+Autoscale configuration for virtual network gateway. Only applicable for certain SKUs.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bounds`](#parameter-autoscaleconfigurationbounds) | object | The bounds of the autoscale configuration. |
+
+### Parameter: `autoScaleConfiguration.bounds`
+
+The bounds of the autoscale configuration.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`max`](#parameter-autoscaleconfigurationboundsmax) | int | Maximum Scale Units for autoscale configuration. |
+| [`min`](#parameter-autoscaleconfigurationboundsmin) | int | Minimum Scale Units for autoscale configuration. |
+
+### Parameter: `autoScaleConfiguration.bounds.max`
+
+Maximum Scale Units for autoscale configuration.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `autoScaleConfiguration.bounds.min`
+
+Minimum Scale Units for autoscale configuration.
+
+- Required: Yes
+- Type: int
 
 ### Parameter: `clientRevokedCertThumbprint`
 
@@ -2898,6 +2974,34 @@ Specify the name of lock.
 
 - Required: No
 - Type: string
+
+### Parameter: `managedIdentity`
+
+The managed identity definition for this resource. Supports system-assigned and user-assigned identities.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`systemAssigned`](#parameter-managedidentitysystemassigned) | bool | Enables system assigned managed identity on the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentityuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
+
+### Parameter: `managedIdentity.systemAssigned`
+
+Enables system assigned managed identity on the resource.
+
+- Required: No
+- Type: bool
+
+### Parameter: `managedIdentity.userAssignedResourceIds`
+
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
+
+- Required: No
+- Type: array
 
 ### Parameter: `natRules`
 
@@ -3207,6 +3311,21 @@ Specifies the zones of the Public IP address. Basic IP SKU does not support Avai
   ]
   ```
 
+### Parameter: `resiliencyModel`
+
+Property to indicate if the Express Route Gateway has resiliency model of MultiHomed or SingleHomed. Only applicable for ExpressRoute gateways.
+
+- Required: No
+- Type: string
+- Default: `'SingleHomed'`
+- Allowed:
+  ```Bicep
+  [
+    'MultiHomed'
+    'SingleHomed'
+  ]
+  ```
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
@@ -3325,6 +3444,7 @@ The SKU of the Gateway.
     'ErGw1AZ'
     'ErGw2AZ'
     'ErGw3AZ'
+    'ErGwScale'
     'HighPerformance'
     'Standard'
     'UltraPerformance'
@@ -3354,6 +3474,67 @@ Configuration for AAD Authentication for P2S Tunnel Type, Cannot be configured i
 
 - Required: No
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadAudience`](#parameter-vpnclientaadconfigurationaadaudience) | string | The AAD audience property for VPN client connection used for AAD authentication. |
+| [`aadIssuer`](#parameter-vpnclientaadconfigurationaadissuer) | string | The AAD issuer property for VPN client connection used for AAD authentication. |
+| [`aadTenant`](#parameter-vpnclientaadconfigurationaadtenant) | string | The AAD tenant property for VPN client connection used for AAD authentication. |
+| [`vpnAuthenticationTypes`](#parameter-vpnclientaadconfigurationvpnauthenticationtypes) | array | VPN authentication types for the virtual network gateway. |
+| [`vpnClientProtocols`](#parameter-vpnclientaadconfigurationvpnclientprotocols) | array | VPN client protocols for Virtual network gateway. |
+
+### Parameter: `vpnClientAadConfiguration.aadAudience`
+
+The AAD audience property for VPN client connection used for AAD authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnClientAadConfiguration.aadIssuer`
+
+The AAD issuer property for VPN client connection used for AAD authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnClientAadConfiguration.aadTenant`
+
+The AAD tenant property for VPN client connection used for AAD authentication.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnClientAadConfiguration.vpnAuthenticationTypes`
+
+VPN authentication types for the virtual network gateway.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'AAD'
+    'Certificate'
+    'Radius'
+  ]
+  ```
+
+### Parameter: `vpnClientAadConfiguration.vpnClientProtocols`
+
+VPN client protocols for Virtual network gateway.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'IkeV2'
+    'OpenVPN'
+    'SSTP'
+  ]
+  ```
 
 ### Parameter: `vpnClientAddressPoolPrefix`
 
@@ -3411,6 +3592,7 @@ Specifies the VPN type.
 | `secondaryCustomBgpIpAddress` | string | The secondary custom Azure APIPA BGP IP address (Active-Active mode). |
 | `secondaryDefaultBgpIpAddress` | string | The secondary default Azure BGP peer IP address (Active-Active mode). |
 | `secondaryPublicIpAddress` | string | The secondary public IP address of the virtual network gateway (Active-Active mode). |
+| `tertiaryPublicIpAddress` | string | The tertiary public IP address of the virtual network gateway (Active-Active with P2S mode). |
 
 ## Cross-referenced modules
 
@@ -3418,7 +3600,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/public-ip-address:0.5.1` | Remote reference |
+| `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

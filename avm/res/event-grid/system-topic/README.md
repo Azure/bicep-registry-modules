@@ -8,6 +8,7 @@ This module deploys an Event Grid System Topic.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -16,8 +17,8 @@ This module deploys an Event Grid System Topic.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.EventGrid/systemTopics` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/systemTopics) |
-| `Microsoft.EventGrid/systemTopics/eventSubscriptions` | [2023-12-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2023-12-15-preview/systemTopics/eventSubscriptions) |
+| `Microsoft.EventGrid/systemTopics` | [2025-02-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-02-15/systemTopics) |
+| `Microsoft.EventGrid/systemTopics/eventSubscriptions` | [2025-02-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.EventGrid/2025-02-15/systemTopics/eventSubscriptions) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -29,8 +30,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/system-topic:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using managed identity authentication](#example-2-using-managed-identity-authentication)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -106,7 +108,201 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using large parameter set_
+### Example 2: _Using managed identity authentication_
+
+This instance deploys the module testing delivery with resource identity (managed identity authentication).
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
+  name: 'systemTopicDeployment'
+  params: {
+    // Required parameters
+    name: 'egstid001'
+    source: '<source>'
+    topicType: 'Microsoft.Storage.StorageAccounts'
+    // Non-required parameters
+    eventSubscriptions: [
+      {
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'ServiceBusTopic'
+            properties: {
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: '<userAssignedIdentity>'
+          }
+        }
+        eventDeliverySchema: 'CloudEventSchemaV1_0'
+        expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+        filter: {
+          enableAdvancedFilteringOnArrays: true
+          isSubjectCaseSensitive: false
+        }
+        name: 'egstidSub'
+        retryPolicy: {
+          eventTimeToLive: '120'
+          maxDeliveryAttempts: 10
+        }
+      }
+    ]
+    location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    tags: {
+      Environment: 'Non-Prod'
+      'fix-verification': 'true'
+      Role: 'DeploymentValidation'
+      'test-scenario': 'delivery-with-resource-identity'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "egstid001"
+    },
+    "source": {
+      "value": "<source>"
+    },
+    "topicType": {
+      "value": "Microsoft.Storage.StorageAccounts"
+    },
+    // Non-required parameters
+    "eventSubscriptions": {
+      "value": [
+        {
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "ServiceBusTopic",
+              "properties": {
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "UserAssigned",
+              "userAssignedIdentity": "<userAssignedIdentity>"
+            }
+          },
+          "eventDeliverySchema": "CloudEventSchemaV1_0",
+          "expirationTimeUtc": "2099-01-01T11:00:21.715Z",
+          "filter": {
+            "enableAdvancedFilteringOnArrays": true,
+            "isSubjectCaseSensitive": false
+          },
+          "name": "egstidSub",
+          "retryPolicy": {
+            "eventTimeToLive": "120",
+            "maxDeliveryAttempts": 10
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "tags": {
+      "value": {
+        "Environment": "Non-Prod",
+        "fix-verification": "true",
+        "Role": "DeploymentValidation",
+        "test-scenario": "delivery-with-resource-identity"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/system-topic:<version>'
+
+// Required parameters
+param name = 'egstid001'
+param source = '<source>'
+param topicType = 'Microsoft.Storage.StorageAccounts'
+// Non-required parameters
+param eventSubscriptions = [
+  {
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'ServiceBusTopic'
+        properties: {
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
+      }
+    }
+    eventDeliverySchema: 'CloudEventSchemaV1_0'
+    expirationTimeUtc: '2099-01-01T11:00:21.715Z'
+    filter: {
+      enableAdvancedFilteringOnArrays: true
+      isSubjectCaseSensitive: false
+    }
+    name: 'egstidSub'
+    retryPolicy: {
+      eventTimeToLive: '120'
+      maxDeliveryAttempts: 10
+    }
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param tags = {
+  Environment: 'Non-Prod'
+  'fix-verification': 'true'
+  Role: 'DeploymentValidation'
+  'test-scenario': 'delivery-with-resource-identity'
+}
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -396,7 +592,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -677,7 +873,7 @@ The diagnostic settings of the service.
 | [`logCategoriesAndGroups`](#parameter-diagnosticsettingslogcategoriesandgroups) | array | The name of logs that will be streamed. "allLogs" includes all possible logs for the resource. Set to `[]` to disable log collection. |
 | [`marketplacePartnerResourceId`](#parameter-diagnosticsettingsmarketplacepartnerresourceid) | string | The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs. |
 | [`metricCategories`](#parameter-diagnosticsettingsmetriccategories) | array | The name of metrics that will be streamed. "allMetrics" includes all possible metrics for the resource. Set to `[]` to disable metric collection. |
-| [`name`](#parameter-diagnosticsettingsname) | string | The name of diagnostic setting. |
+| [`name`](#parameter-diagnosticsettingsname) | string | The name of the diagnostic setting. |
 | [`storageAccountResourceId`](#parameter-diagnosticsettingsstorageaccountresourceid) | string | Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 | [`workspaceResourceId`](#parameter-diagnosticsettingsworkspaceresourceid) | string | Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub. |
 
@@ -787,7 +983,7 @@ Enable or disable the category explicitly. Default is `true`.
 
 ### Parameter: `diagnosticSettings.name`
 
-The name of diagnostic setting.
+The name of the diagnostic setting.
 
 - Required: No
 - Type: string
@@ -820,7 +1016,6 @@ Event subscriptions to deploy.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -878,7 +1073,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourcesIds`](#parameter-managedidentitiesuserassignedresourcesids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -887,9 +1082,9 @@ Enables system assigned managed identity on the resource.
 - Required: No
 - Type: bool
 
-### Parameter: `managedIdentities.userAssignedResourcesIds`
+### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -1017,6 +1212,14 @@ Tags of the resource.
 | `resourceGroupName` | string | The name of the resource group the event grid system topic was deployed into. |
 | `resourceId` | string | The resource ID of the event grid system topic. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

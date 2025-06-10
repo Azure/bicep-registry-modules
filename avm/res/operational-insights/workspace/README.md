@@ -230,7 +230,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       ]
     }
     publicNetworkAccessForIngestion: 'Disabled'
-    publicNetworkAccessForQuery: 'Disabled'
+    publicNetworkAccessForQuery: 'Enabled'
     savedSearches: [
       {
         category: 'VDC Saved Searches'
@@ -557,7 +557,7 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
       "value": "Disabled"
     },
     "publicNetworkAccessForQuery": {
-      "value": "Disabled"
+      "value": "Enabled"
     },
     "savedSearches": {
       "value": [
@@ -866,7 +866,7 @@ param managedIdentities = {
   ]
 }
 param publicNetworkAccessForIngestion = 'Disabled'
-param publicNetworkAccessForQuery = 'Disabled'
+param publicNetworkAccessForQuery = 'Enabled'
 param savedSearches = [
   {
     category: 'VDC Saved Searches'
@@ -3956,8 +3956,10 @@ Tags of the resource.
 | `location` | string | The location the resource was deployed into. |
 | `logAnalyticsWorkspaceId` | string | The ID associated with the workspace. |
 | `name` | string | The name of the deployed log analytics workspace. |
+| `primarySharedKey` | securestring | The primary shared key of the log analytics workspace. |
 | `resourceGroupName` | string | The resource group of the deployed log analytics workspace. |
 | `resourceId` | string | The resource ID of the deployed log analytics workspace. |
+| `secondarySharedKey` | securestring | The secondary shared key of the log analytics workspace. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
 
 ## Cross-referenced modules

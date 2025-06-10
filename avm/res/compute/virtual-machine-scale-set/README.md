@@ -8,6 +8,7 @@ This module deploys a Virtual Machine Scale Set.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -29,12 +30,13 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/compute/virtual-machine-scale-set:<version>`.
 
 - [Using only defaults for Linux](#example-1-using-only-defaults-for-linux)
-- [Using large parameter set for Linux](#example-2-using-large-parameter-set-for-linux)
-- [Using disk encryption set for the VM.](#example-3-using-disk-encryption-set-for-the-vm)
-- [Using only defaults for Windows](#example-4-using-only-defaults-for-windows)
-- [Using large parameter set for Windows](#example-5-using-large-parameter-set-for-windows)
-- [Deploying VMSS in uniform orchestration mode with Windows image.](#example-6-deploying-vmss-in-uniform-orchestration-mode-with-windows-image)
-- [WAF-aligned](#example-7-waf-aligned)
+- [Deploys VMSS with health extension](#example-2-deploys-vmss-with-health-extension)
+- [Using large parameter set for Linux](#example-3-using-large-parameter-set-for-linux)
+- [Using disk encryption set for the VM.](#example-4-using-disk-encryption-set-for-the-vm)
+- [Using only defaults for Windows](#example-5-using-only-defaults-for-windows)
+- [Using large parameter set for Windows](#example-6-using-large-parameter-set-for-windows)
+- [Deploying VMSS in uniform orchestration mode with Windows image.](#example-7-deploying-vmss-in-uniform-orchestration-mode-with-windows-image)
+- [WAF-aligned](#example-8-waf-aligned)
 
 ### Example 1: _Using only defaults for Linux_
 
@@ -244,7 +246,232 @@ param publicKeys = [
 </details>
 <p>
 
-### Example 2: _Using large parameter set for Linux_
+### Example 2: _Deploys VMSS with health extension_
+
+This instance deploys the module with as Linux VMSS with health extension.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualMachineScaleSet 'br/public:avm/res/compute/virtual-machine-scale-set:<version>' = {
+  name: 'virtualMachineScaleSetDeployment'
+  params: {
+    // Required parameters
+    adminPassword: '<adminPassword>'
+    adminUsername: 'scaleSetAdmin'
+    imageReference: {
+      offer: '0001-com-ubuntu-server-jammy'
+      publisher: 'Canonical'
+      sku: '22_04-lts-gen2'
+      version: 'latest'
+    }
+    name: 'cvmsslinhealth001'
+    nicConfigurations: [
+      {
+        ipConfigurations: [
+          {
+            name: 'ipconfig1'
+            properties: {
+              publicIPAddressConfiguration: {
+                name: 'pip-cvmsslinhealth'
+              }
+              subnet: {
+                id: '<id>'
+              }
+            }
+          }
+        ]
+        nicSuffix: '-nic01'
+      }
+    ]
+    osDisk: {
+      createOption: 'fromImage'
+      diskSizeGB: '128'
+      managedDisk: {
+        storageAccountType: 'Premium_LRS'
+      }
+    }
+    osType: 'Linux'
+    skuName: 'Standard_B12ms'
+    // Non-required parameters
+    disablePasswordAuthentication: true
+    extensionHealthConfig: {
+      enabled: true
+      port: 22
+      protocol: 'tcp'
+    }
+    location: '<location>'
+    publicKeys: [
+      {
+        keyData: '<keyData>'
+        path: '/home/scaleSetAdmin/.ssh/authorized_keys'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "adminPassword": {
+      "value": "<adminPassword>"
+    },
+    "adminUsername": {
+      "value": "scaleSetAdmin"
+    },
+    "imageReference": {
+      "value": {
+        "offer": "0001-com-ubuntu-server-jammy",
+        "publisher": "Canonical",
+        "sku": "22_04-lts-gen2",
+        "version": "latest"
+      }
+    },
+    "name": {
+      "value": "cvmsslinhealth001"
+    },
+    "nicConfigurations": {
+      "value": [
+        {
+          "ipConfigurations": [
+            {
+              "name": "ipconfig1",
+              "properties": {
+                "publicIPAddressConfiguration": {
+                  "name": "pip-cvmsslinhealth"
+                },
+                "subnet": {
+                  "id": "<id>"
+                }
+              }
+            }
+          ],
+          "nicSuffix": "-nic01"
+        }
+      ]
+    },
+    "osDisk": {
+      "value": {
+        "createOption": "fromImage",
+        "diskSizeGB": "128",
+        "managedDisk": {
+          "storageAccountType": "Premium_LRS"
+        }
+      }
+    },
+    "osType": {
+      "value": "Linux"
+    },
+    "skuName": {
+      "value": "Standard_B12ms"
+    },
+    // Non-required parameters
+    "disablePasswordAuthentication": {
+      "value": true
+    },
+    "extensionHealthConfig": {
+      "value": {
+        "enabled": true,
+        "port": 22,
+        "protocol": "tcp"
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicKeys": {
+      "value": [
+        {
+          "keyData": "<keyData>",
+          "path": "/home/scaleSetAdmin/.ssh/authorized_keys"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/compute/virtual-machine-scale-set:<version>'
+
+// Required parameters
+param adminPassword = '<adminPassword>'
+param adminUsername = 'scaleSetAdmin'
+param imageReference = {
+  offer: '0001-com-ubuntu-server-jammy'
+  publisher: 'Canonical'
+  sku: '22_04-lts-gen2'
+  version: 'latest'
+}
+param name = 'cvmsslinhealth001'
+param nicConfigurations = [
+  {
+    ipConfigurations: [
+      {
+        name: 'ipconfig1'
+        properties: {
+          publicIPAddressConfiguration: {
+            name: 'pip-cvmsslinhealth'
+          }
+          subnet: {
+            id: '<id>'
+          }
+        }
+      }
+    ]
+    nicSuffix: '-nic01'
+  }
+]
+param osDisk = {
+  createOption: 'fromImage'
+  diskSizeGB: '128'
+  managedDisk: {
+    storageAccountType: 'Premium_LRS'
+  }
+}
+param osType = 'Linux'
+param skuName = 'Standard_B12ms'
+// Non-required parameters
+param disablePasswordAuthentication = true
+param extensionHealthConfig = {
+  enabled: true
+  port: 22
+  protocol: 'tcp'
+}
+param location = '<location>'
+param publicKeys = [
+  {
+    keyData: '<keyData>'
+    path: '/home/scaleSetAdmin/.ssh/authorized_keys'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 3: _Using large parameter set for Linux_
 
 This instance deploys the module with most of its features enabled.
 
@@ -828,7 +1055,7 @@ param vmPriority = 'Regular'
 </details>
 <p>
 
-### Example 3: _Using disk encryption set for the VM._
+### Example 4: _Using disk encryption set for the VM._
 
 This instance deploys the module with disk enryption set.
 
@@ -1100,7 +1327,7 @@ param publicKeys = [
 </details>
 <p>
 
-### Example 4: _Using only defaults for Windows_
+### Example 5: _Using only defaults for Windows_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -1283,7 +1510,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 5: _Using large parameter set for Windows_
+### Example 6: _Using large parameter set for Windows_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1853,7 +2080,7 @@ param vmPriority = 'Regular'
 </details>
 <p>
 
-### Example 6: _Deploying VMSS in uniform orchestration mode with Windows image._
+### Example 7: _Deploying VMSS in uniform orchestration mode with Windows image._
 
 This instance deploys the module with the minimum set of required parameters in uniform orchestration mode.
 
@@ -2046,7 +2273,7 @@ param patchMode = 'AutomaticByOS'
 </details>
 <p>
 
-### Example 7: _WAF-aligned_
+### Example 8: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Well-Architected Framework for Windows.
 
@@ -3149,7 +3376,7 @@ The managed identity definition for this resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`systemAssigned`](#parameter-managedidentitiessystemassigned) | bool | Enables system assigned managed identity on the resource. |
-| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. |
+| [`userAssignedResourceIds`](#parameter-managedidentitiesuserassignedresourceids) | array | The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption. |
 
 ### Parameter: `managedIdentities.systemAssigned`
 
@@ -3160,7 +3387,7 @@ Enables system assigned managed identity on the resource.
 
 ### Parameter: `managedIdentities.userAssignedResourceIds`
 
-The resource ID(s) to assign to the resource.
+The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption.
 
 - Required: No
 - Type: array
@@ -3640,6 +3867,15 @@ Do not provide a value! This date value is used to generate a registration token
 | `resourceGroupName` | string | The resource group of the virtual machine scale set. |
 | `resourceId` | string | The resource ID of the virtual machine scale set. |
 | `systemAssignedMIPrincipalId` | string | The principal ID of the system assigned identity. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.4.1` | Remote reference |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

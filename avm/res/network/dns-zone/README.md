@@ -8,6 +8,7 @@ This module deploys a Public DNS zone.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
+- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -352,7 +353,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
           email: 'azuredns-hostmaster.microsoft.com'
           expireTime: 2419200
           host: 'ns1-04.azure-dns.com.'
-          minimumTtl: 300
+          minimumTTL: 300
           refreshTime: 3600
           retryTime: 300
           serialNumber: 1
@@ -700,7 +701,7 @@ module dnsZone 'br/public:avm/res/network/dns-zone:<version>' = {
             "email": "azuredns-hostmaster.microsoft.com",
             "expireTime": 2419200,
             "host": "ns1-04.azure-dns.com.",
-            "minimumTtl": 300,
+            "minimumTTL": 300,
             "refreshTime": 3600,
             "retryTime": 300,
             "serialNumber": 1
@@ -1030,7 +1031,7 @@ param soa = [
       email: 'azuredns-hostmaster.microsoft.com'
       expireTime: 2419200
       host: 'ns1-04.azure-dns.com.'
-      minimumTtl: 300
+      minimumTTL: 300
       refreshTime: 3600
       retryTime: 300
       serialNumber: 1
@@ -2813,7 +2814,7 @@ The SOA record in the record set.
 | [`email`](#parameter-soasoarecordemail) | string | The email contact for this SOA record. |
 | [`expireTime`](#parameter-soasoarecordexpiretime) | int | The expire time for this SOA record. |
 | [`host`](#parameter-soasoarecordhost) | string | The domain name of the authoritative name server for this SOA record. |
-| [`minimumTtl`](#parameter-soasoarecordminimumttl) | int | The minimum value for this SOA record. By convention this is used to determine the negative caching duration. |
+| [`minimumTTL`](#parameter-soasoarecordminimumttl) | int | The minimum value for this SOA record. By convention this is used to determine the negative caching duration. |
 | [`refreshTime`](#parameter-soasoarecordrefreshtime) | int | The refresh value for this SOA record. |
 | [`retryTime`](#parameter-soasoarecordretrytime) | int | The retry time for this SOA record. |
 | [`serialNumber`](#parameter-soasoarecordserialnumber) | int | The serial number for this SOA record. |
@@ -2839,7 +2840,7 @@ The domain name of the authoritative name server for this SOA record.
 - Required: Yes
 - Type: string
 
-### Parameter: `soa.soaRecord.minimumTtl`
+### Parameter: `soa.soaRecord.minimumTTL`
 
 The minimum value for this SOA record. By convention this is used to determine the negative caching duration.
 
@@ -3258,6 +3259,14 @@ The text value of this TXT record.
 | `nameServers` | array | The name servers of the DNS zone. |
 | `resourceGroupName` | string | The resource group the DNS zone was deployed into. |
 | `resourceId` | string | The resource ID of the DNS zone. |
+
+## Cross-referenced modules
+
+This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
+
+| Reference | Type |
+| :-- | :-- |
+| `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
 

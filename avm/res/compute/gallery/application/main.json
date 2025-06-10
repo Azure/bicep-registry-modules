@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "8421640590183520512"
+      "version": "0.35.1.17967",
+      "templateHash": "14256121951310131781"
     },
     "name": "Compute Galleries Applications",
     "description": "This module deploys an Azure Compute Gallery Application."
@@ -87,7 +87,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a custom action."
       }
     },
     "roleAssignmentType": {
@@ -161,7 +162,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a role assignment.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "12044655551245282190"
+      "version": "0.35.1.17967",
+      "templateHash": "190690872747761309"
     },
     "name": "Storage Account File Shares",
     "description": "This module deploys a Storage Account File Share."
@@ -190,18 +190,18 @@
     "storageAccount::fileService": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts/fileServices",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('fileServicesName'))]"
     },
     "storageAccount": {
       "existing": true,
       "type": "Microsoft.Storage/storageAccounts",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-01-01",
       "name": "[parameters('storageAccountName')]"
     },
     "fileShare": {
       "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
-      "apiVersion": "2023-01-01",
+      "apiVersion": "2024-01-01",
       "name": "[format('{0}/{1}/{2}', parameters('storageAccountName'), parameters('fileServicesName'), parameters('name'))]",
       "properties": {
         "accessTier": "[parameters('accessTier')]",

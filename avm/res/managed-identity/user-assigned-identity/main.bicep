@@ -8,13 +8,15 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. The federated identity credentials list to indicate which token from the external IdP should be trusted by your application. Federated identity credentials are supported on applications only. A maximum of 20 federated identity credentials can be added per application object.')
-param federatedIdentityCredentials federatedIdentityCredentialsType
+param federatedIdentityCredentials federatedIdentityCredentialType[]?
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
-param lock lockType
+param lock lockType?
 
+import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. Array of role assignments to create.')
-param roleAssignments roleAssignmentType
+param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -74,7 +76,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: name
   location: location
   tags: tags
@@ -94,7 +96,7 @@ resource userAssignedIdentity_lock 'Microsoft.Authorization/locks@2020-05-01' = 
 @batchSize(1)
 module userAssignedIdentity_federatedIdentityCredentials 'federated-identity-credential/main.bicep' = [
   for (federatedIdentityCredential, index) in (federatedIdentityCredentials ?? []): {
-    name: '${uniqueString(deployment().name, location)}-UserMSI-FederatedIdentityCredential-${index}'
+    name: '${uniqueString(deployment().name, location)}-UserMSI-FederatedIdentityCred-${index}'
     params: {
       name: federatedIdentityCredential.name
       userAssignedIdentityName: userAssignedIdentity.name
@@ -147,41 +149,9 @@ output location string = userAssignedIdentity.location
 //   Definitions   //
 // =============== //
 
-type lockType = {
-  @description('Optional. Specify the name of lock.')
-  name: string?
-
-  @description('Optional. Specify the type of lock.')
-  kind: ('CanNotDelete' | 'ReadOnly' | 'None')?
-}?
-
-type roleAssignmentType = {
-  @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
-  name: string?
-
-  @description('Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: \'/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11\'.')
-  roleDefinitionIdOrName: string
-
-  @description('Required. The principal ID of the principal (user/group/identity) to assign the role to.')
-  principalId: string
-
-  @description('Optional. The principal type of the assigned principal ID.')
-  principalType: ('ServicePrincipal' | 'Group' | 'User' | 'ForeignGroup' | 'Device')?
-
-  @description('Optional. The description of the role assignment.')
-  description: string?
-
-  @description('Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".')
-  condition: string?
-
-  @description('Optional. Version of the condition.')
-  conditionVersion: '2.0'?
-
-  @description('Optional. The Resource Id of the delegated managed identity resource.')
-  delegatedManagedIdentityResourceId: string?
-}[]?
-
-type federatedIdentityCredentialsType = {
+@export()
+@description('The type for the federated identity credential.')
+type federatedIdentityCredentialType = {
   @description('Required. The name of the federated identity credential.')
   name: string
 
@@ -193,4 +163,4 @@ type federatedIdentityCredentialsType = {
 
   @description('Required. The identifier of the external identity.')
   subject: string
-}[]?
+}

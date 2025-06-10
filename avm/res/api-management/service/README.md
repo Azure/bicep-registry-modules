@@ -17,10 +17,12 @@ This module deploys an API Management Service. The default deployment is set to 
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.ApiManagement/service` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service) |
-| `Microsoft.ApiManagement/service/apis` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis) |
-| `Microsoft.ApiManagement/service/apis/diagnostics` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/diagnostics) |
-| `Microsoft.ApiManagement/service/apis/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/policies) |
-| `Microsoft.ApiManagement/service/apiVersionSets` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apiVersionSets) |
+| `Microsoft.ApiManagement/service/apis` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis) |
+| `Microsoft.ApiManagement/service/apis/diagnostics` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/diagnostics) |
+| `Microsoft.ApiManagement/service/apis/operations` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/operations) |
+| `Microsoft.ApiManagement/service/apis/operations/policies` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/apis/operations/policies) |
+| `Microsoft.ApiManagement/service/apis/policies` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apis/policies) |
+| `Microsoft.ApiManagement/service/apiVersionSets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2024-05-01/service/apiVersionSets) |
 | `Microsoft.ApiManagement/service/authorizationServers` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/authorizationServers) |
 | `Microsoft.ApiManagement/service/backends` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/backends) |
 | `Microsoft.ApiManagement/service/caches` | [2022-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ApiManagement/2022-08-01/service/caches) |
@@ -70,7 +72,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
-    location: '<location>'
     sku: 'Consumption'
   }
 }
@@ -99,9 +100,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       "value": "az-amorg-x-001"
     },
     // Non-required parameters
-    "location": {
-      "value": "<location>"
-    },
     "sku": {
       "value": "Consumption"
     }
@@ -124,7 +122,6 @@ param name = 'apiscon001'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
-param location = '<location>'
 param sku = 'Consumption'
 ```
 
@@ -148,8 +145,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     name: 'apismin001'
     publisherEmail: 'apimgmt-noreply@mail.windowsazure.com'
     publisherName: 'az-amorg-x-001'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -175,10 +170,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     },
     "publisherName": {
       "value": "az-amorg-x-001"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -198,8 +189,6 @@ using 'br/public:avm/res/api-management/service:<version>'
 param name = 'apismin001'
 param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -224,7 +213,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     enableDeveloperPortal: true
-    location: '<location>'
     sku: 'Developer'
   }
 }
@@ -256,9 +244,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "enableDeveloperPortal": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "sku": {
       "value": "Developer"
     }
@@ -282,7 +267,6 @@ param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
 param enableDeveloperPortal = true
-param location = '<location>'
 param sku = 'Developer'
 ```
 
@@ -311,7 +295,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
       {
         disableGateway: false
         location: '<location>'
-        publicIpAddressId: '<publicIpAddressId>'
+        publicIpAddressResourceId: '<publicIpAddressResourceId>'
         sku: {
           capacity: 1
           name: 'Premium'
@@ -331,14 +315,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     ]
     apis: [
       {
-        apiVersionSet: {
-          name: 'echo-version-set'
-          properties: {
-            description: 'echo-version-set'
-            displayName: 'echo-version-set'
-            versioningScheme: 'Segment'
-          }
-        }
+        apiVersionSetName: 'echo-version-set'
         displayName: 'Echo API'
         name: 'echo-api'
         path: 'echo'
@@ -349,22 +326,28 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         serviceUrl: 'http://echoapi.cloudapp.net/api'
       }
     ]
-    authorizationServers: {
-      secureList: [
-        {
-          authorizationEndpoint: '<authorizationEndpoint>'
-          clientId: 'apimclientid'
-          clientRegistrationEndpoint: 'http://localhost'
-          clientSecret: '<clientSecret>'
-          displayName: 'AuthServer1'
-          grantTypes: [
-            'authorizationCode'
-          ]
-          name: 'AuthServer1'
-          tokenEndpoint: '<tokenEndpoint>'
-        }
-      ]
-    }
+    apiVersionSets: [
+      {
+        description: 'echo-version-set'
+        displayName: 'echo-version-set'
+        name: 'echo-version-set'
+        versioningScheme: 'Segment'
+      }
+    ]
+    authorizationServers: [
+      {
+        authorizationEndpoint: '<authorizationEndpoint>'
+        clientId: 'apimclientid'
+        clientRegistrationEndpoint: 'http://localhost'
+        clientSecret: '<clientSecret>'
+        displayName: 'AuthServer1'
+        grantTypes: [
+          'authorizationCode'
+        ]
+        name: 'AuthServer1'
+        tokenEndpoint: '<tokenEndpoint>'
+      }
+    ]
     backends: [
       {
         name: 'backend'
@@ -547,7 +530,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         {
           "disableGateway": false,
           "location": "<location>",
-          "publicIpAddressId": "<publicIpAddressId>",
+          "publicIpAddressResourceId": "<publicIpAddressResourceId>",
           "sku": {
             "capacity": 1,
             "name": "Premium"
@@ -571,14 +554,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "apis": {
       "value": [
         {
-          "apiVersionSet": {
-            "name": "echo-version-set",
-            "properties": {
-              "description": "echo-version-set",
-              "displayName": "echo-version-set",
-              "versioningScheme": "Segment"
-            }
-          },
+          "apiVersionSetName": "echo-version-set",
           "displayName": "Echo API",
           "name": "echo-api",
           "path": "echo",
@@ -590,23 +566,31 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
+    "apiVersionSets": {
+      "value": [
+        {
+          "description": "echo-version-set",
+          "displayName": "echo-version-set",
+          "name": "echo-version-set",
+          "versioningScheme": "Segment"
+        }
+      ]
+    },
     "authorizationServers": {
-      "value": {
-        "secureList": [
-          {
-            "authorizationEndpoint": "<authorizationEndpoint>",
-            "clientId": "apimclientid",
-            "clientRegistrationEndpoint": "http://localhost",
-            "clientSecret": "<clientSecret>",
-            "displayName": "AuthServer1",
-            "grantTypes": [
-              "authorizationCode"
-            ],
-            "name": "AuthServer1",
-            "tokenEndpoint": "<tokenEndpoint>"
-          }
-        ]
-      }
+      "value": [
+        {
+          "authorizationEndpoint": "<authorizationEndpoint>",
+          "clientId": "apimclientid",
+          "clientRegistrationEndpoint": "http://localhost",
+          "clientSecret": "<clientSecret>",
+          "displayName": "AuthServer1",
+          "grantTypes": [
+            "authorizationCode"
+          ],
+          "name": "AuthServer1",
+          "tokenEndpoint": "<tokenEndpoint>"
+        }
+      ]
     },
     "backends": {
       "value": [
@@ -817,7 +801,7 @@ param additionalLocations = [
   {
     disableGateway: false
     location: '<location>'
-    publicIpAddressId: '<publicIpAddressId>'
+    publicIpAddressResourceId: '<publicIpAddressResourceId>'
     sku: {
       capacity: 1
       name: 'Premium'
@@ -837,14 +821,7 @@ param apiDiagnostics = [
 ]
 param apis = [
   {
-    apiVersionSet: {
-      name: 'echo-version-set'
-      properties: {
-        description: 'echo-version-set'
-        displayName: 'echo-version-set'
-        versioningScheme: 'Segment'
-      }
-    }
+    apiVersionSetName: 'echo-version-set'
     displayName: 'Echo API'
     name: 'echo-api'
     path: 'echo'
@@ -855,22 +832,28 @@ param apis = [
     serviceUrl: 'http://echoapi.cloudapp.net/api'
   }
 ]
-param authorizationServers = {
-  secureList: [
-    {
-      authorizationEndpoint: '<authorizationEndpoint>'
-      clientId: 'apimclientid'
-      clientRegistrationEndpoint: 'http://localhost'
-      clientSecret: '<clientSecret>'
-      displayName: 'AuthServer1'
-      grantTypes: [
-        'authorizationCode'
-      ]
-      name: 'AuthServer1'
-      tokenEndpoint: '<tokenEndpoint>'
-    }
-  ]
-}
+param apiVersionSets = [
+  {
+    description: 'echo-version-set'
+    displayName: 'echo-version-set'
+    name: 'echo-version-set'
+    versioningScheme: 'Segment'
+  }
+]
+param authorizationServers = [
+  {
+    authorizationEndpoint: '<authorizationEndpoint>'
+    clientId: 'apimclientid'
+    clientRegistrationEndpoint: 'http://localhost'
+    clientSecret: '<clientSecret>'
+    displayName: 'AuthServer1'
+    grantTypes: [
+      'authorizationCode'
+    ]
+    name: 'AuthServer1'
+    tokenEndpoint: '<tokenEndpoint>'
+  }
+]
 param backends = [
   {
     name: 'backend'
@@ -1045,7 +1028,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     publisherName: 'az-amorg-x-001'
     // Non-required parameters
     enableDeveloperPortal: true
-    location: '<location>'
     sku: 'BasicV2'
   }
 }
@@ -1077,9 +1059,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "enableDeveloperPortal": {
       "value": true
     },
-    "location": {
-      "value": "<location>"
-    },
     "sku": {
       "value": "BasicV2"
     }
@@ -1103,7 +1082,6 @@ param publisherEmail = 'apimgmt-noreply@mail.windowsazure.com'
 param publisherName = 'az-amorg-x-001'
 // Non-required parameters
 param enableDeveloperPortal = true
-param location = '<location>'
 param sku = 'BasicV2'
 ```
 
@@ -1130,24 +1108,22 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     // Non-required parameters
     additionalLocations: [
       {
+        availabilityZones: [
+          1
+          2
+          3
+        ]
         disableGateway: false
-        location: 'westus'
+        location: '<location>'
         sku: {
-          capacity: 1
+          capacity: 3
           name: 'Premium'
         }
       }
     ]
     apis: [
       {
-        apiVersionSet: {
-          name: 'echo-version-set'
-          properties: {
-            description: 'An echo API version set'
-            displayName: 'Echo version set'
-            versioningScheme: 'Segment'
-          }
-        }
+        apiVersionSetName: 'echo-version-set'
         description: 'An echo API service'
         displayName: 'Echo API'
         name: 'echo-api'
@@ -1158,22 +1134,28 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         serviceUrl: 'https://echoapi.cloudapp.net/api'
       }
     ]
-    authorizationServers: {
-      secureList: [
-        {
-          authorizationEndpoint: '<authorizationEndpoint>'
-          clientId: 'apimClientid'
-          clientRegistrationEndpoint: 'https://localhost'
-          clientSecret: '<clientSecret>'
-          displayName: 'AuthServer1'
-          grantTypes: [
-            'authorizationCode'
-          ]
-          name: 'AuthServer1'
-          tokenEndpoint: '<tokenEndpoint>'
-        }
-      ]
-    }
+    apiVersionSets: [
+      {
+        description: 'An echo API version set'
+        displayName: 'Echo version set'
+        name: 'echo-version-set'
+        versioningScheme: 'Segment'
+      }
+    ]
+    authorizationServers: [
+      {
+        authorizationEndpoint: '<authorizationEndpoint>'
+        clientId: 'apimClientid'
+        clientRegistrationEndpoint: 'https://localhost'
+        clientSecret: '<clientSecret>'
+        displayName: 'AuthServer1'
+        grantTypes: [
+          'authorizationCode'
+        ]
+        name: 'AuthServer1'
+        tokenEndpoint: '<tokenEndpoint>'
+      }
+    ]
     backends: [
       {
         name: 'backend'
@@ -1229,7 +1211,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         signinTenant: 'mytenant.onmicrosoft.com'
       }
     ]
-    location: '<location>'
     loggers: [
       {
         credentials: {
@@ -1342,10 +1323,15 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "additionalLocations": {
       "value": [
         {
+          "availabilityZones": [
+            1,
+            2,
+            3
+          ],
           "disableGateway": false,
-          "location": "westus",
+          "location": "<location>",
           "sku": {
-            "capacity": 1,
+            "capacity": 3,
             "name": "Premium"
           }
         }
@@ -1354,14 +1340,7 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
     "apis": {
       "value": [
         {
-          "apiVersionSet": {
-            "name": "echo-version-set",
-            "properties": {
-              "description": "An echo API version set",
-              "displayName": "Echo version set",
-              "versioningScheme": "Segment"
-            }
-          },
+          "apiVersionSetName": "echo-version-set",
           "description": "An echo API service",
           "displayName": "Echo API",
           "name": "echo-api",
@@ -1373,23 +1352,31 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
         }
       ]
     },
+    "apiVersionSets": {
+      "value": [
+        {
+          "description": "An echo API version set",
+          "displayName": "Echo version set",
+          "name": "echo-version-set",
+          "versioningScheme": "Segment"
+        }
+      ]
+    },
     "authorizationServers": {
-      "value": {
-        "secureList": [
-          {
-            "authorizationEndpoint": "<authorizationEndpoint>",
-            "clientId": "apimClientid",
-            "clientRegistrationEndpoint": "https://localhost",
-            "clientSecret": "<clientSecret>",
-            "displayName": "AuthServer1",
-            "grantTypes": [
-              "authorizationCode"
-            ],
-            "name": "AuthServer1",
-            "tokenEndpoint": "<tokenEndpoint>"
-          }
-        ]
-      }
+      "value": [
+        {
+          "authorizationEndpoint": "<authorizationEndpoint>",
+          "clientId": "apimClientid",
+          "clientRegistrationEndpoint": "https://localhost",
+          "clientSecret": "<clientSecret>",
+          "displayName": "AuthServer1",
+          "grantTypes": [
+            "authorizationCode"
+          ],
+          "name": "AuthServer1",
+          "tokenEndpoint": "<tokenEndpoint>"
+        }
+      ]
     },
     "backends": {
       "value": [
@@ -1455,9 +1442,6 @@ module service 'br/public:avm/res/api-management/service:<version>' = {
           "signinTenant": "mytenant.onmicrosoft.com"
         }
       ]
-    },
-    "location": {
-      "value": "<location>"
     },
     "loggers": {
       "value": [
@@ -1580,24 +1564,22 @@ param publisherName = 'az-amorg-x-001'
 // Non-required parameters
 param additionalLocations = [
   {
+    availabilityZones: [
+      1
+      2
+      3
+    ]
     disableGateway: false
-    location: 'westus'
+    location: '<location>'
     sku: {
-      capacity: 1
+      capacity: 3
       name: 'Premium'
     }
   }
 ]
 param apis = [
   {
-    apiVersionSet: {
-      name: 'echo-version-set'
-      properties: {
-        description: 'An echo API version set'
-        displayName: 'Echo version set'
-        versioningScheme: 'Segment'
-      }
-    }
+    apiVersionSetName: 'echo-version-set'
     description: 'An echo API service'
     displayName: 'Echo API'
     name: 'echo-api'
@@ -1608,22 +1590,28 @@ param apis = [
     serviceUrl: 'https://echoapi.cloudapp.net/api'
   }
 ]
-param authorizationServers = {
-  secureList: [
-    {
-      authorizationEndpoint: '<authorizationEndpoint>'
-      clientId: 'apimClientid'
-      clientRegistrationEndpoint: 'https://localhost'
-      clientSecret: '<clientSecret>'
-      displayName: 'AuthServer1'
-      grantTypes: [
-        'authorizationCode'
-      ]
-      name: 'AuthServer1'
-      tokenEndpoint: '<tokenEndpoint>'
-    }
-  ]
-}
+param apiVersionSets = [
+  {
+    description: 'An echo API version set'
+    displayName: 'Echo version set'
+    name: 'echo-version-set'
+    versioningScheme: 'Segment'
+  }
+]
+param authorizationServers = [
+  {
+    authorizationEndpoint: '<authorizationEndpoint>'
+    clientId: 'apimClientid'
+    clientRegistrationEndpoint: 'https://localhost'
+    clientSecret: '<clientSecret>'
+    displayName: 'AuthServer1'
+    grantTypes: [
+      'authorizationCode'
+    ]
+    name: 'AuthServer1'
+    tokenEndpoint: '<tokenEndpoint>'
+  }
+]
 param backends = [
   {
     name: 'backend'
@@ -1679,7 +1667,6 @@ param identityProviders = [
     signinTenant: 'mytenant.onmicrosoft.com'
   }
 ]
-param location = '<location>'
 param loggers = [
   {
     credentials: {
@@ -1791,7 +1778,8 @@ param tags = {
 | [`apiDiagnostics`](#parameter-apidiagnostics) | array | API Diagnostics. |
 | [`apis`](#parameter-apis) | array | APIs. |
 | [`apiVersionSets`](#parameter-apiversionsets) | array | API Version Sets. |
-| [`authorizationServers`](#parameter-authorizationservers) | secureObject | Authorization servers. |
+| [`authorizationServers`](#parameter-authorizationservers) | array | Authorization servers. |
+| [`availabilityZones`](#parameter-availabilityzones) | array | A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku. |
 | [`backends`](#parameter-backends) | array | Backends. |
 | [`caches`](#parameter-caches) | array | Caches. |
 | [`certificates`](#parameter-certificates) | array | List of Certificates that need to be installed in the API Management service. Max supported certificates that can be installed is 10. |
@@ -1822,7 +1810,6 @@ param tags = {
 | [`subscriptions`](#parameter-subscriptions) | array | Subscriptions. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`virtualNetworkType`](#parameter-virtualnetworktype) | string | The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only. |
-| [`zones`](#parameter-zones) | array | A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku. |
 
 ### Parameter: `name`
 
@@ -1851,7 +1838,7 @@ The scale units for this API Management service. Required if using Basic, Standa
 
 - Required: No
 - Type: int
-- Default: `2`
+- Default: `3`
 
 ### Parameter: `additionalLocations`
 
@@ -1859,7 +1846,134 @@ Additional datacenter locations of the API Management service. Not supported wit
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-additionallocationslocation) | string | The location name of the additional region among Azure Data center regions. |
+| [`sku`](#parameter-additionallocationssku) | object | SKU properties of the API Management service. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`availabilityZones`](#parameter-additionallocationsavailabilityzones) | array | A list of availability zones denoting where the resource needs to come from. |
+| [`disableGateway`](#parameter-additionallocationsdisablegateway) | bool | Property only valid for an Api Management service deployed in multiple locations. This can be used to disable the gateway in this additional location. |
+| [`natGatewayState`](#parameter-additionallocationsnatgatewaystate) | string | Property can be used to enable NAT Gateway for this API Management service. |
+| [`publicIpAddressResourceId`](#parameter-additionallocationspublicipaddressresourceid) | string | Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the location. Supported only for Premium SKU being deployed in Virtual Network. |
+| [`virtualNetworkConfiguration`](#parameter-additionallocationsvirtualnetworkconfiguration) | object | Virtual network configuration for the location. |
+
+### Parameter: `additionalLocations.location`
+
+The location name of the additional region among Azure Data center regions.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `additionalLocations.sku`
+
+SKU properties of the API Management service.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`capacity`](#parameter-additionallocationsskucapacity) | int | Capacity of the SKU (number of deployed units of the SKU). For Consumption SKU capacity must be specified as 0. |
+| [`name`](#parameter-additionallocationsskuname) | string | Name of the Sku. |
+
+### Parameter: `additionalLocations.sku.capacity`
+
+Capacity of the SKU (number of deployed units of the SKU). For Consumption SKU capacity must be specified as 0.
+
+- Required: Yes
+- Type: int
+
+### Parameter: `additionalLocations.sku.name`
+
+Name of the Sku.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'BasicV2'
+    'Consumption'
+    'Developer'
+    'Isolated'
+    'Premium'
+    'Standard'
+    'StandardV2'
+  ]
+  ```
+
+### Parameter: `additionalLocations.availabilityZones`
+
+A list of availability zones denoting where the resource needs to come from.
+
+- Required: No
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+
+### Parameter: `additionalLocations.disableGateway`
+
+Property only valid for an Api Management service deployed in multiple locations. This can be used to disable the gateway in this additional location.
+
+- Required: No
+- Type: bool
+
+### Parameter: `additionalLocations.natGatewayState`
+
+Property can be used to enable NAT Gateway for this API Management service.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Disabled'
+    'Enabled'
+  ]
+  ```
+
+### Parameter: `additionalLocations.publicIpAddressResourceId`
+
+Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the location. Supported only for Premium SKU being deployed in Virtual Network.
+
+- Required: No
+- Type: string
+
+### Parameter: `additionalLocations.virtualNetworkConfiguration`
+
+Virtual network configuration for the location.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`subnetResourceId`](#parameter-additionallocationsvirtualnetworkconfigurationsubnetresourceid) | string | The full resource ID of a subnet in a virtual network to deploy the API Management service in. |
+
+### Parameter: `additionalLocations.virtualNetworkConfiguration.subnetResourceId`
+
+The full resource ID of a subnet in a virtual network to deploy the API Management service in.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `apiDiagnostics`
 
@@ -1867,7 +1981,6 @@ API Diagnostics.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `apis`
 
@@ -1875,7 +1988,530 @@ APIs.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`displayName`](#parameter-apisdisplayname) | string | API name. Must be 1 to 300 characters long. |
+| [`name`](#parameter-apisname) | string | API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number. |
+| [`path`](#parameter-apispath) | string | Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`apiRevision`](#parameter-apisapirevision) | string | Describes the Revision of the API. If no value is provided, default revision 1 is created. |
+| [`apiRevisionDescription`](#parameter-apisapirevisiondescription) | string | Description of the API Revision. |
+| [`apiType`](#parameter-apisapitype) | string | Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API. |
+| [`apiVersion`](#parameter-apisapiversion) | string | Indicates the Version identifier of the API if the API is versioned. |
+| [`apiVersionDescription`](#parameter-apisapiversiondescription) | string | Description of the API Version. |
+| [`apiVersionSetName`](#parameter-apisapiversionsetname) | string | The name of the API version set to link. |
+| [`authenticationSettings`](#parameter-apisauthenticationsettings) | object | Collection of authentication settings included into this API. |
+| [`description`](#parameter-apisdescription) | string | Description of the API. May include HTML formatting tags. |
+| [`diagnostics`](#parameter-apisdiagnostics) | array | Array of diagnostics to apply to the Service API. |
+| [`format`](#parameter-apisformat) | string | Format of the Content in which the API is getting imported. |
+| [`isCurrent`](#parameter-apisiscurrent) | bool | Indicates if API revision is current API revision. |
+| [`operations`](#parameter-apisoperations) | array | The operations of the api. |
+| [`policies`](#parameter-apispolicies) | array | Array of Policies to apply to the Service API. |
+| [`protocols`](#parameter-apisprotocols) | array | Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS. |
+| [`serviceUrl`](#parameter-apisserviceurl) | string | Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long. |
+| [`sourceApiId`](#parameter-apissourceapiid) | string | API identifier of the source API. |
+| [`subscriptionKeyParameterNames`](#parameter-apissubscriptionkeyparameternames) | object | Protocols over which API is made available. |
+| [`subscriptionRequired`](#parameter-apissubscriptionrequired) | bool | Specifies whether an API or Product subscription is required for accessing the API. |
+| [`type`](#parameter-apistype) | string | Type of API. |
+| [`value`](#parameter-apisvalue) | string | Content value when Importing an API. |
+
+### Parameter: `apis.displayName`
+
+API name. Must be 1 to 300 characters long.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.name`
+
+API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.path`
+
+Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.apiRevision`
+
+Describes the Revision of the API. If no value is provided, default revision 1 is created.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.apiRevisionDescription`
+
+Description of the API Revision.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.apiType`
+
+Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'graphql'
+    'http'
+    'soap'
+    'websocket'
+  ]
+  ```
+
+### Parameter: `apis.apiVersion`
+
+Indicates the Version identifier of the API if the API is versioned.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.apiVersionDescription`
+
+Description of the API Version.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.apiVersionSetName`
+
+The name of the API version set to link.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.authenticationSettings`
+
+Collection of authentication settings included into this API.
+
+- Required: No
+- Type: object
+
+### Parameter: `apis.description`
+
+Description of the API. May include HTML formatting tags.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.diagnostics`
+
+Array of diagnostics to apply to the Service API.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`loggerName`](#parameter-apisdiagnosticsloggername) | string | The name of the logger. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`httpCorrelationProtocol`](#parameter-apisdiagnosticshttpcorrelationprotocol) | string | Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights. |
+| [`metrics`](#parameter-apisdiagnosticsmetrics) | bool | Emit custom metrics via emit-metric policy. Required if using Application Insights. |
+| [`operationNameFormat`](#parameter-apisdiagnosticsoperationnameformat) | string | The format of the Operation Name for Application Insights telemetries. Required if using Application Insights. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`alwaysLog`](#parameter-apisdiagnosticsalwayslog) | string | Specifies for what type of messages sampling settings should not apply. |
+| [`backend`](#parameter-apisdiagnosticsbackend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Backend. |
+| [`frontend`](#parameter-apisdiagnosticsfrontend) | object | Diagnostic settings for incoming/outgoing HTTP messages to the Gateway. |
+| [`logClientIp`](#parameter-apisdiagnosticslogclientip) | bool | Log the ClientIP. |
+| [`name`](#parameter-apisdiagnosticsname) | string | Type of diagnostic resource. |
+| [`samplingPercentage`](#parameter-apisdiagnosticssamplingpercentage) | int | Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged. |
+| [`verbosity`](#parameter-apisdiagnosticsverbosity) | string | The verbosity level applied to traces emitted by trace policies. |
+
+### Parameter: `apis.diagnostics.loggerName`
+
+The name of the logger.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.diagnostics.httpCorrelationProtocol`
+
+Sets correlation protocol to use for Application Insights diagnostics. Required if using Application Insights.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Legacy'
+    'None'
+    'W3C'
+  ]
+  ```
+
+### Parameter: `apis.diagnostics.metrics`
+
+Emit custom metrics via emit-metric policy. Required if using Application Insights.
+
+- Required: No
+- Type: bool
+
+### Parameter: `apis.diagnostics.operationNameFormat`
+
+The format of the Operation Name for Application Insights telemetries. Required if using Application Insights.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Name'
+    'URI'
+  ]
+  ```
+
+### Parameter: `apis.diagnostics.alwaysLog`
+
+Specifies for what type of messages sampling settings should not apply.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.diagnostics.backend`
+
+Diagnostic settings for incoming/outgoing HTTP messages to the Backend.
+
+- Required: No
+- Type: object
+
+### Parameter: `apis.diagnostics.frontend`
+
+Diagnostic settings for incoming/outgoing HTTP messages to the Gateway.
+
+- Required: No
+- Type: object
+
+### Parameter: `apis.diagnostics.logClientIp`
+
+Log the ClientIP.
+
+- Required: No
+- Type: bool
+
+### Parameter: `apis.diagnostics.name`
+
+Type of diagnostic resource.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'applicationinsights'
+    'azuremonitor'
+    'local'
+  ]
+  ```
+
+### Parameter: `apis.diagnostics.samplingPercentage`
+
+Rate of sampling for fixed-rate sampling. Specifies the percentage of requests that are logged. 0% sampling means zero requests logged, while 100% sampling means all requests logged.
+
+- Required: No
+- Type: int
+
+### Parameter: `apis.diagnostics.verbosity`
+
+The verbosity level applied to traces emitted by trace policies.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'error'
+    'information'
+    'verbose'
+  ]
+  ```
+
+### Parameter: `apis.format`
+
+Format of the Content in which the API is getting imported.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'openapi'
+    'openapi-link'
+    'openapi+json'
+    'openapi+json-link'
+    'swagger-json'
+    'swagger-link-json'
+    'wadl-link-json'
+    'wadl-xml'
+    'wsdl'
+    'wsdl-link'
+  ]
+  ```
+
+### Parameter: `apis.isCurrent`
+
+Indicates if API revision is current API revision.
+
+- Required: No
+- Type: bool
+
+### Parameter: `apis.operations`
+
+The operations of the api.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`displayName`](#parameter-apisoperationsdisplayname) | string | The display name of the operation. |
+| [`method`](#parameter-apisoperationsmethod) | string | A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them. |
+| [`name`](#parameter-apisoperationsname) | string | The name of the policy. |
+| [`urlTemplate`](#parameter-apisoperationsurltemplate) | string | Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-apisoperationsdescription) | string | Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters. |
+| [`policies`](#parameter-apisoperationspolicies) | array | The policies to apply to the operation. |
+| [`request`](#parameter-apisoperationsrequest) | object | An entity containing request details. |
+| [`responses`](#parameter-apisoperationsresponses) | array | An entity containing request details. |
+| [`templateParameters`](#parameter-apisoperationstemplateparameters) | array | Collection of URL template parameters. |
+
+### Parameter: `apis.operations.displayName`
+
+The display name of the operation.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.operations.method`
+
+A Valid HTTP Operation Method. Typical Http Methods like GET, PUT, POST but not limited by only them.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.operations.name`
+
+The name of the policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.operations.urlTemplate`
+
+Relative URL template identifying the target resource for this operation. May include parameters. Example: /customers/{cid}/orders/{oid}/?date={date}.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.operations.description`
+
+Description of the operation. May include HTML formatting tags. Must not be longer than 1.000 characters.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.operations.policies`
+
+The policies to apply to the operation.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-apisoperationspoliciesformat) | string | Format of the policyContent. |
+| [`name`](#parameter-apisoperationspoliciesname) | string | The name of the policy. |
+| [`value`](#parameter-apisoperationspoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+### Parameter: `apis.operations.policies.format`
+
+Format of the policyContent.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
+
+### Parameter: `apis.operations.policies.name`
+
+The name of the policy.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.operations.policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.operations.request`
+
+An entity containing request details.
+
+- Required: No
+- Type: object
+
+### Parameter: `apis.operations.responses`
+
+An entity containing request details.
+
+- Required: No
+- Type: array
+
+### Parameter: `apis.operations.templateParameters`
+
+Collection of URL template parameters.
+
+- Required: No
+- Type: array
+
+### Parameter: `apis.policies`
+
+Array of Policies to apply to the Service API.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`value`](#parameter-apispoliciesvalue) | string | Contents of the Policy as defined by the format. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`format`](#parameter-apispoliciesformat) | string | Format of the policyContent. |
+| [`name`](#parameter-apispoliciesname) | string | The name of the policy. |
+
+### Parameter: `apis.policies.value`
+
+Contents of the Policy as defined by the format.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apis.policies.format`
+
+Format of the policyContent.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'rawxml'
+    'rawxml-link'
+    'xml'
+    'xml-link'
+  ]
+  ```
+
+### Parameter: `apis.policies.name`
+
+The name of the policy.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.protocols`
+
+Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS.
+
+- Required: No
+- Type: array
+
+### Parameter: `apis.serviceUrl`
+
+Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.sourceApiId`
+
+API identifier of the source API.
+
+- Required: No
+- Type: string
+
+### Parameter: `apis.subscriptionKeyParameterNames`
+
+Protocols over which API is made available.
+
+- Required: No
+- Type: object
+
+### Parameter: `apis.subscriptionRequired`
+
+Specifies whether an API or Product subscription is required for accessing the API.
+
+- Required: No
+- Type: bool
+
+### Parameter: `apis.type`
+
+Type of API.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'graphql'
+    'http'
+    'soap'
+    'websocket'
+  ]
+  ```
+
+### Parameter: `apis.value`
+
+Content value when Importing an API.
+
+- Required: No
+- Type: string
 
 ### Parameter: `apiVersionSets`
 
@@ -1883,15 +2519,278 @@ API Version Sets.
 
 - Required: No
 - Type: array
-- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`displayName`](#parameter-apiversionsetsdisplayname) | string | The display name of the Name of API Version Set. |
+| [`name`](#parameter-apiversionsetsname) | string | API Version set name. |
+| [`versioningScheme`](#parameter-apiversionsetsversioningscheme) | string | An value that determines where the API Version identifier will be located in a HTTP request. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-apiversionsetsdescription) | string | Description of API Version Set. |
+| [`versionHeaderName`](#parameter-apiversionsetsversionheadername) | string | Name of HTTP header parameter that indicates the API Version if versioningScheme is set to header. |
+| [`versionQueryName`](#parameter-apiversionsetsversionqueryname) | string | Name of query parameter that indicates the API Version if versioningScheme is set to query. |
+
+### Parameter: `apiVersionSets.displayName`
+
+The display name of the Name of API Version Set.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apiVersionSets.name`
+
+API Version set name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `apiVersionSets.versioningScheme`
+
+An value that determines where the API Version identifier will be located in a HTTP request.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Header'
+    'Query'
+    'Segment'
+  ]
+  ```
+
+### Parameter: `apiVersionSets.description`
+
+Description of API Version Set.
+
+- Required: No
+- Type: string
+
+### Parameter: `apiVersionSets.versionHeaderName`
+
+Name of HTTP header parameter that indicates the API Version if versioningScheme is set to header.
+
+- Required: No
+- Type: string
+
+### Parameter: `apiVersionSets.versionQueryName`
+
+Name of query parameter that indicates the API Version if versioningScheme is set to query.
+
+- Required: No
+- Type: string
 
 ### Parameter: `authorizationServers`
 
 Authorization servers.
 
 - Required: No
-- Type: secureObject
-- Default: `{}`
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authorizationEndpoint`](#parameter-authorizationserversauthorizationendpoint) | string | OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>. |
+| [`clientId`](#parameter-authorizationserversclientid) | securestring | Client or app ID registered with this authorization server. |
+| [`clientSecret`](#parameter-authorizationserversclientsecret) | securestring | Client or app secret registered with this authorization server. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value. |
+| [`displayName`](#parameter-authorizationserversdisplayname) | string | API Management Service Authorization Servers name. Must be 1 to 50 characters long. |
+| [`grantTypes`](#parameter-authorizationserversgranttypes) | array | Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials. |
+| [`name`](#parameter-authorizationserversname) | string | Identifier of the authorization server. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`authorizationMethods`](#parameter-authorizationserversauthorizationmethods) | array | HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE. |
+| [`bearerTokenSendingMethods`](#parameter-authorizationserversbearertokensendingmethods) | array | Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query. |
+| [`clientAuthenticationMethod`](#parameter-authorizationserversclientauthenticationmethod) | array | Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body. |
+| [`clientRegistrationEndpoint`](#parameter-authorizationserversclientregistrationendpoint) | string | Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced. |
+| [`defaultScope`](#parameter-authorizationserversdefaultscope) | string | Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values. |
+| [`resourceOwnerPassword`](#parameter-authorizationserversresourceownerpassword) | securestring | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password. |
+| [`resourceOwnerUsername`](#parameter-authorizationserversresourceownerusername) | string | Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username. |
+| [`serverDescription`](#parameter-authorizationserversserverdescription) | string | Description of the authorization server. Can contain HTML formatting tags. |
+| [`supportState`](#parameter-authorizationserverssupportstate) | bool | If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security. |
+| [`tokenBodyParameters`](#parameter-authorizationserverstokenbodyparameters) | array | Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object. |
+| [`tokenEndpoint`](#parameter-authorizationserverstokenendpoint) | string | OAuth token endpoint. Contains absolute URI to entity being referenced. |
+
+### Parameter: `authorizationServers.authorizationEndpoint`
+
+OAuth authorization endpoint. See <http://tools.ietf.org/html/rfc6749#section-3.2>.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationServers.clientId`
+
+Client or app ID registered with this authorization server.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `authorizationServers.clientSecret`
+
+Client or app secret registered with this authorization server. This property will not be filled on 'GET' operations! Use '/listSecrets' POST request to get the value.
+
+- Required: Yes
+- Type: securestring
+
+### Parameter: `authorizationServers.displayName`
+
+API Management Service Authorization Servers name. Must be 1 to 50 characters long.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationServers.grantTypes`
+
+Form of an authorization grant, which the client uses to request the access token. - authorizationCode, implicit, resourceOwnerPassword, clientCredentials.
+
+- Required: Yes
+- Type: array
+- Allowed:
+  ```Bicep
+  [
+    'authorizationCode'
+    'clientCredentials'
+    'implicit'
+    'resourceOwnerPassword'
+  ]
+  ```
+
+### Parameter: `authorizationServers.name`
+
+Identifier of the authorization server.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationServers.authorizationMethods`
+
+HTTP verbs supported by the authorization endpoint. GET must be always present. POST is optional. - HEAD, OPTIONS, TRACE, GET, POST, PUT, PATCH, DELETE.
+
+- Required: No
+- Type: array
+
+### Parameter: `authorizationServers.bearerTokenSendingMethods`
+
+Specifies the mechanism by which access token is passed to the API. - authorizationHeader or query.
+
+- Required: No
+- Type: array
+
+### Parameter: `authorizationServers.clientAuthenticationMethod`
+
+Method of authentication supported by the token endpoint of this authorization server. Possible values are Basic and/or Body. When Body is specified, client credentials and other parameters are passed within the request body in the application/x-www-form-urlencoded format. - Basic or Body.
+
+- Required: No
+- Type: array
+
+### Parameter: `authorizationServers.clientRegistrationEndpoint`
+
+Optional reference to a page where client or app registration for this authorization server is performed. Contains absolute URL to entity being referenced.
+
+- Required: No
+- Type: string
+
+### Parameter: `authorizationServers.defaultScope`
+
+Access token scope that is going to be requested by default. Can be overridden at the API level. Should be provided in the form of a string containing space-delimited values.
+
+- Required: No
+- Type: string
+
+### Parameter: `authorizationServers.resourceOwnerPassword`
+
+Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner password.
+
+- Required: No
+- Type: securestring
+
+### Parameter: `authorizationServers.resourceOwnerUsername`
+
+Can be optionally specified when resource owner password grant type is supported by this authorization server. Default resource owner username.
+
+- Required: No
+- Type: string
+
+### Parameter: `authorizationServers.serverDescription`
+
+Description of the authorization server. Can contain HTML formatting tags.
+
+- Required: No
+- Type: string
+
+### Parameter: `authorizationServers.supportState`
+
+If true, authorization server will include state parameter from the authorization request to its response. Client may use state parameter to raise protocol security.
+
+- Required: No
+- Type: bool
+
+### Parameter: `authorizationServers.tokenBodyParameters`
+
+Additional parameters required by the token endpoint of this authorization server represented as an array of JSON objects with name and value string properties, i.e. {"name" : "name value", "value": "a value"}. - TokenBodyParameterContract object.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-authorizationserverstokenbodyparametersname) | string | Body parameter name. |
+| [`value`](#parameter-authorizationserverstokenbodyparametersvalue) | string | Body parameter value. |
+
+### Parameter: `authorizationServers.tokenBodyParameters.name`
+
+Body parameter name.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationServers.tokenBodyParameters.value`
+
+Body parameter value.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `authorizationServers.tokenEndpoint`
+
+OAuth token endpoint. Contains absolute URI to entity being referenced.
+
+- Required: No
+- Type: string
+
+### Parameter: `availabilityZones`
+
+A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku.
+
+- Required: No
+- Type: array
+- Default:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+    3
+  ]
+  ```
 
 ### Parameter: `backends`
 
@@ -1899,7 +2798,6 @@ Backends.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `caches`
 
@@ -1907,7 +2805,6 @@ Caches.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `certificates`
 
@@ -1915,7 +2812,6 @@ List of Certificates that need to be installed in the API Management service. Ma
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `customProperties`
 
@@ -2121,7 +3017,6 @@ Custom hostname configuration of the API Management service.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `identityProviders`
 
@@ -2129,7 +3024,6 @@ Identity providers.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -2181,7 +3075,6 @@ Loggers.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `managedIdentities`
 
@@ -2224,7 +3117,6 @@ Named values.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `newGuidValue`
 
@@ -2248,7 +3140,6 @@ Policies.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `portalsettings`
 
@@ -2256,7 +3147,6 @@ Portal settings.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `products`
 
@@ -2264,7 +3154,6 @@ Products.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `publicIpAddressResourceId`
 
@@ -2421,7 +3310,6 @@ Subscriptions.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `tags`
 
@@ -2443,20 +3331,6 @@ The type of VPN in which API Management service needs to be configured in. None 
     'External'
     'Internal'
     'None'
-  ]
-  ```
-
-### Parameter: `zones`
-
-A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku.
-
-- Required: No
-- Type: array
-- Default:
-  ```Bicep
-  [
-    1
-    2
   ]
   ```
 

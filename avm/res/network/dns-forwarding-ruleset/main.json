@@ -5,85 +5,103 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "7989603448774483955"
+      "version": "0.34.44.8038",
+      "templateHash": "6335352608990596585"
     },
     "name": "Dns Forwarding Rulesets",
     "description": "This template deploys an dns forwarding ruleset."
   },
   "definitions": {
-    "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
+    "forwardingRuleType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the forwarding rule."
+          }
+        },
+        "forwardingRuleState": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The state of the forwarding rule."
+          }
+        },
+        "domainName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The domain name to forward."
+          }
+        },
+        "targetDnsServers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/targetDnsServerType"
           },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+          "metadata": {
+            "description": "Required. The target DNS servers to forward to."
+          }
+        },
+        "metadata": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Metadata attached to the forwarding rule."
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the forwarding rule."
+      }
+    },
+    "virtualNetworkLinkType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the virtual network link."
+          }
+        },
+        "virtualNetworkResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the virtual network to link."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the virtual network link."
+      }
+    },
+    "targetDnsServerType": {
+      "type": "object",
+      "properties": {
+        "ipAddress": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The IP address of the target DNS server."
+          }
+        },
+        "port": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The port of the target DNS server."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the target DNS server."
+      }
     },
     "lockType": {
       "type": "object",
@@ -108,92 +126,85 @@
           }
         }
       },
-      "nullable": true
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
     },
-    "forwardingRuleType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the forwarding rule."
-            }
-          },
-          "forwardingRuleState": {
-            "type": "string",
-            "allowedValues": [
-              "Disabled",
-              "Enabled"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The state of the forwarding rule."
-            }
-          },
-          "domainName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The domain name to forward."
-            }
-          },
-          "targetDnsServers": {
-            "$ref": "#/definitions/targetDnsServers",
-            "metadata": {
-              "description": "Required. The target DNS servers to forward to."
-            }
-          },
+    "roleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
           "metadata": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Metadata attached to the forwarding rule."
-            }
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       },
-      "nullable": true
-    },
-    "virtualNetworkLinkType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name of the virtual network link."
-            }
-          },
-          "virtualNetworkResourceId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The resource ID of the virtual network to link."
-            }
-          }
-        }
-      },
-      "nullable": true
-    },
-    "targetDnsServers": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "ipAddress": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The IP address of the target DNS server."
-            }
-          },
-          "port": {
-            "type": "int",
-            "metadata": {
-              "description": "Required. The port of the target DNS server."
-            }
-          }
+      "metadata": {
+        "description": "An AVM-aligned type for a role assignment.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     }
@@ -215,12 +226,17 @@
     },
     "lock": {
       "$ref": "#/definitions/lockType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
-      "$ref": "#/definitions/roleAssignmentType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/roleAssignmentType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of role assignments to create."
       }
@@ -239,14 +255,21 @@
       }
     },
     "forwardingRules": {
-      "$ref": "#/definitions/forwardingRuleType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/forwardingRuleType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. Array of forwarding rules."
       }
     },
     "virtualNetworkLinks": {
-      "$ref": "#/definitions/virtualNetworkLinkType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/virtualNetworkLinkType"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. Array of virtual network links."
       }
@@ -393,8 +416,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "18374273039902105155"
+              "version": "0.34.44.8038",
+              "templateHash": "5878735365178041988"
             },
             "name": "Dns Forwarding Rulesets Forwarding Rules",
             "description": "This template deploys Forwarding Rule in a Dns Forwarding Ruleset."
@@ -517,8 +540,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "16294594686029517690"
+              "version": "0.34.44.8038",
+              "templateHash": "5449511663506829719"
             },
             "name": "Dns Forwarding Rulesets Virtual Network Links",
             "description": "This template deploys Virtual Network Link in a Dns Forwarding Ruleset."
