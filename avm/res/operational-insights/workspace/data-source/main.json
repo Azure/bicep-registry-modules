@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "3062149733782372246"
+      "version": "0.36.1.42791",
+      "templateHash": "13861641947418282681"
     },
     "name": "Log Analytics Workspace Datasources",
     "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -130,12 +130,12 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "dataSource": {
       "type": "Microsoft.OperationalInsights/workspaces/dataSources",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "kind": "[parameters('kind')]",
       "tags": "[parameters('tags')]",

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "15624488954958814427"
+      "version": "0.36.1.42791",
+      "templateHash": "13960282648492438275"
     },
     "name": "Log Analytics Workspace Linked Services",
     "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -50,12 +50,12 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "linkedService": {
       "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "tags": "[parameters('tags')]",
       "properties": {
