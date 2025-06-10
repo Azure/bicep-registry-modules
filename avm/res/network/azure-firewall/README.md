@@ -33,12 +33,13 @@ The following section provides usage examples for the module, which were used to
 - [Basic SKU](#example-2-basic-sku)
 - [Custom-PIP](#example-3-custom-pip)
 - [Using only defaults](#example-4-using-only-defaults)
-- [Hub-commom](#example-5-hub-commom)
-- [Hub-min](#example-6-hub-min)
-- [Using large parameter set](#example-7-using-large-parameter-set)
-- [Public-IP-Prefix](#example-8-public-ip-prefix)
-- [Forced tunneling](#example-9-forced-tunneling)
-- [WAF-aligned](#example-10-waf-aligned)
+- [Hub-byoip](#example-5-hub-byoip)
+- [Hub-commom](#example-6-hub-commom)
+- [Hub-min](#example-7-hub-min)
+- [Using large parameter set](#example-8-using-large-parameter-set)
+- [Public-IP-Prefix](#example-9-public-ip-prefix)
+- [Forced tunneling](#example-10-forced-tunneling)
+- [WAF-aligned](#example-11-waf-aligned)
 
 ### Example 1: _Add-PIP_
 
@@ -474,7 +475,98 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 </details>
 <p>
 
-### Example 5: _Hub-commom_
+### Example 5: _Hub-byoip_
+
+This instance deploys the module a vWAN with an existing IP.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module azureFirewall 'br/public:avm/res/network/azure-firewall:<version>' = {
+  name: 'azureFirewallDeployment'
+  params: {
+    // Required parameters
+    name: 'nafhubbyoip001'
+    // Non-required parameters
+    hubIPAddresses: {
+      publicIPs: {
+        count: 1
+      }
+    }
+    location: '<location>'
+    publicIPResourceID: '<publicIPResourceID>'
+    virtualHubId: '<virtualHubId>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "nafhubbyoip001"
+    },
+    // Non-required parameters
+    "hubIPAddresses": {
+      "value": {
+        "publicIPs": {
+          "count": 1
+        }
+      }
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "publicIPResourceID": {
+      "value": "<publicIPResourceID>"
+    },
+    "virtualHubId": {
+      "value": "<virtualHubId>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/azure-firewall:<version>'
+
+// Required parameters
+param name = 'nafhubbyoip001'
+// Non-required parameters
+param hubIPAddresses = {
+  publicIPs: {
+    count: 1
+  }
+}
+param location = '<location>'
+param publicIPResourceID = '<publicIPResourceID>'
+param virtualHubId = '<virtualHubId>'
+```
+
+</details>
+<p>
+
+### Example 6: _Hub-commom_
 
 This instance deploys the module a vWAN in a typical hub setting.
 
@@ -565,7 +657,7 @@ param virtualHubId = '<virtualHubId>'
 </details>
 <p>
 
-### Example 6: _Hub-min_
+### Example 7: _Hub-min_
 
 This instance deploys the module a vWAN minimum hub setting.
 
@@ -651,7 +743,7 @@ param virtualHubId = '<virtualHubId>'
 </details>
 <p>
 
-### Example 7: _Using large parameter set_
+### Example 8: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1171,7 +1263,7 @@ param zones = [
 </details>
 <p>
 
-### Example 8: _Public-IP-Prefix_
+### Example 9: _Public-IP-Prefix_
 
 This instance deploys the module and will use a public IP prefix.
 
@@ -1296,7 +1388,7 @@ param zones = []
 </details>
 <p>
 
-### Example 9: _Forced tunneling_
+### Example 10: _Forced tunneling_
 
 This instance deploys the module and sets up forced tunneling.
 
@@ -1406,7 +1498,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 </details>
 <p>
 
-### Example 10: _WAF-aligned_
+### Example 11: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
