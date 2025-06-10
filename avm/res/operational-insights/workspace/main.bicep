@@ -82,6 +82,9 @@ param managedIdentities managedIdentityAllType?
 @description('Optional. The workspace features.')
 param features workspaceFeaturesType?
 
+@description('Optional. The workspace replication properties.')
+param replication workspaceReplicationType?
+
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingType[]?
 
@@ -187,7 +190,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   location: location
   name: name
   tags: tags
@@ -210,6 +213,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
     publicNetworkAccessForIngestion: publicNetworkAccessForIngestion
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
     forceCmkForQuery: forceCmkForQuery
+    replication: replication
   }
   identity: identity
 }
@@ -354,7 +358,7 @@ module logAnalyticsWorkspace_tables 'table/main.bicep' = [
   }
 ]
 
-module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.3.0' = [
+module logAnalyticsWorkspace_solutions 'br/public:avm/res/operations-management/solution:0.3.1' = [
   for (gallerySolution, index) in gallerySolutions ?? []: if (!empty(gallerySolutions)) {
     name: '${uniqueString(deployment().name, location)}-LAW-Solution-${index}'
     params: {
@@ -676,4 +680,14 @@ type workspaceFeaturesType = {
 
   @description('Optional. Flag that describes if we want to remove the data after 30 days.')
   immediatePurgeDataOn30Days: bool?
+}
+
+@export()
+@description('Replication properties of the workspace.')
+type workspaceReplicationType = {
+  @description('Optional. Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location.')
+  enabled: bool?
+
+  @description('Conditional. The location to which the workspace is replicated. Must be specified if replication is enabled.')
+  location: string?
 }
