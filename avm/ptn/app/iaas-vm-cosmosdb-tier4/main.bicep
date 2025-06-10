@@ -101,7 +101,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 }
 
 // Network security group for VM
-module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.4.0' = {
+module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.1' = {
   name: '${name}-vm-nsg'
   params: {
     name: '${name}-vm-nsg'
@@ -113,7 +113,7 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
 }
 
 // Network security groups for subnets
-module applicationNsg 'br/public:avm/res/network/network-security-group:0.4.0' = {
+module applicationNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
   name: '${name}-application-nsg'
   params: {
     name: 'ApplicationSubnet'
@@ -124,7 +124,7 @@ module applicationNsg 'br/public:avm/res/network/network-security-group:0.4.0' =
   }
 }
 
-module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.4.0' = {
+module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
   name: '${name}-privateendpoint-nsg'
   params: {
     name: 'PrivateEndpointSubnet'
@@ -135,7 +135,7 @@ module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.4.
   }
 }
 
-module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.4.0' = {
+module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
   name: '${name}-bootdiagnostics-nsg'
   params: {
     name: 'BootDiagnosticsSubnet'
@@ -146,7 +146,7 @@ module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.4.
   }
 }
 
-module bastionNsg 'br/public:avm/res/network/network-security-group:0.4.0' = {
+module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
   name: '${name}-bastion-nsg'
   params: {
     name: 'AzureBastionSubnet'
@@ -337,7 +337,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
 }
 
 // Storage account for boot diagnostics
-module storageAccount 'br/public:avm/res/storage/storage-account:0.6.2' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   name: '${name}-storage'
   params: {
     name: replace('${name}stdiag', '-', '')
@@ -363,7 +363,7 @@ module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:0.4.3' = {
 }
 
 // Load balancer
-module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.0' = {
+module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
   name: '${name}-lb'
   params: {
     name: '${name}-lb'
@@ -411,7 +411,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.0' = {
 }
 
 // Network interface for VM
-module networkInterface 'br/public:avm/res/network/network-interface:0.2.1' = {
+module networkInterface 'br/public:avm/res/network/network-interface:0.5.2' = {
   name: '${name}-vm-nic'
   params: {
     name: '${name}-vm-nic'
@@ -492,7 +492,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
 }
 
 // Recovery Services Vault
-module recoveryServicesVault 'br/public:avm/res/recovery-services/vault:0.5.0' = {
+module recoveryServicesVault 'br/public:avm/res/recovery-services/vault:0.9.1' = {
   name: '${name}-rsv'
   params: {
     name: '${name}-rsv'
@@ -567,21 +567,32 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
 }
 
 // Private Endpoint for CosmosDB
-module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.2.0' = {
+module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = {
   name: '${name}-cosmos-pe'
   params: {
     name: '${name}-cosmos-pe'
     location: location
     tags: tags
-    serviceResourceId: cosmosdbAccount.outputs.resourceId
     subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
-    privateDnsZoneResourceIds: [
-      privateDnsZone.outputs.resourceId
+    privateLinkServiceConnections: [
+      {
+        name: '${name}-cosmos-pe-conn'
+        properties: {
+          groupIds: [
+            'MongoCluster'
+          ]
+          privateLinkServiceId: cosmosdbAccount.outputs.resourceId
+        }
+      }
     ]
-    privateDnsZoneGroupName: 'default'
-    groupIds: [
-      'MongoCluster'
-    ]
+    privateDnsZoneGroup: {
+      name: 'default'
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
+        }
+      ]
+    }
     enableTelemetry: enableTelemetry
   }
 }
