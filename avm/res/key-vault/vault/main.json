@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14324572115392636395"
+      "templateHash": "5669695679737021968"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault."
@@ -45,7 +45,7 @@
               "value": {
                 "type": "string",
                 "metadata": {
-                  "description": "Required. An IPv4 address range in CIDR notation, such as \"124.56.78.91\" (simple IP address) or \"124.56.78.0/24\""
+                  "description": "Required. An IPv4 address range in CIDR notation, such as \"124.56.78.91\" (simple IP address) or \"124.56.78.0/24\"."
                 }
               }
             }

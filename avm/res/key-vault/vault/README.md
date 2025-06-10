@@ -2442,11 +2442,11 @@ A list of IP rules.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`value`](#parameter-networkaclsiprulesvalue) | string | An IPv4 address range in CIDR notation, such as "124.56.78.91" (simple IP address) or "124.56.78.0/24" |
+| [`value`](#parameter-networkaclsiprulesvalue) | string | An IPv4 address range in CIDR notation, such as "124.56.78.91" (simple IP address) or "124.56.78.0/24". |
 
 ### Parameter: `networkAcls.ipRules.value`
 
-An IPv4 address range in CIDR notation, such as "124.56.78.91" (simple IP address) or "124.56.78.0/24"
+An IPv4 address range in CIDR notation, such as "124.56.78.91" (simple IP address) or "124.56.78.0/24".
 
 - Required: Yes
 - Type: string
