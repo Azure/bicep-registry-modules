@@ -65,10 +65,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4.1'
-          version: '2025-04-14'
+          name: 'gpt-4o'
+          version: '2024-11-20'
         }
-        name: 'gpt-4'
+        name: 'gpt-4o'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -124,10 +124,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4.1",
-            "version": "2025-04-14"
+            "name": "gpt-4o",
+            "version": "2024-11-20"
           },
-          "name": "gpt-4",
+          "name": "gpt-4o",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -181,10 +181,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4.1'
-      version: '2025-04-14'
+      name: 'gpt-4o'
+      version: '2024-11-20'
     }
-    name: 'gpt-4'
+    name: 'gpt-4o'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -235,10 +235,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4.1'
-          version: '2025-04-14'
+          name: 'gpt-4o'
+          version: '2024-11-20'
         }
-        name: 'gpt-4'
+        name: 'gpt-4o'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -278,10 +278,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4.1",
-            "version": "2025-04-14"
+            "name": "gpt-4o",
+            "version": "2024-11-20"
           },
-          "name": "gpt-4",
+          "name": "gpt-4o",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -315,10 +315,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4.1'
-      version: '2025-04-14'
+      name: 'gpt-4o'
+      version: '2024-11-20'
     }
-    name: 'gpt-4'
+    name: 'gpt-4o'
     sku: {
       capacity: 10
       name: 'Standard'
@@ -348,6 +348,7 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
     kind: 'SpeechServices'
     name: 'csakv001'
     // Non-required parameters
+    disableLocalAuth: false
     location: '<location>'
     secretsExportConfiguration: {
       accessKey1Name: 'csakv001-accessKey1'
@@ -378,6 +379,9 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       "value": "csakv001"
     },
     // Non-required parameters
+    "disableLocalAuth": {
+      "value": false
+    },
     "location": {
       "value": "<location>"
     },
@@ -406,6 +410,7 @@ using 'br/public:avm/res/cognitive-services/account:<version>'
 param kind = 'SpeechServices'
 param name = 'csakv001'
 // Non-required parameters
+param disableLocalAuth = false
 param location = '<location>'
 param secretsExportConfiguration = {
   accessKey1Name: 'csakv001-accessKey1'
@@ -951,10 +956,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
       {
         model: {
           format: 'OpenAI'
-          name: 'gpt-4.1'
-          version: '2025-04-14'
+          name: 'gpt-4o'
+          version: '2024-11-20'
         }
-        name: 'gpt-4'
+        name: 'gpt-4o'
         sku: {
           capacity: 10
           name: 'Standard'
@@ -1007,10 +1012,10 @@ module account 'br/public:avm/res/cognitive-services/account:<version>' = {
         {
           "model": {
             "format": "OpenAI",
-            "name": "gpt-4.1",
-            "version": "2025-04-14"
+            "name": "gpt-4o",
+            "version": "2024-11-20"
           },
-          "name": "gpt-4",
+          "name": "gpt-4o",
           "sku": {
             "capacity": 10,
             "name": "Standard"
@@ -1061,10 +1066,10 @@ param deployments = [
   {
     model: {
       format: 'OpenAI'
-      name: 'gpt-4.1'
-      version: '2025-04-14'
+      name: 'gpt-4o'
+      version: '2024-11-20'
     }
-    name: 'gpt-4'
+    name: 'gpt-4o'
     sku: {
       capacity: 10
       name: 'Standard'
