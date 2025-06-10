@@ -18,7 +18,7 @@ param serviceShort string = 'csoai'
 param namePrefix string = '#_namePrefix_#'
 
 // Set to fixed location as different AI models are only available in very specific locations
-param enforcedLocation string = 'francecentral'
+param enforcedLocation string = 'eastus2'
 
 // ============ //
 // Dependencies //
@@ -57,11 +57,11 @@ module testDeployment '../../../main.bicep' = [
       customSubDomainName: '${namePrefix}x${serviceShort}ai'
       deployments: [
         {
-          name: 'gpt-4'
+          name: 'gpt-4o'
           model: {
             format: 'OpenAI'
-            name: 'gpt-4.1'
-            version: '2025-04-14'
+            name: 'gpt-4o'
+            version: '2024-11-20'
           }
           sku: {
             name: 'Standard'

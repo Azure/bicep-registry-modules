@@ -58,6 +58,7 @@ module testDeployment '../../../main.bicep' = [
         accessKey1Name: '${namePrefix}${serviceShort}001-accessKey1'
         accessKey2Name: '${namePrefix}${serviceShort}001-accessKey2'
       }
+      disableLocalAuth: false // <--- Add this line
     }
   }
 ]
