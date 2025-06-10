@@ -17,9 +17,9 @@ This module deploys a VPN Gateway.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/vpnGateways` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnGateways) |
-| `Microsoft.Network/vpnGateways/natRules` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnGateways/natRules) |
-| `Microsoft.Network/vpnGateways/vpnConnections` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnGateways/vpnConnections) |
+| `Microsoft.Network/vpnGateways` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways) |
+| `Microsoft.Network/vpnGateways/natRules` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/natRules) |
+| `Microsoft.Network/vpnGateways/vpnConnections` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/vpnGateways/vpnConnections) |
 
 ## Usage examples
 
@@ -676,6 +676,78 @@ List of all the NAT Rules to associate with the gateway.
 - Type: array
 - Default: `[]`
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-natrulesname) | string | The name of the NAT rule. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`externalMappings`](#parameter-natrulesexternalmappings) | array | External mappings. |
+| [`internalMappings`](#parameter-natrulesinternalmappings) | array | Internal mappings. |
+| [`ipConfigurationId`](#parameter-natrulesipconfigurationid) | string | IP configuration ID. |
+| [`mode`](#parameter-natrulesmode) | string | NAT rule mode. |
+| [`type`](#parameter-natrulestype) | string | NAT rule type. |
+
+### Parameter: `natRules.name`
+
+The name of the NAT rule.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `natRules.externalMappings`
+
+External mappings.
+
+- Required: No
+- Type: array
+
+### Parameter: `natRules.internalMappings`
+
+Internal mappings.
+
+- Required: No
+- Type: array
+
+### Parameter: `natRules.ipConfigurationId`
+
+IP configuration ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `natRules.mode`
+
+NAT rule mode.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'EgressSnat'
+    'IngressSnat'
+  ]
+  ```
+
+### Parameter: `natRules.type`
+
+NAT rule type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Dynamic'
+    'Static'
+  ]
+  ```
+
 ### Parameter: `tags`
 
 Tags of the resource.
@@ -690,6 +762,289 @@ The VPN connections to create in the VPN gateway.
 - Required: No
 - Type: array
 - Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-vpnconnectionsname) | string | The name of the VPN connection. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`connectionBandwidth`](#parameter-vpnconnectionsconnectionbandwidth) | int | Connection bandwidth in MBPS. |
+| [`enableBgp`](#parameter-vpnconnectionsenablebgp) | bool | Enable BGP flag. |
+| [`enableInternetSecurity`](#parameter-vpnconnectionsenableinternetsecurity) | bool | Enable internet security. |
+| [`enableRateLimiting`](#parameter-vpnconnectionsenableratelimiting) | bool | Enable rate limiting. |
+| [`ipsecPolicies`](#parameter-vpnconnectionsipsecpolicies) | array | IPSec policies. |
+| [`remoteVpnSiteResourceId`](#parameter-vpnconnectionsremotevpnsiteresourceid) | string | Remote VPN site resource ID. |
+| [`routingConfiguration`](#parameter-vpnconnectionsroutingconfiguration) | object | Routing configuration. |
+| [`routingWeight`](#parameter-vpnconnectionsroutingweight) | int | Routing weight. |
+| [`sharedKey`](#parameter-vpnconnectionssharedkey) | string | Shared key. |
+| [`trafficSelectorPolicies`](#parameter-vpnconnectionstrafficselectorpolicies) | array | Traffic selector policies. |
+| [`useLocalAzureIpAddress`](#parameter-vpnconnectionsuselocalazureipaddress) | bool | Use local Azure IP address. |
+| [`usePolicyBasedTrafficSelectors`](#parameter-vpnconnectionsusepolicybasedtrafficselectors) | bool | Use policy-based traffic selectors. |
+| [`vpnConnectionProtocolType`](#parameter-vpnconnectionsvpnconnectionprotocoltype) | string | VPN connection protocol type. |
+| [`vpnLinkConnections`](#parameter-vpnconnectionsvpnlinkconnections) | array | VPN link connections. |
+
+### Parameter: `vpnConnections.name`
+
+The name of the VPN connection.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnConnections.connectionBandwidth`
+
+Connection bandwidth in MBPS.
+
+- Required: No
+- Type: int
+
+### Parameter: `vpnConnections.enableBgp`
+
+Enable BGP flag.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vpnConnections.enableInternetSecurity`
+
+Enable internet security.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vpnConnections.enableRateLimiting`
+
+Enable rate limiting.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vpnConnections.ipsecPolicies`
+
+IPSec policies.
+
+- Required: No
+- Type: array
+
+### Parameter: `vpnConnections.remoteVpnSiteResourceId`
+
+Remote VPN site resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `vpnConnections.routingConfiguration`
+
+Routing configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`associatedRouteTable`](#parameter-vpnconnectionsroutingconfigurationassociatedroutetable) | object | The associated route table for this connection. |
+| [`propagatedRouteTables`](#parameter-vpnconnectionsroutingconfigurationpropagatedroutetables) | object | The propagated route tables for this connection. |
+| [`vnetRoutes`](#parameter-vpnconnectionsroutingconfigurationvnetroutes) | object | The virtual network routes for this connection. |
+
+### Parameter: `vpnConnections.routingConfiguration.associatedRouteTable`
+
+The associated route table for this connection.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-vpnconnectionsroutingconfigurationassociatedroutetableid) | string | The resource ID of the route table. |
+
+### Parameter: `vpnConnections.routingConfiguration.associatedRouteTable.id`
+
+The resource ID of the route table.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnConnections.routingConfiguration.propagatedRouteTables`
+
+The propagated route tables for this connection.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ids`](#parameter-vpnconnectionsroutingconfigurationpropagatedroutetablesids) | array | The list of route table resource IDs to propagate to. |
+| [`labels`](#parameter-vpnconnectionsroutingconfigurationpropagatedroutetableslabels) | array | The list of labels to propagate to. |
+
+### Parameter: `vpnConnections.routingConfiguration.propagatedRouteTables.ids`
+
+The list of route table resource IDs to propagate to.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-vpnconnectionsroutingconfigurationpropagatedroutetablesidsid) | string | The resource ID of the route table. |
+
+### Parameter: `vpnConnections.routingConfiguration.propagatedRouteTables.ids.id`
+
+The resource ID of the route table.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `vpnConnections.routingConfiguration.propagatedRouteTables.labels`
+
+The list of labels to propagate to.
+
+- Required: No
+- Type: array
+
+### Parameter: `vpnConnections.routingConfiguration.vnetRoutes`
+
+The virtual network routes for this connection.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`staticRoutes`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutes) | array | The list of static routes. |
+| [`staticRoutesConfig`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutesconfig) | object | Static routes configuration. |
+
+### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutes`
+
+The list of static routes.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutesaddressprefixes) | array | The address prefixes for the static route. |
+| [`name`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutesname) | string | The name of the static route. |
+| [`nextHopIpAddress`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutesnexthopipaddress) | string | The next hop IP address for the static route. |
+
+### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutes.addressPrefixes`
+
+The address prefixes for the static route.
+
+- Required: No
+- Type: array
+
+### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutes.name`
+
+The name of the static route.
+
+- Required: No
+- Type: string
+
+### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutes.nextHopIpAddress`
+
+The next hop IP address for the static route.
+
+- Required: No
+- Type: string
+
+### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutesConfig`
+
+Static routes configuration.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`vnetLocalRouteOverrideCriteria`](#parameter-vpnconnectionsroutingconfigurationvnetroutesstaticroutesconfigvnetlocalrouteoverridecriteria) | string | Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke. |
+
+### Parameter: `vpnConnections.routingConfiguration.vnetRoutes.staticRoutesConfig.vnetLocalRouteOverrideCriteria`
+
+Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Contains'
+    'Equal'
+  ]
+  ```
+
+### Parameter: `vpnConnections.routingWeight`
+
+Routing weight.
+
+- Required: No
+- Type: int
+
+### Parameter: `vpnConnections.sharedKey`
+
+Shared key.
+
+- Required: No
+- Type: string
+
+### Parameter: `vpnConnections.trafficSelectorPolicies`
+
+Traffic selector policies.
+
+- Required: No
+- Type: array
+
+### Parameter: `vpnConnections.useLocalAzureIpAddress`
+
+Use local Azure IP address.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vpnConnections.usePolicyBasedTrafficSelectors`
+
+Use policy-based traffic selectors.
+
+- Required: No
+- Type: bool
+
+### Parameter: `vpnConnections.vpnConnectionProtocolType`
+
+VPN connection protocol type.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IKEv1'
+    'IKEv2'
+  ]
+  ```
+
+### Parameter: `vpnConnections.vpnLinkConnections`
+
+VPN link connections.
+
+- Required: No
+- Type: array
 
 ### Parameter: `vpnGatewayScaleUnit`
 

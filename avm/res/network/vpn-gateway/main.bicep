@@ -8,10 +8,10 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. The VPN connections to create in the VPN gateway.')
-param vpnConnections array = []
+param vpnConnections vpnConnectionType[] = []
 
 @description('Optional. List of all the NAT Rules to associate with the gateway.')
-param natRules array = []
+param natRules natRuleType[] = []
 
 @description('Required. The resource ID of a virtual Hub to connect to. Note: The virtual Hub and Gateway must be deployed into the same location.')
 param virtualHubResourceId string
@@ -78,7 +78,7 @@ resource vpnGateway 'Microsoft.Network/vpnGateways@2024-07-01' = {
           enableInternetSecurity: connection.?enableInternetSecurity
           remoteVpnSite: contains(connection, 'remoteVpnSiteResourceId')
             ? {
-                id: connection.remoteVpnSiteResourceId
+                id: connection.?remoteVpnSiteResourceId
               }
             : null
           enableRateLimiting: connection.?enableRateLimiting
@@ -230,4 +230,75 @@ type routingConfigurationType = {
       vnetLocalRouteOverrideCriteria: ('Contains' | 'Equal')?
     }?
   }?
+}
+
+@export()
+@description('The type of VPN connection for VPN Gateway.')
+type vpnConnectionType = {
+  @description('Required. The name of the VPN connection.')
+  name: string
+  
+  @description('Optional. Connection bandwidth in MBPS.')
+  connectionBandwidth: int?
+  
+  @description('Optional. Enable BGP flag.')
+  enableBgp: bool?
+  
+  @description('Optional. Enable internet security.')
+  enableInternetSecurity: bool?
+  
+  @description('Optional. Remote VPN site resource ID.')
+  remoteVpnSiteResourceId: string?
+  
+  @description('Optional. Enable rate limiting.')
+  enableRateLimiting: bool?
+  
+  @description('Optional. Routing configuration.')
+  routingConfiguration: routingConfigurationType?
+  
+  @description('Optional. Routing weight.')
+  routingWeight: int?
+  
+  @description('Optional. Shared key.')
+  sharedKey: string?
+  
+  @description('Optional. Use local Azure IP address.')
+  useLocalAzureIpAddress: bool?
+  
+  @description('Optional. Use policy-based traffic selectors.')
+  usePolicyBasedTrafficSelectors: bool?
+  
+  @description('Optional. VPN connection protocol type.')
+  vpnConnectionProtocolType: ('IKEv1' | 'IKEv2')?
+  
+  @description('Optional. IPSec policies.')
+  ipsecPolicies: array?
+  
+  @description('Optional. Traffic selector policies.')
+  trafficSelectorPolicies: array?
+  
+  @description('Optional. VPN link connections.')
+  vpnLinkConnections: array?
+}
+
+@export()
+@description('The type of NAT rule for VPN Gateway.')
+type natRuleType = {
+  @description('Required. The name of the NAT rule.')
+  name: string
+  
+  @description('Optional. External mappings.')
+  externalMappings: array?
+  
+  @description('Optional. Internal mappings.')
+  internalMappings: array?
+  
+  @description('Optional. IP configuration ID.')
+  ipConfigurationId: string?
+  
+  @description('Optional. NAT rule mode.')
+  mode: ('EgressSnat' | 'IngressSnat')?
+  
+  @description('Optional. NAT rule type.')
+  type: ('Dynamic' | 'Static')?
 }
