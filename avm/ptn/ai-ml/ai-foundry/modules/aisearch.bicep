@@ -25,7 +25,7 @@ param userObjectId string
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (networkIsolation)  {
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-search-deployment'
   params: {
     name: 'privatelink.search.windows.net'
@@ -40,51 +40,55 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (n
 
 var nameFormatted = take(toLower(name), 60)
 
-module aiSearch 'br/public:avm/res/search/search-service:0.9.2' = {
+module aiSearch 'br/public:avm/res/search/search-service:0.10.0' = {
   name: take('${nameFormatted}-search-services-deployment', 64)
   dependsOn: [privateDnsZone] // required due to optional flags that could change dependency
   params: {
-      name: nameFormatted
-      location: location
-      cmkEnforcement: 'Disabled'
-      managedIdentities: {
-        systemAssigned: true
-      }
-      publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
-      disableLocalAuth: true
-      sku: 'standard'
-      partitionCount:1
-      replicaCount:3
-      roleAssignments: empty(userObjectId) ? [] : [
-        {
-          principalId: userObjectId
-          principalType: 'User'
-          roleDefinitionIdOrName: 'Search Index Data Contributor'
-        }
-        {
-          principalId: userObjectId
-          principalType: 'User'
-          roleDefinitionIdOrName: 'Search Index Data Reader'
-        }
-      ]
-      diagnosticSettings: [
-        {
-          workspaceResourceId: logAnalyticsWorkspaceResourceId
-        }
-      ]
-      privateEndpoints: networkIsolation ? [
-        {
-          privateDnsZoneGroup: {
-            privateDnsZoneGroupConfigs: [
-              {
-                privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
-              }
-            ]
+    name: nameFormatted
+    location: location
+    cmkEnforcement: 'Disabled'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
+    disableLocalAuth: true
+    sku: 'standard'
+    partitionCount: 1
+    replicaCount: 3
+    roleAssignments: empty(userObjectId)
+      ? []
+      : [
+          {
+            principalId: userObjectId
+            principalType: 'User'
+            roleDefinitionIdOrName: 'Search Index Data Contributor'
           }
-          subnetResourceId: virtualNetworkSubnetResourceId
-        }
-      ] : []
-      tags: tags
+          {
+            principalId: userObjectId
+            principalType: 'User'
+            roleDefinitionIdOrName: 'Search Index Data Reader'
+          }
+        ]
+    diagnosticSettings: [
+      {
+        workspaceResourceId: logAnalyticsWorkspaceResourceId
+      }
+    ]
+    privateEndpoints: networkIsolation
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
+                }
+              ]
+            }
+            subnetResourceId: virtualNetworkSubnetResourceId
+          }
+        ]
+      : []
+    tags: tags
   }
 }
 

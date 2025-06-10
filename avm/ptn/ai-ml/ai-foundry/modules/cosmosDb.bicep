@@ -25,7 +25,7 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. List of Cosmos DB databases to deploy.')
 param databases sqlDatabaseType[]?
 
-module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (networkIsolation) {
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-cosmosdb-deployment'
   params: {
     name: 'privatelink.documents.azure.com'
@@ -40,7 +40,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (n
 
 var nameFormatted = toLower(name)
 
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.11.0' =  {
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
   name: take('${nameFormatted}-cosmosdb-deployment', 64)
   dependsOn: [privateDnsZone] // required due to optional flags that could change dependency
   params: {
@@ -52,7 +52,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.11.0' =  {
       }
     ]
     disableKeyBasedMetadataWriteAccess: true
-    disableLocalAuth: true
+    disableLocalAuthentication: true
     location: location
     minimumTlsVersion: 'Tls12'
     defaultConsistencyLevel: 'Session'
@@ -60,19 +60,21 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.11.0' =  {
       networkAclBypass: 'None'
       publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     }
-    privateEndpoints: networkIsolation ? [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
+    privateEndpoints: networkIsolation
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
+                }
+              ]
             }
-          ]
-        }
-        service: 'Sql'
-        subnetResourceId: virtualNetworkSubnetResourceId
-      }
-    ] : []
+            service: 'Sql'
+            subnetResourceId: virtualNetworkSubnetResourceId
+          }
+        ]
+      : []
     sqlDatabases: databases
     roleAssignments: roleAssignments
     tags: tags

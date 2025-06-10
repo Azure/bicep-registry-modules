@@ -77,58 +77,68 @@ var nsgLogCategories = [
   'NetworkSecurityGroupEvent'
   'NetworkSecurityGroupRuleCounter'
 ]
-var nsgLogs = [for category in nsgLogCategories: {
-  category: category
-  enabled: true
-  retentionPolicy: {
+var nsgLogs = [
+  for category in nsgLogCategories: {
+    category: category
     enabled: true
-    days: 0
+    retentionPolicy: {
+      enabled: true
+      days: 0
+    }
   }
-}]
+]
 var vnetLogCategories = [
   'VMProtectionAlerts'
 ]
 var vnetMetricCategories = [
   'AllMetrics'
 ]
-var vnetLogs = [for category in vnetLogCategories: {
-  category: category
-  enabled: true
-  retentionPolicy: {
+var vnetLogs = [
+  for category in vnetLogCategories: {
+    category: category
     enabled: true
-    days: 0
+    retentionPolicy: {
+      enabled: true
+      days: 0
+    }
   }
-}]
-var vnetMetrics = [for category in vnetMetricCategories: {
-  category: category
-  enabled: true
-  retentionPolicy: {
+]
+var vnetMetrics = [
+  for category in vnetMetricCategories: {
+    category: category
     enabled: true
-    days: 0
+    retentionPolicy: {
+      enabled: true
+      days: 0
+    }
   }
-}]
+]
 var bastionLogCategories = [
   'BastionAuditLogs'
 ]
 var bastionMetricCategories = [
   'AllMetrics'
 ]
-var bastionLogs = [for category in bastionLogCategories: {
-  category: category
-  enabled: true
-  retentionPolicy: {
+var bastionLogs = [
+  for category in bastionLogCategories: {
+    category: category
     enabled: true
-    days: 0
+    retentionPolicy: {
+      enabled: true
+      days: 0
+    }
   }
-}]
-var bastionMetrics = [for category in bastionMetricCategories: {
-  category: category
-  enabled: true
-  retentionPolicy: {
+]
+var bastionMetrics = [
+  for category in bastionMetricCategories: {
+    category: category
     enabled: true
-    days: 0
+    retentionPolicy: {
+      enabled: true
+      days: 0
+    }
   }
-}]
+]
 var bastionSubnetName = 'AzureBastionSubnet'
 
 // Virtual Network
@@ -171,7 +181,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' = {
 }
 
 // Network Security Groups
-resource bastionSubnetNsg 'Microsoft.Network/networkSecurityGroups@2023-04-01' = if (bastionHostEnabled) {
+resource bastionSubnetNsg 'Microsoft.Network/networkSecurityGroups@2024-03-01' = if (bastionHostEnabled) {
   name: bastionSubnetNsgName
   location: location
   tags: tags
@@ -323,7 +333,7 @@ resource bastionSubnetNsg 'Microsoft.Network/networkSecurityGroups@2023-04-01' =
   }
 }
 
-resource vmSubnetNsg 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
+resource vmSubnetNsg 'Microsoft.Network/networkSecurityGroups@2024-03-01' = {
   name: vmSubnetNsgName
   location: location
   tags: tags
@@ -333,17 +343,19 @@ resource vmSubnetNsg 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
 }
 
 // NAT Gateway
-resource natGatewayPublicIp 'Microsoft.Network/publicIPAddresses@2023-04-01' =  [for i in range(0, natGatewayPublicIps): {
-  name: natGatewayPublicIps == 1 ? '${natGatewayName}PublicIp' : '${natGatewayName}PublicIp${i + 1}'
-  location: location
-  sku: {
-    name: 'Standard'
+resource natGatewayPublicIp 'Microsoft.Network/publicIPAddresses@2024-03-01' = [
+  for i in range(0, natGatewayPublicIps): {
+    name: natGatewayPublicIps == 1 ? '${natGatewayName}PublicIp' : '${natGatewayName}PublicIp${i + 1}'
+    location: location
+    sku: {
+      name: 'Standard'
+    }
+    zones: !empty(natGatewayZones) ? natGatewayZones : []
+    properties: {
+      publicIPAllocationMethod: 'Static'
+    }
   }
-  zones: !empty(natGatewayZones) ? natGatewayZones : []
-  properties: {
-    publicIPAllocationMethod: 'Static'
-  }
-}]
+]
 
 resource natGateway 'Microsoft.Network/natGateways@2024-03-01' = {
   name: natGatewayName
@@ -353,9 +365,11 @@ resource natGateway 'Microsoft.Network/natGateways@2024-03-01' = {
   }
   zones: !empty(natGatewayZones) ? natGatewayZones : []
   properties: {
-    publicIpAddresses: [for i in range(0, natGatewayPublicIps): {
-      id: natGatewayPublicIp[i].id
-    }]
+    publicIpAddresses: [
+      for i in range(0, natGatewayPublicIps): {
+        id: natGatewayPublicIp[i].id
+      }
+    ]
     idleTimeoutInMinutes: natGatewayIdleTimeoutMins
   }
   dependsOn: [
@@ -364,7 +378,7 @@ resource natGateway 'Microsoft.Network/natGateways@2024-03-01' = {
 }
 
 // Azure Bastion Host
-resource bastionPublicIpAddress 'Microsoft.Network/publicIPAddresses@2023-04-01' = if (bastionHostEnabled) {
+resource bastionPublicIpAddress 'Microsoft.Network/publicIPAddresses@2024-03-01' = if (bastionHostEnabled) {
   name: bastionPublicIpAddressName
   location: location
   tags: tags
@@ -376,7 +390,7 @@ resource bastionPublicIpAddress 'Microsoft.Network/publicIPAddresses@2023-04-01'
   }
 }
 
-resource bastionHost 'Microsoft.Network/bastionHosts@2023-04-01' = if (bastionHostEnabled) {
+resource bastionHost 'Microsoft.Network/bastionHosts@2024-07-01' = if (bastionHostEnabled) {
   name: bastionHostName
   location: location
   tags: tags

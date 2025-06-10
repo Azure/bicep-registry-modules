@@ -22,7 +22,7 @@ param networkIsolation bool = true
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-module blobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (networkIsolation) {
+module blobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-blob-deployment'
   params: {
     name: 'privatelink.blob.${environment().suffixes.storage}'
@@ -35,7 +35,7 @@ module blobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = i
   }
 }
 
-module filePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (networkIsolation) {
+module filePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-file-deployment'
   params: {
     name: 'privatelink.file.${environment().suffixes.storage}'
@@ -50,7 +50,7 @@ module filePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = i
 
 var nameFormatted = take(toLower(storageName), 24)
 
-module storageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
+module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   name: take('${nameFormatted}-storage-account-deployment', 64)
   dependsOn: [filePrivateDnsZone, blobPrivateDnsZone] // required due to optional flags that could change dependency
   params: {
@@ -72,30 +72,32 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.17.0' = {
         workspaceResourceId: logAnalyticsWorkspaceResourceId
       }
     ]
-    privateEndpoints: networkIsolation ? [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: blobPrivateDnsZone.outputs.resourceId
+    privateEndpoints: networkIsolation
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: blobPrivateDnsZone.outputs.resourceId
+                }
+              ]
             }
-          ]
-        }
-        service: 'blob'
-        subnetResourceId: virtualNetworkSubnetResourceId
-      }
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: filePrivateDnsZone.outputs.resourceId
+            service: 'blob'
+            subnetResourceId: virtualNetworkSubnetResourceId
+          }
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: filePrivateDnsZone.outputs.resourceId
+                }
+              ]
             }
-          ]
-        }
-        service: 'file'
-        subnetResourceId: virtualNetworkSubnetResourceId
-      }
-    ] : []
+            service: 'file'
+            subnetResourceId: virtualNetworkSubnetResourceId
+          }
+        ]
+      : []
     roleAssignments: roleAssignments
   }
 }

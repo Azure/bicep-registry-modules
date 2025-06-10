@@ -22,8 +22,7 @@ param networkIsolation bool = true
 @description('Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
 param userObjectId string
 
-
-module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (networkIsolation) {
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-keyvault-deployment'
   params: {
     name: 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'vaultcore.usgovcloudapi.net' : 'vaultcore.azure.net'}'
@@ -38,16 +37,16 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (n
 
 var nameFormatted = take(toLower(name), 24)
 
-module keyvault 'br/public:avm/res/key-vault/vault:0.11.0' = {
+module keyvault 'br/public:avm/res/key-vault/vault:0.12.1' = {
   name: take('${nameFormatted}-keyvault-deployment', 64)
   dependsOn: [privateDnsZone] // required due to optional flags that could change dependency
   params: {
     name: nameFormatted
     location: location
     tags: tags
-    publicNetworkAccess: networkIsolation ?  'Disabled' : 'Enabled'
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     networkAcls: {
-     defaultAction: 'Allow'
+      defaultAction: 'Allow'
     }
     enableVaultForDeployment: true
     enableVaultForDiskEncryption: true
@@ -56,31 +55,35 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.11.0' = {
     enableRbacAuthorization: true
     enableSoftDelete: true
     softDeleteRetentionInDays: 7
-    diagnosticSettings:[
+    diagnosticSettings: [
       {
         workspaceResourceId: logAnalyticsWorkspaceResourceId
-      } 
+      }
     ]
-    privateEndpoints: networkIsolation ? [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
+    privateEndpoints: networkIsolation
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
+                }
+              ]
             }
-          ]
-        }
-        service: 'vault'
-        subnetResourceId: virtualNetworkSubnetResourceId
-      }
-    ] : []
-    roleAssignments: empty(userObjectId) ? [] : [
-      {
-        principalId: userObjectId
-        principalType: 'User'
-        roleDefinitionIdOrName: 'Key Vault Secrets User'
-      }
-    ]
+            service: 'vault'
+            subnetResourceId: virtualNetworkSubnetResourceId
+          }
+        ]
+      : []
+    roleAssignments: empty(userObjectId)
+      ? []
+      : [
+          {
+            principalId: userObjectId
+            principalType: 'User'
+            roleDefinitionIdOrName: 'Key Vault Secrets User'
+          }
+        ]
   }
 }
 

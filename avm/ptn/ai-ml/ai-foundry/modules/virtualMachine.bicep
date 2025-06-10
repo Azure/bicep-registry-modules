@@ -83,7 +83,9 @@ param tags object
 
 var randomString = uniqueString(resourceGroup().id, vmName, vmAdminPasswordOrKey)
 
-var adminPassword = (length(vmAdminPasswordOrKey) < 8) ? '${vmAdminPasswordOrKey}${take(randomString, 12)}' : vmAdminPasswordOrKey
+var adminPassword = (length(vmAdminPasswordOrKey) < 8)
+  ? '${vmAdminPasswordOrKey}${take(randomString, 12)}'
+  : vmAdminPasswordOrKey
 
 // Variables
 var linuxConfiguration = {
@@ -100,7 +102,7 @@ var linuxConfiguration = {
 }
 
 // Resources
-resource virtualMachineNic 'Microsoft.Network/networkInterfaces@2021-08-01' = {
+resource virtualMachineNic 'Microsoft.Network/networkInterfaces@2024-07-01' = {
   name: vmNicName
   location: location
   tags: tags
@@ -120,12 +122,12 @@ resource virtualMachineNic 'Microsoft.Network/networkInterfaces@2021-08-01' = {
   }
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
   scope: resourceGroup(storageAccountResourceGroup)
 }
 
-resource virtualMachine 'Microsoft.Compute/virtualMachines@2021-11-01' = {
+resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   name: vmName
   location: location
   tags: tags
@@ -229,7 +231,7 @@ resource entraExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01
   ]
 }
 
-resource dcrEventLogs 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
+resource dcrEventLogs 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: 'DCR-Win-Event-Logs-to-LAW'
   location: location
   kind: 'Windows'
@@ -274,7 +276,7 @@ resource dcrEventLogs 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   ]
 }
 
-resource dcrPerfLaw 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
+resource dcrPerfLaw 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: 'DCR-Win-Perf-to-LAW'
   location: location
   kind: 'Windows'
@@ -386,7 +388,7 @@ resource virtualMachineAdministratorLoginRoleDefinition 'Microsoft.Authorization
   scope: subscription()
 }
 
-// This role assignment grants the Virtual Machine Administrator Login role to the current user. 
+// This role assignment grants the Virtual Machine Administrator Login role to the current user.
 resource virtualMachineAdministratorLoginUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (enableMicrosoftEntraIdAuth && !empty(userObjectId)) {
   name: guid(virtualMachine.id, virtualMachineAdministratorLoginRoleDefinition.id, userObjectId)
   scope: virtualMachine

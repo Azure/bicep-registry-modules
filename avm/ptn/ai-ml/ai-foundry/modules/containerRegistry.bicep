@@ -20,7 +20,7 @@ param logAnalyticsWorkspaceResourceId string
 @description('Specifies whether network isolation is enabled. This will create a private endpoint for the Container Registry and link the private DNS zone.')
 param networkIsolation bool = true
 
-module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (networkIsolation) {
+module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-acr-deployment'
   params: {
     name: 'privatelink.${toLower(environment().name) == 'azureusgovernment' ? 'azurecr.us' : 'azurecr.io'}'
@@ -35,9 +35,9 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (n
 
 var nameFormatted = take(toLower(name), 50)
 
-module containerRegistry 'br/public:avm/res/container-registry/registry:0.8.4' = {
+module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: take('${nameFormatted}-container-registry-deployment', 64)
-  dependsOn: [privateDnsZone]  // required due to optional flags that could change dependency
+  dependsOn: [privateDnsZone] // required due to optional flags that could change dependency
   params: {
     name: nameFormatted
     location: location
@@ -49,28 +49,30 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.8.4' =
     networkRuleBypassOptions: 'AzureServices'
     networkRuleSetDefaultAction: networkIsolation ? 'Deny' : 'Allow'
     exportPolicyStatus: networkIsolation ? 'disabled' : 'enabled'
-    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled' 
+    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     zoneRedundancy: 'Disabled'
     managedIdentities: {
       systemAssigned: true
     }
-    diagnosticSettings:[
+    diagnosticSettings: [
       {
         workspaceResourceId: logAnalyticsWorkspaceResourceId
-      } 
-    ]
-    privateEndpoints: networkIsolation ? [
-      {
-        privateDnsZoneGroup: {
-          privateDnsZoneGroupConfigs: [
-            {
-              privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
-            }
-          ]
-        }
-        subnetResourceId: virtualNetworkSubnetResourceId
       }
-    ] : []
+    ]
+    privateEndpoints: networkIsolation
+      ? [
+          {
+            privateDnsZoneGroup: {
+              privateDnsZoneGroupConfigs: [
+                {
+                  privateDnsZoneResourceId: privateDnsZone.outputs.resourceId
+                }
+              ]
+            }
+            subnetResourceId: virtualNetworkSubnetResourceId
+          }
+        ]
+      : []
   }
 }
 
