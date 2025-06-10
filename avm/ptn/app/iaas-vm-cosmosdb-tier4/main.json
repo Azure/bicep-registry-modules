@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "1469926899888771414"
+      "templateHash": "7076319672758053128"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -141,7 +141,7 @@
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
-      "name": "[format('46d3xbcp.ptn.iaasvmcosmosdbtier4.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+      "name": "[format('46d3xbcp.ptn.app-iaasvmcosmosdbt4.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
