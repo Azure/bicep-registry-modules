@@ -1694,7 +1694,7 @@ To find the correct service principal for role assignment:
 
 1. Use the client ID `1412d89f-b8a8-4111-b4fd-e82905cbd85d` to locate the Microsoft.AzureStackHCI service principal
 
-2. Use the Object ID of this service principal for role assignment (in Azure AVM subscription, this is `93b94c6f-a0c0-466d-adee-5a09ca785fe1`)
+2. Use the Object ID of this service principal for role assignment
 
 ## Data Collection
 
