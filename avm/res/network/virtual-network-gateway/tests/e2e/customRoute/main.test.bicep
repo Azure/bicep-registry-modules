@@ -50,7 +50,8 @@ module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
-    params: {      name: '${namePrefix}${serviceShort}001'
+    params: {
+      name: '${namePrefix}${serviceShort}001'
       gatewayType: 'Vpn'
       virtualNetworkResourceId: nestedDependencies.outputs.vnetMainResourceId
       clusterSettings: {
@@ -66,7 +67,8 @@ module testDeployment '../../../main.bicep' = [
           '192.168.100.0/24'
           '192.168.200.0/24'
         ]
-      }      // Use VPN gateway generation that supports custom routes
+      }
+      // Use VPN gateway generation that supports custom routes
       vpnGatewayGeneration: 'Generation2'
       skuName: 'VpnGw2AZ'
       vpnType: 'RouteBased'
@@ -79,19 +81,43 @@ module testDeployment '../../../main.bicep' = [
 // Outputs //
 // ======= //
 
-// Main test outputs (with custom routes)
+@description('Active-active configuration status of the main test VPN gateway.')
 output activeActive bool = testDeployment[0].outputs.activeActive
+
+@description('The BGP ASN (Autonomous System Number) of the main test VPN gateway.')
 output asn int? = testDeployment[0].outputs.?asn
+
+@description('The custom BGP IP addresses configuration of the main test VPN gateway.')
 output customBgpIpAddresses string? = testDeployment[0].outputs.?customBgpIpAddresses
+
+@description('The default BGP IP addresses configuration of the main test VPN gateway.')
 output defaultBgpIpAddresses string? = testDeployment[0].outputs.?defaultBgpIpAddresses
+
+@description('The IP configurations of the main test VPN gateway.')
 output ipConfigurations array? = testDeployment[0].outputs.?ipConfigurations
+
+@description('The location where the main test VPN gateway is deployed.')
 output location string = testDeployment[0].outputs.location
+
+@description('The name of the main test VPN gateway.')
 output name string = testDeployment[0].outputs.name
+
+@description('The primary public IP address of the main test VPN gateway.')
 output primaryPublicIpAddress string = testDeployment[0].outputs.primaryPublicIpAddress
+
+@description('The name of the resource group containing the main test VPN gateway.')
 output resourceGroupName string = testDeployment[0].outputs.resourceGroupName
+
+@description('The resource ID of the main test VPN gateway.')
 output resourceId string = testDeployment[0].outputs.resourceId
+
+@description('The secondary custom BGP IP address of the main test VPN gateway (if configured for active-active).')
 output secondaryCustomBgpIpAddress string? = testDeployment[0].outputs.?secondaryCustomBgpIpAddress
+
+@description('The secondary default BGP IP address of the main test VPN gateway (if configured for active-active).')
 output secondaryDefaultBgpIpAddress string? = testDeployment[0].outputs.?secondaryDefaultBgpIpAddress
+
+@description('The secondary public IP address of the main test VPN gateway (if configured for active-active).')
 output secondaryPublicIpAddress string? = testDeployment[0].outputs.?secondaryPublicIpAddress
 
 

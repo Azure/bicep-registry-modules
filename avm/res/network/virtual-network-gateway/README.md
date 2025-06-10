@@ -1166,6 +1166,7 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
       clusterMode: 'activePassiveNoBgp'
     }
     gatewayType: 'Vpn'
+    name: 'nvgcr001'
     virtualNetworkResourceId: '<virtualNetworkResourceId>'
     // Non-required parameters
     customRoutes: {
@@ -1204,6 +1205,9 @@ module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:
     },
     "gatewayType": {
       "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgcr001"
     },
     "virtualNetworkResourceId": {
       "value": "<virtualNetworkResourceId>"
@@ -1250,6 +1254,7 @@ param clusterSettings = {
   clusterMode: 'activePassiveNoBgp'
 }
 param gatewayType = 'Vpn'
+param name = 'nvgcr001'
 param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 // Non-required parameters
 param customRoutes = {
