@@ -19,15 +19,15 @@ param tables string[]?
 @description('Optional. Tags to configure in the resource.')
 param tags object?
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: last(split(storageAccountResourceId, '/'))!
 }
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = {
   name: logAnalyticsWorkspaceName
 }
 
-resource storageinsightconfig 'Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2023-09-01' = {
+resource storageinsightconfig 'Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2025-02-01' = {
   name: name
   parent: workspace
   tags: tags
