@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10669460088425078329"
+      "templateHash": "17901062411321012692"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -115,7 +115,7 @@
     "storageAccountSku": {
       "type": "object",
       "defaultValue": {
-        "name": "Standard_LRS",
+        "name": "Standard_GRS",
         "tier": "Standard"
       },
       "metadata": {
@@ -11303,7 +11303,12 @@
             "value": [
               {
                 "name": "[format('{0}-lb-frontendconfig01', parameters('name'))]",
-                "subnetId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]"
+                "subnetId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]",
+                "zone": [
+                  "1",
+                  "2",
+                  "3"
+                ]
               }
             ]
           },
@@ -21729,6 +21734,15 @@
           },
           "publicNetworkAccess": {
             "value": "Disabled"
+          },
+          "replicationAlertSettings": {
+            "value": {
+              "customEmailAddresses": [
+                "test.user@testcompany.com"
+              ],
+              "locale": "en-US",
+              "sendToOwners": "Send"
+            }
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"

@@ -68,7 +68,7 @@ param adminUsername string = 'azureuser'
 // Storage account parameters
 @description('Storage. Storage account SKU.')
 param storageAccountSku object = {
-  name: 'Standard_LRS'
+  name: 'Standard_GRS'
   tier: 'Standard'
 }
 
@@ -373,6 +373,7 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
       {
         name: '${name}-lb-frontendconfig01'
         subnetId: virtualNetwork.outputs.subnetResourceIds[0]
+        zone: ['1','2','3']
       }
     ]
     backendAddressPools: [
@@ -499,6 +500,13 @@ module recoveryServicesVault 'br/public:avm/res/recovery-services/vault:0.9.1' =
     location: location
     tags: tags
     publicNetworkAccess: 'Disabled'
+    replicationAlertSettings: {
+      customEmailAddresses: [
+        'test.user@testcompany.com'
+      ]
+      locale: 'en-US'
+      sendToOwners: 'Send'
+    }
     enableTelemetry: enableTelemetry
   }
 }

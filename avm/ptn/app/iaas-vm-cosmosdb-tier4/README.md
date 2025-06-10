@@ -350,7 +350,7 @@ Storage account SKU.
 - Default:
   ```Bicep
   {
-      name: 'Standard_LRS'
+      name: 'Standard_GRS'
       tier: 'Standard'
   }
   ```
