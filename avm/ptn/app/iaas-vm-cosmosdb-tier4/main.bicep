@@ -373,7 +373,11 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
       {
         name: '${name}-lb-frontendconfig01'
         subnetId: virtualNetwork.outputs.subnetResourceIds[0]
-        zone: ['1','2','3']
+        zone: [
+          1
+          2
+          3
+        ]
       }
     ]
     backendAddressPools: [
