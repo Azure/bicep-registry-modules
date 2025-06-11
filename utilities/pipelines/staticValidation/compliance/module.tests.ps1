@@ -963,7 +963,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectVariables | Should -BeNullOrEmpty
             }
 
-            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and set to "false" if module references other modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist, have a type and set to "false" if module references other modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -981,7 +981,10 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 $templateFileContent.variables.Keys | Should -Contain 'enableReferencedModulesTelemetry'
-                $templateFileContent.variables.enableReferencedModulesTelemetry | Should -Be $false
+                # // TODO need to check if the type is set by checking in the Bicep and not in the JSON
+                if ($templateFileContent.variables.enableReferencedModulesTelemetry -ne $false -or $templateFileContent.variables.enableReferencedModulesTelemetry.type -ne 'bool') {
+                    Set-ItResult -Failed -Because 'the variable "enableReferencedModulesTelemetry" should be set to false and of type bool.'
+                }
             }
         }
 
