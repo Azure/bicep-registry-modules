@@ -46,15 +46,17 @@ PUBLIC_KEY=$(az deployment group show \
   --name "$DEPLOYMENT_NAME_1" \
   --resource-group "$RESOURCE_GROUP" \
   --query properties.outputs.publicKeySecretValue.value \
-  --only-show-errors --output tsv)
+  --only-show-errors --output tsv || true)
 
 if [[ -z "$PUBLIC_KEY" ]]; then
-  # ssh-keygen
-  ssh-keygen -t rsa -b 4096 -f ./key -N '""' -q
+  # Generate RSA key pair using OpenSSL
+  openssl genpkey -algorithm RSA -out key -pkeyopt rsa_keygen_bits:4096
+  openssl rsa -in key -pubout -out key.pub
+
   PUBLIC_KEY_B64=$(cat './key.pub' | base64 -w 0)
   PRIVATE_KEY_B64=$(cat './key' | base64 -w 0)
-  sed --in-place "s/{{publicKeySecretValueBase64}}/$PUBLIC_KEY_B64/" '/write.json'
-  sed --in-place "s/{{privateKeySecretValueBase64}}/$PRIVATE_KEY_B64/" '/write.json'
+  sed --in-place "s/{{publicKeySecretValueBase64}}/$PUBLIC_KEY_B64/" 'write.json'
+  sed --in-place "s/{{privateKeySecretValueBase64}}/$PRIVATE_KEY_B64/" 'write.json'
 
   # Generate a random 6-character alphanumeric suffix for deployment name
   RAND_SUFFIX_2=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 6 | head -n 1)
@@ -68,10 +70,10 @@ if [[ -z "$PUBLIC_KEY" ]]; then
     --parameters "write.json" || true
 
   PUBLIC_KEY=$(az deployment group show \
-    --name "$DEPLOYMENT_NAME" \
+    --name "$DEPLOYMENT_NAME_2" \
     --resource-group "$RESOURCE_GROUP" \
     --query properties.outputs.publicKeySecretValue.value \
-    --only-show-errors --output tsv)
+    --only-show-errors --output tsv || true)
 fi
 
 if [[ -z "$PUBLIC_KEY" ]]; then
