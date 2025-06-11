@@ -688,6 +688,6 @@ type workspaceReplicationType = {
   @description('Optional. Specifies whether the replication is enabled or not. When true, workspace configuration and data is replicated to the specified location.')
   enabled: bool?
 
-  @description('Conditional. The location to which the workspace is replicated. Must be specified if replication is enabled.')
+  @description('Conditional. The location to which the workspace is replicated. Required if replication is enabled.')
   location: string?
 }
