@@ -6,12 +6,86 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2914238488562983937"
+      "templateHash": "5669695679737021968"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault."
   },
   "definitions": {
+    "networkAclsType": {
+      "type": "object",
+      "properties": {
+        "bypass": {
+          "type": "string",
+          "allowedValues": [
+            "AzureServices",
+            "None"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The bypass options for traffic for the network ACLs."
+          }
+        },
+        "defaultAction": {
+          "type": "string",
+          "allowedValues": [
+            "Allow",
+            "Deny"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The default action for the network ACLs, when no rule matches."
+          }
+        },
+        "ipRules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. An IPv4 address range in CIDR notation, such as \"124.56.78.91\" (simple IP address) or \"124.56.78.0/24\"."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of IP rules."
+          }
+        },
+        "virtualNetworkRules": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "metadata": {
+                  "description": "Required. The resource ID of the virtual network subnet."
+                }
+              },
+              "ignoreMissingVnetServiceEndpoint": {
+                "type": "bool",
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. Whether NRP will ignore the check if parent subnet has serviceEndpoints configured."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of virtual network rules."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for rules governing the accessibility of the key vault from specific network locations."
+      }
+    },
     "privateEndpointOutputType": {
       "type": "object",
       "properties": {
@@ -457,85 +531,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for a key."
-      }
-    },
-    "rotationPolicyType": {
-      "type": "object",
-      "properties": {
-        "attributes": {
-          "type": "object",
-          "properties": {
-            "expiryTime": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: \"P90D\", \"P1Y\"."
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The attributes of key rotation policy."
-          }
-        },
-        "lifetimeActions": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "action": {
-                "type": "object",
-                "properties": {
-                  "type": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Notify",
-                      "Rotate"
-                    ],
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The type of action."
-                    }
-                  }
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The action of key rotation policy lifetimeAction."
-                }
-              },
-              "trigger": {
-                "type": "object",
-                "properties": {
-                  "timeAfterCreate": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
-                    }
-                  },
-                  "timeBeforeExpiry": {
-                    "type": "string",
-                    "nullable": true,
-                    "metadata": {
-                      "description": "Optional. The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
-                    }
-                  }
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. The trigger of key rotation policy lifetimeAction."
-                }
-              }
-            }
-          },
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The lifetimeActions for key rotation action."
-          }
-        }
-      },
-      "metadata": {
-        "description": "The type for a rotation policy."
       }
     },
     "_1.privateEndpointCustomDnsConfigType": {
@@ -1015,6 +1010,88 @@
           "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
+    },
+    "rotationPolicyType": {
+      "type": "object",
+      "properties": {
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "expiryTime": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: \"P90D\", \"P1Y\"."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The attributes of key rotation policy."
+          }
+        },
+        "lifetimeActions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "allowedValues": [
+                      "notify",
+                      "rotate"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The type of the action."
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The type of the action."
+                }
+              },
+              "trigger": {
+                "type": "object",
+                "properties": {
+                  "timeAfterCreate": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                    }
+                  },
+                  "timeBeforeExpiry": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The time duration for rotating the key."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The key rotation policy lifetime actions."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a rotation policy.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "key/main.bicep"
+        }
+      }
     }
   },
   "parameters": {
@@ -1107,8 +1184,12 @@
     "createMode": {
       "type": "string",
       "defaultValue": "default",
+      "allowedValues": [
+        "default",
+        "recover"
+      ],
       "metadata": {
-        "description": "Optional. The vault's create mode to indicate whether the vault need to be recovered or not. - recover or default."
+        "description": "Optional. The vault's create mode to indicate whether the vault need to be recovered or not."
       }
     },
     "enablePurgeProtection": {
@@ -1130,7 +1211,7 @@
       }
     },
     "networkAcls": {
-      "type": "object",
+      "$ref": "#/definitions/networkAclsType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Rules governing the accessibility of the resource from specific network locations."
@@ -1392,7 +1473,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "1917597109500990809"
+              "templateHash": "10958657547953938402"
             },
             "name": "Key Vault Access Policies",
             "description": "This module deploys a Key Vault Access Policy."
@@ -1688,7 +1769,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "7518886696624650339"
+              "templateHash": "2929149431927742782"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret."
@@ -1779,15 +1860,17 @@
             },
             "name": {
               "type": "string",
+              "minLength": 1,
+              "maxLength": 127,
               "metadata": {
-                "description": "Required. The name of the secret."
+                "description": "Required. The name of the secret (letters (upper and lower case), numbers, -)."
               }
             },
             "tags": {
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.KeyVault/vaults/secrets@2024-11-01#properties/tags"
+                  "source": "Microsoft.KeyVault/vaults@2024-11-01#properties/tags"
                 },
                 "description": "Optional. Resource tags."
               },
@@ -2035,12 +2118,92 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "5052197387450152598"
+              "templateHash": "13194636282705261955"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key."
           },
           "definitions": {
+            "rotationPolicyType": {
+              "type": "object",
+              "properties": {
+                "attributes": {
+                  "type": "object",
+                  "properties": {
+                    "expiryTime": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: \"P90D\", \"P1Y\"."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The attributes of key rotation policy."
+                  }
+                },
+                "lifetimeActions": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "allowedValues": [
+                              "notify",
+                              "rotate"
+                            ],
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The type of the action."
+                            }
+                          }
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The type of the action."
+                        }
+                      },
+                      "trigger": {
+                        "type": "object",
+                        "properties": {
+                          "timeAfterCreate": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                            }
+                          },
+                          "timeBeforeExpiry": {
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {
+                              "description": "Optional. The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                            }
+                          }
+                        },
+                        "nullable": true,
+                        "metadata": {
+                          "description": "Optional. The time duration for rotating the key."
+                        }
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The key rotation policy lifetime actions."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for a rotation policy."
+              }
+            },
             "roleAssignmentType": {
               "type": "object",
               "properties": {
@@ -2134,7 +2297,7 @@
               "type": "object",
               "metadata": {
                 "__bicep_resource_derived_type!": {
-                  "source": "Microsoft.KeyVault/vaults@2024-11-01#properties/tags"
+                  "source": "Microsoft.KeyVault/vaults/keys@2024-11-01#properties/tags"
                 },
                 "description": "Optional. Resource tags."
               },
@@ -2176,6 +2339,9 @@
             },
             "keyOps": {
               "type": "array",
+              "items": {
+                "type": "string"
+              },
               "nullable": true,
               "allowedValues": [
                 "decrypt",
@@ -2228,7 +2394,7 @@
               }
             },
             "rotationPolicy": {
-              "type": "object",
+              "$ref": "#/definitions/rotationPolicyType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. Key rotation policy properties object."

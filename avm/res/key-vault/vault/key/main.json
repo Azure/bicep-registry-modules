@@ -6,12 +6,92 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5052197387450152598"
+      "templateHash": "13194636282705261955"
     },
     "name": "Key Vault Keys",
     "description": "This module deploys a Key Vault Key."
   },
   "definitions": {
+    "rotationPolicyType": {
+      "type": "object",
+      "properties": {
+        "attributes": {
+          "type": "object",
+          "properties": {
+            "expiryTime": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The expiration time for the new key version. It should be in ISO8601 format. Eg: \"P90D\", \"P1Y\"."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The attributes of key rotation policy."
+          }
+        },
+        "lifetimeActions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "allowedValues": [
+                      "notify",
+                      "rotate"
+                    ],
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The type of the action."
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The type of the action."
+                }
+              },
+              "trigger": {
+                "type": "object",
+                "properties": {
+                  "timeAfterCreate": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The time duration after key creation to rotate the key. It only applies to rotate. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                    }
+                  },
+                  "timeBeforeExpiry": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The time duration before key expiring to rotate or notify. It will be in ISO 8601 duration format. Eg: \"P90D\", \"P1Y\"."
+                    }
+                  }
+                },
+                "nullable": true,
+                "metadata": {
+                  "description": "Optional. The time duration for rotating the key."
+                }
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The key rotation policy lifetime actions."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a rotation policy."
+      }
+    },
     "roleAssignmentType": {
       "type": "object",
       "properties": {
@@ -105,7 +185,7 @@
       "type": "object",
       "metadata": {
         "__bicep_resource_derived_type!": {
-          "source": "Microsoft.KeyVault/vaults@2024-11-01#properties/tags"
+          "source": "Microsoft.KeyVault/vaults/keys@2024-11-01#properties/tags"
         },
         "description": "Optional. Resource tags."
       },
@@ -147,6 +227,9 @@
     },
     "keyOps": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "allowedValues": [
         "decrypt",
@@ -199,7 +282,7 @@
       }
     },
     "rotationPolicy": {
-      "type": "object",
+      "$ref": "#/definitions/rotationPolicyType",
       "nullable": true,
       "metadata": {
         "description": "Optional. Key rotation policy properties object."
