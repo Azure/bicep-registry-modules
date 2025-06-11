@@ -432,7 +432,7 @@ resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSetti
 
 module cognitiveService_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
-    name: '${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}'
+    name: take('${uniqueString(deployment().name, location)}-cognitiveService-PrivateEndpoint-${index}', 64)
     scope: resourceGroup(
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(privateEndpoint.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]

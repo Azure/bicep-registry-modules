@@ -1,6 +1,6 @@
-using '../../main.bicep'
+using './main.bicep'
 
-param solutionPrefix = 'macaesbx100'
+param solutionPrefix = 'macaewaf00'
 param solutionLocation = 'australiaeast'
 param azureOpenAILocation = 'australiaeast'
 param virtualMachineConfiguration = {

@@ -763,7 +763,7 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
       virtualNetworkRules: []
       ipRules: []
     }
-    networkInjectionSubnetResourceId: virtualNetwork.outputs.subnetResourceIds[3] //This is the subnet for the AI Foundry Agents
+    networkInjectionSubnetResourceId: virtualNetworkEnabled ? virtualNetwork.?outputs.?subnetResourceIds[3] : null //This is the subnet for the AI Foundry Agents
     publicNetworkAccess: virtualNetworkEnabled ? 'Disabled' : 'Enabled'
     //publicNetworkAccess: 'Enabled' //TODO: connection via private endpoint is not working from containers network. Change this when fixed
     privateEndpoints: virtualNetworkEnabled
@@ -1084,7 +1084,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (co
       {
         // Replace this with built-in role definition Cosmos DB Built-in Data Contributor: https://docs.azure.cn/en-us/cosmos-db/nosql/security/reference-data-plane-roles#cosmos-db-built-in-data-contributor
         roleName: 'Cosmos DB SQL Data Contributor'
-        name: 'cosmos-db-sql-data-contributor'
+        //name: 'cosmos-db-sql-data-contributor'
         dataActions: [
           'Microsoft.DocumentDB/databaseAccounts/readMetadata'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'

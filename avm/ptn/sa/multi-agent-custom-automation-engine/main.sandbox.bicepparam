@@ -1,6 +1,6 @@
-using '../../main.bicep'
+using './main.bicep'
 
-param solutionPrefix = 'macaewaf100'
+param solutionPrefix = 'macaesbx101'
 param solutionLocation = 'australiaeast'
 param azureOpenAILocation = 'australiaeast'
 param logAnalyticsWorkspaceConfiguration = {

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "18092212129161479887"
+      "templateHash": "1481518212296073181"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the Multi-Agent Custom Automation Engine solution accelerator for both Sandbox environments and WAF aligned environments."
@@ -23744,9 +23744,7 @@
               "ipRules": []
             }
           },
-          "networkInjectionSubnetResourceId": {
-            "value": "[reference('virtualNetwork').outputs.subnetResourceIds.value[3]]"
-          },
+          "networkInjectionSubnetResourceId": "[if(variables('virtualNetworkEnabled'), createObject('value', tryGet(tryGet(tryGet(reference('virtualNetwork'), 'outputs'), 'subnetResourceIds'), 'value', 3)), createObject('value', null()))]",
           "publicNetworkAccess": "[if(variables('virtualNetworkEnabled'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(variables('virtualNetworkEnabled'), createObject('value', createArray(createObject('name', format('pep-{0}', variables('aiFoundryAiServicesResourceName')), 'customNetworkInterfaceName', format('nic-{0}', variables('aiFoundryAiServicesResourceName')), 'subnetResourceId', coalesce(tryGet(parameters('aiFoundryAiServicesConfiguration'), 'subnetResourceId'), reference('virtualNetwork').outputs.subnetResourceIds.value[0]), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', map(objectKeys(variables('openAiPrivateDnsZones')), lambda('zone', createObject('name', replace(lambdaVariables('zone'), '.', '-'), 'privateDnsZoneResourceId', resourceId('Microsoft.Network/privateDnsZones', lambdaVariables('zone'))))))))), createObject('value', createArray()))]",
           "roleAssignments": {
@@ -23770,7 +23768,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14908899822779556905"
+              "templateHash": "14792824801972904293"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -25050,7 +25048,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('{0}-cognitiveService-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
+              "name": "[take(format('{0}-cognitiveService-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex()), 64)]",
               "subscriptionId": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[2]]",
               "resourceGroup": "[split(coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupResourceId'), resourceGroup().id), '/')[4]]",
               "properties": {
@@ -50761,7 +50759,6 @@
             "value": [
               {
                 "roleName": "Cosmos DB SQL Data Contributor",
-                "name": "cosmos-db-sql-data-contributor",
                 "dataActions": [
                   "Microsoft.DocumentDB/databaseAccounts/readMetadata",
                   "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
