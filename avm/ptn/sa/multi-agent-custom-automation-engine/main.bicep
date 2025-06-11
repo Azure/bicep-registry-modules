@@ -13,7 +13,7 @@ param enableTelemetry bool = true
 
 // Restricting deployment to only supported Azure OpenAI regions validated with GPT-4o model
 @allowed(['australiaeast', 'eastus2', 'francecentral', 'japaneast', 'norwayeast', 'swedencentral', 'uksouth', 'westus'])
-@description('Azure OpenAI Location')
+@description('Optional. The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions.')
 param azureOpenAILocation string
 
 // @description('Set this if you want to deploy to a different region than the resource group. Otherwise, it will use the resource group location by default.')
@@ -738,7 +738,7 @@ var aiFoundryAiServicesModelDeployment = {
   sku: {
     name: 'GlobalStandard'
     //Currently the capacity is set to 140 for optimal performance.
-    capacity: aiFoundryAiServicesConfiguration.?modelCapcity ?? 140
+    capacity: aiFoundryAiServicesConfiguration.?modelCapacity ?? 140
   }
   raiPolicyName: 'Microsoft.Default'
 }

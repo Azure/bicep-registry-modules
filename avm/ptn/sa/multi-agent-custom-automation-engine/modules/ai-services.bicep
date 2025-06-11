@@ -400,6 +400,7 @@ resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (
   scope: cognitiveService
 }
 
+#disable-next-line use-recent-api-versions
 resource cognitiveService_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'

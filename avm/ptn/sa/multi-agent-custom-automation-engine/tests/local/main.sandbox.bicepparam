@@ -1,4 +1,4 @@
-using '../..//main.bicep'
+using '../../main.bicep'
 
 param solutionPrefix = 'macaewaf100'
 param solutionLocation = 'australiaeast'

@@ -11,7 +11,7 @@ param virtualNetworkEnabled bool
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 param privateEndpoints privateEndpointSingleServiceType[]
 
-resource aiServices 'Microsoft.CognitiveServices/accounts@2023-05-01' existing = {
+resource aiServices 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
   name: aiFoundryAiServicesName
 }
 
