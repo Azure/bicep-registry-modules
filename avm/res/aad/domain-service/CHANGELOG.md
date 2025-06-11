@@ -7,11 +7,11 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 ### Changes
 
 - Updated UDTs (RoleAssignments, DiagnosticsSettings, Locks) to use AVM common type
-- configured `replicaSetType` to be exportable
+- Configured `replicaSetType` to be exportable
 
 ### Breaking Changes
 
-- none
+- None
 
 ## 0.3.1
 
@@ -21,7 +21,7 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ### Breaking Changes
 
-- none
+- None
 
 ## 0.3.0
 
@@ -31,7 +31,7 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ### Breaking Changes
 
-- none
+- None
 
 ## 0.2.1
 
@@ -41,7 +41,7 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ### Breaking Changes
 
-- none
+- None
 
 ## 0.2.0
 
@@ -52,7 +52,7 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ### Breaking Changes
 
-- none
+- None
 
 ## 0.1.0
 
@@ -62,4 +62,4 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 
 ### Breaking Changes
 
-- none
+- None
