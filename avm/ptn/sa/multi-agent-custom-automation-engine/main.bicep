@@ -1913,10 +1913,10 @@ type containerAppConfigurationType = {
   @description('Optional. The tag of the container image to be used by the Container App.')
   containerImageTag: string?
 
-  @description('Optional. The CPU reserved for the Container App. Defaults to 2.0')
+  @description('Optional. The CPU reserved for the Container App. Defaults to 2.0.')
   containerCpu: string?
 
-  @description('Optional. The Memory reserved for the Container App. Defaults to 4.0Gi')
+  @description('Optional. The Memory reserved for the Container App. Defaults to 4.0Gi.')
   containerMemory: string?
 }
 
@@ -1974,7 +1974,7 @@ type webSiteConfigurationType = {
   @description('Optional. The name given to the Container App.')
   containerName: string?
 
-  @description('Optional. The container registry domain of the container image to be used by the Web Site. Default to `biabcontainerreg.azurecr.io`')
+  @description('Optional. The container registry domain of the container image to be used by the Web Site. Default to `biabcontainerreg.azurecr.io`.')
   containerImageRegistryDomain: string?
 
   @description('Optional. The name of the container image to be used by the Web Site.')

@@ -1013,11 +1013,11 @@ The configuration to apply for the Container App resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`concurrentRequests`](#parameter-containerappconfigurationconcurrentrequests) | string | The concurrent requests allowed for the Container App. |
-| [`containerCpu`](#parameter-containerappconfigurationcontainercpu) | string | The CPU reserved for the Container App. Defaults to 2.0 |
+| [`containerCpu`](#parameter-containerappconfigurationcontainercpu) | string | The CPU reserved for the Container App. Defaults to 2.0. |
 | [`containerImageName`](#parameter-containerappconfigurationcontainerimagename) | string | The name of the container image to be used by the Container App. |
 | [`containerImageRegistryDomain`](#parameter-containerappconfigurationcontainerimageregistrydomain) | string | The container registry domain of the container image to be used by the Container App. Default to `biabcontainerreg.azurecr.io` |
 | [`containerImageTag`](#parameter-containerappconfigurationcontainerimagetag) | string | The tag of the container image to be used by the Container App. |
-| [`containerMemory`](#parameter-containerappconfigurationcontainermemory) | string | The Memory reserved for the Container App. Defaults to 4.0Gi |
+| [`containerMemory`](#parameter-containerappconfigurationcontainermemory) | string | The Memory reserved for the Container App. Defaults to 4.0Gi. |
 | [`containerName`](#parameter-containerappconfigurationcontainername) | string | The name given to the Container App. |
 | [`enabled`](#parameter-containerappconfigurationenabled) | bool | If the Container App resource should be deployed or not. |
 | [`environmentResourceId`](#parameter-containerappconfigurationenvironmentresourceid) | string | The resource Id of the Container App Environment where the Container App should be created. |
@@ -1037,7 +1037,7 @@ The concurrent requests allowed for the Container App.
 
 ### Parameter: `containerAppConfiguration.containerCpu`
 
-The CPU reserved for the Container App. Defaults to 2.0
+The CPU reserved for the Container App. Defaults to 2.0.
 
 - Required: No
 - Type: string
@@ -1065,7 +1065,7 @@ The tag of the container image to be used by the Container App.
 
 ### Parameter: `containerAppConfiguration.containerMemory`
 
-The Memory reserved for the Container App. Defaults to 4.0Gi
+The Memory reserved for the Container App. Defaults to 4.0Gi.
 
 - Required: No
 - Type: string
@@ -3289,7 +3289,7 @@ The configuration to apply for the Web Server Farm resource.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containerImageName`](#parameter-websiteconfigurationcontainerimagename) | string | The name of the container image to be used by the Web Site. |
-| [`containerImageRegistryDomain`](#parameter-websiteconfigurationcontainerimageregistrydomain) | string | The container registry domain of the container image to be used by the Web Site. Default to `biabcontainerreg.azurecr.io` |
+| [`containerImageRegistryDomain`](#parameter-websiteconfigurationcontainerimageregistrydomain) | string | The container registry domain of the container image to be used by the Web Site. Default to `biabcontainerreg.azurecr.io`. |
 | [`containerImageTag`](#parameter-websiteconfigurationcontainerimagetag) | string | The tag of the container image to be used by the Web Site. |
 | [`containerName`](#parameter-websiteconfigurationcontainername) | string | The name given to the Container App. |
 | [`enabled`](#parameter-websiteconfigurationenabled) | bool | If the Web Site resource should be deployed or not. |
@@ -3307,7 +3307,7 @@ The name of the container image to be used by the Web Site.
 
 ### Parameter: `webSiteConfiguration.containerImageRegistryDomain`
 
-The container registry domain of the container image to be used by the Web Site. Default to `biabcontainerreg.azurecr.io`
+The container registry domain of the container image to be used by the Web Site. Default to `biabcontainerreg.azurecr.io`.
 
 - Required: No
 - Type: string
