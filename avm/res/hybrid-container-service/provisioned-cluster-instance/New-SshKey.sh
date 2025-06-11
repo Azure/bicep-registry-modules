@@ -32,18 +32,18 @@ az account set --subscription "$SUBSCRIPTION_ID"
 az bicep upgrade
 
 # Generate a random 6-character alphanumeric suffix for deployment name
-RAND_SUFFIX=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 6 | head -n 1)
-DEPLOYMENT_NAME="BicepDeployment-$RAND_SUFFIX"
+RAND_SUFFIX_1=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 6 | head -n 1)
+DEPLOYMENT_NAME_1="BicepDeployment-$RAND_SUFFIX_1"
 
 # Read
 az deployment group create \
-  --name "$DEPLOYMENT_NAME" \
+  --name "$DEPLOYMENT_NAME_1" \
   --resource-group "$RESOURCE_GROUP" \
   --template-file "read.bicep" \
-  --parameters "read.json" > /dev/null
+  --parameters "read.json" || true
 
 PUBLIC_KEY=$(az deployment group show \
-  --name "$DEPLOYMENT_NAME" \
+  --name "$DEPLOYMENT_NAME_1" \
   --resource-group "$RESOURCE_GROUP" \
   --query properties.outputs.publicKeySecretValue.value \
   --only-show-errors --output tsv)
@@ -57,12 +57,12 @@ if [[ -z "$PUBLIC_KEY" ]]; then
   sed --in-place "s/{{privateKeySecretValueBase64}}/$PRIVATE_KEY_B64/" '/write.json'
 
   # Generate a random 6-character alphanumeric suffix for deployment name
-  RAND_SUFFIX=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 6 | head -n 1)
-  DEPLOYMENT_NAME="BicepDeployment-$RAND_SUFFIX"
+  RAND_SUFFIX_2=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 6 | head -n 1)
+  DEPLOYMENT_NAME_2="BicepDeployment-$RAND_SUFFIX_2"
 
   # write
   az deployment group create \
-    --name "$DEPLOYMENT_NAME" \
+    --name "$DEPLOYMENT_NAME_2" \
     --resource-group "$RESOURCE_GROUP" \
     --template-file "write.bicep" \
     --parameters "write.json" || true
@@ -75,7 +75,7 @@ if [[ -z "$PUBLIC_KEY" ]]; then
 fi
 
 if [[ -z "$PUBLIC_KEY" ]]; then
-  exit 1
+  exit 2
 fi
 
 echo "{\"output\": \"$PUBLIC_KEY\"}"> $AZ_SCRIPTS_OUTPUT_PATH
