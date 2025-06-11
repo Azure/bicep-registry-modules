@@ -26,13 +26,42 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   tags: tags
 }
 
-var parametersJsonRaw = loadTextContent('./nested/parameters.json')
-var parametersJson = replace(
-  replace(
-    replace(parametersJsonRaw, '{{keyVaultName}}', keyVaultName),
-    '{{publicKeySecretName}}',
-    sshPublicKeySecretName
-  ),
+resource CRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${managedIdentity.name}-C-RoleAssignment')
+  scope: resourceGroup()
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor role
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource KVARole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${managedIdentity.name}-KVA-RoleAssignment')
+  scope: keyVault
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+    ) // Key Vault Administrator
+    principalType: 'ServicePrincipal'
+  }
+}
+
+var readJsonRaw = loadTextContent('./nested/read.json')
+var readJson = replace(
+  replace(replace(readJsonRaw, '{{keyVaultName}}', keyVaultName), '{{publicKeySecretName}}', sshPublicKeySecretName),
+  '{{privateKeySecretName}}',
+  sshPrivateKeyPemSecretName
+)
+
+var writeJsonRaw = loadTextContent('./nested/read.json')
+var writeJson = replace(
+  replace(replace(writeJsonRaw, '{{keyVaultName}}', keyVaultName), '{{publicKeySecretName}}', sshPublicKeySecretName),
   '{{privateKeySecretName}}',
   sshPrivateKeyPemSecretName
 )
@@ -41,6 +70,10 @@ resource newSshKey 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'newSshKey-${name}'
   location: location
   tags: tags
+  dependsOn: [
+    CRole
+    KVARole
+  ]
   kind: 'AzureCLI'
   identity: {
     type: 'UserAssigned'
@@ -51,7 +84,7 @@ resource newSshKey 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   properties: {
     azCliVersion: '2.71.0'
     scriptContent: loadTextContent('./New-SshKey.sh')
-    arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(parametersJson)}" "${resourceGroup().name}" "${subscription().subscriptionId}"'
+    arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(readJson)}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(writeJson)}" "${resourceGroup().name}" "${subscription().subscriptionId}"'
     timeout: 'PT60M'
     retentionInterval: 'PT1H'
     cleanupPreference: 'OnExpiration'
