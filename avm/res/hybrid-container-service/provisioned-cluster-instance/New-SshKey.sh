@@ -40,7 +40,7 @@ az deployment group create \
   --name "$DEPLOYMENT_NAME" \
   --resource-group "$RESOURCE_GROUP" \
   --template-file "read.bicep" \
-  --parameters "read.json" || true
+  --parameters "read.json" > /dev/null
 
 PUBLIC_KEY=$(az deployment group show \
   --name "$DEPLOYMENT_NAME" \
