@@ -42,7 +42,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09
 //   }
 // }
 
-module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.1' = {
+module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2' = {
   name: take('avm.res.app.managed-environment.${name}', 64)
   params: {
     name: name

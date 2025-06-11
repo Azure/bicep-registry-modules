@@ -561,7 +561,7 @@ module networkSecurityGroupAdministration 'br/public:avm/res/network/network-sec
 // WAF recommendations for networking and connectivity: https://learn.microsoft.com/en-us/azure/well-architected/security/networking
 var virtualNetworkEnabled = virtualNetworkConfiguration.?enabled ?? true
 var virtualNetworkResourceName = virtualNetworkConfiguration.?name ?? 'vnet-${solutionPrefix}'
-module virtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (virtualNetworkEnabled) {
+module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (virtualNetworkEnabled) {
   name: take('avm.res.network.virtual-network.${virtualNetworkResourceName}', 64)
   params: {
     name: virtualNetworkResourceName
@@ -643,7 +643,7 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualN
 // WAF best practices for virtual machines: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/virtual-machines
 var virtualMachineEnabled = virtualMachineConfiguration.?enabled ?? true
 var virtualMachineResourceName = virtualMachineConfiguration.?name ?? 'vm${solutionPrefix}'
-module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.13.0' = if (virtualNetworkEnabled && virtualMachineEnabled) {
+module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (virtualNetworkEnabled && virtualMachineEnabled) {
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
     name: virtualMachineResourceName
@@ -737,7 +737,7 @@ var aiFoundryAiServicesModelDeployment = {
   version: '2024-08-06'
   sku: {
     name: 'GlobalStandard'
-    //Currently the capacity is set to 140 for optimal performance. 
+    //Currently the capacity is set to 140 for optimal performance.
     capacity: aiFoundryAiServicesConfiguration.?modelCapcity ?? 140
   }
   raiPolicyName: 'Microsoft.Default'
@@ -825,7 +825,7 @@ var storageAccountPrivateDnsZones = {
   'privatelink.file.${environment().suffixes.storage}': 'file'
 }
 
-module privateDnsZonesAiFoundryStorageAccount 'br/public:avm/res/network/private-dns-zone:0.3.1' = [
+module privateDnsZonesAiFoundryStorageAccount 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
   for zone in objectKeys(storageAccountPrivateDnsZones): if (virtualNetworkEnabled && aiFoundryStorageAccountEnabled) {
     name: take(
       'avm.res.network.private-dns-zone.storage-account.${uniqueString(aiFoundryStorageAccountResourceName,zone)}.${solutionPrefix}',
@@ -905,7 +905,7 @@ var mlPrivateDnsZones = {
   'privatelink.api.azureml.ms': mlTargetSubResource
   'privatelink.notebooks.azure.net': mlTargetSubResource
 }
-module privateDnsZonesAiFoundryWorkspaceHub 'br/public:avm/res/network/private-dns-zone:0.3.1' = [
+module privateDnsZonesAiFoundryWorkspaceHub 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
   for zone in objectKeys(mlPrivateDnsZones): if (virtualNetworkEnabled && aiFoundryAiHubEnabled) {
     name: take(
       'avm.res.network.private-dns-zone.ai-hub.${uniqueString(aiFoundryAiHubResourceName,zone)}.${solutionPrefix}',
@@ -968,7 +968,7 @@ module aiFoundryAiHub 'modules/ai-hub.bicep' = if (aiFoundryAiHubEnabled) {
 var aiFoundryAiProjectEnabled = aiFoundryAiProjectConfiguration.?enabled ?? true
 var aiFoundryAiProjectName = aiFoundryAiProjectConfiguration.?name ?? 'aihb-${solutionPrefix}'
 
-module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.0' = if (aiFoundryAiProjectEnabled) {
+module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = if (aiFoundryAiProjectEnabled) {
   name: take('avm.res.machine-learning-services.workspace.${aiFoundryAiProjectName}', 64)
   params: {
     name: aiFoundryAiProjectName
@@ -1007,7 +1007,7 @@ module resourceRoleAssignmentAiProjectAiServicesCognitiveServicesOpenAIUser 'br/
 
 // ========== Cosmos DB ========== //
 // WAF best practices for Cosmos DB: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/cosmos-db
-module privateDnsZonesCosmosDb 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (virtualNetworkEnabled) {
+module privateDnsZonesCosmosDb 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (virtualNetworkEnabled) {
   name: take('avm.res.network.private-dns-zone.cosmos-db.${solutionPrefix}', 64)
   params: {
     name: 'privatelink.documents.azure.com'
@@ -1026,7 +1026,9 @@ var cosmosDbAccountEnabled = cosmosDbAccountConfiguration.?enabled ?? true
 var cosmosDbResourceName = cosmosDbAccountConfiguration.?name ?? 'cosmos-${solutionPrefix}'
 var cosmosDbDatabaseName = 'macae'
 var cosmosDbDatabaseMemoryContainerName = 'memory'
-module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = if (cosmosDbAccountEnabled) {
+
+//TODO: update to latest version of AVM module
+module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = if (cosmosDbAccountEnabled) {
   name: take('avm.res.document-db.database-account.${cosmosDbResourceName}', 64)
   params: {
     // Required parameters
@@ -1069,7 +1071,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = if (co
         ]
       }
     ])
-    locations: [
+    failoverLocations: [
       {
         locationName: cosmosDbAccountConfiguration.?location ?? solutionLocation
         failoverPriority: 0
@@ -1078,20 +1080,20 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.12.0' = if (co
     capabilitiesToAdd: [
       'EnableServerless'
     ]
-    sqlRoleAssignmentsPrincipalIds: [
-      //userAssignedIdentityAIHub.outputs.principalId
-      containerApp.outputs.?systemAssignedMIPrincipalId
-    ]
-    sqlRoleDefinitions: [
+    dataPlaneRoleDefinitions: [
       {
         // Replace this with built-in role definition Cosmos DB Built-in Data Contributor: https://docs.azure.cn/en-us/cosmos-db/nosql/security/reference-data-plane-roles#cosmos-db-built-in-data-contributor
-        roleType: 'CustomRole'
         roleName: 'Cosmos DB SQL Data Contributor'
         name: 'cosmos-db-sql-data-contributor'
-        dataAction: [
+        dataActions: [
           'Microsoft.DocumentDB/databaseAccounts/readMetadata'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
           'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        assignments: [
+          {
+            principalId: containerApp.outputs.?systemAssignedMIPrincipalId!
+          }
         ]
       }
     ]
@@ -1130,7 +1132,7 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = if (c
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
 var containerAppEnabled = containerAppConfiguration.?enabled ?? true
 var containerAppResourceName = containerAppConfiguration.?name ?? 'ca-${solutionPrefix}'
-module containerApp 'br/public:avm/res/app/container-app:0.14.2' = if (containerAppEnabled) {
+module containerApp 'br/public:avm/res/app/container-app:0.17.0' = if (containerAppEnabled) {
   name: take('avm.res.app.container-app.${containerAppResourceName}', 64)
   params: {
     name: containerAppResourceName
@@ -1264,7 +1266,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.4.1' = if (webServerFar
 var webSiteEnabled = webSiteConfiguration.?enabled ?? true
 
 var webSiteName = 'app-${solutionPrefix}'
-module webSite 'br/public:avm/res/web/site:0.15.1' = if (webSiteEnabled) {
+module webSite 'br/public:avm/res/web/site:0.16.0' = if (webSiteEnabled) {
   name: take('avm.res.web.site.${webSiteName}', 64)
   params: {
     name: webSiteName
@@ -1273,20 +1275,25 @@ module webSite 'br/public:avm/res/web/site:0.15.1' = if (webSiteEnabled) {
     kind: 'app,linux,container'
     enableTelemetry: enableTelemetry
     serverFarmResourceId: webSiteConfiguration.?environmentResourceId ?? webServerFarm.?outputs.resourceId
-    appInsightResourceId: applicationInsights.outputs.resourceId
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     publicNetworkAccess: 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
     siteConfig: {
       linuxFxVersion: 'DOCKER|${webSiteConfiguration.?containerImageRegistryDomain ?? 'biabcontainerreg.azurecr.io'}/${webSiteConfiguration.?containerImageName ?? 'macaefrontend'}:${webSiteConfiguration.?containerImageTag ?? 'latest'}'
     }
-    appSettingsKeyValuePairs: {
-      SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
-      DOCKER_REGISTRY_SERVER_URL: 'https://${webSiteConfiguration.?containerImageRegistryDomain ?? 'biabcontainerreg.azurecr.io'}'
-      WEBSITES_PORT: '3000'
-      WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
-      BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
-      AUTH_ENABLED: 'false'
-    }
+    configs: [
+      {
+        name: 'appsettings'
+        applicationInsightResourceId: applicationInsights.outputs.resourceId
+        properties: {
+          SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
+          DOCKER_REGISTRY_SERVER_URL: 'https://${webSiteConfiguration.?containerImageRegistryDomain ?? 'biabcontainerreg.azurecr.io'}'
+          WEBSITES_PORT: '3000'
+          WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
+          BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
+          AUTH_ENABLED: 'false'
+        }
+      }
+    ]
   }
 }
 
