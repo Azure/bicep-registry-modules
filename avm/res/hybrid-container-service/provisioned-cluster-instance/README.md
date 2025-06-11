@@ -8,7 +8,6 @@ Deploy a provisioned cluster instance.
 - [Usage examples](#Usage-examples)
 - [Parameters](#Parameters)
 - [Outputs](#Outputs)
-- [Cross-referenced modules](#Cross-referenced-modules)
 - [Data Collection](#Data-Collection)
 
 ## Resource Types
@@ -18,6 +17,8 @@ Deploy a provisioned cluster instance.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.HybridContainerService/provisionedClusterInstances` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridContainerService/2024-01-01/provisionedClusterInstances) |
 | `Microsoft.Kubernetes/connectedClusters` | [2024-07-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2024-07-15-preview/connectedClusters) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
+| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 
 ## Usage examples
 
@@ -53,16 +54,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
-    linuxProfile: {
-      ssh: {
-        publicKeys: [
-          {
-            keyData: '<keyData>'
-          }
-        ]
-      }
-    }
-    name: 'hcpcimin001'
+    name: 'hcpcimin02'
   }
 }
 ```
@@ -92,19 +84,8 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
     },
-    "linuxProfile": {
-      "value": {
-        "ssh": {
-          "publicKeys": [
-            {
-              "keyData": "<keyData>"
-            }
-          ]
-        }
-      }
-    },
     "name": {
-      "value": "hcpcimin001"
+      "value": "hcpcimin02"
     }
   }
 }
@@ -129,16 +110,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
-param linuxProfile = {
-  ssh: {
-    publicKeys: [
-      {
-        keyData: '<keyData>'
-      }
-    ]
-  }
-}
-param name = 'hcpcimin001'
+param name = 'hcpcimin02'
 ```
 
 </details>
@@ -166,16 +138,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
-    linuxProfile: {
-      ssh: {
-        publicKeys: [
-          {
-            keyData: '<keyData>'
-          }
-        ]
-      }
-    }
-    name: 'hcpcimax001'
+    name: 'hcpcimax02'
     // Non-required parameters
     agentPoolProfiles: [
       {
@@ -212,6 +175,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     licenseProfile: {
       azureHybridBenefit: 'False'
     }
+    linuxProfile: '<linuxProfile>'
     location: '<location>'
     oidcIssuerProfile: {
       enabled: false
@@ -258,19 +222,8 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
     },
-    "linuxProfile": {
-      "value": {
-        "ssh": {
-          "publicKeys": [
-            {
-              "keyData": "<keyData>"
-            }
-          ]
-        }
-      }
-    },
     "name": {
-      "value": "hcpcimax001"
+      "value": "hcpcimax02"
     },
     // Non-required parameters
     "agentPoolProfiles": {
@@ -322,6 +275,9 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "azureHybridBenefit": "False"
       }
     },
+    "linuxProfile": {
+      "value": "<linuxProfile>"
+    },
     "location": {
       "value": "<location>"
     },
@@ -370,16 +326,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
-param linuxProfile = {
-  ssh: {
-    publicKeys: [
-      {
-        keyData: '<keyData>'
-      }
-    ]
-  }
-}
-param name = 'hcpcimax001'
+param name = 'hcpcimax02'
 // Non-required parameters
 param agentPoolProfiles = [
   {
@@ -416,6 +363,7 @@ param kubernetesVersion = '1.29.4'
 param licenseProfile = {
   azureHybridBenefit: 'False'
 }
+param linuxProfile = '<linuxProfile>'
 param location = '<location>'
 param oidcIssuerProfile = {
   enabled: false
@@ -460,16 +408,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
-    linuxProfile: {
-      ssh: {
-        publicKeys: [
-          {
-            keyData: '<keyData>'
-          }
-        ]
-      }
-    }
-    name: 'hcpciwaf001'
+    name: 'hcpciwaf02'
     // Non-required parameters
     agentPoolProfiles: [
       {
@@ -498,6 +437,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       count: 1
       vmSize: 'Standard_A4_v2'
     }
+    linuxProfile: '<linuxProfile>'
   }
 }
 ```
@@ -527,19 +467,8 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     "customLocationResourceId": {
       "value": "<customLocationResourceId>"
     },
-    "linuxProfile": {
-      "value": {
-        "ssh": {
-          "publicKeys": [
-            {
-              "keyData": "<keyData>"
-            }
-          ]
-        }
-      }
-    },
     "name": {
-      "value": "hcpciwaf001"
+      "value": "hcpciwaf02"
     },
     // Non-required parameters
     "agentPoolProfiles": {
@@ -574,6 +503,9 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "count": 1,
         "vmSize": "Standard_A4_v2"
       }
+    },
+    "linuxProfile": {
+      "value": "<linuxProfile>"
     }
   }
 }
@@ -598,16 +530,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
-param linuxProfile = {
-  ssh: {
-    publicKeys: [
-      {
-        keyData: '<keyData>'
-      }
-    ]
-  }
-}
-param name = 'hcpciwaf001'
+param name = 'hcpciwaf02'
 // Non-required parameters
 param agentPoolProfiles = [
   {
@@ -636,6 +559,7 @@ param controlPlane = {
   count: 1
   vmSize: 'Standard_A4_v2'
 }
+param linuxProfile = '<linuxProfile>'
 ```
 
 </details>
@@ -651,6 +575,14 @@ param controlPlane = {
 | [`customLocationResourceId`](#parameter-customlocationresourceid) | string | The id of the Custom location that used to create hybrid aks. |
 | [`linuxProfile`](#parameter-linuxprofile) | object | The profile for Linux VMs in the provisioned cluster. |
 | [`name`](#parameter-name) | string | The name of the provisioned cluster instance. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyVaultName`](#parameter-keyvaultname) | string | The name of the key vault. The key vault name. Required if no existing SSH keys. |
+| [`keyvaultResourceGroup`](#parameter-keyvaultresourcegroup) | string | Key vault resource group, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different resource group. |
+| [`keyvaultSubscriptionId`](#parameter-keyvaultsubscriptionid) | string | Key vault subscription ID, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different subscription. |
 
 **Optional parameters**
 
@@ -668,7 +600,10 @@ param controlPlane = {
 | [`networkProfile`](#parameter-networkprofile) | object | The network configuration profile for the provisioned cluster. |
 | [`oidcIssuerProfile`](#parameter-oidcissuerprofile) | object | Open ID Connect (OIDC) Issuer Profile for the connected cluster. |
 | [`securityProfile`](#parameter-securityprofile) | object | Security profile for the connected cluster. |
+| [`sshPrivateKeyPemSecretName`](#parameter-sshprivatekeypemsecretname) | string | The name of the secret in the key vault that contains the SSH private key PEM. |
+| [`sshPublicKeySecretName`](#parameter-sshpublickeysecretname) | string | The name of the secret in the key vault that contains the SSH public key. |
 | [`storageProfile`](#parameter-storageprofile) | object | The storage configuration profile for the provisioned cluster. |
+| [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `cloudProviderProfile`
 
@@ -714,7 +649,7 @@ The id of the Custom location that used to create hybrid aks.
 
 The profile for Linux VMs in the provisioned cluster.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 **Required parameters**
@@ -748,6 +683,27 @@ SSH public keys configuration.
 The name of the provisioned cluster instance.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `keyVaultName`
+
+The name of the key vault. The key vault name. Required if no existing SSH keys.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyvaultResourceGroup`
+
+Key vault resource group, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different resource group.
+
+- Required: No
+- Type: string
+
+### Parameter: `keyvaultSubscriptionId`
+
+Key vault subscription ID, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different subscription.
+
+- Required: No
 - Type: string
 
 ### Parameter: `aadProfile`
@@ -1261,6 +1217,22 @@ Whether workload identity is enabled.
 - Required: Yes
 - Type: bool
 
+### Parameter: `sshPrivateKeyPemSecretName`
+
+The name of the secret in the key vault that contains the SSH private key PEM.
+
+- Required: No
+- Type: string
+- Default: `'AksArcAgentSshPrivateKeyPem'`
+
+### Parameter: `sshPublicKeySecretName`
+
+The name of the secret in the key vault that contains the SSH public key.
+
+- Required: No
+- Type: string
+- Default: `'AksArcAgentSshPublicKey'`
+
 ### Parameter: `storageProfile`
 
 The storage configuration profile for the provisioned cluster.
@@ -1326,6 +1298,13 @@ Whether the SMB CSI driver is enabled.
 - Required: Yes
 - Type: bool
 
+### Parameter: `tags`
+
+Tags of the resource.
+
+- Required: No
+- Type: object
+
 ## Outputs
 
 | Output | Type | Description |
@@ -1334,14 +1313,6 @@ Whether the SMB CSI driver is enabled.
 | `name` | string | The name of the Aks Arc. |
 | `resourceGroupName` | string | The resource group of the Aks Arc. |
 | `resourceId` | string | The ID of the Aks Arc. |
-
-## Cross-referenced modules
-
-This section gives you an overview of all local-referenced module files (i.e., other modules that are referenced in this module) and all remote-referenced files (i.e., Bicep modules that are referenced from a Bicep Registry or Template Specs).
-
-| Reference | Type |
-| :-- | :-- |
-| `br/public:avm/res/kubernetes/connected-cluster:0.1.1` | Remote reference |
 
 ## Data Collection
 

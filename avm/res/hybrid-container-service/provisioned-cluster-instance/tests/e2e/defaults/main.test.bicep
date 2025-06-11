@@ -206,7 +206,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-aks-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}001'
+    name: '${namePrefix}${serviceShort}02'
     customLocationResourceId: customLocation.id
     cloudProviderProfile: {
       infraNetworkProfile: {
