@@ -245,7 +245,7 @@ resource devCenter_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
   }
 ]
 
-module devCenter_projects '../project/main.bicep' = [
+module devCenter_project '../project/main.bicep' = [
   for (project, index) in (projects ?? []): {
     name: '${uniqueString(deployment().name, location)}-Devcenter-Project-${project.name}'
     scope: resourceGroup(
@@ -271,7 +271,7 @@ module devCenter_projectPolicy 'project-policy/main.bicep' = [
     }
     dependsOn: [
       devcenter_gallery
-      devCenter_projects
+      devCenter_project
     ]
   }
 ]
