@@ -2195,6 +2195,10 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     }
     publicNetworkAccessForIngestion: 'Disabled'
     publicNetworkAccessForQuery: 'Disabled'
+    replication: {
+      enabled: true
+      location: '<location>'
+    }
     storageInsightsConfigs: [
       {
         storageAccountResourceId: '<storageAccountResourceId>'
@@ -2384,6 +2388,12 @@ module workspace 'br/public:avm/res/operational-insights/workspace:<version>' = 
     "publicNetworkAccessForQuery": {
       "value": "Disabled"
     },
+    "replication": {
+      "value": {
+        "enabled": true,
+        "location": "<location>"
+      }
+    },
     "storageInsightsConfigs": {
       "value": [
         {
@@ -2551,6 +2561,10 @@ param managedIdentities = {
 }
 param publicNetworkAccessForIngestion = 'Disabled'
 param publicNetworkAccessForQuery = 'Disabled'
+param replication = {
+  enabled: true
+  location: '<location>'
+}
 param storageInsightsConfigs = [
   {
     storageAccountResourceId: '<storageAccountResourceId>'
@@ -3324,7 +3338,7 @@ The workspace replication properties.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`location`](#parameter-replicationlocation) | string | The location to which the workspace is replicated. Must be specified if replication is enabled. |
+| [`location`](#parameter-replicationlocation) | string | The location to which the workspace is replicated. Required if replication is enabled. |
 
 **Optional parameters**
 
@@ -3334,7 +3348,7 @@ The workspace replication properties.
 
 ### Parameter: `replication.location`
 
-The location to which the workspace is replicated. Must be specified if replication is enabled.
+The location to which the workspace is replicated. Required if replication is enabled.
 
 - Required: No
 - Type: string

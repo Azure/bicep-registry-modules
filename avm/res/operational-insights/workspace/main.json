@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "1231094609023187639"
+      "templateHash": "1026220488169805255"
     },
     "name": "Log Analytics Workspaces",
     "description": "This module deploys a Log Analytics Workspace."
@@ -574,7 +574,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The location to which the workspace is replicated. Must be specified if replication is enabled."
+            "description": "Conditional. The location to which the workspace is replicated. Required if replication is enabled."
           }
         }
       },
