@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "1087982039692962440"
+      "templateHash": "7550073341854167328"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -512,7 +512,7 @@
       "$ref": "#/definitions/linuxProfileType",
       "nullable": true,
       "metadata": {
-        "description": "Required. The profile for Linux VMs in the provisioned cluster."
+        "description": "Optional. The profile for Linux VMs in the provisioned cluster."
       }
     },
     "kubernetesVersion": {

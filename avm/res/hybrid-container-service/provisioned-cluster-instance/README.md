@@ -573,7 +573,6 @@ param linuxProfile = '<linuxProfile>'
 | :-- | :-- | :-- |
 | [`cloudProviderProfile`](#parameter-cloudproviderprofile) | object | The profile for the underlying cloud infrastructure provider for the provisioned cluster. |
 | [`customLocationResourceId`](#parameter-customlocationresourceid) | string | The id of the Custom location that used to create hybrid aks. |
-| [`linuxProfile`](#parameter-linuxprofile) | object | The profile for Linux VMs in the provisioned cluster. |
 | [`name`](#parameter-name) | string | The name of the provisioned cluster instance. |
 
 **Conditional parameters**
@@ -596,6 +595,7 @@ param linuxProfile = '<linuxProfile>'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`kubernetesVersion`](#parameter-kubernetesversion) | string | The Kubernetes version for the cluster. |
 | [`licenseProfile`](#parameter-licenseprofile) | object | The license profile of the provisioned cluster. |
+| [`linuxProfile`](#parameter-linuxprofile) | object | The profile for Linux VMs in the provisioned cluster. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`networkProfile`](#parameter-networkprofile) | object | The network configuration profile for the provisioned cluster. |
 | [`oidcIssuerProfile`](#parameter-oidcissuerprofile) | object | Open ID Connect (OIDC) Issuer Profile for the connected cluster. |
@@ -644,39 +644,6 @@ The id of the Custom location that used to create hybrid aks.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `linuxProfile`
-
-The profile for Linux VMs in the provisioned cluster.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`ssh`](#parameter-linuxprofilessh) | object | SSH configuration for Linux nodes. |
-
-### Parameter: `linuxProfile.ssh`
-
-SSH configuration for Linux nodes.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`publicKeys`](#parameter-linuxprofilesshpublickeys) | array | SSH public keys configuration. |
-
-### Parameter: `linuxProfile.ssh.publicKeys`
-
-SSH public keys configuration.
-
-- Required: Yes
-- Type: array
 
 ### Parameter: `name`
 
@@ -1069,6 +1036,39 @@ Azure Hybrid Benefit configuration.
     'True'
   ]
   ```
+
+### Parameter: `linuxProfile`
+
+The profile for Linux VMs in the provisioned cluster.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`ssh`](#parameter-linuxprofilessh) | object | SSH configuration for Linux nodes. |
+
+### Parameter: `linuxProfile.ssh`
+
+SSH configuration for Linux nodes.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`publicKeys`](#parameter-linuxprofilesshpublickeys) | array | SSH public keys configuration. |
+
+### Parameter: `linuxProfile.ssh.publicKeys`
+
+SSH public keys configuration.
+
+- Required: Yes
+- Type: array
 
 ### Parameter: `location`
 
