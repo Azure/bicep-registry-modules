@@ -86,24 +86,18 @@ param enableTelemetry bool = true
 @description('Required. The primary Virtual Network Gateway.')
 param virtualNetworkGateway1 virtualNetworkGatewayType
 
-@description('Optional. The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vnet].')
-param virtualNetworkGateway2 virtualNetworkGatewayType = {
-  id: ''
-}
+@description('Optional. The remote Virtual Network Gateway resource ID. Used for connection connectionType [Vnet2Vnet].')
+param virtualNetworkGateway2ResourceId string = ''
 
-@description('Optional. The remote peer. Used for connection connectionType [ExpressRoute].')
-param peer peerType = {
-  id: ''
-}
+@description('Optional. The remote peer resource ID. Used for connection connectionType [ExpressRoute].')
+param peerResourceId string = ''
 
 @description('Optional. The Authorization Key to connect to an Express Route Circuit. Used for connection type [ExpressRoute].')
 @secure()
 param authorizationKey string = ''
 
-@description('Optional. The local network gateway. Used for connection type [IPsec].')
-param localNetworkGateway2 localNetworkGatewayType = {
-  id: ''
-}
+@description('Optional. The local network gateway resource ID. Used for connection type [IPsec].')
+param localNetworkGateway2ResourceId string = ''
 
 @description('Optional. GatewayCustomBgpIpAddresses to be used for virtual network gateway Connection. Enables APIPA (Automatic Private IP Addressing) for custom BGP IP addresses on both Azure and on-premises sides.')
 param gatewayCustomBgpIpAddresses gatewayCustomBgpIpAddressType[] = []
@@ -139,9 +133,9 @@ resource connection 'Microsoft.Network/connections@2024-05-01' = {
     enablePrivateLinkFastPath: connectionType == 'ExpressRoute' ? enablePrivateLinkFastPath : null
     expressRouteGatewayBypass: connectionType == 'ExpressRoute' ? expressRouteGatewayBypass : null
     virtualNetworkGateway1: virtualNetworkGateway1
-    virtualNetworkGateway2: connectionType == 'Vnet2Vnet' && !empty(virtualNetworkGateway2.id) ? virtualNetworkGateway2 : null
-    localNetworkGateway2: connectionType == 'IPsec' && !empty(localNetworkGateway2.id) ? localNetworkGateway2 : null
-    peer: connectionType == 'ExpressRoute' && !empty(peer.id) ? peer : null
+    virtualNetworkGateway2: connectionType == 'Vnet2Vnet' && !empty(virtualNetworkGateway2ResourceId) ? any({ id: virtualNetworkGateway2ResourceId }) : null
+    localNetworkGateway2: connectionType == 'IPsec' && !empty(localNetworkGateway2ResourceId) ? any({ id: localNetworkGateway2ResourceId }) : null
+    peer: connectionType == 'ExpressRoute' && !empty(peerResourceId) ? { id: peerResourceId } : null
     authorizationKey: connectionType == 'ExpressRoute' && !empty(authorizationKey) ? authorizationKey : null
     sharedKey: connectionType != 'ExpressRoute' ? vpnSharedKey : null
     trafficSelectorPolicies: trafficSelectorPolicies
@@ -230,20 +224,6 @@ type customIPSecPolicyType = {
 @description('The virtual network gateway configuration.')
 type virtualNetworkGatewayType = {
   @description('Required. Resource ID of the virtual network gateway.')
-  id: string
-}
-
-@export()
-@description('The peer configuration for ExpressRoute connections.')
-type peerType = {
-  @description('Required. Resource ID of the peer.')
-  id: string
-}
-
-@export()
-@description('The local network gateway configuration.')
-type localNetworkGatewayType = {
-  @description('Required. Resource ID of the local network gateway.')
   id: string
 }
 

@@ -62,9 +62,7 @@ module testDeployment '../../../main.bicep' = [
       virtualNetworkGateway1: {
         id: nestedDependencies.outputs.primaryVNETGatewayResourceID
       }
-      localNetworkGateway2: {
-        id: nestedDependencies.outputs.localNetworkGatewayResourceID
-      }
+      localNetworkGateway2ResourceId: nestedDependencies.outputs.localNetworkGatewayResourceID
       connectionType: 'IPsec'
       enableBgp: true
       useLocalAzureIpAddress: true

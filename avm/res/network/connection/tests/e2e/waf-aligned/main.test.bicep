@@ -68,9 +68,7 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      virtualNetworkGateway2: {
-        id: nestedDependencies.outputs.secondaryVNETGatewayResourceID
-      }
+      virtualNetworkGateway2ResourceId: nestedDependencies.outputs.secondaryVNETGatewayResourceID
       connectionType: 'Vnet2Vnet'
       vpnSharedKey: password
       tags: {
@@ -79,8 +77,5 @@ module testDeployment '../../../main.bicep' = [
         Role: 'DeploymentValidation'
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

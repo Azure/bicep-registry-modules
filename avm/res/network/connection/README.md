@@ -53,9 +53,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     // Non-required parameters
     connectionType: 'Vnet2Vnet'
     location: '<location>'
-    virtualNetworkGateway2: {
-      id: '<id>'
-    }
+    virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
     vpnSharedKey: '<vpnSharedKey>'
   }
 }
@@ -89,10 +87,8 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     "location": {
       "value": "<location>"
     },
-    "virtualNetworkGateway2": {
-      "value": {
-        "id": "<id>"
-      }
+    "virtualNetworkGateway2ResourceId": {
+      "value": "<virtualNetworkGateway2ResourceId>"
     },
     "vpnSharedKey": {
       "value": "<vpnSharedKey>"
@@ -119,9 +115,7 @@ virtualNetworkGateway1: {
 // Non-required parameters
 param connectionType = 'Vnet2Vnet'
 param location = '<location>'
-virtualNetworkGateway2: {
-  id: '<id>'
-}
+virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
 param vpnSharedKey = '<vpnSharedKey>'
 ```
 
@@ -165,9 +159,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
         ipConfigurationId: '<ipConfigurationId>'
       }
     ]
-    localNetworkGateway2: {
-      id: '<id>'
-    }
+    localNetworkGateway2ResourceId: '<localNetworkGateway2ResourceId>'
     location: '<location>'
     tags: {
       Environment: 'Test'
@@ -228,10 +220,8 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
         }
       ]
     },
-    "localNetworkGateway2": {
-      "value": {
-        "id": "<id>"
-      }
+    "localNetworkGateway2ResourceId": {
+      "value": "<localNetworkGateway2ResourceId>"
     },
     "location": {
       "value": "<location>"
@@ -287,9 +277,7 @@ param gatewayCustomBgpIpAddresses = [
     ipConfigurationId: '<ipConfigurationId>'
   }
 ]
-localNetworkGateway2: {
-  id: '<id>'
-}
+localNetworkGateway2ResourceId: '<localNetworkGateway2ResourceId>'
 param location = '<location>'
 param tags = {
   Environment: 'Test'
@@ -336,9 +324,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
       Role: 'DeploymentValidation'
     }
     usePolicyBasedTrafficSelectors: false
-    virtualNetworkGateway2: {
-      id: '<id>'
-    }
+    virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
     vpnSharedKey: '<vpnSharedKey>'
   }
 }
@@ -394,10 +380,8 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
     "usePolicyBasedTrafficSelectors": {
       "value": false
     },
-    "virtualNetworkGateway2": {
-      "value": {
-        "id": "<id>"
-      }
+    "virtualNetworkGateway2ResourceId": {
+      "value": "<virtualNetworkGateway2ResourceId>"
     },
     "vpnSharedKey": {
       "value": "<vpnSharedKey>"
@@ -436,9 +420,7 @@ param tags = {
   Role: 'DeploymentValidation'
 }
 param usePolicyBasedTrafficSelectors = false
-virtualNetworkGateway2: {
-  id: '<id>'
-}
+virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
 param vpnSharedKey = '<vpnSharedKey>'
 ```
 
@@ -475,9 +457,7 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
     }
-    virtualNetworkGateway2: {
-      id: '<id>'
-    }
+    virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
     vpnSharedKey: '<vpnSharedKey>'
   }
 }
@@ -524,10 +504,8 @@ module connection 'br/public:avm/res/network/connection:<version>' = {
         "Role": "DeploymentValidation"
       }
     },
-    "virtualNetworkGateway2": {
-      "value": {
-        "id": "<id>"
-      }
+    "virtualNetworkGateway2ResourceId": {
+      "value": "<virtualNetworkGateway2ResourceId>"
     },
     "vpnSharedKey": {
       "value": "<vpnSharedKey>"
@@ -563,9 +541,7 @@ param tags = {
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
 }
-virtualNetworkGateway2: {
-  id: '<id>'
-}
+virtualNetworkGateway2ResourceId: '<virtualNetworkGateway2ResourceId>'
 param vpnSharedKey = '<vpnSharedKey>'
 ```
 
@@ -596,16 +572,16 @@ param vpnSharedKey = '<vpnSharedKey>'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`expressRouteGatewayBypass`](#parameter-expressroutegatewaybypass) | bool | Bypass ExpressRoute Gateway for data forwarding. Only available when connection connectionType is Express Route. |
 | [`gatewayCustomBgpIpAddresses`](#parameter-gatewaycustombgpipaddresses) | array | GatewayCustomBgpIpAddresses to be used for virtual network gateway Connection. Enables APIPA (Automatic Private IP Addressing) for custom BGP IP addresses on both Azure and on-premises sides. |
-| [`localNetworkGateway2`](#parameter-localnetworkgateway2) | object | The local network gateway. Used for connection type [IPsec]. |
+| [`localNetworkGateway2ResourceId`](#parameter-localnetworkgateway2resourceid) | string | The local network gateway resource ID. Used for connection type [IPsec]. |
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
-| [`peer`](#parameter-peer) | object | The remote peer. Used for connection connectionType [ExpressRoute]. |
+| [`peerResourceId`](#parameter-peerresourceid) | string | The remote peer resource ID. Used for connection connectionType [ExpressRoute]. |
 | [`routingWeight`](#parameter-routingweight) | int | The weight added to routes learned from this BGP speaker. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 | [`trafficSelectorPolicies`](#parameter-trafficselectorpolicies) | array | The traffic selector policies to be considered by this connection. |
 | [`useLocalAzureIpAddress`](#parameter-uselocalazureipaddress) | bool | Use private local Azure IP for the connection. Only available for IPSec Virtual Network Gateways that use the Azure Private IP Property. |
 | [`usePolicyBasedTrafficSelectors`](#parameter-usepolicybasedtrafficselectors) | bool | Enable policy-based traffic selectors. |
-| [`virtualNetworkGateway2`](#parameter-virtualnetworkgateway2) | object | The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vnet]. |
+| [`virtualNetworkGateway2ResourceId`](#parameter-virtualnetworkgateway2resourceid) | string | The remote Virtual Network Gateway resource ID. Used for connection connectionType [Vnet2Vnet]. |
 | [`vpnSharedKey`](#parameter-vpnsharedkey) | securestring | Specifies a VPN shared key. The same value has to be specified on both Virtual Network Gateways. |
 
 ### Parameter: `name`
@@ -926,31 +902,13 @@ The IpconfigurationId of ipconfiguration which belongs to gateway.
 - Required: Yes
 - Type: string
 
-### Parameter: `localNetworkGateway2`
+### Parameter: `localNetworkGateway2ResourceId`
 
-The local network gateway. Used for connection type [IPsec].
+The local network gateway resource ID. Used for connection type [IPsec].
 
 - Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      id: ''
-  }
-  ```
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-localnetworkgateway2id) | string | Resource ID of the local network gateway. |
-
-### Parameter: `localNetworkGateway2.id`
-
-Resource ID of the local network gateway.
-
-- Required: Yes
 - Type: string
+- Default: `''`
 
 ### Parameter: `location`
 
@@ -996,31 +954,13 @@ Specify the name of lock.
 - Required: No
 - Type: string
 
-### Parameter: `peer`
+### Parameter: `peerResourceId`
 
-The remote peer. Used for connection connectionType [ExpressRoute].
+The remote peer resource ID. Used for connection connectionType [ExpressRoute].
 
 - Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      id: ''
-  }
-  ```
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-peerid) | string | Resource ID of the peer. |
-
-### Parameter: `peer.id`
-
-Resource ID of the peer.
-
-- Required: Yes
 - Type: string
+- Default: `''`
 
 ### Parameter: `routingWeight`
 
@@ -1081,31 +1021,13 @@ Enable policy-based traffic selectors.
 - Type: bool
 - Default: `False`
 
-### Parameter: `virtualNetworkGateway2`
+### Parameter: `virtualNetworkGateway2ResourceId`
 
-The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vnet].
+The remote Virtual Network Gateway resource ID. Used for connection connectionType [Vnet2Vnet].
 
 - Required: No
-- Type: object
-- Default:
-  ```Bicep
-  {
-      id: ''
-  }
-  ```
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`id`](#parameter-virtualnetworkgateway2id) | string | Resource ID of the virtual network gateway. |
-
-### Parameter: `virtualNetworkGateway2.id`
-
-Resource ID of the virtual network gateway.
-
-- Required: Yes
 - Type: string
+- Default: `''`
 
 ### Parameter: `vpnSharedKey`
 

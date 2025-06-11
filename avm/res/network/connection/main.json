@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "17698967814935386218"
+      "templateHash": "8611679748900233251"
     },
     "name": "Virtual Network Gateway Connections",
     "description": "This module deploys a Virtual Network Gateway Connection."
@@ -139,36 +139,6 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The virtual network gateway configuration."
-      }
-    },
-    "peerType": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Resource ID of the peer."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The peer configuration for ExpressRoute connections."
-      }
-    },
-    "localNetworkGatewayType": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. Resource ID of the local network gateway."
-          }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true,
-        "description": "The local network gateway configuration."
       }
     },
     "gatewayCustomBgpIpAddressType": {
@@ -414,22 +384,18 @@
         "description": "Required. The primary Virtual Network Gateway."
       }
     },
-    "virtualNetworkGateway2": {
-      "$ref": "#/definitions/virtualNetworkGatewayType",
-      "defaultValue": {
-        "id": ""
-      },
+    "virtualNetworkGateway2ResourceId": {
+      "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Optional. The remote Virtual Network Gateway. Used for connection connectionType [Vnet2Vnet]."
+        "description": "Optional. The remote Virtual Network Gateway resource ID. Used for connection connectionType [Vnet2Vnet]."
       }
     },
-    "peer": {
-      "$ref": "#/definitions/peerType",
-      "defaultValue": {
-        "id": ""
-      },
+    "peerResourceId": {
+      "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Optional. The remote peer. Used for connection connectionType [ExpressRoute]."
+        "description": "Optional. The remote peer resource ID. Used for connection connectionType [ExpressRoute]."
       }
     },
     "authorizationKey": {
@@ -439,13 +405,11 @@
         "description": "Optional. The Authorization Key to connect to an Express Route Circuit. Used for connection type [ExpressRoute]."
       }
     },
-    "localNetworkGateway2": {
-      "$ref": "#/definitions/localNetworkGatewayType",
-      "defaultValue": {
-        "id": ""
-      },
+    "localNetworkGateway2ResourceId": {
+      "type": "string",
+      "defaultValue": "",
       "metadata": {
-        "description": "Optional. The local network gateway. Used for connection type [IPsec]."
+        "description": "Optional. The local network gateway resource ID. Used for connection type [IPsec]."
       }
     },
     "gatewayCustomBgpIpAddresses": {
@@ -494,9 +458,9 @@
         "enablePrivateLinkFastPath": "[if(equals(parameters('connectionType'), 'ExpressRoute'), parameters('enablePrivateLinkFastPath'), null())]",
         "expressRouteGatewayBypass": "[if(equals(parameters('connectionType'), 'ExpressRoute'), parameters('expressRouteGatewayBypass'), null())]",
         "virtualNetworkGateway1": "[parameters('virtualNetworkGateway1')]",
-        "virtualNetworkGateway2": "[if(and(equals(parameters('connectionType'), 'Vnet2Vnet'), not(empty(parameters('virtualNetworkGateway2').id))), parameters('virtualNetworkGateway2'), null())]",
-        "localNetworkGateway2": "[if(and(equals(parameters('connectionType'), 'IPsec'), not(empty(parameters('localNetworkGateway2').id))), parameters('localNetworkGateway2'), null())]",
-        "peer": "[if(and(equals(parameters('connectionType'), 'ExpressRoute'), not(empty(parameters('peer').id))), parameters('peer'), null())]",
+        "virtualNetworkGateway2": "[if(and(equals(parameters('connectionType'), 'Vnet2Vnet'), not(empty(parameters('virtualNetworkGateway2ResourceId')))), createObject('id', parameters('virtualNetworkGateway2ResourceId')), null())]",
+        "localNetworkGateway2": "[if(and(equals(parameters('connectionType'), 'IPsec'), not(empty(parameters('localNetworkGateway2ResourceId')))), createObject('id', parameters('localNetworkGateway2ResourceId')), null())]",
+        "peer": "[if(and(equals(parameters('connectionType'), 'ExpressRoute'), not(empty(parameters('peerResourceId')))), createObject('id', parameters('peerResourceId')), null())]",
         "authorizationKey": "[if(and(equals(parameters('connectionType'), 'ExpressRoute'), not(empty(parameters('authorizationKey')))), parameters('authorizationKey'), null())]",
         "sharedKey": "[if(not(equals(parameters('connectionType'), 'ExpressRoute')), parameters('vpnSharedKey'), null())]",
         "trafficSelectorPolicies": "[parameters('trafficSelectorPolicies')]",
