@@ -2,7 +2,7 @@
 set -e
 
 # Check arguments
-if [[ $# -ne 6 ]]; then
+if [[ $# -ne 7 ]]; then
   echo "Usage: $0 <base64 of reflect.bicep> <base64 of read.bicep> <base64 of read.json> <base64 of write.bicep> <base64 of write.json> <resource-group> <subscription-id>"
   exit 1
 fi
