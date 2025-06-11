@@ -40,9 +40,24 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
-      name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      azureOpenAILocation: 'australiaeast'
+      //TODO: make all the parameters below default
+      logAnalyticsWorkspaceConfiguration: {
+        dataRetentionInDays: 30
+      }
+      applicationInsightsConfiguration: {
+        retentionInDays: 30
+      }
+      virtualNetworkConfiguration: {
+        enabled: false
+      }
+      aiFoundryStorageAccountConfiguration: {
+        sku: 'Standard_LRS'
+      }
+      webServerFarmConfiguration: {
+        skuCapacity: 1
+        skuName: 'B2'
+      }
     }
   }
 ]

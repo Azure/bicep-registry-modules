@@ -15,7 +15,7 @@ resource aiServices 'Microsoft.CognitiveServices/accounts@2023-05-01' existing =
   name: aiFoundryAiServicesName
 }
 
-module aiFoundryAiHub 'br/public:avm/res/machine-learning-services/workspace:0.10.1' = {
+module aiFoundryAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = {
   name: take('avm.res.machine-learning-services.workspace.${name}', 64)
   params: {
     name: name
@@ -28,7 +28,16 @@ module aiFoundryAiHub 'br/public:avm/res/machine-learning-services/workspace:0.1
     description: 'AI Hub for Multi Agent Custom Automation Engine Solution Accelerator template'
     //associatedKeyVaultResourceId: keyVaultResourceId
     associatedStorageAccountResourceId: storageAccountResourceId
+    systemDatastoresAuthMode: 'Identity'
     associatedApplicationInsightsResourceId: applicationInsightsResourceId
+    //primaryUserAssignedIdentity: managedIdentityResourceId //Required if 'userAssignedIdentities' is not empty
+    managedIdentities: {
+      // userAssignedResourceIds: [
+      //   managedIdentityResourceId
+      // ]
+      systemAssigned: true
+    }
+    provisionNetworkNow: virtualNetworkEnabled ? true : null
     connections: [
       {
         name: 'connection-AzureOpenAI'
@@ -40,15 +49,12 @@ module aiFoundryAiHub 'br/public:avm/res/machine-learning-services/workspace:0.1
           ResourceId: aiServices.id
         }
         connectionProperties: {
-          authType: 'ApiKey'
-          credentials: {
-            key: aiServices.listKeys().key1
-          }
+          authType: 'AAD'
         }
       }
     ]
-    //publicNetworkAccess: virtualNetworkEnabled ? 'Disabled' : 'Enabled'
-    publicNetworkAccess: 'Enabled' //TODO: connection via private endpoint is not working from containers network. Change this when fixed
+    publicNetworkAccess: virtualNetworkEnabled ? 'Disabled' : 'Enabled'
+    //publicNetworkAccess: 'Enabled' //TODO: connection via private endpoint is not working from containers network. Change this when fixed
     managedNetworkSettings: virtualNetworkEnabled
       ? {
           isolationMode: 'AllowInternetOutbound'
@@ -60,3 +66,4 @@ module aiFoundryAiHub 'br/public:avm/res/machine-learning-services/workspace:0.1
 }
 
 output resourceId string = aiFoundryAiHub.outputs.resourceId
+output systemAssignedMIPrincipalId string = aiFoundryAiHub.outputs.?systemAssignedMIPrincipalId!
