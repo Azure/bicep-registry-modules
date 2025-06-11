@@ -55,7 +55,7 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
-    clusterName: '${namePrefix}${serviceShort}01'
+    clusterName: '${namePrefix}${serviceShort}1'
     clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
     keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
@@ -202,18 +202,6 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
   }
 }
 
-module secrets '../secrets.bicep' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-secrets'
-  scope: resourceGroup
-  params: {
-    keyVaultName: nestedDependencies.outputs.keyVaultName
-    name: '${namePrefix}${serviceShort}secrets'
-    location: enforcedLocation
-    sshPrivateKeyPemSecretName: sshPrivateKeyPemSecretName
-    sshPublicKeySecretName: sshPublicKeySecretName
-  }
-}
-
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-aks-${serviceShort}'
@@ -224,15 +212,6 @@ module testDeployment '../../../main.bicep' = {
       infraNetworkProfile: {
         vnetSubnetIds: [
           logicalNetwork.outputs.resourceId
-        ]
-      }
-    }
-    linuxProfile: {
-      ssh: {
-        publicKeys: [
-          {
-            keyData: secrets.outputs.sshPublicKeyPemValue
-          }
         ]
       }
     }

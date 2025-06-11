@@ -207,18 +207,6 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
   }
 }
 
-module secrets '../secrets.bicep' = {
-  name: '${uniqueString(deployment().name, enforcedLocation)}-secrets'
-  scope: resourceGroup
-  params: {
-    keyVaultName: nestedDependencies.outputs.keyVaultName
-    name: '${namePrefix}${serviceShort}secrets'
-    location: enforcedLocation
-    sshPrivateKeyPemSecretName: sshPrivateKeyPemSecretName
-    sshPublicKeySecretName: sshPublicKeySecretName
-  }
-}
-
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-aks-${serviceShort}'
@@ -232,15 +220,7 @@ module testDeployment '../../../main.bicep' = {
         ]
       }
     }
-    linuxProfile: {
-      ssh: {
-        publicKeys: [
-          {
-            keyData: secrets.outputs.sshPublicKeyPemValue
-          }
-        ]
-      }
-    }
+    linuxProfile: null
     controlPlane: {
       count: 1
       vmSize: 'Standard_A4_v2'

@@ -7,14 +7,32 @@ param name string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
+@description('Optional. Tags of the resource.')
+param tags object?
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
+
+@description('Optional. The name of the secret in the key vault that contains the SSH private key PEM.')
+param sshPrivateKeyPemSecretName string = 'AksArcAgentSshPrivateKeyPem'
+
+@description('Optional. The name of the secret in the key vault that contains the SSH public key.')
+param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
+
+@description('Conditional. Key vault subscription ID, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different subscription.')
+param keyvaultSubscriptionId string?
+
+@description('Conditional. Key vault resource group, which is used for for storing secrets for the HCI cluster. Required if no existing SSH keys and key vault is in different resource group.')
+param keyvaultResourceGroup string?
+
+@description('Conditional. The name of the key vault. The key vault name. Required if no existing SSH keys.')
+param keyVaultName string?
 
 @description('Required. The id of the Custom location that used to create hybrid aks.')
 param customLocationResourceId string
 
 @description('Required. The profile for Linux VMs in the provisioned cluster.')
-param linuxProfile linuxProfileType
+param linuxProfile linuxProfileType?
 
 @description('Optional. The Kubernetes version for the cluster.')
 param kubernetesVersion string?
@@ -113,6 +131,22 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
+module secrets './secrets.bicep' = if (empty(linuxProfile) && !empty(keyVaultName)) {
+  name: '${uniqueString(deployment().name, location)}-secrets'
+  scope: resourceGroup(
+    keyvaultSubscriptionId ?? subscription().subscriptionId,
+    keyvaultResourceGroup ?? resourceGroup().name
+  )
+  params: {
+    keyVaultName: keyVaultName!
+    name: name
+    location: location
+    sshPrivateKeyPemSecretName: sshPrivateKeyPemSecretName
+    sshPublicKeySecretName: sshPublicKeySecretName
+    tags: tags
+  }
+}
+
 var enableReferencedModulesTelemetry = false
 
 module connectedCluster 'br/public:avm/res/kubernetes/connected-cluster:0.1.1' = {
@@ -150,7 +184,15 @@ resource provisionedCluster 'Microsoft.HybridContainerService/provisionedCluster
     controlPlane: controlPlane
     kubernetesVersion: kubernetesVersion ?? ''
     licenseProfile: licenseProfile
-    linuxProfile: linuxProfile
+    linuxProfile: linuxProfile ?? {
+      ssh: {
+        publicKeys: [
+          {
+            keyData: secrets.outputs.sshPublicKeyPemValue
+          }
+        ]
+      }
+    }
     networkProfile: networkProfile
     storageProfile: storageProfile
   }
