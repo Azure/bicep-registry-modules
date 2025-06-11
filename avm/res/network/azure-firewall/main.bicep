@@ -123,11 +123,13 @@ var ipConfigurations = concat(
     {
       name: !empty(publicIPResourceID) ? last(split(publicIPResourceID, '/')) : publicIPAddress.outputs.name
       properties: union(
-        {
-          subnet: {
-            id: '${virtualNetworkResourceId}/subnets/AzureFirewallSubnet' // The subnet name must be AzureFirewallSubnet
-          }
-        },
+        (azureSkuName == 'AZFW_VNet')
+          ? {
+              subnet: {
+                id: '${virtualNetworkResourceId}/subnets/AzureFirewallSubnet' // The subnet name must be AzureFirewallSubnet
+              }
+            }
+          : {},
         (!empty(publicIPResourceID) || !empty(publicIPAddressObject))
           ? {
               //Use existing Public IP, new Public IP created in this module, or none if neither
@@ -302,7 +304,6 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
               id: firewallPolicyId
             }
           : null
-        ipConfigurations: ipConfigurations
         sku: {
           name: azureSkuName
           tier: azureSkuTier
