@@ -7,7 +7,6 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 ### Changes
 
 - Updated resource provider versions
-- In the test cases, the Azure Container Registry, storage account and Key Vault names are now unique to prevent deployment failures due to duplicate names
 - Updated az cli version in the deployment script
 - Added min and max length to the ACR name property
 - Exclude Content Trues psrule `Azure.ACR.ContentTrust` for this module
