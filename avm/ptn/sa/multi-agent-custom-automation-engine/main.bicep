@@ -13,7 +13,7 @@ param enableTelemetry bool = true
 
 // Restricting deployment to only supported Azure OpenAI regions validated with GPT-4o model
 @allowed(['australiaeast', 'eastus2', 'francecentral', 'japaneast', 'norwayeast', 'swedencentral', 'uksouth', 'westus'])
-@description('Optional. The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions.')
+@description('Required. The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions.')
 param azureOpenAILocation string
 
 // @description('Set this if you want to deploy to a different region than the resource group. Otherwise, it will use the resource group location by default.')
@@ -815,6 +815,7 @@ module resourceRoleAssignmentAiHubAiProjectAzureAiDeveloper 'br/public:avm/ptn/a
     principalId: aiFoundryAiHub.outputs.?systemAssignedMIPrincipalId!
     principalType: 'ServicePrincipal'
     resourceId: aiFoundryAiProject.outputs.?resourceId
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -1002,6 +1003,7 @@ module resourceRoleAssignmentAiProjectAiServicesCognitiveServicesOpenAIUser 'br/
     principalId: aiFoundryAiProject.outputs.?systemAssignedMIPrincipalId!
     principalType: 'ServicePrincipal'
     resourceId: aiFoundryAiServices.outputs.resourceId
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -1258,6 +1260,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.4.1' = if (webServerFar
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     kind: 'linux'
     zoneRedundant: false //TODO: make it zone redundant for waf aligned
+    enableTelemetry: enableTelemetry
   }
 }
 

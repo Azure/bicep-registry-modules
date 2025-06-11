@@ -290,6 +290,12 @@ param azureOpenAILocation = 'australiaeast'
 
 ## Parameters
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`azureOpenAILocation`](#parameter-azureopenailocation) | string | The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -299,7 +305,6 @@ param azureOpenAILocation = 'australiaeast'
 | [`aiFoundryAiServicesConfiguration`](#parameter-aifoundryaiservicesconfiguration) | object | The configuration to apply for the AI Foundry AI Services resource. |
 | [`aiFoundryStorageAccountConfiguration`](#parameter-aifoundrystorageaccountconfiguration) | object | The configuration to apply for the AI Foundry Storage Account resource. |
 | [`applicationInsightsConfiguration`](#parameter-applicationinsightsconfiguration) | object | The configuration to apply for the Multi-Agent Custom Automation Engine Application Insights resource. |
-| [`azureOpenAILocation`](#parameter-azureopenailocation) | string | The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions. |
 | [`bastionConfiguration`](#parameter-bastionconfiguration) | object | The configuration to apply for the Multi-Agent Custom Automation Engine bastion resource. |
 | [`containerAppConfiguration`](#parameter-containerappconfiguration) | object | The configuration to apply for the Container App resource. |
 | [`containerAppEnvironmentConfiguration`](#parameter-containerappenvironmentconfiguration) | object | The configuration to apply for the Container App Environment resource. |
@@ -318,6 +323,26 @@ param azureOpenAILocation = 'australiaeast'
 | [`virtualNetworkConfiguration`](#parameter-virtualnetworkconfiguration) | object | The configuration to apply for the Multi-Agent Custom Automation Engine virtual network resource. |
 | [`webServerFarmConfiguration`](#parameter-webserverfarmconfiguration) | object | The configuration to apply for the Web Server Farm resource. |
 | [`webSiteConfiguration`](#parameter-websiteconfiguration) | object | The configuration to apply for the Web Server Farm resource. |
+
+### Parameter: `azureOpenAILocation`
+
+The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'australiaeast'
+    'eastus2'
+    'francecentral'
+    'japaneast'
+    'norwayeast'
+    'swedencentral'
+    'uksouth'
+    'westus'
+  ]
+  ```
 
 ### Parameter: `aiFoundryAiHubConfiguration`
 
@@ -866,26 +891,6 @@ The tags to set for the Application Insights resource.
 
 - Required: No
 - Type: object
-
-### Parameter: `azureOpenAILocation`
-
-The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'australiaeast'
-    'eastus2'
-    'francecentral'
-    'japaneast'
-    'norwayeast'
-    'swedencentral'
-    'uksouth'
-    'westus'
-  ]
-  ```
 
 ### Parameter: `bastionConfiguration`
 
