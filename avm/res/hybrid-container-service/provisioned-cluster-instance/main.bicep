@@ -31,7 +31,7 @@ param keyVaultName string?
 @description('Required. The id of the Custom location that used to create hybrid aks.')
 param customLocationResourceId string
 
-@description('Required. The profile for Linux VMs in the provisioned cluster.')
+@description('Optional. The profile for Linux VMs in the provisioned cluster.')
 param linuxProfile linuxProfileType?
 
 @description('Optional. The Kubernetes version for the cluster.')
