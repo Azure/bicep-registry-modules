@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "1481518212296073181"
+      "templateHash": "17841606571431822206"
     },
     "name": "Multi-Agent Custom Automation Engine",
-    "description": "This module contains the resources required to deploy the Multi-Agent Custom Automation Engine solution accelerator for both Sandbox environments and WAF aligned environments."
+    "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments."
   },
   "definitions": {
     "logAnalyticsWorkspaceConfigurationType": {
@@ -295,7 +295,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The Name of the subnet resource."
+            "description": "Required. The Name of the subnet resource."
           }
         },
         "addressPrefix": {
@@ -1897,7 +1897,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Required. Location for all Resources except AI Foundry."
+        "description": "Optional. Location for all Resources except AI Foundry."
       }
     },
     "enableTelemetry": {
@@ -2277,6 +2277,26 @@
     "webSiteName": "[format('app-{0}', parameters('solutionPrefix'))]"
   },
   "resources": {
+    "avmTelemetry": {
+      "condition": "[parameters('enableTelemetry')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2024-03-01",
+      "name": "[format('46d3xbcp.ptn.sa-multiagentcustauteng.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('solutionLocation')), 0, 4))]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": [],
+          "outputs": {
+            "telemetry": {
+              "type": "String",
+              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+            }
+          }
+        }
+      }
+    },
     "logAnalyticsWorkspace": {
       "condition": "[variables('logAnalyticsWorkspaceEnabled')]",
       "type": "Microsoft.Resources/deployments",
@@ -20547,7 +20567,7 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "name": "[format('vnetlink-{0}', split(objectKeys(variables('openAiPrivateDnsZones'))[copyIndex()], '.')[1])]",
+                "name": "[take(format('vnetlink-{0}-{1}', variables('virtualNetworkResourceName'), split(objectKeys(variables('openAiPrivateDnsZones'))[copyIndex()], '.')[1]), 80)]",
                 "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]"
               }
             ]
@@ -26310,7 +26330,7 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "name": "[format('vnetlink-{0}', split(objectKeys(variables('storageAccountPrivateDnsZones'))[copyIndex()], '.')[1])]",
+                "name": "[take(format('vnetlink-{0}-{1}', variables('virtualNetworkResourceName'), split(objectKeys(variables('storageAccountPrivateDnsZones'))[copyIndex()], '.')[1]), 80)]",
                 "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]"
               }
             ]
@@ -35250,7 +35270,7 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "name": "[format('vnetlink-{0}', split(objectKeys(variables('mlPrivateDnsZones'))[copyIndex()], '.')[1])]",
+                "name": "[take(format('vnetlink-{0}-{1}', variables('virtualNetworkResourceName'), split(objectKeys(variables('mlPrivateDnsZones'))[copyIndex()], '.')[1]), 80)]",
                 "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]"
               }
             ]
@@ -47548,7 +47568,7 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "name": "vnetlink-cosmosdb",
+                "name": "[take(format('vnetlink-{0}-documents', variables('virtualNetworkResourceName')), 80)]",
                 "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]"
               }
             ]
@@ -70265,6 +70285,13 @@
     }
   },
   "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the resources were deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    },
     "webSiteDefaultHostname": {
       "type": "string",
       "metadata": {

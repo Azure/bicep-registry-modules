@@ -1,6 +1,6 @@
 # Multi-Agent Custom Automation Engine `[Sa/MultiAgentCustomAutomationEngine]`
 
-This module contains the resources required to deploy the Multi-Agent Custom Automation Engine solution accelerator for both Sandbox environments and WAF aligned environments.
+This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.
 
 ## Navigation
 
@@ -115,10 +115,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Default configuration with default parameter values](#example-1-default-configuration-with-default-parameter-values)
+- [Default configuration with WAF aligned parameter values](#example-2-default-configuration-with-waf-aligned-parameter-values)
 
-### Example 1: _Defaults_
+### Example 1: _Default configuration with default parameter values_
+
+This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
+
 
 <details>
 
@@ -232,7 +235,10 @@ param webServerFarmConfiguration = {
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _Default configuration with WAF aligned parameter values_
+
+This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using parameters that deploy the WAF aligned configuration.
+
 
 <details>
 
@@ -284,12 +290,6 @@ param azureOpenAILocation = 'australiaeast'
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`solutionLocation`](#parameter-solutionlocation) | string | Location for all Resources except AI Foundry. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -310,6 +310,7 @@ param azureOpenAILocation = 'australiaeast'
 | [`networkSecurityGroupBackendConfiguration`](#parameter-networksecuritygroupbackendconfiguration) | object | The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the backend subnet. |
 | [`networkSecurityGroupBastionConfiguration`](#parameter-networksecuritygroupbastionconfiguration) | object | The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the Bastion subnet. |
 | [`networkSecurityGroupContainersConfiguration`](#parameter-networksecuritygroupcontainersconfiguration) | object | The configuration to apply for the Multi-Agent Custom Automation Engine Network Security Group resource for the containers subnet. |
+| [`solutionLocation`](#parameter-solutionlocation) | string | Location for all Resources except AI Foundry. |
 | [`solutionPrefix`](#parameter-solutionprefix) | string | The prefix to add in the default names given to all deployed Azure resources. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
 | [`userAssignedManagedIdentityConfiguration`](#parameter-userassignedmanagedidentityconfiguration) | object | The configuration to apply for the Multi-Agent Custom Automation Engine Managed Identity resource. |
@@ -317,14 +318,6 @@ param azureOpenAILocation = 'australiaeast'
 | [`virtualNetworkConfiguration`](#parameter-virtualnetworkconfiguration) | object | The configuration to apply for the Multi-Agent Custom Automation Engine virtual network resource. |
 | [`webServerFarmConfiguration`](#parameter-webserverfarmconfiguration) | object | The configuration to apply for the Web Server Farm resource. |
 | [`webSiteConfiguration`](#parameter-websiteconfiguration) | object | The configuration to apply for the Web Server Farm resource. |
-
-### Parameter: `solutionLocation`
-
-Location for all Resources except AI Foundry.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `aiFoundryAiHubConfiguration`
 
@@ -2532,6 +2525,14 @@ The tags to set for the Network Security Group resource.
 - Required: No
 - Type: object
 
+### Parameter: `solutionLocation`
+
+Location for all Resources except AI Foundry.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
+
 ### Parameter: `solutionPrefix`
 
 The prefix to add in the default names given to all deployed Azure resources.
@@ -2931,6 +2932,12 @@ An array of 1 or more subnets for the Virtual Network resource.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-virtualnetworkconfigurationsubnetsname) | string | The Name of the subnet resource. |
+
 **Conditional parameters**
 
 | Parameter | Type | Description |
@@ -2945,7 +2952,6 @@ An array of 1 or more subnets for the Virtual Network resource.
 | [`applicationGatewayIPConfigurations`](#parameter-virtualnetworkconfigurationsubnetsapplicationgatewayipconfigurations) | array | Application gateway IP configurations of virtual network resource. |
 | [`defaultOutboundAccess`](#parameter-virtualnetworkconfigurationsubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-virtualnetworkconfigurationsubnetsdelegation) | string | The delegation to enable on the subnet. |
-| [`name`](#parameter-virtualnetworkconfigurationsubnetsname) | string | The Name of the subnet resource. |
 | [`natGatewayResourceId`](#parameter-virtualnetworkconfigurationsubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
 | [`networkSecurityGroupResourceId`](#parameter-virtualnetworkconfigurationsubnetsnetworksecuritygroupresourceid) | string | The resource ID of the network security group to assign to the subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-virtualnetworkconfigurationsubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
@@ -2955,6 +2961,13 @@ An array of 1 or more subnets for the Virtual Network resource.
 | [`serviceEndpointPolicies`](#parameter-virtualnetworkconfigurationsubnetsserviceendpointpolicies) | array | An array of service endpoint policies. |
 | [`serviceEndpoints`](#parameter-virtualnetworkconfigurationsubnetsserviceendpoints) | array | The service endpoints to enable on the subnet. |
 | [`sharingScope`](#parameter-virtualnetworkconfigurationsubnetssharingscope) | string | Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty. |
+
+### Parameter: `virtualNetworkConfiguration.subnets.name`
+
+The Name of the subnet resource.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `virtualNetworkConfiguration.subnets.addressPrefix`
 
@@ -2989,13 +3002,6 @@ Set this property to false to disable default outbound connectivity for all VMs 
 The delegation to enable on the subnet.
 
 - Required: No
-- Type: string
-
-### Parameter: `virtualNetworkConfiguration.subnets.name`
-
-The Name of the subnet resource.
-
-- Required: Yes
 - Type: string
 
 ### Parameter: `virtualNetworkConfiguration.subnets.natGatewayResourceId`
@@ -3354,6 +3360,7 @@ The tags to set for the Web Site resource.
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `resourceGroupName` | string | The resource group the resources were deployed into. |
 | `webSiteDefaultHostname` | string | The default url of the website to connect to the Multi-Agent Custom Automation Engine solution. |
 
 ## Cross-referenced modules

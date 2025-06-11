@@ -1,11 +1,11 @@
 metadata name = 'Multi-Agent Custom Automation Engine'
-metadata description = 'This module contains the resources required to deploy the Multi-Agent Custom Automation Engine solution accelerator for both Sandbox environments and WAF aligned environments.'
+metadata description = 'This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.'
 
 @description('Optional. The prefix to add in the default names given to all deployed Azure resources.')
 @maxLength(19)
 param solutionPrefix string = 'macae${uniqueString(deployer().objectId, deployer().tenantId, subscription().subscriptionId, resourceGroup().id)}'
 
-@description('Required. Location for all Resources except AI Foundry.')
+@description('Optional. Location for all Resources except AI Foundry.')
 param solutionLocation string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -231,9 +231,9 @@ param webSiteConfiguration webSiteConfigurationType = {
 // Resources      //
 // ============== //
 
-/* #disable-next-line no-deployments-resources
+#disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.[[REPLACE WITH TELEMETRY IDENTIFIER]].${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.sa-multiagentcustauteng.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, solutionLocation), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
@@ -248,7 +248,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
       }
     }
   }
-} */
+}
 
 // ========== Log Analytics Workspace ========== //
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
@@ -720,7 +720,7 @@ module privateDnsZonesAiServices 'br/public:avm/res/network/private-dns-zone:0.7
       enableTelemetry: enableTelemetry
       virtualNetworkLinks: [
         {
-          name: 'vnetlink-${split(zone, '.')[1]}'
+          name: take('vnetlink-${virtualNetworkResourceName}-${split(zone, '.')[1]}', 80)
           virtualNetworkResourceId: virtualNetwork.outputs.resourceId
         }
       ]
@@ -837,7 +837,7 @@ module privateDnsZonesAiFoundryStorageAccount 'br/public:avm/res/network/private
       enableTelemetry: enableTelemetry
       virtualNetworkLinks: [
         {
-          name: 'vnetlink-${split(zone, '.')[1]}'
+          name: take('vnetlink-${virtualNetworkResourceName}-${split(zone, '.')[1]}', 80)
           virtualNetworkResourceId: virtualNetwork.outputs.resourceId
         }
       ]
@@ -917,7 +917,7 @@ module privateDnsZonesAiFoundryWorkspaceHub 'br/public:avm/res/network/private-d
       tags: tags
       virtualNetworkLinks: [
         {
-          name: 'vnetlink-${split(zone, '.')[1]}'
+          name: take('vnetlink-${virtualNetworkResourceName}-${split(zone, '.')[1]}', 80)
           virtualNetworkResourceId: virtualNetwork.outputs.resourceId
         }
       ]
@@ -1014,7 +1014,7 @@ module privateDnsZonesCosmosDb 'br/public:avm/res/network/private-dns-zone:0.7.1
     enableTelemetry: enableTelemetry
     virtualNetworkLinks: [
       {
-        name: 'vnetlink-cosmosdb'
+        name: take('vnetlink-${virtualNetworkResourceName}-documents', 80)
         virtualNetworkResourceId: virtualNetwork.outputs.resourceId
       }
     ]
@@ -1303,6 +1303,9 @@ module webSite 'br/public:avm/res/web/site:0.16.0' = if (webSiteEnabled) {
 
 // Add your outputs here
 
+@description('The resource group the resources were deployed into.')
+output resourceGroupName string = resourceGroup().name
+
 @description('The default url of the website to connect to the Multi-Agent Custom Automation Engine solution.')
 output webSiteDefaultHostname string = webSite.outputs.defaultHostname
 
@@ -1431,7 +1434,7 @@ type virtualNetworkConfigurationType = {
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 type subnetType = {
-  @description('Optional. The Name of the subnet resource.')
+  @description('Required. The Name of the subnet resource.')
   name: string
 
   @description('Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty.')
