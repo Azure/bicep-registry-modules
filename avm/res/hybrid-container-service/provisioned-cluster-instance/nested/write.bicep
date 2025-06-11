@@ -34,3 +34,14 @@ resource privateKeySecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
     value: base64ToString(privateKeySecretValueBase64)
   }
 }
+
+module reflect './reflect.bicep' = {
+  name: 'reflect'
+  params: {
+    input: base64ToString(publicKeySecretValueBase64)
+  }
+}
+
+output publicKeySecretName string = publicKeySecretName
+output privateKeySecretName string = privateKeySecretName
+output publicKeySecretValue string = reflect.outputs.output

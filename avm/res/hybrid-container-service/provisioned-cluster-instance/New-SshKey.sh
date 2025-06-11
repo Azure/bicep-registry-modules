@@ -66,8 +66,16 @@ if [[ -z "$PUBLIC_KEY" ]]; then
     --resource-group "$RESOURCE_GROUP" \
     --template-file "write.bicep" \
     --parameters "write.json" || true
+
+  PUBLIC_KEY=$(az deployment group show \
+    --name "$DEPLOYMENT_NAME" \
+    --resource-group "$RESOURCE_GROUP" \
+    --query properties.outputs.publicKeySecretValue.value \
+    --only-show-errors --output tsv)
 fi
 
+if [[ -z "$PUBLIC_KEY" ]]; then
+  exit 1
+fi
 
-
-
+echo "{\"output\": \"$PUBLIC_KEY\"}"> $AZ_SCRIPTS_OUTPUT_PATH

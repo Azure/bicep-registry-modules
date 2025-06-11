@@ -59,7 +59,7 @@ var readJson = replace(
   sshPrivateKeyPemSecretName
 )
 
-var writeJsonRaw = loadTextContent('./nested/read.json')
+var writeJsonRaw = loadTextContent('./nested/write.json')
 var writeJson = replace(
   replace(replace(writeJsonRaw, '{{keyVaultName}}', keyVaultName), '{{publicKeySecretName}}', sshPublicKeySecretName),
   '{{privateKeySecretName}}',
