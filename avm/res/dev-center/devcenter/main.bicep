@@ -52,6 +52,9 @@ param projectPolicies projectPolicyType[]?
 @description('Optional. The compute galleries to associate with the Dev Center. The Dev Center identity (system or user) must have "Contributor" access to the gallery.')
 param galleries devCenterGalleryType[]?
 
+@description('Optional. The projects to create in the Dev Center.')
+param projects array = []
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -215,22 +218,6 @@ module devcenter_gallery 'gallery/main.bicep' = [
   }
 ]
 
-@batchSize(1)
-module devCenter_projectPolicy 'project-policy/main.bicep' = [
-  for (projectPolicy, index) in (projectPolicies ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Devcenter-ProjectPolicy-${index}'
-    params: {
-      devcenterName: devcenter.name
-      name: projectPolicy.name
-      resourcePolicies: projectPolicy.?resourcePolicies
-      projectResourceIds: projectPolicy.?projectResourceIds
-    }
-    dependsOn: [
-      devcenter_gallery
-    ]
-  }
-]
-
 resource devCenter_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
@@ -255,6 +242,37 @@ resource devCenter_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
       delegatedManagedIdentityResourceId: roleAssignment.?delegatedManagedIdentityResourceId
     }
     scope: devcenter
+  }
+]
+
+module devCenter_projects '../project/main.bicep' = [
+  for (project, index) in (projects ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Devcenter-Project-${project.name}'
+    scope: resourceGroup(
+      split(project.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
+      split(project.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
+    )
+    params: {
+      devCenterResourceId: devcenter.id
+      name: project.name
+    }
+  }
+]
+
+@batchSize(1)
+module devCenter_projectPolicy 'project-policy/main.bicep' = [
+  for (projectPolicy, index) in (projectPolicies ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Devcenter-ProjectPolicy-${index}'
+    params: {
+      devcenterName: devcenter.name
+      name: projectPolicy.name
+      resourcePolicies: projectPolicy.?resourcePolicies
+      projectResourceIds: projectPolicy.?projectResourceIds
+    }
+    dependsOn: [
+      devcenter_gallery
+      devCenter_projects
+    ]
   }
 ]
 
