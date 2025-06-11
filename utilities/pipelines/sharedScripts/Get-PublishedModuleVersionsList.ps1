@@ -39,7 +39,7 @@ function Get-PublishedModuleVersionsList {
         Write-Error "Error message: $($_.Exception.Message)"
         throw $_.Exception
     }
-    $publishedTags = $tagListResponse.tags | Sort-Object -Culture 'en-US'
+    $publishedTags = $tagListResponse.tags | Sort-Object { [Version]$_ } -Culture 'en-US'
     Write-Verbose "  Found tags: $($publishedTags -join ', ')" -Verbose
     return $publishedTags
 }
