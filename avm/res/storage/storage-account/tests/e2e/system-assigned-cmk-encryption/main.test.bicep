@@ -56,7 +56,6 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      location: resourceLocation
       name: nestedDependencies.outputs.storageAccountName
       privateEndpoints: [
         {
@@ -87,8 +86,5 @@ module testDeployment '../../../main.bicep' = [
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
       }
     }
-    dependsOn: [
-      nestedDependencies
-    ]
   }
 ]

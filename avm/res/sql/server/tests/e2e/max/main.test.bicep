@@ -45,7 +45,8 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    serverIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    databaseIdentityName: 'dep-${namePrefix}-dbmsi-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: enforcedLocation
   }
@@ -79,7 +80,7 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      primaryUserAssignedIdentityId: nestedDependencies.outputs.managedIdentityResourceId
+      primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.serverIdentityResourceId
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       location: enforcedLocation
@@ -87,13 +88,13 @@ module testDeployment '../../../main.bicep' = [
         {
           name: '7027a5c5-d1b1-49e0-80cc-ffdff3a3ada9'
           roleDefinitionIdOrName: 'Owner'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalId: nestedDependencies.outputs.serverIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
           name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalId: nestedDependencies.outputs.serverIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
@@ -101,7 +102,7 @@ module testDeployment '../../../main.bicep' = [
             'Microsoft.Authorization/roleDefinitions',
             'acdd72a7-3385-48ef-bd42-f606fba81ae7'
           )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalId: nestedDependencies.outputs.serverIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
       ]
@@ -125,6 +126,7 @@ module testDeployment '../../../main.bicep' = [
             tier: 'GeneralPurpose'
             capacity: 10
           }
+          availabilityZone: -1
         }
       ]
       databases: [
@@ -135,6 +137,11 @@ module testDeployment '../../../main.bicep' = [
             name: 'ElasticPool'
             tier: 'GeneralPurpose'
             capacity: 0
+          }
+          managedIdentities: {
+            userAssignedResourceIds: [
+              nestedDependencies.outputs.databaseIdentityResourceId
+            ]
           }
           maxSizeBytes: 34359738368
           licenseType: 'LicenseIncluded'
@@ -154,6 +161,7 @@ module testDeployment '../../../main.bicep' = [
           backupLongTermRetentionPolicy: {
             monthlyRetention: 'P6M'
           }
+          availabilityZone: -1
         }
       ]
       customerManagedKey: {
@@ -179,7 +187,7 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
+          nestedDependencies.outputs.serverIdentityResourceId
         ]
       }
       privateEndpoints: [
@@ -213,7 +221,7 @@ module testDeployment '../../../main.bicep' = [
         {
           ignoreMissingVnetServiceEndpoint: true
           name: 'newVnetRule1'
-          virtualNetworkSubnetId: nestedDependencies.outputs.serviceEndpointSubnetResourceId
+          virtualNetworkSubnetResourceId: nestedDependencies.outputs.serviceEndpointSubnetResourceId
         }
       ]
       restrictOutboundNetworkAccess: 'Disabled'

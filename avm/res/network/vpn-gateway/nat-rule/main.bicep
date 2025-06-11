@@ -30,11 +30,11 @@ param mode string?
 ])
 param type string?
 
-resource vpnGateway 'Microsoft.Network/vpnGateways@2023-04-01' existing = {
+resource vpnGateway 'Microsoft.Network/vpnGateways@2024-07-01' existing = {
   name: vpnGatewayName
 }
 
-resource natRule 'Microsoft.Network/vpnGateways/natRules@2023-04-01' = {
+resource natRule 'Microsoft.Network/vpnGateways/natRules@2024-07-01' = {
   name: name
   parent: vpnGateway
   properties: {

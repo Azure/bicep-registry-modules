@@ -15,7 +15,8 @@ This module deploys a Container App.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps) |
+| `Microsoft.App/containerApps` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps) |
+| `Microsoft.App/containerApps/authConfigs` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps/authConfigs) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 
@@ -281,10 +282,32 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     environmentResourceId: '<environmentResourceId>'
     name: 'acamax001'
     // Non-required parameters
+    activeRevisionsMode: 'Single'
+    authConfig: {
+      globalValidation: {
+        unauthenticatedClientAction: 'Return401'
+      }
+      httpSettings: {
+        requireHttps: true
+      }
+      platform: {
+        enabled: true
+      }
+    }
     identitySettings: [
       {
         identity: '<identity>'
         lifecycle: 'None'
+      }
+    ]
+    initContainersTemplate: [
+      {
+        image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+        name: 'init-container'
+        resources: {
+          cpu: '<cpu>'
+          memory: '0.5Gi'
+        }
       }
     ]
     location: '<location>'
@@ -318,14 +341,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     ]
     runtime: {
       java: {
-        enableJavaAgent: true
-        enableMetrics: false
-        loggerSettings: [
-          {
-            level: 'info'
-            logger: 'test'
-          }
-        ]
+        enableMetrics: true
       }
     }
     scaleSettings: {
@@ -345,6 +361,9 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
         name: 'keyvaultstoredsecret'
       }
     ]
+    service: {
+      type: 'Web'
+    }
     tags: {
       Env: 'test'
       'hidden-title': 'This is visible in the resource name'
@@ -412,11 +431,39 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
       "value": "acamax001"
     },
     // Non-required parameters
+    "activeRevisionsMode": {
+      "value": "Single"
+    },
+    "authConfig": {
+      "value": {
+        "globalValidation": {
+          "unauthenticatedClientAction": "Return401"
+        },
+        "httpSettings": {
+          "requireHttps": true
+        },
+        "platform": {
+          "enabled": true
+        }
+      }
+    },
     "identitySettings": {
       "value": [
         {
           "identity": "<identity>",
           "lifecycle": "None"
+        }
+      ]
+    },
+    "initContainersTemplate": {
+      "value": [
+        {
+          "image": "mcr.microsoft.com/azuredocs/containerapps-helloworld:latest",
+          "name": "init-container",
+          "resources": {
+            "cpu": "<cpu>",
+            "memory": "0.5Gi"
+          }
         }
       ]
     },
@@ -460,14 +507,7 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
     "runtime": {
       "value": {
         "java": {
-          "enableJavaAgent": true,
-          "enableMetrics": false,
-          "loggerSettings": [
-            {
-              "level": "info",
-              "logger": "test"
-            }
-          ]
+          "enableMetrics": true
         }
       }
     },
@@ -491,6 +531,11 @@ module containerApp 'br/public:avm/res/app/container-app:<version>' = {
           "name": "keyvaultstoredsecret"
         }
       ]
+    },
+    "service": {
+      "value": {
+        "type": "Web"
+      }
     },
     "tags": {
       "value": {
@@ -553,10 +598,32 @@ param containers = [
 param environmentResourceId = '<environmentResourceId>'
 param name = 'acamax001'
 // Non-required parameters
+param activeRevisionsMode = 'Single'
+param authConfig = {
+  globalValidation: {
+    unauthenticatedClientAction: 'Return401'
+  }
+  httpSettings: {
+    requireHttps: true
+  }
+  platform: {
+    enabled: true
+  }
+}
 param identitySettings = [
   {
     identity: '<identity>'
     lifecycle: 'None'
+  }
+]
+param initContainersTemplate = [
+  {
+    image: 'mcr.microsoft.com/azuredocs/containerapps-helloworld:latest'
+    name: 'init-container'
+    resources: {
+      cpu: '<cpu>'
+      memory: '0.5Gi'
+    }
   }
 ]
 param location = '<location>'
@@ -590,14 +657,7 @@ param roleAssignments = [
 ]
 param runtime = {
   java: {
-    enableJavaAgent: true
-    enableMetrics: false
-    loggerSettings: [
-      {
-        level: 'info'
-        logger: 'test'
-      }
-    ]
+    enableMetrics: true
   }
 }
 param scaleSettings = {
@@ -617,6 +677,9 @@ param secrets = [
     name: 'keyvaultstoredsecret'
   }
 ]
+param service = {
+  type: 'Web'
+}
 param tags = {
   Env: 'test'
   'hidden-title': 'This is visible in the resource name'
@@ -969,6 +1032,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`activeRevisionsMode`](#parameter-activerevisionsmode) | string | Controls how active revisions are handled for the Container app. |
 | [`additionalPortMappings`](#parameter-additionalportmappings) | array | Settings to expose additional ports on container app. |
+| [`authConfig`](#parameter-authconfig) | object | The name of the Container App Auth configs. |
 | [`clientCertificateMode`](#parameter-clientcertificatemode) | string | Client certificate mode for mTLS. |
 | [`corsPolicy`](#parameter-corspolicy) | object | Object userd to configure CORS policy. |
 | [`customDomains`](#parameter-customdomains) | array | Custom domain bindings for Container App hostnames. |
@@ -1425,6 +1489,66 @@ Specifies the exposed port for the target port. If not specified, it defaults to
 - Required: No
 - Type: int
 
+### Parameter: `authConfig`
+
+The name of the Container App Auth configs.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`encryptionSettings`](#parameter-authconfigencryptionsettings) | object | The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization. |
+| [`globalValidation`](#parameter-authconfigglobalvalidation) | object | The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization. |
+| [`httpSettings`](#parameter-authconfighttpsettings) | object | The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization. |
+| [`identityProviders`](#parameter-authconfigidentityproviders) | object | The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization. |
+| [`login`](#parameter-authconfiglogin) | object | The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization. |
+| [`platform`](#parameter-authconfigplatform) | object | The configuration settings of the platform of ContainerApp Service Authentication/Authorization. |
+
+### Parameter: `authConfig.encryptionSettings`
+
+The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfig.globalValidation`
+
+The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfig.httpSettings`
+
+The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfig.identityProviders`
+
+The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfig.login`
+
+The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
+### Parameter: `authConfig.platform`
+
+The configuration settings of the platform of ContainerApp Service Authentication/Authorization.
+
+- Required: No
+- Type: object
+
 ### Parameter: `clientCertificateMode`
 
 Client certificate mode for mTLS.
@@ -1507,7 +1631,6 @@ Custom domain bindings for Container App hostnames.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `dapr`
 
@@ -1515,7 +1638,6 @@ Dapr configuration for the Container App.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `disableIngress`
 
@@ -1603,7 +1725,6 @@ List of specialized containers that run before app containers.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `ipSecurityRestrictions`
 
@@ -1611,7 +1732,6 @@ Rules to restrict incoming IP address.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `location`
 
@@ -1699,7 +1819,6 @@ Collection of private container registry credentials for containers used by the 
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `revisionSuffix`
 
@@ -1819,106 +1938,6 @@ Runtime configuration for the Container App.
 
 - Required: No
 - Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`dotnet`](#parameter-runtimedotnet) | object | Runtime configuration for ASP.NET Core. |
-| [`java`](#parameter-runtimejava) | object | Runtime configuration for Java. |
-
-### Parameter: `runtime.dotnet`
-
-Runtime configuration for ASP.NET Core.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`autoConfigureDataProtection`](#parameter-runtimedotnetautoconfiguredataprotection) | bool | Enable to auto configure the ASP.NET Core Data Protection feature. |
-
-### Parameter: `runtime.dotnet.autoConfigureDataProtection`
-
-Enable to auto configure the ASP.NET Core Data Protection feature.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `runtime.java`
-
-Runtime configuration for Java.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`enableJavaAgent`](#parameter-runtimejavaenablejavaagent) | bool | Enable Java agent injection for the Java app. |
-| [`enableMetrics`](#parameter-runtimejavaenablemetrics) | bool | Enable JMX core metrics for the Java app. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`loggerSettings`](#parameter-runtimejavaloggersettings) | array | Java agent logging configuration. |
-
-### Parameter: `runtime.java.enableJavaAgent`
-
-Enable Java agent injection for the Java app.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `runtime.java.enableMetrics`
-
-Enable JMX core metrics for the Java app.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `runtime.java.loggerSettings`
-
-Java agent logging configuration.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`level`](#parameter-runtimejavaloggersettingslevel) | string | Java agent logging level. |
-| [`logger`](#parameter-runtimejavaloggersettingslogger) | string | Name of the logger. |
-
-### Parameter: `runtime.java.loggerSettings.level`
-
-Java agent logging level.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'debug'
-    'error'
-    'info'
-    'off'
-    'trace'
-    'warn'
-  ]
-  ```
-
-### Parameter: `runtime.java.loggerSettings.logger`
-
-Name of the logger.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `scaleSettings`
 
@@ -2089,7 +2108,6 @@ Dev ContainerApp service type.
 
 - Required: No
 - Type: object
-- Default: `{}`
 
 ### Parameter: `serviceBinds`
 
@@ -2179,7 +2197,6 @@ List of volume definitions for the Container App.
 
 - Required: No
 - Type: array
-- Default: `[]`
 
 ### Parameter: `workloadProfileName`
 

@@ -41,7 +41,7 @@ param stickySessionsAffinity string = 'none'
 param ingressTransport string = 'auto'
 
 @description('Optional. Dev ContainerApp service type.')
-param service object = {}
+param service resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.configuration.service?
 
 @description('Optional. Toggle to include the service configuration.')
 param includeAddOns bool = false
@@ -82,7 +82,7 @@ param lock lockType?
 param tags object?
 
 @description('Optional. Collection of private container registry credentials for containers used by the Container app.')
-param registries array = []
+param registries resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.configuration.registries?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -96,13 +96,13 @@ param roleAssignments roleAssignmentType[]?
 param enableTelemetry bool = true
 
 @description('Optional. Custom domain bindings for Container App hostnames.')
-param customDomains array = []
+param customDomains resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.configuration.ingress.customDomains?
 
 @description('Optional. Exposed Port in containers for TCP traffic from ingress.')
 param exposedPort int = 0
 
 @description('Optional. Rules to restrict incoming IP address.')
-param ipSecurityRestrictions array = []
+param ipSecurityRestrictions resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.configuration.ingress.ipSecurityRestrictions?
 
 @description('Optional. Associates a traffic label with a revision. Label name should be consist of lower case alphanumeric characters or dashes.')
 param trafficLabel string = 'label-1'
@@ -117,22 +117,22 @@ param trafficRevisionName string = ''
 param trafficWeight int = 100
 
 @description('Optional. Dapr configuration for the Container App.')
-param dapr object = {}
+param dapr resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.configuration.dapr?
 
 @description('Optional. Settings for Managed Identities that are assigned to the Container App. If a Managed Identity is not specified here, default settings will be used.')
-param identitySettings resourceInput<'Microsoft.App/containerApps@2024-10-02-preview'>.properties.configuration.identitySettings?
+param identitySettings resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.configuration.identitySettings?
 
 @description('Optional. Max inactive revisions a Container App can have.')
 param maxInactiveRevisions int = 0
 
 @description('Optional. Runtime configuration for the Container App.')
-param runtime runtimeType?
+param runtime resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.configuration.runtime?
 
 @description('Required. List of container definitions for the Container App.')
 param containers containerType[]
 
 @description('Optional. List of specialized containers that run before app containers.')
-param initContainersTemplate array = []
+param initContainersTemplate resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.template.initContainers?
 
 @description('Optional. The secrets of the Container App.')
 param secrets secretType[]?
@@ -141,10 +141,13 @@ param secrets secretType[]?
 param revisionSuffix string = ''
 
 @description('Optional. List of volume definitions for the Container App.')
-param volumes array = []
+param volumes resourceInput<'Microsoft.App/containerApps@2025-01-01'>.properties.template.volumes?
 
 @description('Optional. Workload profile name to pin for container app execution.')
 param workloadProfileName string = ''
+
+@description('Optional. The name of the Container App Auth configs.')
+param authConfig authConfigType?
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
@@ -209,13 +212,22 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
+resource containerApp 'Microsoft.App/containerApps@2025-01-01' = {
   name: name
   tags: tags
   location: location
   identity: identity
   properties: {
     environmentId: environmentResourceId
+    workloadProfileName: workloadProfileName
+    template: {
+        containers: containers
+        initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
+        revisionSuffix: revisionSuffix
+        scale: scaleSettings
+        serviceBinds: (includeAddOns && !empty(serviceBinds)) ? serviceBinds : null
+        volumes: !empty(volumes) ? volumes : null
+      }
     configuration: {
       activeRevisionsMode: activeRevisionsMode
       dapr: !empty(dapr) ? dapr : null
@@ -260,34 +272,8 @@ resource containerApp 'Microsoft.App/containerApps@2024-10-02-preview' = {
       maxInactiveRevisions: maxInactiveRevisions
       registries: !empty(registries) ? registries : null
       secrets: secrets
-      runtime: {
-        dotnet: !empty(runtime.?dotnet)
-          ? {
-              autoConfigureDataProtection: runtime.?dotnet.autoConfigureDataProtection
-            }
-          : null
-        java: !empty(runtime.?java)
-          ? {
-              enableMetrics: runtime.?java.enableMetrics
-              javaAgent: {
-                enabled: runtime.?java.enableJavaAgent
-                logging: {
-                  loggerSettings: runtime.?java.?loggerSettings
-                }
-              }
-            }
-          : null
-      }
+      runtime: !empty(runtime) ? runtime : null
     }
-    template: {
-      containers: containers
-      initContainers: !empty(initContainersTemplate) ? initContainersTemplate : null
-      revisionSuffix: revisionSuffix
-      scale: scaleSettings
-      serviceBinds: (includeAddOns && !empty(serviceBinds)) ? serviceBinds : null
-      volumes: !empty(volumes) ? volumes : null
-    }
-    workloadProfileName: workloadProfileName
   }
 }
 
@@ -317,6 +303,19 @@ resource containerApp_roleAssignments 'Microsoft.Authorization/roleAssignments@2
     scope: containerApp
   }
 ]
+
+module containerAppAuthConfigs './auth-config/main.bicep' = if (!empty(authConfig)) {
+  name: '${uniqueString(deployment().name, location)}-auth-config'
+  params: {
+    containerAppName: containerApp.name
+    encryptionSettings: authConfig.?encryptionSettings
+    globalValidation: authConfig.?globalValidation
+    httpSettings: authConfig.?httpSettings
+    identityProviders: authConfig.?identityProviders
+    login: authConfig.?login
+    platform: authConfig.?platform
+  }
+}
 
 @description('The resource ID of the Container App.')
 output resourceId string = containerApp.id
@@ -552,34 +551,6 @@ type volumeMountType = {
 }
 
 @export()
-@description('Optional. App runtime configuration for the Container App.')
-type runtimeType = {
-  @description('Optional. Runtime configuration for ASP.NET Core.')
-  dotnet: {
-    @description('Required. Enable to auto configure the ASP.NET Core Data Protection feature.')
-    autoConfigureDataProtection: bool
-  }?
-
-  @description('Optional. Runtime configuration for Java.')
-  java: {
-    @description('Required. Enable JMX core metrics for the Java app.')
-    enableMetrics: bool
-
-    @description('Required. Enable Java agent injection for the Java app.')
-    enableJavaAgent: bool
-
-    @description('Optional. Java agent logging configuration.')
-    loggerSettings: {
-      @description('Required. Name of the logger.')
-      logger: string
-
-      @description('Required. Java agent logging level.')
-      level: ('debug' | 'error' | 'info' | 'off' | 'trace' | 'warn')
-    }[]?
-  }?
-}
-
-@export()
 @description('The type for a secret.')
 type secretType = {
   @description('Optional. Resource ID of a managed identity to authenticate with Azure Key Vault, or System to use a system-assigned identity.')
@@ -594,4 +565,26 @@ type secretType = {
   @description('Conditional. The container app secret value, if not fetched from the Key Vault. Required if `keyVaultUrl` is not null.')
   @secure()
   value: string?
+}
+
+@export()
+@description('The type for the container app\'s authentication configuration.')
+type authConfigType = {
+  @description('Optional. The configuration settings of the secrets references of encryption key and signing key for ContainerApp Service Authentication/Authorization.')
+  encryptionSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.encryptionSettings?
+
+  @description('Optional. The configuration settings that determines the validation flow of users using Service Authentication and/or Authorization.')
+  globalValidation: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.globalValidation?
+
+  @description('Optional. The configuration settings of the HTTP requests for authentication and authorization requests made against ContainerApp Service Authentication/Authorization.')
+  httpSettings: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.httpSettings?
+
+  @description('Optional. The configuration settings of each of the identity providers used to configure ContainerApp Service Authentication/Authorization.')
+  identityProviders: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.identityProviders?
+
+  @description('Optional. The configuration settings of the login flow of users using ContainerApp Service Authentication/Authorization.')
+  login: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.login?
+
+  @description('Optional. The configuration settings of the platform of ContainerApp Service Authentication/Authorization.')
+  platform: resourceInput<'Microsoft.App/containerApps/authConfigs@2025-01-01'>.properties.platform?
 }

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "1590776576142483800"
+      "version": "0.35.1.17967",
+      "templateHash": "8054022893657473307"
     },
     "name": "Machine Learning Services Workspaces",
     "description": "This module deploys a Machine Learning Services Workspace."
@@ -458,6 +458,30 @@
           "$ref": "#/definitions/connectionPropertyType",
           "metadata": {
             "description": "Required. The properties of the connection, specific to the auth type."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the workspace connection."
+      }
+    },
+    "datastoreType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the datastore to create."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.MachineLearningServices/workspaces/datastores@2024-10-01#properties/properties"
+            },
+            "description": "Required. The properties of the datastore."
           }
         }
       },
@@ -1878,6 +1902,16 @@
         "description": "Optional. Connections to create in the workspace."
       }
     },
+    "datastores": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/datastoreType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. Datastores to create in the workspace."
+      }
+    },
     "tags": {
       "type": "object",
       "nullable": true,
@@ -2255,8 +2289,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "14463677195465146164"
+              "version": "0.35.1.17967",
+              "templateHash": "8367876684793659506"
             },
             "name": "Machine Learning Services Workspaces Computes",
             "description": "This module deploys a Machine Learning Services Workspaces Compute.\n\nAttaching a compute is not idempotent and will fail in case you try to redeploy over an existing compute in AML (see parameter `deployCompute`)."
@@ -2521,8 +2555,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "11571995595419225315"
+              "version": "0.35.1.17967",
+              "templateHash": "8692375174405115433"
             },
             "name": "Machine Learning Services Workspaces Connections",
             "description": "This module creates a connection in a Machine Learning Services workspace."
@@ -3302,6 +3336,102 @@
               "type": "string",
               "metadata": {
                 "description": "The name of the resource group the connection was created in."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "workspace"
+      ]
+    },
+    "workspace_datastores": {
+      "copy": {
+        "name": "workspace_datastores",
+        "count": "[length(parameters('datastores'))]"
+      },
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-{1}-datastore', parameters('name'), parameters('datastores')[copyIndex()].name)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "machineLearningWorkspaceName": {
+            "value": "[parameters('name')]"
+          },
+          "name": {
+            "value": "[parameters('datastores')[copyIndex()].name]"
+          },
+          "properties": {
+            "value": "[parameters('datastores')[copyIndex()].properties]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.35.1.17967",
+              "templateHash": "14383983573401363041"
+            },
+            "name": "Machine Learning Services Workspaces Datastores",
+            "description": "This module creates a datastore in a Machine Learning Services workspace."
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the datastore to create."
+              }
+            },
+            "machineLearningWorkspaceName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the parent Machine Learning Workspace."
+              }
+            },
+            "properties": {
+              "type": "object",
+              "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.MachineLearningServices/workspaces/datastores@2024-10-01#properties/properties"
+                },
+                "description": "Required. The properties of the datastore."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+              "apiVersion": "2024-10-01",
+              "name": "[format('{0}/{1}', parameters('machineLearningWorkspaceName'), parameters('name'))]",
+              "properties": "[parameters('properties')]"
+            }
+          ],
+          "outputs": {
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the datastore."
+              },
+              "value": "[resourceId('Microsoft.MachineLearningServices/workspaces/datastores', parameters('machineLearningWorkspaceName'), parameters('name'))]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the datastore."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the datastore was created in."
               },
               "value": "[resourceGroup().name]"
             }

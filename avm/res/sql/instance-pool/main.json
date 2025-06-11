@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "8492808105657553147"
+      "templateHash": "3972645437879378102"
     },
     "name": "SQL Server Instance Pool",
     "description": "This module deploys an Azure SQL Server Instance Pool."
@@ -101,18 +101,34 @@
       "metadata": {
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
+    },
+    "capacity": {
+      "type": "int",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Capacity of the particular SKU."
+      }
+    },
+    "size": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Size of the particular SKU."
+      }
     }
   },
   "resources": {
     "instancePool": {
       "type": "Microsoft.Sql/instancePools",
-      "apiVersion": "2023-05-01-preview",
+      "apiVersion": "2024-05-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "sku": {
+        "capacity": "[parameters('capacity')]",
         "family": "[parameters('skuFamily')]",
         "name": "[parameters('skuName')]",
+        "size": "[parameters('size')]",
         "tier": "[parameters('tier')]"
       },
       "properties": {
@@ -162,7 +178,7 @@
       "metadata": {
         "description": "The location of the SQL instance pool."
       },
-      "value": "[reference('instancePool', '2023-05-01-preview', 'full').location]"
+      "value": "[reference('instancePool', '2024-05-01-preview', 'full').location]"
     },
     "resourceGroupName": {
       "type": "string",
