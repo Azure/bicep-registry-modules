@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7564528812843461438"
+      "templateHash": "3214014637272702503"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments."
@@ -1187,7 +1187,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The container registry domain of the container image to be used by the Container App. Default to `biabcontainerreg.azurecr.io`"
+            "description": "Optional. The container registry domain of the container image to be used by the Container App. Default to `biabcontainerreg.azurecr.io`."
           }
         },
         "containerImageName": {

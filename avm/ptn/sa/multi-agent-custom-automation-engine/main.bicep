@@ -1904,7 +1904,7 @@ type containerAppConfigurationType = {
   @description('Optional. The name given to the Container App.')
   containerName: string?
 
-  @description('Optional. The container registry domain of the container image to be used by the Container App. Default to `biabcontainerreg.azurecr.io`')
+  @description('Optional. The container registry domain of the container image to be used by the Container App. Default to `biabcontainerreg.azurecr.io`.')
   containerImageRegistryDomain: string?
 
   @description('Optional. The name of the container image to be used by the Container App.')
