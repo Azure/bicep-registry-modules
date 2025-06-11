@@ -17,9 +17,9 @@ This module deploys a VPN Gateway.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
-| `Microsoft.Network/vpnGateways` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways) |
-| `Microsoft.Network/vpnGateways/natRules` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways/natRules) |
-| `Microsoft.Network/vpnGateways/vpnConnections` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/vpnGateways/vpnConnections) |
+| `Microsoft.Network/vpnGateways` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnGateways) |
+| `Microsoft.Network/vpnGateways/natRules` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnGateways/natRules) |
+| `Microsoft.Network/vpnGateways/vpnConnections` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/vpnGateways/vpnConnections) |
 
 ## Usage examples
 
@@ -144,7 +144,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     }
     vpnConnections: [
       {
-        connectionBandwidth: 100
         enableBgp: false
         enableInternetSecurity: true
         enableRateLimiting: false
@@ -224,7 +223,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     "vpnConnections": {
       "value": [
         {
-          "connectionBandwidth": 100,
           "enableBgp": false,
           "enableInternetSecurity": true,
           "enableRateLimiting": false,
@@ -288,7 +286,6 @@ param tags = {
 }
 param vpnConnections = [
   {
-    connectionBandwidth: 100
     enableBgp: false
     enableInternetSecurity: true
     enableRateLimiting: false
@@ -351,7 +348,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     }
     vpnConnections: [
       {
-        connectionBandwidth: 100
         enableBgp: false
         enableInternetSecurity: true
         enableRateLimiting: false
@@ -425,7 +421,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
     "vpnConnections": {
       "value": [
         {
-          "connectionBandwidth": 100,
           "enableBgp": false,
           "enableInternetSecurity": true,
           "enableRateLimiting": false,
@@ -485,7 +480,6 @@ param tags = {
 }
 param vpnConnections = [
   {
-    connectionBandwidth: 100
     enableBgp: false
     enableInternetSecurity: true
     enableRateLimiting: false
@@ -546,7 +540,65 @@ BGP settings details.
 
 - Required: No
 - Type: object
-- Default: `{}`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`asn`](#parameter-bgpsettingsasn) | int | The BGP speaker's ASN (Autonomous System Number). |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`bgpPeeringAddresses`](#parameter-bgpsettingsbgppeeringaddresses) | array | BGP peering addresses for this VPN Gateway. |
+| [`peerWeight`](#parameter-bgpsettingspeerweight) | int | The weight added to routes learned from this BGP speaker. |
+
+### Parameter: `bgpSettings.asn`
+
+The BGP speaker's ASN (Autonomous System Number).
+
+- Required: Yes
+- Type: int
+- MinValue: 0
+- MaxValue: 4294967295
+
+### Parameter: `bgpSettings.bgpPeeringAddresses`
+
+BGP peering addresses for this VPN Gateway.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`customBgpIpAddresses`](#parameter-bgpsettingsbgppeeringaddressescustombgpipaddresses) | array | The custom BGP peering addresses. |
+| [`ipconfigurationId`](#parameter-bgpsettingsbgppeeringaddressesipconfigurationid) | string | The IP configuration ID. |
+
+### Parameter: `bgpSettings.bgpPeeringAddresses.customBgpIpAddresses`
+
+The custom BGP peering addresses.
+
+- Required: No
+- Type: array
+
+### Parameter: `bgpSettings.bgpPeeringAddresses.ipconfigurationId`
+
+The IP configuration ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `bgpSettings.peerWeight`
+
+The weight added to routes learned from this BGP speaker.
+
+- Required: No
+- Type: int
+- MinValue: 0
+- MaxValue: 100
 
 ### Parameter: `enableBgpRouteTranslationForNat`
 

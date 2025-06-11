@@ -2,20 +2,20 @@ metadata name = 'API Management Services'
 metadata description = 'This module deploys an API Management Service. The default deployment is set to use a Premium SKU to align with Microsoft WAF-aligned best practices. In most cases, non-prod deployments should use a lower-tier SKU.'
 
 @description('Optional. Additional datacenter locations of the API Management service. Not supported with V2 SKUs.')
-param additionalLocations array = []
+param additionalLocations additionalLocationType[]?
 
 @description('Required. The name of the API Management service.')
 param name string
 
 @description('Optional. List of Certificates that need to be installed in the API Management service. Max supported certificates that can be installed is 10.')
 @maxLength(10)
-param certificates array = []
+param certificates array?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
 @description('Optional. Custom properties of the API Management service. Not supported if SKU is Consumption.')
-param customProperties object = {
+param customProperties resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.properties.customProperties = {
   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168': 'False'
   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_128_CBC_SHA': 'False'
   'Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TLS_RSA_WITH_AES_256_CBC_SHA': 'False'
@@ -33,7 +33,7 @@ param disableGateway bool = false
 param enableClientCertificate bool = false
 
 @description('Optional. Custom hostname configuration of the API Management service.')
-param hostnameConfigurations array = []
+param hostnameConfigurations resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.properties.hostnameConfigurations?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.4.1'
 @description('Optional. The managed identity definition for this resource.')
@@ -78,13 +78,13 @@ param roleAssignments roleAssignmentType[]?
 param sku string = 'Premium'
 
 @description('Conditional. The scale units for this API Management service. Required if using Basic, Standard, or Premium skus. For range of capacities for each sku, reference https://azure.microsoft.com/en-us/pricing/details/api-management/.')
-param skuCapacity int = 2
+param skuCapacity int = 3
 
 @description('Optional. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
 param subnetResourceId string?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ApiManagement/service@2024-05-01'>.tags?
 
 @description('Optional. The type of VPN in which API Management service needs to be configured in. None (Default Value) means the API Management service is not part of any Virtual Network, External means the API Management deployment is set up inside a Virtual Network having an internet Facing Endpoint, and Internal means that API Management deployment is setup inside a Virtual Network having an Intranet Facing Endpoint only.')
 @allowed([
@@ -99,49 +99,58 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 param diagnosticSettings diagnosticSettingFullType[]?
 
 @description('Optional. A list of availability zones denoting where the resource needs to come from. Only supported by Premium sku.')
-param zones array = [1, 2]
+@allowed([
+  1
+  2
+  3
+])
+param availabilityZones int[] = [
+  1
+  2
+  3
+]
 
 @description('Optional. Necessary to create a new GUID.')
 param newGuidValue string = newGuid()
 
 @description('Optional. APIs.')
-param apis array = []
+param apis apiType[]?
 
 @description('Optional. API Version Sets.')
-param apiVersionSets array = []
+param apiVersionSets apiVersionSetType[]?
 
 @description('Optional. Authorization servers.')
 param authorizationServers authorizationServerType[]?
 
 @description('Optional. Backends.')
-param backends array = []
+param backends array?
 
 @description('Optional. Caches.')
-param caches array = []
+param caches array?
 
 @description('Optional. API Diagnostics.')
-param apiDiagnostics array = []
+param apiDiagnostics array?
 
 @description('Optional. Identity providers.')
-param identityProviders array = []
+param identityProviders array?
 
 @description('Optional. Loggers.')
-param loggers array = []
+param loggers array?
 
 @description('Optional. Named values.')
-param namedValues array = []
+param namedValues array?
 
 @description('Optional. Policies.')
-param policies array = []
+param policies array?
 
 @description('Optional. Portal settings.')
-param portalsettings array = []
+param portalsettings array?
 
 @description('Optional. Products.')
-param products array = []
+param products array?
 
 @description('Optional. Subscriptions.')
-param subscriptions array = []
+param subscriptions array?
 
 @description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the region. Supported only for Developer and Premium SKU being deployed in Virtual Network.')
 param publicIpAddressResourceId string?
@@ -232,14 +241,24 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
     name: sku
     capacity: contains(sku, 'Consumption') ? 0 : contains(sku, 'Developer') ? 1 : skuCapacity
   }
-  zones: contains(sku, 'Premium') ? zones : []
+  zones: contains(sku, 'Premium') ? map(availabilityZones, zone => string(zone)) : []
   identity: identity
   properties: {
     publisherEmail: publisherEmail
     publisherName: publisherName
     notificationSenderEmail: notificationSenderEmail
     hostnameConfigurations: hostnameConfigurations
-    additionalLocations: contains(sku, 'Premium') ? additionalLocations : []
+    additionalLocations: contains(sku, 'Premium') && !empty(additionalLocations)
+      ? map((additionalLocations ?? []), additLoc => {
+          location: additLoc.location
+          sku: additLoc.sku
+          disableGateway: additLoc.?disableGateway
+          natGatewayState: additLoc.?natGatewayState
+          publicIpAddressId: additLoc.?publicIpAddressResourceId
+          virtualNetworkConfiguration: additLoc.?virtualNetworkConfiguration
+          zones: map(additLoc.?availabilityZones ?? [], zone => string(zone))
+        })
+      : []
     customProperties: contains(sku, 'Consumption') ? null : customProperties
     certificates: certificates
     enableClientCertificate: enableClientCertificate ? true : null
@@ -250,7 +269,7 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
           subnetResourceId: subnetResourceId
         }
       : null
-    publicIpAddressId: !empty(publicIpAddressResourceId) ? publicIpAddressResourceId : null
+    publicIpAddressId: publicIpAddressResourceId
     apiVersionConstraint: !empty(minApiVersion)
       ? {
           minApiVersion: minApiVersion
@@ -264,20 +283,20 @@ resource service 'Microsoft.ApiManagement/service@2024-05-01' = {
 }
 
 module service_apis 'api/main.bicep' = [
-  for (api, index) in apis: {
+  for (api, index) in (apis ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-Api-${index}'
     params: {
       apiManagementServiceName: service.name
       displayName: api.displayName
       name: api.name
       path: api.path
-      apiDescription: api.?apiDescription
+      description: api.?description
       apiRevision: api.?apiRevision
       apiRevisionDescription: api.?apiRevisionDescription
       apiType: api.?apiType
       apiVersion: api.?apiVersion
       apiVersionDescription: api.?apiVersionDescription
-      apiVersionSetId: api.?apiVersionSetId
+      apiVersionSetName: api.?apiVersionSetName
       authenticationSettings: api.?authenticationSettings
       format: api.?format
       isCurrent: api.?isCurrent
@@ -298,12 +317,16 @@ module service_apis 'api/main.bicep' = [
 ]
 
 module service_apiVersionSets 'api-version-set/main.bicep' = [
-  for (apiVersionSet, index) in apiVersionSets: {
+  for (apiVersionSet, index) in (apiVersionSets ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-ApiVersionSet-${index}'
     params: {
       apiManagementServiceName: service.name
       name: apiVersionSet.name
-      properties: apiVersionSet.?properties ?? {}
+      displayName: apiVersionSet.displayName
+      versioningScheme: apiVersionSet.versioningScheme
+      description: apiVersionSet.?description
+      versionHeaderName: apiVersionSet.?versionHeaderName
+      versionQueryName: apiVersionSet.?versionQueryName
     }
   }
 ]
@@ -335,7 +358,7 @@ module service_authorizationServers 'authorization-server/main.bicep' = [
 ]
 
 module service_backends 'backend/main.bicep' = [
-  for (backend, index) in backends: {
+  for (backend, index) in (backends ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-Backend-${index}'
     params: {
       apiManagementServiceName: service.name
@@ -354,7 +377,7 @@ module service_backends 'backend/main.bicep' = [
 ]
 
 module service_caches 'cache/main.bicep' = [
-  for (cache, index) in caches: {
+  for (cache, index) in (caches ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-Cache-${index}'
     params: {
       apiManagementServiceName: service.name
@@ -368,7 +391,7 @@ module service_caches 'cache/main.bicep' = [
 ]
 
 module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
-  for (apidiagnostic, index) in apiDiagnostics: {
+  for (apidiagnostic, index) in (apiDiagnostics ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-Api-Diagnostic-${index}'
     params: {
       apiManagementServiceName: service.name
@@ -393,7 +416,7 @@ module service_apiDiagnostics 'api/diagnostics/main.bicep' = [
 ]
 
 module service_identityProviders 'identity-provider/main.bicep' = [
-  for (identityProvider, index) in identityProviders: {
+  for (identityProvider, index) in (identityProviders ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-IdentityProvider-${index}'
     params: {
       apiManagementServiceName: service.name
@@ -414,7 +437,7 @@ module service_identityProviders 'identity-provider/main.bicep' = [
 ]
 
 module service_loggers 'logger/main.bicep' = [
-  for (logger, index) in loggers: {
+  for (logger, index) in (loggers ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-Logger-${index}'
     params: {
       name: logger.name
@@ -432,7 +455,7 @@ module service_loggers 'logger/main.bicep' = [
 ]
 
 module service_namedValues 'named-value/main.bicep' = [
-  for (namedValue, index) in namedValues: {
+  for (namedValue, index) in (namedValues ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-NamedValue-${index}'
     params: {
       apiManagementServiceName: service.name
@@ -447,7 +470,7 @@ module service_namedValues 'named-value/main.bicep' = [
 ]
 
 module service_portalsettings 'portalsetting/main.bicep' = [
-  for (portalsetting, index) in portalsettings: if (!empty(portalsetting.properties)) {
+  for (portalsetting, index) in (portalsettings ?? []): if (!empty(portalsetting.properties)) {
     name: '${uniqueString(deployment().name, location)}-Apim-PortalSetting-${index}'
     params: {
       apiManagementServiceName: service.name
@@ -458,7 +481,7 @@ module service_portalsettings 'portalsetting/main.bicep' = [
 ]
 
 module service_policies 'policy/main.bicep' = [
-  for (policy, index) in policies: {
+  for (policy, index) in (policies ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-Policy-${index}'
     params: {
       apiManagementServiceName: service.name
@@ -469,7 +492,7 @@ module service_policies 'policy/main.bicep' = [
 ]
 
 module service_products 'product/main.bicep' = [
-  for (product, index) in products: {
+  for (product, index) in (products ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-Product-${index}'
     params: {
       displayName: product.displayName
@@ -491,7 +514,7 @@ module service_products 'product/main.bicep' = [
 ]
 
 module service_subscriptions 'subscription/main.bicep' = [
-  for (subscription, index) in subscriptions: {
+  for (subscription, index) in (subscriptions ?? []): {
     name: '${uniqueString(deployment().name, location)}-Apim-Subscription-${index}'
     params: {
       apiManagementServiceName: service.name
@@ -640,4 +663,153 @@ type authorizationServerType = {
 
   @description('Optional. OAuth token endpoint. Contains absolute URI to entity being referenced.')
   tokenEndpoint: string?
+}
+
+import { diagnosticType, operationType, policyType } from 'api/main.bicep'
+
+@export()
+@description('The type of an API Management service API.')
+type apiType = {
+  @description('Required. API revision identifier. Must be unique in the current API Management service instance. Non-current revision has ;rev=n as a suffix where n is the revision number.')
+  name: string
+
+  @description('Optional. Array of Policies to apply to the Service API.')
+  policies: policyType[]?
+
+  @description('Optional. Array of diagnostics to apply to the Service API.')
+  diagnostics: diagnosticType[]?
+
+  @description('Optional. The operations of the api.')
+  operations: operationType[]?
+
+  @description('Optional. Describes the Revision of the API. If no value is provided, default revision 1 is created.')
+  apiRevision: string?
+
+  @description('Optional. Description of the API Revision.')
+  apiRevisionDescription: string?
+
+  @description('Optional. Type of API to create. * http creates a REST API * soap creates a SOAP pass-through API * websocket creates websocket API * graphql creates GraphQL API.')
+  apiType: ('graphql' | 'http' | 'soap' | 'websocket')?
+
+  @description('Optional. Indicates the Version identifier of the API if the API is versioned.')
+  apiVersion: string?
+
+  @description('Optional. The name of the API version set to link.')
+  apiVersionSetName: string?
+
+  @description('Optional. Description of the API Version.')
+  apiVersionDescription: string?
+
+  @description('Optional. Collection of authentication settings included into this API.')
+  authenticationSettings: resourceInput<'Microsoft.ApiManagement/service/apis@2024-05-01'>.properties.authenticationSettings?
+
+  @description('Optional. Description of the API. May include HTML formatting tags.')
+  description: string?
+
+  @description('Required. API name. Must be 1 to 300 characters long.')
+  @maxLength(300)
+  displayName: string
+
+  @description('Optional. Format of the Content in which the API is getting imported.')
+  format: (
+    | 'wadl-xml'
+    | 'wadl-link-json'
+    | 'swagger-json'
+    | 'swagger-link-json'
+    | 'wsdl'
+    | 'wsdl-link'
+    | 'openapi'
+    | 'openapi+json'
+    | 'openapi-link'
+    | 'openapi+json-link')?
+
+  @description('Optional. Indicates if API revision is current API revision.')
+  isCurrent: bool?
+
+  @description('Required. Relative URL uniquely identifying this API and all of its resource paths within the API Management service instance. It is appended to the API endpoint base URL specified during the service instance creation to form a public URL for this API.')
+  path: string
+
+  @description('Optional. Describes on which protocols the operations in this API can be invoked. - HTTP or HTTPS.')
+  protocols: string[]?
+
+  @description('Optional. Absolute URL of the backend service implementing this API. Cannot be more than 2000 characters long.')
+  @maxLength(2000)
+  serviceUrl: string?
+
+  @description('Optional. API identifier of the source API.')
+  sourceApiId: string?
+
+  @description('Optional. Protocols over which API is made available.')
+  subscriptionKeyParameterNames: resourceInput<'Microsoft.ApiManagement/service/apis@2024-05-01'>.properties.subscriptionKeyParameterNames?
+
+  @description('Optional. Specifies whether an API or Product subscription is required for accessing the API.')
+  subscriptionRequired: bool?
+
+  @description('Optional. Type of API.')
+  type: ('graphql' | 'http' | 'soap' | 'websocket')?
+
+  @description('Optional. Content value when Importing an API.')
+  value: string?
+}
+
+@export()
+@description('The type of an API Management service API Version Set.')
+type apiVersionSetType = {
+  @sys.description('Required. API Version set name.')
+  name: string
+
+  @sys.description('Required. The display name of the Name of API Version Set.')
+  @minLength(1)
+  @maxLength(100)
+  displayName: string
+
+  @sys.description('Required. An value that determines where the API Version identifier will be located in a HTTP request.')
+  versioningScheme: ('Header' | 'Query' | 'Segment')
+
+  @sys.description('Optional. Description of API Version Set.')
+  description: string?
+
+  @sys.description('Optional. Name of HTTP header parameter that indicates the API Version if versioningScheme is set to header.')
+  @minLength(1)
+  @maxLength(100)
+  versionHeaderName: string?
+
+  @sys.description('Optional. Name of query parameter that indicates the API Version if versioningScheme is set to query.')
+  @minLength(1)
+  @maxLength(100)
+  versionQueryName: string?
+}
+
+@export()
+@description('The type of an API Management service additional location.')
+type additionalLocationType = {
+  @sys.description('Optional. Property only valid for an Api Management service deployed in multiple locations. This can be used to disable the gateway in this additional location.')
+  disableGateway: bool?
+
+  @sys.description('Required. The location name of the additional region among Azure Data center regions.')
+  location: string
+
+  @sys.description('Optional. Property can be used to enable NAT Gateway for this API Management service.')
+  natGatewayState: ('Disabled' | 'Enabled')?
+
+  @sys.description('Optional. Public Standard SKU IP V4 based IP address to be associated with Virtual Network deployed service in the location. Supported only for Premium SKU being deployed in Virtual Network.')
+  publicIpAddressResourceId: string?
+
+  @sys.description('Required. SKU properties of the API Management service.')
+  sku: {
+    @sys.description('Required. Capacity of the SKU (number of deployed units of the SKU). For Consumption SKU capacity must be specified as 0.')
+    capacity: int
+
+    @sys.description('Required. Name of the Sku.')
+    name: ('Basic' | 'BasicV2' | 'Consumption' | 'Developer' | 'Isolated' | 'Premium' | 'Standard' | 'StandardV2')
+  }
+
+  @sys.description('Optional. Virtual network configuration for the location.')
+  virtualNetworkConfiguration: {
+    @sys.description('Required. The full resource ID of a subnet in a virtual network to deploy the API Management service in.')
+    subnetResourceId: string
+  }?
+
+  @sys.description('Optional. A list of availability zones denoting where the resource needs to come from.')
+  availabilityZones: (1 | 2 | 3)[]?
 }

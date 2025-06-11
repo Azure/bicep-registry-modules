@@ -1,0 +1,91 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "15561539799762283135"
+    },
+    "name": "API Management Service API Operation Policies",
+    "description": "This module deploys an API Management Service API Operation Policy."
+  },
+  "parameters": {
+    "apiManagementServiceName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API Management service. Required if the template is used in a standalone deployment."
+      }
+    },
+    "apiName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent API. Required if the template is used in a standalone deployment."
+      }
+    },
+    "operationName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent operation. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the policy."
+      }
+    },
+    "format": {
+      "type": "string",
+      "allowedValues": [
+        "rawxml",
+        "rawxml-link",
+        "xml",
+        "xml-link"
+      ],
+      "metadata": {
+        "description": "Required. Format of the policyContent."
+      }
+    },
+    "value": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Contents of the Policy as defined by the format."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.ApiManagement/service/apis/operations/policies",
+      "apiVersion": "2022-08-01",
+      "name": "[format('{0}/{1}/{2}/{3}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('operationName'), parameters('name'))]",
+      "properties": {
+        "value": "[parameters('value')]",
+        "format": "[parameters('format')]"
+      }
+    }
+  ],
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the policy."
+      },
+      "value": "[resourceId('Microsoft.ApiManagement/service/apis/operations/policies', parameters('apiManagementServiceName'), parameters('apiName'), parameters('operationName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the policy."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group the policy was deployed into."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}
