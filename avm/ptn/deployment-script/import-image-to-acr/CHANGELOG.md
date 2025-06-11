@@ -9,8 +9,6 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 - Updated resource provider versions
 - Updated az cli version in the deployment script
 - Added min and max length to the ACR name property
-- Exclude Content Trues psrule `Azure.ACR.ContentTrust` for this module
-- Disabled contentTrust in the 'max' and 'waf-aligned' tests, as creating signed images is a big overhead for the CI deployment testing and raise an error in the PSRule `Azure.ACR.ContentTrust`
 
 ### Breaking Changes
 
