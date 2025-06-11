@@ -16,8 +16,8 @@ param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
 @description('Optional. Tags of the resource.')
 param tags object?
 
-resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
-  name: keyVaultName!
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: keyVaultName
 }
 
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
@@ -26,11 +26,22 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   tags: tags
 }
 
-resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'generateSSHKey-${name}'
+var parametersJsonRaw = loadTextContent('./nested/parameters.json')
+var parametersJson = replace(
+  replace(
+    replace(parametersJsonRaw, '{{keyVaultName}}', keyVaultName),
+    '{{publicKeySecretName}}',
+    sshPublicKeySecretName
+  ),
+  '{{privateKeySecretName}}',
+  sshPrivateKeyPemSecretName
+)
+
+resource newSshKey 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: 'newSshKey-${name}'
   location: location
   tags: tags
-  kind: 'AzurePowerShell'
+  kind: 'AzureCLI'
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -38,28 +49,13 @@ resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     }
   }
   properties: {
-    azPowerShellVersion: '8.0'
-    retentionInterval: 'P1D'
-    scriptContent: loadTextContent('./generateSshKey.ps1')
+    azCliVersion: '2.71.0'
+    scriptContent: loadTextContent('./New-SshKey.sh')
+    arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(parametersJson)}" "${resourceGroup().name}" "${subscription().subscriptionId}"'
+    timeout: 'PT60M'
+    retentionInterval: 'PT1H'
+    cleanupPreference: 'OnExpiration'
   }
 }
 
-resource sshPublicKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: kv
-  name: sshPublicKeySecretName
-  properties: {
-    contentType: 'Secret'
-    value: generateSSHKey.properties.outputs.publicKey
-  }
-}
-
-resource sshPrivateKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: kv
-  name: sshPrivateKeyPemSecretName
-  properties: {
-    contentType: 'Secret'
-    value: generateSSHKey.properties.outputs.privateKey
-  }
-}
-
-output sshPublicKeyPemValue string = generateSSHKey.properties.outputs.publicKey
+output sshPublicKeyPemValue string = newSshKey.properties.outputs.output
