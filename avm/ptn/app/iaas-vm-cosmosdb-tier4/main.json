@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "17901062411321012692"
+      "version": "0.35.1.17967",
+      "templateHash": "17206748972267843964"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -52,7 +52,7 @@
         {
           "name": "HTTP",
           "properties": {
-            "protocol": "TCP",
+            "protocol": "Tcp",
             "sourcePortRange": "*",
             "destinationPortRange": "80",
             "sourceAddressPrefix": "*",
@@ -143,7 +143,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
       "name": "[format('46d3xbcp.ptn.app-iaasvmcosmosdbt4.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
-      "location": "[parameters('location')]",
       "properties": {
         "mode": "Incremental",
         "template": {
@@ -11304,10 +11303,10 @@
               {
                 "name": "[format('{0}-lb-frontendconfig01', parameters('name'))]",
                 "subnetId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]",
-                "zone": [
-                  "1",
-                  "2",
-                  "3"
+                "zones": [
+                  1,
+                  2,
+                  3
                 ]
               }
             ]
