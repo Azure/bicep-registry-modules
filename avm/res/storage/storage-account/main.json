@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14685645971976492606"
+      "templateHash": "3682363270982275902"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2565,7 +2565,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "18178127110856698414"
+              "templateHash": "10639682105009641581"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -3036,7 +3036,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "5355880000308002446"
+                      "templateHash": "10376458647259834115"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -3263,7 +3263,7 @@
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2024-03-01",
-                      "name": "[format('46d3xbcp.res.network-virtualnetworksubnet.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
                         "template": {
