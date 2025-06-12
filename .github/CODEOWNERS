@@ -41,6 +41,7 @@
 /avm/ptn/sa/conversation-knowledge-mining/ @Azure/avm-ptn-sa-conversationknowledgemining-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/virtual-machine-images/azure-image-builder/ @Azure/avm-ptn-virtualmachineimages-azureimagebuilder-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/app/cosmos-db-account-container-app/ @Azure/avm-ptn-app-cosmos-db-account-container-app-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/alerts-management/action-rule/ @Azure/avm-res-alertsmanagement-actionrule-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/analysis-services/server/ @Azure/avm-res-analysisservices-server-module-owners-bicep @Azure/avm-module-reviewers-bicep
