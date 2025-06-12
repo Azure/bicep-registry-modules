@@ -127,7 +127,7 @@ var identity = !empty(managedIdentities)
   : null
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.cdn-profile.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -145,7 +145,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource profile 'Microsoft.Cdn/profiles@2023-05-01' = {
+resource profile 'Microsoft.Cdn/profiles@2025-04-15' = {
   name: name
   location: location
   identity: identity
@@ -255,6 +255,8 @@ module profile_customDomains 'custom-domain/main.bicep' = [
       minimumTlsVersion: customDomain.?minimumTlsVersion
       preValidatedCustomDomainResourceId: customDomain.?preValidatedCustomDomainResourceId
       secretName: customDomain.?secretName
+      cipherSuiteSetType: customDomain.?cipherSuiteSetType
+      customizedCipherSuiteSet: customDomain.?customizedCipherSuiteSet
     }
   }
 ]
