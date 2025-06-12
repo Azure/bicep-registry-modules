@@ -190,7 +190,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
     name: '${namePrefix}${serviceShort}logicalnetwork'
     location: enforcedLocation
     customLocationResourceId: customLocation.id
-    vmSwitchName: 'ConvergedSwitch(management)'
+    vmSwitchName: azlocal.outputs.vSwitchName
     ipAllocationMethod: 'Static'
     addressPrefix: '172.20.0.1/24'
     startingAddress: '172.20.0.171'
