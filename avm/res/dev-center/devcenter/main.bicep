@@ -267,7 +267,7 @@ module devCenter_projectPolicy 'project-policy/main.bicep' = [
       devcenterName: devcenter.name
       name: projectPolicy.name
       resourcePolicies: projectPolicy.?resourcePolicies
-      projectResourceIds: projectPolicy.?projectResourceIds
+      projectsResourceIdOrName: projectPolicy.?projectsResourceIdOrName
     }
     dependsOn: [
       devcenter_gallery
@@ -341,8 +341,8 @@ type projectPolicyType = {
   @description('Required. Resource policies that are a part of this project policy.')
   resourcePolicies: resourcePolicyType
 
-  @description('Optional. Resources (Projects) that have access to the shared resources that are a part of this project policy. If not specified, the project policy status will be set to "Unassigned". The project must be associated to the Dev Center where the project policy is created.')
-  projectResourceIds: string[]?
+  @description('Optional. Project names or resource IDs that have access to the shared resources that are a part of this project policy. If a string starts with "/subscriptions/", it will be treated as a resource ID. Otherwise, it will be treated as a project name and resolved to a resource ID assuming the project is in the same resource group as the dev center. If not specified, the project policy status will be set to "Unassigned".')
+  projectsResourceIdOrName: string[]?
 }
 
 @description('The type for Dev Center Gallery.')

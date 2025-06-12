@@ -12,12 +12,22 @@ param name string
 @description('Required. Resource policies that are a part of this project policy.')
 param resourcePolicies resourcePolicyType
 
-@description('Optional. Resources (Projects) that have access to the shared resources that are a part of this project policy. If not specified, the project policy status will be set to "Unassigned".')
-param projectResourceIds string[]?
+@description('Optional. Project names or resource IDs that have access to the shared resources that are a part of this project policy. If a string starts with "/subscriptions/", it will be treated as a resource ID. Otherwise, it will be treated as a project name and resolved to a resource ID assuming the project is in the same resource group as the dev center. If not specified, the project policy status will be set to "Unassigned".')
+param projectsResourceIdOrName string[]?
 
 resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' existing = {
   name: devcenterName
 }
+
+// Resolve project names to resource IDs
+var projectResourceIds = [
+  for projectResourceIdOrName in (projectsResourceIdOrName ?? []): startsWith(
+      projectResourceIdOrName,
+      '/subscriptions/'
+    )
+    ? projectResourceIdOrName // It's already a resource ID
+    : resourceId('Microsoft.DevCenter/projects', projectResourceIdOrName) // It's a project name, construct the resource ID
+]
 
 resource projectPolicy 'Microsoft.DevCenter/devcenters/projectPolicies@2025-02-01' = {
   parent: devcenter

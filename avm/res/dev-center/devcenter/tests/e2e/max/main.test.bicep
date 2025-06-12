@@ -164,8 +164,8 @@ module testDeployment '../../../main.bicep' = [
               resources: '${devcenterExpectedResourceID}/galleries/Default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-24h2-ent-cpc'
             }
           ]
-          projectResourceIds: [
-            nestedDependencies.outputs.devCenterProjectResourceId
+          projectsResourceIdOrName: [
+            'test-project'
           ]
         }
       ]
