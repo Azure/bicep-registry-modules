@@ -25,7 +25,7 @@ param roleAssignments roleAssignmentType[]?
 param publicNetworkAccess string = 'Disabled'
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.HealthcareApis/workspaces@2022-06-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
