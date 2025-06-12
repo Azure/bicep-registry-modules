@@ -3,7 +3,10 @@ using './main.bicep'
 param solutionPrefix = 'macaewaf101'
 param solutionLocation = 'australiaeast'
 param azureOpenAILocation = 'australiaeast'
-param virtualMachineConfiguration = {
-  adminUsername: 'adminuser'
-  adminPassword: 'P@ssw0rd1234'
-}
+param enableMonitoring = true
+param enablePrivateNetworking = true
+param enableScalability = true
+param enableRedundancy = true
+param enableTelemetry = true
+param virtualMachineAdminPassword = 'P@ssw0rd1234!P@ssw0rd1234!'
+param virtualMachineAdminUsername = 'azureuser'

@@ -4,7 +4,7 @@ param location string
 param sku string
 param storageAccountResourceId string
 param logAnalyticsWorkspaceResourceId string
-param applicationInsightsResourceId string
+param applicationInsightsResourceId string?
 param aiFoundryAiServicesName string
 param enableTelemetry bool
 param virtualNetworkEnabled bool
