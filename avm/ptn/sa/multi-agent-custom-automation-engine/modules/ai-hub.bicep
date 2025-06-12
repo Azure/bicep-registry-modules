@@ -3,13 +3,14 @@ param tags object
 param location string
 param sku string
 param storageAccountResourceId string
-param logAnalyticsWorkspaceResourceId string
+param logAnalyticsWorkspaceResourceId string?
 param applicationInsightsResourceId string?
 param aiFoundryAiServicesName string
 param enableTelemetry bool
 param virtualNetworkEnabled bool
 import { privateEndpointSingleServiceType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 param privateEndpoints privateEndpointSingleServiceType[]
+param enableMonitoring bool
 
 resource aiServices 'Microsoft.CognitiveServices/accounts@2024-10-01' existing = {
   name: aiFoundryAiServicesName
@@ -22,7 +23,7 @@ module aiFoundryAiHub 'br/public:avm/res/machine-learning-services/workspace:0.1
     tags: tags
     location: location
     enableTelemetry: enableTelemetry
-    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }] : null
     kind: 'Hub'
     sku: sku
     description: 'AI Hub for Multi Agent Custom Automation Engine Solution Accelerator template'

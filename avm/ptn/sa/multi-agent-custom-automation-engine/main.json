@@ -6,10 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5560647092988743988"
+      "templateHash": "17597664720665880231"
     },
     "name": "Multi-Agent Custom Automation Engine",
-    "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments."
+    "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
   },
   "parameters": {
     "solutionPrefix": {
@@ -104,14 +104,14 @@
     },
     "backendContainerImageTag": {
       "type": "string",
-      "defaultValue": "latest_2025-06-11_621",
+      "defaultValue": "latest_2025-06-12_639",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the backend from public Container Registry `biabcontainerreg.azurecr.io`."
       }
     },
     "frontendContainerImageTag": {
       "type": "string",
-      "defaultValue": "latest_2025-06-11_621",
+      "defaultValue": "latest_2025-06-12_639",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the frontend from public Container Registry `biabcontainerreg.azurecr.io`."
       }
@@ -35989,15 +35989,14 @@
           "aiFoundryAiServicesName": {
             "value": "[reference('aiFoundryAiServices').outputs.name.value]"
           },
-          "applicationInsightsResourceId": {
-            "value": "[reference('applicationInsights').outputs.resourceId.value]"
-          },
+          "applicationInsightsResourceId": "[if(parameters('enableMonitoring'), createObject('value', reference('applicationInsights').outputs.resourceId.value), createObject('value', null()))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "logAnalyticsWorkspaceResourceId": {
-            "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId]"
+          "enableMonitoring": {
+            "value": "[parameters('enableMonitoring')]"
           },
+          "logAnalyticsWorkspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId), createObject('value', null()))]",
           "storageAccountResourceId": {
             "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.storage.storage-account.{0}', variables('aiFoundryStorageAccountResourceName')), 64)), '2022-09-01').resourceId]"
           },
@@ -36014,7 +36013,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "7657926864794817096"
+              "templateHash": "2049810970778062958"
             }
           },
           "definitions": {
@@ -36392,10 +36391,12 @@
               "type": "string"
             },
             "logAnalyticsWorkspaceResourceId": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "applicationInsightsResourceId": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "aiFoundryAiServicesName": {
               "type": "string"
@@ -36411,6 +36412,9 @@
               "items": {
                 "$ref": "#/definitions/privateEndpointSingleServiceType"
               }
+            },
+            "enableMonitoring": {
+              "type": "bool"
             }
           },
           "resources": {
@@ -36442,13 +36446,7 @@
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   },
-                  "diagnosticSettings": {
-                    "value": [
-                      {
-                        "workspaceResourceId": "[parameters('logAnalyticsWorkspaceResourceId')]"
-                      }
-                    ]
-                  },
+                  "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId')))), createObject('value', null()))]",
                   "kind": {
                     "value": "Hub"
                   },
@@ -52133,16 +52131,12 @@
           "location": {
             "value": "[parameters('solutionLocation')]"
           },
-          "logAnalyticsResourceName": {
-            "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').name]"
-          },
+          "logAnalyticsResourceName": "[if(parameters('enableMonitoring'), createObject('value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').name), createObject('value', null()))]",
           "publicNetworkAccess": {
             "value": "Enabled"
           },
           "zoneRedundant": "[if(parameters('enablePrivateNetworking'), createObject('value', true()), createObject('value', false()))]",
-          "applicationInsightsConnectionString": {
-            "value": "[reference('applicationInsights').outputs.connectionString.value]"
-          },
+          "applicationInsightsConnectionString": "[if(parameters('enableMonitoring'), createObject('value', reference('applicationInsights').outputs.connectionString.value), createObject('value', null()))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
@@ -52153,12 +52147,13 @@
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
           "contentVersion": "1.0.0.0",
           "metadata": {
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3020829069565085134"
+              "templateHash": "10706510786178170099"
             }
           },
           "parameters": {
@@ -52169,7 +52164,8 @@
               "type": "string"
             },
             "logAnalyticsResourceName": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "tags": {
               "type": "object"
@@ -52190,11 +52186,19 @@
               "type": "string"
             },
             "applicationInsightsConnectionString": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             }
           },
-          "resources": [
-            {
+          "resources": {
+            "logAnalyticsWorkspace": {
+              "condition": "[parameters('enableMonitoring')]",
+              "existing": true,
+              "type": "Microsoft.OperationalInsights/workspaces",
+              "apiVersion": "2023-09-01",
+              "name": "[parameters('logAnalyticsResourceName')]"
+            },
+            "containerAppEnvironment": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[take(format('avm.res.app.managed-environment.{0}', parameters('name')), 64)]",
@@ -52216,7 +52220,7 @@
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   },
-                  "appLogsConfiguration": "[if(parameters('enableMonitoring'), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', reference(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsResourceName')), '2023-09-01').customerId, 'sharedKey', listKeys(resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsResourceName')), '2023-09-01').primarySharedKey))), createObject('value', null()))]",
+                  "appLogsConfiguration": "[if(parameters('enableMonitoring'), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys('logAnalyticsWorkspace', '2023-09-01').primarySharedKey))), createObject('value', null()))]",
                   "workloadProfiles": {
                     "value": [
                       {
@@ -52228,9 +52232,7 @@
                   "publicNetworkAccess": {
                     "value": "[parameters('publicNetworkAccess')]"
                   },
-                  "appInsightsConnectionString": {
-                    "value": "[parameters('applicationInsightsConnectionString')]"
-                  },
+                  "appInsightsConnectionString": "[if(parameters('enableMonitoring'), createObject('value', parameters('applicationInsightsConnectionString')), createObject('value', null()))]",
                   "zoneRedundant": {
                     "value": "[parameters('zoneRedundant')]"
                   },
@@ -53110,17 +53112,20 @@
                     }
                   }
                 }
-              }
+              },
+              "dependsOn": [
+                "logAnalyticsWorkspace"
+              ]
             }
-          ],
+          },
           "outputs": {
             "resourceId": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.app.managed-environment.{0}', parameters('name')), 64)), '2022-09-01').outputs.resourceId.value]"
+              "value": "[reference('containerAppEnvironment').outputs.resourceId.value]"
             },
             "location": {
               "type": "string",
-              "value": "[reference(resourceId('Microsoft.Resources/deployments', take(format('avm.res.app.managed-environment.{0}', parameters('name')), 64)), '2022-09-01').outputs.location.value]"
+              "value": "[reference('containerAppEnvironment').outputs.location.value]"
             }
           }
         }
@@ -53234,11 +53239,11 @@
                   },
                   {
                     "name": "APPLICATIONINSIGHTS_INSTRUMENTATION_KEY",
-                    "value": "[reference('applicationInsights').outputs.instrumentationKey.value]"
+                    "value": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.instrumentationKey.value, '')]"
                   },
                   {
                     "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
-                    "value": "[reference('applicationInsights').outputs.connectionString.value]"
+                    "value": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.connectionString.value, '')]"
                   },
                   {
                     "name": "AZURE_AI_AGENT_PROJECT_CONNECTION_STRING",
@@ -55311,7 +55316,7 @@
             "value": [
               {
                 "name": "appsettings",
-                "applicationInsightResourceId": "[reference('applicationInsights').outputs.resourceId.value]",
+                "applicationInsightResourceId": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.resourceId.value, null())]",
                 "properties": {
                   "SCM_DO_BUILD_DURING_DEPLOYMENT": "true",
                   "DOCKER_REGISTRY_SERVER_URL": "[format('https://{0}', variables('containerRegistryHostname'))]",

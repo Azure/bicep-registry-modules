@@ -1,5 +1,5 @@
 using './main.bicep'
 
-param solutionPrefix = 'macaesbx101'
+param solutionPrefix = 'macaesbx102'
 param solutionLocation = 'australiaeast'
 param azureOpenAILocation = 'australiaeast'
