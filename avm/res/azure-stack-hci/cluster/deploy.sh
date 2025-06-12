@@ -5,7 +5,7 @@ set -e  # Exit on any error
 echo "Starting HCI deployment script..."
 
 # Check required environment variables
-if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ]; then
+if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ] || [ -z "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" ]; then
     echo "Error: Required environment variables are missing"
     exit 1
 fi
@@ -14,18 +14,38 @@ fi
 echo "Setting subscription context to: $SUBSCRIPTION_ID"
 az account set --subscription "$SUBSCRIPTION_ID"
 
-# Decode base64 and create deployment-setting.bicep file
+# Create directory structure and decode base64 files
+echo "Creating required directory structure and bicep files..."
+
+# Create deployment-setting directory
+mkdir -p deployment-setting
+
+# Decode and create deployment-setting.bicep file
 echo "Creating deployment-setting.bicep file from base64 encoded content..."
 echo "$DEPLOYMENT_SETTING_BICEP_BASE64" | base64 -d > deployment-setting.bicep
 
-# Verify the file was created successfully
+# Decode and create deployment-setting/main.bicep file
+echo "Creating deployment-setting/main.bicep file from base64 encoded content..."
+echo "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" | base64 -d > deployment-setting/main.bicep
+
+# Verify the files were created successfully
 if [ ! -f "deployment-setting.bicep" ] || [ ! -s "deployment-setting.bicep" ]; then
     echo "Error: Failed to create deployment-setting.bicep file or file is empty"
     exit 1
 fi
 
-echo "✅ deployment-setting.bicep file created successfully"
-echo "File size: $(wc -c < deployment-setting.bicep) bytes"
+if [ ! -f "deployment-setting/main.bicep" ] || [ ! -s "deployment-setting/main.bicep" ]; then
+    echo "Error: Failed to create deployment-setting/main.bicep file or file is empty"
+    exit 1
+fi
+
+echo "✅ All bicep files created successfully"
+echo "deployment-setting.bicep size: $(wc -c < deployment-setting.bicep) bytes"
+echo "deployment-setting/main.bicep size: $(wc -c < deployment-setting/main.bicep) bytes"
+
+# List current directory structure for debugging
+echo "Current directory structure:"
+find . -name "*.bicep" -type f
 
 # Parse deployment operations into JSON array format
 IFS=',' read -ra OPERATIONS <<< "$DEPLOYMENT_OPERATIONS"
@@ -133,6 +153,7 @@ fi
 # Clean up temporary files
 rm -f "$PARAM_FILE"
 rm -f "deployment-setting.bicep"
+rm -rf "deployment-setting"
 
 echo "Completed deployment"
 

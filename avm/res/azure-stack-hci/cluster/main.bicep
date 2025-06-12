@@ -313,6 +313,10 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
         name: 'DEPLOYMENT_SETTING_BICEP_BASE64'
         value: base64(loadTextContent('./nested/deployment-setting.bicep'))
       }
+      {
+        name: 'DEPLOYMENT_SETTING_MAIN_BICEP_BASE64'
+        value: base64(loadTextContent('./deployment-setting/main.bicep'))
+      }
     ]
     scriptContent: loadTextContent('./deploy.sh')
   }
