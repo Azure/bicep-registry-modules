@@ -94,6 +94,6 @@ module aiSearch 'br/public:avm/res/search/search-service:0.10.0' = {
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 
-output resourceId string = aiSearch.outputs.resourceId
-output name string = aiSearch.outputs.name
+output searchResourceId string = aiSearch.outputs.resourceId
+output searchName string = aiSearch.outputs.name
 output systemAssignedMIPrincipalId string = aiSearch.outputs.?systemAssignedMIPrincipalId ?? ''

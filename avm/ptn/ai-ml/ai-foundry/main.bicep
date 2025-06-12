@@ -101,26 +101,26 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
-  name: take('${name}-log-analytics-deployment', 64)
-  params: {
-    name: toLower('log-${name}')
-    location: location
-    tags: allTags
-    skuName: 'PerNode'
-    dataRetention: 60
-  }
-}
+// module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
+//   name: take('${name}-log-analytics-deployment', 64)
+//   params: {
+//     name: toLower('log-${name}')
+//     location: location
+//     tags: allTags
+//     skuName: 'PerNode'
+//     dataRetention: 60
+//   }
+// }
 
-module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
-  name: take('${name}-app-insights-deployment', 64)
-  params: {
-    name: toLower('appi-${name}')
-    location: location
-    tags: allTags
-    workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-  }
-}
+// module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
+//   name: take('${name}-app-insights-deployment', 64)
+//   params: {
+//     name: toLower('appi-${name}')
+//     location: location
+//     tags: allTags
+//     workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+//   }
+// }
 
 module network 'modules/virtualNetwork.bicep' = if (networkIsolation) {
   name: take('${name}-network-deployment', 64)
@@ -232,16 +232,11 @@ module cognitiveServices 'modules/cognitive-services/main.bicep' = {
     aiModelDeployments: aiModelDeployments
     userObjectId: userObjectId
     contentSafetyEnabled: contentSafetyEnabled
-    visionEnabled: visionEnabled
-    languageEnabled: languageEnabled
-    speechEnabled: speechEnabled
-    translatorEnabled: translatorEnabled
-    documentIntelligenceEnabled: documentIntelligenceEnabled
     tags: allTags
   }
 }
 
-// // Add the new FDP cognitive services module
+// Add the new FDP cognitive services module
 module project 'modules/ai-foundry-project/main.bicep' = {
   name: '${name}prj'
   params: {
@@ -348,11 +343,10 @@ output AZURE_AI_PROJECT_NAME string = project.outputs.projectName
 output AZURE_BASTION_NAME string = networkIsolation ? network.outputs.bastionName : ''
 output AZURE_VM_RESOURCE_ID string = networkIsolation ? virtualMachine.outputs.id : ''
 output AZURE_VM_USERNAME string = servicesUsername
-output AZURE_APP_INSIGHTS_NAME string = applicationInsights.outputs.name
+//output AZURE_APP_INSIGHTS_NAME string = applicationInsights.outputs.name
 output AZURE_CONTAINER_REGISTRY_NAME string = acrEnabled ? containerRegistry.outputs.name : ''
-output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.outputs.name
+//output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.outputs.name
 output AZURE_STORAGE_ACCOUNT_NAME string = storageAccount.outputs.storageName
 output AZURE_VIRTUAL_NETWORK_NAME string = networkIsolation ? network.outputs.virtualNetworkName : ''
 output AZURE_VIRTUAL_NETWORK_SUBNET_NAME string = networkIsolation ? network.outputs.vmSubnetName : ''
-output AZURE_SQL_SERVER_USERNAME string = sqlServerEnabled ? servicesUsername : ''
 output AZURE_COSMOS_ACCOUNT_NAME string = cosmosDbEnabled ? cosmosDb.outputs.cosmosDBname : ''

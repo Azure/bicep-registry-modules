@@ -8,7 +8,7 @@ param location string
 
 // CosmosDB Account
 @description('Name of the customers existing CosmosDB Resource')
-param cosmosDBname string
+param cosmosDBName string
 
 @description('Whether to include Cosmos DB in the deployment.')
 param cosmosDbEnabled bool
@@ -30,6 +30,10 @@ param defaultProjectName string = name
 param defaultProjectDisplayName string = name
 param defaultProjectDescription string = 'This is the default project for AI Foundry.'
 
+// var threadConnections = ['${cosmosDBConnection}']
+// var storageConnections = ['${azureStorageConnection}']
+// var vectorStoreConnections = ['${aiSearchConnection}']
+
 resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
   name: aiServicesName
 }
@@ -43,7 +47,7 @@ resource aiSearchService 'Microsoft.Search/searchServices@2025-05-01' existing =
 }
 
 resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2025-05-01-preview' existing = if (cosmosDbEnabled) {
-  name: cosmosDBname
+  name: cosmosDBName
 }
 
 resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
@@ -72,7 +76,7 @@ resource project_connection_azure_storage 'Microsoft.CognitiveServices/accounts/
       ResourceId: storageAccount.id
       location: storageAccount.location
       accountName: storageAccount.name
-      containerName: '${name}proj'
+      containerName: '${name}projUploads'
     }
   }
 }
@@ -94,7 +98,7 @@ resource project_connection_azureai_search 'Microsoft.CognitiveServices/accounts
 }
 
 resource project_connection_cosmosdb 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (cosmosDbEnabled) {
-  name: cosmosDBname
+  name: cosmosDBName
   parent: project
   properties: {
     category: 'CosmosDB'
@@ -108,5 +112,39 @@ resource project_connection_cosmosdb 'Microsoft.CognitiveServices/accounts/proje
   }
 }
 
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = {
+  name: 'accountCapHost'
+  parent: foundryAccount
+  properties: {
+    capabilityHostKind: 'Agents'
+  }
+}
+
+resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = {
+  name: 'projectCapHost'
+  parent: project
+  properties: {
+    capabilityHostKind: 'Agents'
+    vectorStoreConnections: [
+      project_connection_azureai_search.name
+    ]
+    storageConnections: [
+      storageName
+    ]
+    threadStorageConnections: [
+      cosmosDBName
+    ]
+  }
+  dependsOn: [
+    accountCapabilityHost
+  ]
+}
+
+output projectCapHost string = projectCapabilityHost.name
+
 output projectId string = project.id
 output projectName string = project.name
+// BYO connection names
+output cosmosDBConnection string = cosmosDBName
+output azureStorageConnection string = storageName
+output aiSearchConnection string = nameFormatted

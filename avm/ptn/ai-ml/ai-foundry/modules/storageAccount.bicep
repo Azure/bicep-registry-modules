@@ -62,6 +62,56 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     allowBlobPublicAccess: false
     allowSharedKeyAccess: false
     allowCrossTenantReplication: false
+    blobServices: {
+      containers: [
+        {
+          name: '${nameFormatted}projUploads'
+          properties: {
+            publicAccess: 'None'
+            roleAssignments: [
+              {
+                principalId: '<principalId>'
+                principalType: 'ServicePrincipal'
+                roleDefinitionIdOrName: 'Owner'
+              }
+              {
+                principalId: '<principalId>'
+                principalType: 'ServicePrincipal'
+                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              }
+              {
+                principalId: '<principalId>'
+                principalType: 'ServicePrincipal'
+                roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+              }
+            ]
+          }
+        }
+        {
+          name: '${nameFormatted}sysdata'
+          properties: {
+            publicAccess: 'None'
+            roleAssignments: [
+              {
+                principalId: '<principalId>'
+                principalType: 'ServicePrincipal'
+                roleDefinitionIdOrName: 'Owner'
+              }
+              {
+                principalId: '<principalId>'
+                principalType: 'ServicePrincipal'
+                roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
+              }
+              {
+                principalId: '<principalId>'
+                principalType: 'ServicePrincipal'
+                roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+              }
+            ]
+          }
+        }
+      ]
+    }
     minimumTlsVersion: 'TLS1_2'
     networkAcls: {
       defaultAction: 'Allow'

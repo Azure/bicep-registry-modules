@@ -33,21 +33,6 @@ param aiModelDeployments deploymentsType[] = []
 @description('Whether to include Azure AI Content Safety in the deployment.')
 param contentSafetyEnabled bool
 
-@description('Whether to include Azure AI Vision in the deployment.')
-param visionEnabled bool
-
-@description('Whether to include Azure AI Language in the deployment.')
-param languageEnabled bool
-
-@description('Whether to include Azure AI Speech in the deployment.')
-param speechEnabled bool
-
-@description('Whether to include Azure AI Translator in the deployment.')
-param translatorEnabled bool
-
-@description('Whether to include Azure Document Intelligence in the deployment.')
-param documentIntelligenceEnabled bool
-
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object
 
@@ -140,109 +125,6 @@ module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
   }
 }
 
-module vision 'service.bicep' = if (visionEnabled) {
-  name: take('${name}-vision-deployment', 64)
-  dependsOn: [cognitiveServicesPrivateDnsZone] // required due to optional flags that could change dependency
-  params: {
-    name: 'vision${name}${resourceToken}'
-    location: location
-    kind: 'ComputerVision'
-    sku: 'S1'
-    networkIsolation: networkIsolation
-    networkAcls: networkAcls
-    virtualNetworkSubnetResourceId: networkIsolation ? virtualNetworkSubnetResourceId : ''
-    privateDnsZonesResourceIds: networkIsolation
-      ? [
-          cognitiveServicesPrivateDnsZone.outputs.resourceId
-        ]
-      : []
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    tags: tags
-  }
-}
-
-module language 'service.bicep' = if (languageEnabled) {
-  name: take('${name}-language-deployment', 64)
-  dependsOn: [cognitiveServicesPrivateDnsZone] // required due to optional flags that could change dependency
-  params: {
-    name: 'lang${name}${resourceToken}'
-    location: location
-    kind: 'TextAnalytics'
-    sku: 'S'
-    networkIsolation: networkIsolation
-    networkAcls: networkAcls
-    virtualNetworkSubnetResourceId: networkIsolation ? virtualNetworkSubnetResourceId : ''
-    privateDnsZonesResourceIds: networkIsolation
-      ? [
-          cognitiveServicesPrivateDnsZone.outputs.resourceId
-        ]
-      : []
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    tags: tags
-  }
-}
-
-module speech 'service.bicep' = if (speechEnabled) {
-  name: take('${name}-speech-deployment', 64)
-  dependsOn: [cognitiveServicesPrivateDnsZone] // required due to optional flags that could change dependency
-  params: {
-    name: 'speech${name}${resourceToken}'
-    location: location
-    kind: 'SpeechServices'
-    networkIsolation: networkIsolation
-    networkAcls: networkAcls
-    virtualNetworkSubnetResourceId: networkIsolation ? virtualNetworkSubnetResourceId : ''
-    privateDnsZonesResourceIds: networkIsolation
-      ? [
-          cognitiveServicesPrivateDnsZone.outputs.resourceId
-        ]
-      : []
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    tags: tags
-  }
-}
-
-module translator 'service.bicep' = if (translatorEnabled) {
-  name: take('${name}-translator-deployment', 64)
-  dependsOn: [cognitiveServicesPrivateDnsZone] // required due to optional flags that could change dependency
-  params: {
-    name: 'translator${name}${resourceToken}'
-    location: location
-    kind: 'TextTranslation'
-    sku: 'S1'
-    networkIsolation: networkIsolation
-    networkAcls: networkAcls
-    virtualNetworkSubnetResourceId: networkIsolation ? virtualNetworkSubnetResourceId : ''
-    privateDnsZonesResourceIds: networkIsolation
-      ? [
-          cognitiveServicesPrivateDnsZone.outputs.resourceId
-        ]
-      : []
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    tags: tags
-  }
-}
-
-module documentIntelligence 'service.bicep' = if (documentIntelligenceEnabled) {
-  name: take('${name}-doc-intel-deployment', 64)
-  dependsOn: [cognitiveServicesPrivateDnsZone] // required due to optional flags that could change dependency
-  params: {
-    name: 'docintel${name}${resourceToken}'
-    location: location
-    kind: 'FormRecognizer'
-    networkIsolation: networkIsolation
-    virtualNetworkSubnetResourceId: networkIsolation ? virtualNetworkSubnetResourceId : ''
-    privateDnsZonesResourceIds: networkIsolation
-      ? [
-          cognitiveServicesPrivateDnsZone.outputs.resourceId
-        ]
-      : []
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
-    networkAcls: networkAcls
-    tags: tags
-  }
-}
-
 import { deploymentsType } from '../customTypes.bicep'
 import { connectionType } from 'br/public:avm/res/machine-learning-services/workspace:0.10.1'
 
@@ -253,10 +135,5 @@ output aiServicesSystemAssignedMIPrincipalId string = aiServices.outputs.?system
 
 output connections array = union(
   [aiServices.outputs.foundryConnection],
-  contentSafetyEnabled ? [contentSafety.outputs.foundryConnection] : [],
-  visionEnabled ? [vision.outputs.foundryConnection] : [],
-  languageEnabled ? [language.outputs.foundryConnection] : [],
-  speechEnabled ? [speech.outputs.foundryConnection] : [],
-  translatorEnabled ? [translator.outputs.foundryConnection] : [],
-  documentIntelligenceEnabled ? [documentIntelligence.outputs.foundryConnection] : []
+  contentSafetyEnabled ? [contentSafety.outputs.foundryConnection] : []
 )
