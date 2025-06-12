@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "4899675580903703157"
+      "version": "0.35.1.17967",
+      "templateHash": "7258995271080005683"
     },
     "name": "API Management Service APIs Diagnostics.",
     "description": "This module deploys an API Management Service API Diagnostics."
@@ -50,17 +51,23 @@
     },
     "backend": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01#properties/properties/properties/backend"
+        },
         "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Backend."
-      }
+      },
+      "nullable": true
     },
     "frontend": {
       "type": "object",
-      "defaultValue": {},
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ApiManagement/service/apis/diagnostics@2024-05-01#properties/properties/properties/frontend"
+        },
         "description": "Optional. Diagnostic settings for incoming/outgoing HTTP messages to the Gateway."
-      }
+      },
+      "nullable": true
     },
     "httpCorrelationProtocol": {
       "type": "string",
@@ -119,10 +126,28 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "service::api": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service/apis",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('apiName'))]"
+    },
+    "service::logger": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service/loggers",
+      "apiVersion": "2024-05-01",
+      "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('loggerName'))]"
+    },
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-05-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "diagnostic": {
       "type": "Microsoft.ApiManagement/service/apis/diagnostics",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}/{2}', parameters('apiManagementServiceName'), parameters('apiName'), parameters('name'))]",
       "properties": {
         "alwaysLog": "[parameters('alwaysLog')]",
@@ -140,7 +165,7 @@
         "verbosity": "[parameters('verbosity')]"
       }
     }
-  ],
+  },
   "outputs": {
     "resourceId": {
       "type": "string",
