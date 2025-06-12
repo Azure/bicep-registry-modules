@@ -12,7 +12,7 @@ This module deploys a CDN Profile Custom Domains.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Cdn/profiles/customDomains` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2023-05-01/profiles/customDomains) |
+| `Microsoft.Cdn/profiles/customDomains` | [2025-04-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Cdn/2025-04-15/profiles/customDomains) |
 
 ## Parameters
 
@@ -29,6 +29,8 @@ This module deploys a CDN Profile Custom Domains.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`cipherSuiteSetType`](#parameter-ciphersuitesettype) | string | The cipher suite set type that will be used for Https |
+| [`customizedCipherSuiteSet`](#parameter-customizedciphersuiteset) | object | The customized cipher suite set that will be used for Https. Required if cipherSuiteSetType is Customized. |
 | [`extendedProperties`](#parameter-extendedproperties) | object | Key-Value pair representing migration properties for domains. |
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | The minimum TLS version required for the custom domain. Default value: TLS12. |
 | [`preValidatedCustomDomainResourceId`](#parameter-prevalidatedcustomdomainresourceid) | string | Resource reference to the Azure resource where custom domain ownership was prevalidated. |
@@ -75,6 +77,22 @@ The name of the CDN profile.
 
 - Required: Yes
 - Type: string
+
+### Parameter: `cipherSuiteSetType`
+
+The cipher suite set type that will be used for Https
+
+- Required: No
+- Type: string
+- Default: `''`
+
+### Parameter: `customizedCipherSuiteSet`
+
+The customized cipher suite set that will be used for Https. Required if cipherSuiteSetType is Customized.
+
+- Required: No
+- Type: object
+- Default: `{}`
 
 ### Parameter: `extendedProperties`
 

@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.1.11899",
-      "templateHash": "16176516087789568863"
+      "version": "0.36.1.42791",
+      "templateHash": "729234201541424389"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains."
@@ -75,6 +75,20 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Extended properties."
+          }
+        },
+        "cipherSuiteSetType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The cipher suite set type that will be used for Https."
+          }
+        },
+        "customizedCipherSuiteSet": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The customized cipher suite set that will be used for Https."
           }
         }
       },
@@ -182,6 +196,20 @@
       "metadata": {
         "description": "Optional. The name of the secret. ie. subs/rg/profile/secret."
       }
+    },
+    "cipherSuiteSetType": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The cipher suite set type that will be used for Https"
+      }
+    },
+    "customizedCipherSuiteSet": {
+      "type": "object",
+      "defaultValue": {},
+      "metadata": {
+        "description": "Optional. The customized cipher suite set that will be used for Https. Required if cipherSuiteSetType is Customized."
+      }
     }
   },
   "resources": {
@@ -189,18 +217,18 @@
       "condition": "[not(empty(parameters('secretName')))]",
       "existing": true,
       "type": "Microsoft.Cdn/profiles/secrets",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]"
     },
     "profile": {
       "existing": true,
       "type": "Microsoft.Cdn/profiles",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[parameters('profileName')]"
     },
     "customDomain": {
       "type": "Microsoft.Cdn/profiles/customDomains",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
       "properties": {
         "azureDnsZone": "[if(not(empty(parameters('azureDnsZoneResourceId'))), createObject('id', parameters('azureDnsZoneResourceId')), null())]",
@@ -209,6 +237,8 @@
         "preValidatedCustomDomainResourceId": "[if(not(empty(parameters('preValidatedCustomDomainResourceId'))), createObject('id', parameters('preValidatedCustomDomainResourceId')), null())]",
         "tlsSettings": {
           "certificateType": "[parameters('certificateType')]",
+          "cipherSuiteSetType": "[if(not(empty(parameters('cipherSuiteSetType'))), parameters('cipherSuiteSetType'), null())]",
+          "customizedCipherSuiteSet": "[if(not(empty(parameters('customizedCipherSuiteSet'))), parameters('customizedCipherSuiteSet'), null())]",
           "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
           "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
         }
@@ -243,9 +273,9 @@
         "description": "The DNS validation records."
       },
       "value": {
-        "dnsTxtRecordName": "[format('_dnsauth.{0}', reference('customDomain').hostName)]",
-        "dnsTxtRecordValue": "[reference('customDomain').validationProperties.validationToken]",
-        "dnsTxtRecordExpiry": "[reference('customDomain').validationProperties.expirationDate]"
+        "dnsTxtRecordName": "[if(not(empty(reference('customDomain').validationProperties)), format('_dnsauth.{0}', reference('customDomain').hostName), null())]",
+        "dnsTxtRecordValue": "[tryGet(tryGet(reference('customDomain'), 'validationProperties'), 'validationToken')]",
+        "dnsTxtRecordExpiry": "[tryGet(tryGet(reference('customDomain'), 'validationProperties'), 'expirationDate')]"
       }
     }
   }
