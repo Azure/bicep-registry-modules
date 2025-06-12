@@ -120,16 +120,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $file.Name | Should -BeExactly 'README.md'
         }
 
-        It '[<moduleFolderName>] A [` version.json `] file must only have a major & minor version.' -TestCases ($moduleFolderTestCases | Where-Object { Test-Path (Join-Path $_.moduleFolderPath 'version.json') }) {
-
-            param (
-                [string] $moduleFolderPath
-            )
-
-            $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
-            $versionFileContent.version | Should -Match '^[0-9]+\.[0-9]+$' -Because 'only the major.minor version may be specified in the version.json file.'
-        }
-
         # (Pilot for child module publishing) Only a subset of child modules is allowed to have a version.json file
         It '[<moduleFolderName>] child module should not contain a [` version.json `] file unless explicitly allowed for publishing.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
 
@@ -143,56 +133,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
             if ($pathExisting) {
                 $childModuleAllowedList | Should -Contain $moduleFullName -Because "only the child modules listed in the [./$childModuleAllowedListRelativePath] list may have a version.json file."
-            }
-        }
-
-        It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($moduleFolderTestCases | Where-Object { $_.isTopLevelModule }) {
-
-            param(
-                [string] $moduleFolderPath,
-                [string] $moduleType
-            )
-
-            $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
-
-            # Use correct telemetry link based on file path
-            switch ($moduleType) {
-                'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
-                'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
-                'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
-                Default {}
-            }
-
-            # Fetch CSV
-            # =========
-            try {
-                $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
-            } catch {
-                $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
-                Write-Error $errorMessage
-                Set-ItResult -Skipped -Because $errorMessage
-            }
-            $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
-
-            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
-            $relevantCSVRow = $csvData | Where-Object {
-                $_.ModuleName -eq $moduleName
-            }
-
-            if (-not $relevantCSVRow) {
-                $errorMessage = "Failed to identify module [$moduleName]."
-                Write-Error $errorMessage
-                Set-ItResult -Skipped -Because $errorMessage
-            }
-            $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
-
-            $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
-            if ($isOrphaned) {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $true -Because 'The module is orphaned.'
-            } else {
-                $pathExisting = Test-Path $orphanedFilePath
-                $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
             }
         }
     }
@@ -282,6 +222,98 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $filePath = Join-Path -Path $e2eTestFolderPath 'main.test.bicep'
                 $pathExisting = Test-Path $filePath
                 $pathExisting | Should -Be $true -Because "path [$filePath] is expected to exist."
+            }
+        }
+
+        It '[<moduleFolderName>] Resource Modules must not skip the "*defaults" or "*waf-aligned" tests with a [` .e2eignore `] file.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $moduleFolderPath
+            )
+
+            $incorrectFolders = @()
+            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object {
+                $_.Name -match '^.*(defaults|waf-aligned)$' # the spec BCPRMNFR1 states, that the folder names should start with defaults|waf-aligned. Since it is a should and not a must, need to check for both cases.
+            }
+            foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+                $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
+                if (Test-Path $filePath) {
+                    $incorrectFolders += $e2eTestFolderPath.Name
+                }
+            }
+            $incorrectFolders | Should -BeNullOrEmpty -Because ('skipping this test is not allowed. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
+        }
+
+        It '[<moduleFolderName>] a [` .e2eignore `] file must contain text, which states the exception reason for not executing the deployment test.' -TestCases $topLevelModuleTestCases {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $moduleFolderPath
+            )
+
+            $incorrectFolders = @()
+            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
+            foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+                $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
+                $pathExisting = Test-Path $filePath
+                if ($pathExisting) {
+                    $fileContent = Get-Content -Path $filePath
+                    if (-not $fileContent) {
+                        $incorrectFolders += $e2eTestFolderPath.Name + '\.e2eignore'
+                    }
+                }
+            }
+            $incorrectFolders | Should -BeNullOrEmpty -Because ('the file should contain a reason for skipping the test. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
+        }
+
+        It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases $topLevelModuleTestCases {
+
+            param(
+                [string] $moduleFolderPath,
+                [string] $moduleType
+            )
+
+            $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
+
+            # Use correct telemetry link based on file path
+            switch ($moduleType) {
+                'res' { $telemetryCsvLink = $telemetryResCsvLink; break }
+                'ptn' { $telemetryCsvLink = $telemetryPtnCsvLink; break }
+                'utl' { $telemetryCsvLink = $telemetryUtlCsvLink; break }
+                Default {}
+            }
+
+            # Fetch CSV
+            # =========
+            try {
+                $rawData = Invoke-WebRequest -Uri $telemetryCsvLink
+            } catch {
+                $errorMessage = "Failed to download telemetry CSV file from [$telemetryCsvLink] due to [{0}]." -f $_.Exception.Message
+                Write-Error $errorMessage
+                Set-ItResult -Skipped -Because $errorMessage
+            }
+            $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
+
+            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
+            $relevantCSVRow = $csvData | Where-Object {
+                $_.ModuleName -eq $moduleName
+            }
+
+            if (-not $relevantCSVRow) {
+                $errorMessage = "Failed to identify module [$moduleName]."
+                Write-Error $errorMessage
+                Set-ItResult -Skipped -Because $errorMessage
+            }
+            $isOrphaned = [String]::IsNullOrEmpty($relevantCSVRow.PrimaryModuleOwnerGHHandle)
+
+            $orphanedFilePath = Join-Path -Path $moduleFolderPath 'ORPHANED.md'
+            if ($isOrphaned) {
+                $pathExisting = Test-Path $orphanedFilePath
+                $pathExisting | Should -Be $true -Because 'The module is orphaned.'
+            } else {
+                $pathExisting = Test-Path $orphanedFilePath
+                $pathExisting | Should -Be $false -Because ('The module is not orphaned but owned by [{0}].' -f $relevantCSVRow.PrimaryModuleOwnerGHHandle)
             }
         }
     }
@@ -732,6 +764,50 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 $incorrectParameters | Should -BeNullOrEmpty -Because ('required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+            }
+
+            It '[<moduleFolderName>] All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type.' -TestCases $moduleFolderTestCases {
+                param (
+                    [hashtable] $templateFileContent,
+                    [hashtable] $templateFileParameters
+                )
+
+                $incorrectParameters = @()
+                foreach ($parameterName in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
+                    $parameter = $templateFileParameters.$parameterName
+
+                    $isArrayOfObjects = $parameter.type -eq 'array' -and $parameter.keys -contains 'items' -and $parameter.items.type -eq 'object'
+                    $isObject = $parameter.type -eq 'object'
+
+                    if ($isArrayOfObjects) {
+                        ## Array of objects
+                        # Note: We don't need to check for `$parameter.items.keys -contains '$ref'` because if a UDT is implemented, 'items' only contains '$ref' and hence the `isArrayOfObjects` variable is already `false`.
+                        $hasProperties = $parameter.items.keys -contains 'properties'
+                        $hasRdtDefintion = $parameter.items.metadata.Keys -contains '__bicep_resource_derived_type!'
+                        if (-not ($hasProperties -or $hasRdtDefintion)) {
+                            $incorrectParameters += $parameterName
+                        }
+                    } elseif ($isObject) {
+                        # Object
+                        $hasProperties = $parameter.keys -contains 'properties'
+                        $hasRdtDefintion = $parameter.metadata.Keys -contains '__bicep_resource_derived_type!'
+                        $hasUdtDefinition = $parameter.keys -contains '$ref'
+                        if (-not ($hasProperties -or $hasRdtDefintion -or $hasUdtDefinition)) {
+                            $incorrectParameters += $parameterName
+                        }
+                    }
+                }
+
+                if ($incorrectParameters.Count -gt 0) {
+                    $warningMessage = 'All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items '
+                    Write-Warning ("$warningMessage`n- {0}`n" -f ($incorrectParameters -join "`n- "))
+
+                    Write-Output @{
+                        Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($incorrectParameters -join '</code><br>- <code>'))
+                    }
+                }
+                # Once we want to enforce this test, replace the above warning with the below
+                # $incorrectParameters | Should -BeNullOrEmpty -Because ('all parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             Context 'Schema-based User-defined-types tests' -Tag 'UDT' {
@@ -1296,15 +1372,7 @@ Describe 'Module tests' -Tag 'Module' {
                     }
                 }
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('No user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
-
-                    Write-Output @{
-                        Warning = $warningMessage
-                    }
-                }
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as an array, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
 
             It '[<moduleFolderName>] A UDT should not be nullable, but instead the parameter that uses it. AVM-Spec-Ref: BCPNFR18.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
@@ -1326,15 +1394,7 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('No user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
-
-                    Write-Output @{
-                        Warning = $warningMessage
-                    }
-                }
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('no user-defined type should be declared as nullable, but instead the parameter that uses the type. This makes the template and its parameters easier to understand. Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
 
             It '[<moduleFolderName>] A UDT should always be camel-cased and end with the suffix "Type". AVM-Spec-Ref: BCPNFR19.' -TestCases $moduleFolderTestCases -Tag 'UDT' {
@@ -1362,15 +1422,7 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 # To be re-enabled once more modules are prepared. The code right below can then be removed.
-                # $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                if ($incorrectTypes.Count -gt 0) {
-                    $warningMessage = ('Every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
-                    Write-Warning $warningMessage
-
-                    Write-Output @{
-                        Warning = $warningMessage
-                    }
-                }
+                $incorrectTypes | Should -BeNullOrEmpty -Because ('every used-defined type should be camel-cased and end with the suffix "Type". Found incorrect items: [{0}].' -f ($incorrectTypes -join ', '))
             }
         }
     }
@@ -1393,6 +1445,37 @@ Describe 'Module tests' -Tag 'Module' {
                     versionFileExists = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
                 }
             }
+        }
+
+        It '[<moduleFolderName>] A [` version.json `] file must only have a major & minor version.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
+
+            param (
+                [string] $moduleFolderPath
+            )
+
+            $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
+            $versionFileContent.version | Should -Match '^[0-9]+\.[0-9]+$' -Because 'only the major.minor version may be specified in the version.json file.'
+        }
+
+        # Temporary test, before v1.0 release
+        It '[<moduleFolderName>] A [` version.json `] file must not yet contain a major version greater than 0.' -TestCases ($moduleFolderTestCases | Where-Object { $_.versionFileExists }) {
+
+            param (
+                [string] $moduleFolderPath,
+                [string] $moduleType,
+                [string] $moduleFolderName
+            )
+
+            if ($moduleType -eq 'res' -and $moduleFolderName -eq 'network/nat-gateway') {
+                # Using a warning and skip, since nat-gateway has already been released with version 1.x.
+                Write-Warning "[avm/$moduleType/$moduleFolderName] has already been released with version 1.x"
+                Set-ItResult -Skipped -Because 'the module has already been released with version 1.x.'
+                return
+            }
+
+            $versionFileContent = Get-Content (Join-Path -Path $moduleFolderPath 'version.json') | ConvertFrom-Json -AsHashtable
+            $major, $minor = $versionFileContent.version -split '\.'
+            $major | Should -Be 0 -Because 'module version must be incremented via minor and patch (automatic) versions only for the time being.'
         }
 
         # If the child modules version has been increased, all versioned parent modules up the chain should increase their version as well
@@ -1469,10 +1552,10 @@ Describe 'Governance tests' {
         $expectedEntry = '/{0}/ @Azure/{1}-module-owners-bicep @Azure/avm-module-reviewers-bicep' -f ($relativeModulePath -replace '\\', '/'), ($relativeModulePath -replace '-' -replace '[\\|\/]', '-')
 
         # Line should exist
-        $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/spec/snfr20/#codeowners-file) file as [/$expectedEntry]. Please ensure there is a forward slash (/) at the beginning and end of the module path at the start of the line."
+        $moduleLine | Should -Not -BeNullOrEmpty -Because "the module should be listed in the [CODEOWNERS](https://azure.github.io/Azure-Verified-Modules/spec/SNFR20/#codeowners-file) file as [/$expectedEntry]. Please ensure there is a forward slash (/) at the beginning and end of the module path at the start of the line."
 
         # Line should be correct
-        $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/spec/snfr20/#codeowners-file).'
+        $moduleLine | Should -Be $expectedEntry -Because 'the module should match the expected format as documented [here](https://azure.github.io/Azure-Verified-Modules/spec/SNFR20/#codeowners-file).'
     }
 
     It '[<moduleFolderName>] Module identifier should be listed in issue template in the correct alphabetical position.' -TestCases $governanceTestCases {
@@ -1799,11 +1882,11 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
         if ($approvedApiVersions -notcontains $TargetApi) {
             # Using a warning now instead of an error, as we don't want to block PRs for this.
-            $warningMessage = "The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following: {0}" -f ($approvedApiVersions -join ', ')
-            Write-Warning $warningMessage
+            $warningMessage = "The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following "
+            Write-Warning ("$warningMessage`n- {0}`n" -f ($approvedApiVersions -join "`n- "))
 
             Write-Output @{
-                Warning = $warningMessage
+                Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($approvedApiVersions -join '</code><br>- <code>'))
             }
             # The original failed test was
             # $approvedApiVersions | Should -Contain $TargetApi
@@ -1822,11 +1905,11 @@ Describe 'API version tests' -Tag 'ApiCheck' {
             if ($indexOfVersion -gt ($approvedApiVersions.Count - 2)) {
                 $newerAPIVersions = $approvedApiVersions[0..($indexOfVersion - 1)]
 
-                $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions [{0}]" -f ($newerAPIVersions -join ', ')
-                Write-Warning $warningMessage
+                $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions "
+                Write-Warning ("$warningMessage`n- {0}`n" -f ($newerAPIVersions -join "`n- "))
 
                 Write-Output @{
-                    Warning = $warningMessage
+                    Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($newerAPIVersions -join '</code><br>- <code>'))
                 }
             }
         }

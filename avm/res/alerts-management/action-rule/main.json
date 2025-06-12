@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "9440630980565289166"
+      "version": "0.35.1.17967",
+      "templateHash": "14879341739605245920"
     },
     "name": "Action Rules",
     "description": "This module deploys an Alert Processing Rule."

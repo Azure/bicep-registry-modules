@@ -35,31 +35,11 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
       kty: 'RSA'
     }
   }
-
-  resource dbKey 'keys@2022-07-01' = {
-    name: 'keyDatabaseEncryptionKey'
-    properties: {
-      kty: 'RSA'
-    }
-  }
 }
 
 resource keyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${keyVault::key.id}-${location}-${managedIdentity.id}-Key-Vault-Crypto-Service-Encryption-User-RoleAssignment')
   scope: keyVault::key
-  properties: {
-    principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'e147488a-f6f5-4113-8e2d-b22465e65bf6'
-    ) // Key Vault Crypto Service Encryption User
-    principalType: 'ServicePrincipal'
-  }
-}
-
-resource dbKeyPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${keyVault::dbKey.id}-${location}-${managedIdentity.id}-Key-Vault-Crypto-Service-Encryption-User-RoleAssignment')
-  scope: keyVault::dbKey
   properties: {
     principalId: managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
@@ -81,12 +61,6 @@ output keyVaultEncryptionKeyUrl string = keyVault::key.properties.keyUriWithVers
 
 @description('The name of the created Key Vault Encryption Key.')
 output keyVaultKeyName string = keyVault::key.name
-
-@description('The URL of the created Key Vault Database Encryption Key.')
-output keyVaultDatabaseEncryptionKeyUrl string = keyVault::dbKey.properties.keyUriWithVersion
-
-@description('The name of the created Key Vault Database Encryption Key.')
-output keyVaultDatabaseKeyName string = keyVault::dbKey.name
 
 @description('The name of the created Key Vault.')
 output keyVaultName string = keyVault.name

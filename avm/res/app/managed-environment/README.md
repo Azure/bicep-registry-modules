@@ -1060,23 +1060,21 @@ The AppLogsConfiguration for the Managed Environment.
 - Required: No
 - Type: object
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`logAnalyticsConfiguration`](#parameter-applogsconfigurationloganalyticsconfiguration) | object | The Log Analytics configuration. Required if `destination` is `log-analytics`. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`destination`](#parameter-applogsconfigurationdestination) | string | The destination of the logs. |
-| [`logAnalyticsConfiguration`](#parameter-applogsconfigurationloganalyticsconfiguration) | object | The configuration for Log Analytics. |
-
-### Parameter: `appLogsConfiguration.destination`
-
-The destination of the logs.
-
-- Required: No
-- Type: string
 
 ### Parameter: `appLogsConfiguration.logAnalyticsConfiguration`
 
-The configuration for Log Analytics.
+The Log Analytics configuration. Required if `destination` is `log-analytics`.
 
 - Required: No
 - Type: object
@@ -1085,12 +1083,12 @@ The configuration for Log Analytics.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`customerId`](#parameter-applogsconfigurationloganalyticsconfigurationcustomerid) | string | The customer ID of the Log Analytics workspace. |
+| [`customerId`](#parameter-applogsconfigurationloganalyticsconfigurationcustomerid) | string | The Log Analytics Workspace ID. |
 | [`sharedKey`](#parameter-applogsconfigurationloganalyticsconfigurationsharedkey) | securestring | The shared key of the Log Analytics workspace. |
 
 ### Parameter: `appLogsConfiguration.logAnalyticsConfiguration.customerId`
 
-The customer ID of the Log Analytics workspace.
+The Log Analytics Workspace ID.
 
 - Required: Yes
 - Type: string
@@ -1101,6 +1099,21 @@ The shared key of the Log Analytics workspace.
 
 - Required: Yes
 - Type: securestring
+
+### Parameter: `appLogsConfiguration.destination`
+
+The destination of the logs.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'azure-monitor'
+    'log-analytics'
+    'none'
+  ]
+  ```
 
 ### Parameter: `certificate`
 

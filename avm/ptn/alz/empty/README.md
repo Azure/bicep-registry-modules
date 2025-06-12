@@ -20,7 +20,7 @@ Also please ensure you review the [Notes section of the module's README](https:/
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Authorization/policyAssignments` | [2022-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-06-01/policyAssignments) |
+| `Microsoft.Authorization/policyAssignments` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policyAssignments) |
 | `Microsoft.Authorization/policyDefinitions` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policyDefinitions) |
 | `Microsoft.Authorization/policySetDefinitions` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2025-01-01/policySetDefinitions) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
@@ -115,6 +115,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
     managementGroupDisplayName: 'AVM ALZ PTN Empty Max Test'
     managementGroupPolicyAssignments: [
       {
+        definitionVersion: '1.*.*'
         displayName: 'Allowed virtual machine size SKUs'
         enforcementMode: 'Default'
         identity: 'None'
@@ -204,6 +205,7 @@ module empty 'br/public:avm/ptn/alz/empty:<version>' = {
     "managementGroupPolicyAssignments": {
       "value": [
         {
+          "definitionVersion": "1.*.*",
           "displayName": "Allowed virtual machine size SKUs",
           "enforcementMode": "Default",
           "identity": "None",
@@ -281,6 +283,7 @@ param managementGroupCustomRoleDefinitions = '<managementGroupCustomRoleDefiniti
 param managementGroupDisplayName = 'AVM ALZ PTN Empty Max Test'
 param managementGroupPolicyAssignments = [
   {
+    definitionVersion: '1.*.*'
     displayName: 'Allowed virtual machine size SKUs'
     enforcementMode: 'Default'
     identity: 'None'
@@ -571,6 +574,7 @@ Array of policy assignments to create on the management group.
 | [`additionalManagementGroupsIDsToAssignRbacTo`](#parameter-managementgrouppolicyassignmentsadditionalmanagementgroupsidstoassignrbacto) | array | An array of additional management group IDs to assign RBAC to for the policy assignment if it has an identity. |
 | [`additionalResourceGroupResourceIDsToAssignRbacTo`](#parameter-managementgrouppolicyassignmentsadditionalresourcegroupresourceidstoassignrbacto) | array | An array of additional Resource Group Resource IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments. |
 | [`additionalSubscriptionIDsToAssignRbacTo`](#parameter-managementgrouppolicyassignmentsadditionalsubscriptionidstoassignrbacto) | array | An array of additional Subscription IDs to assign RBAC to for the policy assignment if it has an identity, only supported for Management Group Policy Assignments. |
+| [`definitionVersion`](#parameter-managementgrouppolicyassignmentsdefinitionversion) | string | The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview. |
 | [`description`](#parameter-managementgrouppolicyassignmentsdescription) | string | The description of the policy assignment. |
 | [`displayName`](#parameter-managementgrouppolicyassignmentsdisplayname) | string | The display name of the policy assignment. Maximum length is 128 characters. |
 | [`location`](#parameter-managementgrouppolicyassignmentslocation) | string | The location of the policy assignment. Only required when utilizing managed identity, as sets location of system assigned managed identity, if created. |
@@ -646,6 +650,13 @@ An array of additional Subscription IDs to assign RBAC to for the policy assignm
 
 - Required: No
 - Type: array
+
+### Parameter: `managementGroupPolicyAssignments.definitionVersion`
+
+The policy definition version to use for the policy assignment. If not specified, the latest version of the policy definition will be used. For more information on policy assignment definition versions see https://learn.microsoft.com/azure/governance/policy/concepts/assignment-structure#policy-definition-id-and-version-preview.
+
+- Required: No
+- Type: string
 
 ### Parameter: `managementGroupPolicyAssignments.description`
 
@@ -1045,9 +1056,9 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/policy-assignment:0.3.1` | Remote reference |
-| `br/public:avm/ptn/authorization/role-assignment:0.2.0` | Remote reference |
-| `br/public:avm/ptn/authorization/role-definition:0.1.0` | Remote reference |
+| `br/public:avm/ptn/authorization/policy-assignment:0.4.0` | Remote reference |
+| `br/public:avm/ptn/authorization/role-assignment:0.2.2` | Remote reference |
+| `br/public:avm/ptn/authorization/role-definition:0.1.1` | Remote reference |
 | `br/public:avm/res/management/management-group:0.1.2` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 

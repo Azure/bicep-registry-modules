@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "8867518354956441115"
+      "version": "0.35.1.17967",
+      "templateHash": "1760724396434998597"
     },
     "name": "Scheduled Query Rules",
     "description": "This module deploys a Scheduled Query Rule."
@@ -57,6 +57,36 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The type for an actions configuration."
+      }
+    },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "managedIdentityAllType": {
@@ -232,9 +262,19 @@
     },
     "targetResourceTypes": {
       "type": "array",
-      "defaultValue": [],
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
       "metadata": {
         "description": "Optional. List of resource type of the target resource(s) on which the alert is created/updated. For example if the scope is a resource group and targetResourceTypes is Microsoft.Compute/virtualMachines, then a different alert will be fired for each virtual machine in the resource group which meet the alert criteria. Relevant only for rules of the kind LogAlert."
+      }
+    },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the service."
       }
     },
     "roleAssignments": {
@@ -249,13 +289,19 @@
     },
     "ruleResolveConfiguration": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/scheduledQueryRules@2025-01-01-preview#properties/properties/properties/resolveConfiguration"
+        },
         "description": "Optional. Defines the configuration for resolving fired alerts. Relevant only for rules of the kind LogAlert. Note, ResolveConfiguration can't be used together with AutoMitigate."
-      }
+      },
+      "nullable": true
     },
     "scopes": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "metadata": {
         "description": "Required. The list of resource IDs that this scheduled query rule is scoped to."
       }
@@ -298,6 +344,9 @@
     "criterias": {
       "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/scheduledQueryRules@2025-01-01-preview#properties/properties/properties/criteria"
+        },
         "description": "Required. The rule criteria that defines the conditions of the scheduled query rule."
       }
     },
@@ -310,10 +359,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.Insights/scheduledQueryRules@2025-01-01-preview#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -339,7 +391,7 @@
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
-    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'))), 'UserAssigned', 'SystemAssigned'), if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'))), fail('You can only configure either a system-assigned or user-assigned identities, not both.'), 'SystemAssigned'), if(not(empty(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -371,13 +423,27 @@
     },
     "queryRule": {
       "type": "Microsoft.Insights/scheduledQueryRules",
-      "apiVersion": "2023-03-15-preview",
+      "apiVersion": "2025-01-01-preview",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "identity": "[variables('identity')]",
       "kind": "[parameters('kind')]",
-      "properties": "[shallowMerge(createArray(createObject('actions', createObject('actionGroups', tryGet(parameters('actions'), 'actionGroupResourceIds'), 'actionProperties', coalesce(tryGet(parameters('actions'), 'actionProperties'), createObject()), 'customProperties', coalesce(tryGet(parameters('actions'), 'customProperties'), createObject())), 'criteria', parameters('criterias'), 'description', parameters('alertDescription'), 'displayName', coalesce(parameters('alertDisplayName'), parameters('name')), 'enabled', parameters('enabled')), if(and(equals(parameters('kind'), 'LogAlert'), empty(parameters('ruleResolveConfiguration'))), createObject('autoMitigate', parameters('autoMitigate'), 'muteActionsDuration', parameters('suppressForMinutes')), createObject()), createObject('resolveConfiguration', if(equals(parameters('kind'), 'LogAlert'), parameters('ruleResolveConfiguration'), null()), 'evaluationFrequency', if(equals(parameters('kind'), 'LogAlert'), parameters('evaluationFrequency'), null()), 'overrideQueryTimeRange', if(equals(parameters('kind'), 'LogAlert'), parameters('queryTimeRange'), null()), 'severity', if(equals(parameters('kind'), 'LogAlert'), parameters('severity'), null()), 'skipQueryValidation', if(equals(parameters('kind'), 'LogAlert'), parameters('skipQueryValidation'), null()), 'targetResourceTypes', if(equals(parameters('kind'), 'LogAlert'), parameters('targetResourceTypes'), null()), 'windowSize', if(equals(parameters('kind'), 'LogAlert'), parameters('windowSize'), null()), 'scopes', parameters('scopes'))))]"
+      "properties": "[shallowMerge(createArray(createObject('actions', createObject('actionGroups', tryGet(parameters('actions'), 'actionGroupResourceIds'), 'actionProperties', coalesce(tryGet(parameters('actions'), 'actionProperties'), createObject()), 'customProperties', coalesce(tryGet(parameters('actions'), 'customProperties'), createObject())), 'criteria', parameters('criterias'), 'description', parameters('alertDescription'), 'displayName', coalesce(parameters('alertDisplayName'), parameters('name')), 'enabled', parameters('enabled'), 'scopes', parameters('scopes')), if(equals(parameters('kind'), 'LogAlert'), shallowMerge(createArray(createObject('evaluationFrequency', parameters('evaluationFrequency'), 'overrideQueryTimeRange', parameters('queryTimeRange'), 'severity', parameters('severity'), 'skipQueryValidation', parameters('skipQueryValidation'), 'targetResourceTypes', parameters('targetResourceTypes'), 'windowSize', parameters('windowSize'), 'resolveConfiguration', parameters('ruleResolveConfiguration')), if(empty(parameters('ruleResolveConfiguration')), createObject('autoMitigate', parameters('autoMitigate'), 'muteActionsDuration', parameters('suppressForMinutes')), createObject()))), createObject())))]"
+    },
+    "queryRule_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Insights/scheduledQueryRules/{0}', parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "queryRule"
+      ]
     },
     "queryRule_roleAssignments": {
       "copy": {
@@ -429,7 +495,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('queryRule', '2023-03-15-preview', 'full').location]"
+      "value": "[reference('queryRule', '2025-01-01-preview', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -437,7 +503,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('queryRule', '2023-03-15-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('queryRule', '2025-01-01-preview', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

@@ -80,7 +80,7 @@ module testDeployment '../../../main.bicep' = [
         kind: 'CanNotDelete'
         name: 'myCustomLockName'
       }
-      primaryUserAssignedIdentityId: nestedDependencies.outputs.serverIdentityResourceId
+      primaryUserAssignedIdentityResourceId: nestedDependencies.outputs.serverIdentityResourceId
       administratorLogin: 'adminUserName'
       administratorLoginPassword: password
       location: enforcedLocation
@@ -126,6 +126,7 @@ module testDeployment '../../../main.bicep' = [
             tier: 'GeneralPurpose'
             capacity: 10
           }
+          availabilityZone: -1
         }
       ]
       databases: [
@@ -160,6 +161,7 @@ module testDeployment '../../../main.bicep' = [
           backupLongTermRetentionPolicy: {
             monthlyRetention: 'P6M'
           }
+          availabilityZone: -1
         }
       ]
       customerManagedKey: {
@@ -219,7 +221,7 @@ module testDeployment '../../../main.bicep' = [
         {
           ignoreMissingVnetServiceEndpoint: true
           name: 'newVnetRule1'
-          virtualNetworkSubnetId: nestedDependencies.outputs.serviceEndpointSubnetResourceId
+          virtualNetworkSubnetResourceId: nestedDependencies.outputs.serviceEndpointSubnetResourceId
         }
       ]
       restrictOutboundNetworkAccess: 'Disabled'
