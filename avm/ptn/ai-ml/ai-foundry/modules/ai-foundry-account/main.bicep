@@ -128,9 +128,9 @@ module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
 import { deploymentsType } from '../customTypes.bicep'
 import { connectionType } from 'br/public:avm/res/machine-learning-services/workspace:0.10.1'
 
-output aiServicesResourceId string = aiServices.outputs.resourceId
-output aiServicesName string = aiServices.outputs.name
-output aiServicesEndpoint string = aiServices.outputs.endpoint
+output aiServicesResourceId string = aiServices.outputs.cognitiveResourceId
+output aiServicesName string = aiServices.outputs.cognitiveName
+output aiServicesEndpoint string = aiServices.outputs.cogntiveEndpoint
 output aiServicesSystemAssignedMIPrincipalId string = aiServices.outputs.?systemAssignedMIPrincipalId ?? ''
 
 output connections array = union(

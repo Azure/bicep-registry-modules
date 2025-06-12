@@ -101,26 +101,26 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-// module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
-//   name: take('${name}-log-analytics-deployment', 64)
-//   params: {
-//     name: toLower('log-${name}')
-//     location: location
-//     tags: allTags
-//     skuName: 'PerNode'
-//     dataRetention: 60
-//   }
-// }
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
+  name: take('${name}-log-analytics-deployment', 64)
+  params: {
+    name: toLower('log-${name}')
+    location: location
+    tags: allTags
+    skuName: 'PerNode'
+    dataRetention: 60
+  }
+}
 
-// module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
-//   name: take('${name}-app-insights-deployment', 64)
-//   params: {
-//     name: toLower('appi-${name}')
-//     location: location
-//     tags: allTags
-//     workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-//   }
-// }
+module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
+  name: take('${name}-app-insights-deployment', 64)
+  params: {
+    name: toLower('appi-${name}')
+    location: location
+    tags: allTags
+    workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+  }
+}
 
 module network 'modules/virtualNetwork.bicep' = if (networkIsolation) {
   name: take('${name}-network-deployment', 64)
@@ -178,6 +178,24 @@ module containerRegistry 'modules/containerRegistry.bicep' = if (acrEnabled) {
   }
 }
 
+module cognitiveServices 'modules/ai-foundry-account/main.bicep' = {
+  name: '${name}-cognitive-services-deployment'
+  params: {
+    name: name
+    resourceToken: resourceToken
+    location: location
+    networkIsolation: networkIsolation
+    networkAcls: networkAcls
+    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    aiModelDeployments: aiModelDeployments
+    userObjectId: userObjectId
+    contentSafetyEnabled: contentSafetyEnabled
+    tags: allTags
+  }
+}
+
 module storageAccount 'modules/storageAccount.bicep' = {
   name: take('${name}-storage-account-deployment', 64)
   params: {
@@ -218,36 +236,18 @@ module storageAccount 'modules/storageAccount.bicep' = {
   }
 }
 
-module cognitiveServices 'modules/cognitive-services/main.bicep' = {
-  name: '${name}-cognitive-services-deployment'
-  params: {
-    name: name
-    resourceToken: resourceToken
-    location: location
-    networkIsolation: networkIsolation
-    networkAcls: networkAcls
-    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-    aiModelDeployments: aiModelDeployments
-    userObjectId: userObjectId
-    contentSafetyEnabled: contentSafetyEnabled
-    tags: allTags
-  }
-}
-
 // Add the new FDP cognitive services module
-module project 'modules/ai-foundry-project/main.bicep' = {
+module project 'modules/aifoundryproject.bicep' = {
   name: '${name}prj'
   params: {
-    cosmosDBname: cosmosDbEnabled ? cosmosDb.outputs.cosmosDBname : ''
+    cosmosDBName: cosmosDbEnabled ? cosmosDb.outputs.cosmosDBname : ''
     cosmosDbEnabled: cosmosDbEnabled
     searchEnabled: searchEnabled
     name: projectName
     location: location
     storageName: storageAccount.outputs.storageName
     aiServicesName: cognitiveServices.outputs.aiServicesName
-    nameFormatted: searchEnabled ? aiSearch.outputs.name : ''
+    nameFormatted: searchEnabled ? aiSearch.outputs.searchName : ''
   }
 }
 
@@ -337,15 +337,15 @@ import { connectionType } from 'br/public:avm/res/machine-learning-services/work
 
 output AZURE_KEY_VAULT_NAME string = keyvault.outputs.name
 output AZURE_AI_SERVICES_NAME string = cognitiveServices.outputs.aiServicesName
-output AZURE_AI_SEARCH_NAME string = searchEnabled ? aiSearch.outputs.name : ''
+output AZURE_AI_SEARCH_NAME string = searchEnabled ? aiSearch.outputs.searchName : ''
 output AZURE_AI_HUB_NAME string = cognitiveServices.outputs.aiServicesName
 output AZURE_AI_PROJECT_NAME string = project.outputs.projectName
 output AZURE_BASTION_NAME string = networkIsolation ? network.outputs.bastionName : ''
 output AZURE_VM_RESOURCE_ID string = networkIsolation ? virtualMachine.outputs.id : ''
 output AZURE_VM_USERNAME string = servicesUsername
-//output AZURE_APP_INSIGHTS_NAME string = applicationInsights.outputs.name
+output AZURE_APP_INSIGHTS_NAME string = applicationInsights.outputs.name
 output AZURE_CONTAINER_REGISTRY_NAME string = acrEnabled ? containerRegistry.outputs.name : ''
-//output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.outputs.name
+output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.outputs.name
 output AZURE_STORAGE_ACCOUNT_NAME string = storageAccount.outputs.storageName
 output AZURE_VIRTUAL_NETWORK_NAME string = networkIsolation ? network.outputs.virtualNetworkName : ''
 output AZURE_VIRTUAL_NETWORK_SUBNET_NAME string = networkIsolation ? network.outputs.vmSubnetName : ''
