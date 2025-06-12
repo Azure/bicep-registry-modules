@@ -72,7 +72,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          # creds: ${{ secrets.AZURE_CREDENTIALS }}
           client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
           tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
           subscription-id: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
@@ -121,7 +121,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          # creds: ${{ secrets.AZURE_CREDENTIALS }}
           client-id: ${{ secrets.VALIDATE_CLIENT_ID }}
           tenant-id: ${{ secrets.VALIDATE_TENANT_ID }}
           subscription-id: ${{ secrets.VALIDATE_SUBSCRIPTION_ID }}
