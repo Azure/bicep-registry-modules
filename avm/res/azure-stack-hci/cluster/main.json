@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "16978206902562336432"
+      "templateHash": "12688282583463013510"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -497,6 +497,9 @@
             "description": "Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster."
           }
         }
+      },
+      "metadata": {
+        "__bicep_export!": true
       }
     },
     "roleAssignmentType": {
@@ -786,6 +789,7 @@
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
       }
     ],
+    "$fxv#0": "#!/bin/bash\n\nset -e  # Exit on any error\n\necho \"Starting HCI deployment script...\"\n\n# Check required environment variables\nif [ -z \"$RESOURCE_GROUP_NAME\" ] || [ -z \"$SUBSCRIPTION_ID\" ] || [ -z \"$CLUSTER_NAME\" ] || [ -z \"$DEPLOYMENT_SETTINGS\" ]; then\n    echo \"Error: Required environment variables are missing\"\n    exit 1\nfi\n\n# Set subscription context\necho \"Setting subscription context to: $SUBSCRIPTION_ID\"\naz account set --subscription \"$SUBSCRIPTION_ID\"\n\n# Parse deployment operations into JSON array format\nIFS=',' read -ra OPERATIONS <<< \"$DEPLOYMENT_OPERATIONS\"\necho \"Deployment operations: ${OPERATIONS[@]}\"\n\n# Convert operations array to JSON format\nOPERATIONS_JSON=\"[\"\nfor i in \"${!OPERATIONS[@]}\"; do\n    if [ $i -gt 0 ]; then\n        OPERATIONS_JSON+=\",\"\n    fi\n    OPERATIONS_JSON+=\"\\\"${OPERATIONS[$i]}\\\"\"\ndone\nOPERATIONS_JSON+=\"]\"\n\necho \"Deployment operations JSON: $OPERATIONS_JSON\"\n\n# Create parameter file and execute single deployment\nPARAM_FILE=\"deployment-params.json\"\n\ncat > \"$PARAM_FILE\" << EOF\n{\n  \"\\$schema\": \"https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#\",\n  \"contentVersion\": \"1.0.0.0\",\n  \"parameters\": {\n    \"deploymentOperations\": {\n      \"value\": $OPERATIONS_JSON\n    },\n    \"deploymentSettings\": {\n      \"value\": $DEPLOYMENT_SETTINGS\n    },\n    \"useSharedKeyVault\": {\n      \"value\": $USE_SHARED_KEYVAULT\n    },\n    \"hciResourceProviderObjectId\": {\n      \"value\": \"$HCI_RESOURCE_PROVIDER_OBJECT_ID\"\n    },\n    \"clusterName\": {\n      \"value\": \"$CLUSTER_NAME\"\n    },\n    \"cloudId\": {\n      \"value\": \"$CLOUD_ID\"\n    }\n  }\n}\nEOF\n\necho \"Created parameter file: $PARAM_FILE\"\necho \"Parameter file content:\"\ncat \"$PARAM_FILE\"\n\n# Execute Bicep deployment\nDEPLOYMENT_NAME=\"hci-deployment-$(date +%s)\"\n\necho \"Starting deployment: $DEPLOYMENT_NAME\"\necho \"Using template: deployment-setting.bicep\"\necho \"Using parameters: $PARAM_FILE\"\n\n# Check if deployment-setting.bicep file exists\nif [ ! -f \"deployment-setting.bicep\" ]; then\n    echo \"Error: deployment-setting.bicep file not found in current directory\"\n    echo \"Current directory contents:\"\n    ls -la\n    exit 1\nfi\n\n# Execute deployment\naz deployment group create \\\n    --resource-group \"$RESOURCE_GROUP_NAME\" \\\n    --name \"$DEPLOYMENT_NAME\" \\\n    --template-file \"deployment-setting.bicep\" \\\n    --parameters \"@$PARAM_FILE\" \\\n    --verbose\n\nDEPLOYMENT_STATUS=$?\n\nif [ $DEPLOYMENT_STATUS -eq 0 ]; then\n    echo \"✅ Deployment completed successfully\"\n\n    # Get deployment outputs\n    echo \"Deployment outputs:\"\n    az deployment group show \\\n        --resource-group \"$RESOURCE_GROUP_NAME\" \\\n        --name \"$DEPLOYMENT_NAME\" \\\n        --query \"properties.outputs\" \\\n        --output table\nelse\n    echo \"❌ Deployment failed with status: $DEPLOYMENT_STATUS\"\n\n    # Get deployment error details\n    echo \"Deployment error details:\"\n    az deployment group show \\\n        --resource-group \"$RESOURCE_GROUP_NAME\" \\\n        --name \"$DEPLOYMENT_NAME\" \\\n        --query \"properties.error\" \\\n        --output json\n\n    exit $DEPLOYMENT_STATUS\nfi\n\n# Clean up temporary parameter file\nrm -f \"$PARAM_FILE\"\n\necho \"Completed deployment\"\n\necho \"🎉 HCI deployment completed successfully!\"\n\n# Set output for Bicep usage\ncat > $AZ_SCRIPTS_OUTPUT_PATH << EOF\n{\n  \"status\": \"success\",\n  \"message\": \"Deployment completed successfully\",\n  \"operations\": $OPERATIONS_JSON\n}\nEOF\n",
     "builtInRoleNames": {
       "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
       "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
@@ -830,6 +834,85 @@
       "location": "[parameters('location')]",
       "properties": {},
       "tags": "[parameters('tags')]"
+    },
+    "managedIdentity": {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[format('temp-{0}', parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]"
+    },
+    "CRole": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(format('msi-{0}-C-RoleAssignment', format('temp-{0}', parameters('name'))))]",
+      "properties": {
+        "principalId": "[reference('managedIdentity').principalId]",
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "managedIdentity"
+      ]
+    },
+    "deploymentScript": {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2023-08-01",
+      "name": "[format('hci-deployment-script-{0}', uniqueString(resourceGroup().id))]",
+      "location": "[resourceGroup().location]",
+      "kind": "AzureCLI",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('temp-{0}', parameters('name'))))]": {}
+        }
+      },
+      "properties": {
+        "azCliVersion": "2.50.0",
+        "timeout": "PT30M",
+        "retentionInterval": "P1D",
+        "cleanupPreference": "OnSuccess",
+        "environmentVariables": [
+          {
+            "name": "RESOURCE_GROUP_NAME",
+            "value": "[resourceGroup().name]"
+          },
+          {
+            "name": "SUBSCRIPTION_ID",
+            "value": "[subscription().subscriptionId]"
+          },
+          {
+            "name": "CLUSTER_NAME",
+            "value": "[parameters('name')]"
+          },
+          {
+            "name": "CLOUD_ID",
+            "value": "[reference('cluster').cloudId]"
+          },
+          {
+            "name": "USE_SHARED_KEYVAULT",
+            "value": "[string(parameters('useSharedKeyVault'))]"
+          },
+          {
+            "name": "DEPLOYMENT_OPERATIONS",
+            "value": "[join(parameters('deploymentOperations'), ',')]"
+          },
+          {
+            "name": "HCI_RESOURCE_PROVIDER_OBJECT_ID",
+            "secureValue": "[parameters('hciResourceProviderObjectId')]"
+          },
+          {
+            "name": "DEPLOYMENT_SETTINGS",
+            "value": "[string(parameters('deploymentSettings'))]"
+          }
+        ],
+        "scriptContent": "[variables('$fxv#0')]"
+      },
+      "dependsOn": [
+        "cluster",
+        "CRole",
+        "managedIdentity"
+      ]
     },
     "cluster_roleAssignments": {
       "copy": {

@@ -206,6 +206,117 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
   }
 }
 
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'temp-${name}'
+  location: location
+  tags: tags
+}
+
+resource CRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${managedIdentity.name}-C-RoleAssignment')
+  scope: resourceGroup()
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor role
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// var deploymentSettingJsonRaw = loadTextContent('./nested/deployment-setting.json')
+// var deploymentSettingJson = replace(
+//   replace(
+//     replace(deploymentSettingJsonRaw, '{{deploymentOperations}}', join(deploymentOperations, ',')),
+//     '{{deploymentSettings}}',
+//     deploymentSettings
+//   ),
+//   '{{privateKeySecretName}}',
+//   sshPrivateKeyPemSecretName
+// )
+
+// resource deploy 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+//   name: 'deploy-${name}'
+//   location: location
+//   tags: tags
+//   dependsOn: [
+//     CRole
+//   ]
+//   kind: 'AzureCLI'
+//   identity: {
+//     type: 'UserAssigned'
+//     userAssignedIdentities: {
+//       '${managedIdentity.id}': {}
+//     }
+//   }
+//   properties: {
+//     azCliVersion: '2.71.0'
+//     scriptContent: loadTextContent('./deploy.sh')
+//     arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(readJson)}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(writeJson)}" "${resourceGroup().name}" "${subscription().subscriptionId}"'
+//     timeout: 'PT30M'
+//     retentionInterval: 'PT60M'
+//     cleanupPreference: 'OnExpiration'
+//   }
+// }
+
+// Use deployment script to run the shell script
+resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: 'hci-deployment-script-${uniqueString(resourceGroup().id)}'
+  location: resourceGroup().location
+  kind: 'AzureCLI'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    azCliVersion: '2.50.0'
+    timeout: 'PT30M'
+    retentionInterval: 'P1D'
+    cleanupPreference: 'OnSuccess'
+    environmentVariables: [
+      {
+        name: 'RESOURCE_GROUP_NAME'
+        value: resourceGroup().name
+      }
+      {
+        name: 'SUBSCRIPTION_ID'
+        value: subscription().subscriptionId
+      }
+      {
+        name: 'CLUSTER_NAME'
+        value: cluster.name
+      }
+      {
+        name: 'CLOUD_ID'
+        value: cluster.properties.cloudId
+      }
+      {
+        name: 'USE_SHARED_KEYVAULT'
+        value: string(useSharedKeyVault)
+      }
+      {
+        name: 'DEPLOYMENT_OPERATIONS'
+        value: join(deploymentOperations, ',')
+      }
+      {
+        name: 'HCI_RESOURCE_PROVIDER_OBJECT_ID'
+        secureValue: hciResourceProviderObjectId
+      }
+      {
+        name: 'DEPLOYMENT_SETTINGS'
+        value: string(deploymentSettings)
+      }
+    ]
+    scriptContent: loadTextContent('./deploy.sh')
+  }
+  dependsOn: [
+    CRole
+  ]
+}
+
 @batchSize(1)
 module deploymentSetting 'deployment-setting/main.bicep' = [
   for deploymentOperation in sortedDeploymentOperations: if (!empty(deploymentOperation) && !empty(deploymentSettings)) {
@@ -416,6 +527,7 @@ type securityConfigurationType = {
   wdacEnforced: bool
 }
 
+@export()
 type deploymentSettingsType = {
   @minLength(4)
   @maxLength(8)
