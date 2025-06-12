@@ -247,7 +247,7 @@ resource devCenter_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
 
 module devCenter_project '../project/main.bicep' = [
   for (project, index) in (projects ?? []): {
-    name: '${uniqueString(deployment().name, location)}-Devcenter-Project-${project.name}'
+    name: '${uniqueString(deployment().name, location)}-Devcenter-Project-${index}'
     scope: resourceGroup(
       split(project.?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
       split(project.?resourceGroupResourceId ?? resourceGroup().id, '/')[4]

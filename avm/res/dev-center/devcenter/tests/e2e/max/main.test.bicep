@@ -8,7 +8,6 @@ metadata description = 'This instance deploys the module with most of its featur
 // ========== //
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
-@maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-devcenter-devcenter-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
@@ -30,13 +29,18 @@ param namePrefix string = '#_namePrefix_#'
 // General resources
 // =================
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup1 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
 
+resource resourceGroup2 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: '${resourceGroupName}-2'
+  location: resourceLocation
+}
+
 module nestedDependencies 'dependencies.bicep' = {
-  scope: resourceGroup
+  scope: resourceGroup1
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
@@ -51,11 +55,11 @@ module nestedDependencies 'dependencies.bicep' = {
 // ============== //
 
 var devcenterName = '${namePrefix}${serviceShort}001'
-var devcenterExpectedResourceID = '${resourceGroup.id}/providers/Microsoft.DevCenter/devcenters/${devcenterName}'
+var devcenterExpectedResourceID = '${resourceGroup1.id}/providers/Microsoft.DevCenter/devcenters/${devcenterName}'
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
-    scope: resourceGroup
+    scope: resourceGroup1
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: devcenterName
@@ -132,6 +136,15 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
+      projects: [
+        {
+          name: 'test-project-same-resource-group'
+        }
+        {
+          name: 'test-project-another-resource-group'
+          resourceGroupResourceId: resourceGroup2.id
+        }
+      ]
       projectPolicies: [
         {
           name: 'Default'
@@ -163,15 +176,15 @@ module testDeployment '../../../main.bicep' = [
             {
               resources: '${devcenterExpectedResourceID}/galleries/Default/images/microsoftwindowsdesktop_windows-ent-cpc_win11-24h2-ent-cpc'
             }
+            {
+              action: 'Deny'
+              resourceType: 'AttachedNetworks'
+            }
           ]
           projectsResourceIdOrName: [
-            'test-project'
+            'test-project-same-resource-group'
+            '${resourceGroup2.id}/providers/Microsoft.DevCenter/projects/test-project-another-resource-group'
           ]
-        }
-      ]
-      projects: [
-        {
-          name: 'test-project'
         }
       ]
     }
