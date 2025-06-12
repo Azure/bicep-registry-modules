@@ -45,10 +45,10 @@ param enableRedundancy bool = false
 param enablePrivateNetworking bool = false
 
 @secure()
-@description('Conditional. The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
+@description('Optional. The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
 param virtualMachineAdminUsername string = '' //TODO: store value in Key Vault
 
-@description('Conditional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
+@description('Optional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
 @secure()
 param virtualMachineAdminPassword string = newGuid() //TODO: store value in Key Vault
 

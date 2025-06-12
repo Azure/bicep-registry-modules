@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2120447871753277521"
+      "templateHash": "18311251053149398238"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module  contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -92,14 +92,14 @@
       "type": "securestring",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true."
+        "description": "Optional. The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true."
       }
     },
     "virtualMachineAdminPassword": {
       "type": "securestring",
       "defaultValue": "[newGuid()]",
       "metadata": {
-        "description": "Conditional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true."
+        "description": "Optional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true."
       }
     },
     "backendContainerImageTag": {

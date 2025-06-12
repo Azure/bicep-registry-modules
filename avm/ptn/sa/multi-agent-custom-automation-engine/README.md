@@ -256,13 +256,6 @@ param enableTelemetry = true
 | :-- | :-- | :-- |
 | [`azureOpenAILocation`](#parameter-azureopenailocation) | string | The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions. |
 
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`virtualMachineAdminPassword`](#parameter-virtualmachineadminpassword) | securestring | The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
-| [`virtualMachineAdminUsername`](#parameter-virtualmachineadminusername) | securestring | The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -277,6 +270,8 @@ param enableTelemetry = true
 | [`solutionLocation`](#parameter-solutionlocation) | string | Location for all Resources except AI Foundry. |
 | [`solutionPrefix`](#parameter-solutionprefix) | string | The prefix to add in the default names given to all deployed Azure resources. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
+| [`virtualMachineAdminPassword`](#parameter-virtualmachineadminpassword) | securestring | The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
+| [`virtualMachineAdminUsername`](#parameter-virtualmachineadminusername) | securestring | The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
 
 ### Parameter: `azureOpenAILocation`
 
@@ -297,22 +292,6 @@ The location of OpenAI related resources. This should be one of the supported Az
     'westus'
   ]
   ```
-
-### Parameter: `virtualMachineAdminPassword`
-
-The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.
-
-- Required: No
-- Type: securestring
-- Default: `[newGuid()]`
-
-### Parameter: `virtualMachineAdminUsername`
-
-The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.
-
-- Required: No
-- Type: securestring
-- Default: `''`
 
 ### Parameter: `backendContainerImageTag`
 
@@ -399,6 +378,22 @@ The tags to apply to all deployed Azure resources.
       location: '[parameters(\'solutionLocation\')]'
   }
   ```
+
+### Parameter: `virtualMachineAdminPassword`
+
+The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.
+
+- Required: No
+- Type: securestring
+- Default: `[newGuid()]`
+
+### Parameter: `virtualMachineAdminUsername`
+
+The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.
+
+- Required: No
+- Type: securestring
+- Default: `''`
 
 ## Outputs
 
