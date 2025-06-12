@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "729234201541424389"
+      "templateHash": "4152856745534187528"
     },
     "name": "CDN Profiles Custom Domains",
     "description": "This module deploys a CDN Profile Custom Domains."
@@ -201,7 +201,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. The cipher suite set type that will be used for Https"
+        "description": "Optional. The cipher suite set type that will be used for Https."
       }
     },
     "customizedCipherSuiteSet": {

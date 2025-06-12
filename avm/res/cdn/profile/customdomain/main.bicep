@@ -37,7 +37,7 @@ param minimumTlsVersion string = 'TLS12'
 @description('Optional. The name of the secret. ie. subs/rg/profile/secret.')
 param secretName string = ''
 
-@description('Optional. The cipher suite set type that will be used for Https')
+@description('Optional. The cipher suite set type that will be used for Https.')
 param cipherSuiteSetType string = ''
 
 @description('Optional. The customized cipher suite set that will be used for Https. Required if cipherSuiteSetType is Customized.')

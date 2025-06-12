@@ -29,7 +29,7 @@ This module deploys a CDN Profile Custom Domains.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`cipherSuiteSetType`](#parameter-ciphersuitesettype) | string | The cipher suite set type that will be used for Https |
+| [`cipherSuiteSetType`](#parameter-ciphersuitesettype) | string | The cipher suite set type that will be used for Https. |
 | [`customizedCipherSuiteSet`](#parameter-customizedciphersuiteset) | object | The customized cipher suite set that will be used for Https. Required if cipherSuiteSetType is Customized. |
 | [`extendedProperties`](#parameter-extendedproperties) | object | Key-Value pair representing migration properties for domains. |
 | [`minimumTlsVersion`](#parameter-minimumtlsversion) | string | The minimum TLS version required for the custom domain. Default value: TLS12. |
@@ -80,7 +80,7 @@ The name of the CDN profile.
 
 ### Parameter: `cipherSuiteSetType`
 
-The cipher suite set type that will be used for Https
+The cipher suite set type that will be used for Https.
 
 - Required: No
 - Type: string
