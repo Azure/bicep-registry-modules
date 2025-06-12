@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "1798080903299122087"
+      "version": "0.33.93.31351",
+      "templateHash": "7550073341854167328"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -737,8 +737,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "9630401518787054165"
+              "version": "0.33.93.31351",
+              "templateHash": "5003165182670754502"
             }
           },
           "parameters": {
@@ -788,9 +788,9 @@
             "$fxv#1": "@secure()\nparam input string\n\n#disable-next-line outputs-should-not-contain-secrets\noutput output string = input\n",
             "$fxv#2": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {\n  name: keyVaultName\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: keyVault.getSecret(publicKeySecretName)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
             "$fxv#3": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The value of the public key in Base 64.')\n@secure()\nparam publicKeySecretValueBase64 string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\n@description('Required. The value of the private key in Base 64.')\n@secure()\nparam privateKeySecretValueBase64 string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {\n  name: keyVaultName\n}\n\nresource publicKeySecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {\n  parent: keyVault\n  name: publicKeySecretName\n  properties: {\n    value: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\nresource privateKeySecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {\n  parent: keyVault\n  name: privateKeySecretName\n  properties: {\n    value: base64ToString(privateKeySecretValueBase64)\n  }\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
-            "readJsonRaw": "{\r\n    \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\r\n    \"contentVersion\": \"1.0.0.0\",\r\n    \"parameters\": {\r\n        \"keyVaultName\": {\r\n            \"value\": \"{{keyVaultName}}\"\r\n        },\r\n        \"publicKeySecretName\": {\r\n            \"value\": \"{{publicKeySecretName}}\"\r\n        },\r\n        \"privateKeySecretName\": {\r\n            \"value\": \"{{privateKeySecretName}}\"\r\n        }\r\n    }\r\n}",
+            "readJsonRaw": "{\n    \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\n    \"contentVersion\": \"1.0.0.0\",\n    \"parameters\": {\n        \"keyVaultName\": {\n            \"value\": \"{{keyVaultName}}\"\n        },\n        \"publicKeySecretName\": {\n            \"value\": \"{{publicKeySecretName}}\"\n        },\n        \"privateKeySecretName\": {\n            \"value\": \"{{privateKeySecretName}}\"\n        }\n    }\n}",
             "readJson": "[replace(replace(replace(variables('readJsonRaw'), '{{keyVaultName}}', parameters('keyVaultName')), '{{publicKeySecretName}}', parameters('sshPublicKeySecretName')), '{{privateKeySecretName}}', parameters('sshPrivateKeyPemSecretName'))]",
-            "writeJsonRaw": "{\r\n    \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\r\n    \"contentVersion\": \"1.0.0.0\",\r\n    \"parameters\": {\r\n        \"keyVaultName\": {\r\n            \"value\": \"{{keyVaultName}}\"\r\n        },\r\n        \"publicKeySecretName\": {\r\n            \"value\": \"{{publicKeySecretName}}\"\r\n        },\r\n        \"publicKeySecretValueBase64\": {\r\n            \"value\": \"{{publicKeySecretValueBase64}}\"\r\n        },\r\n        \"privateKeySecretName\": {\r\n            \"value\": \"{{privateKeySecretName}}\"\r\n        },\r\n        \"privateKeySecretValueBase64\": {\r\n            \"value\": \"{{privateKeySecretValueBase64}}\"\r\n        }\r\n    }\r\n}",
+            "writeJsonRaw": "{\n    \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\n    \"contentVersion\": \"1.0.0.0\",\n    \"parameters\": {\n        \"keyVaultName\": {\n            \"value\": \"{{keyVaultName}}\"\n        },\n        \"publicKeySecretName\": {\n            \"value\": \"{{publicKeySecretName}}\"\n        },\n        \"publicKeySecretValueBase64\": {\n            \"value\": \"{{publicKeySecretValueBase64}}\"\n        },\n        \"privateKeySecretName\": {\n            \"value\": \"{{privateKeySecretName}}\"\n        },\n        \"privateKeySecretValueBase64\": {\n            \"value\": \"{{privateKeySecretValueBase64}}\"\n        }\n    }\n}",
             "writeJson": "[replace(replace(replace(variables('writeJsonRaw'), '{{keyVaultName}}', parameters('keyVaultName')), '{{publicKeySecretName}}', parameters('sshPublicKeySecretName')), '{{privateKeySecretName}}', parameters('sshPrivateKeyPemSecretName'))]"
           },
           "resources": {
