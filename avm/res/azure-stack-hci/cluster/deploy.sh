@@ -79,6 +79,8 @@ if [ ! -f "deployment-setting.bicep" ]; then
     exit 1
 fi
 
+# TODO: check if deployment-settings exists or failed
+
 # Execute deployment
 az deployment group create \
     --resource-group "$RESOURCE_GROUP_NAME" \
