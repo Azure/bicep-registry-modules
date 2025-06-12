@@ -5,7 +5,7 @@ set -e  # Exit on any error
 echo "Starting HCI deployment script..."
 
 # Check required environment variables
-if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$DEPLOYMENT_SETTINGS" ]; then
+if [ -z "$RESOURCE_GROUP_NAME" ] || [ -z "$SUBSCRIPTION_ID" ] || [ -z "$CLUSTER_NAME" ] || [ -z "$DEPLOYMENT_SETTINGS" ] || [ -z "$DEPLOYMENT_SETTING_BICEP_BASE64" ]; then
     echo "Error: Required environment variables are missing"
     exit 1
 fi
@@ -13,6 +13,19 @@ fi
 # Set subscription context
 echo "Setting subscription context to: $SUBSCRIPTION_ID"
 az account set --subscription "$SUBSCRIPTION_ID"
+
+# Decode base64 and create deployment-setting.bicep file
+echo "Creating deployment-setting.bicep file from base64 encoded content..."
+echo "$DEPLOYMENT_SETTING_BICEP_BASE64" | base64 -d > deployment-setting.bicep
+
+# Verify the file was created successfully
+if [ ! -f "deployment-setting.bicep" ] || [ ! -s "deployment-setting.bicep" ]; then
+    echo "Error: Failed to create deployment-setting.bicep file or file is empty"
+    exit 1
+fi
+
+echo "✅ deployment-setting.bicep file created successfully"
+echo "File size: $(wc -c < deployment-setting.bicep) bytes"
 
 # Parse deployment operations into JSON array format
 IFS=',' read -ra OPERATIONS <<< "$DEPLOYMENT_OPERATIONS"
@@ -71,13 +84,15 @@ echo "Starting deployment: $DEPLOYMENT_NAME"
 echo "Using template: deployment-setting.bicep"
 echo "Using parameters: $PARAM_FILE"
 
-# Check if deployment-setting.bicep file exists
+# Check if deployment-setting.bicep file was created successfully
 if [ ! -f "deployment-setting.bicep" ]; then
-    echo "Error: deployment-setting.bicep file not found in current directory"
+    echo "Error: deployment-setting.bicep file was not created successfully"
     echo "Current directory contents:"
     ls -la
     exit 1
 fi
+
+echo "✅ deployment-setting.bicep file found and ready for deployment"
 
 # TODO: check if deployment-settings exists or failed
 
@@ -115,8 +130,9 @@ else
     exit $DEPLOYMENT_STATUS
 fi
 
-# Clean up temporary parameter file
+# Clean up temporary files
 rm -f "$PARAM_FILE"
+rm -f "deployment-setting.bicep"
 
 echo "Completed deployment"
 
