@@ -54,7 +54,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
-    name: 'hcpcimin02'
+    name: 'hcpcimin001'
   }
 }
 ```
@@ -85,7 +85,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<customLocationResourceId>"
     },
     "name": {
-      "value": "hcpcimin02"
+      "value": "hcpcimin001"
     }
   }
 }
@@ -110,7 +110,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
-param name = 'hcpcimin02'
+param name = 'hcpcimin001'
 ```
 
 </details>
@@ -138,7 +138,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
-    name: 'hcpcimax02'
+    name: 'hcpcimax001'
     // Non-required parameters
     agentPoolProfiles: [
       {
@@ -223,7 +223,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<customLocationResourceId>"
     },
     "name": {
-      "value": "hcpcimax02"
+      "value": "hcpcimax001"
     },
     // Non-required parameters
     "agentPoolProfiles": {
@@ -326,7 +326,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
-param name = 'hcpcimax02'
+param name = 'hcpcimax001'
 // Non-required parameters
 param agentPoolProfiles = [
   {
@@ -408,7 +408,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       }
     }
     customLocationResourceId: '<customLocationResourceId>'
-    name: 'hcpciwaf02'
+    name: 'hcpciwaf001'
     // Non-required parameters
     agentPoolProfiles: [
       {
@@ -468,7 +468,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       "value": "<customLocationResourceId>"
     },
     "name": {
-      "value": "hcpciwaf02"
+      "value": "hcpciwaf001"
     },
     // Non-required parameters
     "agentPoolProfiles": {
@@ -530,7 +530,7 @@ param cloudProviderProfile = {
   }
 }
 param customLocationResourceId = '<customLocationResourceId>'
-param name = 'hcpciwaf02'
+param name = 'hcpciwaf001'
 // Non-required parameters
 param agentPoolProfiles = [
   {
