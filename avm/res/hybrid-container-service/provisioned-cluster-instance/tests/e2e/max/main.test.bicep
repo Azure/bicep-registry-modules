@@ -211,7 +211,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-aks-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}02'
+    name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
     customLocationResourceId: customLocation.id
     enableTelemetry: true

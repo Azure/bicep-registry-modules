@@ -55,7 +55,7 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
-    clusterName: '${namePrefix}${serviceShort}1'
+    clusterName: '${namePrefix}${serviceShort}01'
     clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
     keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
@@ -206,7 +206,7 @@ module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-aks-${serviceShort}'
   params: {
-    name: '${namePrefix}${serviceShort}02'
+    name: '${namePrefix}${serviceShort}001'
     customLocationResourceId: customLocation.id
     cloudProviderProfile: {
       infraNetworkProfile: {
