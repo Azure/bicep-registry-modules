@@ -55,6 +55,8 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     }
     customLocationResourceId: '<customLocationResourceId>'
     name: 'hcpcimin001'
+    // Non-required parameters
+    keyVaultName: '<keyVaultName>'
   }
 }
 ```
@@ -86,6 +88,10 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     },
     "name": {
       "value": "hcpcimin001"
+    },
+    // Non-required parameters
+    "keyVaultName": {
+      "value": "<keyVaultName>"
     }
   }
 }
@@ -111,6 +117,8 @@ param cloudProviderProfile = {
 }
 param customLocationResourceId = '<customLocationResourceId>'
 param name = 'hcpcimin001'
+// Non-required parameters
+param keyVaultName = '<keyVaultName>'
 ```
 
 </details>
@@ -171,6 +179,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       vmSize: 'Standard_A4_v2'
     }
     enableTelemetry: true
+    keyVaultName: '<keyVaultName>'
     kubernetesVersion: '1.29.4'
     licenseProfile: {
       azureHybridBenefit: 'False'
@@ -267,6 +276,9 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     "enableTelemetry": {
       "value": true
     },
+    "keyVaultName": {
+      "value": "<keyVaultName>"
+    },
     "kubernetesVersion": {
       "value": "1.29.4"
     },
@@ -359,6 +371,7 @@ param controlPlane = {
   vmSize: 'Standard_A4_v2'
 }
 param enableTelemetry = true
+param keyVaultName = '<keyVaultName>'
 param kubernetesVersion = '1.29.4'
 param licenseProfile = {
   azureHybridBenefit: 'False'
@@ -437,6 +450,7 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       count: 1
       vmSize: 'Standard_A4_v2'
     }
+    keyVaultName: '<keyVaultName>'
     linuxProfile: '<linuxProfile>'
   }
 }
@@ -504,6 +518,9 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "vmSize": "Standard_A4_v2"
       }
     },
+    "keyVaultName": {
+      "value": "<keyVaultName>"
+    },
     "linuxProfile": {
       "value": "<linuxProfile>"
     }
@@ -559,6 +576,7 @@ param controlPlane = {
   count: 1
   vmSize: 'Standard_A4_v2'
 }
+param keyVaultName = '<keyVaultName>'
 param linuxProfile = '<linuxProfile>'
 ```
 
