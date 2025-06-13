@@ -784,8 +784,10 @@ Describe 'Module tests' -Tag 'Module' {
 
             It '[<moduleFolderName>] All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type.' -TestCases $moduleFolderTestCases {
                 param (
-                    [hashtable] $templateFileContent,
-                    [hashtable] $templateFileParameters
+                    [hashtable] $TemplateFileContent,
+                    [hashtable] $TemplateFileParameters,
+                    [string] $TemplateFilePath,
+                    [bool] $VersionFileExists
                 )
 
                 $incorrectParameters = @()
@@ -815,15 +817,24 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 if ($incorrectParameters.Count -gt 0) {
-                    $warningMessage = 'All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items '
-                    Write-Warning ("$warningMessage`n- {0}`n" -f ($incorrectParameters -join "`n- "))
 
-                    Write-Output @{
-                        Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($incorrectParameters -join '</code><br>- <code>'))
+                    $versionFilePath = Join-Path (Split-Path $templateFilePath) 'version.json'
+                    if ($VersionFileExists) {
+                        $moduleVersion = [version](Get-Content $versionFilePath -Raw | ConvertFrom-Json).version
+                    }
+                    if ($VersionFileExists -and $moduleVersion -ge [version]'1.0') {
+                        # Enforcing test for modules with a version greater than 1.0
+                        $incorrectParameters | Should -BeNullOrEmpty -Because ('all parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+                    } else {
+
+                        $warningMessage = 'All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: '
+                        Write-Warning ("$warningMessage`n- {0}`n" -f ($incorrectParameters -join "`n- "))
+
+                        Write-Output @{
+                            Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($incorrectParameters -join '</code><br>- <code>'))
+                        }
                     }
                 }
-                # Once we want to enforce this test, replace the above warning with the below
-                # $incorrectParameters | Should -BeNullOrEmpty -Because ('all parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             Context 'Schema-based User-defined-types tests' -Tag 'UDT' {
