@@ -18,13 +18,17 @@ on:
         description: "Remove deployed module"
         required: false
         default: true
+      customLocation:
+        type: string
+        description: "Default location overwrite (e.g., eastus)"
+        required: false
   push:
     branches:
       - main
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.dev-ops.cicd-agents-and-runners"
+      - ".github/workflows/avm.ptn.dev-ops.cicd-agents-and-runners.yml"
       - "avm/ptn/dev-ops/cicd-agents-and-runners/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"

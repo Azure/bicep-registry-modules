@@ -7,9 +7,6 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'camin'
 
@@ -20,6 +17,9 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param password string = newGuid()
 
+@description('Optional. The location to deploy resources to.')
+var enforcedLocation = 'northeurope'
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -27,13 +27,13 @@ param password string = newGuid()
 var certificateName = 'appgwcert'
 
 module testDeployment '../../../main.bicep' = {
-  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}'
   params: {
-    workloadName: serviceShort
+    workloadName: '${serviceShort}${namePrefix}'
     tags: {
       environment: 'test'
     }
-    location: resourceLocation
+    location: enforcedLocation
     vmSize: 'Standard_B1s'
     vmAdminPassword: password
     vmAuthenticationType: 'sshPublicKey'
