@@ -214,6 +214,7 @@ module testDeployment '../../../main.bicep' = {
     name: '${namePrefix}${serviceShort}001'
     location: enforcedLocation
     customLocationResourceId: customLocation.id
+    keyVaultName: nestedDependencies.outputs.keyVaultName
     enableTelemetry: true
     kubernetesVersion: '1.29.4'
     storageProfile: {
