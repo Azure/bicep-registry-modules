@@ -30,10 +30,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/system-topic:<version>`.
 
 - [Using only defaults with managed identity](#example-1-using-only-defaults-with-managed-identity)
-- [Using deliveryWithResourceIdentity with system-assigned identity](#example-2-using-deliverywithresourceidentity-with-system-assigned-identity)
-- [Using managed identity authentication](#example-3-using-managed-identity-authentication)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [WAF-aligned with managed identity](#example-5-waf-aligned-with-managed-identity)
+- [Using managed identity authentication](#example-2-using-managed-identity-authentication)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned with managed identity](#example-4-waf-aligned-with-managed-identity)
 
 ### Example 1: _Using only defaults with managed identity_
 
@@ -196,261 +195,7 @@ param resourceRoleAssignments = [
 </details>
 <p>
 
-### Example 2: _Using deliveryWithResourceIdentity with system-assigned identity_
-
-This test verify the Event Grid System Topic with deliveryWithResourceIdentity using system-assigned managed identity and automatic role assignments to Storage Account.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
-  name: 'systemTopicDeployment'
-  params: {
-    // Required parameters
-    name: 'egstsi001'
-    source: '<source>'
-    topicType: 'Microsoft.Storage.StorageAccounts'
-    // Non-required parameters
-    eventSubscriptions: [
-      {
-        deadLetterWithResourceIdentity: {
-          deadLetterDestination: {
-            endpointType: 'StorageBlob'
-            properties: {
-              blobContainerName: '<blobContainerName>'
-              resourceId: '<resourceId>'
-            }
-          }
-          identity: {
-            type: 'SystemAssigned'
-          }
-        }
-        deliveryWithResourceIdentity: {
-          destination: {
-            endpointType: 'StorageQueue'
-            properties: {
-              queueMessageTimeToLiveInSeconds: 500000
-              queueName: '<queueName>'
-              resourceId: '<resourceId>'
-            }
-          }
-          identity: {
-            type: 'SystemAssigned'
-          }
-        }
-        eventDeliverySchema: 'CloudEventSchemaV1_0'
-        filter: {
-          isSubjectCaseSensitive: false
-        }
-        name: 'egstsi001'
-        retryPolicy: {
-          eventTimeToLiveInMinutes: 600
-          maxDeliveryAttempts: 10
-        }
-      }
-    ]
-    location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    resourceRoleAssignments: [
-      {
-        description: 'Allow Event Grid System Topic to write dead letter blobs to storage'
-        resourceId: '<resourceId>'
-        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-      }
-      {
-        description: 'Allow Event Grid System Topic to write to storage queue'
-        resourceId: '<resourceId>'
-        roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
-      }
-      {
-        description: 'Allow Event Grid System Topic to send messages to storage queue'
-        resourceId: '<resourceId>'
-        roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
-      }
-    ]
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "name": {
-      "value": "egstsi001"
-    },
-    "source": {
-      "value": "<source>"
-    },
-    "topicType": {
-      "value": "Microsoft.Storage.StorageAccounts"
-    },
-    // Non-required parameters
-    "eventSubscriptions": {
-      "value": [
-        {
-          "deadLetterWithResourceIdentity": {
-            "deadLetterDestination": {
-              "endpointType": "StorageBlob",
-              "properties": {
-                "blobContainerName": "<blobContainerName>",
-                "resourceId": "<resourceId>"
-              }
-            },
-            "identity": {
-              "type": "SystemAssigned"
-            }
-          },
-          "deliveryWithResourceIdentity": {
-            "destination": {
-              "endpointType": "StorageQueue",
-              "properties": {
-                "queueMessageTimeToLiveInSeconds": 500000,
-                "queueName": "<queueName>",
-                "resourceId": "<resourceId>"
-              }
-            },
-            "identity": {
-              "type": "SystemAssigned"
-            }
-          },
-          "eventDeliverySchema": "CloudEventSchemaV1_0",
-          "filter": {
-            "isSubjectCaseSensitive": false
-          },
-          "name": "egstsi001",
-          "retryPolicy": {
-            "eventTimeToLiveInMinutes": 600,
-            "maxDeliveryAttempts": 10
-          }
-        }
-      ]
-    },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "resourceRoleAssignments": {
-      "value": [
-        {
-          "description": "Allow Event Grid System Topic to write dead letter blobs to storage",
-          "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
-        },
-        {
-          "description": "Allow Event Grid System Topic to write to storage queue",
-          "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "974c5e8b-45b9-4653-ba55-5f855dd0fb88"
-        },
-        {
-          "description": "Allow Event Grid System Topic to send messages to storage queue",
-          "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
-        }
-      ]
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/res/event-grid/system-topic:<version>'
-
-// Required parameters
-param name = 'egstsi001'
-param source = '<source>'
-param topicType = 'Microsoft.Storage.StorageAccounts'
-// Non-required parameters
-param eventSubscriptions = [
-  {
-    deadLetterWithResourceIdentity: {
-      deadLetterDestination: {
-        endpointType: 'StorageBlob'
-        properties: {
-          blobContainerName: '<blobContainerName>'
-          resourceId: '<resourceId>'
-        }
-      }
-      identity: {
-        type: 'SystemAssigned'
-      }
-    }
-    deliveryWithResourceIdentity: {
-      destination: {
-        endpointType: 'StorageQueue'
-        properties: {
-          queueMessageTimeToLiveInSeconds: 500000
-          queueName: '<queueName>'
-          resourceId: '<resourceId>'
-        }
-      }
-      identity: {
-        type: 'SystemAssigned'
-      }
-    }
-    eventDeliverySchema: 'CloudEventSchemaV1_0'
-    filter: {
-      isSubjectCaseSensitive: false
-    }
-    name: 'egstsi001'
-    retryPolicy: {
-      eventTimeToLiveInMinutes: 600
-      maxDeliveryAttempts: 10
-    }
-  }
-]
-param location = '<location>'
-param managedIdentities = {
-  systemAssigned: true
-}
-param resourceRoleAssignments = [
-  {
-    description: 'Allow Event Grid System Topic to write dead letter blobs to storage'
-    resourceId: '<resourceId>'
-    roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-  }
-  {
-    description: 'Allow Event Grid System Topic to write to storage queue'
-    resourceId: '<resourceId>'
-    roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
-  }
-  {
-    description: 'Allow Event Grid System Topic to send messages to storage queue'
-    resourceId: '<resourceId>'
-    roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
-  }
-]
-```
-
-</details>
-<p>
-
-### Example 3: _Using managed identity authentication_
+### Example 2: _Using managed identity authentication_
 
 This instance deploys the module testing delivery with resource identity (managed identity authentication).
 
@@ -644,7 +389,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -694,7 +439,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         }
         name: 'egstmax001'
         retryPolicy: {
-          eventTimeToLive: '120'
+          eventTimeToLiveInMinutes: 120
           maxDeliveryAttempts: 10
         }
       }
@@ -711,12 +456,12 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
       {
         description: 'Allow Event Grid System Topic to write to storage queue'
         resourceId: '<resourceId>'
-        roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+        roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
       }
       {
         description: 'Allow Event Grid System Topic to send messages to storage queue'
         resourceId: '<resourceId>'
-        roleDefinitionIdOrName: 'Storage Queue Data Message Sender'
+        roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
       }
     ]
     roleAssignments: [
@@ -724,7 +469,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
       }
       {
         name: '<name>'
@@ -805,7 +550,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
           },
           "name": "egstmax001",
           "retryPolicy": {
-            "eventTimeToLive": "120",
+            "eventTimeToLiveInMinutes": 120,
             "maxDeliveryAttempts": 10
           }
         }
@@ -830,12 +575,12 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         {
           "description": "Allow Event Grid System Topic to write to storage queue",
           "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "Storage Queue Data Contributor"
+          "roleDefinitionIdOrName": "974c5e8b-45b9-4653-ba55-5f855dd0fb88"
         },
         {
           "description": "Allow Event Grid System Topic to send messages to storage queue",
           "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "Storage Queue Data Message Sender"
+          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
         }
       ]
     },
@@ -845,7 +590,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
           "name": "c9beca28-efcf-4d1d-99aa-8f334484a2c2",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
         },
         {
           "name": "<name>",
@@ -918,7 +663,7 @@ param eventSubscriptions = [
     }
     name: 'egstmax001'
     retryPolicy: {
-      eventTimeToLive: '120'
+      eventTimeToLiveInMinutes: 120
       maxDeliveryAttempts: 10
     }
   }
@@ -935,12 +680,12 @@ param resourceRoleAssignments = [
   {
     description: 'Allow Event Grid System Topic to write to storage queue'
     resourceId: '<resourceId>'
-    roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+    roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
   }
   {
     description: 'Allow Event Grid System Topic to send messages to storage queue'
     resourceId: '<resourceId>'
-    roleDefinitionIdOrName: 'Storage Queue Data Message Sender'
+    roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
   }
 ]
 param roleAssignments = [
@@ -948,7 +693,7 @@ param roleAssignments = [
     name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
   }
   {
     name: '<name>'
@@ -972,7 +717,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned with managed identity_
+### Example 4: _WAF-aligned with managed identity_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework and uses managed identities to deliver Event Grid Topic events.
 

@@ -79,7 +79,7 @@ module testDeployment '../../../main.bicep' = [
           }
           retryPolicy: {
             maxDeliveryAttempts: 10
-            eventTimeToLive: '120'
+            eventTimeToLiveInMinutes: 120
           }
           eventDeliverySchema: 'CloudEventSchemaV1_0'
           destination: {
@@ -116,7 +116,7 @@ module testDeployment '../../../main.bicep' = [
       roleAssignments: [
         {
           name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
-          roleDefinitionIdOrName: 'Owner'
+          roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
@@ -138,12 +138,12 @@ module testDeployment '../../../main.bicep' = [
       resourceRoleAssignments: [
         {
           resourceId: nestedDependencies.outputs.storageAccountResourceId
-          roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+          roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
           description: 'Allow Event Grid System Topic to write to storage queue'
         }
         {
           resourceId: nestedDependencies.outputs.storageAccountResourceId
-          roleDefinitionIdOrName: 'Storage Queue Data Message Sender'
+          roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
           description: 'Allow Event Grid System Topic to send messages to storage queue'
         }
       ]
