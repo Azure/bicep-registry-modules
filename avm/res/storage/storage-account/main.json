@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "5108126869588736121"
+      "version": "0.36.1.42791",
+      "templateHash": "3682363270982275902"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2214,8 +2214,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11585123047105458062"
+              "version": "0.36.1.42791",
+              "templateHash": "15460042769205098170"
             },
             "name": "Storage Account Management Policies",
             "description": "This module deploys a Storage Account Management Policy."
@@ -2326,8 +2326,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "18350684375691178826"
+              "version": "0.36.1.42791",
+              "templateHash": "9887081627902627152"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -2564,8 +2564,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "6864791231608714221"
+              "version": "0.36.1.42791",
+              "templateHash": "10639682105009641581"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -2896,6 +2896,7 @@
             }
           },
           "variables": {
+            "enableReferencedModulesTelemetry": false,
             "name": "default"
           },
           "resources": {
@@ -3022,6 +3023,9 @@
                   },
                   "immutabilityPolicyProperties": {
                     "value": "[tryGet(coalesce(parameters('containers'), createArray())[copyIndex()], 'immutabilityPolicyProperties')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[variables('enableReferencedModulesTelemetry')]"
                   }
                 },
                 "template": {
@@ -3031,8 +3035,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "16608863835956278253"
+                      "version": "0.36.1.42791",
+                      "templateHash": "10376458647259834115"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -3206,6 +3210,13 @@
                         "description": "Optional. Specifies whether data in the container may be accessed publicly and the level of access."
                       }
                     },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    },
                     "roleAssignments": {
                       "type": "array",
                       "items": {
@@ -3247,6 +3258,26 @@
                       "type": "Microsoft.Storage/storageAccounts/blobServices",
                       "apiVersion": "2024-01-01",
                       "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('blobServiceName'))]"
+                    },
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.storage-blobcontainer.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
                     },
                     "storageAccount": {
                       "existing": true,
@@ -3323,8 +3354,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "16507112099495773673"
+                              "version": "0.36.1.42791",
+                              "templateHash": "8550034166416361637"
                             },
                             "name": "Storage Account Blob Container Immutability Policies",
                             "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -3503,8 +3534,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "16585885324390135986"
+              "version": "0.36.1.42791",
+              "templateHash": "5330835559983552205"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service."
@@ -3863,8 +3894,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "190690872747761309"
+                      "version": "0.36.1.42791",
+                      "templateHash": "13660405414692054289"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share."
@@ -4298,8 +4329,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15089132876669102729"
+              "version": "0.36.1.42791",
+              "templateHash": "12083447974600668784"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service."
@@ -4617,8 +4648,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "9203389950224823099"
+                      "version": "0.36.1.42791",
+                      "templateHash": "9655936521854066340"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue."
@@ -4890,8 +4921,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "17345564162551993063"
+              "version": "0.36.1.42791",
+              "templateHash": "7524420471291814386"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service."
@@ -5206,8 +5237,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "6286190839827082273"
+                      "version": "0.36.1.42791",
+                      "templateHash": "10594209871901294578"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table."
@@ -5460,8 +5491,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15126360152170162999"
+              "version": "0.36.1.42791",
+              "templateHash": "17210397279620716997"
             }
           },
           "definitions": {
