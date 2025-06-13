@@ -13,8 +13,105 @@ param source string
 @description('Required. TopicType for the system topic.')
 param topicType string
 
+// User-defined types for Event Grid components
+@description('Event subscription destination configuration. Should contain endpointType and properties matching the Azure Event Grid destination schema.')
+type destinationType = object
+
+@description('Dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema.')
+type deadLetterDestinationType = object
+
+@description('Identity configuration for delivery or dead letter.')
+type identityType = {
+  @description('Required. The type of identity to use.')
+  type: 'SystemAssigned' | 'UserAssigned'
+  
+  @description('Conditional. The user assigned identity resource ID. Required when type is UserAssigned.')
+  userAssignedIdentity: string?
+}
+
+@description('Delivery configuration with resource identity.')
+type deliveryWithResourceIdentityType = {
+  @description('Required. The identity configuration for delivery.')
+  identity: identityType
+  
+  @description('Required. The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema.')
+  destination: object
+}
+
+@description('Dead letter configuration with resource identity.')
+type deadLetterWithResourceIdentityType = {
+  @description('Required. The identity configuration for dead letter.')
+  identity: identityType
+  
+  @description('Required. The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema.')
+  deadLetterDestination: object
+}
+
+@description('Event subscription filter configuration.')
+type filterType = {
+  @description('Optional. Allows advanced filters to be evaluated against an array of values instead of expecting a singular value.')
+  enableAdvancedFilteringOnArrays: bool?
+  
+  @description('Optional. A list of applicable event types that can be filtered.')
+  includedEventTypes: string[]?
+  
+  @description('Optional. Defines if the subject field should be compared in a case sensitive manner.')
+  isSubjectCaseSensitive: bool?
+  
+  @description('Optional. An optional string to filter events for an event subscription based on a resource path prefix.')
+  subjectBeginsWith: string?
+  
+  @description('Optional. An optional string to filter events for an event subscription based on a resource path suffix.')
+  subjectEndsWith: string?
+  
+  @description('Optional. A list of advanced filters.')
+  advancedFilters: object[]?
+}
+
+@description('Retry policy configuration for event delivery.')
+type retryPolicyType = {
+  @description('Optional. The maximum number of delivery attempts for events.')
+  maxDeliveryAttempts: int?
+  
+  @description('Optional. Time in minutes that determines how long to continue attempting delivery.')
+  eventTimeToLiveInMinutes: int?
+}
+
+@description('Event subscription configuration.')
+type eventSubscriptionType = {
+  @description('Required. The name of the event subscription.')
+  name: string
+  
+  @description('Optional. Dead Letter Destination.')
+  deadLetterDestination: deadLetterDestinationType?
+  
+  @description('Optional. Dead Letter with Resource Identity Configuration.')
+  deadLetterWithResourceIdentity: deadLetterWithResourceIdentityType?
+  
+  @description('Optional. Delivery with Resource Identity Configuration.')
+  deliveryWithResourceIdentity: deliveryWithResourceIdentityType?
+  
+  @description('Conditional. The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided.')
+  destination: destinationType?
+  
+  @description('Optional. The event delivery schema for the event subscription.')
+  eventDeliverySchema: 'CloudEventSchemaV1_0' | 'CustomInputSchema' | 'EventGridSchema' | 'EventGridEvent'?
+  
+  @description('Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).')
+  expirationTimeUtc: string?
+  
+  @description('Optional. The filter for the event subscription.')
+  filter: filterType?
+  
+  @description('Optional. The list of user defined labels.')
+  labels: string[]?
+  
+  @description('Optional. The retry policy for events.')
+  retryPolicy: retryPolicyType?
+}
+
 @description('Optional. Event subscriptions to deploy.')
-param eventSubscriptions array?
+param eventSubscriptions eventSubscriptionType[]?
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The diagnostic settings of the service.')
@@ -24,8 +121,8 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('Optional. Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs.')
-param resourceRoleAssignments {
+@description('External resource role assignment configuration.')
+type resourceRoleAssignmentType = {
   @description('Required. The resource ID of the target resource to assign permissions to.')
   resourceId: string
   
@@ -37,7 +134,10 @@ param resourceRoleAssignments {
   
   @description('Optional. Name of the role for logging purposes.')
   roleName: string?
-}[] = []
+}
+
+@description('Optional. Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs.')
+param resourceRoleAssignments resourceRoleAssignmentType[] = []
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -48,7 +148,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.EventGrid/systemTopics@2025-02-15'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

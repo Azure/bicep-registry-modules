@@ -93,7 +93,7 @@ module testDeployment '../../../main.bicep' = [
           }
           retryPolicy: {
             maxDeliveryAttempts: 10
-            eventTimeToLive: '600'
+            eventTimeToLiveInMinutes: 600
           }
         }
       ]

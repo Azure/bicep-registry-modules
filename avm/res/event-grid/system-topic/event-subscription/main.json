@@ -6,10 +6,167 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "13885863756842304833"
+      "templateHash": "16835945297021264600"
     },
     "name": "Event Grid System Topic Event Subscriptions",
     "description": "This module deploys an Event Grid System Topic Event Subscription."
+  },
+  "definitions": {
+    "destinationType": {
+      "type": "object",
+      "metadata": {
+        "description": "Event subscription destination configuration. Should contain endpointType and properties matching the Azure Event Grid destination schema."
+      }
+    },
+    "deadLetterDestinationType": {
+      "type": "object",
+      "metadata": {
+        "description": "Dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema."
+      }
+    },
+    "identityType": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "allowedValues": [
+            "SystemAssigned",
+            "UserAssigned"
+          ],
+          "metadata": {
+            "description": "Required. The type of identity to use."
+          }
+        },
+        "userAssignedIdentity": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The user assigned identity resource ID. Required when type is UserAssigned."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Identity configuration for delivery or dead letter."
+      }
+    },
+    "deliveryWithResourceIdentityType": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/definitions/identityType",
+          "metadata": {
+            "description": "Required. The identity configuration for delivery."
+          }
+        },
+        "destination": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Delivery configuration with resource identity."
+      }
+    },
+    "deadLetterWithResourceIdentityType": {
+      "type": "object",
+      "properties": {
+        "identity": {
+          "$ref": "#/definitions/identityType",
+          "metadata": {
+            "description": "Required. The identity configuration for dead letter."
+          }
+        },
+        "deadLetterDestination": {
+          "type": "object",
+          "metadata": {
+            "description": "Required. The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Dead letter configuration with resource identity."
+      }
+    },
+    "filterType": {
+      "type": "object",
+      "properties": {
+        "enableAdvancedFilteringOnArrays": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Allows advanced filters to be evaluated against an array of values instead of expecting a singular value."
+          }
+        },
+        "includedEventTypes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of applicable event types that can be filtered."
+          }
+        },
+        "isSubjectCaseSensitive": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Defines if the subject field should be compared in a case sensitive manner."
+          }
+        },
+        "subjectBeginsWith": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An optional string to filter events for an event subscription based on a resource path prefix."
+          }
+        },
+        "subjectEndsWith": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. An optional string to filter events for an event subscription based on a resource path suffix."
+          }
+        },
+        "advancedFilters": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of advanced filters."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Event subscription filter configuration."
+      }
+    },
+    "retryPolicyType": {
+      "type": "object",
+      "properties": {
+        "maxDeliveryAttempts": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The maximum number of delivery attempts for events."
+          }
+        },
+        "eventTimeToLiveInMinutes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Time in minutes that determines how long to continue attempting delivery."
+          }
+        }
+      },
+      "metadata": {
+        "description": "Retry policy configuration for event delivery."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -25,31 +182,31 @@
       }
     },
     "deadLetterDestination": {
-      "type": "object",
+      "$ref": "#/definitions/deadLetterDestinationType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information)."
+        "description": "Optional. Dead Letter Destination."
       }
     },
     "deadLetterWithResourceIdentity": {
-      "type": "object",
+      "$ref": "#/definitions/deadLetterWithResourceIdentityType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information)."
+        "description": "Optional. Dead Letter with Resource Identity Configuration."
       }
     },
     "deliveryWithResourceIdentity": {
-      "type": "object",
+      "$ref": "#/definitions/deliveryWithResourceIdentityType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information)."
+        "description": "Optional. Delivery with Resource Identity Configuration."
       }
     },
     "destination": {
-      "type": "object",
+      "$ref": "#/definitions/destinationType",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information)."
+        "description": "Conditional. The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided."
       }
     },
     "eventDeliverySchema": {
@@ -73,24 +230,27 @@
       }
     },
     "filter": {
-      "type": "object",
+      "$ref": "#/definitions/filterType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information)."
+        "description": "Optional. The filter for the event subscription."
       }
     },
     "labels": {
       "type": "array",
+      "items": {
+        "type": "string"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. The list of user defined labels."
       }
     },
     "retryPolicy": {
-      "type": "object",
+      "$ref": "#/definitions/retryPolicyType",
       "nullable": true,
       "metadata": {
-        "description": "Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events."
+        "description": "Optional. The retry policy for events."
       }
     }
   },

@@ -7,7 +7,7 @@ param storageAccountName string
 @description('Required. The name of the Storage Queue to create.')
 param storageQueueName string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
   location: location
   sku: {
@@ -15,10 +15,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2022-05-01' = {
   }
   kind: 'StorageV2'
 
-  resource queueService 'queueServices@2022-09-01' = {
+  resource queueService 'queueServices@2024-01-01' = {
     name: 'default'
 
-    resource queue 'queues@2022-09-01' = {
+    resource queue 'queues@2024-01-01' = {
       name: storageQueueName
     }
   }

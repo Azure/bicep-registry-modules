@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using only defaults with managed identity'
+metadata description = 'This instance deploys the module with the minimum set of required parameters and uses managed identities to deliver Event Grid Topic events.'
 
 // ========== //
 // Parameters //
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -68,6 +68,33 @@ module testDeployment '../../../main.bicep' = [
       source: nestedDependencies.outputs.storageAccountResourceId
       topicType: 'Microsoft.Storage.StorageAccounts'
       location: resourceLocation
+      managedIdentities: {
+        systemAssigned: true
+      }
+      eventSubscriptions: [
+        {
+          name: '${namePrefix}${serviceShort}001'
+          deliveryWithResourceIdentity: {
+            identity: {
+              type: 'SystemAssigned'
+            }
+            destination: {
+              endpointType: 'StorageQueue'
+              properties: {
+                resourceId: nestedDependencies.outputs.storageAccountResourceId
+                queueName: nestedDependencies.outputs.queueName
+              }
+            }
+          }
+        }
+      ]
+      resourceRoleAssignments: [
+        {
+          resourceId: nestedDependencies.outputs.storageAccountResourceId
+          roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a' // Storage Queue Data Message Sender
+          description: 'Allow Event Grid System Topic to send messages to storage queue'
+        }
+      ]
     }
   }
 ]

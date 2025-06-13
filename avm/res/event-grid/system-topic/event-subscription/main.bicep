@@ -7,17 +7,81 @@ param name string
 @description('Required. Name of the Event Grid System Topic.')
 param systemTopicName string
 
-@description('Optional. Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information).')
-param deadLetterDestination object?
+// User-defined types for Event Grid components  
+@description('Event subscription destination configuration. Should contain endpointType and properties matching the Azure Event Grid destination schema.')
+type destinationType = object
 
-@description('Optional. Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information).')
-param deadLetterWithResourceIdentity object?
+@description('Dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema.')
+type deadLetterDestinationType = object
 
-@description('Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information).')
-param deliveryWithResourceIdentity object?
+@description('Identity configuration for delivery or dead letter.')
+type identityType = {
+  @description('Required. The type of identity to use.')
+  type: 'SystemAssigned' | 'UserAssigned'
+  
+  @description('Conditional. The user assigned identity resource ID. Required when type is UserAssigned.')
+  userAssignedIdentity: string?
+}
 
-@description('Conditional. The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).')
-param destination object?
+@description('Delivery configuration with resource identity.')
+type deliveryWithResourceIdentityType = {
+  @description('Required. The identity configuration for delivery.')
+  identity: identityType
+  
+  @description('Required. The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema.')
+  destination: object
+}
+
+@description('Dead letter configuration with resource identity.')
+type deadLetterWithResourceIdentityType = {
+  @description('Required. The identity configuration for dead letter.')
+  identity: identityType
+  
+  @description('Required. The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema.')
+  deadLetterDestination: object
+}
+
+@description('Event subscription filter configuration.')
+type filterType = {
+  @description('Optional. Allows advanced filters to be evaluated against an array of values instead of expecting a singular value.')
+  enableAdvancedFilteringOnArrays: bool?
+  
+  @description('Optional. A list of applicable event types that can be filtered.')
+  includedEventTypes: string[]?
+  
+  @description('Optional. Defines if the subject field should be compared in a case sensitive manner.')
+  isSubjectCaseSensitive: bool?
+  
+  @description('Optional. An optional string to filter events for an event subscription based on a resource path prefix.')
+  subjectBeginsWith: string?
+  
+  @description('Optional. An optional string to filter events for an event subscription based on a resource path suffix.')
+  subjectEndsWith: string?
+  
+  @description('Optional. A list of advanced filters.')
+  advancedFilters: object[]?
+}
+
+@description('Retry policy configuration for event delivery.')
+type retryPolicyType = {
+  @description('Optional. The maximum number of delivery attempts for events.')
+  maxDeliveryAttempts: int?
+  
+  @description('Optional. Time in minutes that determines how long to continue attempting delivery.')
+  eventTimeToLiveInMinutes: int?
+}
+
+@description('Optional. Dead Letter Destination.')
+param deadLetterDestination deadLetterDestinationType?
+
+@description('Optional. Dead Letter with Resource Identity Configuration.')
+param deadLetterWithResourceIdentity deadLetterWithResourceIdentityType?
+
+@description('Optional. Delivery with Resource Identity Configuration.')
+param deliveryWithResourceIdentity deliveryWithResourceIdentityType?
+
+@description('Conditional. The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided.')
+param destination destinationType?
 
 @description('Optional. The event delivery schema for the event subscription.')
 @allowed([
@@ -31,14 +95,14 @@ param eventDeliverySchema string = 'EventGridSchema'
 @description('Optional. The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).')
 param expirationTimeUtc string?
 
-@description('Optional. The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information).')
-param filter object?
+@description('Optional. The filter for the event subscription.')
+param filter filterType?
 
 @description('Optional. The list of user defined labels.')
-param labels array?
+param labels string[]?
 
-@description('Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events.')
-param retryPolicy object?
+@description('Optional. The retry policy for events.')
+param retryPolicy retryPolicyType?
 
 resource systemTopic 'Microsoft.EventGrid/systemTopics@2025-02-15' existing = {
   name: systemTopicName

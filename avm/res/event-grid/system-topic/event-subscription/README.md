@@ -27,20 +27,20 @@ This module deploys an Event Grid System Topic Event Subscription.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`destination`](#parameter-destination) | object | The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information). |
+| [`destination`](#parameter-destination) | object | The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`deadLetterDestination`](#parameter-deadletterdestination) | object | Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information). |
-| [`deadLetterWithResourceIdentity`](#parameter-deadletterwithresourceidentity) | object | Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information). |
-| [`deliveryWithResourceIdentity`](#parameter-deliverywithresourceidentity) | object | Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information). |
+| [`deadLetterDestination`](#parameter-deadletterdestination) | object | Dead Letter Destination. |
+| [`deadLetterWithResourceIdentity`](#parameter-deadletterwithresourceidentity) | object | Dead Letter with Resource Identity Configuration. |
+| [`deliveryWithResourceIdentity`](#parameter-deliverywithresourceidentity) | object | Delivery with Resource Identity Configuration. |
 | [`eventDeliverySchema`](#parameter-eventdeliveryschema) | string | The event delivery schema for the event subscription. |
 | [`expirationTimeUtc`](#parameter-expirationtimeutc) | string | The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ). |
-| [`filter`](#parameter-filter) | object | The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information). |
+| [`filter`](#parameter-filter) | object | The filter for the event subscription. |
 | [`labels`](#parameter-labels) | array | The list of user defined labels. |
-| [`retryPolicy`](#parameter-retrypolicy) | object | The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events. |
+| [`retryPolicy`](#parameter-retrypolicy) | object | The retry policy for events. |
 
 ### Parameter: `name`
 
@@ -58,31 +58,139 @@ Name of the Event Grid System Topic.
 
 ### Parameter: `destination`
 
-The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).
+The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided.
 
 - Required: No
 - Type: object
 
 ### Parameter: `deadLetterDestination`
 
-Dead Letter Destination. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterdestination-objects for more information).
+Dead Letter Destination.
 
 - Required: No
 - Type: object
 
 ### Parameter: `deadLetterWithResourceIdentity`
 
-Dead Letter with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deadletterwithresourceidentity-objects for more information).
+Dead Letter with Resource Identity Configuration.
 
 - Required: No
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deadLetterDestination`](#parameter-deadletterwithresourceidentitydeadletterdestination) | object | The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema. |
+| [`identity`](#parameter-deadletterwithresourceidentityidentity) | object | The identity configuration for dead letter. |
+
+### Parameter: `deadLetterWithResourceIdentity.deadLetterDestination`
+
+The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `deadLetterWithResourceIdentity.identity`
+
+The identity configuration for dead letter.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-deadletterwithresourceidentityidentitytype) | string | The type of identity to use. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedIdentity`](#parameter-deadletterwithresourceidentityidentityuserassignedidentity) | string | The user assigned identity resource ID. Required when type is UserAssigned. |
+
+### Parameter: `deadLetterWithResourceIdentity.identity.type`
+
+The type of identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SystemAssigned'
+    'UserAssigned'
+  ]
+  ```
+
+### Parameter: `deadLetterWithResourceIdentity.identity.userAssignedIdentity`
+
+The user assigned identity resource ID. Required when type is UserAssigned.
+
+- Required: No
+- Type: string
 
 ### Parameter: `deliveryWithResourceIdentity`
 
-Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information).
+Delivery with Resource Identity Configuration.
 
 - Required: No
 - Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-deliverywithresourceidentitydestination) | object | The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema. |
+| [`identity`](#parameter-deliverywithresourceidentityidentity) | object | The identity configuration for delivery. |
+
+### Parameter: `deliveryWithResourceIdentity.destination`
+
+The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `deliveryWithResourceIdentity.identity`
+
+The identity configuration for delivery.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-deliverywithresourceidentityidentitytype) | string | The type of identity to use. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedIdentity`](#parameter-deliverywithresourceidentityidentityuserassignedidentity) | string | The user assigned identity resource ID. Required when type is UserAssigned. |
+
+### Parameter: `deliveryWithResourceIdentity.identity.type`
+
+The type of identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SystemAssigned'
+    'UserAssigned'
+  ]
+  ```
+
+### Parameter: `deliveryWithResourceIdentity.identity.userAssignedIdentity`
+
+The user assigned identity resource ID. Required when type is UserAssigned.
+
+- Required: No
+- Type: string
 
 ### Parameter: `eventDeliverySchema`
 
@@ -110,10 +218,63 @@ The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTH
 
 ### Parameter: `filter`
 
-The filter for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptionfilter for more information).
+The filter for the event subscription.
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`advancedFilters`](#parameter-filteradvancedfilters) | array | A list of advanced filters. |
+| [`enableAdvancedFilteringOnArrays`](#parameter-filterenableadvancedfilteringonarrays) | bool | Allows advanced filters to be evaluated against an array of values instead of expecting a singular value. |
+| [`includedEventTypes`](#parameter-filterincludedeventtypes) | array | A list of applicable event types that can be filtered. |
+| [`isSubjectCaseSensitive`](#parameter-filterissubjectcasesensitive) | bool | Defines if the subject field should be compared in a case sensitive manner. |
+| [`subjectBeginsWith`](#parameter-filtersubjectbeginswith) | string | An optional string to filter events for an event subscription based on a resource path prefix. |
+| [`subjectEndsWith`](#parameter-filtersubjectendswith) | string | An optional string to filter events for an event subscription based on a resource path suffix. |
+
+### Parameter: `filter.advancedFilters`
+
+A list of advanced filters.
+
+- Required: No
+- Type: array
+
+### Parameter: `filter.enableAdvancedFilteringOnArrays`
+
+Allows advanced filters to be evaluated against an array of values instead of expecting a singular value.
+
+- Required: No
+- Type: bool
+
+### Parameter: `filter.includedEventTypes`
+
+A list of applicable event types that can be filtered.
+
+- Required: No
+- Type: array
+
+### Parameter: `filter.isSubjectCaseSensitive`
+
+Defines if the subject field should be compared in a case sensitive manner.
+
+- Required: No
+- Type: bool
+
+### Parameter: `filter.subjectBeginsWith`
+
+An optional string to filter events for an event subscription based on a resource path prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `filter.subjectEndsWith`
+
+An optional string to filter events for an event subscription based on a resource path suffix.
+
+- Required: No
+- Type: string
 
 ### Parameter: `labels`
 
@@ -124,10 +285,31 @@ The list of user defined labels.
 
 ### Parameter: `retryPolicy`
 
-The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events.
+The retry policy for events.
 
 - Required: No
 - Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventTimeToLiveInMinutes`](#parameter-retrypolicyeventtimetoliveinminutes) | int | Time in minutes that determines how long to continue attempting delivery. |
+| [`maxDeliveryAttempts`](#parameter-retrypolicymaxdeliveryattempts) | int | The maximum number of delivery attempts for events. |
+
+### Parameter: `retryPolicy.eventTimeToLiveInMinutes`
+
+Time in minutes that determines how long to continue attempting delivery.
+
+- Required: No
+- Type: int
+
+### Parameter: `retryPolicy.maxDeliveryAttempts`
+
+The maximum number of delivery attempts for events.
+
+- Required: No
+- Type: int
 
 ## Outputs
 
