@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Azure Managed Redis (Preview) with Entra ID authentication'
-metadata description = 'This instance deploys an Azure Managed Redis (Preview) cache with Entra ID authentication.'
+metadata name = 'Azure Managed Redis with Entra ID authentication'
+metadata description = 'This instance deploys an Azure Managed Redis cache with Entra ID authentication.'
 
 // ========== //
 // Parameters //
@@ -53,7 +53,6 @@ module testDeployment '../../../main.bicep' = [
     params: {
       name: '${namePrefix}${serviceShort}001'
       location: enforcedLocation
-      skuName: 'Balanced_B10'
       database: {
         accessKeysAuthentication: 'Disabled'
         accessPolicyAssignments: [
