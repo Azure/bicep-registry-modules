@@ -26,12 +26,12 @@ This module deploys a Backup Policy for Azure NetApp File.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. |
+| [`dailyBackupsToKeep`](#parameter-dailybackupstokeep) | int | The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 | [`enabled`](#parameter-enabled) | bool | Indicates whether the backup policy is enabled. |
 | [`location`](#parameter-location) | string | The location of the backup policy. |
-| [`monthlyBackupsToKeep`](#parameter-monthlybackupstokeep) | int | The monthly backups to keep. |
+| [`monthlyBackupsToKeep`](#parameter-monthlybackupstokeep) | int | The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 | [`name`](#parameter-name) | string | The name of the backup policy. |
-| [`weeklyBackupsToKeep`](#parameter-weeklybackupstokeep) | int | The weekly backups to keep. |
+| [`weeklyBackupsToKeep`](#parameter-weeklybackupstokeep) | int | The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 
 ### Parameter: `netAppAccountName`
 
@@ -42,7 +42,7 @@ The name of the parent NetApp account. Required if the template is used in a sta
 
 ### Parameter: `dailyBackupsToKeep`
 
-The daily backups to keep.
+The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
@@ -68,11 +68,13 @@ The location of the backup policy.
 
 ### Parameter: `monthlyBackupsToKeep`
 
-The monthly backups to keep.
+The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
 - Default: `0`
+- MinValue: 0
+- MaxValue: 1019
 
 ### Parameter: `name`
 
@@ -84,11 +86,13 @@ The name of the backup policy.
 
 ### Parameter: `weeklyBackupsToKeep`
 
-The weekly backups to keep.
+The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
 - Default: `0`
+- MinValue: 0
+- MaxValue: 1019
 
 ## Outputs
 

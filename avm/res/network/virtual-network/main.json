@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "17149671713634252895"
+      "version": "0.32.4.45862",
+      "templateHash": "13907244476360982437"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -138,6 +138,41 @@
           "nullable": true,
           "metadata": {
             "description": "Conditional. List of address prefixes for the subnet. Required if `addressPrefix` is empty."
+          }
+        },
+        "ipamPoolPrefixAllocations": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "object",
+              "properties": {
+                "pool": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Resource ID of the IPAM pool."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. The Resource ID of the IPAM pool."
+                  }
+                },
+                "numberOfIpAddresses": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Number of IP addresses allocated from the pool."
+                  }
+                }
+              }
+            }
+          ],
+          "items": false,
+          "nullable": true,
+          "metadata": {
+            "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty and the VNet address space configured to use IPAM Pool."
           }
         },
         "applicationGatewayIPConfigurations": {
@@ -497,7 +532,14 @@
     "addressPrefixes": {
       "type": "array",
       "metadata": {
-        "description": "Required. An Array of 1 or more IP Address Prefixes for the Virtual Network."
+        "description": "Required. An Array of 1 or more IP Address Prefixes OR the resource ID of the IPAM pool to be used for the Virtual Network. When specifying an IPAM pool resource ID you must also set a value for the parameter called `ipamPoolNumberOfIpAddresses`."
+      }
+    },
+    "ipamPoolNumberOfIpAddresses": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Number of IP addresses allocated from the pool. To be used only when the addressPrefix param is defined with a resource ID of an IPAM pool."
       }
     },
     "virtualNetworkBgpCommunity": {
@@ -660,14 +702,12 @@
     },
     "virtualNetwork": {
       "type": "Microsoft.Network/virtualNetworks",
-      "apiVersion": "2024-01-01",
+      "apiVersion": "2024-05-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
       "properties": {
-        "addressSpace": {
-          "addressPrefixes": "[parameters('addressPrefixes')]"
-        },
+        "addressSpace": "[if(contains(parameters('addressPrefixes')[0], '/Microsoft.Network/networkManagers/'), createObject('ipamPoolPrefixAllocations', createArray(createObject('pool', createObject('id', parameters('addressPrefixes')[0]), 'numberOfIpAddresses', parameters('ipamPoolNumberOfIpAddresses')))), createObject('addressPrefixes', parameters('addressPrefixes')))]",
         "bgpCommunities": "[if(not(empty(parameters('virtualNetworkBgpCommunity'))), createObject('virtualNetworkCommunity', parameters('virtualNetworkBgpCommunity')), null())]",
         "ddosProtectionPlan": "[if(not(empty(parameters('ddosProtectionPlanResourceId'))), createObject('id', parameters('ddosProtectionPlanResourceId')), null())]",
         "dhcpOptions": "[if(not(empty(parameters('dnsServers'))), createObject('dnsServers', array(parameters('dnsServers'))), null())]",
@@ -782,6 +822,9 @@
           "addressPrefixes": {
             "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'addressPrefixes')]"
           },
+          "ipamPoolPrefixAllocations": {
+            "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'ipamPoolPrefixAllocations')]"
+          },
           "applicationGatewayIPConfigurations": {
             "value": "[tryGet(coalesce(parameters('subnets'), createArray())[copyIndex()], 'applicationGatewayIPConfigurations')]"
           },
@@ -829,8 +872,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "15641525953184589207"
+              "version": "0.32.4.45862",
+              "templateHash": "6928993269407282230"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
@@ -930,6 +973,16 @@
               "nullable": true,
               "metadata": {
                 "description": "Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty."
+              }
+            },
+            "ipamPoolPrefixAllocations": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty."
               }
             },
             "networkSecurityGroupResourceId": {
@@ -1100,7 +1153,7 @@
             },
             "subnet": {
               "type": "Microsoft.Network/virtualNetworks/subnets",
-              "apiVersion": "2024-01-01",
+              "apiVersion": "2024-05-01",
               "name": "[format('{0}/{1}', parameters('virtualNetworkName'), parameters('name'))]",
               "properties": {
                 "copy": [
@@ -1114,6 +1167,7 @@
                 ],
                 "addressPrefix": "[parameters('addressPrefix')]",
                 "addressPrefixes": "[parameters('addressPrefixes')]",
+                "ipamPoolPrefixAllocations": "[parameters('ipamPoolPrefixAllocations')]",
                 "networkSecurityGroup": "[if(not(empty(parameters('networkSecurityGroupResourceId'))), createObject('id', parameters('networkSecurityGroupResourceId')), null())]",
                 "routeTable": "[if(not(empty(parameters('routeTableResourceId'))), createObject('id', parameters('routeTableResourceId')), null())]",
                 "natGateway": "[if(not(empty(parameters('natGatewayResourceId'))), createObject('id', parameters('natGatewayResourceId')), null())]",
@@ -1184,6 +1238,13 @@
                 "description": "List of address prefixes for the subnet."
               },
               "value": "[coalesce(tryGet(reference('subnet'), 'addressPrefixes'), createArray())]"
+            },
+            "ipamPoolPrefixAllocations": {
+              "type": "array",
+              "metadata": {
+                "description": "The IPAM pool prefix allocations for the subnet."
+              },
+              "value": "[coalesce(tryGet(reference('subnet'), 'ipamPoolPrefixAllocations'), createArray())]"
             }
           }
         }
@@ -1237,8 +1298,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "13644695472933819194"
+              "version": "0.32.4.45862",
+              "templateHash": "6667873480569726785"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
@@ -1394,8 +1455,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "13644695472933819194"
+              "version": "0.32.4.45862",
+              "templateHash": "6667873480569726785"
             },
             "name": "Virtual Network Peerings",
             "description": "This module deploys a Virtual Network Peering."
@@ -1551,7 +1612,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('virtualNetwork', '2024-01-01', 'full').location]"
+      "value": "[reference('virtualNetwork', '2024-05-01', 'full').location]"
     }
   }
 }

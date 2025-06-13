@@ -46,13 +46,15 @@ function Set-AvmGitHubPrLabels {
         # core team is already assigned, no or more than one module reviewer team is assigned
         if ($allTeamNames.Contains('avm-core-team-technical-bicep') -or $teamNames.Count -eq 0 -or $teamNames.Count -gt 1) {
             gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
-        } else {
+        }
+        else {
             $teamMembers = [array](Get-GithubTeamMembersLogin -OrgName $Repo.Split('/')[0] -TeamName $teamNames[0])
 
             # no members in module team or only one and that user submitted the PR
             if (($teamMembers.Count -eq 0) -or ($teamMembers.Count -eq 1 -and $teamMembers[0] -eq $pr.author.login)) {
                 gh pr edit $pr.url --add-label 'Needs: Core Team :genie:' --repo $Repo
-            } else {
+            }
+            else {
                 gh pr edit $pr.url --add-label 'Needs: Module Owner :mega:' --repo $Repo
             }
 
@@ -64,8 +66,8 @@ function Set-AvmGitHubPrLabels {
 
             foreach ($module in $modules) {
                 if ($module.ModuleName.Replace('-', '').Replace('/', '-') -eq $moduleName) {
-                    if ($module.ModuleStatus -eq 'Orphaned :eyes:') {
-                        gh pr edit $pr.url --add-label 'Status: Module Orphaned :eyes:' --repo $Repo
+                    if ($module.ModuleStatus -eq 'Orphaned') {
+                        gh pr edit $pr.url --add-label 'Status: Module Orphaned :yellow_circle:' --repo $Repo
                         break;
                     }
                 }

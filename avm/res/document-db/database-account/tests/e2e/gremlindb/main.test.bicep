@@ -19,7 +19,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // The default pipeline is selecting random regions which don't have capacity for Azure Cosmos DB or support all Azure Cosmos DB features when creating new accounts.
 #disable-next-line no-hardcoded-location
-var enforcedLocation = 'spaincentral'
+var enforcedLocation = 'eastus2'
 
 // ============ //
 // Dependencies //
@@ -43,7 +43,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}002'
-      location: enforcedLocation
       capabilitiesToAdd: [
         'EnableGremlin'
       ]
@@ -96,6 +95,31 @@ module testDeployment '../../../main.bicep' = [
           name: '${namePrefix}-gdb-${serviceShort}-002'
         }
       ]
+      zoneRedundant: false
     }
   }
 ]
+
+@secure()
+output primaryReadOnlyKey string = testDeployment[0].outputs.primaryReadOnlyKey
+
+@secure()
+output primaryReadWriteKey string = testDeployment[0].outputs.primaryReadWriteKey
+
+@secure()
+output primaryReadOnlyConnectionString string = testDeployment[0].outputs.primaryReadOnlyConnectionString
+
+@secure()
+output primaryReadWriteConnectionString string = testDeployment[0].outputs.primaryReadWriteConnectionString
+
+@secure()
+output secondaryReadOnlyKey string = testDeployment[1].outputs.secondaryReadOnlyKey
+
+@secure()
+output secondaryReadWriteKey string = testDeployment[1].outputs.secondaryReadWriteKey
+
+@secure()
+output secondaryReadOnlyConnectionString string = testDeployment[1].outputs.secondaryReadOnlyConnectionString
+
+@secure()
+output secondaryReadWriteConnectionString string = testDeployment[1].outputs.secondaryReadWriteConnectionString

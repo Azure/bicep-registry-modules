@@ -104,8 +104,12 @@ function Get-SpecsAlignedResourceName {
                 # Setting explicitly as both [apimanagement/service/apis/policies] & [apimanagement/service/apis/policy] exist in the specs and the later seem to have been an initial incorrect publish (only one API version exists)
                 $resourceType = 'service/apis/policies'
             }
+            'service/api/operation/policy' {
+                # Setting explicitly as both [service/apis/operations/policies] & [service/apis/operations/policy] exist in the specs and the later seem to have been an initial incorrect publish (only one API version exists)
+                $resourceType = 'service/apis/operations/policies'
+            }
             Default {
-                throw ('Found ambiguous resource types [{0}] for identifier [{1}]' -f ($resourceType -join ','), $rawResourceType)
+                throw ('[{0}] Found ambiguous resource types [{1}] for identifier [{2}]' -f $MyInvocation.MyCommand.Name, ($resourceType -join ','), $rawResourceType)
             }
         }
     }
