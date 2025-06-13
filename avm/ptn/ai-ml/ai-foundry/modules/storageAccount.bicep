@@ -19,6 +19,9 @@ param logAnalyticsWorkspaceResourceId string
 @description('Specifies whether network isolation is enabled. This will create a private endpoint for the Storage Account and link the private DNS zone.')
 param networkIsolation bool = true
 
+@description('Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
+param userObjectId string = deployer().objectId
+
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
@@ -70,17 +73,17 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
             publicAccess: 'None'
             roleAssignments: [
               {
-                principalId: '<principalId>'
+                principalId: userObjectId
                 principalType: 'ServicePrincipal'
                 roleDefinitionIdOrName: 'Owner'
               }
               {
-                principalId: '<principalId>'
+                principalId: userObjectId
                 principalType: 'ServicePrincipal'
                 roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
               }
               {
-                principalId: '<principalId>'
+                principalId: userObjectId
                 principalType: 'ServicePrincipal'
                 roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
               }
@@ -93,17 +96,17 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
             publicAccess: 'None'
             roleAssignments: [
               {
-                principalId: '<principalId>'
+                principalId: userObjectId
                 principalType: 'ServicePrincipal'
                 roleDefinitionIdOrName: 'Owner'
               }
               {
-                principalId: '<principalId>'
+                principalId: userObjectId
                 principalType: 'ServicePrincipal'
                 roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
               }
               {
-                principalId: '<principalId>'
+                principalId: userObjectId
                 principalType: 'ServicePrincipal'
                 roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
               }

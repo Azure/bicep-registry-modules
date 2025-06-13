@@ -44,17 +44,16 @@ param userObjectId string = deployer().objectId
 @description('Optional IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed.')
 param allowedIpAddress string = ''
 
-@description('Specifies whether network isolation is enabled. When true, Foundry and related components will be deployed, network access parameters will be set to Disabled.')
-param networkIsolation bool = true
+@description('Specifies whether network isolation is enabled. When true, Foundry and related components will be deployed, network access parameters will be set to Disabled. This is automatically set based on aiFoundryType.')
+var networkIsolation = toLower(aiFoundryType) == 'standardprivate'
 
-@description('Whether to include Cosmos DB in the deployment.')
-param cosmosDbEnabled bool = true
-
-@description('Optional. List of Cosmos DB databases to deploy.')
-param cosmosDatabases sqlDatabaseType[] = []
-
-@description('Whether to include Azure AI Search in the deployment.')
-param searchEnabled bool = true
+@allowed([
+  'Basic'
+  'StandardPublic'
+  'StandardPrivate'
+])
+@description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
+param aiFoundryType string
 
 @description('Whether to include Azure AI Content Safety in the deployment.')
 param contentSafetyEnabled bool
@@ -101,7 +100,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
+//Do we deploy or just leave out of the pattern for Foundry?
+
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-log-analytics-deployment', 64)
   params: {
     name: toLower('log-${name}')
@@ -112,7 +113,9 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
+//Do we deploy or just leave out of the pattern for Foundry?
+
+module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-app-insights-deployment', 64)
   params: {
     name: toLower('appi-${name}')
@@ -122,7 +125,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
   }
 }
 
-module network 'modules/virtualNetwork.bicep' = if (networkIsolation) {
+module network 'modules/virtualNetwork.bicep' = if (toLower(aiFoundryType) == 'standardprivate') {
   name: take('${name}-network-deployment', 64)
   params: {
     virtualNetworkName: toLower('vnet-${name}')
@@ -151,7 +154,7 @@ module network 'modules/virtualNetwork.bicep' = if (networkIsolation) {
   }
 }
 
-module keyvault 'modules/keyvault.bicep' = {
+module keyvault 'modules/keyvault.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-keyvault-deployment', 64)
   params: {
     name: 'kv${name}${resourceToken}'
@@ -165,7 +168,7 @@ module keyvault 'modules/keyvault.bicep' = {
   }
 }
 
-module containerRegistry 'modules/containerRegistry.bicep' = if (acrEnabled) {
+module containerRegistry 'modules/containerRegistry.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-container-registry-deployment', 64)
   params: {
     name: 'cr${name}${resourceToken}'
@@ -196,7 +199,7 @@ module cognitiveServices 'modules/ai-foundry-account/main.bicep' = {
   }
 }
 
-module storageAccount 'modules/storageAccount.bicep' = {
+module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-storage-account-deployment', 64)
   params: {
     storageName: 'st${name}${resourceToken}'
@@ -222,15 +225,13 @@ module storageAccount 'modules/storageAccount.bicep' = {
           roleDefinitionIdOrName: 'Storage Blob Data Contributor'
         }
       ],
-      searchEnabled
-        ? [
-            {
-              principalId: searchEnabled ? aiSearch.outputs.systemAssignedMIPrincipalId : ''
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-            }
-          ]
-        : []
+      [
+        {
+          principalId: aiSearch.outputs.systemAssignedMIPrincipalId
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        }
+      ]
     )
     tags: allTags
   }
@@ -240,18 +241,17 @@ module storageAccount 'modules/storageAccount.bicep' = {
 module project 'modules/aifoundryproject.bicep' = {
   name: '${name}prj'
   params: {
-    cosmosDBName: cosmosDbEnabled ? cosmosDb.outputs.cosmosDBname : ''
-    cosmosDbEnabled: cosmosDbEnabled
-    searchEnabled: searchEnabled
+    aiFoundryType: aiFoundryType
+    cosmosDBName: toLower(aiFoundryType) != 'basic' ? cosmosDb.outputs.cosmosDBname : ''
     name: projectName
     location: location
     storageName: storageAccount.outputs.storageName
     aiServicesName: cognitiveServices.outputs.aiServicesName
-    nameFormatted: searchEnabled ? aiSearch.outputs.searchName : ''
+    nameFormatted: toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
   }
 }
 
-module aiSearch 'modules/aisearch.bicep' = if (searchEnabled) {
+module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-ai-search-deployment', 64)
   params: {
     name: 'srch${name}${resourceToken}'
@@ -288,7 +288,7 @@ module aiSearch 'modules/aisearch.bicep' = if (searchEnabled) {
   }
 }
 
-module virtualMachine './modules/virtualMachine.bicep' = if (networkIsolation) {
+module virtualMachine './modules/virtualMachine.bicep' = if (toLower(aiFoundryType) != 'standardprivate') {
   name: take('${name}-virtual-machine-deployment', 64)
   params: {
     vmName: toLower('vm-${name}-jump')
@@ -318,7 +318,7 @@ module virtualMachine './modules/virtualMachine.bicep' = if (networkIsolation) {
   dependsOn: networkIsolation ? [storageAccount] : []
 }
 
-module cosmosDb 'modules/cosmosDb.bicep' = if (cosmosDbEnabled) {
+module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-cosmosdb-deployment', 64)
   params: {
     name: 'cos${name}${resourceToken}'
@@ -337,7 +337,7 @@ import { connectionType } from 'br/public:avm/res/machine-learning-services/work
 
 output AZURE_KEY_VAULT_NAME string = keyvault.outputs.name
 output AZURE_AI_SERVICES_NAME string = cognitiveServices.outputs.aiServicesName
-output AZURE_AI_SEARCH_NAME string = searchEnabled ? aiSearch.outputs.searchName : ''
+output AZURE_AI_SEARCH_NAME string = toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
 output AZURE_AI_HUB_NAME string = cognitiveServices.outputs.aiServicesName
 output AZURE_AI_PROJECT_NAME string = project.outputs.projectName
 output AZURE_BASTION_NAME string = networkIsolation ? network.outputs.bastionName : ''
@@ -349,4 +349,4 @@ output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.outputs
 output AZURE_STORAGE_ACCOUNT_NAME string = storageAccount.outputs.storageName
 output AZURE_VIRTUAL_NETWORK_NAME string = networkIsolation ? network.outputs.virtualNetworkName : ''
 output AZURE_VIRTUAL_NETWORK_SUBNET_NAME string = networkIsolation ? network.outputs.vmSubnetName : ''
-output AZURE_COSMOS_ACCOUNT_NAME string = cosmosDbEnabled ? cosmosDb.outputs.cosmosDBname : ''
+output AZURE_COSMOS_ACCOUNT_NAME string = toLower(aiFoundryType) != 'basic' ? cosmosDb.outputs.cosmosDBname : ''

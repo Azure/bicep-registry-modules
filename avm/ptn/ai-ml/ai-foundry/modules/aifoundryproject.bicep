@@ -6,21 +6,22 @@ param name string
 @description('Specifies the location for all the Azure resources. Defaults to the location of the resource group.')
 param location string
 
-// CosmosDB Account
-@description('Name of the customers existing CosmosDB Resource')
+@allowed([
+  'Basic'
+  'StandardPublic'
+  'StandardPrivate'
+])
+@description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
+param aiFoundryType string
+
+@description('Name of the CosmosDB Resource')
 param cosmosDBName string
 
-@description('Whether to include Cosmos DB in the deployment.')
-param cosmosDbEnabled bool
-
-@description('Name of the customers existing Azure Storage Account')
+@description('Name of the Azure Storage Account')
 param storageName string
 
 @description('Foundry Account Name')
 param aiServicesName string
-
-@description('Whether to include Azure AI Search in the deployment.')
-param searchEnabled bool
 
 @description('Azure Search Service Name')
 param nameFormatted string
@@ -38,15 +39,15 @@ resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview
   name: aiServicesName
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = if (toLower(aiFoundryType) != 'basic') {
   name: storageName
 }
 
-resource aiSearchService 'Microsoft.Search/searchServices@2025-05-01' existing = if (searchEnabled) {
+resource aiSearchService 'Microsoft.Search/searchServices@2025-05-01' existing = if (toLower(aiFoundryType) != 'basic') {
   name: nameFormatted
 }
 
-resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2025-05-01-preview' existing = if (cosmosDbEnabled) {
+resource cosmosDBAccount 'Microsoft.DocumentDB/databaseAccounts@2025-05-01-preview' existing = if (toLower(aiFoundryType) != 'basic') {
   name: cosmosDBName
 }
 
@@ -63,13 +64,12 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
   }
 }
 
-resource project_connection_azure_storage 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = {
+resource project_connection_azure_storage 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
   name: storageName
   parent: project
   properties: {
     category: 'AzureBlob'
     target: storageAccount.properties.primaryEndpoints.blob
-    // target: storageAccountTarget
     authType: 'AAD'
     metadata: {
       ApiType: 'Azure'
@@ -81,38 +81,38 @@ resource project_connection_azure_storage 'Microsoft.CognitiveServices/accounts/
   }
 }
 
-resource project_connection_azureai_search 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (searchEnabled) {
-  name: searchEnabled ? aiSearchService.name : ''
+resource project_connection_azureai_search 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
+  name: aiSearchService.name
   parent: project
   properties: {
     category: 'CognitiveSearch'
-    target: searchEnabled ? 'https://${aiSearchService.name}.search.windows.net/' : ''
+    target: 'https://${aiSearchService.name}.search.windows.net/'
     authType: 'AAD'
     isSharedToAll: true
     metadata: {
       ApiType: 'Azure'
-      ResourceId: searchEnabled ? aiSearchService.id : ''
-      location: searchEnabled ? aiSearchService.location : ''
+      ResourceId: aiSearchService.id
+      location: aiSearchService.location
     }
   }
 }
 
-resource project_connection_cosmosdb 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (cosmosDbEnabled) {
+resource project_connection_cosmosdb 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
   name: cosmosDBName
   parent: project
   properties: {
     category: 'CosmosDB'
-    target: cosmosDbEnabled ? cosmosDBAccount.properties.documentEndpoint : ''
+    target: cosmosDBAccount.properties.documentEndpoint
     authType: 'AAD'
     metadata: {
       ApiType: 'Azure'
-      ResourceId: cosmosDbEnabled ? cosmosDBAccount.id : ''
-      location: cosmosDbEnabled ? cosmosDBAccount.location : ''
+      ResourceId: cosmosDBAccount.id
+      location: cosmosDBAccount.location
     }
   }
 }
 
-resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = {
+resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
   name: 'accountCapHost'
   parent: foundryAccount
   properties: {
@@ -120,7 +120,7 @@ resource accountCapabilityHost 'Microsoft.CognitiveServices/accounts/capabilityH
   }
 }
 
-resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = {
+resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/capabilityHosts@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic') {
   name: 'projectCapHost'
   parent: project
   properties: {
