@@ -17,20 +17,22 @@ az account set --subscription "$SUBSCRIPTION_ID"
 # Create directory structure and decode base64 files
 echo "Creating required directory structure and bicep files..."
 
+# Create nested directory
+mkdir -p nested
 # Create deployment-setting directory
 mkdir -p deployment-setting
 
 # Decode and create deployment-setting.bicep file
 echo "Creating deployment-setting.bicep file from base64 encoded content..."
-echo "$DEPLOYMENT_SETTING_BICEP_BASE64" | base64 -d > deployment-setting.bicep
+echo "$DEPLOYMENT_SETTING_BICEP_BASE64" | base64 -d > nested/deployment-setting.bicep
 
 # Decode and create deployment-setting/main.bicep file
 echo "Creating deployment-setting/main.bicep file from base64 encoded content..."
 echo "$DEPLOYMENT_SETTING_MAIN_BICEP_BASE64" | base64 -d > deployment-setting/main.bicep
 
 # Verify the files were created successfully
-if [ ! -f "deployment-setting.bicep" ] || [ ! -s "deployment-setting.bicep" ]; then
-    echo "Error: Failed to create deployment-setting.bicep file or file is empty"
+if [ ! -f "nested/deployment-setting.bicep" ] || [ ! -s "nested/deployment-setting.bicep" ]; then
+    echo "Error: Failed to create nested/deployment-setting.bicep file or file is empty"
     exit 1
 fi
 
@@ -40,7 +42,7 @@ if [ ! -f "deployment-setting/main.bicep" ] || [ ! -s "deployment-setting/main.b
 fi
 
 echo "✅ All bicep files created successfully"
-echo "deployment-setting.bicep size: $(wc -c < deployment-setting.bicep) bytes"
+echo "nested/deployment-setting.bicep size: $(wc -c < nested/deployment-setting.bicep) bytes"
 echo "deployment-setting/main.bicep size: $(wc -c < deployment-setting/main.bicep) bytes"
 
 # List current directory structure for debugging
@@ -101,18 +103,18 @@ cat "$PARAM_FILE"
 DEPLOYMENT_NAME="hci-deployment-$(date +%s)"
 
 echo "Starting deployment: $DEPLOYMENT_NAME"
-echo "Using template: deployment-setting.bicep"
+echo "Using template: nested/deployment-setting.bicep"
 echo "Using parameters: $PARAM_FILE"
 
-# Check if deployment-setting.bicep file was created successfully
-if [ ! -f "deployment-setting.bicep" ]; then
-    echo "Error: deployment-setting.bicep file was not created successfully"
+# Check if nested/deployment-setting.bicep file was created successfully
+if [ ! -f "nested/deployment-setting.bicep" ]; then
+    echo "Error: nested/deployment-setting.bicep file was not created successfully"
     echo "Current directory contents:"
     ls -la
     exit 1
 fi
 
-echo "✅ deployment-setting.bicep file found and ready for deployment"
+echo "✅ nested/deployment-setting.bicep file found and ready for deployment"
 
 # TODO: check if deployment-settings exists or failed
 
@@ -120,7 +122,7 @@ echo "✅ deployment-setting.bicep file found and ready for deployment"
 az deployment group create \
     --resource-group "$RESOURCE_GROUP_NAME" \
     --name "$DEPLOYMENT_NAME" \
-    --template-file "deployment-setting.bicep" \
+    --template-file "nested/deployment-setting.bicep" \
     --parameters "@$PARAM_FILE" \
     --verbose
 
@@ -152,7 +154,7 @@ fi
 
 # Clean up temporary files
 rm -f "$PARAM_FILE"
-rm -f "deployment-setting.bicep"
+rm -f "nested/deployment-setting.bicep"
 rm -rf "deployment-setting"
 
 echo "Completed deployment"
