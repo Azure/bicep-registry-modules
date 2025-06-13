@@ -35,6 +35,10 @@ import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
 
+// Import types from child modules
+import { ipsecPolicyType, trafficSelectorPolicyType, vpnSiteLinkConnectionType } from 'vpn-connection/main.bicep'
+import { vpnNatRuleMappingType } from 'nat-rule/main.bicep'
+
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
@@ -272,13 +276,13 @@ type vpnConnectionType = {
   vpnConnectionProtocolType: ('IKEv1' | 'IKEv2')?
   
   @description('Optional. IPSec policies.')
-  ipsecPolicies: array?
+  ipsecPolicies: ipsecPolicyType[]?
   
   @description('Optional. Traffic selector policies.')
-  trafficSelectorPolicies: array?
+  trafficSelectorPolicies: trafficSelectorPolicyType[]?
   
   @description('Optional. VPN link connections.')
-  vpnLinkConnections: array?
+  vpnLinkConnections: vpnSiteLinkConnectionType[]?
 }
 
 @export()
@@ -288,10 +292,10 @@ type natRuleType = {
   name: string
   
   @description('Optional. External mappings.')
-  externalMappings: array?
+  externalMappings: vpnNatRuleMappingType[]?
   
   @description('Optional. Internal mappings.')
-  internalMappings: array?
+  internalMappings: vpnNatRuleMappingType[]?
   
   @description('Optional. IP configuration ID.')
   ipConfigurationId: string?
