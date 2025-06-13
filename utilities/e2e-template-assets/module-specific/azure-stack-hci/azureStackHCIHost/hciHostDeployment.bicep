@@ -60,20 +60,20 @@ param waitDeploymentScriptPrefixName string
 // Deploy Host VM Infrastructure    //
 // =================================//
 
-var blobUriOut1 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand1-output.txt'
-var blobUriErr1 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand1-error.txt'
-var blobUriOut2 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand2-output.txt'
-var blobUriErr2 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand2-error.txt'
-var blobUriOut3 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand3-output.txt'
-var blobUriErr3 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand3-error.txt'
-var blobUriOut4 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand4-output.txt'
-var blobUriErr4 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand4-error.txt'
-var blobUriOut5 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand5-output.txt'
-var blobUriErr5 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand5-error.txt'
-var blobUriOut6 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand6-output.txt'
-var blobUriErr6 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand6-error.txt'
-var blobUriOut7 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand7-output.txt'
-var blobUriErr7 = 'https://avmlog.blob.core.windows.net/hcpc/runcommand77-error.txt'
+var blobUriOut1 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand1-output.txt'
+var blobUriErr1 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand1-error.txt'
+var blobUriOut2 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand2-output.txt'
+var blobUriErr2 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand2-error.txt'
+var blobUriOut3 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand3-output.txt'
+var blobUriErr3 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand3-error.txt'
+var blobUriOut4 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand4-output.txt'
+var blobUriErr4 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand4-error.txt'
+var blobUriOut5 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand5-output.txt'
+var blobUriErr5 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand5-error.txt'
+var blobUriOut6 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand6-output.txt'
+var blobUriErr6 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand6-error.txt'
+var blobUriOut7 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand7-output.txt'
+var blobUriErr7 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand77-error.txt'
 
 // vm managed identity used for HCI Arc onboarding
 resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
