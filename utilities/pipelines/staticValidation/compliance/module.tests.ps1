@@ -53,6 +53,19 @@ BeforeDiscovery {
             throw "Failed to build template [$_]. Try running the command ``bicep build $_ --stdout`` locally for troubleshooting. Make sure you have the latest Bicep CLI installed."
         }
         $templateHashTable = ConvertFrom-Json $builtTemplate -AsHashtable
+
+        # add variable types to the $templateHashTable, which can only be retrieved from the bicep file, not the compiled json
+        $varPattern = '^\s*var\s+([a-zA-Z0-9_]+)(?:\s+([a-zA-Z0-9_]+))?\s*='
+        foreach ($line in Get-Content $_) {
+            if ($line -match $varPattern) {
+                $variableValue = $templateHashTable.variables[$matches[1]]
+                $templateHashTable.variables[$matches[1]] = [PSCustomObject]@{
+                    Value = $variableValue
+                    Type  = ($matches[2] ? $matches[2] :'implicit' )
+                }
+            }
+        }
+
         $null = $dict.TryAdd($_, $templateHashTable)
     }
 
@@ -412,7 +425,6 @@ Describe 'Module tests' -Tag 'Module' {
             .  (Join-Path $repoRootPath 'utilities' 'pipelines' 'sharedScripts' 'helper' 'Get-CrossReferencedModuleList.ps1')
             # load cross-references
             $crossReferencedModuleList = Get-CrossReferencedModuleList
-
         }
 
         It '[<moduleFolderName>] `Set-ModuleReadMe` script should not apply any updates.' -TestCases $readmeFileTestCases {
@@ -963,7 +975,7 @@ Describe 'Module tests' -Tag 'Module' {
                 $incorrectVariables | Should -BeNullOrEmpty
             }
 
-            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist, have a type and set to "false" if module references other modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist if module references other modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
 
                 param(
                     [hashtable] $templateFileContent
@@ -981,10 +993,64 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 $templateFileContent.variables.Keys | Should -Contain 'enableReferencedModulesTelemetry'
-                # // TODO need to check if the type is set by checking in the Bicep and not in the JSON
-                if ($templateFileContent.variables.enableReferencedModulesTelemetry -ne $false -or $templateFileContent.variables.enableReferencedModulesTelemetry.type -ne 'bool') {
-                    Set-ItResult -Failed -Because 'the variable "enableReferencedModulesTelemetry" should be set to false and of type bool.'
+            }
+
+            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should be "false" if module references other modules with dedicated telemetry.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+                param(
+                    [hashtable] $templateFileContent
+                )
+
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
                 }
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
+                    return
+                }
+
+                $templateFileContent.variables.enableReferencedModulesTelemetry.Value | Should -Be $false
+            }
+
+            It '[<moduleFolderName>] Variable "enableReferencedModulesTelemetry" should exist and of type "bool".' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+                param(
+                    [hashtable] $templateFileContent
+                )
+
+                # get all referenced modules, that offer a telemetry parameter
+                $referencesWithTelemetry = $templateFileContent.resources.Values | Where-Object {
+                    $_.type -eq 'Microsoft.Resources/deployments' -and
+                    $_.properties.template.parameters.Keys -contains 'enableTelemetry'
+                }
+
+                if ($referencesWithTelemetry.Count -eq 0) {
+                    Set-ItResult -Skipped -Because 'no modules with dedicated telemetry are deployed.'
+                    return
+                }
+
+                $variableType = $templateFileContent.variables['enableReferencedModulesTelemetry'].Type
+                $variableType | Should -Be 'bool' -Because 'the [enableReferencedModulesTelemetry] variable should be of type [bool].'
+            }
+
+            It '[<moduleFolderName>] Variables should be typed.' -TestCases $moduleFolderTestCases {
+
+                param(
+                    [hashtable] $templateFileContent
+                )
+
+                $variablesWithoutTypes = @()
+                foreach ($variableName in $templateFileContent.variables.Keys) {
+                    if ($templateFileContent.variables[$variableName].Type -eq 'implicit') {
+                        $variablesWithoutTypes += $variableName
+                    }
+                }
+
+                Write-Warning -Message ('Variables in the template file should be typed. Found variables without type: [{0}].' -f ($variablesWithoutTypes -join ', '))
+                Set-ItResult -Skipped -Because 'typed variables are available in Bicep, but not yet enforced in the AVM specs.'
             }
         }
 
