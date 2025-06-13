@@ -55,7 +55,7 @@ module testDeployment '../../../main.bicep' = [
       location: resourceLocation
       name: '${namePrefix}${serviceShort}001'
       firewallPolicyId: nestedDependencies.outputs.firewallPolicyResourceId
-      virtualHubId: nestedDependencies.outputs.virtualHubResourceId
+      virtualHubResoureId: nestedDependencies.outputs.virtualHubResourceId
       hubIPAddresses: {
         publicIPs: {
           count: 1

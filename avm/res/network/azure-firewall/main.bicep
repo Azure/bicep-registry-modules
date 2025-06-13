@@ -48,7 +48,7 @@ param firewallPolicyId string = ''
 param hubIPAddresses hubIPAddressesType?
 
 @description('Conditional. The virtualHub resource ID to which the firewall belongs. Required if `virtualNetworkId` is empty.')
-param virtualHubId string = ''
+param virtualHubResoureId string = ''
 
 @allowed([
   'Alert'
@@ -309,9 +309,9 @@ resource azureFirewall 'Microsoft.Network/azureFirewalls@2024-05-01' = {
           tier: azureSkuTier
         }
         hubIPAddresses: !empty(hubIPAddresses) ? hubIPAddresses : null
-        virtualHub: !empty(virtualHubId)
+        virtualHub: !empty(virtualHubResoureId)
           ? {
-              id: virtualHubId
+              id: virtualHubResoureId
             }
           : null
       }
