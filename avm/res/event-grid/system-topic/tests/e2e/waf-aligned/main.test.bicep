@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned'
-metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.'
+metadata name = 'WAF-aligned with managed identity'
+metadata description = 'This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework and uses managed identities to deliver Event Grid Topic events.'
 
 // ========== //
 // Parameters //
@@ -26,7 +26,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
@@ -79,17 +79,32 @@ module testDeployment '../../../main.bicep' = [
           }
           retryPolicy: {
             maxDeliveryAttempts: 10
-            eventTimeToLive: '120'
+            eventTimeToLiveInMinutes: 120
           }
           eventDeliverySchema: 'CloudEventSchemaV1_0'
-          destination: {
-            endpointType: 'StorageQueue'
-            properties: {
-              resourceId: nestedDependencies.outputs.storageAccountResourceId
-              queueMessageTimeToLiveInSeconds: 86400
-              queueName: nestedDependencies.outputs.queueName
+          deliveryWithResourceIdentity: {
+            identity: {
+              type: 'SystemAssigned'
+            }
+            destination: {
+              endpointType: 'StorageQueue'
+              properties: {
+                resourceId: nestedDependencies.outputs.storageAccountResourceId
+                queueMessageTimeToLiveInSeconds: 86400
+                queueName: nestedDependencies.outputs.queueName
+              }
             }
           }
+        }
+      ]
+      managedIdentities: {
+        systemAssigned: true
+      }
+      resourceRoleAssignments: [
+        {
+          resourceId: nestedDependencies.outputs.storageAccountResourceId
+          roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a' // Storage Queue Data Message Sender
+          description: 'Allow Event Grid System Topic to send messages to storage queue'
         }
       ]
       diagnosticSettings: [
