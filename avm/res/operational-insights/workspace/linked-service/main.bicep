@@ -16,11 +16,11 @@ param writeAccessResourceId string?
 @description('Optional. Tags to configure in the resource.')
 param tags object?
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = {
   name: logAnalyticsWorkspaceName
 }
 
-resource linkedService 'Microsoft.OperationalInsights/workspaces/linkedServices@2023-09-01' = {
+resource linkedService 'Microsoft.OperationalInsights/workspaces/linkedServices@2025-02-01' = {
   name: name
   parent: workspace
   tags: tags
