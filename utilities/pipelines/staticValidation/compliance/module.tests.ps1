@@ -807,7 +807,7 @@ Describe 'Module tests' -Tag 'Module' {
                         $moduleVersion = [version](Get-Content $versionFilePath -Raw | ConvertFrom-Json).version
                     }
                     if ((Test-Path $versionFilePath) -and $moduleVersion -ge [version]'1.0') {
-                        # Enforcing test for 1.0 modules
+                        # Enforcing test for modules with a version greater than 1.0
                         $incorrectParameters | Should -BeNullOrEmpty -Because ('all parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
                     } else {
 
