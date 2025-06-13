@@ -24,8 +24,6 @@ param(
 
 $script:ErrorActionPreference = 'Stop'
 
-Start-Sleep -Seconds 180 # sleep for 3 minutes
-
 try {
     $username = "$($DomainFQDN.Split('.')[0])\$AdministratorAccount"
     $securePassword = ConvertTo-SecureString $AdministratorPassword -AsPlainText -Force
