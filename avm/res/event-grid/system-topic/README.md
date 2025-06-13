@@ -30,9 +30,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/system-topic:<version>`.
 
 - [Using only defaults](#example-1-using-only-defaults)
-- [Using managed identity authentication](#example-2-using-managed-identity-authentication)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Using deliveryWithResourceIdentity with system-assigned identity](#example-2-using-deliverywithresourceidentity-with-system-assigned-identity)
+- [Using managed identity authentication](#example-3-using-managed-identity-authentication)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned](#example-5-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -108,7 +109,261 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Using managed identity authentication_
+### Example 2: _Using deliveryWithResourceIdentity with system-assigned identity_
+
+This test verify the Event Grid System Topic with deliveryWithResourceIdentity using system-assigned managed identity and automatic role assignments to Storage Account.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
+  name: 'systemTopicDeployment'
+  params: {
+    // Required parameters
+    name: 'egstsi001'
+    source: '<source>'
+    topicType: 'Microsoft.Storage.StorageAccounts'
+    // Non-required parameters
+    eventSubscriptions: [
+      {
+        deadLetterWithResourceIdentity: {
+          deadLetterDestination: {
+            endpointType: 'StorageBlob'
+            properties: {
+              blobContainerName: '<blobContainerName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'SystemAssigned'
+          }
+        }
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueMessageTimeToLiveInSeconds: 500000
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'SystemAssigned'
+          }
+        }
+        eventDeliverySchema: 'CloudEventSchemaV1_0'
+        filter: {
+          isSubjectCaseSensitive: false
+        }
+        name: 'egstsi001'
+        retryPolicy: {
+          eventTimeToLive: '600'
+          maxDeliveryAttempts: 10
+        }
+      }
+    ]
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    resourceRoleAssignments: [
+      {
+        description: 'Allow Event Grid System Topic to write dead letter blobs to storage'
+        resourceId: '<resourceId>'
+        roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+      }
+      {
+        description: 'Allow Event Grid System Topic to write to storage queue'
+        resourceId: '<resourceId>'
+        roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+      }
+      {
+        description: 'Allow Event Grid System Topic to send messages to storage queue'
+        resourceId: '<resourceId>'
+        roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+      }
+    ]
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "name": {
+      "value": "egstsi001"
+    },
+    "source": {
+      "value": "<source>"
+    },
+    "topicType": {
+      "value": "Microsoft.Storage.StorageAccounts"
+    },
+    // Non-required parameters
+    "eventSubscriptions": {
+      "value": [
+        {
+          "deadLetterWithResourceIdentity": {
+            "deadLetterDestination": {
+              "endpointType": "StorageBlob",
+              "properties": {
+                "blobContainerName": "<blobContainerName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "SystemAssigned"
+            }
+          },
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueMessageTimeToLiveInSeconds": 500000,
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "SystemAssigned"
+            }
+          },
+          "eventDeliverySchema": "CloudEventSchemaV1_0",
+          "filter": {
+            "isSubjectCaseSensitive": false
+          },
+          "name": "egstsi001",
+          "retryPolicy": {
+            "eventTimeToLive": "600",
+            "maxDeliveryAttempts": 10
+          }
+        }
+      ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "resourceRoleAssignments": {
+      "value": [
+        {
+          "description": "Allow Event Grid System Topic to write dead letter blobs to storage",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "ba92f5b4-2d11-453d-a403-e96b0029c9fe"
+        },
+        {
+          "description": "Allow Event Grid System Topic to write to storage queue",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "Storage Queue Data Contributor"
+        },
+        {
+          "description": "Allow Event Grid System Topic to send messages to storage queue",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
+        }
+      ]
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/event-grid/system-topic:<version>'
+
+// Required parameters
+param name = 'egstsi001'
+param source = '<source>'
+param topicType = 'Microsoft.Storage.StorageAccounts'
+// Non-required parameters
+param eventSubscriptions = [
+  {
+    deadLetterWithResourceIdentity: {
+      deadLetterDestination: {
+        endpointType: 'StorageBlob'
+        properties: {
+          blobContainerName: '<blobContainerName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'SystemAssigned'
+      }
+    }
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueMessageTimeToLiveInSeconds: 500000
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'SystemAssigned'
+      }
+    }
+    eventDeliverySchema: 'CloudEventSchemaV1_0'
+    filter: {
+      isSubjectCaseSensitive: false
+    }
+    name: 'egstsi001'
+    retryPolicy: {
+      eventTimeToLive: '600'
+      maxDeliveryAttempts: 10
+    }
+  }
+]
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param resourceRoleAssignments = [
+  {
+    description: 'Allow Event Grid System Topic to write dead letter blobs to storage'
+    resourceId: '<resourceId>'
+    roleDefinitionIdOrName: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+  }
+  {
+    description: 'Allow Event Grid System Topic to write to storage queue'
+    resourceId: '<resourceId>'
+    roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+  }
+  {
+    description: 'Allow Event Grid System Topic to send messages to storage queue'
+    resourceId: '<resourceId>'
+    roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+  }
+]
+```
+
+</details>
+<p>
+
+### Example 3: _Using managed identity authentication_
 
 This instance deploys the module testing delivery with resource identity (managed identity authentication).
 
@@ -302,7 +557,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -365,6 +620,18 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     managedIdentities: {
       systemAssigned: true
     }
+    resourceRoleAssignments: [
+      {
+        description: 'Allow Event Grid System Topic to write to storage queue'
+        resourceId: '<resourceId>'
+        roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+      }
+      {
+        description: 'Allow Event Grid System Topic to send messages to storage queue'
+        resourceId: '<resourceId>'
+        roleDefinitionIdOrName: 'Storage Queue Data Message Sender'
+      }
+    ]
     roleAssignments: [
       {
         name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
@@ -471,6 +738,20 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         "systemAssigned": true
       }
     },
+    "resourceRoleAssignments": {
+      "value": [
+        {
+          "description": "Allow Event Grid System Topic to write to storage queue",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "Storage Queue Data Contributor"
+        },
+        {
+          "description": "Allow Event Grid System Topic to send messages to storage queue",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "Storage Queue Data Message Sender"
+        }
+      ]
+    },
     "roleAssignments": {
       "value": [
         {
@@ -563,6 +844,18 @@ param lock = {
 param managedIdentities = {
   systemAssigned: true
 }
+param resourceRoleAssignments = [
+  {
+    description: 'Allow Event Grid System Topic to write to storage queue'
+    resourceId: '<resourceId>'
+    roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+  }
+  {
+    description: 'Allow Event Grid System Topic to send messages to storage queue'
+    resourceId: '<resourceId>'
+    roleDefinitionIdOrName: 'Storage Queue Data Message Sender'
+  }
+]
 param roleAssignments = [
   {
     name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
@@ -592,7 +885,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -832,6 +1125,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`resourceRoleAssignments`](#parameter-resourceroleassignments) | array | Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID, role, and optionally the endpoint type for automatic permission assignment. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -1089,22 +1383,62 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 - Required: No
 - Type: array
 
+### Parameter: `resourceRoleAssignments`
+
+Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID, role, and optionally the endpoint type for automatic permission assignment.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-resourceroleassignmentsresourceid) | string | The resource ID of the target resource to assign permissions to. |
+| [`roleDefinitionIdOrName`](#parameter-resourceroleassignmentsroledefinitionidorname) | string | The role definition ID or name. Can be either a role definition ID (GUID) or a role name (e.g., "Storage Blob Data Contributor", "ba92f5b4-2d11-453d-a403-e96b0029c9fe"). |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-resourceroleassignmentsdescription) | string | Description of the role assignment. |
+| [`roleName`](#parameter-resourceroleassignmentsrolename) | string | Name of the role for logging purposes. |
+
+### Parameter: `resourceRoleAssignments.resourceId`
+
+The resource ID of the target resource to assign permissions to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `resourceRoleAssignments.roleDefinitionIdOrName`
+
+The role definition ID or name. Can be either a role definition ID (GUID) or a role name (e.g., "Storage Blob Data Contributor", "ba92f5b4-2d11-453d-a403-e96b0029c9fe").
+
+- Required: Yes
+- Type: string
+
+### Parameter: `resourceRoleAssignments.description`
+
+Description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `resourceRoleAssignments.roleName`
+
+Name of the role for logging purposes.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Roles configurable by name:
-  - `'Contributor'`
-  - `'EventGrid Contributor'`
-  - `'EventGrid Data Sender'`
-  - `'EventGrid EventSubscription Contributor'`
-  - `'EventGrid EventSubscription Reader'`
-  - `'Owner'`
-  - `'Reader'`
-  - `'Role Based Access Control Administrator'`
-  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1219,6 +1553,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection

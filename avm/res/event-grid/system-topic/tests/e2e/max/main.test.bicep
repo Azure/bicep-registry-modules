@@ -135,6 +135,18 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
+      resourceRoleAssignments: [
+        {
+          resourceId: nestedDependencies.outputs.storageAccountResourceId
+          roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+          description: 'Allow Event Grid System Topic to write to storage queue'
+        }
+        {
+          resourceId: nestedDependencies.outputs.storageAccountResourceId
+          roleDefinitionIdOrName: 'Storage Queue Data Message Sender'
+          description: 'Allow Event Grid System Topic to send messages to storage queue'
+        }
+      ]
       tags: {
         'hidden-title': 'This is visible in the resource name'
         Environment: 'Non-Prod'
