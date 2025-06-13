@@ -65,46 +65,29 @@ OPERATIONS_JSON+="]"
 
 echo "Deployment operations JSON: $OPERATIONS_JSON"
 
+# Convert boolean values to proper JSON format
+USE_SHARED_KEYVAULT_JSON=$(echo "$USE_SHARED_KEYVAULT" | tr '[:upper:]' '[:lower:]')
+if [ "$USE_SHARED_KEYVAULT_JSON" = "true" ] || [ "$USE_SHARED_KEYVAULT_JSON" = "1" ]; then
+    USE_SHARED_KEYVAULT_JSON="true"
+else
+    USE_SHARED_KEYVAULT_JSON="false"
+fi
+
+echo "Use shared key vault: $USE_SHARED_KEYVAULT_JSON"
+
 # Create parameter file and execute single deployment
 PARAM_FILE="deployment-params.json"
 
-cat > "$PARAM_FILE" << EOF
-{
-  "\$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "deploymentOperations": {
-      "value": $OPERATIONS_JSON
-    },
-    "deploymentSettings": {
-      "value": $DEPLOYMENT_SETTINGS
-    },
-    "useSharedKeyVault": {
-      "value": $USE_SHARED_KEYVAULT
-    },
-    "hciResourceProviderObjectId": {
-      "value": "$HCI_RESOURCE_PROVIDER_OBJECT_ID"
-    },
-    "clusterName": {
-      "value": "$CLUSTER_NAME"
-    },
-    "cloudId": {
-      "value": "$CLOUD_ID"
-    }
-  }
-}
-EOF
+# Create parameters using direct az deployment command instead of parameter file to avoid JSON parsing issues
+echo "Starting deployment with inline parameters..."
 
-echo "Created parameter file: $PARAM_FILE"
-echo "Parameter file content:"
-cat "$PARAM_FILE"
+# TODO: check if deployment-settings exists or failed
 
 # Execute Bicep deployment
 DEPLOYMENT_NAME="hci-deployment-$(date +%s)"
 
 echo "Starting deployment: $DEPLOYMENT_NAME"
 echo "Using template: nested/deployment-setting.bicep"
-echo "Using parameters: $PARAM_FILE"
 
 # Check if nested/deployment-setting.bicep file was created successfully
 if [ ! -f "nested/deployment-setting.bicep" ]; then
@@ -116,14 +99,18 @@ fi
 
 echo "✅ nested/deployment-setting.bicep file found and ready for deployment"
 
-# TODO: check if deployment-settings exists or failed
-
-# Execute deployment
+# Execute deployment with inline parameters to avoid JSON parsing issues
 az deployment group create \
     --resource-group "$RESOURCE_GROUP_NAME" \
     --name "$DEPLOYMENT_NAME" \
     --template-file "nested/deployment-setting.bicep" \
-    --parameters "@$PARAM_FILE" \
+    --parameters \
+        deploymentOperations="$OPERATIONS_JSON" \
+        deploymentSettings="$DEPLOYMENT_SETTINGS" \
+        useSharedKeyVault="$USE_SHARED_KEYVAULT_JSON" \
+        hciResourceProviderObjectId="$HCI_RESOURCE_PROVIDER_OBJECT_ID" \
+        clusterName="$CLUSTER_NAME" \
+        cloudId="$CLOUD_ID" \
     --verbose
 
 DEPLOYMENT_STATUS=$?
@@ -153,7 +140,6 @@ else
 fi
 
 # Clean up temporary files
-rm -f "$PARAM_FILE"
 rm -f "nested/deployment-setting.bicep"
 rm -rf "deployment-setting"
 
