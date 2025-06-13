@@ -236,6 +236,48 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
+        It '[<moduleFolderName>] Resource Modules must not skip the "*defaults" or "*waf-aligned" tests with a [` .e2eignore `] file.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $moduleFolderPath
+            )
+
+            $incorrectFolders = @()
+            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object {
+                $_.Name -match '^.*(defaults|waf-aligned)$' # the spec BCPRMNFR1 states, that the folder names should start with defaults|waf-aligned. Since it is a should and not a must, need to check for both cases.
+            }
+            foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+                $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
+                if (Test-Path $filePath) {
+                    $incorrectFolders += $e2eTestFolderPath.Name
+                }
+            }
+            $incorrectFolders | Should -BeNullOrEmpty -Because ('skipping this test is not allowed. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
+        }
+
+        It '[<moduleFolderName>] a [` .e2eignore `] file must contain text, which states the exception reason for not executing the deployment test.' -TestCases $topLevelModuleTestCases {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $moduleFolderPath
+            )
+
+            $incorrectFolders = @()
+            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
+            foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+                $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
+                $pathExisting = Test-Path $filePath
+                if ($pathExisting) {
+                    $fileContent = Get-Content -Path $filePath
+                    if (-not $fileContent) {
+                        $incorrectFolders += $e2eTestFolderPath.Name + '\.e2eignore'
+                    }
+                }
+            }
+            $incorrectFolders | Should -BeNullOrEmpty -Because ('the file should contain a reason for skipping the test. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
+        }
+
         It '[<moduleFolderName>] Top-level module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.versionFileExists }) {
 
             param(
