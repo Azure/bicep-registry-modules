@@ -1457,7 +1457,7 @@ Event subscriptions to deploy.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`destination`](#parameter-eventsubscriptionsdestination) | object | The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided. |
+| [`destination`](#parameter-eventsubscriptionsdestination) | object | Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. |
 
 **Optional parameters**
 
@@ -1481,7 +1481,7 @@ The name of the event subscription.
 
 ### Parameter: `eventSubscriptions.destination`
 
-The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided.
+Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription.
 
 - Required: No
 - Type: object
@@ -1531,7 +1531,7 @@ The identity configuration for dead letter.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedIdentity`](#parameter-eventsubscriptionsdeadletterwithresourceidentityidentityuserassignedidentity) | string | The user assigned identity resource ID. Required when type is UserAssigned. |
+| [`userAssignedIdentity`](#parameter-eventsubscriptionsdeadletterwithresourceidentityidentityuserassignedidentity) | string | Required if type is UserAssigned. The user assigned identity resource ID. |
 
 ### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity.identity.type`
 
@@ -1549,7 +1549,7 @@ The type of identity to use.
 
 ### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity.identity.userAssignedIdentity`
 
-The user assigned identity resource ID. Required when type is UserAssigned.
+Required if type is UserAssigned. The user assigned identity resource ID.
 
 - Required: No
 - Type: string
@@ -1592,7 +1592,7 @@ The identity configuration for delivery.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedIdentity`](#parameter-eventsubscriptionsdeliverywithresourceidentityidentityuserassignedidentity) | string | The user assigned identity resource ID. Required when type is UserAssigned. |
+| [`userAssignedIdentity`](#parameter-eventsubscriptionsdeliverywithresourceidentityidentityuserassignedidentity) | string | Required if type is UserAssigned. The user assigned identity resource ID. |
 
 ### Parameter: `eventSubscriptions.deliveryWithResourceIdentity.identity.type`
 
@@ -1610,7 +1610,7 @@ The type of identity to use.
 
 ### Parameter: `eventSubscriptions.deliveryWithResourceIdentity.identity.userAssignedIdentity`
 
-The user assigned identity resource ID. Required when type is UserAssigned.
+Required if type is UserAssigned. The user assigned identity resource ID.
 
 - Required: No
 - Type: string
@@ -1649,7 +1649,7 @@ The filter for the event subscription.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`advancedFilters`](#parameter-eventsubscriptionsfilteradvancedfilters) | array | A list of advanced filters. |
+| [`advancedFilters`](#parameter-eventsubscriptionsfilteradvancedfilters) | array | A list of advanced filters. Each filter should contain operatorType, key, and value/values properties. |
 | [`enableAdvancedFilteringOnArrays`](#parameter-eventsubscriptionsfilterenableadvancedfilteringonarrays) | bool | Allows advanced filters to be evaluated against an array of values instead of expecting a singular value. |
 | [`includedEventTypes`](#parameter-eventsubscriptionsfilterincludedeventtypes) | array | A list of applicable event types that can be filtered. |
 | [`isSubjectCaseSensitive`](#parameter-eventsubscriptionsfilterissubjectcasesensitive) | bool | Defines if the subject field should be compared in a case sensitive manner. |
@@ -1658,7 +1658,7 @@ The filter for the event subscription.
 
 ### Parameter: `eventSubscriptions.filter.advancedFilters`
 
-A list of advanced filters.
+A list of advanced filters. Each filter should contain operatorType, key, and value/values properties.
 
 - Required: No
 - Type: array

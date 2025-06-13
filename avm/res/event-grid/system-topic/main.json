@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "6549865183392299427"
+      "templateHash": "6433887798797860244"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic."
@@ -41,7 +41,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The user assigned identity resource ID. Required when type is UserAssigned."
+            "description": "Conditional. Required if type is UserAssigned. The user assigned identity resource ID."
           }
         }
       },
@@ -59,7 +59,7 @@
           }
         },
         "destination": {
-          "type": "object",
+          "$ref": "#/definitions/destinationType",
           "metadata": {
             "description": "Required. The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema."
           }
@@ -79,7 +79,7 @@
           }
         },
         "deadLetterDestination": {
-          "type": "object",
+          "$ref": "#/definitions/deadLetterDestinationType",
           "metadata": {
             "description": "Required. The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema."
           }
@@ -87,6 +87,12 @@
       },
       "metadata": {
         "description": "Dead letter configuration with resource identity."
+      }
+    },
+    "advancedFilterType": {
+      "type": "object",
+      "metadata": {
+        "description": "Advanced filter configuration for event subscriptions."
       }
     },
     "filterType": {
@@ -133,11 +139,11 @@
         "advancedFilters": {
           "type": "array",
           "items": {
-            "type": "object"
+            "$ref": "#/definitions/advancedFilterType"
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. A list of advanced filters."
+            "description": "Optional. A list of advanced filters. Each filter should contain operatorType, key, and value/values properties."
           }
         }
       },
@@ -201,7 +207,7 @@
           "$ref": "#/definitions/destinationType",
           "nullable": true,
           "metadata": {
-            "description": "Conditional. The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided."
+            "description": "Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription."
           }
         },
         "eventDeliverySchema": {
@@ -817,7 +823,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "16835945297021264600"
+              "templateHash": "12151202702446715514"
             },
             "name": "Event Grid System Topic Event Subscriptions",
             "description": "This module deploys an Event Grid System Topic Event Subscription."
@@ -852,7 +858,7 @@
                   "type": "string",
                   "nullable": true,
                   "metadata": {
-                    "description": "Conditional. The user assigned identity resource ID. Required when type is UserAssigned."
+                    "description": "Conditional. Required if type is UserAssigned. The user assigned identity resource ID."
                   }
                 }
               },
@@ -870,7 +876,7 @@
                   }
                 },
                 "destination": {
-                  "type": "object",
+                  "$ref": "#/definitions/destinationType",
                   "metadata": {
                     "description": "Required. The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema."
                   }
@@ -890,7 +896,7 @@
                   }
                 },
                 "deadLetterDestination": {
-                  "type": "object",
+                  "$ref": "#/definitions/deadLetterDestinationType",
                   "metadata": {
                     "description": "Required. The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema."
                   }
@@ -898,6 +904,12 @@
               },
               "metadata": {
                 "description": "Dead letter configuration with resource identity."
+              }
+            },
+            "advancedFilterType": {
+              "type": "object",
+              "metadata": {
+                "description": "Advanced filter configuration for event subscriptions."
               }
             },
             "filterType": {
@@ -944,11 +956,11 @@
                 "advancedFilters": {
                   "type": "array",
                   "items": {
-                    "type": "object"
+                    "$ref": "#/definitions/advancedFilterType"
                   },
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. A list of advanced filters."
+                    "description": "Optional. A list of advanced filters. Each filter should contain operatorType, key, and value/values properties."
                   }
                 }
               },
@@ -1017,7 +1029,7 @@
               "$ref": "#/definitions/destinationType",
               "nullable": true,
               "metadata": {
-                "description": "Conditional. The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided."
+                "description": "Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription."
               }
             },
             "eventDeliverySchema": {

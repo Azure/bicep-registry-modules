@@ -19,7 +19,7 @@ type identityType = {
   @description('Required. The type of identity to use.')
   type: 'SystemAssigned' | 'UserAssigned'
   
-  @description('Conditional. The user assigned identity resource ID. Required when type is UserAssigned.')
+  @description('Conditional. Required if type is UserAssigned. The user assigned identity resource ID.')
   userAssignedIdentity: string?
 }
 
@@ -29,7 +29,7 @@ type deliveryWithResourceIdentityType = {
   identity: identityType
   
   @description('Required. The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema.')
-  destination: object
+  destination: destinationType
 }
 
 @description('Dead letter configuration with resource identity.')
@@ -38,8 +38,11 @@ type deadLetterWithResourceIdentityType = {
   identity: identityType
   
   @description('Required. The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema.')
-  deadLetterDestination: object
+  deadLetterDestination: deadLetterDestinationType
 }
+
+@description('Advanced filter configuration for event subscriptions.')
+type advancedFilterType = object
 
 @description('Event subscription filter configuration.')
 type filterType = {
@@ -58,8 +61,8 @@ type filterType = {
   @description('Optional. An optional string to filter events for an event subscription based on a resource path suffix.')
   subjectEndsWith: string?
   
-  @description('Optional. A list of advanced filters.')
-  advancedFilters: object[]?
+  @description('Optional. A list of advanced filters. Each filter should contain operatorType, key, and value/values properties.')
+  advancedFilters: advancedFilterType[]?
 }
 
 @description('Retry policy configuration for event delivery.')
@@ -80,7 +83,7 @@ param deadLetterWithResourceIdentity deadLetterWithResourceIdentityType?
 @description('Optional. Delivery with Resource Identity Configuration.')
 param deliveryWithResourceIdentity deliveryWithResourceIdentityType?
 
-@description('Conditional. The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided.')
+@description('Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription.')
 param destination destinationType?
 
 @description('Optional. The event delivery schema for the event subscription.')

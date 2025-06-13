@@ -27,7 +27,7 @@ This module deploys an Event Grid System Topic Event Subscription.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`destination`](#parameter-destination) | object | The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided. |
+| [`destination`](#parameter-destination) | object | Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. |
 
 **Optional parameters**
 
@@ -58,7 +58,7 @@ Name of the Event Grid System Topic.
 
 ### Parameter: `destination`
 
-The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided.
+Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription.
 
 - Required: No
 - Type: object
@@ -108,7 +108,7 @@ The identity configuration for dead letter.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedIdentity`](#parameter-deadletterwithresourceidentityidentityuserassignedidentity) | string | The user assigned identity resource ID. Required when type is UserAssigned. |
+| [`userAssignedIdentity`](#parameter-deadletterwithresourceidentityidentityuserassignedidentity) | string | Required if type is UserAssigned. The user assigned identity resource ID. |
 
 ### Parameter: `deadLetterWithResourceIdentity.identity.type`
 
@@ -126,7 +126,7 @@ The type of identity to use.
 
 ### Parameter: `deadLetterWithResourceIdentity.identity.userAssignedIdentity`
 
-The user assigned identity resource ID. Required when type is UserAssigned.
+Required if type is UserAssigned. The user assigned identity resource ID.
 
 - Required: No
 - Type: string
@@ -169,7 +169,7 @@ The identity configuration for delivery.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`userAssignedIdentity`](#parameter-deliverywithresourceidentityidentityuserassignedidentity) | string | The user assigned identity resource ID. Required when type is UserAssigned. |
+| [`userAssignedIdentity`](#parameter-deliverywithresourceidentityidentityuserassignedidentity) | string | Required if type is UserAssigned. The user assigned identity resource ID. |
 
 ### Parameter: `deliveryWithResourceIdentity.identity.type`
 
@@ -187,7 +187,7 @@ The type of identity to use.
 
 ### Parameter: `deliveryWithResourceIdentity.identity.userAssignedIdentity`
 
-The user assigned identity resource ID. Required when type is UserAssigned.
+Required if type is UserAssigned. The user assigned identity resource ID.
 
 - Required: No
 - Type: string
@@ -227,7 +227,7 @@ The filter for the event subscription.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`advancedFilters`](#parameter-filteradvancedfilters) | array | A list of advanced filters. |
+| [`advancedFilters`](#parameter-filteradvancedfilters) | array | A list of advanced filters. Each filter should contain operatorType, key, and value/values properties. |
 | [`enableAdvancedFilteringOnArrays`](#parameter-filterenableadvancedfilteringonarrays) | bool | Allows advanced filters to be evaluated against an array of values instead of expecting a singular value. |
 | [`includedEventTypes`](#parameter-filterincludedeventtypes) | array | A list of applicable event types that can be filtered. |
 | [`isSubjectCaseSensitive`](#parameter-filterissubjectcasesensitive) | bool | Defines if the subject field should be compared in a case sensitive manner. |
@@ -236,7 +236,7 @@ The filter for the event subscription.
 
 ### Parameter: `filter.advancedFilters`
 
-A list of advanced filters.
+A list of advanced filters. Each filter should contain operatorType, key, and value/values properties.
 
 - Required: No
 - Type: array
