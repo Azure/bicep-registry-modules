@@ -43,7 +43,7 @@ module testDeployment '../../../main.bicep' = [
       // You parameters go here
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
-      acrEnabled: true // Set to true or false as required
+      aiFoundryType: 'Basic' // Replace with the required value@allowed(['Basic''StandardPublic''StandardPrivate'])
       contentSafetyEnabled: false // Set to true or false as required
       vmAdminPasswordOrKey: '$tart12345' // Replace with a secure password or key
     }
