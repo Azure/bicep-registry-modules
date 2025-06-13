@@ -44,7 +44,7 @@ module testDeployment '../../../main.bicep' = [
       name: '${namePrefix}${serviceShort}001'
       location: resourceLocation
       aiFoundryType: 'Basic' // Replace with the appropriate value
-      contentSafetyEnabled: true // Set to true or false as required
+      contentSafetyEnabled: false // Set to true or false as required
       vmAdminPasswordOrKey: 'P@ssw0rd123!' // Replace with a secure password or key
     }
   }
