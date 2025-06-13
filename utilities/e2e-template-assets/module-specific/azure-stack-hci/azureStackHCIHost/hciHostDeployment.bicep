@@ -60,6 +60,44 @@ param waitDeploymentScriptPrefixName string
 // Deploy Host VM Infrastructure    //
 // =================================//
 
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
+  name: uniqueString(resourceGroup().id, 'logs')
+  location: resourceGroup().location
+  kind: 'StorageV2'
+  sku: {
+    name: 'Standard_LRS'
+  }
+  properties: {
+    allowBlobPublicAccess: false
+  }
+
+  resource blob 'blobServices@2024-01-01' = {
+    name: 'default'
+
+    resource container 'containers@2024-01-01' = {
+      name: 'logs'
+      properties: {
+        publicAccess: 'None'
+      }
+    }
+  }
+}
+
+var blobUriOut1 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand1-output.txt'
+var blobUriErr1 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand1-error.txt'
+var blobUriOut2 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand2-output.txt'
+var blobUriErr2 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand2-error.txt'
+var blobUriOut3 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand3-output.txt'
+var blobUriErr3 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand3-error.txt'
+var blobUriOut4 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand4-output.txt'
+var blobUriErr4 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand4-error.txt'
+var blobUriOut5 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand5-output.txt'
+var blobUriErr5 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand5-error.txt'
+var blobUriOut6 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand6-output.txt'
+var blobUriErr6 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand6-error.txt'
+var blobUriOut7 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand7-output.txt'
+var blobUriErr7 = 'https://${storageAccount.name}.blob.core.windows.net/logs/runcommand77-error.txt'
+
 // vm managed identity used for HCI Arc onboarding
 resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
   location: location
@@ -297,6 +335,8 @@ resource runCommand1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       script: loadTextContent('./scripts/hciHostStage1.ps1')
     }
     treatFailureAsDeploymentFailure: true
+    errorBlobUri: blobUriErr1
+    outputBlobUri: blobUriOut1
   }
 }
 
@@ -310,6 +350,8 @@ resource runCommand2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       script: loadTextContent('./scripts/hciHostStage2.ps1')
     }
     treatFailureAsDeploymentFailure: true
+    errorBlobUri: blobUriErr2
+    outputBlobUri: blobUriOut2
   }
   dependsOn: [runCommand1]
 }
@@ -355,6 +397,8 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       }
     ]
     treatFailureAsDeploymentFailure: true
+    errorBlobUri: blobUriErr3
+    outputBlobUri: blobUriOut3
   }
   dependsOn: [wait1]
 }
@@ -369,6 +413,8 @@ resource runCommand4 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       script: loadTextContent('./scripts/hciHostStage4.ps1')
     }
     treatFailureAsDeploymentFailure: true
+    errorBlobUri: blobUriErr4
+    outputBlobUri: blobUriOut4
   }
   dependsOn: [runCommand3]
 }
@@ -422,6 +468,8 @@ resource runCommand5 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       }
     ]
     treatFailureAsDeploymentFailure: true
+    errorBlobUri: blobUriErr5
+    outputBlobUri: blobUriOut5
   }
   dependsOn: [wait2]
 }
@@ -496,6 +544,8 @@ resource runCommand6 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       }
     ]
     treatFailureAsDeploymentFailure: true
+    errorBlobUri: blobUriErr6
+    outputBlobUri: blobUriOut6
   }
   dependsOn: [runCommand5]
 }
@@ -528,6 +578,8 @@ resource runCommand7 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       }
     ]
     treatFailureAsDeploymentFailure: true
+    errorBlobUri: blobUriErr7
+    outputBlobUri: blobUriOut7
   }
   dependsOn: [runCommand6]
 }
