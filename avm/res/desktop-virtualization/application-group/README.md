@@ -17,8 +17,8 @@ This module deploys an Azure Virtual Desktop Application Group.
 | :-- | :-- |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.DesktopVirtualization/applicationGroups` | [2023-09-05](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2023-09-05/applicationGroups) |
-| `Microsoft.DesktopVirtualization/applicationGroups/applications` | [2023-09-05](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2023-09-05/applicationGroups/applications) |
+| `Microsoft.DesktopVirtualization/applicationGroups` | [2024-04-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2024-04-03/applicationGroups) |
+| `Microsoft.DesktopVirtualization/applicationGroups/applications` | [2024-04-03](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DesktopVirtualization/2024-04-03/applicationGroups/applications) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 
 ## Usage examples
@@ -50,8 +50,6 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
     applicationGroupType: 'Desktop'
     hostpoolName: '<hostpoolName>'
     name: 'dvagmin002'
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -77,10 +75,6 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
     },
     "name": {
       "value": "dvagmin002"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -100,8 +94,6 @@ using 'br/public:avm/res/desktop-virtualization/application-group:<version>'
 param applicationGroupType = 'Desktop'
 param hostpoolName = '<hostpoolName>'
 param name = 'dvagmin002'
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -402,7 +394,6 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
         workspaceResourceId: '<workspaceResourceId>'
       }
     ]
-    location: '<location>'
     tags: {
       Environment: 'Non-Prod'
       Role: 'DeploymentValidation'
@@ -444,9 +435,6 @@ module applicationGroup 'br/public:avm/res/desktop-virtualization/application-gr
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
     "tags": {
       "value": {
         "Environment": "Non-Prod",
@@ -480,7 +468,6 @@ param diagnosticSettings = [
     workspaceResourceId: '<workspaceResourceId>'
   }
 ]
-param location = '<location>'
 param tags = {
   Environment: 'Non-Prod'
   Role: 'DeploymentValidation'
@@ -512,6 +499,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
+| [`showInFeed`](#parameter-showinfeed) | bool | Boolean representing whether the applicationGroup is show in the feed. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
 ### Parameter: `applicationGroupType`
@@ -548,6 +536,127 @@ List of applications to be created in the Application Group.
 
 - Required: No
 - Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`filePath`](#parameter-applicationsfilepath) | string | Specifies a path for the executable file for the Application. |
+| [`friendlyName`](#parameter-applicationsfriendlyname) | string | Friendly name of the Application. |
+| [`name`](#parameter-applicationsname) | string | Name of the Application to be created in the Application Group. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`applicationType`](#parameter-applicationsapplicationtype) | string | Resource Type of Application. |
+| [`commandLineArguments`](#parameter-applicationscommandlinearguments) | string | Command-Line Arguments for the Application. |
+| [`commandLineSetting`](#parameter-applicationscommandlinesetting) | string | Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all. |
+| [`description`](#parameter-applicationsdescription) | string | Description of the Application. |
+| [`iconIndex`](#parameter-applicationsiconindex) | int | Index of the icon. |
+| [`iconPath`](#parameter-applicationsiconpath) | string | Path to icon. |
+| [`msixPackageApplicationId`](#parameter-applicationsmsixpackageapplicationid) | string | Specifies the package application Id for MSIX applications. |
+| [`msixPackageFamilyName`](#parameter-applicationsmsixpackagefamilyname) | string | Specifies the package family name for MSIX applications. |
+| [`showInPortal`](#parameter-applicationsshowinportal) | bool | Specifies whether to show the RemoteApp program in the RD Web Access server. |
+
+### Parameter: `applications.filePath`
+
+Specifies a path for the executable file for the Application.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.friendlyName`
+
+Friendly name of the Application.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.name`
+
+Name of the Application to be created in the Application Group.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `applications.applicationType`
+
+Resource Type of Application.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'InBuilt'
+    'MsixApplication'
+  ]
+  ```
+
+### Parameter: `applications.commandLineArguments`
+
+Command-Line Arguments for the Application.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.commandLineSetting`
+
+Specifies whether this published Application can be launched with command-line arguments provided by the client, command-line arguments specified at publish time, or no command-line arguments at all.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Allow'
+    'DoNotAllow'
+    'Require'
+  ]
+  ```
+
+### Parameter: `applications.description`
+
+Description of the Application.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.iconIndex`
+
+Index of the icon.
+
+- Required: No
+- Type: int
+
+### Parameter: `applications.iconPath`
+
+Path to icon.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.msixPackageApplicationId`
+
+Specifies the package application Id for MSIX applications.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.msixPackageFamilyName`
+
+Specifies the package family name for MSIX applications.
+
+- Required: No
+- Type: string
+
+### Parameter: `applications.showInPortal`
+
+Specifies whether to show the RemoteApp program in the RD Web Access server.
+
+- Required: No
+- Type: bool
 
 ### Parameter: `description`
 
@@ -847,6 +956,14 @@ The principal type of the assigned principal ID.
     'User'
   ]
   ```
+
+### Parameter: `showInFeed`
+
+Boolean representing whether the applicationGroup is show in the feed.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `tags`
 
