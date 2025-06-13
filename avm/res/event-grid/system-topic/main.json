@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7400869359745872927"
+      "templateHash": "5740745046745007387"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic."
@@ -335,7 +335,7 @@
           "roleDefinitionIdOrName": {
             "type": "string",
             "metadata": {
-              "description": "Required. The role definition ID or name. Can be either a role definition ID (GUID) or a role name (e.g., \"Storage Blob Data Contributor\", \"ba92f5b4-2d11-453d-a403-e96b0029c9fe\")."
+              "description": "Required. The role definition ID (GUID) or full role definition resource ID. Role names are not supported. Example: \"ba92f5b4-2d11-453d-a403-e96b0029c9fe\" or \"/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe\"."
             }
           },
           "description": {
@@ -356,7 +356,7 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Optional. Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID, role, and optionally the endpoint type for automatic permission assignment."
+        "description": "Optional. Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs."
       }
     },
     "lock": {

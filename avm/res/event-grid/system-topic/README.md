@@ -178,7 +178,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
       {
         description: 'Allow Event Grid System Topic to write to storage queue'
         resourceId: '<resourceId>'
-        roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+        roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
       }
       {
         description: 'Allow Event Grid System Topic to send messages to storage queue'
@@ -271,7 +271,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         {
           "description": "Allow Event Grid System Topic to write to storage queue",
           "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "Storage Queue Data Contributor"
+          "roleDefinitionIdOrName": "974c5e8b-45b9-4653-ba55-5f855dd0fb88"
         },
         {
           "description": "Allow Event Grid System Topic to send messages to storage queue",
@@ -350,7 +350,7 @@ param resourceRoleAssignments = [
   {
     description: 'Allow Event Grid System Topic to write to storage queue'
     resourceId: '<resourceId>'
-    roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+    roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
   }
   {
     description: 'Allow Event Grid System Topic to send messages to storage queue'
@@ -1125,7 +1125,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`resourceRoleAssignments`](#parameter-resourceroleassignments) | array | Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID, role, and optionally the endpoint type for automatic permission assignment. |
+| [`resourceRoleAssignments`](#parameter-resourceroleassignments) | array | Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -1385,7 +1385,7 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 
 ### Parameter: `resourceRoleAssignments`
 
-Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID, role, and optionally the endpoint type for automatic permission assignment.
+Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs.
 
 - Required: No
 - Type: array
@@ -1396,7 +1396,7 @@ Array of role assignments to create on external resources. This is useful for sc
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`resourceId`](#parameter-resourceroleassignmentsresourceid) | string | The resource ID of the target resource to assign permissions to. |
-| [`roleDefinitionIdOrName`](#parameter-resourceroleassignmentsroledefinitionidorname) | string | The role definition ID or name. Can be either a role definition ID (GUID) or a role name (e.g., "Storage Blob Data Contributor", "ba92f5b4-2d11-453d-a403-e96b0029c9fe"). |
+| [`roleDefinitionIdOrName`](#parameter-resourceroleassignmentsroledefinitionidorname) | string | The role definition ID (GUID) or full role definition resource ID. Role names are not supported. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe". |
 
 **Optional parameters**
 
@@ -1414,7 +1414,7 @@ The resource ID of the target resource to assign permissions to.
 
 ### Parameter: `resourceRoleAssignments.roleDefinitionIdOrName`
 
-The role definition ID or name. Can be either a role definition ID (GUID) or a role name (e.g., "Storage Blob Data Contributor", "ba92f5b4-2d11-453d-a403-e96b0029c9fe").
+The role definition ID (GUID) or full role definition resource ID. Role names are not supported. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".
 
 - Required: Yes
 - Type: string
