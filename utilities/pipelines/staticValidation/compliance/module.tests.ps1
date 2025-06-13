@@ -811,7 +811,7 @@ Describe 'Module tests' -Tag 'Module' {
                         $incorrectParameters | Should -BeNullOrEmpty -Because ('all parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
                     } else {
 
-                        $warningMessage = 'All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items '
+                        $warningMessage = 'All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: '
                         Write-Warning ("$warningMessage`n- {0}`n" -f ($incorrectParameters -join "`n- "))
 
                         Write-Output @{
