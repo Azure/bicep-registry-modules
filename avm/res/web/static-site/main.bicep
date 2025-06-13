@@ -88,6 +88,13 @@ param functionAppSettings object = {}
 @description('Optional. The custom domains associated with this static site. The deployment will fail as long as the validation records are not present.')
 param customDomains array = []
 
+@description('Optional. Custom domain validation method. If not specified, automatically determined based on domain structure.')
+@allowed([
+  'dns-txt-token'
+  'cname-delegation'
+])
+param validationMethod string?
+
 @description('Optional. Whether or not public network access is allowed for this resource. For security reasons it should be disabled. If not specified, it will be disabled by default if private endpoints are set.')
 @allowed([
   ''
@@ -233,9 +240,7 @@ module staticSite_customDomains 'custom-domain/main.bicep' = [
     params: {
       name: customDomain
       staticSiteName: staticSite.name
-      validationMethod: indexOf(customDomain, '.') == lastIndexOf(customDomain, '.')
-        ? 'dns-txt-token'
-        : 'cname-delegation'
+      validationMethod: validationMethod ?? (indexOf(customDomain, '.') == lastIndexOf(customDomain, '.') ? 'dns-txt-token' : 'cname-delegation')
     }
   }
 ]
