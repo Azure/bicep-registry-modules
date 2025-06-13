@@ -122,7 +122,6 @@ function Publish-ModuleFromPathToPBR {
             publishedModuleName = $publishedModuleName
             gitTagName          = $gitTagName
         }
-
     }
 
     return $resultSet
