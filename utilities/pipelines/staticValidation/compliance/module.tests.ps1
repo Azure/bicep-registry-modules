@@ -61,7 +61,7 @@ BeforeDiscovery {
                 $variableValue = $templateHashTable.variables[$matches[1]]
                 $templateHashTable.variables[$matches[1]] = [PSCustomObject]@{
                     Value = $variableValue
-                    Type  = ($matches[2] ? $matches[2] :'implicit' )
+                    Type  = $matches[2] ? $matches[2] : 'implicit'
                 }
             }
         }
