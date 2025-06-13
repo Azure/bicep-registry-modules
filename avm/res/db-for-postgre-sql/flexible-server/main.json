@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "4103860976688069913"
+      "version": "0.35.1.17967",
+      "templateHash": "18127768093152314001"
     },
     "name": "DBforPostgreSQL Flexible Servers",
     "description": "This module deploys a DBforPostgreSQL Flexible Server."
@@ -85,7 +85,7 @@
             "switchover"
           ],
           "metadata": {
-            "description": "Conditional. Sets the promote mode for a replica server. This is a write only property. 'standalone'\n'switchover'. Required if enabling replication."
+            "description": "Conditional. Sets the promote mode for a replica server. This is a write only property. Required if enabling replication."
           }
         },
         "promoteOption": {
@@ -95,7 +95,7 @@
             "planned"
           ],
           "metadata": {
-            "description": "Conditional. Sets the promote options for a replica server. This is a write only property.\t'forced'\n'planned'. Required if enabling replication."
+            "description": "Conditional. Sets the promote options for a replica server. This is a write only property. Required if enabling replication."
           }
         },
         "role": {
@@ -107,7 +107,7 @@
             "Primary"
           ],
           "metadata": {
-            "description": "Conditional. Used to indicate role of the server in replication set.\t'AsyncReplica', 'GeoAsyncReplica', 'None', 'Primary'. Required if enabling replication."
+            "description": "Conditional. Used to indicate role of the server in replication set. Required if enabling replication."
           }
         }
       },
@@ -712,16 +712,40 @@
       }
     },
     "availabilityZone": {
-      "type": "string",
-      "defaultValue": "",
+      "type": "int",
       "allowedValues": [
-        "",
-        "1",
-        "2",
-        "3"
+        -1,
+        1,
+        2,
+        3
       ],
       "metadata": {
-        "description": "Optional. Availability zone information of the server. Default will have no preference set."
+        "description": "Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones)."
+      }
+    },
+    "highAvailabilityZone": {
+      "type": "int",
+      "defaultValue": -1,
+      "allowedValues": [
+        -1,
+        1,
+        2,
+        3
+      ],
+      "metadata": {
+        "description": "Optional. Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set."
+      }
+    },
+    "highAvailability": {
+      "type": "string",
+      "defaultValue": "ZoneRedundant",
+      "allowedValues": [
+        "Disabled",
+        "SameZone",
+        "ZoneRedundant"
+      ],
+      "metadata": {
+        "description": "Optional. The mode for high availability."
       }
     },
     "backupRetentionDays": {
@@ -776,29 +800,18 @@
     },
     "version": {
       "type": "string",
-      "defaultValue": "16",
+      "defaultValue": "17",
       "allowedValues": [
         "11",
         "12",
         "13",
         "14",
         "15",
-        "16"
+        "16",
+        "17"
       ],
       "metadata": {
         "description": "Optional. PostgreSQL Server version."
-      }
-    },
-    "highAvailability": {
-      "type": "string",
-      "defaultValue": "ZoneRedundant",
-      "allowedValues": [
-        "Disabled",
-        "SameZone",
-        "ZoneRedundant"
-      ],
-      "metadata": {
-        "description": "Optional. The mode for high availability."
       }
     },
     "createMode": {
@@ -843,14 +856,17 @@
     },
     "maintenanceWindow": {
       "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01#properties/properties/properties/maintenanceWindow"
+        },
+        "description": "Optional. Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
+      },
       "defaultValue": {
         "customWindow": "Enabled",
         "dayOfWeek": 0,
         "startHour": 1,
         "startMinute": 0
-      },
-      "metadata": {
-        "description": "Optional. Properties for the maintenence window. If provided, 'customWindow' property must exist and set to 'Enabled'."
       }
     },
     "pointInTimeUTC": {
@@ -869,7 +885,7 @@
     },
     "delegatedSubnetResourceId": {
       "type": "string",
-      "defaultValue": "",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is 'Private Access' - virtual network integration."
       }
@@ -946,10 +962,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DBforPostgreSQL/flexibleServers@2024-08-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -988,6 +1007,7 @@
       }
     ],
     "enableReferencedModulesTelemetry": false,
+    "standByAvailabilityZone": "[tryGet(createObject('Disabled', null(), 'SameZone', parameters('availabilityZone'), 'ZoneRedundant', parameters('highAvailabilityZone')), parameters('highAvailability'))]",
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None'), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
     "builtInRoleNames": {
@@ -1065,17 +1085,17 @@
           "passwordAuth": "[if(and(not(empty(parameters('administratorLogin'))), not(empty(parameters('administratorLoginPassword')))), 'enabled', 'disabled')]",
           "tenantId": "[parameters('tenantId')]"
         },
-        "availabilityZone": "[parameters('availabilityZone')]",
+        "availabilityZone": "[if(not(equals(parameters('availabilityZone'), -1)), string(parameters('availabilityZone')), null())]",
+        "highAvailability": {
+          "mode": "[parameters('highAvailability')]",
+          "standbyAvailabilityZone": "[if(not(equals(variables('standByAvailabilityZone'), -1)), string(variables('standByAvailabilityZone')), null())]"
+        },
         "backup": {
           "backupRetentionDays": "[parameters('backupRetentionDays')]",
           "geoRedundantBackup": "[parameters('geoRedundantBackup')]"
         },
         "createMode": "[parameters('createMode')]",
-        "dataEncryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('primaryKeyURI', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion), 'primaryUserAssignedIdentityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), 'type', 'AzureKeyVault'), null())]",
-        "highAvailability": {
-          "mode": "[parameters('highAvailability')]",
-          "standbyAvailabilityZone": "[if(equals(parameters('highAvailability'), 'SameZone'), parameters('availabilityZone'), null())]"
-        },
+        "dataEncryption": "[if(not(empty(parameters('customerManagedKey'))), createObject('primaryKeyURI', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, parameters('customerManagedKey').keyVersion), reference('cMKKeyVault::cMKKey').keyUriWithVersion), 'primaryUserAssignedIdentityId', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), 'type', 'AzureKeyVault'), null())]",
         "maintenanceWindow": "[if(not(empty(parameters('maintenanceWindow'))), createObject('customWindow', parameters('maintenanceWindow').customWindow, 'dayOfWeek', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').dayOfWeek, 0), 'startHour', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startHour, 0), 'startMinute', if(equals(parameters('maintenanceWindow').customWindow, 'Enabled'), parameters('maintenanceWindow').startMinute, 0)), null())]",
         "network": "[if(and(not(empty(parameters('delegatedSubnetResourceId'))), empty(parameters('firewallRules'))), createObject('delegatedSubnetResourceId', parameters('delegatedSubnetResourceId'), 'privateDnsZoneArmResourceId', parameters('privateDnsZoneArmResourceId'), 'publicNetworkAccess', parameters('publicNetworkAccess')), createObject('publicNetworkAccess', parameters('publicNetworkAccess')))]",
         "pointInTimeUTC": "[if(equals(parameters('createMode'), 'PointInTimeRestore'), parameters('pointInTimeUTC'), null())]",
@@ -1202,8 +1222,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "12559382321541199726"
+              "version": "0.35.1.17967",
+              "templateHash": "335166068139660536"
             },
             "name": "DBforPostgreSQL Flexible Server Databases",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Database."
@@ -1315,8 +1335,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "533163168353951900"
+              "version": "0.35.1.17967",
+              "templateHash": "1585180545107563289"
             },
             "name": "DBforPostgreSQL Flexible Server Firewall Rules",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Firewall Rule."
@@ -1424,8 +1444,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14381841795302215842"
+              "version": "0.35.1.17967",
+              "templateHash": "13692321818839794474"
             },
             "name": "DBforPostgreSQL Flexible Server Configurations",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Configuration."
@@ -1541,8 +1561,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "9438694500506305843"
+              "version": "0.35.1.17967",
+              "templateHash": "13090076068489784265"
             },
             "name": "DBforPostgreSQL Flexible Server Administrators",
             "description": "This module deploys a DBforPostgreSQL Flexible Server Administrator."
@@ -1652,8 +1672,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "17600786812294347393"
+              "version": "0.35.1.17967",
+              "templateHash": "4729251626539480258"
             },
             "name": "DBforPostgreSQL Flexible Server Advanced Threat Protection",
             "description": "This module deploys a DBforPostgreSQL Advanced Threat Protection."

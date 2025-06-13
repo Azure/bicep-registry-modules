@@ -207,7 +207,7 @@ configuration:
           - addReply:
               reply: |
                 > [!IMPORTANT]
-                > @${issueAuthor}, this issue has been automatically marked as stale because it has been marked as requiring author feedback but has not had any activity for **4 days**. It will be closed if no further activity occurs **within 3 days of this comment**.
+                > ${issueAuthor}, this issue has been automatically marked as stale because it has been marked as requiring author feedback but has not had any activity for **4 days**.
 
                 > [!TIP]
                 > To prevent further actions to take effect, one of the following conditions must be met:

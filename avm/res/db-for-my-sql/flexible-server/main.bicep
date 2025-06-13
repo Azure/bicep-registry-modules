@@ -12,7 +12,7 @@ param lock lockType?
 param location string = resourceGroup().location
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview'>.tags?
 
 @description('Optional. The administrator login name of a server. Can only be specified when the MySQL server is being created.')
 param administratorLogin string?
@@ -36,16 +36,22 @@ param skuName string
 param tier string
 
 @allowed([
-  ''
-  '1'
-  '2'
-  '3'
+  -1
+  1
+  2
+  3
 ])
-@description('Optional. Availability zone information of the server. Default will have no preference set.')
-param availabilityZone string = ''
+@description('Required. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Note that the availability zone numbers here are the logical availability zone in your Azure subscription. Different subscriptions might have a different mapping of the physical zone and logical zone. To understand more, please refer to [Physical and logical availability zones](https://learn.microsoft.com/en-us/azure/reliability/availability-zones-overview?tabs=azure-cli#physical-and-logical-availability-zones).')
+param availabilityZone int
 
-@description('Optional. Standby availability zone information of the server. Default will have no preference set.')
-param highAvailabilityZone string = ''
+@description('Optional. Standby availability zone information of the server. If set to 1, 2 or 3, the availability zone is hardcoded to that value. If set to -1, no zone is defined. Default will have no preference set.')
+@allowed([
+  -1
+  1
+  2
+  3
+])
+param highAvailabilityZone int = -1
 
 @minValue(1)
 @maxValue(35)
@@ -88,7 +94,7 @@ param customerManagedKeyGeo customerManagedKeyType?
 param highAvailability string = 'ZoneRedundant'
 
 @description('Optional. Properties for the maintenence window. If provided, "customWindow" property must exist and set to "Enabled".')
-param maintenanceWindow object = {}
+param maintenanceWindow resourceInput<'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview'>.properties.maintenanceWindow = {}
 
 @description('Optional. Delegated subnet arm resource ID. Used when the desired connectivity mode is "Private Access" - virtual network integration. Delegation must be enabled on the subnet for MySQL Flexible Servers and subnet CIDR size is /29.')
 param delegatedSubnetResourceId string?
@@ -309,8 +315,9 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview
   identity: identity
   properties: {
     administratorLogin: administratorLogin
+    #disable-next-line use-secure-value-for-secure-inputs // Has a @secure() annotation
     administratorLoginPassword: administratorLoginPassword
-    availabilityZone: availabilityZone
+    availabilityZone: availabilityZone != -1 ? string(availabilityZone) : null
     backup: {
       backupRetentionDays: backupRetentionDays
       geoRedundantBackup: geoRedundantBackup
@@ -333,7 +340,7 @@ resource flexibleServer 'Microsoft.DBforMySQL/flexibleServers@2024-10-01-preview
       : null
     highAvailability: {
       mode: highAvailability
-      standbyAvailabilityZone: standByAvailabilityZone
+      standbyAvailabilityZone: standByAvailabilityZone != -1 ? string(standByAvailabilityZone) : null
     }
     maintenanceWindow: !empty(maintenanceWindow)
       ? {

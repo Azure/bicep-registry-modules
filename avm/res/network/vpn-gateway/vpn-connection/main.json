@@ -1,14 +1,143 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "6343342170986309278"
+      "version": "0.36.1.42791",
+      "templateHash": "10719955705553689469"
     },
     "name": "VPN Gateway VPN Connections",
     "description": "This module deploys a VPN Gateway VPN Connection."
+  },
+  "definitions": {
+    "routingConfigurationType": {
+      "type": "object",
+      "properties": {
+        "associatedRouteTable": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the route table."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The associated route table for this connection."
+          }
+        },
+        "propagatedRouteTables": {
+          "type": "object",
+          "properties": {
+            "ids": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. The resource ID of the route table."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of route table resource IDs to propagate to."
+              }
+            },
+            "labels": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of labels to propagate to."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The propagated route tables for this connection."
+          }
+        },
+        "vnetRoutes": {
+          "type": "object",
+          "properties": {
+            "staticRoutes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The name of the static route."
+                    }
+                  },
+                  "addressPrefixes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The address prefixes for the static route."
+                    }
+                  },
+                  "nextHopIpAddress": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. The next hop IP address for the static route."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The list of static routes."
+              }
+            },
+            "staticRoutesConfig": {
+              "type": "object",
+              "properties": {
+                "vnetLocalRouteOverrideCriteria": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Contains",
+                    "Equal"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Determines whether the NVA in a SPOKE VNET is bypassed for traffic with destination in spoke."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Static routes configuration."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The virtual network routes for this connection."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of routing configuration for VPN connections."
+      }
+    }
   },
   "parameters": {
     "name": {
@@ -45,8 +174,8 @@
       }
     },
     "routingConfiguration": {
-      "type": "object",
-      "defaultValue": {},
+      "$ref": "#/definitions/routingConfigurationType",
+      "nullable": true,
       "metadata": {
         "description": "Optional. Routing configuration indicating the associated and propagated route tables for this connection."
       }
@@ -95,9 +224,9 @@
     },
     "connectionBandwidth": {
       "type": "int",
-      "defaultValue": 10,
+      "nullable": true,
       "metadata": {
-        "description": "Optional. Expected bandwidth in MBPS."
+        "description": "Optional. Expected bandwidth in MBPS. This parameter is deprecated and should be avoided in favor of VpnSiteLinkConnection configuration."
       }
     },
     "vpnConnectionProtocolType": {
@@ -126,10 +255,16 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "vpnGateway": {
+      "existing": true,
+      "type": "Microsoft.Network/vpnGateways",
+      "apiVersion": "2024-07-01",
+      "name": "[parameters('vpnGatewayName')]"
+    },
+    "vpnConnection": {
       "type": "Microsoft.Network/vpnGateways/vpnConnections",
-      "apiVersion": "2023-04-01",
+      "apiVersion": "2024-07-01",
       "name": "[format('{0}/{1}', parameters('vpnGatewayName'), parameters('name'))]",
       "properties": {
         "connectionBandwidth": "[parameters('connectionBandwidth')]",
@@ -148,7 +283,7 @@
         "vpnLinkConnections": "[parameters('vpnLinkConnections')]"
       }
     }
-  ],
+  },
   "outputs": {
     "name": {
       "type": "string",
