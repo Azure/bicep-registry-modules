@@ -47,7 +47,8 @@ module dependencies 'dependencies.bicep' = {
 // ============== //
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
-  for iteration in ['init', 'idem']: {    scope: resourceGroup
+  for iteration in ['init', 'idem']: {
+    scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
@@ -84,7 +85,7 @@ module testDeployment '../../../main.bicep' = [
               properties: {
                 resourceId: dependencies.outputs.storageAccountResourceId
                 blobContainerName: dependencies.outputs.blobContainerName
-              }
+              }            
             }
           }
           filter: {
@@ -92,7 +93,8 @@ module testDeployment '../../../main.bicep' = [
           }
           retryPolicy: {
             maxDeliveryAttempts: 10
-            eventTimeToLive: '600'          }
+            eventTimeToLive: '600'
+          }
         }
       ]
       resourceRoleAssignments: [

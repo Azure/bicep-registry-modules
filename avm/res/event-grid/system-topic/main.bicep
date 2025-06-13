@@ -76,6 +76,8 @@ var formattedRoleAssignments = [
   })
 ]
 
+var enableReferencedModulesTelemetry = false
+
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: take(
@@ -201,6 +203,7 @@ module systemTopic_resourceRoleAssignments 'br/public:avm/ptn/authorization/reso
       principalType: 'ServicePrincipal'
       description: assignment.?description ?? 'Role assignment for Event Grid System Topic ${systemTopic.name}'
       roleName: assignment.?roleName ?? assignment.roleDefinitionIdOrName
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
