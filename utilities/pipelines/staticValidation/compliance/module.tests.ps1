@@ -225,6 +225,48 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
+        It '[<moduleFolderName>] Resource Modules must not skip the "*defaults" or "*waf-aligned" tests with a [` .e2eignore `] file.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $moduleFolderPath
+            )
+
+            $incorrectFolders = @()
+            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object {
+                $_.Name -match '^.*(defaults|waf-aligned)$' # the spec BCPRMNFR1 states, that the folder names should start with defaults|waf-aligned. Since it is a should and not a must, need to check for both cases.
+            }
+            foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+                $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
+                if (Test-Path $filePath) {
+                    $incorrectFolders += $e2eTestFolderPath.Name
+                }
+            }
+            $incorrectFolders | Should -BeNullOrEmpty -Because ('skipping this test is not allowed. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
+        }
+
+        It '[<moduleFolderName>] a [` .e2eignore `] file must contain text, which states the exception reason for not executing the deployment test.' -TestCases $topLevelModuleTestCases {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $moduleFolderPath
+            )
+
+            $incorrectFolders = @()
+            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
+            foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+                $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
+                $pathExisting = Test-Path $filePath
+                if ($pathExisting) {
+                    $fileContent = Get-Content -Path $filePath
+                    if (-not $fileContent) {
+                        $incorrectFolders += $e2eTestFolderPath.Name + '\.e2eignore'
+                    }
+                }
+            }
+            $incorrectFolders | Should -BeNullOrEmpty -Because ('the file should contain a reason for skipping the test. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
+        }
+
         It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases $topLevelModuleTestCases {
 
             param(
@@ -880,6 +922,50 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 $incorrectParameters | Should -BeNullOrEmpty -Because ('required parameters in the template file should have a description that starts with "Required.". Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+            }
+
+            It '[<moduleFolderName>] All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type.' -TestCases $moduleFolderTestCases {
+                param (
+                    [hashtable] $templateFileContent,
+                    [hashtable] $templateFileParameters
+                )
+
+                $incorrectParameters = @()
+                foreach ($parameterName in ($templateFileParameters.PSBase.Keys | Sort-Object -Culture 'en-US')) {
+                    $parameter = $templateFileParameters.$parameterName
+
+                    $isArrayOfObjects = $parameter.type -eq 'array' -and $parameter.keys -contains 'items' -and $parameter.items.type -eq 'object'
+                    $isObject = $parameter.type -eq 'object'
+
+                    if ($isArrayOfObjects) {
+                        ## Array of objects
+                        # Note: We don't need to check for `$parameter.items.keys -contains '$ref'` because if a UDT is implemented, 'items' only contains '$ref' and hence the `isArrayOfObjects` variable is already `false`.
+                        $hasProperties = $parameter.items.keys -contains 'properties'
+                        $hasRdtDefintion = $parameter.items.metadata.Keys -contains '__bicep_resource_derived_type!'
+                        if (-not ($hasProperties -or $hasRdtDefintion)) {
+                            $incorrectParameters += $parameterName
+                        }
+                    } elseif ($isObject) {
+                        # Object
+                        $hasProperties = $parameter.keys -contains 'properties'
+                        $hasRdtDefintion = $parameter.metadata.Keys -contains '__bicep_resource_derived_type!'
+                        $hasUdtDefinition = $parameter.keys -contains '$ref'
+                        if (-not ($hasProperties -or $hasRdtDefintion -or $hasUdtDefinition)) {
+                            $incorrectParameters += $parameterName
+                        }
+                    }
+                }
+
+                if ($incorrectParameters.Count -gt 0) {
+                    $warningMessage = 'All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items '
+                    Write-Warning ("$warningMessage`n- {0}`n" -f ($incorrectParameters -join "`n- "))
+
+                    Write-Output @{
+                        Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($incorrectParameters -join '</code><br>- <code>'))
+                    }
+                }
+                # Once we want to enforce this test, replace the above warning with the below
+                # $incorrectParameters | Should -BeNullOrEmpty -Because ('all parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             Context 'Schema-based User-defined-types tests' -Tag 'UDT' {
@@ -1954,11 +2040,11 @@ Describe 'API version tests' -Tag 'ApiCheck' {
 
         if ($approvedApiVersions -notcontains $TargetApi) {
             # Using a warning now instead of an error, as we don't want to block PRs for this.
-            $warningMessage = "The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following: {0}" -f ($approvedApiVersions -join ', ')
-            Write-Warning $warningMessage
+            $warningMessage = "The used API version [$TargetApi] is not one of the most recent 5 versions. Please consider upgrading to one of the following "
+            Write-Warning ("$warningMessage`n- {0}`n" -f ($approvedApiVersions -join "`n- "))
 
             Write-Output @{
-                Warning = $warningMessage
+                Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($approvedApiVersions -join '</code><br>- <code>'))
             }
             # The original failed test was
             # $approvedApiVersions | Should -Contain $TargetApi
@@ -1977,11 +2063,11 @@ Describe 'API version tests' -Tag 'ApiCheck' {
             if ($indexOfVersion -gt ($approvedApiVersions.Count - 2)) {
                 $newerAPIVersions = $approvedApiVersions[0..($indexOfVersion - 1)]
 
-                $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions [{0}]" -f ($newerAPIVersions -join ', ')
-                Write-Warning $warningMessage
+                $warningMessage = "The used API version [$TargetApi] for Resource Type [$ProviderNamespace/$ResourceType] will soon expire. Please consider updating it. Consider using one of the newer API versions "
+                Write-Warning ("$warningMessage`n- {0}`n" -f ($newerAPIVersions -join "`n- "))
 
                 Write-Output @{
-                    Warning = $warningMessage
+                    Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($newerAPIVersions -join '</code><br>- <code>'))
                 }
             }
         }
