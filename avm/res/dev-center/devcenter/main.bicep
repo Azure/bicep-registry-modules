@@ -52,7 +52,10 @@ param projectPolicies projectPolicyType[]?
 @description('Optional. The compute galleries to associate with the Dev Center. The Dev Center identity (system or user) must have "Contributor" access to the gallery.')
 param galleries devCenterGalleryType[]?
 
-@description('Optional. The projects to create in the Dev Center.')
+@description('Optional. The attached networks to associate with the Dev Center. You can attach existing network connections to a dev center. You must attach a network connection to a dev center before you can use it in projects to create dev box pools. Network connections enable dev boxes to connect to existing virtual networks. The location, or Azure region, of the network connection determines where associated dev boxes are hosted.')
+param attachedNetworks attachedNetworkType[]?
+
+@description('Optional. The projects to create in the Dev Center. A project is the point of access to Microsoft Dev Box for the development team members. A project contains dev box pools, which specify the dev box definitions and network connections used when dev boxes are created. Each project is associated with a single dev center. When you associate a project with a dev center, all the settings at the dev center level are applied to the project automatically.')
 param projects array = []
 
 var formattedUserAssignedIdentities = reduce(
@@ -218,6 +221,17 @@ module devcenter_gallery 'gallery/main.bicep' = [
   }
 ]
 
+module devcenter_attachedNetwork 'attachednetwork/main.bicep' = [
+  for (attachedNetwork, index) in (attachedNetworks ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Devcenter-AttachedNetwork-${index}'
+    params: {
+      devcenterName: devcenter.name
+      name: attachedNetwork.name
+      networkConnectionResourceId: attachedNetwork.networkConnectionResourceId
+    }
+  }
+]
+
 resource devCenter_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
@@ -341,7 +355,7 @@ type projectPolicyType = {
   @description('Required. Resource policies that are a part of this project policy.')
   resourcePolicies: resourcePolicyType
 
-  @description('Optional. Project names or resource IDs that have access to the shared resources that are a part of this project policy. If a string starts with "/subscriptions/", it will be treated as a resource ID. Otherwise, it will be treated as a project name and resolved to a resource ID assuming the project is in the same resource group as the dev center. If not specified, the project policy status will be set to "Unassigned".')
+  @description('Optional. Project names or resource IDs that will be in scope of this project policy. Project names can be used if the project is in the same resource group as the Dev Center. If the project is in a different resource group or subscription, the full resource ID must be provided. If not provided, the policy status will be set to "Unassigned".')
   projectsResourceIdOrName: string[]?
 }
 
@@ -352,4 +366,13 @@ type devCenterGalleryType = {
 
   @description('Required. The resource ID of the backing Azure Compute Gallery. The devcenter identity (system or user) must have "Contributor" access to the gallery.')
   galleryResourceId: string
+}
+
+@description('The type for Dev Center Attached Network.')
+type attachedNetworkType = {
+  @description('Required. The name of the attached network.')
+  name: string
+
+  @description('Required. The resource ID of the Network Connection you want to attach to the Dev Center.')
+  networkConnectionResourceId: string
 }

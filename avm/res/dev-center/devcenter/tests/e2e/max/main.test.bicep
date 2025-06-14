@@ -46,6 +46,8 @@ module nestedDependencies 'dependencies.bicep' = {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     //keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
+    devCenterNetworkConnectionName: 'dep-${namePrefix}-dcnc-${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -185,6 +187,12 @@ module testDeployment '../../../main.bicep' = [
             'test-project-same-resource-group'
             '${resourceGroup2.id}/providers/Microsoft.DevCenter/projects/test-project-another-resource-group'
           ]
+        }
+      ]
+      attachedNetworks: [
+        {
+          name: 'test-attached-network'
+          networkConnectionResourceId: nestedDependencies.outputs.networkConnectionResourceId
         }
       ]
     }
