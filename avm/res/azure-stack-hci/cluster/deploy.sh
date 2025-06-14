@@ -75,11 +75,58 @@ fi
 
 echo "Use shared key vault: $USE_SHARED_KEYVAULT_JSON"
 
-# Create parameter file and execute single deployment
+# Debug: Check the content of DEPLOYMENT_SETTINGS
+echo "Debug: DEPLOYMENT_SETTINGS type check..."
+echo "First 100 chars of DEPLOYMENT_SETTINGS: ${DEPLOYMENT_SETTINGS:0:100}"
+
+# Validate if DEPLOYMENT_SETTINGS is valid JSON
+if ! echo "$DEPLOYMENT_SETTINGS" | jq empty 2>/dev/null; then
+    echo "Error: DEPLOYMENT_SETTINGS is not valid JSON"
+    echo "Content: $DEPLOYMENT_SETTINGS"
+    exit 1
+fi
+
+# Create parameter file for deployment
 PARAM_FILE="deployment-params.json"
 
-# Create parameters using direct az deployment command instead of parameter file to avoid JSON parsing issues
-echo "Starting deployment with inline parameters..."
+# Method 1: Create a proper parameter file with JSON object
+echo "Creating parameter file..."
+cat > "$PARAM_FILE" << EOF
+{
+  "\$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentOperations": {
+      "value": $OPERATIONS_JSON
+    },
+    "deploymentSettings": {
+      "value": $DEPLOYMENT_SETTINGS
+    },
+    "useSharedKeyVault": {
+      "value": $USE_SHARED_KEYVAULT_JSON
+    },
+    "hciResourceProviderObjectId": {
+      "value": "$HCI_RESOURCE_PROVIDER_OBJECT_ID"
+    },
+    "clusterName": {
+      "value": "$CLUSTER_NAME"
+    },
+    "cloudId": {
+      "value": "$CLOUD_ID"
+    }
+  }
+}
+EOF
+
+# Validate the parameter file
+echo "Validating parameter file..."
+if ! jq empty "$PARAM_FILE" 2>/dev/null; then
+    echo "Error: Generated parameter file is not valid JSON"
+    cat "$PARAM_FILE"
+    exit 1
+fi
+
+echo "✅ Parameter file created and validated successfully"
 
 # TODO: check if deployment-settings exists or failed
 
@@ -88,6 +135,7 @@ DEPLOYMENT_NAME="hci-deployment-$(date +%s)"
 
 echo "Starting deployment: $DEPLOYMENT_NAME"
 echo "Using template: nested/deployment-setting.bicep"
+echo "Using parameter file: $PARAM_FILE"
 
 # Check if nested/deployment-setting.bicep file was created successfully
 if [ ! -f "nested/deployment-setting.bicep" ]; then
@@ -99,18 +147,12 @@ fi
 
 echo "✅ nested/deployment-setting.bicep file found and ready for deployment"
 
-# Execute deployment with inline parameters to avoid JSON parsing issues
+# Execute deployment with parameter file
 az deployment group create \
     --resource-group "$RESOURCE_GROUP_NAME" \
     --name "$DEPLOYMENT_NAME" \
     --template-file "nested/deployment-setting.bicep" \
-    --parameters \
-        deploymentOperations="$OPERATIONS_JSON" \
-        deploymentSettings="$DEPLOYMENT_SETTINGS" \
-        useSharedKeyVault="$USE_SHARED_KEYVAULT_JSON" \
-        hciResourceProviderObjectId="$HCI_RESOURCE_PROVIDER_OBJECT_ID" \
-        clusterName="$CLUSTER_NAME" \
-        cloudId="$CLOUD_ID" \
+    --parameters "@$PARAM_FILE" \
     --verbose
 
 DEPLOYMENT_STATUS=$?
@@ -136,10 +178,19 @@ else
         --query "properties.error" \
         --output json
 
+    # Also show the deployment operations for more details
+    echo "Deployment operations:"
+    az deployment operation group list \
+        --resource-group "$RESOURCE_GROUP_NAME" \
+        --name "$DEPLOYMENT_NAME" \
+        --query "[?properties.provisioningState=='Failed'].{operation: operationId, code: properties.statusCode, message: properties.statusMessage}" \
+        --output table
+
     exit $DEPLOYMENT_STATUS
 fi
 
 # Clean up temporary files
+rm -f "$PARAM_FILE"
 rm -f "nested/deployment-setting.bicep"
 rm -rf "deployment-setting"
 
