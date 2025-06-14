@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "9430506984318581506"
+      "templateHash": "14461002561831625493"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -844,26 +844,91 @@
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]"
     },
-    "CRole": {
+    "roleAssignmentContributor": {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(format('msi-{0}-C-RoleAssignment', format('temp-{0}', parameters('name'))))]",
+      "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('temp-{0}', parameters('name'))), variables('builtInRoleNames').Contributor, resourceGroup().id)]",
       "properties": {
+        "roleDefinitionId": "[variables('builtInRoleNames').Contributor]",
         "principalId": "[reference('managedIdentity').principalId]",
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
         "managedIdentity"
       ]
     },
-    "UserAccessAdminRole": {
+    "roleAssignmentOwner": {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(format('msi-{0}-UAA-RoleAssignment', format('temp-{0}', parameters('name'))))]",
+      "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('temp-{0}', parameters('name'))), variables('builtInRoleNames').Owner, resourceGroup().id)]",
       "properties": {
+        "roleDefinitionId": "[variables('builtInRoleNames').Owner]",
         "principalId": "[reference('managedIdentity').principalId]",
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "managedIdentity"
+      ]
+    },
+    "roleAssignmentReader": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('temp-{0}', parameters('name'))), variables('builtInRoleNames').Reader, resourceGroup().id)]",
+      "properties": {
+        "roleDefinitionId": "[variables('builtInRoleNames').Reader]",
+        "principalId": "[reference('managedIdentity').principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "managedIdentity"
+      ]
+    },
+    "roleAssignmentRBACAdmin": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('temp-{0}', parameters('name'))), variables('builtInRoleNames')['Role Based Access Control Administrator'], resourceGroup().id)]",
+      "properties": {
+        "roleDefinitionId": "[variables('builtInRoleNames')['Role Based Access Control Administrator']]",
+        "principalId": "[reference('managedIdentity').principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "managedIdentity"
+      ]
+    },
+    "roleAssignmentUserAccessAdmin": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('temp-{0}', parameters('name'))), variables('builtInRoleNames')['User Access Administrator'], resourceGroup().id)]",
+      "properties": {
+        "roleDefinitionId": "[variables('builtInRoleNames')['User Access Administrator']]",
+        "principalId": "[reference('managedIdentity').principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "managedIdentity"
+      ]
+    },
+    "roleAssignmentHCIAdmin": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('temp-{0}', parameters('name'))), variables('builtInRoleNames')['Azure Stack HCI Administrator'], resourceGroup().id)]",
+      "properties": {
+        "roleDefinitionId": "[variables('builtInRoleNames')['Azure Stack HCI Administrator']]",
+        "principalId": "[reference('managedIdentity').principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "managedIdentity"
+      ]
+    },
+    "roleAssignmentWACAdmin": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('temp-{0}', parameters('name'))), variables('builtInRoleNames')['Windows Admin Center Administrator Login'], resourceGroup().id)]",
+      "properties": {
+        "roleDefinitionId": "[variables('builtInRoleNames')['Windows Admin Center Administrator Login']]",
+        "principalId": "[reference('managedIdentity').principalId]",
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
@@ -933,9 +998,14 @@
       },
       "dependsOn": [
         "cluster",
-        "CRole",
         "managedIdentity",
-        "UserAccessAdminRole"
+        "roleAssignmentContributor",
+        "roleAssignmentHCIAdmin",
+        "roleAssignmentOwner",
+        "roleAssignmentRBACAdmin",
+        "roleAssignmentReader",
+        "roleAssignmentUserAccessAdmin",
+        "roleAssignmentWACAdmin"
       ]
     },
     "cluster_roleAssignments": {

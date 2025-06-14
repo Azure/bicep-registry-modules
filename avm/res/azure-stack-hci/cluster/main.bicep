@@ -212,29 +212,79 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-
   tags: tags
 }
 
-resource CRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${managedIdentity.name}-C-RoleAssignment')
+// Contributor
+resource roleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames.Contributor, resourceGroup().id)
   scope: resourceGroup()
   properties: {
+    roleDefinitionId: builtInRoleNames.Contributor
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      'b24988ac-6180-42a0-ab88-20f7382dd24c'
-    ) // Contributor role
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Owner
+resource roleAssignmentOwner 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames.Owner, resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames.Owner
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Reader
+resource roleAssignmentReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames.Reader, resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames.Reader
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Role Based Access Control Administrator
+resource roleAssignmentRBACAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames['Role Based Access Control Administrator'], resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames['Role Based Access Control Administrator']
+    principalId: managedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
 
 // User Access Administrator
-resource UserAccessAdminRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('msi-${managedIdentity.name}-UAA-RoleAssignment')
+resource roleAssignmentUserAccessAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames['User Access Administrator'], resourceGroup().id)
   scope: resourceGroup()
   properties: {
+    roleDefinitionId: builtInRoleNames['User Access Administrator']
     principalId: managedIdentity.properties.principalId
-    roleDefinitionId: subscriptionResourceId(
-      'Microsoft.Authorization/roleDefinitions',
-      '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
-    ) // User Access Administrator role
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Azure Stack HCI Administrator
+resource roleAssignmentHCIAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames['Azure Stack HCI Administrator'], resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames['Azure Stack HCI Administrator']
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Windows Admin Center Administrator Login
+resource roleAssignmentWACAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames['Windows Admin Center Administrator Login'], resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames['Windows Admin Center Administrator Login']
+    principalId: managedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }
 }
@@ -335,8 +385,13 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     scriptContent: loadTextContent('./deploy.sh')
   }
   dependsOn: [
-    CRole
-    UserAccessAdminRole
+    roleAssignmentContributor
+    roleAssignmentOwner
+    roleAssignmentReader
+    roleAssignmentRBACAdmin
+    roleAssignmentUserAccessAdmin
+    roleAssignmentHCIAdmin
+    roleAssignmentWACAdmin
   ]
 }
 
