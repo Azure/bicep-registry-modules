@@ -42,7 +42,7 @@ param retentionDays int = 90
 @description('Optional. A blob storage to hold the auditing storage account.')
 param storageAccountResourceId string = ''
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   name: serverName
 }
 
@@ -52,20 +52,37 @@ var primaryUserAssignedIdentityPrincipalId = filter(
   identity => identity.key == server.properties.primaryUserAssignedIdentityId
 )[0].value.principalId
 
-module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = if (isManagedIdentityInUse && !empty(storageAccountResourceId)) {
-  name: '${server.name}-stau-rbac'
-  scope: (isManagedIdentityInUse && !empty(storageAccountResourceId))
-    ? resourceGroup(split(storageAccountResourceId!, '/')[2], split(storageAccountResourceId!, '/')[4])
-    : resourceGroup()
+// If storage account is in a different resource group
+module storageAccount_sbdc_rbac_rg 'modules/nested_storageRoleAssignment.bicep' = if (isManagedIdentityInUse && !empty(storageAccountResourceId) && split(
+  storageAccountResourceId,
+  '/'
+)[4] != resourceGroup().name) {
+  name: '${server.name}-stau-rbac-rg'
+  scope: resourceGroup(split(storageAccountResourceId, '/')[2], split(storageAccountResourceId, '/')[4])
   params: {
-    storageAccountName: last(split(storageAccountResourceId!, '/'))
+    storageAccountName: last(split(storageAccountResourceId, '/'))
     managedIdentityPrincipalId: server.identity.type == 'UserAssigned'
       ? primaryUserAssignedIdentityPrincipalId
       : server.identity.principalId
   }
 }
 
-resource auditSettings 'Microsoft.Sql/servers/auditingSettings@2023-08-01-preview' = {
+// If storage account is in the same resource group
+module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = if (isManagedIdentityInUse && !empty(storageAccountResourceId) && split(
+  storageAccountResourceId,
+  '/'
+)[4] == resourceGroup().name) {
+  name: '${server.name}-stau-rbac'
+  scope: resourceGroup()
+  params: {
+    storageAccountName: last(split(storageAccountResourceId, '/'))
+    managedIdentityPrincipalId: server.identity.type == 'UserAssigned'
+      ? primaryUserAssignedIdentityPrincipalId
+      : server.identity.principalId
+  }
+}
+
+resource auditSettings 'Microsoft.Sql/servers/auditingSettings@2023-08-01' = {
   name: name
   parent: server
   properties: {
@@ -79,7 +96,7 @@ resource auditSettings 'Microsoft.Sql/servers/auditingSettings@2023-08-01-previe
     retentionDays: retentionDays
     storageAccountAccessKey: !empty(storageAccountResourceId) && !isManagedIdentityInUse
       ? listKeys(storageAccountResourceId, '2019-06-01').keys[0].value
-      : any(null)
+      : null
     storageAccountSubscriptionId: !empty(storageAccountResourceId) ? split(storageAccountResourceId, '/')[2] : any(null)
     storageEndpoint: !empty(storageAccountResourceId)
       ? 'https://${last(split(storageAccountResourceId, '/'))}.blob.${environment().suffixes.storage}'

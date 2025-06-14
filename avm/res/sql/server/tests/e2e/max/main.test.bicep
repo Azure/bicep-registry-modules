@@ -127,6 +127,10 @@ module testDeployment '../../../main.bicep' = [
             capacity: 10
           }
           availabilityZone: -1
+          lock: {
+            kind: 'CanNotDelete'
+            name: 'myCustomLockName'
+          }
         }
       ]
       databases: [
@@ -162,12 +166,22 @@ module testDeployment '../../../main.bicep' = [
             monthlyRetention: 'P6M'
           }
           availabilityZone: -1
+          lock: {
+            kind: 'CanNotDelete'
+            name: 'myCustomLockName'
+          }
+          customerManagedKey: {
+            keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
+            keyName: nestedDependencies.outputs.databaseKeyVaultKeyName
+            keyVersion: last(split(nestedDependencies.outputs.databaseKeyVaultEncryptionKeyUrl, '/'))
+            autoRotationEnabled: true
+          }
         }
       ]
       customerManagedKey: {
         keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-        keyName: nestedDependencies.outputs.keyVaultKeyName
-        keyVersion: last(split(nestedDependencies.outputs.keyVaultEncryptionKeyUrl, '/'))
+        keyName: nestedDependencies.outputs.serverKeyVaultKeyName
+        keyVersion: last(split(nestedDependencies.outputs.serverKeyVaultEncryptionKeyUrl, '/'))
         autoRotationEnabled: true
       }
       firewallRules: [

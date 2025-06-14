@@ -1,7 +1,7 @@
 param storageAccountName string
 param managedIdentityPrincipalId string
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = {
   name: storageAccountName
 }
 
