@@ -52,19 +52,6 @@ var primaryUserAssignedIdentityPrincipalId = filter(
   identity => identity.key == server.properties.primaryUserAssignedIdentityId
 )[0].value.principalId
 
-// module storageAccount_sbdc_rbac 'modules/nested_storageRoleAssignment.bicep' = if (isManagedIdentityInUse && !empty(storageAccountResourceId)) {
-//   name: '${server.name}-stau-rbac'
-//   scope: (isManagedIdentityInUse && !empty(storageAccountResourceId))
-//     ? resourceGroup(split(storageAccountResourceId!, '/')[2], split(storageAccountResourceId!, '/')[4])
-//     : resourceGroup()
-//   params: {
-//     storageAccountName: last(split(storageAccountResourceId!, '/'))
-//     managedIdentityPrincipalId: server.identity.type == 'UserAssigned'
-//       ? primaryUserAssignedIdentityPrincipalId
-//       : server.identity.principalId
-//   }
-// }
-
 // If storage account is in a different resource group
 module storageAccount_sbdc_rbac_rg 'modules/nested_storageRoleAssignment.bicep' = if (isManagedIdentityInUse && !empty(storageAccountResourceId) && split(
   storageAccountResourceId,
