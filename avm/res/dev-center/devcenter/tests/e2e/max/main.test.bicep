@@ -16,8 +16,8 @@ param resourceLocation string = deployment().location
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dcdcmax'
 
-// @description('Generated. Used as a basis for unique resource names.')
-// param baseTime string = utcNow('u')
+@description('Generated. Used as a basis for unique resource names.')
+param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -44,7 +44,7 @@ module nestedDependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
-    //keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
+    keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     devCenterNetworkConnectionName: 'dep-${namePrefix}-dcnc-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
@@ -79,6 +79,26 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
+      catalogs: [
+        {
+          name: 'quickstart-catalog'
+          gitHub: {
+            uri: 'https://github.com/microsoft/devcenter-catalog.git'
+            branch: 'main'
+            path: 'Environment-Definitions'
+          }
+          syncType: 'Scheduled'
+        }
+        {
+          name: 'testCatalogAzureDevOpsGit'
+          adoGit: {
+            uri: 'https://contoso@dev.azure.com/contoso/your-project/_git/your-repo'
+            branch: 'main'
+            secretIdentifier: nestedDependencies.outputs.keyVaultSecretUri
+          }
+          syncType: 'Manual'
+        }
+      ]
       roleAssignments: [
         {
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId

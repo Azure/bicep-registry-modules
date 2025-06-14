@@ -40,6 +40,9 @@ param devBoxProvisioningSettings devBoxProvisioningSettingsType?
 @description('Optional. Network settings that will be enforced on network resources associated with the Dev Center.')
 param networkSettings networkSettingsType?
 
+@sys.description('Optional. The catalogs to create in the dev center. Catalogs help you provide a set of curated infrastructure-as-code(IaC) templates, known as environment definitions for your development teams to create environments. You can attach your own source control repository from GitHub or Azure Repos as a catalog and specify the folder with your environment definitions. Deployment Environments scans the folder for environment definitions and makes them available for dev teams to create environments.')
+param catalogs catalogType[]?
+
 @description('Optional. Dev Center settings to be used when associating a project with a catalog.')
 param projectCatalogSettings projectCatalogSettingsType?
 
@@ -198,6 +201,21 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' = {
   }
 }
 
+module project_catalog 'catalog/main.bicep' = [
+  for (catalog, index) in (catalogs ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Devcenter-Catalog-${index}'
+    params: {
+      name: catalog.name
+      devcenterName: devcenter.name
+      gitHub: catalog.?gitHub
+      adoGit: catalog.?adoGit
+      syncType: catalog.?syncType
+      tags: catalog.?tags
+      location: location
+    }
+  }
+]
+
 module devcenter_environmentType 'environment-type/main.bicep' = [
   for (environmentType, index) in (environmentTypes ?? []): {
     name: '${uniqueString(deployment().name, location)}-Devcenter-EnvironmentType-${index}'
@@ -332,6 +350,26 @@ type networkSettingsType = {
 type projectCatalogSettingsType = {
   @description('Optional. Whether project catalogs associated with projects in this dev center can be configured to sync catalog items.')
   catalogItemSyncEnableStatus: ('Enabled' | 'Disabled')?
+}
+
+import { sourceType } from 'catalog/main.bicep'
+@export()
+@sys.description('The type for a Dev Center Catalog.')
+type catalogType = {
+  @sys.description('Required. The name of the catalog. Must be between 3 and 63 characters and can contain alphanumeric characters, hyphens, underscores, and periods.')
+  name: string
+
+  @sys.description('Optional. GitHub repository configuration for the catalog.')
+  gitHub: sourceType?
+
+  @sys.description('Optional. Azure DevOps Git repository configuration for the catalog.')
+  adoGit: sourceType?
+
+  @sys.description('Optional. Indicates the type of sync that is configured for the catalog. Defaults to "Scheduled".')
+  syncType: ('Manual' | 'Scheduled')?
+
+  @sys.description('Optional. Resource tags to apply to the catalog.')
+  tags: object?
 }
 
 @description('The type for environment types.')
