@@ -287,7 +287,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
   properties: {
     azCliVersion: '2.50.0'
-    timeout: 'PT30M'
+    timeout: 'PT5H'
     retentionInterval: 'P1D'
     cleanupPreference: 'OnSuccess'
     environmentVariables: [
@@ -336,6 +336,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   }
   dependsOn: [
     CRole
+    UserAccessAdminRole
   ]
 }
 
