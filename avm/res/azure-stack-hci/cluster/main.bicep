@@ -225,6 +225,20 @@ resource CRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+// User Access Administrator
+resource UserAccessAdminRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${managedIdentity.name}-UAA-RoleAssignment')
+  scope: resourceGroup()
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+    ) // User Access Administrator role
+    principalType: 'ServicePrincipal'
+  }
+}
+
 // var deploymentSettingJsonRaw = loadTextContent('./nested/deployment-setting.json')
 // var deploymentSettingJson = replace(
 //   replace(
