@@ -89,7 +89,7 @@ fi
 # Create parameter file for deployment
 PARAM_FILE="deployment-params.json"
 
-# Method 1: Create a proper parameter file with JSON object
+# Create a proper parameter file with JSON object
 echo "Creating parameter file..."
 cat > "$PARAM_FILE" << EOF
 {
@@ -127,6 +127,13 @@ if ! jq empty "$PARAM_FILE" 2>/dev/null; then
 fi
 
 echo "✅ Parameter file created and validated successfully"
+
+# Print parameter file content for debugging
+echo "============================================"
+echo "Parameter file content:"
+echo "============================================"
+cat "$PARAM_FILE" | jq '.'
+echo "============================================"
 
 # TODO: check if deployment-settings exists or failed
 
