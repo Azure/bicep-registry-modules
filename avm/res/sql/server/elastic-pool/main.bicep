@@ -68,11 +68,11 @@ param preferredEnclaveType 'Default' | 'VBS' = 'Default'
 @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
 param zoneRedundant bool = true
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   name: serverName
 }
 
-resource elasticPool 'Microsoft.Sql/servers/elasticPools@2023-08-01-preview' = {
+resource elasticPool 'Microsoft.Sql/servers/elasticPools@2023-08-01' = {
   name: name
   location: location
   parent: server

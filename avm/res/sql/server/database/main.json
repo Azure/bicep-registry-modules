@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "15632818564385347474"
+      "version": "0.36.1.42791",
+      "templateHash": "15961431104919711857"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -714,7 +714,7 @@
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[parameters('serverName')]"
     },
     "cMKKeyVault": {
@@ -728,7 +728,7 @@
     },
     "database": {
       "type": "Microsoft.Sql/servers/databases",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -858,8 +858,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "16869585493743816680"
+              "version": "0.36.1.42791",
+              "templateHash": "9948442514033354219"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -895,10 +895,10 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
               "properties": {
-                "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2023-08-01-preview', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
+                "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2023-08-01', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
                 "retentionDays": "[parameters('retentionDays')]"
               }
             }
@@ -975,8 +975,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "12746160659080715511"
+              "version": "0.36.1.42791",
+              "templateHash": "101116542806833061"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -1045,13 +1045,13 @@
             "server::database": {
               "existing": true,
               "type": "Microsoft.Sql/servers/databases",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]"
             },
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[parameters('serverName')]"
             },
             "backupLongTermRetentionPolicy": {
@@ -1125,7 +1125,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('database', '2023-08-01-preview', 'full').location]"
+      "value": "[reference('database', '2023-08-01', 'full').location]"
     }
   }
 }

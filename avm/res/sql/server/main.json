@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "17469013701936746633"
+      "version": "0.36.1.42791",
+      "templateHash": "12810467141935447786"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -2214,7 +2214,7 @@
     },
     "server": {
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -2420,8 +2420,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15632818564385347474"
+              "version": "0.36.1.42791",
+              "templateHash": "15961431104919711857"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -3129,7 +3129,7 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[parameters('serverName')]"
             },
             "cMKKeyVault": {
@@ -3143,7 +3143,7 @@
             },
             "database": {
               "type": "Microsoft.Sql/servers/databases",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -3273,8 +3273,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "16869585493743816680"
+                      "version": "0.36.1.42791",
+                      "templateHash": "9948442514033354219"
                     },
                     "name": "Azure SQL Server Database Short Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -3310,10 +3310,10 @@
                   "resources": [
                     {
                       "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
-                      "apiVersion": "2023-08-01-preview",
+                      "apiVersion": "2023-08-01",
                       "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
                       "properties": {
-                        "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2023-08-01-preview', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
+                        "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2023-08-01', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
                         "retentionDays": "[parameters('retentionDays')]"
                       }
                     }
@@ -3390,8 +3390,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "12746160659080715511"
+                      "version": "0.36.1.42791",
+                      "templateHash": "101116542806833061"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3460,13 +3460,13 @@
                     "server::database": {
                       "existing": true,
                       "type": "Microsoft.Sql/servers/databases",
-                      "apiVersion": "2023-08-01-preview",
+                      "apiVersion": "2023-08-01",
                       "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]"
                     },
                     "server": {
                       "existing": true,
                       "type": "Microsoft.Sql/servers",
-                      "apiVersion": "2023-08-01-preview",
+                      "apiVersion": "2023-08-01",
                       "name": "[parameters('serverName')]"
                     },
                     "backupLongTermRetentionPolicy": {
@@ -3540,7 +3540,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('database', '2023-08-01-preview', 'full').location]"
+              "value": "[reference('database', '2023-08-01', 'full').location]"
             }
           }
         }
@@ -3620,8 +3620,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15665151450501314299"
+              "version": "0.36.1.42791",
+              "templateHash": "8266622523187177483"
             },
             "name": "SQL Server Elastic Pool",
             "description": "This module deploys an Azure SQL Server Elastic Pool."
@@ -3880,12 +3880,12 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[parameters('serverName')]"
             },
             "elasticPool": {
               "type": "Microsoft.Sql/servers/elasticPools",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -3945,7 +3945,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('elasticPool', '2023-08-01-preview', 'full').location]"
+              "value": "[reference('elasticPool', '2023-08-01', 'full').location]"
             }
           }
         }
@@ -4016,8 +4016,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "15954548978129725136"
+              "version": "0.34.44.8038",
+              "templateHash": "12389807800450456797"
             },
             "name": "Private Endpoints",
             "description": "This module deploys a Private Endpoint."
@@ -4426,7 +4426,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.10.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.network-privateendpoint.{0}.{1}', replace('0.11.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -4444,7 +4444,7 @@
             },
             "privateEndpoint": {
               "type": "Microsoft.Network/privateEndpoints",
-              "apiVersion": "2023-11-01",
+              "apiVersion": "2024-05-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -4532,8 +4532,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5440815542537978381"
+                      "version": "0.34.44.8038",
+                      "templateHash": "13997305779829540948"
                     },
                     "name": "Private Endpoint Private DNS Zone Groups",
                     "description": "This module deploys a Private Endpoint Private DNS Zone Group."
@@ -4605,12 +4605,12 @@
                     "privateEndpoint": {
                       "existing": true,
                       "type": "Microsoft.Network/privateEndpoints",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[parameters('privateEndpointName')]"
                     },
                     "privateDnsZoneGroup": {
                       "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
-                      "apiVersion": "2023-11-01",
+                      "apiVersion": "2024-05-01",
                       "name": "[format('{0}/{1}', parameters('privateEndpointName'), parameters('name'))]",
                       "properties": {
                         "privateDnsZoneConfigs": "[variables('privateDnsZoneConfigsVar')]"
@@ -4674,7 +4674,7 @@
               "metadata": {
                 "description": "The location the resource was deployed into."
               },
-              "value": "[reference('privateEndpoint', '2023-11-01', 'full').location]"
+              "value": "[reference('privateEndpoint', '2024-05-01', 'full').location]"
             },
             "customDnsConfigs": {
               "type": "array",
@@ -4744,8 +4744,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "7080187876883566683"
+              "version": "0.36.1.42791",
+              "templateHash": "4373974379110057634"
             },
             "name": "Azure SQL Server Firewall Rule",
             "description": "This module deploys an Azure SQL Server Firewall Rule."
@@ -4781,7 +4781,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/firewallRules",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "endIpAddress": "[parameters('endIpAddress')]",
@@ -4851,8 +4851,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "16868479675279800432"
+              "version": "0.36.1.42791",
+              "templateHash": "4329943834463874399"
             },
             "name": "Azure SQL Server Virtual Network Rules",
             "description": "This module deploys an Azure SQL Server Virtual Network Rule."
@@ -4887,7 +4887,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/virtualNetworkRules",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "ignoreMissingVnetServiceEndpoint": "[parameters('ignoreMissingVnetServiceEndpoint')]",
@@ -4973,8 +4973,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15966111454725303120"
+              "version": "0.36.1.42791",
+              "templateHash": "15348652978067640813"
             },
             "name": "Azure SQL Server Security Alert Policies",
             "description": "This module deploys an Azure SQL Server Security Alert Policy."
@@ -5064,12 +5064,12 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[parameters('serverName')]"
             },
             "securityAlertPolicy": {
               "type": "Microsoft.Sql/servers/securityAlertPolicies",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "disabledAlerts": "[parameters('disabledAlerts')]",
@@ -5148,8 +5148,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15149956056568585521"
+              "version": "0.36.1.42791",
+              "templateHash": "2856119284131810417"
             },
             "name": "Azure SQL Server Vulnerability Assessments",
             "description": "This module deploys an Azure SQL Server Vulnerability Assessment."
@@ -5237,12 +5237,12 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[parameters('serverName')]"
             },
             "vulnerabilityAssessment": {
               "type": "Microsoft.Sql/servers/vulnerabilityAssessments",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "storageContainerPath": "[format('https://{0}.blob.{1}/vulnerability-assessment/', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage)]",
@@ -5267,7 +5267,7 @@
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
                   "managedInstanceIdentityPrincipalId": {
-                    "value": "[reference('server', '2023-08-01-preview', 'full').identity.principalId]"
+                    "value": "[reference('server', '2023-08-01', 'full').identity.principalId]"
                   }
                 },
                 "template": {
@@ -5276,8 +5276,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "10761590804435613868"
+                      "version": "0.36.1.42791",
+                      "templateHash": "16708437053172304191"
                     }
                   },
                   "parameters": {
@@ -5372,8 +5372,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "6714566924594913670"
+              "version": "0.36.1.42791",
+              "templateHash": "11129867292095349286"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5419,12 +5419,12 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[parameters('serverName')]"
             },
             "key": {
               "type": "Microsoft.Sql/servers/keys",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
@@ -5490,8 +5490,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "6714566924594913670"
+              "version": "0.36.1.42791",
+              "templateHash": "11129867292095349286"
             },
             "name": "Azure SQL Server Keys",
             "description": "This module deploys an Azure SQL Server Key."
@@ -5537,12 +5537,12 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[parameters('serverName')]"
             },
             "key": {
               "type": "Microsoft.Sql/servers/keys",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('serverName'), coalesce(parameters('name'), variables('serverKeyName')))]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
@@ -5610,8 +5610,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "7021740352606247353"
+              "version": "0.36.1.42791",
+              "templateHash": "17490849737310265082"
             },
             "name": "Azure SQL Server Encryption Protector",
             "description": "This module deploys an Azure SQL Server Encryption Protector."
@@ -5651,7 +5651,7 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/encryptionProtector",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('sqlServerName'), 'current')]",
               "properties": {
                 "serverKeyType": "[parameters('serverKeyType')]",
@@ -5742,8 +5742,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "4727925735892722326"
+              "version": "0.36.1.42791",
+              "templateHash": "18380400942025106313"
             },
             "name": "Azure SQL Server Audit Settings",
             "description": "This module deploys an Azure SQL Server Audit Settings."
@@ -5840,12 +5840,12 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[parameters('serverName')]"
             },
             "auditSettings": {
               "type": "Microsoft.Sql/servers/auditingSettings",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
               "properties": {
                 "state": "[parameters('state')]",
@@ -5861,8 +5861,63 @@
                 "storageEndpoint": "[if(not(empty(parameters('storageAccountResourceId'))), format('https://{0}.blob.{1}', last(split(parameters('storageAccountResourceId'), '/')), environment().suffixes.storage), null())]"
               }
             },
+            "storageAccount_sbdc_rbac_rg": {
+              "condition": "[and(and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId')))), not(equals(split(parameters('storageAccountResourceId'), '/')[4], resourceGroup().name)))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-stau-rbac-rg', parameters('serverName'))]",
+              "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
+              "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "storageAccountName": {
+                    "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
+                  },
+                  "managedIdentityPrincipalId": "[if(equals(reference('server', '2023-08-01', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2023-08-01', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2023-08-01', 'full').identity.principalId))]"
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.36.1.42791",
+                      "templateHash": "16469435463567159258"
+                    }
+                  },
+                  "parameters": {
+                    "storageAccountName": {
+                      "type": "string"
+                    },
+                    "managedIdentityPrincipalId": {
+                      "type": "string"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.Storage/storageAccounts/{0}', parameters('storageAccountName'))]",
+                      "name": "[guid(format('{0}-{1}-Storage-Blob-Data-Contributor', resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccountName')), parameters('managedIdentityPrincipalId')))]",
+                      "properties": {
+                        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+                        "principalId": "[parameters('managedIdentityPrincipalId')]",
+                        "principalType": "ServicePrincipal"
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "server"
+              ]
+            },
             "storageAccount_sbdc_rbac": {
-              "condition": "[and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId'))))]",
+              "condition": "[and(and(parameters('isManagedIdentityInUse'), not(empty(parameters('storageAccountResourceId')))), equals(split(parameters('storageAccountResourceId'), '/')[4], resourceGroup().name))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('{0}-stau-rbac', parameters('serverName'))]",
@@ -5875,7 +5930,7 @@
                   "storageAccountName": {
                     "value": "[last(split(parameters('storageAccountResourceId'), '/'))]"
                   },
-                  "managedIdentityPrincipalId": "[if(equals(reference('server', '2023-08-01-preview', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2023-08-01-preview', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2023-08-01-preview', 'full').identity.principalId))]"
+                  "managedIdentityPrincipalId": "[if(equals(reference('server', '2023-08-01', 'full').identity.type, 'UserAssigned'), createObject('value', filter(items(reference('server', '2023-08-01', 'full').identity.userAssignedIdentities), lambda('identity', equals(lambdaVariables('identity').key, reference('server').primaryUserAssignedIdentityId)))[0].value.principalId), createObject('value', reference('server', '2023-08-01', 'full').identity.principalId))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -5883,8 +5938,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "9873493969278157067"
+                      "version": "0.36.1.42791",
+                      "templateHash": "16469435463567159258"
                     }
                   },
                   "parameters": {
@@ -5971,8 +6026,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "1586204151956272516"
+              "version": "0.36.1.42791",
+              "templateHash": "18255389690016246128"
             }
           },
           "definitions": {
@@ -6050,7 +6105,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
@@ -6059,7 +6114,7 @@
                 "count": "[length(parameters('secretsToSet'))]"
               },
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
               "properties": {
                 "value": "[parameters('secretsToSet')[copyIndex()].value]"
@@ -6137,8 +6192,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15947051067826269286"
+              "version": "0.36.1.42791",
+              "templateHash": "7002329445517579297"
             },
             "name": "Azure SQL Server failover group",
             "description": "This module deploys Azure SQL Server failover group."
@@ -6262,7 +6317,7 @@
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[parameters('serverName')]"
             },
             "failoverGroup": {
@@ -6357,14 +6412,14 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('server', '2023-08-01-preview', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('server', '2023-08-01', 'full'), 'identity'), 'principalId')]"
     },
     "location": {
       "type": "string",
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('server', '2023-08-01-preview', 'full').location]"
+      "value": "[reference('server', '2023-08-01', 'full').location]"
     },
     "exportedSecrets": {
       "$ref": "#/definitions/secretsOutputType",

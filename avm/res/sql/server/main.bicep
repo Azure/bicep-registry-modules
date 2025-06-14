@@ -216,7 +216,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
+resource server 'Microsoft.Sql/servers@2023-08-01' = {
   location: location
   name: name
   tags: tags
@@ -357,7 +357,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
     scope: resourceGroup(

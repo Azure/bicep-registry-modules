@@ -156,7 +156,7 @@ import { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/av
 @description('Optional. The customer managed key definition for database TDE.')
 param customerManagedKey customerManagedKeyWithAutoRotateType?
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   name: serverName
 }
 
@@ -185,7 +185,7 @@ resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (!empt
   }
 }
 
-resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
+resource database 'Microsoft.Sql/servers/databases@2023-08-01' = {
   name: name
   parent: server
   location: location
@@ -231,12 +231,6 @@ resource database 'Microsoft.Sql/servers/databases@2023-08-01-preview' = {
     sourceResourceId: sourceResourceId
     useFreeLimit: useFreeLimit
     zoneRedundant: zoneRedundant
-    // keys: [
-    //   {
-    //     databaseKeyType: ''
-    //     uri: ''
-    //   }
-    // ]
   }
 }
 

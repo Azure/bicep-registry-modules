@@ -100,7 +100,7 @@ output keyVaultDatabaseEncryptionKeyUrl string = keyVault::dbKey.properties.keyU
 @description('The name of the created Server Encryption Key.')
 output keyVaultKeyName string = keyVault::key.name
 
-@description('The URL of the created Database Encryption Key.')
+@description('The name of the created Database Encryption Key.')
 output keyVaultDatabaseKeyName string = keyVault::dbKey.name
 
 @description('The name of the created Key Vault.')
