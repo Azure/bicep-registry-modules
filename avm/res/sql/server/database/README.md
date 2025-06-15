@@ -13,10 +13,11 @@ This module deploys an Azure SQL Server Database.
 
 | Resource Type | API Version |
 | :-- | :-- |
+| `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.Sql/servers/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/databases) |
+| `Microsoft.Sql/servers/databases` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases) |
 | `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/servers/databases/backupLongTermRetentionPolicies) |
-| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/databases/backupShortTermRetentionPolicies) |
+| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupShortTermRetentionPolicies) |
 
 ## Parameters
 
@@ -43,16 +44,16 @@ This module deploys an Azure SQL Server Database.
 | [`catalogCollation`](#parameter-catalogcollation) | string | Collation of the metadata catalog. |
 | [`collation`](#parameter-collation) | string | The collation of the database. |
 | [`createMode`](#parameter-createmode) | string | Specifies the mode of database creation. |
+| [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition for database TDE. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`elasticPoolResourceId`](#parameter-elasticpoolresourceid) | string | The resource ID of the elastic pool containing this database. |
-| [`encryptionProtector`](#parameter-encryptionprotector) | string | The azure key vault URI of the database if it's configured with per Database Customer Managed Keys. |
-| [`encryptionProtectorAutoRotation`](#parameter-encryptionprotectorautorotation) | bool | The flag to enable or disable auto rotation of database encryption protector AKV key. |
 | [`federatedClientId`](#parameter-federatedclientid) | string | The Client id used for cross tenant per database CMK scenario. |
 | [`freeLimitExhaustionBehavior`](#parameter-freelimitexhaustionbehavior) | string | Specifies the behavior when monthly free limits are exhausted for the free database. |
 | [`highAvailabilityReplicaCount`](#parameter-highavailabilityreplicacount) | int | The number of readonly secondary replicas associated with the database. |
 | [`isLedgerOn`](#parameter-isledgeron) | bool | Whether or not this database is a ledger database, which means all tables in the database are ledger tables. Note: the value of this property cannot be changed after the database has been created. |
 | [`licenseType`](#parameter-licensetype) | string | The license type to apply for this database. |
 | [`location`](#parameter-location) | string | Location for all resources. |
+| [`lock`](#parameter-lock) | object | The lock settings of the databse. |
 | [`longTermRetentionBackupResourceId`](#parameter-longtermretentionbackupresourceid) | string | The resource identifier of the long term retention backup associated with create operation of this database. |
 | [`maintenanceConfigurationId`](#parameter-maintenanceconfigurationid) | string | Maintenance configuration ID assigned to the database. This configuration defines the period when the maintenance updates will occur. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -249,6 +250,63 @@ Specifies the mode of database creation.
   ]
   ```
 
+### Parameter: `customerManagedKey`
+
+The customer managed key definition for database TDE.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-customermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-customermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRotationEnabled`](#parameter-customermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-customermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
+| [`userAssignedIdentityResourceId`](#parameter-customermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
+### Parameter: `customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
+
 ### Parameter: `diagnosticSettings`
 
 The diagnostic settings of the service.
@@ -402,20 +460,6 @@ The resource ID of the elastic pool containing this database.
 - Required: No
 - Type: string
 
-### Parameter: `encryptionProtector`
-
-The azure key vault URI of the database if it's configured with per Database Customer Managed Keys.
-
-- Required: No
-- Type: string
-
-### Parameter: `encryptionProtectorAutoRotation`
-
-The flag to enable or disable auto rotation of database encryption protector AKV key.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `federatedClientId`
 
 The Client id used for cross tenant per database CMK scenario.
@@ -474,6 +518,42 @@ Location for all resources.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
+
+### Parameter: `lock`
+
+The lock settings of the databse.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `longTermRetentionBackupResourceId`
 

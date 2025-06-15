@@ -13,11 +13,11 @@ param virtualNetworkSubnetResourceId string
 @description('Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment.')
 param serverName string
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   name: serverName
 }
 
-resource virtualNetworkRule 'Microsoft.Sql/servers/virtualNetworkRules@2023-08-01-preview' = {
+resource virtualNetworkRule 'Microsoft.Sql/servers/virtualNetworkRules@2023-08-01' = {
   name: name
   parent: server
   properties: {
