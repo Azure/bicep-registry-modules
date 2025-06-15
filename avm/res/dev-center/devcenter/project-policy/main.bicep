@@ -1,6 +1,10 @@
 metadata name = 'Dev Center Project Policy'
 metadata description = 'This module deploys a Dev Center Project Policy.'
 
+// ================ //
+// Parameters       //
+// ================ //
+
 @description('Conditional. The name of the parent dev center. Required if the template is used in a standalone deployment.')
 param devcenterName string
 
@@ -15,10 +19,6 @@ param resourcePolicies resourcePolicyType
 @description('Optional. Project names or resource IDs that will be in scope of this project policy. Project names can be used if the project is in the same resource group as the Dev Center. If the project is in a different resource group or subscription, the full resource ID must be provided. If not provided, the policy status will be set to "Unassigned".')
 param projectsResourceIdOrName string[]?
 
-resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' existing = {
-  name: devcenterName
-}
-
 // Resolve project names to resource IDs
 var projectResourceIds = [
   for projectResourceIdOrName in (projectsResourceIdOrName ?? []): startsWith(
@@ -29,6 +29,14 @@ var projectResourceIds = [
     : resourceId('Microsoft.DevCenter/projects', projectResourceIdOrName) // It's a project name, construct the resource ID
 ]
 
+// ============== //
+// Resources      //
+// ============== //
+
+resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' existing = {
+  name: devcenterName
+}
+
 resource projectPolicy 'Microsoft.DevCenter/devcenters/projectPolicies@2025-02-01' = {
   parent: devcenter
   name: name
@@ -37,6 +45,10 @@ resource projectPolicy 'Microsoft.DevCenter/devcenters/projectPolicies@2025-02-0
     scopes: projectResourceIds
   }
 }
+
+// ============ //
+// Outputs      //
+// ============ //
 
 @description('The name of the resource group the Dev Center Project Policy was created in.')
 output resourceGroupName string = resourceGroup().name

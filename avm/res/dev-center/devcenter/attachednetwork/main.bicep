@@ -1,6 +1,10 @@
 metadata name = 'Dev Center Attached Network'
 metadata description = 'This module deploys a Dev Center Attached Network.'
 
+// ================ //
+// Parameters       //
+// ================ //
+
 @description('Conditional. The name of the parent dev center. Required if the template is used in a standalone deployment.')
 param devcenterName string
 
@@ -11,6 +15,10 @@ param name string
 
 @description('Required. The resource ID of the Network Connection you want to attach to the Dev Center.')
 param networkConnectionResourceId string
+
+// ============== //
+// Resources      //
+// ============== //
 
 resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' existing = {
   name: devcenterName
@@ -23,6 +31,10 @@ resource attachedNetwork 'Microsoft.DevCenter/devcenters/attachednetworks@2025-0
     networkConnectionId: networkConnectionResourceId
   }
 }
+
+// ============ //
+// Outputs      //
+// ============ //
 
 @description('The name of the resource group the Dev Center Attached Network was created in.')
 output resourceGroupName string = resourceGroup().name

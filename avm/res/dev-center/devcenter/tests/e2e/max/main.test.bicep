@@ -79,26 +79,6 @@ module testDeployment '../../../main.bicep' = [
           nestedDependencies.outputs.managedIdentityResourceId
         ]
       }
-      catalogs: [
-        {
-          name: 'quickstart-catalog'
-          gitHub: {
-            uri: 'https://github.com/microsoft/devcenter-catalog.git'
-            branch: 'main'
-            path: 'Environment-Definitions'
-          }
-          syncType: 'Scheduled'
-        }
-        {
-          name: 'testCatalogAzureDevOpsGit'
-          adoGit: {
-            uri: 'https://contoso@dev.azure.com/contoso/your-project/_git/your-repo'
-            branch: 'main'
-            secretIdentifier: nestedDependencies.outputs.keyVaultSecretUri
-          }
-          syncType: 'Manual'
-        }
-      ]
       roleAssignments: [
         {
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
@@ -118,6 +98,42 @@ module testDeployment '../../../main.bicep' = [
           )
           principalId: nestedDependencies.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
+        }
+      ]
+      devboxDefinitions: [
+        {
+          name: 'test-devbox-definition-builtin-gallery-image'
+          imageResourceId: '${devcenterExpectedResourceID}/galleries/Default/images/microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2'
+          //osStorageType: 'Premium_LRS'
+          sku: {
+            name: 'general_i_8c32gb512ssd_v2'
+            family: 'general_i'
+            capacity: 1
+          }
+          hibernateSupport: 'Enabled'
+          tags: {
+            costCenter: '1234'
+          }
+        }
+      ]
+      catalogs: [
+        {
+          name: 'quickstart-catalog'
+          gitHub: {
+            uri: 'https://github.com/microsoft/devcenter-catalog.git'
+            branch: 'main'
+            path: 'Environment-Definitions'
+          }
+          syncType: 'Scheduled'
+        }
+        {
+          name: 'testCatalogAzureDevOpsGit'
+          adoGit: {
+            uri: 'https://contoso@dev.azure.com/contoso/your-project/_git/your-repo'
+            branch: 'main'
+            secretIdentifier: nestedDependencies.outputs.keyVaultSecretUri
+          }
+          syncType: 'Manual'
         }
       ]
       //customerManagedKey: {

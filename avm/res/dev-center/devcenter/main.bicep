@@ -58,6 +58,9 @@ param galleries devCenterGalleryType[]?
 @description('Optional. The attached networks to associate with the Dev Center. You can attach existing network connections to a dev center. You must attach a network connection to a dev center before you can use it in projects to create dev box pools. Network connections enable dev boxes to connect to existing virtual networks. The location, or Azure region, of the network connection determines where associated dev boxes are hosted.')
 param attachedNetworks attachedNetworkType[]?
 
+@description('Optional. The DevBox definitions to create in the Dev Center. A DevBox definition specifies the source operating system image and compute size, including CPU, memory, and storage. Dev Box definitions are used to create DevBox pools.')
+param devboxDefinitions devboxDefinitionType[]?
+
 @description('Optional. The projects to create in the Dev Center. A project is the point of access to Microsoft Dev Box for the development team members. A project contains dev box pools, which specify the dev box definitions and network connections used when dev boxes are created. Each project is associated with a single dev center. When you associate a project with a dev center, all the settings at the dev center level are applied to the project automatically.')
 param projects array = []
 
@@ -250,6 +253,22 @@ module devcenter_attachedNetwork 'attachednetwork/main.bicep' = [
   }
 ]
 
+module devcenter_devboxDefinition 'devboxdefinition/main.bicep' = [
+  for (devboxDefinition, index) in (devboxDefinitions ?? []): {
+    name: '${uniqueString(deployment().name, location)}-Devcenter-DevboxDefinition-${index}'
+    params: {
+      devcenterName: devcenter.name
+      name: devboxDefinition.name
+      imageResourceId: devboxDefinition.imageResourceId
+      osStorageType: devboxDefinition.?osStorageType
+      sku: devboxDefinition.sku
+      hibernateSupport: devboxDefinition.?hibernateSupport ?? 'Disabled'
+      tags: devboxDefinition.?tags
+      location: devboxDefinition.?location ?? location
+    }
+  }
+]
+
 resource devCenter_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
   properties: {
@@ -329,6 +348,11 @@ output systemAssignedMIPrincipalId string? = devcenter.?identity.?principalId
 
 @description('The URI of the Dev Center.')
 output devCenterUri string = devcenter.properties.devCenterUri
+
+@description('The names of the DevBox definitions.')
+output devboxDefinitionNames array = [
+  for (devboxDefinition, index) in (devboxDefinitions ?? []): devcenter_devboxDefinition[index].outputs.name
+]
 
 // ================ //
 // Definitions      //
@@ -413,4 +437,29 @@ type attachedNetworkType = {
 
   @description('Required. The resource ID of the Network Connection you want to attach to the Dev Center.')
   networkConnectionResourceId: string
+}
+
+import { skuType } from 'devboxdefinition/main.bicep'
+@description('The type for Dev Box definitions.')
+type devboxDefinitionType = {
+  @description('Required. The name of the DevBox definition.')
+  name: string
+
+  @description('Required. The Image ID, or Image version ID. When Image ID is provided, its latest version will be used.')
+  imageResourceId: string
+
+  @description('Optional. The storage type used for the operating system disk of the DevBox.')
+  osStorageType: string?
+
+  @description('Required. The SKU configuration for the dev box definition. See "https://learn.microsoft.com/en-us/rest/api/devcenter/administrator/skus/list-by-subscription?view=rest-devcenter-administrator-2024-02-01" for more information about SKUs.')
+  sku: skuType
+
+  @description('Optional. Settings for hibernation support.')
+  hibernateSupport: 'Enabled' | 'Disabled'?
+
+  @description('Optional. Location for the DevBox definition.')
+  location: string?
+
+  @description('Optional. Tags of the resource.')
+  tags: object?
 }
