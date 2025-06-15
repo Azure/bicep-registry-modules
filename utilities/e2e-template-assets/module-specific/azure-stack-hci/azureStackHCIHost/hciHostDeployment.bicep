@@ -101,6 +101,15 @@ module roleAssignment_subscriptionContributor 'modules/subscriptionRoleAssignmen
   }
 }
 
+module roleAssignment_log 'modules/logRoleAssignment.bicep' = {
+  name: 'logRoleAssignment'
+  scope: resourceGroup('iacautomation-bicep')
+  params: {
+    containerName: 'avmlog/default/hcpc'
+    principalId: userAssignedIdentity.properties.principalId
+  }
+}
+
 // optional VNET and subnet for the HCI host Azure VM
 resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = {
   name: virtualNetworkName
