@@ -29,14 +29,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/system-topic:<version>`.
 
-- [Using only defaults](#example-1-using-only-defaults)
+- [Using only defaults with managed identity](#example-1-using-only-defaults-with-managed-identity)
 - [Using managed identity authentication](#example-2-using-managed-identity-authentication)
 - [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned](#example-4-waf-aligned)
+- [WAF-aligned with managed identity](#example-4-waf-aligned-with-managed-identity)
 
-### Example 1: _Using only defaults_
+### Example 1: _Using only defaults with managed identity_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with the minimum set of required parameters and uses managed identities to deliver Event Grid Topic events.
 
 
 <details>
@@ -52,7 +52,34 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     source: '<source>'
     topicType: 'Microsoft.Storage.StorageAccounts'
     // Non-required parameters
+    eventSubscriptions: [
+      {
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'SystemAssigned'
+          }
+        }
+        name: 'egstmin001'
+      }
+    ]
     location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
+    resourceRoleAssignments: [
+      {
+        description: 'Allow Event Grid System Topic to send messages to storage queue'
+        resourceId: '<resourceId>'
+        roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+      }
+    ]
   }
 }
 ```
@@ -80,8 +107,41 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
       "value": "Microsoft.Storage.StorageAccounts"
     },
     // Non-required parameters
+    "eventSubscriptions": {
+      "value": [
+        {
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "SystemAssigned"
+            }
+          },
+          "name": "egstmin001"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "resourceRoleAssignments": {
+      "value": [
+        {
+          "description": "Allow Event Grid System Topic to send messages to storage queue",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
+        }
+      ]
     }
   }
 }
@@ -102,7 +162,34 @@ param name = 'egstmin001'
 param source = '<source>'
 param topicType = 'Microsoft.Storage.StorageAccounts'
 // Non-required parameters
+param eventSubscriptions = [
+  {
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'SystemAssigned'
+      }
+    }
+    name: 'egstmin001'
+  }
+]
 param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
+param resourceRoleAssignments = [
+  {
+    description: 'Allow Event Grid System Topic to send messages to storage queue'
+    resourceId: '<resourceId>'
+    roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+  }
+]
 ```
 
 </details>
@@ -352,7 +439,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         }
         name: 'egstmax001'
         retryPolicy: {
-          eventTimeToLive: '120'
+          eventTimeToLiveInMinutes: 120
           maxDeliveryAttempts: 10
         }
       }
@@ -365,12 +452,24 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     managedIdentities: {
       systemAssigned: true
     }
+    resourceRoleAssignments: [
+      {
+        description: 'Allow Event Grid System Topic to write to storage queue'
+        resourceId: '<resourceId>'
+        roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+      }
+      {
+        description: 'Allow Event Grid System Topic to send messages to storage queue'
+        resourceId: '<resourceId>'
+        roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+      }
+    ]
     roleAssignments: [
       {
         name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
         principalId: '<principalId>'
         principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Owner'
+        roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
       }
       {
         name: '<name>'
@@ -451,7 +550,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
           },
           "name": "egstmax001",
           "retryPolicy": {
-            "eventTimeToLive": "120",
+            "eventTimeToLiveInMinutes": 120,
             "maxDeliveryAttempts": 10
           }
         }
@@ -471,13 +570,27 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         "systemAssigned": true
       }
     },
+    "resourceRoleAssignments": {
+      "value": [
+        {
+          "description": "Allow Event Grid System Topic to write to storage queue",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "974c5e8b-45b9-4653-ba55-5f855dd0fb88"
+        },
+        {
+          "description": "Allow Event Grid System Topic to send messages to storage queue",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
+        }
+      ]
+    },
     "roleAssignments": {
       "value": [
         {
           "name": "c9beca28-efcf-4d1d-99aa-8f334484a2c2",
           "principalId": "<principalId>",
           "principalType": "ServicePrincipal",
-          "roleDefinitionIdOrName": "Owner"
+          "roleDefinitionIdOrName": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
         },
         {
           "name": "<name>",
@@ -550,7 +663,7 @@ param eventSubscriptions = [
     }
     name: 'egstmax001'
     retryPolicy: {
-      eventTimeToLive: '120'
+      eventTimeToLiveInMinutes: 120
       maxDeliveryAttempts: 10
     }
   }
@@ -563,12 +676,24 @@ param lock = {
 param managedIdentities = {
   systemAssigned: true
 }
+param resourceRoleAssignments = [
+  {
+    description: 'Allow Event Grid System Topic to write to storage queue'
+    resourceId: '<resourceId>'
+    roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+  }
+  {
+    description: 'Allow Event Grid System Topic to send messages to storage queue'
+    resourceId: '<resourceId>'
+    roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+  }
+]
 param roleAssignments = [
   {
     name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
     principalId: '<principalId>'
     principalType: 'ServicePrincipal'
-    roleDefinitionIdOrName: 'Owner'
+    roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
   }
   {
     name: '<name>'
@@ -592,9 +717,9 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 4: _WAF-aligned with managed identity_
 
-This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
+This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework and uses managed identities to deliver Event Grid Topic events.
 
 
 <details>
@@ -626,12 +751,17 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     ]
     eventSubscriptions: [
       {
-        destination: {
-          endpointType: 'StorageQueue'
-          properties: {
-            queueMessageTimeToLiveInSeconds: 86400
-            queueName: '<queueName>'
-            resourceId: '<resourceId>'
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueMessageTimeToLiveInSeconds: 86400
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'SystemAssigned'
           }
         }
         eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -642,7 +772,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         }
         name: 'egstwaf001'
         retryPolicy: {
-          eventTimeToLive: '120'
+          eventTimeToLiveInMinutes: 120
           maxDeliveryAttempts: 10
         }
       }
@@ -652,6 +782,16 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
     }
+    managedIdentities: {
+      systemAssigned: true
+    }
+    resourceRoleAssignments: [
+      {
+        description: 'Allow Event Grid System Topic to send messages to storage queue'
+        resourceId: '<resourceId>'
+        roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+      }
+    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -703,12 +843,17 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     "eventSubscriptions": {
       "value": [
         {
-          "destination": {
-            "endpointType": "StorageQueue",
-            "properties": {
-              "queueMessageTimeToLiveInSeconds": 86400,
-              "queueName": "<queueName>",
-              "resourceId": "<resourceId>"
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueMessageTimeToLiveInSeconds": 86400,
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "SystemAssigned"
             }
           },
           "eventDeliverySchema": "CloudEventSchemaV1_0",
@@ -719,7 +864,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
           },
           "name": "egstwaf001",
           "retryPolicy": {
-            "eventTimeToLive": "120",
+            "eventTimeToLiveInMinutes": 120,
             "maxDeliveryAttempts": 10
           }
         }
@@ -733,6 +878,20 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
       }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
+    },
+    "resourceRoleAssignments": {
+      "value": [
+        {
+          "description": "Allow Event Grid System Topic to send messages to storage queue",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
+        }
+      ]
     },
     "tags": {
       "value": {
@@ -776,12 +935,17 @@ param diagnosticSettings = [
 ]
 param eventSubscriptions = [
   {
-    destination: {
-      endpointType: 'StorageQueue'
-      properties: {
-        queueMessageTimeToLiveInSeconds: 86400
-        queueName: '<queueName>'
-        resourceId: '<resourceId>'
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueMessageTimeToLiveInSeconds: 86400
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'SystemAssigned'
       }
     }
     eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -792,7 +956,7 @@ param eventSubscriptions = [
     }
     name: 'egstwaf001'
     retryPolicy: {
-      eventTimeToLive: '120'
+      eventTimeToLiveInMinutes: 120
       maxDeliveryAttempts: 10
     }
   }
@@ -802,6 +966,16 @@ param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
 }
+param managedIdentities = {
+  systemAssigned: true
+}
+param resourceRoleAssignments = [
+  {
+    description: 'Allow Event Grid System Topic to send messages to storage queue'
+    resourceId: '<resourceId>'
+    roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+  }
+]
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -832,6 +1006,7 @@ param tags = {
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
+| [`resourceRoleAssignments`](#parameter-resourceroleassignments) | array | Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -1017,6 +1192,292 @@ Event subscriptions to deploy.
 - Required: No
 - Type: array
 
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-eventsubscriptionsname) | string | The name of the event subscription. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-eventsubscriptionsdestination) | object | Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deadLetterDestination`](#parameter-eventsubscriptionsdeadletterdestination) | object | Dead Letter Destination. |
+| [`deadLetterWithResourceIdentity`](#parameter-eventsubscriptionsdeadletterwithresourceidentity) | object | Dead Letter with Resource Identity Configuration. |
+| [`deliveryWithResourceIdentity`](#parameter-eventsubscriptionsdeliverywithresourceidentity) | object | Delivery with Resource Identity Configuration. |
+| [`eventDeliverySchema`](#parameter-eventsubscriptionseventdeliveryschema) | string | The event delivery schema for the event subscription. |
+| [`expirationTimeUtc`](#parameter-eventsubscriptionsexpirationtimeutc) | string | The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ). |
+| [`filter`](#parameter-eventsubscriptionsfilter) | object | The filter for the event subscription. |
+| [`labels`](#parameter-eventsubscriptionslabels) | array | The list of user defined labels. |
+| [`retryPolicy`](#parameter-eventsubscriptionsretrypolicy) | object | The retry policy for events. |
+
+### Parameter: `eventSubscriptions.name`
+
+The name of the event subscription.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `eventSubscriptions.destination`
+
+Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.deadLetterDestination`
+
+Dead Letter Destination.
+
+- Required: No
+- Type: object
+
+### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity`
+
+Dead Letter with Resource Identity Configuration.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`deadLetterDestination`](#parameter-eventsubscriptionsdeadletterwithresourceidentitydeadletterdestination) | object | The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema. |
+| [`identity`](#parameter-eventsubscriptionsdeadletterwithresourceidentityidentity) | object | The identity configuration for dead letter. |
+
+### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity.deadLetterDestination`
+
+The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity.identity`
+
+The identity configuration for dead letter.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-eventsubscriptionsdeadletterwithresourceidentityidentitytype) | string | The type of identity to use. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedIdentity`](#parameter-eventsubscriptionsdeadletterwithresourceidentityidentityuserassignedidentity) | string | Required if type is UserAssigned. The user assigned identity resource ID. |
+
+### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity.identity.type`
+
+The type of identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SystemAssigned'
+    'UserAssigned'
+  ]
+  ```
+
+### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity.identity.userAssignedIdentity`
+
+Required if type is UserAssigned. The user assigned identity resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventSubscriptions.deliveryWithResourceIdentity`
+
+Delivery with Resource Identity Configuration.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`destination`](#parameter-eventsubscriptionsdeliverywithresourceidentitydestination) | object | The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema. |
+| [`identity`](#parameter-eventsubscriptionsdeliverywithresourceidentityidentity) | object | The identity configuration for delivery. |
+
+### Parameter: `eventSubscriptions.deliveryWithResourceIdentity.destination`
+
+The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema.
+
+- Required: Yes
+- Type: object
+
+### Parameter: `eventSubscriptions.deliveryWithResourceIdentity.identity`
+
+The identity configuration for delivery.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`type`](#parameter-eventsubscriptionsdeliverywithresourceidentityidentitytype) | string | The type of identity to use. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`userAssignedIdentity`](#parameter-eventsubscriptionsdeliverywithresourceidentityidentityuserassignedidentity) | string | Required if type is UserAssigned. The user assigned identity resource ID. |
+
+### Parameter: `eventSubscriptions.deliveryWithResourceIdentity.identity.type`
+
+The type of identity to use.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'SystemAssigned'
+    'UserAssigned'
+  ]
+  ```
+
+### Parameter: `eventSubscriptions.deliveryWithResourceIdentity.identity.userAssignedIdentity`
+
+Required if type is UserAssigned. The user assigned identity resource ID.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventSubscriptions.eventDeliverySchema`
+
+The event delivery schema for the event subscription.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CloudEventSchemaV1_0'
+    'CustomInputSchema'
+    'EventGridEvent'
+    'EventGridSchema'
+  ]
+  ```
+
+### Parameter: `eventSubscriptions.expirationTimeUtc`
+
+The expiration time for the event subscription. Format is ISO-8601 (yyyy-MM-ddTHH:mm:ssZ).
+
+- Required: No
+- Type: string
+
+### Parameter: `eventSubscriptions.filter`
+
+The filter for the event subscription.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`advancedFilters`](#parameter-eventsubscriptionsfilteradvancedfilters) | array | A list of advanced filters. Each filter should contain operatorType, key, and value/values properties. |
+| [`enableAdvancedFilteringOnArrays`](#parameter-eventsubscriptionsfilterenableadvancedfilteringonarrays) | bool | Allows advanced filters to be evaluated against an array of values instead of expecting a singular value. |
+| [`includedEventTypes`](#parameter-eventsubscriptionsfilterincludedeventtypes) | array | A list of applicable event types that can be filtered. |
+| [`isSubjectCaseSensitive`](#parameter-eventsubscriptionsfilterissubjectcasesensitive) | bool | Defines if the subject field should be compared in a case sensitive manner. |
+| [`subjectBeginsWith`](#parameter-eventsubscriptionsfiltersubjectbeginswith) | string | An optional string to filter events for an event subscription based on a resource path prefix. |
+| [`subjectEndsWith`](#parameter-eventsubscriptionsfiltersubjectendswith) | string | An optional string to filter events for an event subscription based on a resource path suffix. |
+
+### Parameter: `eventSubscriptions.filter.advancedFilters`
+
+A list of advanced filters. Each filter should contain operatorType, key, and value/values properties.
+
+- Required: No
+- Type: array
+
+### Parameter: `eventSubscriptions.filter.enableAdvancedFilteringOnArrays`
+
+Allows advanced filters to be evaluated against an array of values instead of expecting a singular value.
+
+- Required: No
+- Type: bool
+
+### Parameter: `eventSubscriptions.filter.includedEventTypes`
+
+A list of applicable event types that can be filtered.
+
+- Required: No
+- Type: array
+
+### Parameter: `eventSubscriptions.filter.isSubjectCaseSensitive`
+
+Defines if the subject field should be compared in a case sensitive manner.
+
+- Required: No
+- Type: bool
+
+### Parameter: `eventSubscriptions.filter.subjectBeginsWith`
+
+An optional string to filter events for an event subscription based on a resource path prefix.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventSubscriptions.filter.subjectEndsWith`
+
+An optional string to filter events for an event subscription based on a resource path suffix.
+
+- Required: No
+- Type: string
+
+### Parameter: `eventSubscriptions.labels`
+
+The list of user defined labels.
+
+- Required: No
+- Type: array
+
+### Parameter: `eventSubscriptions.retryPolicy`
+
+The retry policy for events.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`eventTimeToLiveInMinutes`](#parameter-eventsubscriptionsretrypolicyeventtimetoliveinminutes) | int | Time in minutes that determines how long to continue attempting delivery. |
+| [`maxDeliveryAttempts`](#parameter-eventsubscriptionsretrypolicymaxdeliveryattempts) | int | The maximum number of delivery attempts for events. |
+
+### Parameter: `eventSubscriptions.retryPolicy.eventTimeToLiveInMinutes`
+
+Time in minutes that determines how long to continue attempting delivery.
+
+- Required: No
+- Type: int
+
+### Parameter: `eventSubscriptions.retryPolicy.maxDeliveryAttempts`
+
+The maximum number of delivery attempts for events.
+
+- Required: No
+- Type: int
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -1089,22 +1550,62 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 - Required: No
 - Type: array
 
+### Parameter: `resourceRoleAssignments`
+
+Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-resourceroleassignmentsresourceid) | string | The resource ID of the target resource to assign permissions to. |
+| [`roleDefinitionIdOrName`](#parameter-resourceroleassignmentsroledefinitionidorname) | string | The role definition ID (GUID) or full role definition resource ID. Role names are not supported. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe". |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-resourceroleassignmentsdescription) | string | Description of the role assignment. |
+| [`roleName`](#parameter-resourceroleassignmentsrolename) | string | Name of the role for logging purposes. |
+
+### Parameter: `resourceRoleAssignments.resourceId`
+
+The resource ID of the target resource to assign permissions to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `resourceRoleAssignments.roleDefinitionIdOrName`
+
+The role definition ID (GUID) or full role definition resource ID. Role names are not supported. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".
+
+- Required: Yes
+- Type: string
+
+### Parameter: `resourceRoleAssignments.description`
+
+Description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `resourceRoleAssignments.roleName`
+
+Name of the role for logging purposes.
+
+- Required: No
+- Type: string
+
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
 
 - Required: No
 - Type: array
-- Roles configurable by name:
-  - `'Contributor'`
-  - `'EventGrid Contributor'`
-  - `'EventGrid Data Sender'`
-  - `'EventGrid EventSubscription Contributor'`
-  - `'EventGrid EventSubscription Reader'`
-  - `'Owner'`
-  - `'Reader'`
-  - `'Role Based Access Control Administrator'`
-  - `'User Access Administrator'`
 
 **Required parameters**
 
@@ -1219,6 +1720,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
+| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Data Collection
