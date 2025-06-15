@@ -305,6 +305,9 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   name: 'arc1'
   location: location
+  dependsOn: [
+    ad
+  ]
   properties: {
     source: {
       script: loadTextContent('./scripts/provision-arc.ps1')
@@ -364,6 +367,9 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   name: 'arc2'
   location: location
+  dependsOn: [
+    ad
+  ]
   properties: {
     source: {
       script: loadTextContent('./scripts/provision-arc.ps1')

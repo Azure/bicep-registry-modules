@@ -385,6 +385,7 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     scriptContent: loadTextContent('./deploy.sh')
   }
   dependsOn: [
+    secrets
     roleAssignmentContributor
     roleAssignmentOwner
     roleAssignmentReader

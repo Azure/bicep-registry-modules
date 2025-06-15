@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14461002561831625493"
+      "templateHash": "14716124869200830906"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -1005,7 +1005,8 @@
         "roleAssignmentRBACAdmin",
         "roleAssignmentReader",
         "roleAssignmentUserAccessAdmin",
-        "roleAssignmentWACAdmin"
+        "roleAssignmentWACAdmin",
+        "secrets"
       ]
     },
     "cluster_roleAssignments": {
