@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Basic SKU'
-metadata description = 'This instance deploys the module with the Basic SKU.'
+metadata name = 'Hub-byoip'
+metadata description = 'This instance deploys the module a vWAN with an existing IP.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.azurefirewalls-${ser
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nafbasic'
+param serviceShort string = 'nafhubbyoip'
 
 @description('Optional. A token to inject into the name of each resource.')
 param namePrefix string = '#_namePrefix_#'
@@ -35,7 +35,9 @@ module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
   params: {
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
+    virtualWanName: 'dep-${namePrefix}-vwan-${serviceShort}'
+    virtualHubName: 'dep-${namePrefix}-vhub-${serviceShort}'
+    publicIPName: 'dep-${namePrefix}-pip-${serviceShort}'
     location: resourceLocation
   }
 }
@@ -51,11 +53,13 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      azureSkuTier: 'Basic'
-      virtualNetworkResourceId: nestedDependencies.outputs.virtualNetworkResourceId
-      location: resourceLocation
-      threatIntelMode: 'Deny'
-      networkRuleCollections: []
+      virtualHubResoureId: nestedDependencies.outputs.virtualHubResourceId
+      publicIPResourceID: nestedDependencies.outputs.publicIPResourceId
+      hubIPAddresses: {
+        publicIPs: {
+          count: 1
+        }
+      }
     }
   }
 ]
