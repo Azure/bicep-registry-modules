@@ -72,6 +72,9 @@ param firewallRules firewallRuleType[]?
 @description('Optional. List of Big Data Pools to be created in the workspace.')
 param bigDataPools bigDataPoolType[]?
 
+@description('Optional. List of SQL Pools to be created in the workspace.')
+param sqlPools sqlPoolType[]?
+
 @description('Optional. Purview Resource ID.')
 param purviewResourceID string = ''
 
@@ -383,6 +386,29 @@ module workspace_bigDataPools 'big-data-pool/main.bicep' = [
   }
 ]
 
+// SQL Pools
+module workspace_sqlPools 'sql-pool/main.bicep' = [
+  for (sqlPool, index) in (sqlPools ?? []): {
+    name: '${uniqueString(deployment().name, location)}-workspace-sqlp-${index}'
+    params: {
+      name: sqlPool.name
+      workspaceName: workspace.name
+      location: location
+      collation: sqlPool.?collation
+      maxSizeBytes: sqlPool.?maxSizeBytes
+      sku: sqlPool.?sku
+      restorePointInTime: sqlPool.?restorePointInTime
+      recoverableDatabaseId: sqlPool.?recoverableDatabaseId
+      storageAccountType: sqlPool.?storageAccountType
+      transparentDataEncryption: sqlPool.?transparentDataEncryption
+      diagnosticSettings: sqlPool.?diagnosticSettings ?? []
+      roleAssignments: sqlPool.?roleAssignments ?? []
+      lock: sqlPool.?lock ?? lock
+      tags: sqlPool.?tags ?? tags
+    }
+  }
+]
+
 // Endpoints
 module workspace_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
@@ -613,4 +639,65 @@ type bigDataPoolType = {
 
   @description('Optional. Tags of the resource.')
   tags: object?
+}
+
+@export()
+@description('The synapse workspace SQL Pool definition.')
+type sqlPoolType = {
+  @description('Required. The name of the SQL Pool.')
+  name: string
+
+  @description('Optional. The collation of the SQL pool.')
+  collation: string?
+
+  @description('Optional. The max size of the SQL pool in bytes.')
+  maxSizeBytes: int?
+
+  @description('Optional. The performance level of the SQL pool.')
+  sku: (
+    | 'DW100c'
+    | 'DW200c'
+    | 'DW300c'
+    | 'DW400c'
+    | 'DW500c'
+    | 'DW1000c'
+    | 'DW1500c'
+    | 'DW2000c'
+    | 'DW2500c'
+    | 'DW3000c'
+    | 'DW5000c'
+    | 'DW6000c'
+    | 'DW7500c'
+    | 'DW10000c'
+    | 'DW15000c'
+    | 'DW30000c')?
+
+  @description('Optional. The restore point in time to restore from (ISO8601 format).')
+  restorePointInTime: string?
+
+  @description('Optional. The recoverable database ID to restore from.')
+  recoverableDatabaseId: string?
+
+  @description('Optional. The storage account type to use for the SQL pool.')
+  storageAccountType: (
+    | 'GRS'
+    | 'LRS'
+    | 'ZRS')?
+
+  @description('Optional. Enable database transparent data encryption.')
+  transparentDataEncryption: (
+    | 'Enabled'
+    | 'Disabled')?
+
+  @description('Optional. The diagnostic settings of the service.')
+  diagnosticSettings: diagnosticSettingFullType[]?
+
+  @description('Optional. Array of role assignments to create.')
+  roleAssignments: roleAssignmentType[]?
+
+  @description('Optional. The lock settings of the service.')
+  lock: lockType?
+
+  @description('Optional. Tags of the resource.')
+  tags: resourceInput<'Microsoft.Synapse/workspaces/sqlPools@2021-06-01'>.tags?
 }
