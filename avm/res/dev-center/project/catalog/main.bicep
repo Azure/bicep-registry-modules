@@ -27,7 +27,7 @@ param adoGit sourceType?
 param syncType string = 'Scheduled'
 
 @description('Optional. Resource tags to apply to the catalog.')
-param tags object?
+param tags resourceInput<'Microsoft.DevCenter/projects/catalogs@2025-02-01'>.tags?
 
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
