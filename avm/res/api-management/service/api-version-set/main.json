@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "6801592949576181154"
+      "version": "0.35.1.17967",
+      "templateHash": "11694183233744573980"
     },
     "name": "API Management Service API Version Sets",
     "description": "This module deploys an API Management Service API Version Set."
@@ -24,22 +25,71 @@
         "description": "Optional. API Version set name."
       }
     },
-    "properties": {
-      "type": "object",
-      "defaultValue": {},
+    "displayName": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 100,
       "metadata": {
-        "description": "Optional. API Version set properties."
+        "description": "Required. The display name of the Name of API Version Set."
+      }
+    },
+    "versioningScheme": {
+      "type": "string",
+      "allowedValues": [
+        "Header",
+        "Query",
+        "Segment"
+      ],
+      "metadata": {
+        "description": "Required. An value that determines where the API Version identifier will be located in a HTTP request."
+      }
+    },
+    "description": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Description of API Version Set."
+      }
+    },
+    "versionHeaderName": {
+      "type": "string",
+      "nullable": true,
+      "minLength": 1,
+      "maxLength": 100,
+      "metadata": {
+        "description": "Optional. Name of HTTP header parameter that indicates the API Version if versioningScheme is set to header."
+      }
+    },
+    "versionQueryName": {
+      "type": "string",
+      "nullable": true,
+      "minLength": 1,
+      "maxLength": 100,
+      "metadata": {
+        "description": "Optional. Name of query parameter that indicates the API Version if versioningScheme is set to query."
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "service": {
+      "existing": true,
+      "type": "Microsoft.ApiManagement/service",
+      "apiVersion": "2024-05-01",
+      "name": "[parameters('apiManagementServiceName')]"
+    },
+    "apiVersionSet": {
       "type": "Microsoft.ApiManagement/service/apiVersionSets",
-      "apiVersion": "2022-08-01",
+      "apiVersion": "2024-05-01",
       "name": "[format('{0}/{1}', parameters('apiManagementServiceName'), parameters('name'))]",
-      "properties": "[parameters('properties')]"
+      "properties": {
+        "displayName": "[parameters('displayName')]",
+        "versioningScheme": "[parameters('versioningScheme')]",
+        "description": "[parameters('description')]",
+        "versionHeaderName": "[parameters('versionHeaderName')]",
+        "versionQueryName": "[parameters('versionQueryName')]"
+      }
     }
-  ],
+  },
   "outputs": {
     "resourceId": {
       "type": "string",

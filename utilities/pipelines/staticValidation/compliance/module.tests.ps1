@@ -135,6 +135,22 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $childModuleAllowedList | Should -Contain $moduleFullName -Because "only the child modules listed in the [./$childModuleAllowedListRelativePath] list may have a version.json file."
             }
         }
+
+        It '[<moduleFolderName>] Resource module (folder) name must be singular, use ''-'' instead of camel-case and be lower-case (e.g., ''the-cake-is-a-lie'').' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+            param(
+                [string] $moduleFolderPath
+            )
+
+            $folderName = Split-Path $moduleFolderPath -Leaf
+            $expectedFolderName = ($folderName -cReplace '([A-Z])', '-$1').ToLower()
+
+            # Remove singular/plural indicators to not give the wrong impression of what is expected
+            $reducedCurrentFolderName = Get-ReducedWordString $folderName
+            $reducedExpectedFolderName = Get-ReducedWordString $expectedFolderName
+
+            "$reducedCurrentFolderName*" | Should -Be "$reducedExpectedFolderName*" -Because 'the folder name must be a singular lower-case version of the resource type name, using hyphens instead of camel-case. The [*] is to be replaced with the singular ending.'
+        }
     }
 
     Context 'Top level module folder tests' {
@@ -223,6 +239,48 @@ Describe 'File/folder tests' -Tag 'Modules' {
                 $pathExisting = Test-Path $filePath
                 $pathExisting | Should -Be $true -Because "path [$filePath] is expected to exist."
             }
+        }
+
+        It '[<moduleFolderName>] Resource Modules must not skip the "*defaults" or "*waf-aligned" tests with a [` .e2eignore `] file.' -TestCases ($topLevelModuleTestCases | Where-Object { $_.moduleType -eq 'res' }) {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $moduleFolderPath
+            )
+
+            $incorrectFolders = @()
+            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e') | Where-Object {
+                $_.Name -match '^.*(defaults|waf-aligned)$' # the spec BCPRMNFR1 states, that the folder names should start with defaults|waf-aligned. Since it is a should and not a must, need to check for both cases.
+            }
+            foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+                $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
+                if (Test-Path $filePath) {
+                    $incorrectFolders += $e2eTestFolderPath.Name
+                }
+            }
+            $incorrectFolders | Should -BeNullOrEmpty -Because ('skipping this test is not allowed. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
+        }
+
+        It '[<moduleFolderName>] a [` .e2eignore `] file must contain text, which states the exception reason for not executing the deployment test.' -TestCases $topLevelModuleTestCases {
+
+            param(
+                [string] $moduleFolderName,
+                [string] $moduleFolderPath
+            )
+
+            $incorrectFolders = @()
+            $e2eTestFolderPathList = Get-ChildItem -Directory (Join-Path -Path $moduleFolderPath 'tests' 'e2e')
+            foreach ($e2eTestFolderPath in $e2eTestFolderPathList) {
+                $filePath = Join-Path -Path $e2eTestFolderPath '.e2eignore'
+                $pathExisting = Test-Path $filePath
+                if ($pathExisting) {
+                    $fileContent = Get-Content -Path $filePath
+                    if (-not $fileContent) {
+                        $incorrectFolders += $e2eTestFolderPath.Name + '\.e2eignore'
+                    }
+                }
+            }
+            $incorrectFolders | Should -BeNullOrEmpty -Because ('the file should contain a reason for skipping the test. Found incorrect items: [{0}].' -f ($incorrectFolders -join ', '))
         }
 
         It '[<moduleFolderName>] Module should contain a [` ORPHANED.md `] file only if orphaned.' -TestCases $topLevelModuleTestCases {
@@ -726,8 +784,10 @@ Describe 'Module tests' -Tag 'Module' {
 
             It '[<moduleFolderName>] All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type.' -TestCases $moduleFolderTestCases {
                 param (
-                    [hashtable] $templateFileContent,
-                    [hashtable] $templateFileParameters
+                    [hashtable] $TemplateFileContent,
+                    [hashtable] $TemplateFileParameters,
+                    [string] $TemplateFilePath,
+                    [bool] $VersionFileExists
                 )
 
                 $incorrectParameters = @()
@@ -757,15 +817,24 @@ Describe 'Module tests' -Tag 'Module' {
                 }
 
                 if ($incorrectParameters.Count -gt 0) {
-                    $warningMessage = 'All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items '
-                    Write-Warning ("$warningMessage`n- {0}`n" -f ($incorrectParameters -join "`n- "))
 
-                    Write-Output @{
-                        Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($incorrectParameters -join '</code><br>- <code>'))
+                    $versionFilePath = Join-Path (Split-Path $templateFilePath) 'version.json'
+                    if ($VersionFileExists) {
+                        $moduleVersion = [version](Get-Content $versionFilePath -Raw | ConvertFrom-Json).version
+                    }
+                    if ($VersionFileExists -and $moduleVersion -ge [version]'1.0') {
+                        # Enforcing test for modules with a version greater than 1.0
+                        $incorrectParameters | Should -BeNullOrEmpty -Because ('all parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
+                    } else {
+
+                        $warningMessage = 'All parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: '
+                        Write-Warning ("$warningMessage`n- {0}`n" -f ($incorrectParameters -join "`n- "))
+
+                        Write-Output @{
+                            Warning = ("$warningMessage<br>- <code>{0}</code><br>" -f ($incorrectParameters -join '</code><br>- <code>'))
+                        }
                     }
                 }
-                # Once we want to enforce this test, replace the above warning with the below
-                # $incorrectParameters | Should -BeNullOrEmpty -Because ('all parameters which are of type [object] or [array-of-objects] should implement a user-defined, or resource-derived type. Found incorrect items: [{0}].' -f ($incorrectParameters -join ', '))
             }
 
             Context 'Schema-based User-defined-types tests' -Tag 'UDT' {
