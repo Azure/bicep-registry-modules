@@ -626,10 +626,29 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     // Required parameters
     name: 'dffwaf001'
     // Non-required parameters
+    customerManagedKey: {
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
         eventHubName: '<eventHubName>'
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+          {
+            categoryGroup: 'audit'
+          }
+        ]
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'waf-aligned-diagnostics'
         storageAccountResourceId: '<storageAccountResourceId>'
         workspaceResourceId: '<workspaceResourceId>'
       }
@@ -637,15 +656,44 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     gitConfigureLater: true
     integrationRuntimes: [
       {
-        name: 'TestRuntime'
+        integrationRuntimeCustomDescription: 'WAF-aligned self-hosted integration runtime with enhanced security'
+        name: 'WafAlignedRuntime'
         type: 'SelfHosted'
       }
     ]
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'dataFactory'
+        subnetResourceId: '<subnetResourceId>'
+        tags: {
+          Environment: 'Non-Prod'
+          Role: 'DeploymentValidation'
+        }
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
     tags: {
+      'Backup-Required': 'No'
+      'Compliance-Required': 'Yes'
+      'Cost-Center': 'IT-DataPlatform'
+      'Data-Classification': 'Internal'
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
       Role: 'DeploymentValidation'
+      'WAF-Pillar': 'Security-Reliability-Cost-OperationalExcellence'
     }
   }
 }
@@ -668,11 +716,32 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
       "value": "dffwaf001"
     },
     // Non-required parameters
+    "customerManagedKey": {
+      "value": {
+        "keyName": "<keyName>",
+        "keyVaultResourceId": "<keyVaultResourceId>",
+        "userAssignedIdentityResourceId": "<userAssignedIdentityResourceId>"
+      }
+    },
     "diagnosticSettings": {
       "value": [
         {
           "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
           "eventHubName": "<eventHubName>",
+          "logCategoriesAndGroups": [
+            {
+              "categoryGroup": "allLogs"
+            },
+            {
+              "categoryGroup": "audit"
+            }
+          ],
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "waf-aligned-diagnostics",
           "storageAccountResourceId": "<storageAccountResourceId>",
           "workspaceResourceId": "<workspaceResourceId>"
         }
@@ -684,7 +753,8 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "integrationRuntimes": {
       "value": [
         {
-          "name": "TestRuntime",
+          "integrationRuntimeCustomDescription": "WAF-aligned self-hosted integration runtime with enhanced security",
+          "name": "WafAlignedRuntime",
           "type": "SelfHosted"
         }
       ]
@@ -692,11 +762,45 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "dataFactory",
+          "subnetResourceId": "<subnetResourceId>",
+          "tags": {
+            "Environment": "Non-Prod",
+            "Role": "DeploymentValidation"
+          }
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
+    },
     "tags": {
       "value": {
+        "Backup-Required": "No",
+        "Compliance-Required": "Yes",
+        "Cost-Center": "IT-DataPlatform",
+        "Data-Classification": "Internal",
         "Environment": "Non-Prod",
         "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
+        "Role": "DeploymentValidation",
+        "WAF-Pillar": "Security-Reliability-Cost-OperationalExcellence"
       }
     }
   }
@@ -716,10 +820,29 @@ using 'br/public:avm/res/data-factory/factory:<version>'
 // Required parameters
 param name = 'dffwaf001'
 // Non-required parameters
+param customerManagedKey = {
+  keyName: '<keyName>'
+  keyVaultResourceId: '<keyVaultResourceId>'
+  userAssignedIdentityResourceId: '<userAssignedIdentityResourceId>'
+}
 param diagnosticSettings = [
   {
     eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
     eventHubName: '<eventHubName>'
+    logCategoriesAndGroups: [
+      {
+        categoryGroup: 'allLogs'
+      }
+      {
+        categoryGroup: 'audit'
+      }
+    ]
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'waf-aligned-diagnostics'
     storageAccountResourceId: '<storageAccountResourceId>'
     workspaceResourceId: '<workspaceResourceId>'
   }
@@ -727,15 +850,44 @@ param diagnosticSettings = [
 param gitConfigureLater = true
 param integrationRuntimes = [
   {
-    name: 'TestRuntime'
+    integrationRuntimeCustomDescription: 'WAF-aligned self-hosted integration runtime with enhanced security'
+    name: 'WafAlignedRuntime'
     type: 'SelfHosted'
   }
 ]
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'dataFactory'
+    subnetResourceId: '<subnetResourceId>'
+    tags: {
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+]
+param publicNetworkAccess = 'Disabled'
 param tags = {
+  'Backup-Required': 'No'
+  'Compliance-Required': 'Yes'
+  'Cost-Center': 'IT-DataPlatform'
+  'Data-Classification': 'Internal'
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
   Role: 'DeploymentValidation'
+  'WAF-Pillar': 'Security-Reliability-Cost-OperationalExcellence'
 }
 ```
 
