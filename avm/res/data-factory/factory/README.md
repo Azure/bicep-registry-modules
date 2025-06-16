@@ -639,9 +639,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           {
             categoryGroup: 'allLogs'
           }
-          {
-            categoryGroup: 'audit'
-          }
         ]
         metricCategories: [
           {
@@ -731,9 +728,6 @@ module factory 'br/public:avm/res/data-factory/factory:<version>' = {
           "logCategoriesAndGroups": [
             {
               "categoryGroup": "allLogs"
-            },
-            {
-              "categoryGroup": "audit"
             }
           ],
           "metricCategories": [
@@ -832,9 +826,6 @@ param diagnosticSettings = [
     logCategoriesAndGroups: [
       {
         categoryGroup: 'allLogs'
-      }
-      {
-        categoryGroup: 'audit'
       }
     ]
     metricCategories: [
