@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10446881790970323145"
+      "templateHash": "7982537749518529946"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -1687,6 +1687,13 @@
       "metadata": {
         "description": "Optional. Enables the deployment of a `CanNotDelete` resource locks to the Virtual Networks Resource Group that is created by this module.\n"
       }
+    },
+    "peerAllVirtualNetworks": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Flag to do mesh peering of all virtual networks deployed into the new subscription."
+      }
     }
   },
   "variables": {
@@ -1985,6 +1992,9 @@
           "userAssignedIdentitiesResourceGroupLockEnabled": {
             "value": "[parameters('userAssignedIdentitiesResourceGroupLockEnabled')]"
           },
+          "peerAllVirtualNetworks": {
+            "value": "[parameters('peerAllVirtualNetworks')]"
+          },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           }
@@ -1997,7 +2007,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "5205620126087633213"
+              "templateHash": "16892033208338195324"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -3426,6 +3436,13 @@
                 "description": "A list of additional virtual networks to create."
               }
             },
+            "peerAllVirtualNetworks": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Flag to do mesh peering of all virtual networks deployed into the new subscription."
+              }
+            },
             "virtualNetworkVwanEnableInternetSecurity": {
               "type": "bool",
               "defaultValue": true,
@@ -3728,7 +3745,9 @@
             "virtualWanHubConnectionPropogatedRouteTables": "[if(not(empty(parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'))), parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'), array(variables('virutalWanHubDefaultRouteTableId')))]",
             "virtualWanHubConnectionPropogatedLabels": "[if(not(empty(parameters('virtualNetworkVwanPropagatedLabels'))), parameters('virtualNetworkVwanPropagatedLabels'), createArray('default'))]",
             "resourceProvidersFormatted": "[replace(string(parameters('resourceProviders')), '\"', '\\\"')]",
-            "nsgArrayFormatted": "[if(not(empty(parameters('additionalVirtualNetworks'))), flatten(map(parameters('additionalVirtualNetworks'), lambda('vnet', map(filter(coalesce(tryGet(lambdaVariables('vnet'), 'subnets'), createArray()), lambda('subnet', and(contains(lambdaVariables('subnet'), 'networkSecurityGroup'), not(equals(lambdaVariables('subnet').networkSecurityGroup, null()))))), lambda('subnet', createObject('vnetResourceGroupName', lambdaVariables('vnet').resourceGroupName, 'subnetName', lambdaVariables('subnet').name, 'nsgName', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'name'), ''), 'nsgLocation', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'location'), lambdaVariables('vnet').location), 'nsgRules', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'securityRules'), null()), 'nsgTags', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'tags'), null()))))))), createArray())]"
+            "nsgArrayFormatted": "[if(not(empty(parameters('additionalVirtualNetworks'))), flatten(map(parameters('additionalVirtualNetworks'), lambda('vnet', map(filter(coalesce(tryGet(lambdaVariables('vnet'), 'subnets'), createArray()), lambda('subnet', and(contains(lambdaVariables('subnet'), 'networkSecurityGroup'), not(equals(lambdaVariables('subnet').networkSecurityGroup, null()))))), lambda('subnet', createObject('vnetResourceGroupName', lambdaVariables('vnet').resourceGroupName, 'subnetName', lambdaVariables('subnet').name, 'nsgName', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'name'), ''), 'nsgLocation', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'location'), lambdaVariables('vnet').location), 'nsgRules', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'securityRules'), null()), 'nsgTags', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'tags'), null()))))))), createArray())]",
+            "allVirtualNetworks": "[if(and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), concat(createArray(createObject('name', parameters('virtualNetworkName'), 'resourceGroupName', parameters('virtualNetworkResourceGroupName'), 'location', parameters('virtualNetworkLocation'), 'addressPrefixes', parameters('virtualNetworkAddressSpace'))), parameters('additionalVirtualNetworks')), parameters('additionalVirtualNetworks'))]",
+            "peeringCombinations": "[if(and(not(empty(variables('allVirtualNetworks'))), parameters('peerAllVirtualNetworks')), flatten(map(variables('allVirtualNetworks'), lambda('sourceVnet', 'sourceIndex', map(filter(variables('allVirtualNetworks'), lambda('targetVnet', 'targetIndex', not(equals(lambdaVariables('sourceIndex'), lambdaVariables('targetIndex'))))), lambda('targetVnet', 'targetIndex', createObject('sourceName', lambdaVariables('sourceVnet').name, 'targetName', lambdaVariables('targetVnet').name, 'sourceResourceGroupName', lambdaVariables('sourceVnet').resourceGroupName, 'targetResourceGroupName', lambdaVariables('targetVnet').resourceGroupName, 'sourceIndex', lambdaVariables('sourceIndex'), 'targetIndex', indexOf(variables('allVirtualNetworks'), lambdaVariables('targetVnet')), 'peeringName', format('peer-{0}-to-{1}', lambdaVariables('sourceVnet').name, lambdaVariables('targetVnet').name))))))), createArray())]"
           },
           "resources": {
             "moveSubscriptionToManagementGroupDelay": {
@@ -45904,6 +45923,147 @@
                 "[format('createAdditonalNatGateway[{0}]', copyIndex())]",
                 "createBastionNsg",
                 "createResourceGroupForadditionalLzNetworking"
+              ]
+            },
+            "meshPeerAdditionalVnets": {
+              "copy": {
+                "name": "meshPeerAdditionalVnets",
+                "count": "[length(variables('peeringCombinations'))]"
+              },
+              "condition": "[and(and(parameters('peerAllVirtualNetworks'), not(empty(parameters('additionalVirtualNetworks')))), not(equals(variables('peeringCombinations')[copyIndex()].sourceResourceGroupName, parameters('virtualNetworkResourceGroupName'))))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('meshPeerAdditionalVnets-{0}-{1}', copyIndex(), uniqueString('meshPeerAdditionalVnets', deployment().name))]",
+              "subscriptionId": "[parameters('subscriptionId')]",
+              "resourceGroup": "[variables('peeringCombinations')[copyIndex()].sourceResourceGroupName]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "destinationVirtualNetworkName": {
+                    "value": "[variables('peeringCombinations')[copyIndex()].targetName]"
+                  },
+                  "destinationVirtualNetworkResourceGroupName": {
+                    "value": "[variables('peeringCombinations')[copyIndex()].targetResourceGroupName]"
+                  },
+                  "sourceVirtualNetworkName": {
+                    "value": "[variables('peeringCombinations')[copyIndex()].sourceName]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.36.1.42791",
+                      "templateHash": "4693796059509131662"
+                    }
+                  },
+                  "parameters": {
+                    "sourceVirtualNetworkName": {
+                      "type": "string"
+                    },
+                    "destinationVirtualNetworkName": {
+                      "type": "string"
+                    },
+                    "destinationVirtualNetworkResourceGroupName": {
+                      "type": "string"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}-to-{2}', parameters('sourceVirtualNetworkName'), parameters('sourceVirtualNetworkName'), parameters('destinationVirtualNetworkName'))]",
+                      "properties": {
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": false,
+                        "allowVirtualNetworkAccess": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                          "id": "[resourceId(parameters('destinationVirtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('destinationVirtualNetworkName'))]"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "createAdditionalVnets"
+              ]
+            },
+            "meshPeerFromPrimaryVnet": {
+              "copy": {
+                "name": "meshPeerFromPrimaryVnet",
+                "count": "[length(variables('peeringCombinations'))]"
+              },
+              "condition": "[and(and(parameters('peerAllVirtualNetworks'), and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName'))))), equals(variables('peeringCombinations')[copyIndex()].sourceResourceGroupName, parameters('virtualNetworkResourceGroupName')))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('meshPeerFromPrimaryVnet-{0}-{1}', copyIndex(), uniqueString('meshPeerFromPrimaryVnet', deployment().name))]",
+              "subscriptionId": "[parameters('subscriptionId')]",
+              "resourceGroup": "[variables('peeringCombinations')[copyIndex()].sourceResourceGroupName]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "destinationVirtualNetworkName": {
+                    "value": "[variables('peeringCombinations')[copyIndex()].targetName]"
+                  },
+                  "destinationVirtualNetworkResourceGroupName": {
+                    "value": "[variables('peeringCombinations')[copyIndex()].targetResourceGroupName]"
+                  },
+                  "sourceVirtualNetworkName": {
+                    "value": "[variables('peeringCombinations')[copyIndex()].sourceName]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.36.1.42791",
+                      "templateHash": "4693796059509131662"
+                    }
+                  },
+                  "parameters": {
+                    "sourceVirtualNetworkName": {
+                      "type": "string"
+                    },
+                    "destinationVirtualNetworkName": {
+                      "type": "string"
+                    },
+                    "destinationVirtualNetworkResourceGroupName": {
+                      "type": "string"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+                      "apiVersion": "2024-07-01",
+                      "name": "[format('{0}/{1}-to-{2}', parameters('sourceVirtualNetworkName'), parameters('sourceVirtualNetworkName'), parameters('destinationVirtualNetworkName'))]",
+                      "properties": {
+                        "allowForwardedTraffic": true,
+                        "allowGatewayTransit": false,
+                        "allowVirtualNetworkAccess": true,
+                        "useRemoteGateways": false,
+                        "remoteVirtualNetwork": {
+                          "id": "[resourceId(parameters('destinationVirtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('destinationVirtualNetworkName'))]"
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "dependsOn": [
+                "createAdditionalVnets",
+                "createLzVnet"
               ]
             }
           },

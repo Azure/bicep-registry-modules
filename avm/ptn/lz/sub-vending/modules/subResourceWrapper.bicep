@@ -88,8 +88,8 @@ param virtualNetworkUseRemoteGateways bool = true
 @sys.description('A list of additional virtual networks to create.')
 param additionalVirtualNetworks virtualNetworkType[] = []
 
-//@sys.description('Flag to do mesh peering of all virtual networks deployed into the new subscription.')
-//param peerAllVirtualNetworks bool = false
+@sys.description('Flag to do mesh peering of all virtual networks deployed into the new subscription.')
+param peerAllVirtualNetworks bool = false
 
 @sys.description('Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.')
 param virtualNetworkVwanEnableInternetSecurity bool = true
@@ -473,6 +473,41 @@ var nsgArrayFormatted = !empty(additionalVirtualNetworks)
             nsgLocation: subnet.?networkSecurityGroup.?location ?? vnet.location
             nsgRules: subnet.?networkSecurityGroup.?securityRules ?? null
             nsgTags: subnet.?networkSecurityGroup.?tags ?? null
+          }
+        )
+    ))
+  : []
+
+// Generate peering combinations using the same flatten/map approach
+// Include the primary VNet (createLzVnet) when it's enabled for mesh peering
+var allVirtualNetworks = (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))
+  ? concat(
+      [
+        {
+          name: virtualNetworkName
+          resourceGroupName: virtualNetworkResourceGroupName
+          location: virtualNetworkLocation
+          addressPrefixes: virtualNetworkAddressSpace
+        }
+      ],
+      additionalVirtualNetworks
+    )
+  : additionalVirtualNetworks
+
+var peeringCombinations = !empty(allVirtualNetworks) && peerAllVirtualNetworks
+  ? flatten(map(
+      allVirtualNetworks,
+      (sourceVnet, sourceIndex) =>
+        map(
+          filter(allVirtualNetworks, (targetVnet, targetIndex) => sourceIndex != targetIndex),
+          (targetVnet, targetIndex) => {
+            sourceName: sourceVnet.name
+            targetName: targetVnet.name
+            sourceResourceGroupName: sourceVnet.resourceGroupName
+            targetResourceGroupName: targetVnet.resourceGroupName
+            sourceIndex: sourceIndex
+            targetIndex: indexOf(allVirtualNetworks, targetVnet)
+            peeringName: 'peer-${sourceVnet.name}-to-${targetVnet.name}'
           }
         )
     ))
@@ -1645,6 +1680,37 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
           ]
         : null
       enableTelemetry: enableTelemetry
+    }
+  }
+]
+
+// Mesh peering for additional VNets only
+module meshPeerAdditionalVnets 'peering.bicep' = [
+  for (peering, i) in peeringCombinations: if (peerAllVirtualNetworks && !empty(additionalVirtualNetworks) && peering.sourceResourceGroupName != virtualNetworkResourceGroupName) {
+    scope: resourceGroup(subscriptionId, peering.sourceResourceGroupName)
+    dependsOn: [
+      createAdditionalVnets
+    ]
+    params: {
+      destinationVirtualNetworkName: peering.targetName
+      destinationVirtualNetworkResourceGroupName: peering.targetResourceGroupName
+      sourceVirtualNetworkName: peering.sourceName
+    }
+  }
+]
+
+// Mesh peering from primary VNet to additional VNets
+module meshPeerFromPrimaryVnet 'peering.bicep' = [
+  for (peering, i) in peeringCombinations: if (peerAllVirtualNetworks && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) && peering.sourceResourceGroupName == virtualNetworkResourceGroupName) {
+    scope: resourceGroup(subscriptionId, peering.sourceResourceGroupName)
+    dependsOn: [
+      createLzVnet
+      createAdditionalVnets
+    ]
+    params: {
+      destinationVirtualNetworkName: peering.targetName
+      destinationVirtualNetworkResourceGroupName: peering.targetResourceGroupName
+      sourceVirtualNetworkName: peering.sourceName
     }
   }
 ]

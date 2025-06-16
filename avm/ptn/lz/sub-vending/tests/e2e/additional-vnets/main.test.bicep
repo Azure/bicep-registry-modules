@@ -48,6 +48,7 @@ module testDeployment '../../../main.bicep' = {
       }
     ]
     virtualNetworkResourceGroupLockEnabled: false
+    peerAllVirtualNetworks: true
     additionalVirtualNetworks: [
       {
         name: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}-1'
@@ -87,6 +88,7 @@ module testDeployment '../../../main.bicep' = {
         resourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}-2'
         location: resourceLocation
         addressPrefixes: ['10.90.0.0/16']
+        resourceGroupLockEnabled: false
         peerToHubNetwork: false
         subnets: [
           {

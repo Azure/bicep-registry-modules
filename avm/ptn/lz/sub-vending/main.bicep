@@ -386,6 +386,9 @@ param userAssignedManagedIdentities userAssignedIdentityType[] = []
 ''')
 param userAssignedIdentitiesResourceGroupLockEnabled bool = true
 
+@description('Optional. Flag to do mesh peering of all virtual networks deployed into the new subscription.')
+param peerAllVirtualNetworks bool = false
+
 // VARIABLES
 
 var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId)
@@ -487,6 +490,7 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     userAssignedIdentityResourceGroupName: userAssignedIdentityResourceGroupName
     userAssignedManagedIdentities: userAssignedManagedIdentities
     userAssignedIdentitiesResourceGroupLockEnabled: userAssignedIdentitiesResourceGroupLockEnabled
+    peerAllVirtualNetworks: peerAllVirtualNetworks
     enableTelemetry: enableTelemetry
   }
 }

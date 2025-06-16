@@ -101,5 +101,9 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $additionalVnet2.Subnets[0].AddressPrefix | Should -Be '10.90.1.0/24'
             $additionalVnet2.Subnets[0].NatGateway | Should -Not -BeNullOrEmpty
         }
+
+        It 'Should have a Virtual Network with 2 Virtual Network Peers' {
+            $vnetHs.VirtualNetworkPeerings.Count | Should -Be 2
+        }
     }
 }
