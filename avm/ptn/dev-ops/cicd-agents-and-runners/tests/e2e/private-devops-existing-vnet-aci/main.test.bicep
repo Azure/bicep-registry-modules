@@ -77,6 +77,7 @@ module testDeployment '../../../main.bicep' = {
       containerRegistryPrivateDnsZoneResourceId: nestedDependencies.outputs.acrPrivateDNSZoneResourceId
       natGatewayPublicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceId
       natGatewayResourceId: nestedDependencies.outputs.natGatewayResourceId
+      acrDeploymentScriptSubnetName: 'acr-deployment-script-subnet'
       computeNetworking: {
         computeNetworkType: 'azureContainerInstance'
         containerInstanceSubnetName: 'aci-subnet'

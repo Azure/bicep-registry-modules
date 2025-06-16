@@ -207,7 +207,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
   name: 'logAnalyticsWorkspace-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'law-${namingPrefix}-${uniqueString(resourceGroup().id)}-law'
@@ -216,7 +216,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
   }
 }
 
-module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = {
+module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: 'userAssignedIdentity-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'msi-${namingPrefix}-${uniqueString(resourceGroup().id)}'
@@ -224,7 +224,7 @@ module userAssignedIdentity 'br/public:avm/res/managed-identity/user-assigned-id
   }
 }
 
-module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (privateNetworking && empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')) {
+module acrPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (privateNetworking && empty(networkingConfiguration.?containerRegistryPrivateDnsZoneResourceId ?? '')) {
   name: 'acrdnszone${namingPrefix}${uniqueString(resourceGroup().id)}'
   params: {
     name: 'privatelink.azurecr.io'
@@ -255,6 +255,10 @@ module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
       {
         principalId: userAssignedIdentity.outputs.principalId
         roleDefinitionIdOrName: '8311e382-0749-4cb8-b61a-304f252e45ec'
+      }
+      {
+        principalId: userAssignedIdentity.outputs.principalId
+        roleDefinitionIdOrName: '3bc748fc-213d-45c1-8d91-9da5725539b9'
       }
     ]
     networkRuleBypassOptions: privateNetworking ? 'AzureServices' : 'None'
@@ -288,7 +292,7 @@ module acr 'br/public:avm/res/container-registry/registry:0.9.1' = {
       : null
   }
 }
-module newVnet 'br/public:avm/res/network/virtual-network:0.6.1' = if (networkingConfiguration.networkType == 'createNew') {
+module newVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (networkingConfiguration.networkType == 'createNew') {
   name: 'vnet-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'vnet-${namingPrefix}-${uniqueString(resourceGroup().id)}'
@@ -307,6 +311,7 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.6.1' = if (networkin
             {
               name: networkingConfiguration.?acrDeploymentScriptSubnetName ?? 'acr-deployment-script-subnet'
               addressPrefix: networkingConfiguration.?acrDeploymentScriptSubnetPrefix ?? '10.0.3.0/24'
+              delegation: 'Microsoft.ContainerInstance/containerGroups'
             }
           ]
         : [],
@@ -403,7 +408,7 @@ module natGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = if (privateNet
   }
 }
 
-resource buildImages 'Microsoft.ContainerRegistry/registries/tasks@2019-06-01-preview' = [
+resource buildImages 'Microsoft.ContainerRegistry/registries/tasks@2025-03-01-preview' = [
   for (image, i) in computeTypes: {
     name: '${acr.name}/buildImage-${image}-${selfHostedConfig.selfHostedType}-${i}'
     location: location
@@ -455,7 +460,7 @@ module buildImagesRoleAssignment 'br/public:avm/ptn/authorization/resource-role-
   }
 ]
 
-resource taskRun 'Microsoft.ContainerRegistry/registries/taskRuns@2019-06-01-preview' = [
+resource taskRun 'Microsoft.ContainerRegistry/registries/taskRuns@2025-03-01-preview' = [
   for (image, i) in computeTypes: {
     name: '${acr.name}/taskrun-${image}-${selfHostedConfig.selfHostedType}-${i}'
     location: location
@@ -705,7 +710,7 @@ module acaPlaceholderJob 'br/public:avm/res/app/job:0.6.0' = if (contains(comput
     workloadProfileName: 'consumption'
   }
 }
-module deploymentScriptPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (privateNetworking && empty(networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? '')) {
+module deploymentScriptPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (privateNetworking && empty(networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? '')) {
   name: 'stgdsdnszone${namingPrefix}${uniqueString(resourceGroup().id)}'
   params: {
     name: 'privatelink.file.${environment().suffixes.storage}'
@@ -762,8 +767,8 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.13.0' = 
   }
 }
 
-module deploymentScriptAcr 'br/public:avm/res/storage/storage-account:0.13.0' = if (privateNetworking) {
-  name: 'deploymentScriptAcr-${uniqueString(resourceGroup().id)}'
+module deploymentScriptAcrStg 'br/public:avm/res/storage/storage-account:0.13.0' = if (privateNetworking) {
+  name: 'deploymentScriptAcrStg-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'stgacr${uniqueString(resourceGroup().id, acr.outputs.name,location)}'
     location: location
@@ -783,24 +788,21 @@ module deploymentScriptAcr 'br/public:avm/res/storage/storage-account:0.13.0' = 
       {
         service: 'file'
         subnetResourceId: networkingConfiguration.networkType == 'useExisting'
-          ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.acrDeploymentScriptSubnetName}'
+          ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.?containerRegistryPrivateEndpointSubnetName}'
           : filter(
               newVnet.outputs.subnetResourceIds,
               subnetId =>
-                contains(
-                  subnetId,
-                  networkingConfiguration.?acrDeploymentScriptSubnetName ?? 'acr-deployment-script-subnet'
-                )
+                contains(subnetId, networkingConfiguration.?containerRegistryPrivateEndpointSubnetName ?? 'acr-subnet')
             )[0]
         privateDnsZoneResourceIds: [
-          networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? deploymentScriptPrivateDNSZone.outputs.resourceId
+          networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? deploymentScriptPrivateDNSZone.outputs.resourceId
         ]
       }
     ]
   }
 }
 
-module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1' = if (contains(
+module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.5.1' = if (contains(
   computeTypes,
   'azure-container-app'
 ) && selfHostedConfig.selfHostedType == 'azuredevops') {
@@ -813,7 +815,7 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1'
     retentionInterval: 'P1D'
     location: location
     managedIdentities: {
-      userAssignedResourcesIds: [
+      userAssignedResourceIds: [
         userAssignedIdentity.outputs.resourceId
       ]
     }
@@ -850,14 +852,22 @@ module acrNetworkByPassTasks 'br/public:avm/res/resources/deployment-script:0.5.
       ]
     }
     enableTelemetry: enableTelemetry
-    storageAccountResourceId: privateNetworking ? deploymentScriptAcr.outputs.resourceId : null
+    storageAccountResourceId: privateNetworking ? deploymentScriptAcrStg.outputs.resourceId : null
     subnetResourceIds: (privateNetworking && networkingConfiguration.networkType == 'createNew')
-      ? filter(
-          newVnet.outputs.subnetResourceIds,
-          subnetId => contains(subnetId, networkingConfiguration.?acrDeploymentScriptSubnetName ?? 'acr-ds-subnet')
-        )[0]
+      ? [
+          filter(
+            newVnet.outputs.subnetResourceIds,
+            subnetId =>
+              contains(
+                subnetId,
+                networkingConfiguration.?acrDeploymentScriptSubnetName ?? 'acr-deployment-script-subnet'
+              )
+          )[0]
+        ]
       : (privateNetworking && networkingConfiguration.networkType == 'useExisting')
-          ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.acrDeploymentScriptSubnetName}'
+          ? [
+              '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.acrDeploymentScriptSubnetName}'
+            ]
           : null
     scriptContent: 'az resource update --namespace Microsoft.ContainerRegistry --resource-type registries --name ${acr.outputs.name} --resource-group ${resourceGroup().name} --api-version 2025-05-01-preview --set properties.networkRuleBypassAllowedForTasks=true'
   }

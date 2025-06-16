@@ -22,13 +22,14 @@ param personalAccessToken string = newGuid()
 param serviceShort string = 'pngh'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+//param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'sbb'
 
 // =================
 // General resources
 // =================
 
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceLocation
 }
