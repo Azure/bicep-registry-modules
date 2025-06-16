@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10439854813799229429"
+      "templateHash": "245244927823755151"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -50242,7 +50242,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10043975046936902391"
+              "templateHash": "12631559748191194416"
             }
           },
           "parameters": {
@@ -50706,7 +50706,7 @@
             },
             {
               "type": "Microsoft.Insights/dataCollectionRuleAssociations",
-              "apiVersion": "2022-06-01",
+              "apiVersion": "2023-03-11",
               "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
               "name": "DCRA-VMSS-WEL-LAW",
               "properties": {
@@ -50720,7 +50720,7 @@
             },
             {
               "type": "Microsoft.Insights/dataCollectionRuleAssociations",
-              "apiVersion": "2022-06-01",
+              "apiVersion": "2023-03-11",
               "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
               "name": "DCRA-VM-PC-LAW",
               "properties": {

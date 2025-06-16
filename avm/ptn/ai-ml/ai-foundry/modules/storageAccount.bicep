@@ -55,7 +55,6 @@ var nameFormatted = take(toLower(storageName), 24)
 
 module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   name: take('${nameFormatted}-storage-account-deployment', 64)
-  dependsOn: [filePrivateDnsZone, blobPrivateDnsZone] // required due to optional flags that could change dependency
   params: {
     name: nameFormatted
     location: location

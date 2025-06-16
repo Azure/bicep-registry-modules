@@ -39,7 +39,6 @@ var nameFormatted = take(toLower(name), 24)
 
 module keyvault 'br/public:avm/res/key-vault/vault:0.13.0' = {
   name: take('${nameFormatted}-keyvault-deployment', 64)
-  dependsOn: [privateDnsZone] // required due to optional flags that could change dependency
   params: {
     name: nameFormatted
     location: location
