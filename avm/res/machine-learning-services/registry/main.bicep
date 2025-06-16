@@ -202,7 +202,7 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
   }
 }
 
-module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-registry-PrivateEndpoint-${index}'
     scope: resourceGroup(
