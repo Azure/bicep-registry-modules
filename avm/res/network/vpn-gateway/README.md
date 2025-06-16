@@ -31,7 +31,7 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [NAT Rules Issue Test Case](#example-3-nat-rules-issue-test-case)
+- [Using NAT Rules](#example-3-using-nat-rules)
 - [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
@@ -303,9 +303,9 @@ param vpnConnections = [
 </details>
 <p>
 
-### Example 3: _NAT Rules Issue Test Case_
+### Example 3: _Using NAT Rules_
 
-This test case reproduces and verifies the fix for the NAT rules reference issue.
+This instance deploys the module using NAT rule.
 
 
 <details>
@@ -358,12 +358,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
         type: 'Static'
       }
     ]
-    tags: {
-      Environment: 'Test'
-      issue: 'vpng-4509'
-      Purpose: 'NAT Rules Dependency Fix Validation'
-      'test-case': 'nat-rules-issue-fix'
-    }
     vpnConnections: [
       {
         enableBgp: false
@@ -474,14 +468,6 @@ module vpnGateway 'br/public:avm/res/network/vpn-gateway:<version>' = {
         }
       ]
     },
-    "tags": {
-      "value": {
-        "Environment": "Test",
-        "issue": "vpng-4509",
-        "Purpose": "NAT Rules Dependency Fix Validation",
-        "test-case": "nat-rules-issue-fix"
-      }
-    },
     "vpnConnections": {
       "value": [
         {
@@ -582,12 +568,6 @@ param natRules = [
     type: 'Static'
   }
 ]
-param tags = {
-  Environment: 'Test'
-  issue: 'vpng-4509'
-  Purpose: 'NAT Rules Dependency Fix Validation'
-  'test-case': 'nat-rules-issue-fix'
-}
 param vpnConnections = [
   {
     enableBgp: false

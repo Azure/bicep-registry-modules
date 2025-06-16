@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'NAT Rules Issue Test Case'
-metadata description = 'This test case reproduces and verifies the fix for the NAT rules reference issue.'
+metadata name = 'Using NAT Rules'
+metadata description = 'This instance deploys the module using NAT rule.'
 
 // ========== //
 // Parameters //
@@ -9,7 +9,7 @@ metadata description = 'This test case reproduces and verifies the fix for the N
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-network.vpngateway-nattest-rg'
+param resourceGroupName string = 'dep-${namePrefix}-network.vpngateways-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -61,20 +61,20 @@ module testDeployment '../../../main.bicep' = [
       bgpSettings: {
         asn: 65515
         peerWeight: 0
-      }      // NAT Rules - Define these first
+      }     
       natRules: [
         {
           name: 'testnatrule'
           mode: 'EgressSnat'
-          type: 'Static'  // Static NAT requires equal-sized address spaces
+          type: 'Static'  
           externalMappings: [
             {
-              addressSpace: '10.52.18.0/28'  // Changed to /28 to match internal mapping
+              addressSpace: '10.52.18.0/28'  
             }
           ]
           internalMappings: [
             {
-              addressSpace: '10.33.5.64/28'  // Both are /28 (16 IPs each)
+              addressSpace: '10.33.5.64/28' 
             }
           ]
         }
@@ -84,18 +84,17 @@ module testDeployment '../../../main.bicep' = [
           type: 'Static'
           externalMappings: [
             {
-              addressSpace: '192.168.100.0/24'  // /24 (256 IPs)
+              addressSpace: '192.168.100.0/24' 
             }
           ]
           internalMappings: [
             {
-              addressSpace: '10.10.10.0/24'    // /24 (256 IPs) - equal size
+              addressSpace: '10.10.10.0/24' 
             }
           ]
         }
       ]
         // VPN Connections that reference the NAT rules
-      // With the fix, these will deploy after NAT rules are created
       vpnConnections: [
         {
           name: 'test-connection-with-nat'
@@ -106,7 +105,6 @@ module testDeployment '../../../main.bicep' = [
           useLocalAzureIpAddress: false
           usePolicyBasedTrafficSelectors: false
           vpnConnectionProtocolType: 'IKEv2'
-          // Removed deprecated routingWeight property from connection level
           
           // VPN Link Connections with NAT rule references
           vpnLinkConnections: [
@@ -122,13 +120,12 @@ module testDeployment '../../../main.bicep' = [
                 vpnLinkConnectionMode: 'Default'
                 vpnSiteLink: {
                   id: nestedDependencies.outputs.vpnSiteLinkResourceId
-                }                // This egress NAT rule reference will now work due to the dependency fix
+                }              
                 egressNatRules: [
                   {
                     id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup.name}/providers/Microsoft.Network/vpnGateways/${namePrefix}${serviceShort}001/natRules/testnatrule'
                   }
                 ]
-                // Also test ingress NAT rule reference  
                 ingressNatRules: [
                   {
                     id: '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup.name}/providers/Microsoft.Network/vpnGateways/${namePrefix}${serviceShort}001/natRules/ingress-nat-rule'
@@ -140,35 +137,9 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
       
-      // Additional settings
       vpnGatewayScaleUnit: 2
       enableTelemetry: true
-        // Tags for identification
-      tags: {
-        'test-case': 'nat-rules-issue-fix'
-        issue: 'vpng-4509'
-        Environment: 'Test'
-        Purpose: 'NAT Rules Dependency Fix Validation'
-      }
     }
   }
 ]
 
-// ======= //
-// Outputs //
-// ======= //
-
-@description('The name of the VPN gateway.')
-output vpnGatewayName string = testDeployment[0].outputs.name
-
-@description('The resource ID of the VPN gateway.')
-output vpnGatewayResourceId string = testDeployment[0].outputs.resourceId
-
-@description('The NAT rule resource IDs.')
-output natRuleResourceIds array = testDeployment[0].outputs.natRuleResourceIds
-
-@description('The VPN connection resource IDs.')
-output vpnConnectionResourceIds array = testDeployment[0].outputs.vpnConnectionResourceIds
-
-@description('The resource group name.')
-output resourceGroupName string = resourceGroup.name
