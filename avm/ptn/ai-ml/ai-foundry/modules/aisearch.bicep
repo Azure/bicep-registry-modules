@@ -42,7 +42,7 @@ var nameFormatted = take(toLower(name), 60)
 
 module aiSearch 'br/public:avm/res/search/search-service:0.10.0' = {
   name: take('${nameFormatted}-search-services-deployment', 64)
-  dependsOn: [privateDnsZone] // required due to optional flags that could change dependency
+  // dependsOn: [privateDnsZone] // required due to optional flags that could change dependency
   params: {
     name: nameFormatted
     location: location

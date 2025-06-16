@@ -365,7 +365,7 @@ resource dcrPerfLaw 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   ]
 }
 
-resource dcrEventLogsAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2022-06-01' = {
+resource dcrEventLogsAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = {
   name: 'DCRA-VMSS-WEL-LAW'
   scope: virtualMachine
   properties: {
@@ -374,7 +374,7 @@ resource dcrEventLogsAssociation 'Microsoft.Insights/dataCollectionRuleAssociati
   }
 }
 
-resource dcrPerfLawAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2022-06-01' = {
+resource dcrPerfLawAssociation 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = {
   name: 'DCRA-VM-PC-LAW'
   scope: virtualMachine
   properties: {

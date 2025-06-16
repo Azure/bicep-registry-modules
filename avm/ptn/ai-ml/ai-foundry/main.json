@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2623041588480414798"
+      "templateHash": "10439854813799229429"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -1680,7 +1680,7 @@
       "type": "string",
       "defaultValue": "Standard_DS4_v2",
       "metadata": {
-        "description": "Specifies the size of the jump-box Virtual Machine."
+        "description": "Optional.Specifies the size of the jump-box Virtual Machine."
       }
     },
     "vmAdminUsername": {
@@ -1689,7 +1689,7 @@
       "minLength": 3,
       "maxLength": 20,
       "metadata": {
-        "description": "Specifies the name of the administrator account for the jump-box virtual machine. Defaults to \"[name]vmuser\". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion."
+        "description": "Optional.Specifies the name of the administrator account for the jump-box virtual machine. Defaults to \"[name]vmuser\". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion."
       }
     },
     "vmAdminPasswordOrKey": {
@@ -1697,7 +1697,7 @@
       "minLength": 4,
       "maxLength": 70,
       "metadata": {
-        "description": "Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters."
+        "description": "Optional. Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters."
       }
     },
     "tags": {
@@ -1711,14 +1711,14 @@
       "type": "string",
       "defaultValue": "[deployer().objectId]",
       "metadata": {
-        "description": "Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user."
+        "description": "Required. Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user."
       }
     },
     "allowedIpAddress": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed."
+        "description": "Optional. IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed."
       }
     },
     "aiFoundryType": {
@@ -1729,13 +1729,13 @@
         "StandardPrivate"
       ],
       "metadata": {
-        "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
+        "description": "Required. Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
       }
     },
     "contentSafetyEnabled": {
       "type": "bool",
       "metadata": {
-        "description": "Whether to include Azure AI Content Safety in the deployment."
+        "description": "Optional. Whether to include Azure AI Content Safety in the deployment."
       }
     },
     "networkAcls": {
@@ -1752,7 +1752,7 @@
       "type": "string",
       "defaultValue": "[format('{0}proj', parameters('name'))]",
       "metadata": {
-        "description": "Name of the AI Foundry project"
+        "description": "Required. Name of the AI Foundry project"
       }
     }
   },
