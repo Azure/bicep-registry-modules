@@ -16,8 +16,8 @@ param deadLetterWithResourceIdentity object?
 @description('Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information).')
 param deliveryWithResourceIdentity object?
 
-@description('Required. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).')
-param destination object
+@description('Conditional. The destination for the event subscription. Required if deliveryWithResourceIdentity is not provided. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).')
+param destination object?
 
 @description('Optional. The event delivery schema for the event subscription.')
 @allowed([
@@ -40,11 +40,11 @@ param labels array?
 @description('Optional. The retry policy for events. This can be used to configure the TTL and maximum number of delivery attempts and time to live for events.')
 param retryPolicy object?
 
-resource systemTopic 'Microsoft.EventGrid/systemTopics@2023-12-15-preview' existing = {
+resource systemTopic 'Microsoft.EventGrid/systemTopics@2025-02-15' existing = {
   name: systemTopicName
 }
 
-resource eventSubscription 'Microsoft.EventGrid/systemTopics/eventSubscriptions@2023-12-15-preview' = {
+resource eventSubscription 'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15' = {
   name: name
   parent: systemTopic
   properties: {

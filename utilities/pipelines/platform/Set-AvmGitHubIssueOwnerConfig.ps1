@@ -60,7 +60,7 @@ function Set-AvmGitHubIssueOwnerConfig {
 "@
         }
         # orphaned module
-        elseif ($module.ModuleStatus -eq 'Orphaned :eyes:') {
+        elseif ($module.ModuleStatus -eq 'Orphaned') {
             $reply = @"
 **@$($issue.author.login), thanks for submitting this issue for the ``$moduleName`` module!**
 
@@ -91,7 +91,7 @@ function Set-AvmGitHubIssueOwnerConfig {
             gh issue comment $issue.url --body $reply --repo $Repo
         }
 
-        if (($module.ModuleStatus -ne 'Orphaned :eyes:') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
+        if (($module.ModuleStatus -ne 'Orphaned') -and (-not ([string]::IsNullOrEmpty($module.PrimaryModuleOwnerGHHandle)))) {
             if ($PSCmdlet.ShouldProcess(("owner [{0}] to issue [$($issue.title)]" -f $module.PrimaryModuleOwnerGHHandle), 'Assign')) {
                 # assign owner
                 $assign = gh issue edit $issue.url --add-assignee $module.PrimaryModuleOwnerGHHandle --repo $Repo
