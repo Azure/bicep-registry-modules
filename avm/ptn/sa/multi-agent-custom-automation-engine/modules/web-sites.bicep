@@ -230,6 +230,7 @@ module app_config 'web-sites.config.bicep' = [
   }
 ]
 
+#disable-next-line use-recent-api-versions
 resource app_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
   for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
     name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'

@@ -322,6 +322,7 @@ resource cognitiveService 'Microsoft.CognitiveServices/accounts@2025-04-01-previ
   }
   properties: {
     customSubDomainName: customSubDomainName
+    allowProjectManagement: true
     networkAcls: !empty(networkAcls ?? {})
       ? {
           defaultAction: networkAcls.?defaultAction
@@ -388,6 +389,21 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
     }
   }
 ]
+param projectName string
+param projectDescription string
+
+resource aiFoundryProject 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
+  parent: cognitiveService
+  name: projectName
+  location: location
+  identity: {
+    type: 'SystemAssigned'
+  }
+  properties: {
+    description: projectDescription
+    displayName: projectName
+  }
+}
 
 resource cognitiveService_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
   name: lock.?name ?? 'lock-${name}'
@@ -536,6 +552,12 @@ output name string = cognitiveService.name
 
 @description('The resource ID of the cognitive services account.')
 output resourceId string = cognitiveService.id
+
+@description('The resource ID of AI project.')
+output aiProjectResourceId string = aiFoundryProject.id
+
+@description('The endpoint to connect to the AI Project API')
+output aiProjectApiEndpoint string = aiFoundryProject.properties.endpoints['AI Foundry API']
 
 @description('The resource group the cognitive services account was deployed into.')
 output resourceGroupName string = resourceGroup().name
