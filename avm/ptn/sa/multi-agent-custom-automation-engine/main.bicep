@@ -46,7 +46,7 @@ param enablePrivateNetworking bool = false
 
 @secure()
 @description('Optional. The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
-param virtualMachineAdminUsername string = '' //TODO: store value in Key Vault
+param virtualMachineAdminUsername string = take(newGuid(), 20) //TODO: store value in Key Vault
 
 @description('Optional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
 @secure()
@@ -580,8 +580,8 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
     }
     managedIdentities: { systemAssigned: true }
     networkInjectionSubnetResourceId: enablePrivateNetworking ? virtualNetwork.?outputs.?subnetResourceIds[3] : null //This is the subnet for the AI Foundry Agents
-    publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    //publicNetworkAccess: 'Enabled' //TODO: connection via private endpoint is not working from containers network. Change this when fixed
+    //publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: 'Enabled' //TODO: connection via private endpoint is not working from containers network. Change this when fixed
     privateEndpoints: enablePrivateNetworking
       ? ([
           {
@@ -775,8 +775,7 @@ module aiFoundryAiHub 'modules/ai-hub.bicep' = {
 
 // AI Foundry: AI Project
 // WAF best practices for Open AI: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-openai
-var aiFoundryAiProjectName = 'aipj-${solutionPrefix}'
-
+var aiFoundryAiProjectName = 'aihb-${solutionPrefix}'
 module aiFoundryAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = {
   name: take('avm.res.machine-learning-services.workspace.${aiFoundryAiProjectName}', 64)
   params: {

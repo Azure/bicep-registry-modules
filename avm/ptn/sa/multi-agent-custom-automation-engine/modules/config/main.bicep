@@ -65,7 +65,7 @@ resource applicationInsights 'Microsoft.Insights/components@2020-02-02' existing
   scope: resourceGroup(split(applicationInsightResourceId!, '/')[2], split(applicationInsightResourceId!, '/')[4])
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(storageAccountResourceId)) {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' existing = if (!empty(storageAccountResourceId)) {
   name: last(split(storageAccountResourceId!, '/'))
   scope: resourceGroup(split(storageAccountResourceId!, '/')[2], split(storageAccountResourceId!, '/')[4])
 }
