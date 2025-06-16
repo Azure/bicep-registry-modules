@@ -323,15 +323,38 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic'
 import { sqlDatabaseType, deploymentsType } from 'modules/customTypes.bicep'
 import { connectionType } from 'br/public:avm/res/machine-learning-services/workspace:0.10.1'
 
-output AZURE_KEY_VAULT_NAME string = keyvault.outputs.name
-output AZURE_AI_SERVICES_NAME string = cognitiveServices.outputs.aiServicesName
-output AZURE_AI_SEARCH_NAME string = toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
-output AZURE_AI_PROJECT_NAME string = project.outputs.projectName
-output AZURE_BASTION_NAME string = networkIsolation ? network.outputs.bastionName : ''
-output AZURE_VM_RESOURCE_ID string = networkIsolation ? virtualMachine.outputs.id : ''
-output AZURE_VM_USERNAME string = servicesUsername
-output AZURE_CONTAINER_REGISTRY_NAME string = toLower(aiFoundryType) != 'basic' ? containerRegistry.outputs.name : ''
-output AZURE_STORAGE_ACCOUNT_NAME string = storageAccount.outputs.storageName
-output AZURE_VIRTUAL_NETWORK_NAME string = networkIsolation ? network.outputs.virtualNetworkName : ''
-output AZURE_VIRTUAL_NETWORK_SUBNET_NAME string = networkIsolation ? network.outputs.vmSubnetName : ''
-output AZURE_COSMOS_ACCOUNT_NAME string = toLower(aiFoundryType) != 'basic' ? cosmosDb.outputs.cosmosDBname : ''
+@description('Name of the deployed Azure Key Vault.')
+output azureKeyVaultName string = keyvault.outputs.name
+
+@description('Name of the deployed Azure AI Services account.')
+output azureAiServicesName string = cognitiveServices.outputs.aiServicesName
+
+@description('Name of the deployed Azure AI Search service.')
+output azureAiSearchName string = toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
+
+@description('Name of the deployed Azure AI Project.')
+output azureAiProjectName string = project.outputs.projectName
+
+@description('Name of the deployed Azure Bastion host.')
+output azureBastionName string = networkIsolation ? network.outputs.bastionName : ''
+
+@description('Resource ID of the deployed Azure VM.')
+output azureVmResourceId string = networkIsolation ? virtualMachine.outputs.id : ''
+
+@description('Username for the deployed Azure VM.')
+output azureVmUsername string = servicesUsername
+
+@description('Name of the deployed Azure Container Registry.')
+output azureContainerRegistryName string = toLower(aiFoundryType) != 'basic' ? containerRegistry.outputs.name : ''
+
+@description('Name of the deployed Azure Storage Account.')
+output azureStorageAccountName string = storageAccount.outputs.storageName
+
+@description('Name of the deployed Azure Virtual Network.')
+output azureVirtualNetworkName string = networkIsolation ? network.outputs.virtualNetworkName : ''
+
+@description('Name of the deployed Azure Virtual Network Subnet.')
+output azureVirtualNetworkSubnetName string = networkIsolation ? network.outputs.vmSubnetName : ''
+
+@description('Name of the deployed Azure Cosmos DB account.')
+output azureCosmosAccountName string = toLower(aiFoundryType) != 'basic' ? cosmosDb.outputs.cosmosDBname : ''
