@@ -85,20 +85,17 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>`.
 
-- [Using only defaults for Azure DevOps self-hosted agents using both Azure Container Instances and Azure Container Apps.](#example-1-using-only-defaults-for-azure-devops-self-hosted-agents-using-both-azure-container-instances-and-azure-container-apps)
-- [Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances.](#example-2-using-only-defaults-for-azure-devops-self-hosted-agents-using-azure-container-instances)
-- [Using only defaults for GitHub self-hosted runners using Azure Container Apps.](#example-3-using-only-defaults-for-github-self-hosted-runners-using-azure-container-apps)
-- [Using large parameter set for Azure DevOps self-hosted agents using Azure Container Apps.](#example-4-using-large-parameter-set-for-azure-devops-self-hosted-agents-using-azure-container-apps)
-- [Using large parameter set for GitHub self-hosted runners using Azure Container Instances.](#example-5-using-large-parameter-set-for-github-self-hosted-runners-using-azure-container-instances)
-- [Deploys GitHub self-hosted runners using Azure Container Apps for a GitHub organization scope.](#example-6-deploys-github-self-hosted-runners-using-azure-container-apps-for-a-github-organization-scope)
-- [Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet.](#example-7-using-only-defaults-for-azure-devops-self-hosted-agents-using-private-networking-in-an-existing-vnet)
-- [Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.](#example-8-using-only-defaults-for-github-self-hosted-runners-using-private-networking-in-an-existing-vnet)
-- [Using only defaults for GitHub self-hosted runners using Private networking.](#example-9-using-only-defaults-for-github-self-hosted-runners-using-private-networking)
+- [Aca-Aci](#example-1-aca-aci)
+- [Defaults.Azuredevops.Aci](#example-2-defaultsazuredevopsaci)
+- [Defaults.Github.Aca](#example-3-defaultsgithubaca)
+- [Max.Azuredevops.Aca](#example-4-maxazuredevopsaca)
+- [Max.Github.Aci](#example-5-maxgithubaci)
+- [Org-Scope-Github-Aca](#example-6-org-scope-github-aca)
+- [Private-Devops-Existing-Vnet-Aci](#example-7-private-devops-existing-vnet-aci)
+- [Private-Github-Existing-Vnet-Aca](#example-8-private-github-existing-vnet-aca)
+- [Private-Github-New-Vnet](#example-9-private-github-new-vnet)
 
-### Example 1: _Using only defaults for Azure DevOps self-hosted agents using both Azure Container Instances and Azure Container Apps._
-
-This instance deploys the module with the minimum set of required parameters for Azure DevOps self-hosted agents in Azure Container Instances and Azure Container Apps.
-
+### Example 1: _Aca-Aci_
 
 <details>
 
@@ -215,10 +212,7 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 2: _Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances._
-
-This instance deploys the module with the minimum set of required parameters for Azure DevOps self-hosted agents in Azure Container Instances.
-
+### Example 2: _Defaults.Azuredevops.Aci_
 
 <details>
 
@@ -332,10 +326,7 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 3: _Using only defaults for GitHub self-hosted runners using Azure Container Apps._
-
-This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps.
-
+### Example 3: _Defaults.Github.Aca_
 
 <details>
 
@@ -356,6 +347,12 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
       virtualNetworkName: 'vnet-aca'
     }
     selfHostedConfig: {
+      azureContainerAppTarget: {
+        resources: {
+          cpu: '1'
+          memory: '2Gi'
+        }
+      }
       githubOrganization: 'githHubOrganization'
       githubRepository: 'dummyRepo'
       personalAccessToken: '<personalAccessToken>'
@@ -398,6 +395,12 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
     },
     "selfHostedConfig": {
       "value": {
+        "azureContainerAppTarget": {
+          "resources": {
+            "cpu": "1",
+            "memory": "2Gi"
+          }
+        },
         "githubOrganization": "githHubOrganization",
         "githubRepository": "dummyRepo",
         "personalAccessToken": "<personalAccessToken>",
@@ -436,6 +439,12 @@ param networkingConfiguration = {
   virtualNetworkName: 'vnet-aca'
 }
 param selfHostedConfig = {
+  azureContainerAppTarget: {
+    resources: {
+      cpu: '1'
+      memory: '2Gi'
+    }
+  }
   githubOrganization: 'githHubOrganization'
   githubRepository: 'dummyRepo'
   personalAccessToken: '<personalAccessToken>'
@@ -449,10 +458,7 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 4: _Using large parameter set for Azure DevOps self-hosted agents using Azure Container Apps._
-
-This instance deploys the module with most of its features enabled for Azure DevOps self-hosted agents using Azure Container Apps.
-
+### Example 4: _Max.Azuredevops.Aca_
 
 <details>
 
@@ -599,10 +605,7 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 5: _Using large parameter set for GitHub self-hosted runners using Azure Container Instances._
-
-This instance deploys the module with most of its features enabled for GitHub self-hosted runners using Azure Container Instances.
-
+### Example 5: _Max.Github.Aci_
 
 <details>
 
@@ -752,10 +755,7 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 6: _Deploys GitHub self-hosted runners using Azure Container Apps for a GitHub organization scope._
-
-This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps for a GitHub organization scope.
-
+### Example 6: _Org-Scope-Github-Aca_
 
 <details>
 
@@ -869,10 +869,7 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 7: _Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet._
-
-This instance deploys the module with the minimum set of required parameters Azure DevOps self-hosted agents using Private networking in Azure Container Instances in an existing vnet.
-
+### Example 7: _Private-Devops-Existing-Vnet-Aci_
 
 <details>
 
@@ -1022,10 +1019,7 @@ param privateNetworking = true
 </details>
 <p>
 
-### Example 8: _Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet._
-
-This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Apps in an existing vnet.
-
+### Example 8: _Private-Github-Existing-Vnet-Aca_
 
 <details>
 
@@ -1047,10 +1041,10 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
         containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
         containerAppSubnetName: 'aca-subnet'
         containerInstanceSubnetName: 'aci-subnet'
-        deploymentScriptPrivateDnsZoneResourceId: '<deploymentScriptPrivateDnsZoneResourceId>'
       }
       containerRegistryPrivateDnsZoneResourceId: '<containerRegistryPrivateDnsZoneResourceId>'
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
+      deploymentScriptPrivateDnsZoneResourceId: '<deploymentScriptPrivateDnsZoneResourceId>'
       natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
       natGatewayResourceId: '<natGatewayResourceId>'
       networkType: 'useExisting'
@@ -1097,11 +1091,11 @@ module cicdAgentsAndRunners 'br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<
           "computeNetworkType": "azureContainerApp",
           "containerAppDeploymentScriptSubnetName": "aca-ds-subnet",
           "containerAppSubnetName": "aca-subnet",
-          "containerInstanceSubnetName": "aci-subnet",
-          "deploymentScriptPrivateDnsZoneResourceId": "<deploymentScriptPrivateDnsZoneResourceId>"
+          "containerInstanceSubnetName": "aci-subnet"
         },
         "containerRegistryPrivateDnsZoneResourceId": "<containerRegistryPrivateDnsZoneResourceId>",
         "containerRegistryPrivateEndpointSubnetName": "acr-subnet",
+        "deploymentScriptPrivateDnsZoneResourceId": "<deploymentScriptPrivateDnsZoneResourceId>",
         "natGatewayPublicIpAddressResourceId": "<natGatewayPublicIpAddressResourceId>",
         "natGatewayResourceId": "<natGatewayResourceId>",
         "networkType": "useExisting",
@@ -1149,10 +1143,10 @@ param networkingConfiguration = {
     containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
     containerAppSubnetName: 'aca-subnet'
     containerInstanceSubnetName: 'aci-subnet'
-    deploymentScriptPrivateDnsZoneResourceId: '<deploymentScriptPrivateDnsZoneResourceId>'
   }
   containerRegistryPrivateDnsZoneResourceId: '<containerRegistryPrivateDnsZoneResourceId>'
   containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
+  deploymentScriptPrivateDnsZoneResourceId: '<deploymentScriptPrivateDnsZoneResourceId>'
   natGatewayPublicIpAddressResourceId: '<natGatewayPublicIpAddressResourceId>'
   natGatewayResourceId: '<natGatewayResourceId>'
   networkType: 'useExisting'
@@ -1172,10 +1166,7 @@ param privateNetworking = true
 </details>
 <p>
 
-### Example 9: _Using only defaults for GitHub self-hosted runners using Private networking._
-
-This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Instances.
-
+### Example 9: _Private-Github-New-Vnet_
 
 <details>
 
@@ -1530,6 +1521,7 @@ To use this variant, set the property `networkType` to `useExisting`.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containerRegistryPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-useexistingcontainerregistryprivatednszoneresourceid) | string | The container registry private DNS zone Id. If not provided, a new private DNS zone will be created. |
+| [`deploymentScriptPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-useexistingdeploymentscriptprivatednszoneresourceid) | string | The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used. |
 | [`natGatewayPublicIpAddressResourceId`](#parameter-networkingconfigurationnetworktype-useexistingnatgatewaypublicipaddressresourceid) | string | The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created. |
 | [`natGatewayResourceId`](#parameter-networkingconfigurationnetworktype-useexistingnatgatewayresourceid) | string | The existing NAT Gateway resource Id. This should be provided if an existing NAT gateway is available to be used. If this parameter is not provided, a new NAT gateway will be created. |
 
@@ -1573,7 +1565,6 @@ To use this variant, set the property `computeNetworkType` to `azureContainerApp
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`containerInstanceSubnetName`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappcontainerinstancesubnetname) | string | The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately. |
-| [`deploymentScriptPrivateDnsZoneResourceId`](#parameter-networkingconfigurationnetworktype-useexistingcomputenetworkingcomputenetworktype-azurecontainerappdeploymentscriptprivatednszoneresourceid) | string | The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. |
 
 ### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.computeNetworkType`
 
@@ -1605,13 +1596,6 @@ The existing network container app subnet name. This is required for Container A
 ### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.containerInstanceSubnetName`
 
 The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately.
-
-- Required: No
-- Type: string
-
-### Parameter: `networkingConfiguration.networkType-useExisting.computeNetworking.computeNetworkType-azureContainerApp.deploymentScriptPrivateDnsZoneResourceId`
-
-The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created.
 
 - Required: No
 - Type: string
@@ -1678,6 +1662,13 @@ The existing virtual network resource Id.
 ### Parameter: `networkingConfiguration.networkType-useExisting.containerRegistryPrivateDnsZoneResourceId`
 
 The container registry private DNS zone Id. If not provided, a new private DNS zone will be created.
+
+- Required: No
+- Type: string
+
+### Parameter: `networkingConfiguration.networkType-useExisting.deploymentScriptPrivateDnsZoneResourceId`
+
+The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used.
 
 - Required: No
 - Type: string

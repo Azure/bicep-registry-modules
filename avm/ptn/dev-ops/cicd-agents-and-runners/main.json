@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7167975984477830067"
+      "templateHash": "5451410096770914043"
     },
     "name": "CI CD Agents and Runners",
     "description": "This module deploys self-hosted agents and runners for Azure DevOps and GitHub on Azure Container Instances and/or Azure Container Apps."
@@ -197,6 +197,13 @@
             "description": "Required. The subnet name for the ACR deployment script. Only required if private networking is used. If not provided, a default name will be used."
           }
         },
+        "deploymentScriptPrivateDnsZoneResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used."
+          }
+        },
         "computeNetworking": {
           "$ref": "#/definitions/computeNetworkingType",
           "metadata": {
@@ -230,13 +237,6 @@
           "type": "string",
           "metadata": {
             "description": "Required. The existing subnet name for the container app deployment script."
-          }
-        },
-        "deploymentScriptPrivateDnsZoneResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created."
           }
         },
         "containerInstanceSubnetName": {
@@ -832,8 +832,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4588928420314680274"
+              "version": "0.35.1.17967",
+              "templateHash": "10549387460031423688"
             },
             "name": "Log Analytics Workspaces",
             "description": "This module deploys a Log Analytics Workspace."
@@ -2020,7 +2020,7 @@
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.11.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "name": "[format('46d3xbcp.res.operationalinsights-workspace.{0}.{1}', replace('0.11.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -2186,8 +2186,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "14024094214852981332"
+                      "version": "0.35.1.17967",
+                      "templateHash": "2043978404537017691"
                     },
                     "name": "Log Analytics Workspace Storage Insight Configs",
                     "description": "This module deploys a Log Analytics Workspace Storage Insight Config."
@@ -2263,7 +2263,7 @@
                         "tables": "[parameters('tables')]",
                         "storageAccount": {
                           "id": "[parameters('storageAccountResourceId')]",
-                          "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2022-09-01').keys[0].value]"
+                          "key": "[listKeys('storageAccount', '2022-09-01').keys[0].value]"
                         }
                       }
                     }
@@ -2331,8 +2331,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "15202444687633091947"
+                      "version": "0.35.1.17967",
+                      "templateHash": "15624488954958814427"
                     },
                     "name": "Log Analytics Workspace Linked Services",
                     "description": "This module deploys a Log Analytics Workspace Linked Service."
@@ -2450,8 +2450,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "1489251440210164837"
+                      "version": "0.35.1.17967",
+                      "templateHash": "8250559094478594611"
                     },
                     "name": "Log Analytics Workspace Linked Storage Accounts",
                     "description": "This module deploys a Log Analytics Workspace Linked Storage Account."
@@ -2583,8 +2583,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "14407663387414945082"
+                      "version": "0.35.1.17967",
+                      "templateHash": "5149844663841891327"
                     },
                     "name": "Log Analytics Workspace Saved Searches",
                     "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -2746,8 +2746,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "15082251740316718256"
+                      "version": "0.35.1.17967",
+                      "templateHash": "1695158270142527557"
                     },
                     "name": "Log Analytics Workspace Data Exports",
                     "description": "This module deploys a Log Analytics Workspace Data Export."
@@ -2939,8 +2939,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "3186325409788999053"
+                      "version": "0.35.1.17967",
+                      "templateHash": "3062149733782372246"
                     },
                     "name": "Log Analytics Workspace Datasources",
                     "description": "This module deploys a Log Analytics Workspace Data Source."
@@ -3166,8 +3166,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "4329017759962267155"
+                      "version": "0.35.1.17967",
+                      "templateHash": "5855172714151847939"
                     },
                     "name": "Log Analytics Workspace Tables",
                     "description": "This module deploys a Log Analytics Workspace Table."
@@ -3819,6 +3819,20 @@
                 "description": "The principal ID of the system assigned identity."
               },
               "value": "[tryGet(tryGet(reference('logAnalyticsWorkspace', '2023-09-01', 'full'), 'identity'), 'principalId')]"
+            },
+            "primarySharedKey": {
+              "type": "securestring",
+              "metadata": {
+                "description": "The primary shared key of the log analytics workspace."
+              },
+              "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').primarySharedKey]"
+            },
+            "secondarySharedKey": {
+              "type": "securestring",
+              "metadata": {
+                "description": "The secondary shared key of the log analytics workspace."
+              },
+              "value": "[listKeys('logAnalyticsWorkspace', '2023-09-01').secondarySharedKey]"
             }
           }
         }
@@ -12190,8 +12204,14 @@
           "name": {
             "value": "[format('appEnv{0}{1}', parameters('namingPrefix'), uniqueString(resourceGroup().id))]"
           },
-          "logAnalyticsWorkspaceResourceId": {
-            "value": "[reference('logAnalyticsWorkspace').outputs.resourceId.value]"
+          "appLogsConfiguration": {
+            "value": {
+              "destination": "log-analytics",
+              "logAnalyticsConfiguration": {
+                "customerId": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('logAnalyticsWorkspace-{0}', uniqueString(resourceGroup().id))), '2022-09-01').logAnalyticsWorkspaceId]",
+                "sharedKey": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('logAnalyticsWorkspace-{0}', uniqueString(resourceGroup().id))), '2022-09-01').primarySharedKey]"
+              }
+            }
           },
           "location": {
             "value": "[parameters('location')]"
@@ -12202,7 +12222,7 @@
           "infrastructureResourceGroupName": {
             "value": "[parameters('infrastructureResourceGroupName')]"
           },
-          "infrastructureSubnetId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'))))[0]), if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppSubnetName)), createObject('value', null())))]",
+          "infrastructureSubnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'createNew'), createObject('value', filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppSubnetName'), 'app-subnet'))))[0]), if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), createObject('value', format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppSubnetName)), createObject('value', null())))]",
           "zoneRedundant": {
             "value": true
           },
@@ -12223,8 +12243,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "3681621599409004903"
+              "version": "0.35.1.17967",
+              "templateHash": "10777649424390064640"
             },
             "name": "App ManagedEnvironments",
             "description": "This module deploys an App Managed Environment (also known as a Container App Environment)."
@@ -12267,6 +12287,7 @@
                 },
                 "certificateKeyVaultProperties": {
                   "$ref": "#/definitions/certificateKeyVaultPropertiesType",
+                  "nullable": true,
                   "metadata": {
                     "description": "Optional. A key vault reference."
                   }
@@ -12318,6 +12339,48 @@
                 "description": "The type of the storage."
               }
             },
+            "appLogsConfigurationType": {
+              "type": "object",
+              "properties": {
+                "destination": {
+                  "type": "string",
+                  "allowedValues": [
+                    "azure-monitor",
+                    "log-analytics",
+                    "none"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The destination of the logs."
+                  }
+                },
+                "logAnalyticsConfiguration": {
+                  "type": "object",
+                  "properties": {
+                    "customerId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Log Analytics Workspace ID."
+                      }
+                    },
+                    "sharedKey": {
+                      "type": "securestring",
+                      "metadata": {
+                        "description": "Required. The shared key of the Log Analytics workspace."
+                      }
+                    }
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Conditional. The Log Analytics configuration. Required if `destination` is `log-analytics`."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for the App Logs Configuration."
+              }
+            },
             "certificateKeyVaultPropertiesType": {
               "type": "object",
               "properties": {
@@ -12334,7 +12397,6 @@
                   }
                 }
               },
-              "nullable": true,
               "metadata": {
                 "description": "The type for the certificate's key vault properties.",
                 "__bicep_imported_from!": {
@@ -12483,12 +12545,6 @@
                 "description": "Required. Name of the Container Apps Managed Environment."
               }
             },
-            "logAnalyticsWorkspaceResourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. Existing Log Analytics Workspace resource ID. Note: This value is not required as per the resource type. However, not providing it currently causes an issue that is tracked [here](https://github.com/Azure/bicep/issues/9990)."
-              }
-            },
             "location": {
               "type": "string",
               "defaultValue": "[resourceGroup().location]",
@@ -12518,13 +12574,6 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
-              }
-            },
-            "logsDestination": {
-              "type": "string",
-              "defaultValue": "log-analytics",
-              "metadata": {
-                "description": "Optional. Logs destination."
               }
             },
             "enableTelemetry": {
@@ -12562,7 +12611,7 @@
                 "description": "Conditional. CIDR notation IP range assigned to the Docker bridge, network. It must not overlap with any other provided IP ranges and can only be used when the environment is deployed into a virtual network. If not provided, it will be set with a default value by the platform. Required if zoneRedundant is set to true to make the resource WAF compliant."
               }
             },
-            "infrastructureSubnetId": {
+            "infrastructureSubnetResourceId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
@@ -12680,6 +12729,13 @@
               "metadata": {
                 "description": "Optional. A Managed Environment Certificate."
               }
+            },
+            "appLogsConfiguration": {
+              "$ref": "#/definitions/appLogsConfigurationType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The AppLogsConfiguration for the Managed Environment."
+              }
             }
           },
           "variables": {
@@ -12720,8 +12776,8 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.app-managedenvironment.{0}.{1}', replace('0.10.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "apiVersion": "2024-11-01",
+              "name": "[format('46d3xbcp.res.app-managedenvironment.{0}.{1}', replace('0.11.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
               "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -12737,15 +12793,6 @@
                 }
               }
             },
-            "logAnalyticsWorkspace": {
-              "condition": "[not(empty(parameters('logAnalyticsWorkspaceResourceId')))]",
-              "existing": true,
-              "type": "Microsoft.OperationalInsights/workspaces",
-              "apiVersion": "2023-09-01",
-              "subscriptionId": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2]]",
-              "resourceGroup": "[split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]]",
-              "name": "[last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))]"
-            },
             "managedEnvironment": {
               "type": "Microsoft.App/managedEnvironments",
               "apiVersion": "2024-10-02-preview",
@@ -12757,13 +12804,7 @@
                 "appInsightsConfiguration": {
                   "connectionString": "[parameters('appInsightsConnectionString')]"
                 },
-                "appLogsConfiguration": {
-                  "destination": "[parameters('logsDestination')]",
-                  "logAnalyticsConfiguration": {
-                    "customerId": "[reference('logAnalyticsWorkspace').customerId]",
-                    "sharedKey": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('logAnalyticsWorkspaceResourceId'), '/')[2], split(parameters('logAnalyticsWorkspaceResourceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', last(split(parameters('logAnalyticsWorkspaceResourceId'), '/'))), '2023-09-01').primarySharedKey]"
-                  }
-                },
+                "appLogsConfiguration": "[parameters('appLogsConfiguration')]",
                 "daprAIConnectionString": "[parameters('daprAIConnectionString')]",
                 "daprAIInstrumentationKey": "[parameters('daprAIInstrumentationKey')]",
                 "customDomainConfiguration": {
@@ -12781,18 +12822,15 @@
                 "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
                 "vnetConfiguration": {
                   "internal": "[parameters('internal')]",
-                  "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('infrastructureSubnetId'), null())]",
-                  "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetId'))), parameters('dockerBridgeCidr'), null())]",
-                  "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), parameters('platformReservedCidr'), null())]",
-                  "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetId')))), parameters('platformReservedDnsIP'), null())]"
+                  "infrastructureSubnetId": "[if(not(empty(parameters('infrastructureSubnetResourceId'))), parameters('infrastructureSubnetResourceId'), null())]",
+                  "dockerBridgeCidr": "[if(not(empty(parameters('infrastructureSubnetResourceId'))), parameters('dockerBridgeCidr'), null())]",
+                  "platformReservedCidr": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetResourceId')))), parameters('platformReservedCidr'), null())]",
+                  "platformReservedDnsIP": "[if(and(empty(parameters('workloadProfiles')), not(empty(parameters('infrastructureSubnetResourceId')))), parameters('platformReservedDnsIP'), null())]"
                 },
                 "workloadProfiles": "[if(not(empty(parameters('workloadProfiles'))), parameters('workloadProfiles'), null())]",
                 "zoneRedundant": "[parameters('zoneRedundant')]",
                 "infrastructureResourceGroup": "[parameters('infrastructureResourceGroupName')]"
-              },
-              "dependsOn": [
-                "logAnalyticsWorkspace"
-              ]
+              }
             },
             "managedEnvironment_roleAssignments": {
               "copy": {
@@ -12867,8 +12905,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.44.8038",
-                      "templateHash": "15951560263054769031"
+                      "version": "0.35.1.17967",
+                      "templateHash": "18123249047188753287"
                     },
                     "name": "App ManagedEnvironments Certificates",
                     "description": "This module deploys a App Managed Environment Certificate."
@@ -12890,7 +12928,6 @@
                           }
                         }
                       },
-                      "nullable": true,
                       "metadata": {
                         "__bicep_export!": true,
                         "description": "The type for the certificate's key vault properties."
@@ -12919,6 +12956,7 @@
                     },
                     "certificateKeyVaultProperties": {
                       "$ref": "#/definitions/certificateKeyVaultPropertiesType",
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. A key vault reference to the certificate to use for the custom domain."
                       }
@@ -22029,7 +22067,7 @@
                 "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, parameters('networkingConfiguration').computeNetworking.containerAppDeploymentScriptSubnetName), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerAppDeploymentScriptSubnetName'), 'app-deployment-script-subnet'))))[0])]",
                 "privateDnsZoneGroupName": "stgPrivateDNSZoneGroup",
                 "privateDnsZoneResourceIds": [
-                  "[coalesce(tryGet(parameters('networkingConfiguration').computeNetworking, 'deploymentScriptPrivateDnsZoneResourceId'), reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value)]"
+                  "[coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value)]"
                 ]
               }
             ]
@@ -27059,9 +27097,7 @@
               {
                 "service": "file",
                 "subnetResourceId": "[if(equals(parameters('networkingConfiguration').networkType, 'useExisting'), format('{0}/subnets/{1}', parameters('networkingConfiguration').virtualNetworkResourceId, tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName')), filter(reference('newVnet').outputs.subnetResourceIds.value, lambda('subnetId', contains(lambdaVariables('subnetId'), coalesce(tryGet(parameters('networkingConfiguration'), 'containerRegistryPrivateEndpointSubnetName'), 'acr-subnet'))))[0])]",
-                "privateDnsZoneResourceIds": [
-                  "[coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value)]"
-                ]
+                "privateDnsZoneResourceIds": "[if(not(empty(coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), ''))), createArray(coalesce(tryGet(parameters('networkingConfiguration'), 'deploymentScriptPrivateDnsZoneResourceId'), '')), createArray(reference('deploymentScriptPrivateDNSZone').outputs.resourceId.value))]"
               }
             ]
           }

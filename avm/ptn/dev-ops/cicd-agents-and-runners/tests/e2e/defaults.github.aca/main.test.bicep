@@ -50,6 +50,12 @@ module testDeployment '../../../main.bicep' = {
       githubRepository: 'dummyRepo'
       personalAccessToken: personalAccessToken
       selfHostedType: 'github'
+      azureContainerAppTarget: {
+        resources: {
+          cpu: '1'
+          memory: '2Gi'
+        }
+      }
     }
     networkingConfiguration: {
       addressSpace: '10.0.0.0/16'

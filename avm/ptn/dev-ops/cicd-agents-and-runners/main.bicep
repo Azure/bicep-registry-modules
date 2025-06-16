@@ -207,7 +207,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.1' = {
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
   name: 'logAnalyticsWorkspace-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'law-${namingPrefix}-${uniqueString(resourceGroup().id)}-law'
@@ -354,18 +354,24 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (networkin
     )
   }
 }
-module appEnvironment 'br/public:avm/res/app/managed-environment:0.10.2' = if (contains(
+module appEnvironment 'br/public:avm/res/app/managed-environment:0.11.2' = if (contains(
   computeTypes,
   'azure-container-app'
 )) {
   name: 'appEnv-${uniqueString(resourceGroup().id)}'
   params: {
     name: 'appEnv${namingPrefix}${uniqueString(resourceGroup().id)}'
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    appLogsConfiguration: {
+      destination: 'log-analytics'
+      logAnalyticsConfiguration: {
+        customerId: logAnalyticsWorkspace.outputs.logAnalyticsWorkspaceId
+        sharedKey: logAnalyticsWorkspace.outputs.primarySharedKey
+      }
+    }
     location: location
     enableTelemetry: enableTelemetry
     infrastructureResourceGroupName: infrastructureResourceGroupName
-    infrastructureSubnetId: networkingConfiguration.networkType == 'createNew'
+    infrastructureSubnetResourceId: networkingConfiguration.networkType == 'createNew'
       ? filter(
           newVnet.outputs.subnetResourceIds,
           subnetId => contains(subnetId, networkingConfiguration.?containerAppSubnetName ?? 'app-subnet')
@@ -760,7 +766,7 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.13.0' = 
             )[0]
         privateDnsZoneGroupName: 'stgPrivateDNSZoneGroup'
         privateDnsZoneResourceIds: [
-          networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? deploymentScriptPrivateDNSZone.outputs.resourceId
+          networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? deploymentScriptPrivateDNSZone.outputs.resourceId
         ]
       }
     ]
@@ -794,9 +800,11 @@ module deploymentScriptAcrStg 'br/public:avm/res/storage/storage-account:0.13.0'
               subnetId =>
                 contains(subnetId, networkingConfiguration.?containerRegistryPrivateEndpointSubnetName ?? 'acr-subnet')
             )[0]
-        privateDnsZoneResourceIds: [
-          networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? deploymentScriptPrivateDNSZone.outputs.resourceId
-        ]
+        privateDnsZoneResourceIds: !empty(networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? '')
+          ? [
+              networkingConfiguration.?deploymentScriptPrivateDnsZoneResourceId ?? ''
+            ]
+          : [deploymentScriptPrivateDNSZone.outputs.resourceId]
       }
     ]
   }
@@ -967,6 +975,9 @@ type existingNetworkType = {
   @description('Required. The subnet name for the ACR deployment script. Only required if private networking is used. If not provided, a default name will be used.')
   acrDeploymentScriptSubnetName: string
 
+  @description('Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used.')
+  deploymentScriptPrivateDnsZoneResourceId: string?
+
   @description('Required. The compute type networking type.')
   computeNetworking: computeNetworkingType
 }
@@ -981,9 +992,6 @@ type containerAppNetworkConfigType = {
 
   @description('Required. The existing subnet name for the container app deployment script.')
   containerAppDeploymentScriptSubnetName: string
-
-  @description('Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created.')
-  deploymentScriptPrivateDnsZoneResourceId: string?
 
   @description('Optional. The container instance subnet name in the created virtual network. If not provided, a default name will be used. This subnet is required for private networking Azure DevOps scenarios to deploy the deployment script which starts the placeholder agent privately.')
   containerInstanceSubnetName: string?

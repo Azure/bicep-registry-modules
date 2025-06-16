@@ -22,8 +22,7 @@ param personalAccessToken string = newGuid()
 param serviceShort string = 'pngh'
 
 @description('Optional. A token to inject into the name of each resource.')
-//param namePrefix string = '#_namePrefix_#'
-param namePrefix string = 'sbb'
+param namePrefix string = '#_namePrefix_#'
 
 // =================
 // General resources
