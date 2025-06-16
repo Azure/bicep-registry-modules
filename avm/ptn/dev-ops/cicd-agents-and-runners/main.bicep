@@ -304,6 +304,10 @@ module newVnet 'br/public:avm/res/network/virtual-network:0.6.1' = if (networkin
               name: networkingConfiguration.?containerRegistryPrivateEndpointSubnetName ?? 'acr-subnet'
               addressPrefix: networkingConfiguration.?containerRegistrySubnetPrefix ?? '10.0.0.32/29'
             }
+            {
+              name: networkingConfiguration.?acrDeploymentScriptSubnetName ?? 'acr-deployment-script-subnet'
+              addressPrefix: networkingConfiguration.?acrDeploymentScriptSubnetPrefix ?? '10.0.3.0/24'
+            }
           ]
         : [],
       (privateNetworking && selfHostedConfig.selfHostedType == 'azuredevops') || (contains(
@@ -406,6 +410,9 @@ resource buildImages 'Microsoft.ContainerRegistry/registries/tasks@2019-06-01-pr
     identity: {
       type: 'SystemAssigned'
     }
+    dependsOn: [
+      acrNetworkByPassTasks
+    ]
     properties: {
       platform: {
         os: 'Linux'
@@ -698,10 +705,7 @@ module acaPlaceholderJob 'br/public:avm/res/app/job:0.6.0' = if (contains(comput
     workloadProfileName: 'consumption'
   }
 }
-module deploymentScriptPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (contains(
-  computeTypes,
-  'azure-container-app'
-) && selfHostedConfig.selfHostedType == 'azuredevops' && privateNetworking && empty(networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? '')) {
+module deploymentScriptPrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.5.0' = if (privateNetworking && empty(networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? '')) {
   name: 'stgdsdnszone${namingPrefix}${uniqueString(resourceGroup().id)}'
   params: {
     name: 'privatelink.file.${environment().suffixes.storage}'
@@ -758,6 +762,44 @@ module deploymentScriptStg 'br/public:avm/res/storage/storage-account:0.13.0' = 
   }
 }
 
+module deploymentScriptAcr 'br/public:avm/res/storage/storage-account:0.13.0' = if (privateNetworking) {
+  name: 'deploymentScriptAcr-${uniqueString(resourceGroup().id)}'
+  params: {
+    name: 'stgacr${uniqueString(resourceGroup().id, acr.outputs.name,location)}'
+    location: location
+    allowBlobPublicAccess: false
+    allowSharedKeyAccess: true
+    publicNetworkAccess: 'Disabled'
+    //Assigning Storage Blob Data Contributor role to the user assigned identity
+    roleAssignments: [
+      {
+        principalId: userAssignedIdentity.outputs.principalId
+        roleDefinitionIdOrName: '69566ab7-960f-475b-8e7c-b3118f30c6bd'
+        principalType: 'ServicePrincipal'
+      }
+    ]
+    enableTelemetry: enableTelemetry
+    privateEndpoints: [
+      {
+        service: 'file'
+        subnetResourceId: networkingConfiguration.networkType == 'useExisting'
+          ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.acrDeploymentScriptSubnetName}'
+          : filter(
+              newVnet.outputs.subnetResourceIds,
+              subnetId =>
+                contains(
+                  subnetId,
+                  networkingConfiguration.?acrDeploymentScriptSubnetName ?? 'acr-deployment-script-subnet'
+                )
+            )[0]
+        privateDnsZoneResourceIds: [
+          networkingConfiguration.computeNetworking.?deploymentScriptPrivateDnsZoneResourceId ?? deploymentScriptPrivateDNSZone.outputs.resourceId
+        ]
+      }
+    ]
+  }
+}
+
 module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1' = if (contains(
   computeTypes,
   'azure-container-app'
@@ -791,6 +833,33 @@ module runPlaceHolderAgent 'br/public:avm/res/resources/deployment-script:0.3.1'
           : null
     arguments: '-resourceGroup ${resourceGroup().name} -jobName ${acaPlaceholderJob.outputs.name} -subscriptionId ${subscription().subscriptionId}'
     scriptContent: loadTextContent('./scripts/startAzureDevOpsContainerJob.ps1')
+  }
+}
+
+module acrNetworkByPassTasks 'br/public:avm/res/resources/deployment-script:0.5.1' = {
+  params: {
+    name: 'acrNetworkByPassTasks-${uniqueString(resourceGroup().id)}'
+    kind: 'AzureCLI'
+    azCliVersion: '2.72.0'
+    cleanupPreference: 'Always'
+    retentionInterval: 'P1D'
+    location: location
+    managedIdentities: {
+      userAssignedResourceIds: [
+        userAssignedIdentity.outputs.resourceId
+      ]
+    }
+    enableTelemetry: enableTelemetry
+    storageAccountResourceId: privateNetworking ? deploymentScriptAcr.outputs.resourceId : null
+    subnetResourceIds: (privateNetworking && networkingConfiguration.networkType == 'createNew')
+      ? filter(
+          newVnet.outputs.subnetResourceIds,
+          subnetId => contains(subnetId, networkingConfiguration.?acrDeploymentScriptSubnetName ?? 'acr-ds-subnet')
+        )[0]
+      : (privateNetworking && networkingConfiguration.networkType == 'useExisting')
+          ? '${networkingConfiguration.virtualNetworkResourceId}/subnets/${networkingConfiguration.acrDeploymentScriptSubnetName}'
+          : null
+    scriptContent: 'az resource update --namespace Microsoft.ContainerRegistry --resource-type registries --name ${acr.outputs.name} --resource-group ${resourceGroup().name} --api-version 2025-05-01-preview --set properties.networkRuleBypassAllowedForTasks=true'
   }
 }
 
@@ -852,8 +921,14 @@ type newNetworkType = {
   @description('Optional. The subnet name for the container app deployment script. Only required if private networking is used. If not provided, a default name will be used.')
   containerAppDeploymentScriptSubnetName: string?
 
+  @description('Optional. The subnet name for the ACR deployment script. Only required if private networking is used. If not provided, a default name will be used.')
+  acrDeploymentScriptSubnetName: string?
+
   @description('Optional. The subnet address prefix for the container app deployment script which is used to start the placeholder Azure DevOps agent. Only required if private networking is used. If not provided, a default subnet prefix will be used.')
   containerAppDeploymentScriptSubnetPrefix: string?
+
+  @description('Optional. The subnet address prefix for the acr deployment script which is used to start the placeholder Azure DevOps agent. Only required if private networking is used. If not provided, a default subnet prefix will be used.')
+  acrDeploymentScriptSubnetPrefix: string?
 
   @description('Optional. The deployment script private DNS zone Id. If not provided, a new private DNS zone will be created. Only required if private networking is used.')
   deploymentScriptPrivateDnsZoneResourceId: string?
@@ -878,6 +953,9 @@ type existingNetworkType = {
 
   @description('Optional. The existing public IP address to associate with the NAT gateway. This should be provided if an existing public Ip address is available to be used. If this parameter is not provided, a new Public Ip address will be created.')
   natGatewayPublicIpAddressResourceId: string?
+
+  @description('Required. The subnet name for the ACR deployment script. Only required if private networking is used. If not provided, a default name will be used.')
+  acrDeploymentScriptSubnetName: string
 
   @description('Required. The compute type networking type.')
   computeNetworking: computeNetworkingType

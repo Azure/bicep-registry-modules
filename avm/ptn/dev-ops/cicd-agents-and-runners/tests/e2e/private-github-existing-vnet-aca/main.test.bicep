@@ -22,7 +22,8 @@ param personalAccessToken string = newGuid()
 param serviceShort string = 'pnexg'
 
 @description('Optional. A token to inject into the name of each resource.')
-param namePrefix string = '#_namePrefix_#'
+//param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'shas'
 
 // =================
 // General resources
@@ -73,6 +74,7 @@ module testDeployment '../../../main.bicep' = {
       containerRegistryPrivateEndpointSubnetName: 'acr-subnet'
       natGatewayPublicIpAddressResourceId: nestedDependencies.outputs.publicIPResourceId
       natGatewayResourceId: nestedDependencies.outputs.natGatewayResourceId
+      acrDeploymentScriptSubnetName: 'acr-ds-subnet'
       computeNetworking: {
         containerAppDeploymentScriptSubnetName: 'aca-ds-subnet'
         containerAppSubnetName: 'aca-subnet'
