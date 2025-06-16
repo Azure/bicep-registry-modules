@@ -271,7 +271,7 @@ param enableTelemetry = true
 | [`solutionPrefix`](#parameter-solutionprefix) | string | The prefix to add in the default names given to all deployed Azure resources. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
 | [`virtualMachineAdminPassword`](#parameter-virtualmachineadminpassword) | securestring | The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
-| [`virtualMachineAdminUsername`](#parameter-virtualmachineadminusername) | securestring | The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
+| [`virtualMachineAdminUsername`](#parameter-virtualmachineadminusername) | securestring | The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true. |
 
 ### Parameter: `azureOpenAILocation`
 
@@ -389,7 +389,7 @@ The password for the administrator account of the virtual machine. Allows to cus
 
 ### Parameter: `virtualMachineAdminUsername`
 
-The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.
+The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.
 
 - Required: No
 - Type: securestring
