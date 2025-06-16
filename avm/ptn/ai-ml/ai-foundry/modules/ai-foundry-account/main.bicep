@@ -75,7 +75,6 @@ module aiServices 'service.bicep' = {
           openAiPrivateDnsZone.outputs.resourceId
         ]
       : []
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
 
     aiModelDeployments: aiModelDeployments
     roleAssignments: empty(userObjectId)
@@ -115,7 +114,6 @@ module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
           cognitiveServicesPrivateDnsZone.outputs.resourceId
         ]
       : []
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspaceResourceId
     tags: tags
   }
 }

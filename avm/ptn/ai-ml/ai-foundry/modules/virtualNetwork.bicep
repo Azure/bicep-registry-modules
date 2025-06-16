@@ -421,7 +421,6 @@ resource vmSubnetNsgDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@20
   name: diagnosticSettingsName
   scope: vmSubnetNsg
   properties: {
-    workspaceId: workspaceId
     logs: nsgLogs
   }
 }
@@ -430,7 +429,6 @@ resource bastionSubnetNsgDiagnosticSettings 'Microsoft.Insights/diagnosticSettin
   name: diagnosticSettingsName
   scope: bastionSubnetNsg
   properties: {
-    workspaceId: workspaceId
     logs: nsgLogs
   }
 }
@@ -439,7 +437,6 @@ resource vnetDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-0
   name: diagnosticSettingsName
   scope: vnet
   properties: {
-    workspaceId: workspaceId
     logs: vnetLogs
     metrics: vnetMetrics
   }
@@ -449,7 +446,6 @@ resource bastionDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-0
   name: diagnosticSettingsName
   scope: bastionHost
   properties: {
-    workspaceId: workspaceId
     logs: bastionLogs
     metrics: bastionMetrics
   }

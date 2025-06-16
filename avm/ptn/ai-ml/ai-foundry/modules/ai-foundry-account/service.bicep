@@ -60,9 +60,6 @@ param privateDnsZonesResourceIds string[] = []
 @description('Resource ID of the subnet for the private endpoint.')
 param virtualNetworkSubnetResourceId string
 
-@description('The resource ID of the Log Analytics workspace to use for diagnostic settings.')
-param logAnalyticsWorkspaceResourceId string
-
 @description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentsType[] = []
 
@@ -99,11 +96,6 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     customSubDomainName: name
     disableLocalAuth: networkIsolation
     publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
-    diagnosticSettings: [
-      {
-        workspaceResourceId: logAnalyticsWorkspaceResourceId
-      }
-    ]
     roleAssignments: roleAssignments
     networkAcls: networkAcls
     privateEndpoints: networkIsolation

@@ -320,7 +320,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic'
   }
 }
 
-import { sqlDatabaseType, databasePropertyType, deploymentsType } from 'modules/customTypes.bicep'
+import { sqlDatabaseType, deploymentsType } from 'modules/customTypes.bicep'
 import { connectionType } from 'br/public:avm/res/machine-learning-services/workspace:0.10.1'
 
 output AZURE_KEY_VAULT_NAME string = keyvault.outputs.name
