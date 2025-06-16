@@ -279,11 +279,11 @@ resource ad 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
     parameters: [
       {
         name: 'IP'
-        value: 'hciHost01'
+        value: '192.168.1.254'
       }
       {
         name: 'Port'
-        value: '6985'
+        value: '5985'
       }
       {
         name: 'Authentication'
@@ -332,11 +332,11 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
     parameters: [
       {
         name: 'IP'
-        value: 'hciHost01'
+        value: '192.168.1.12'
       }
       {
         name: 'Port'
-        value: '15985'
+        value: '5985'
       }
       {
         name: 'Authentication'
@@ -393,11 +393,11 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
     parameters: [
       {
         name: 'IP'
-        value: 'hciHost01'
+        value: '192.168.1.13'
       }
       {
         name: 'Port'
-        value: '25985'
+        value: '5985'
       }
       {
         name: 'Authentication'
