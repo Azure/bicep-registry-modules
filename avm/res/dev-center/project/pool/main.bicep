@@ -33,7 +33,7 @@ param devBoxDefinition devBoxDefinitionTypeType?
 param location string = resourceGroup().location
 
 @description('Optional. Resource tags to apply to the pool.')
-param tags object?
+param tags resourceInput<'Microsoft.DevCenter/projects/pools@2025-02-01'>.tags?
 
 @description('Required. Each dev box creator will be granted the selected permissions on the dev boxes they create. Indicates whether owners of Dev Boxes in this pool are added as a "local administrator" or "standard user" on the Dev Box.')
 @allowed([

@@ -16,7 +16,7 @@ param description string?
 param location string = resourceGroup().location
 
 @sys.description('Optional. Resource tags to apply to the project.')
-param tags object?
+param tags resourceInput<'Microsoft.DevCenter/projects@2025-02-01'>.tags?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @sys.description('Optional. The lock settings of the service.')
@@ -292,7 +292,7 @@ type environmentTypeType = {
   roleAssignments: roleAssignmentType[]?
 
   @sys.description('Optional. Resource tags to apply to the environment type.')
-  tags: object?
+  tags: resourceInput<'Microsoft.DevCenter/projects/environmentTypes@2025-02-01'>.tags?
 
   @sys.description('Optional. A collection of additional object IDs of users, groups, service principals or managed identities be granted permissions on each environment of this type. Each identity can have multiple role definitions (permissions) GUIDs assigned to it. These can be either built-in or custom role definitions.')
   userRoleAssignmentsRoles: userRoleAssignmentsRolesType[]?
@@ -317,7 +317,7 @@ type poolType = {
   devBoxDefinition: devBoxDefinitionTypeType?
 
   @sys.description('Optional. Resource tags to apply to the pool.')
-  tags: object?
+  tags: resourceInput<'Microsoft.DevCenter/projects/pools@2025-02-01'>.tags?
 
   @sys.description('Required. Each dev box creator will be granted the selected permissions on the dev boxes they create. Indicates whether owners of Dev Boxes in this pool are added as a "local administrator" or "standard user" on the Dev Box.')
   localAdministrator: 'Enabled' | 'Disabled'
@@ -361,5 +361,5 @@ type catalogType = {
   syncType: ('Manual' | 'Scheduled')?
 
   @sys.description('Optional. Resource tags to apply to the catalog.')
-  tags: object?
+  tags: resourceInput<'Microsoft.DevCenter/projects/catalogs@2025-02-01'>.tags?
 }
