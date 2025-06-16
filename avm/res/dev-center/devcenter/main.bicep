@@ -427,7 +427,7 @@ type projectPolicyType = {
 
 @description('The type for Dev Center Gallery.')
 type devCenterGalleryType = {
-  @description('Required. The name of the gallery resource.')
+  @description('Required. It must be between 1 and 80 characters, can only include alphanumeric characters, underscores and periods, and can not start or end with "." or "_".')
   name: string
 
   @description('Required. The resource ID of the backing Azure Compute Gallery. The devcenter identity (system or user) must have "Contributor" access to the gallery.')

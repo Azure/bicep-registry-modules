@@ -8,9 +8,9 @@ metadata description = 'This module deploys a Dev Center Gallery.'
 @description('Conditional. The name of the parent dev center. Required if the template is used in a standalone deployment.')
 param devcenterName string
 
-@description('Required. The name of the gallery resource.')
-@minLength(3)
-@maxLength(63)
+@description('Required. It must be between 1 and 80 characters, can only include alphanumeric characters, underscores and periods, and can not start or end with "." or "_".')
+@minLength(1)
+@maxLength(80)
 param name string
 
 @description('Required. The resource ID of the backing Azure Compute Gallery. The devcenter identity (system or user) must have "Contributor" access to the gallery.')

@@ -45,7 +45,7 @@ module nestedDependencies 'dependencies.bicep' = {
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    galleryName: 'dep${namePrefix}sig${serviceShort}'
+    galleryName: 'dep${namePrefix}gal${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     devCenterNetworkConnectionName: 'dep-${namePrefix}-dcnc-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
@@ -103,7 +103,7 @@ module testDeployment '../../../main.bicep' = [
       ]
       galleries: [
         {
-          name: 'compute-gallery'
+          name: 'computegallery'
           galleryResourceId: nestedDependencies.outputs.galleryResourceId
           devCenterIdentityPrincipalId: nestedDependencies.outputs.managedIdentityPrincipalId
         }
