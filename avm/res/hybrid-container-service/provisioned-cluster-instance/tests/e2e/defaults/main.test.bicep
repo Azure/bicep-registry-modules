@@ -19,23 +19,19 @@ param arbLocalAdminAndDeploymentUserPass string
 
 @description('Required. The app ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
 @secure()
-#disable-next-line secure-parameter-default
-param arbDeploymentAppId string = ''
+param arbDeploymentAppId string
 
 @description('Required. The service principal ID of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
 @secure()
-#disable-next-line secure-parameter-default
-param arbDeploymentSPObjectId string = ''
+param arbDeploymentSPObjectId string
 
 @description('Required. The secret of the service principal used for the Azure Stack HCI Resource Bridge deployment.')
 @secure()
-#disable-next-line secure-parameter-default
-param arbDeploymentServicePrincipalSecret string = ''
+param arbDeploymentServicePrincipalSecret string
 
 @description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \'Microsoft.AzureStackHCI\' provider was registered in the subscription.')
 @secure()
-#disable-next-line secure-parameter-default
-param hciResourceProviderObjectId string = ''
+param hciResourceProviderObjectId string
 
 @description('Optional. The name of the secret in the key vault that contains the SSH private key PEM.')
 param sshPrivateKeyPemSecretName string = 'AksArcAgentSshPrivateKeyPem'
