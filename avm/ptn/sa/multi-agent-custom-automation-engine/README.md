@@ -393,7 +393,7 @@ The username for the administrator account of the virtual machine. Allows to cus
 
 - Required: No
 - Type: securestring
-- Default: `''`
+- Default: `[take(newGuid(), 20)]`
 
 ## Outputs
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "1507585426735091404"
+      "templateHash": "17826028870430608610"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -90,7 +90,7 @@
     },
     "virtualMachineAdminUsername": {
       "type": "securestring",
-      "defaultValue": "",
+      "defaultValue": "[take(newGuid(), 20)]",
       "metadata": {
         "description": "Optional. The username for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true."
       }
@@ -158,7 +158,7 @@
       "privatelink.notebooks.azure.net": "[variables('mlTargetSubResource')]"
     },
     "aiFoundryAiHubResourceName": "[format('aih-{0}', parameters('solutionPrefix'))]",
-    "aiFoundryAiProjectName": "[format('aipj-{0}', parameters('solutionPrefix'))]",
+    "aiFoundryAiProjectName": "[format('aihb-{0}', parameters('solutionPrefix'))]",
     "roleAssignmentAiProjectAiServicesCognitiveServicesOpenAIUser": "[format('{0}-{1}-CognitiveServicesOpenAIUser', variables('aiFoundryAiProjectName'), variables('aiFoundryAiHubResourceName'))]",
     "cosmosDbResourceName": "[format('cosmos-{0}', parameters('solutionPrefix'))]",
     "cosmosDbDatabaseName": "macae",
@@ -21309,7 +21309,9 @@
             }
           },
           "networkInjectionSubnetResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', tryGet(tryGet(tryGet(reference('virtualNetwork'), 'outputs'), 'subnetResourceIds'), 'value', 3)), createObject('value', null()))]",
-          "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+          "publicNetworkAccess": {
+            "value": "Enabled"
+          },
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-{0}', variables('aiFoundryAiServicesResourceName')), 'customNetworkInterfaceName', format('nic-{0}', variables('aiFoundryAiServicesResourceName')), 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[0], 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', map(objectKeys(variables('openAiPrivateDnsZones')), lambda('zone', createObject('name', replace(lambdaVariables('zone'), '.', '-'), 'privateDnsZoneResourceId', resourceId('Microsoft.Network/privateDnsZones', lambdaVariables('zone'))))))))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": [
@@ -55337,7 +55339,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13055434803852350973"
+              "templateHash": "3920509187944762954"
             }
           },
           "definitions": {
@@ -56420,7 +56422,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "17830342104521361888"
+                      "templateHash": "5539098255558802452"
                     },
                     "name": "Site App Settings",
                     "description": "This module deploys a Site App Setting."
@@ -56508,7 +56510,7 @@
                       "condition": "[not(empty(parameters('storageAccountResourceId')))]",
                       "existing": true,
                       "type": "Microsoft.Storage/storageAccounts",
-                      "apiVersion": "2023-05-01",
+                      "apiVersion": "2024-01-01",
                       "subscriptionId": "[split(parameters('storageAccountResourceId'), '/')[2]]",
                       "resourceGroup": "[split(parameters('storageAccountResourceId'), '/')[4]]",
                       "name": "[last(split(parameters('storageAccountResourceId'), '/'))]"
@@ -56523,7 +56525,7 @@
                       "type": "Microsoft.Web/sites/config",
                       "apiVersion": "2024-04-01",
                       "name": "[format('{0}/{1}', parameters('appName'), parameters('name'))]",
-                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2023-05-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
+                      "properties": "[union(parameters('currentAppSettings'), parameters('properties'), if(and(not(empty(parameters('storageAccountResourceId'))), not(parameters('storageAccountUseIdentityAuthentication'))), createObject('AzureWebJobsStorage', format('DefaultEndpointsProtocol=https;AccountName={0};AccountKey={1};EndpointSuffix={2}', last(split(parameters('storageAccountResourceId'), '/')), listKeys('storageAccount', '2024-01-01').keys[0].value, environment().suffixes.storage)), if(and(not(empty(parameters('storageAccountResourceId'))), parameters('storageAccountUseIdentityAuthentication')), createObject('AzureWebJobsStorage__accountName', last(split(parameters('storageAccountResourceId'), '/')), 'AzureWebJobsStorage__blobServiceUri', reference('storageAccount').primaryEndpoints.blob, 'AzureWebJobsStorage__queueServiceUri', reference('storageAccount').primaryEndpoints.queue, 'AzureWebJobsStorage__tableServiceUri', reference('storageAccount').primaryEndpoints.table), createObject())), if(not(empty(parameters('applicationInsightResourceId'))), createObject('APPLICATIONINSIGHTS_CONNECTION_STRING', reference('applicationInsights').ConnectionString), createObject()))]",
                       "dependsOn": [
                         "applicationInsights",
                         "storageAccount"
