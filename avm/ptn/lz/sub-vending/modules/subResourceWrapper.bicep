@@ -461,25 +461,17 @@ var nsgArrayFormatted = !empty(additionalVirtualNetworks)
   ? flatten(map(
       additionalVirtualNetworks,
       vnet =>
-        map(
-          filter(
-            vnet.?subnets ?? [],
-            subnet => contains(subnet, 'networkSecurityGroup') && subnet.networkSecurityGroup != null
-          ),
-          subnet => {
-            vnetResourceGroupName: vnet.resourceGroupName
-            subnetName: subnet.name
-            nsgName: subnet.?networkSecurityGroup.?name ?? ''
-            nsgLocation: subnet.?networkSecurityGroup.?location ?? vnet.location
-            nsgRules: subnet.?networkSecurityGroup.?securityRules ?? null
-            nsgTags: subnet.?networkSecurityGroup.?tags ?? null
-          }
-        )
+        map(vnet.?subnets ?? [], subnet => {
+          vnetResourceGroupName: vnet.resourceGroupName
+          subnetName: subnet.name
+          nsgName: subnet.?networkSecurityGroup.?name ?? 'nsg-${subnet.name}-${vnet.name}-${substring(guid(vnet.name ?? 'vnet', vnet.resourceGroupName, subnet.name), 0, 4)}'
+          nsgLocation: subnet.?networkSecurityGroup.?location ?? vnet.location
+          nsgRules: subnet.?networkSecurityGroup.?securityRules ?? null
+          nsgTags: subnet.?networkSecurityGroup.?tags ?? null
+        })
     ))
   : []
 
-// Generate peering combinations using the same flatten/map approach
-// Include the primary VNet (createLzVnet) when it's enabled for mesh peering
 var allVirtualNetworks = (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))
   ? concat(
       [
@@ -828,9 +820,9 @@ module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-grou
       createResourceGroupForadditionalLzNetworking
     ]
     params: {
-      name: nsg.nsgName
+      name: nsg.nsgName ?? 'nsg-${nsg.subnetName}-${substring(guid(nsg.vnetResourceGroupName, nsg.subnetName), 0, 5)}'
       securityRules: nsg.?nsgRules ?? null
-      location: nsg.?nsgLocation ?? virtualNetworkLocation
+      location: nsg.?nsgLocation ?? additionalVirtualNetworks[i].location
       tags: nsg.?nsgTags ?? null
       enableTelemetry: enableTelemetry
     }

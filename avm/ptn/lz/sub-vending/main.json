@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7982537749518529946"
+      "templateHash": "3922566507607884488"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -2007,7 +2007,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "16892033208338195324"
+              "templateHash": "13693981430278652355"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -3745,7 +3745,7 @@
             "virtualWanHubConnectionPropogatedRouteTables": "[if(not(empty(parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'))), parameters('virtualNetworkVwanPropagatedRouteTablesResourceIds'), array(variables('virutalWanHubDefaultRouteTableId')))]",
             "virtualWanHubConnectionPropogatedLabels": "[if(not(empty(parameters('virtualNetworkVwanPropagatedLabels'))), parameters('virtualNetworkVwanPropagatedLabels'), createArray('default'))]",
             "resourceProvidersFormatted": "[replace(string(parameters('resourceProviders')), '\"', '\\\"')]",
-            "nsgArrayFormatted": "[if(not(empty(parameters('additionalVirtualNetworks'))), flatten(map(parameters('additionalVirtualNetworks'), lambda('vnet', map(filter(coalesce(tryGet(lambdaVariables('vnet'), 'subnets'), createArray()), lambda('subnet', and(contains(lambdaVariables('subnet'), 'networkSecurityGroup'), not(equals(lambdaVariables('subnet').networkSecurityGroup, null()))))), lambda('subnet', createObject('vnetResourceGroupName', lambdaVariables('vnet').resourceGroupName, 'subnetName', lambdaVariables('subnet').name, 'nsgName', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'name'), ''), 'nsgLocation', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'location'), lambdaVariables('vnet').location), 'nsgRules', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'securityRules'), null()), 'nsgTags', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'tags'), null()))))))), createArray())]",
+            "nsgArrayFormatted": "[if(not(empty(parameters('additionalVirtualNetworks'))), flatten(map(parameters('additionalVirtualNetworks'), lambda('vnet', map(coalesce(tryGet(lambdaVariables('vnet'), 'subnets'), createArray()), lambda('subnet', createObject('vnetResourceGroupName', lambdaVariables('vnet').resourceGroupName, 'subnetName', lambdaVariables('subnet').name, 'nsgName', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'name'), format('nsg-{0}-{1}-{2}', lambdaVariables('subnet').name, lambdaVariables('vnet').name, substring(guid(coalesce(lambdaVariables('vnet').name, 'vnet'), lambdaVariables('vnet').resourceGroupName, lambdaVariables('subnet').name), 0, 4))), 'nsgLocation', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'location'), lambdaVariables('vnet').location), 'nsgRules', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'securityRules'), null()), 'nsgTags', coalesce(tryGet(tryGet(lambdaVariables('subnet'), 'networkSecurityGroup'), 'tags'), null()))))))), createArray())]",
             "allVirtualNetworks": "[if(and(and(and(and(parameters('virtualNetworkEnabled'), not(empty(parameters('virtualNetworkName')))), not(empty(parameters('virtualNetworkAddressSpace')))), not(empty(parameters('virtualNetworkLocation')))), not(empty(parameters('virtualNetworkResourceGroupName')))), concat(createArray(createObject('name', parameters('virtualNetworkName'), 'resourceGroupName', parameters('virtualNetworkResourceGroupName'), 'location', parameters('virtualNetworkLocation'), 'addressPrefixes', parameters('virtualNetworkAddressSpace'))), parameters('additionalVirtualNetworks')), parameters('additionalVirtualNetworks'))]",
             "peeringCombinations": "[if(and(not(empty(variables('allVirtualNetworks'))), parameters('peerAllVirtualNetworks')), flatten(map(variables('allVirtualNetworks'), lambda('sourceVnet', 'sourceIndex', map(filter(variables('allVirtualNetworks'), lambda('targetVnet', 'targetIndex', not(equals(lambdaVariables('sourceIndex'), lambdaVariables('targetIndex'))))), lambda('targetVnet', 'targetIndex', createObject('sourceName', lambdaVariables('sourceVnet').name, 'targetName', lambdaVariables('targetVnet').name, 'sourceResourceGroupName', lambdaVariables('sourceVnet').resourceGroupName, 'targetResourceGroupName', lambdaVariables('targetVnet').resourceGroupName, 'sourceIndex', lambdaVariables('sourceIndex'), 'targetIndex', indexOf(variables('allVirtualNetworks'), lambdaVariables('targetVnet')), 'peeringName', format('peer-{0}-to-{1}', lambdaVariables('sourceVnet').name, lambdaVariables('targetVnet').name))))))), createArray())]"
           },
@@ -8697,13 +8697,13 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[variables('nsgArrayFormatted')[copyIndex()].nsgName]"
+                    "value": "[coalesce(variables('nsgArrayFormatted')[copyIndex()].nsgName, format('nsg-{0}-{1}', variables('nsgArrayFormatted')[copyIndex()].subnetName, substring(guid(variables('nsgArrayFormatted')[copyIndex()].vnetResourceGroupName, variables('nsgArrayFormatted')[copyIndex()].subnetName), 0, 5)))]"
                   },
                   "securityRules": {
                     "value": "[coalesce(tryGet(variables('nsgArrayFormatted')[copyIndex()], 'nsgRules'), null())]"
                   },
                   "location": {
-                    "value": "[coalesce(tryGet(variables('nsgArrayFormatted')[copyIndex()], 'nsgLocation'), parameters('virtualNetworkLocation'))]"
+                    "value": "[coalesce(tryGet(variables('nsgArrayFormatted')[copyIndex()], 'nsgLocation'), parameters('additionalVirtualNetworks')[copyIndex()].location)]"
                   },
                   "tags": {
                     "value": "[coalesce(tryGet(variables('nsgArrayFormatted')[copyIndex()], 'nsgTags'), null())]"
