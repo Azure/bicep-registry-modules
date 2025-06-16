@@ -19,7 +19,7 @@ var identity = !empty(properties.?authentication.?managedIdentities)
     }
   : null
 
-resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' existing = if (properties.endpointType == 'EventGrid') {
+resource eventGridTopic 'Microsoft.EventGrid/topics@2025-02-15' existing = if (properties.endpointType == 'EventGrid') {
   name: last(split(properties.?eventGridTopicResourceId, '/'))
   scope: resourceGroup(
     split(properties.?eventGridTopicResourceId, '/')[2],
