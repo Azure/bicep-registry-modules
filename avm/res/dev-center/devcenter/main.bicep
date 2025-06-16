@@ -238,6 +238,7 @@ module devcenter_gallery 'gallery/main.bicep' = [
       devcenterName: devcenter.name
       name: gallery.name
       galleryResourceId: gallery.galleryResourceId
+      devCenterIdentityPrincipalId: gallery.?devCenterIdentityPrincipalId
     }
   }
 ]
@@ -266,6 +267,9 @@ module devcenter_devboxDefinition 'devboxdefinition/main.bicep' = [
       tags: devboxDefinition.?tags
       location: devboxDefinition.?location ?? location
     }
+    dependsOn: [
+      devcenter_gallery
+    ]
   }
 ]
 
@@ -428,6 +432,9 @@ type devCenterGalleryType = {
 
   @description('Required. The resource ID of the backing Azure Compute Gallery. The devcenter identity (system or user) must have "Contributor" access to the gallery.')
   galleryResourceId: string
+
+  @description('Optional. The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically.')
+  devCenterIdentityPrincipalId: string?
 }
 
 @description('The type for Dev Center Attached Network.')

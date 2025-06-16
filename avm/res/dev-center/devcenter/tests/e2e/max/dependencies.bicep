@@ -1,6 +1,9 @@
 @description('Required. The name of the KeyVault to create.')
 param keyVaultName string
 
+@description('Required. The name of the Compute Gallery to create.')
+param galleryName string
+
 @description('Required. The name of the Managed Identity to create.')
 param managedIdentityName string
 
@@ -18,6 +21,12 @@ var addressPrefix = '10.0.0.0/16'
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
+}
+
+resource gallery 'Microsoft.Compute/galleries@2024-03-03' = {
+  name: galleryName
+  location: location
+  properties: {}
 }
 
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
@@ -140,3 +149,6 @@ output networkConnectionResourceId string = devCenterNetworkConnection.id
 
 @description('The secret URI of the created Key Vault secret.')
 output keyVaultSecretUri string = keyVault::secret.properties.secretUriWithVersion
+
+@description('The resource ID of the created Azure Compute Gallery.')
+output galleryResourceId string = gallery.id

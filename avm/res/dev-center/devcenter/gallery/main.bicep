@@ -16,6 +16,9 @@ param name string
 @description('Required. The resource ID of the backing Azure Compute Gallery. The devcenter identity (system or user) must have "Contributor" access to the gallery.')
 param galleryResourceId string
 
+@description('Optional. The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically.')
+param devCenterIdentityPrincipalId string?
+
 // To do ==> Support creating the Contributor role assignment for the Dev Center identity on the backing Azure Compute Gallery.
 
 // ============== //
@@ -26,12 +29,24 @@ resource devcenter 'Microsoft.DevCenter/devcenters@2025-02-01' existing = {
   name: devcenterName
 }
 
+module computeGallery_roleAssignment 'modules/computeGallery_roleAssignment.bicep' = if (devCenterIdentityPrincipalId != '') {
+  name: '${deployment().name}-Contributor-RoleAssignment'
+  scope: resourceGroup(split(galleryResourceId, '/')[4])
+  params: {
+    devCenterIdentityPrincipalId: devCenterIdentityPrincipalId!
+    galleryResourceId: galleryResourceId
+  }
+}
+
 resource gallery 'Microsoft.DevCenter/devcenters/galleries@2025-02-01' = {
   name: name
   parent: devcenter
   properties: {
     galleryResourceId: galleryResourceId
   }
+  dependsOn: [
+    computeGallery_roleAssignment
+  ]
 }
 
 // ============ //
