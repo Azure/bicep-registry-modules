@@ -64,7 +64,6 @@ module openAiPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' =
 
 module aiServices 'service.bicep' = {
   name: take('${name}-ai-services-deployment', 64)
-  dependsOn: [cognitiveServicesPrivateDnsZone, openAiPrivateDnsZone] // required due to optional flags that could change dependency
   params: {
     name: 'cog${name}${resourceToken}'
     location: location
@@ -107,7 +106,6 @@ module aiServices 'service.bicep' = {
 
 module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
   name: take('${name}-content-safety-deployment', 64)
-  dependsOn: [cognitiveServicesPrivateDnsZone] // required due to optional flags that could change dependency
   params: {
     name: 'safety${name}${resourceToken}'
     location: location
@@ -126,7 +124,6 @@ module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
 }
 
 import { deploymentsType } from '../customTypes.bicep'
-import { connectionType } from 'br/public:avm/res/machine-learning-services/workspace:0.10.1'
 
 output aiServicesResourceId string = aiServices.outputs.cognitiveResourceId
 output aiServicesName string = aiServices.outputs.cognitiveName

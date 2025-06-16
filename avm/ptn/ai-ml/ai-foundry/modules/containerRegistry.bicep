@@ -37,7 +37,6 @@ var nameFormatted = take(toLower(name), 50)
 
 module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: take('${nameFormatted}-container-registry-deployment', 64)
-  dependsOn: [privateDnsZone] // required due to optional flags that could change dependency
   params: {
     name: nameFormatted
     location: location
