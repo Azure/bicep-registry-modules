@@ -274,6 +274,7 @@ resource ad 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
     source: {
       script: loadTextContent('./scripts/provision-ad.ps1')
     }
+    treatFailureAsDeploymentFailure: true
     errorBlobUri: blobUriErrAd
     outputBlobUri: blobUriOutAd
     parameters: [
@@ -327,6 +328,7 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
     source: {
       script: loadTextContent('./scripts/provision-arc.ps1')
     }
+    treatFailureAsDeploymentFailure: true
     errorBlobUri: blobUriErrArc1
     outputBlobUri: blobUriOutArc1
     parameters: [
@@ -388,6 +390,7 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
     source: {
       script: loadTextContent('./scripts/provision-arc.ps1')
     }
+    treatFailureAsDeploymentFailure: true
     errorBlobUri: blobUriErrArc2
     outputBlobUri: blobUriOutArc2
     parameters: [
