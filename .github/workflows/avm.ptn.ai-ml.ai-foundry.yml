@@ -28,8 +28,8 @@ on:
     paths:
       - ".github/actions/templates/avm-**"
       - ".github/workflows/avm.template.module.yml"
-      - ".github/workflows/avm.ptn.ai-platform.baseline.yml"
-      - "avm/ptn/ai-platform/baseline/**"
+      - ".github/workflows/avm.ptn.ai-ml.ai-foundry.yml"
+      - "avm/ptn/ai-ml/**"
       - "utilities/pipelines/**"
       - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
