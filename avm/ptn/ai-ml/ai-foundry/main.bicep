@@ -174,7 +174,7 @@ module containerRegistry 'modules/containerRegistry.bicep' = if (toLower(aiFound
   }
 }
 
-module cognitiveServices 'modules/ai-foundry-account/main.bicep' = {
+module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
   name: '${name}-cognitive-services-deployment'
   params: {
     name: name
