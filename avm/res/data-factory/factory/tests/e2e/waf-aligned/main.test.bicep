@@ -118,9 +118,6 @@ module testDeployment '../../../main.bicep' = [
             {
               categoryGroup: 'allLogs'
             }
-            {
-              categoryGroup: 'audit'
-            }
           ]
           metricCategories: [
             {
