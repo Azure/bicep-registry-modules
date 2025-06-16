@@ -1,36 +1,36 @@
 @minLength(3)
 @maxLength(12)
-@description('Name of the Cognitive Services resource. Must be unique in the resource group.')
+@description('Required. Name of the Cognitive Services resource. Must be unique in the resource group.')
 param name string
 
-@description('Unique string to use when naming global resources.')
+@description('Required. Unique string to use when naming global resources.')
 param resourceToken string
 
-@description('Specifies the location for all the Azure resources. Defaults to the location of the resource group.')
+@description('Required. Specifies the location for all the Azure resources. Defaults to the location of the resource group.')
 param location string
 
-@description('Specifies whether network isolation is enabled. When true, Foundry and related components will be deployed, network access parameters will be set to Disabled.')
+@description('Required. Specifies whether network isolation is enabled. When true, Foundry and related components will be deployed, network access parameters will be set to Disabled.')
 param networkIsolation bool
 
-@description('Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
+@description('Required. Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
 param userObjectId string
 
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}
 
-@description('Resource ID of the virtual network to link the private DNS zones.')
+@description('Required. Resource ID of the virtual network to link the private DNS zones. Conditional: Only required if networkIsolation is true.')
 param virtualNetworkResourceId string
 
-@description('Resource ID of the subnet for the private endpoint.')
+@description('Required. Resource ID of the subnet for the private endpoint. Conditional: Only required if networkIsolation is true.')
 param virtualNetworkSubnetResourceId string
 
 @description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentsType[] = []
 
-@description('Whether to include Azure AI Content Safety in the deployment.')
+@description('Required. Whether to include Azure AI Content Safety in the deployment.')
 param contentSafetyEnabled bool
 
-@description('Optional. A collection of rules governing the accessibility from specific network locations.')
+@description('Required. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object
 
 module cognitiveServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
