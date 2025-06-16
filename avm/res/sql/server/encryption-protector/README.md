@@ -12,7 +12,7 @@ This module deploys an Azure SQL Server Encryption Protector.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.Sql/servers/encryptionProtector` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/encryptionProtector) |
+| `Microsoft.Sql/servers/encryptionProtector` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/encryptionProtector) |
 
 ## Parameters
 

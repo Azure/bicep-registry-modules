@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Azure Managed Redis (Preview)'
-metadata description = 'This instance deploys an Azure Managed Redis (Preview) cache with the minimum set of required parameters.'
+metadata name = 'Using only defaults'
+metadata description = 'This instance deploys the module with the minimum set of required parameters.'
 
 // ========== //
 // Parameters //
@@ -9,15 +9,15 @@ metadata description = 'This instance deploys an Azure Managed Redis (Preview) c
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
-param resourceGroupName string = 'dep-${namePrefix}-cache-redisenterprise-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-devcenter.project-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'creamr'
+param serviceShort string = 'dcpmin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
-// Hardcoded to 'uksouth' because AMR SKUs are not available in all regions
+// Hardcoded because service not available in all regions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'uksouth'
 
@@ -32,6 +32,14 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   location: enforcedLocation
 }
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
+  params: {
+    devCenterName: 'dep-${namePrefix}-dc-${serviceShort}'
+  }
+}
+
 // ============== //
 // Test Execution //
 // ============== //
@@ -43,7 +51,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: '${namePrefix}${serviceShort}001'
-      skuName: 'Balanced_B10'
+      devCenterResourceId: nestedDependencies.outputs.devCenterResourceId
     }
   }
 ]
