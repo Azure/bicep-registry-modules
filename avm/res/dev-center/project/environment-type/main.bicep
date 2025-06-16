@@ -36,7 +36,7 @@ param creatorRoleAssignmentRoles string[]
 param userRoleAssignmentsRoles userRoleAssignmentsRolesType[]?
 
 @description('Optional. Resource tags to apply to the environment type.')
-param tags object?
+param tags resourceInput<'Microsoft.DevCenter/projects/environmentTypes@2025-02-01'>.tags?
 
 import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The managed identity definition for this resource. If using user assigned identities, they must be first associated to the project that this environment type is created in and only one user identity can be used per project. At least one identity (system assigned or user assigned) must be enabled for deployment. The default is set to system assigned identity.')
@@ -188,5 +188,5 @@ type userRoleAssignmentsRolesType = {
   @description('Required. The object ID of the user, group, service principal, or managed identity.')
   objectId: string
   @description('Required. An array of role definition GUIDs to assign to the object.')
-  roleDefinitions: array
+  roleDefinitions: string[]
 }
