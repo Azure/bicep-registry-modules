@@ -2272,7 +2272,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.11.2` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.11.1` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.13.0` | Remote reference |
 
