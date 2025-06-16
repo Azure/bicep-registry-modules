@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10376094136031250793"
+      "templateHash": "2947154870216849436"
     },
     "name": "Dev Center Project Environment Type",
     "description": "This module deploys a Dev Center Project Environment Type."
@@ -23,6 +23,9 @@
         },
         "roleDefinitions": {
           "type": "array",
+          "items": {
+            "type": "string"
+          },
           "metadata": {
             "description": "Required. An array of role definition GUIDs to assign to the object."
           }
@@ -204,10 +207,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DevCenter/projects/environmentTypes@2025-02-01#properties/tags"
+        },
         "description": "Optional. Resource tags to apply to the environment type."
-      }
+      },
+      "nullable": true
     },
     "managedIdentities": {
       "$ref": "#/definitions/managedIdentityAllType",

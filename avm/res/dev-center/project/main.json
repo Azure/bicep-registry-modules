@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14230053369568529055"
+      "templateHash": "2975135934210648196"
     },
     "name": "Dev Center Project",
     "description": "This module deploys a Dev Center Project."
@@ -93,10 +93,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DevCenter/projects/environmentTypes@2025-02-01#properties/tags"
+            },
             "description": "Optional. Resource tags to apply to the environment type."
-          }
+          },
+          "nullable": true
         },
         "userRoleAssignmentsRoles": {
           "type": "array",
@@ -156,10 +159,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DevCenter/projects/pools@2025-02-01#properties/tags"
+            },
             "description": "Optional. Resource tags to apply to the pool."
-          }
+          },
+          "nullable": true
         },
         "localAdministrator": {
           "type": "string",
@@ -268,10 +274,13 @@
         },
         "tags": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.DevCenter/projects/catalogs@2025-02-01#properties/tags"
+            },
             "description": "Optional. Resource tags to apply to the catalog."
-          }
+          },
+          "nullable": true
         }
       },
       "metadata": {
@@ -600,6 +609,9 @@
         },
         "roleDefinitions": {
           "type": "array",
+          "items": {
+            "type": "string"
+          },
           "metadata": {
             "description": "Required. An array of role definition GUIDs to assign to the object."
           }
@@ -645,10 +657,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DevCenter/projects@2025-02-01#properties/tags"
+        },
         "description": "Optional. Resource tags to apply to the project."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -881,7 +896,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10376094136031250793"
+              "templateHash": "2947154870216849436"
             },
             "name": "Dev Center Project Environment Type",
             "description": "This module deploys a Dev Center Project Environment Type."
@@ -898,6 +913,9 @@
                 },
                 "roleDefinitions": {
                   "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
                   "metadata": {
                     "description": "Required. An array of role definition GUIDs to assign to the object."
                   }
@@ -1079,10 +1097,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DevCenter/projects/environmentTypes@2025-02-01#properties/tags"
+                },
                 "description": "Optional. Resource tags to apply to the environment type."
-              }
+              },
+              "nullable": true
             },
             "managedIdentities": {
               "$ref": "#/definitions/managedIdentityAllType",
@@ -1262,7 +1283,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13819882242836998242"
+              "templateHash": "15199668707642182217"
             },
             "name": "Dev Center Project Catalog",
             "description": "This module deploys a Dev Center Project Catalog."
@@ -1347,10 +1368,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DevCenter/projects/catalogs@2025-02-01#properties/tags"
+                },
                 "description": "Optional. Resource tags to apply to the catalog."
-              }
+              },
+              "nullable": true
             },
             "location": {
               "type": "string",
@@ -1486,7 +1510,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10233674627917705989"
+              "templateHash": "12919519496313854576"
             },
             "name": "Dev Center Project Pool",
             "description": "This module deploys a Dev Center Project Pool."
@@ -1679,10 +1703,13 @@
             },
             "tags": {
               "type": "object",
-              "nullable": true,
               "metadata": {
+                "__bicep_resource_derived_type!": {
+                  "source": "Microsoft.DevCenter/projects/pools@2025-02-01#properties/tags"
+                },
                 "description": "Optional. Resource tags to apply to the pool."
-              }
+              },
+              "nullable": true
             },
             "localAdministrator": {
               "type": "string",

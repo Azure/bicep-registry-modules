@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "13819882242836998242"
+      "templateHash": "15199668707642182217"
     },
     "name": "Dev Center Project Catalog",
     "description": "This module deploys a Dev Center Project Catalog."
@@ -91,10 +91,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DevCenter/projects/catalogs@2025-02-01#properties/tags"
+        },
         "description": "Optional. Resource tags to apply to the catalog."
-      }
+      },
+      "nullable": true
     },
     "location": {
       "type": "string",
