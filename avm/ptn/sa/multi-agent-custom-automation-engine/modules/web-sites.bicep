@@ -213,7 +213,7 @@ resource app 'Microsoft.Web/sites@2024-04-01' = {
   }
 }
 
-module app_config 'config/main.bicep' = [
+module app_config 'web-sites.config.bicep' = [
   for (config, index) in (configs ?? []): {
     name: '${uniqueString(deployment().name, location)}-Site-Config-${index}'
     params: {
