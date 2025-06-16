@@ -75,9 +75,6 @@ param userObjectId string = ''
 @description('Specifies the location.')
 param location string = resourceGroup().location
 
-@description('Specifies the resource id of the Log Analytics workspace.')
-param workspaceId string
-
 @description('Specifies the resource tags.')
 param tags object
 
@@ -264,10 +261,7 @@ resource dcrEventLogs 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
     description: 'Collect Windows Event Logs and send to Azure Monitor Logs'
     destinations: {
       logAnalytics: [
-        {
-          name: 'logAnalytics'
-          workspaceResourceId: workspaceId
-        }
+        {}
       ]
     }
   }
@@ -353,10 +347,7 @@ resource dcrPerfLaw 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
     description: 'Collect Performance Counters and send to Azure Monitor Logs.'
     destinations: {
       logAnalytics: [
-        {
-          name: 'logAnalytics'
-          workspaceResourceId: workspaceId
-        }
+        {}
       ]
     }
   }

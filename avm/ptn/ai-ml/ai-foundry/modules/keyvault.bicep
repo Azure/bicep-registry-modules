@@ -13,9 +13,6 @@ param virtualNetworkResourceId string
 @description('Resource ID of the subnet for the private endpoint.')
 param virtualNetworkSubnetResourceId string
 
-@description('Resource ID of the Log Analytics workspace to use for diagnostic settings.')
-param logAnalyticsWorkspaceResourceId string
-
 @description('Specifies whether network isolation is enabled. This will create a private endpoint for the Key Vault and link the private DNS zone.')
 param networkIsolation bool = true
 
@@ -55,9 +52,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.0' = {
     enableSoftDelete: true
     softDeleteRetentionInDays: 7
     diagnosticSettings: [
-      {
-        workspaceResourceId: logAnalyticsWorkspaceResourceId
-      }
+      {}
     ]
     privateEndpoints: networkIsolation
       ? [

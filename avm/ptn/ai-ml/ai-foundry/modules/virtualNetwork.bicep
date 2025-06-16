@@ -62,9 +62,6 @@ param natGatewayIdleTimeoutMins int = 30
 @description('Optional IP address to allow access throught Bastion NSG. If not specified, all IP addresses are allowed.')
 param allowedIpAddress string = ''
 
-@description('Specifies the resource id of the Log Analytics workspace.')
-param workspaceId string
-
 @description('Specifies the location.')
 param location string = resourceGroup().location
 

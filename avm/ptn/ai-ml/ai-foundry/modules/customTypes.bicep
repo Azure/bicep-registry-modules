@@ -191,12 +191,6 @@ type databasePropertyType = {
 
   @description('Optional. The diagnostic settings of the service.')
   diagnosticSettings: diagnosticSettingFullType[]?
-
-  @description('Optional. The short term backup retention policy for the database.')
-  backupShortTermRetentionPolicy: shortTermBackupRetentionPolicyType?
-
-  @description('Optional. The long term backup retention policy for the database.')
-  backupLongTermRetentionPolicy: longTermBackupRetentionPolicyType?
 }
 
 // Reference: https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/database/main.bicep
@@ -217,40 +211,6 @@ type databaseSkuType = {
 
   @description('Optional. The tier or edition of the particular SKU, e.g. Basic, Premium.')
   tier: string?
-}
-
-// Reference: https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/database/main.bicep
-@export()
-@description('The short-term backup retention policy for the database.')
-type shortTermBackupRetentionPolicyType = {
-  @description('Optional. Differential backup interval in hours. For Hyperscale tiers this value will be ignored.')
-  diffBackupIntervalInHours: int?
-
-  @description('Optional. Point-in-time retention in days.')
-  retentionDays: int?
-}
-
-// Reference: https://github.com/Azure/bicep-registry-modules/blob/main/avm/res/sql/server/database/main.bicep
-@export()
-@description('The long-term backup retention policy for the database.')
-type longTermBackupRetentionPolicyType = {
-  @description('Optional. The BackupStorageAccessTier for the LTR backups.')
-  backupStorageAccessTier: 'Archive' | 'Hot'?
-
-  @description('Optional. The setting whether to make LTR backups immutable.')
-  makeBackupsImmutable: bool?
-
-  @description('Optional. Monthly retention in ISO 8601 duration format.')
-  monthlyRetention: string?
-
-  @description('Optional. Weekly retention in ISO 8601 duration format.')
-  weeklyRetention: string?
-
-  @description('Optional. Week of year backup to keep for yearly retention.')
-  weekOfYear: int?
-
-  @description('Optional. Yearly retention in ISO 8601 duration format.')
-  yearlyRetention: string?
 }
 
 @export()
@@ -294,6 +254,5 @@ type deploymentsType = {
   @description('Optional. The version upgrade option.')
   versionUpgradeOption: string?
 }
-
 
 import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'

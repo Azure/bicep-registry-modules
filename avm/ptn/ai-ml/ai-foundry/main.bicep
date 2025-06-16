@@ -100,30 +100,26 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-//Do we deploy or just leave out of the pattern for Foundry?
+// module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (toLower(aiFoundryType) != 'basic') {
+//   name: take('${name}-log-analytics-deployment', 64)
+//   params: {
+//     name: toLower('log-${name}')
+//     location: location
+//     tags: allTags
+//     skuName: 'PerNode'
+//     dataRetention: 60
+//   }
+// }
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (toLower(aiFoundryType) != 'basic') {
-  name: take('${name}-log-analytics-deployment', 64)
-  params: {
-    name: toLower('log-${name}')
-    location: location
-    tags: allTags
-    skuName: 'PerNode'
-    dataRetention: 60
-  }
-}
-
-//Do we deploy or just leave out of the pattern for Foundry?
-
-module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (toLower(aiFoundryType) != 'basic') {
-  name: take('${name}-app-insights-deployment', 64)
-  params: {
-    name: toLower('appi-${name}')
-    location: location
-    tags: allTags
-    workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-  }
-}
+// module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (toLower(aiFoundryType) != 'basic') {
+//   name: take('${name}-app-insights-deployment', 64)
+//   params: {
+//     name: toLower('appi-${name}')
+//     location: location
+//     tags: allTags
+//     workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+//   }
+// }
 
 module network 'modules/virtualNetwork.bicep' = if (toLower(aiFoundryType) == 'standardprivate') {
   name: take('${name}-network-deployment', 64)
@@ -148,7 +144,6 @@ module network 'modules/virtualNetwork.bicep' = if (toLower(aiFoundryType) == 's
     natGatewayPublicIps: 1
     natGatewayIdleTimeoutMins: 30
     allowedIpAddress: allowedIpAddress
-    workspaceId: logAnalyticsWorkspace.outputs.resourceId
     location: location
     tags: allTags
   }
@@ -162,7 +157,6 @@ module keyvault 'modules/keyvault.bicep' = if (toLower(aiFoundryType) != 'basic'
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     userObjectId: userObjectId
     tags: allTags
   }
@@ -176,7 +170,6 @@ module containerRegistry 'modules/containerRegistry.bicep' = if (toLower(aiFound
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     tags: allTags
   }
 }
@@ -191,7 +184,6 @@ module cognitiveServices 'modules/ai-foundry-account/main.bicep' = {
     networkAcls: networkAcls
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     aiModelDeployments: aiModelDeployments
     userObjectId: userObjectId
     contentSafetyEnabled: contentSafetyEnabled
@@ -207,7 +199,6 @@ module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     roleAssignments: concat(
       empty(userObjectId)
         ? []
@@ -259,7 +250,6 @@ module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic'
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     userObjectId: userObjectId
     roleAssignments: union(
       empty(userObjectId)
@@ -311,7 +301,6 @@ module virtualMachine './modules/virtualMachine.bicep' = if (toLower(aiFoundryTy
     enableAcceleratedNetworking: true
     enableMicrosoftEntraIdAuth: true
     userObjectId: userObjectId
-    workspaceId: logAnalyticsWorkspace.outputs.resourceId
     location: location
     tags: allTags
   }
@@ -326,7 +315,6 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic'
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
-    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     databases: cosmosDatabases
     tags: allTags
   }
@@ -342,9 +330,7 @@ output AZURE_AI_PROJECT_NAME string = project.outputs.projectName
 output AZURE_BASTION_NAME string = networkIsolation ? network.outputs.bastionName : ''
 output AZURE_VM_RESOURCE_ID string = networkIsolation ? virtualMachine.outputs.id : ''
 output AZURE_VM_USERNAME string = servicesUsername
-output AZURE_APP_INSIGHTS_NAME string = applicationInsights.outputs.name
 output AZURE_CONTAINER_REGISTRY_NAME string = toLower(aiFoundryType) != 'basic' ? containerRegistry.outputs.name : ''
-output AZURE_LOG_ANALYTICS_WORKSPACE_NAME string = logAnalyticsWorkspace.outputs.name
 output AZURE_STORAGE_ACCOUNT_NAME string = storageAccount.outputs.storageName
 output AZURE_VIRTUAL_NETWORK_NAME string = networkIsolation ? network.outputs.virtualNetworkName : ''
 output AZURE_VIRTUAL_NETWORK_SUBNET_NAME string = networkIsolation ? network.outputs.vmSubnetName : ''

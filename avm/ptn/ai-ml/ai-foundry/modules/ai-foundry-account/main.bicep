@@ -24,9 +24,6 @@ param virtualNetworkResourceId string
 @description('Resource ID of the subnet for the private endpoint.')
 param virtualNetworkSubnetResourceId string
 
-@description('Resource ID of the Log Analytics workspace to use for diagnostic settings.')
-param logAnalyticsWorkspaceResourceId string
-
 @description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentsType[] = []
 

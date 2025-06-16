@@ -13,9 +13,6 @@ param virtualNetworkResourceId string
 @description('Resource ID of the subnet for the private endpoint.')
 param virtualNetworkSubnetResourceId string
 
-@description('Resource ID of the Log Analytics workspace to use for diagnostic settings.')
-param logAnalyticsWorkspaceResourceId string
-
 @description('Specifies whether network isolation is enabled. This will create a private endpoint for the AI Search resource and link the private DNS zone.')
 param networkIsolation bool = true
 
@@ -70,9 +67,7 @@ module aiSearch 'br/public:avm/res/search/search-service:0.10.0' = {
           }
         ]
     diagnosticSettings: [
-      {
-        workspaceResourceId: logAnalyticsWorkspaceResourceId
-      }
+      {}
     ]
     privateEndpoints: networkIsolation
       ? [

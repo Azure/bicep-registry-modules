@@ -13,9 +13,6 @@ param virtualNetworkResourceId string
 @description('Resource ID of the subnet for the private endpoint.')
 param virtualNetworkSubnetResourceId string
 
-@description('Resource ID of the Log Analytics workspace to use for diagnostic settings.')
-param logAnalyticsWorkspaceResourceId string
-
 @description('Specifies whether network isolation is enabled. This will create a private endpoint for the Cosmos DB Account and link the private DNS zone.')
 param networkIsolation bool = true
 
@@ -46,9 +43,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
     name: nameFormatted
     automaticFailover: true
     diagnosticSettings: [
-      {
-        workspaceResourceId: logAnalyticsWorkspaceResourceId
-      }
+      {}
     ]
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: true

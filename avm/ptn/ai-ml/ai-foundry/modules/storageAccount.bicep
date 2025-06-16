@@ -13,9 +13,6 @@ param virtualNetworkResourceId string
 @description('Resource ID of the subnet for the private endpoint.')
 param virtualNetworkSubnetResourceId string
 
-@description('Resource ID of the Log Analytics workspace to use for diagnostic settings.')
-param logAnalyticsWorkspaceResourceId string
-
 @description('Specifies whether network isolation is enabled. This will create a private endpoint for the Storage Account and link the private DNS zone.')
 param networkIsolation bool = true
 
@@ -120,9 +117,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     }
     supportsHttpsTrafficOnly: true
     diagnosticSettings: [
-      {
-        workspaceResourceId: logAnalyticsWorkspaceResourceId
-      }
+      {}
     ]
     privateEndpoints: networkIsolation
       ? [
