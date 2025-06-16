@@ -22,7 +22,7 @@ param readWriteEndpoint readWriteEndpointType
 @description('Required. Databases secondary type on partner server.')
 param secondaryType 'Geo' | 'Standby'
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   name: serverName
 }
 
