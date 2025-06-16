@@ -358,3 +358,6 @@ output azureVirtualNetworkSubnetName string = networkIsolation ? network.outputs
 
 @description('Name of the deployed Azure Cosmos DB account.')
 output azureCosmosAccountName string = toLower(aiFoundryType) != 'basic' ? cosmosDb.outputs.cosmosDBname : ''
+
+@description('Name of the deployed Azure Resource Group.')
+output azureResourceGroupName string = resourceGroup().name
