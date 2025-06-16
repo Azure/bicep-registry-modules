@@ -85,17 +85,20 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/dev-ops/cicd-agents-and-runners:<version>`.
 
-- [Aca-Aci](#example-1-aca-aci)
-- [Defaults.Azuredevops.Aci](#example-2-defaultsazuredevopsaci)
-- [Defaults.Github.Aca](#example-3-defaultsgithubaca)
-- [Max.Azuredevops.Aca](#example-4-maxazuredevopsaca)
-- [Max.Github.Aci](#example-5-maxgithubaci)
-- [Org-Scope-Github-Aca](#example-6-org-scope-github-aca)
-- [Private-Devops-Existing-Vnet-Aci](#example-7-private-devops-existing-vnet-aci)
-- [Private-Github-Existing-Vnet-Aca](#example-8-private-github-existing-vnet-aca)
-- [Private-Github-New-Vnet](#example-9-private-github-new-vnet)
+- [Using only defaults for Azure DevOps self-hosted agents using both Azure Container Instances and Azure Container Apps.](#example-1-using-only-defaults-for-azure-devops-self-hosted-agents-using-both-azure-container-instances-and-azure-container-apps)
+- [Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances.](#example-2-using-only-defaults-for-azure-devops-self-hosted-agents-using-azure-container-instances)
+- [Using only defaults for GitHub self-hosted runners using Azure Container Apps.](#example-3-using-only-defaults-for-github-self-hosted-runners-using-azure-container-apps)
+- [Using large parameter set for Azure DevOps self-hosted agents using Azure Container Apps.](#example-4-using-large-parameter-set-for-azure-devops-self-hosted-agents-using-azure-container-apps)
+- [Using large parameter set for GitHub self-hosted runners using Azure Container Instances.](#example-5-using-large-parameter-set-for-github-self-hosted-runners-using-azure-container-instances)
+- [Deploys GitHub self-hosted runners using Azure Container Apps for a GitHub organization scope.](#example-6-deploys-github-self-hosted-runners-using-azure-container-apps-for-a-github-organization-scope)
+- [Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet.](#example-7-using-only-defaults-for-azure-devops-self-hosted-agents-using-private-networking-in-an-existing-vnet)
+- [Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet.](#example-8-using-only-defaults-for-github-self-hosted-runners-using-private-networking-in-an-existing-vnet)
+- [Using only defaults for GitHub self-hosted runners using Private networking.](#example-9-using-only-defaults-for-github-self-hosted-runners-using-private-networking)
 
-### Example 1: _Aca-Aci_
+### Example 1: _Using only defaults for Azure DevOps self-hosted agents using both Azure Container Instances and Azure Container Apps._
+
+This instance deploys the module with the minimum set of required parameters for Azure DevOps self-hosted agents in Azure Container Instances and Azure Container Apps.
+
 
 <details>
 
@@ -212,7 +215,10 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 2: _Defaults.Azuredevops.Aci_
+### Example 2: _Using only defaults for Azure DevOps self-hosted agents using Azure Container Instances._
+
+This instance deploys the module with the minimum set of required parameters for Azure DevOps self-hosted agents in Azure Container Instances.
+
 
 <details>
 
@@ -326,7 +332,10 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 3: _Defaults.Github.Aca_
+### Example 3: _Using only defaults for GitHub self-hosted runners using Azure Container Apps._
+
+This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps.
+
 
 <details>
 
@@ -458,7 +467,10 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 4: _Max.Azuredevops.Aca_
+### Example 4: _Using large parameter set for Azure DevOps self-hosted agents using Azure Container Apps._
+
+This instance deploys the module with most of its features enabled for Azure DevOps self-hosted agents using Azure Container Apps.
+
 
 <details>
 
@@ -605,7 +617,10 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 5: _Max.Github.Aci_
+### Example 5: _Using large parameter set for GitHub self-hosted runners using Azure Container Instances._
+
+This instance deploys the module with most of its features enabled for GitHub self-hosted runners using Azure Container Instances.
+
 
 <details>
 
@@ -755,7 +770,10 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 6: _Org-Scope-Github-Aca_
+### Example 6: _Deploys GitHub self-hosted runners using Azure Container Apps for a GitHub organization scope._
+
+This instance deploys the module with the minimum set of required parameters for GitHub self-hosted runners in Azure Container Apps for a GitHub organization scope.
+
 
 <details>
 
@@ -869,7 +887,10 @@ param privateNetworking = false
 </details>
 <p>
 
-### Example 7: _Private-Devops-Existing-Vnet-Aci_
+### Example 7: _Using only defaults for Azure DevOps self-hosted agents using Private networking in an existing vnet._
+
+This instance deploys the module with the minimum set of required parameters Azure DevOps self-hosted agents using Private networking in Azure Container Instances in an existing vnet.
+
 
 <details>
 
@@ -1019,7 +1040,10 @@ param privateNetworking = true
 </details>
 <p>
 
-### Example 8: _Private-Github-Existing-Vnet-Aca_
+### Example 8: _Using only defaults for GitHub self-hosted runners using Private networking in an existing vnet._
+
+This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Apps in an existing vnet.
+
 
 <details>
 
@@ -1166,7 +1190,10 @@ param privateNetworking = true
 </details>
 <p>
 
-### Example 9: _Private-Github-New-Vnet_
+### Example 9: _Using only defaults for GitHub self-hosted runners using Private networking._
+
+This instance deploys the module with the minimum set of required parameters GitHub self-hosted runners using Private networking in Azure Container Instances.
+
 
 <details>
 
@@ -2255,7 +2282,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/app/job:0.6.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.10.2` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.11.2` | Remote reference |
 | `br/public:avm/res/container-instance/container-group:0.2.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
@@ -2263,7 +2290,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
 | `br/public:avm/res/network/public-ip-address:0.8.0` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
-| `br/public:avm/res/operational-insights/workspace:0.11.1` | Remote reference |
+| `br/public:avm/res/operational-insights/workspace:0.11.2` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.5.1` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.13.0` | Remote reference |
 
