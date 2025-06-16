@@ -252,9 +252,6 @@ module registry_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.1
       applicationSecurityGroupResourceIds: privateEndpoint.?applicationSecurityGroupResourceIds
       customNetworkInterfaceName: privateEndpoint.?customNetworkInterfaceName
     }
-    // dependsOn: [
-    //   registry
-    // ]
   }
 ]
 
