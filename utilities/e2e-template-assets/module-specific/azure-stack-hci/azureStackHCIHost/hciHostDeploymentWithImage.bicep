@@ -100,7 +100,7 @@ module roleAssignment_log 'modules/logRoleAssignment.bicep' = {
 }
 
 // optional VNET and subnet for the HCI host Azure VM
-resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = {
+resource vnet 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -129,7 +129,7 @@ resource vnet 'Microsoft.Network/virtualNetworks@2020-11-01' = {
 }
 
 // create a mintenance configuration for the Azure Stack HCI Host VM and proxy server
-resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023-09-01-preview' = {
+resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023-04-01' = {
   location: location
   name: maintenanceConfigurationName ?? ''
   properties: {
@@ -152,12 +152,12 @@ resource maintenanceConfig 'Microsoft.Maintenance/maintenanceConfigurations@2023
   }
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2020-11-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   location: location
   name: networkSecurityGroupName
 }
 
-resource hciHostVMSSFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' = {
+resource hciHostVMSSFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-11-01' = {
   name: HCIHostVirtualMachineScaleSetName
   location: location
   zones: ['1', '2', '3']
@@ -167,7 +167,7 @@ resource hciHostVMSSFlex 'Microsoft.Compute/virtualMachineScaleSets@2024-03-01' 
   }
 }
 
-resource nic 'Microsoft.Network/networkInterfaces@2020-11-01' = {
+resource nic 'Microsoft.Network/networkInterfaces@2024-07-01' = {
   location: location
   name: networkInterfaceName
   properties: {
@@ -191,7 +191,7 @@ resource nic 'Microsoft.Network/networkInterfaces@2020-11-01' = {
 param imageReferenceId string = '/SharedGalleries/b9e38f20-7c9c-4497-a25d-1a0c5eef2108-DIRECTLYSHARING/Images/vhci-Generalized/Versions/latest'
 
 // Azure Stack HCI Host VM -
-resource vm 'Microsoft.Compute/virtualMachines@2024-03-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2024-11-01' = {
   location: location
   name: virtualMachineName
   zones: ['1']

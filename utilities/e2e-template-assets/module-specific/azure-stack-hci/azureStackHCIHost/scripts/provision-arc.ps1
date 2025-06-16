@@ -34,31 +34,31 @@ try {
     $session = New-PSSession -ComputerName $IP -Port $Port -Authentication $Authentication -Credential $credential
 
     Invoke-Command -Session $session -ScriptBlock {
-        function Install-ModuleIfMissing {
-            param(
-                [Parameter(Mandatory = $true)]
-                [string]$Name,
-                [Parameter(Mandatory = $false)]
-                [string]$Repository = 'PSGallery',
-                [Parameter(Mandatory = $false)]
-                [switch]$Force,
-                [Parameter(Mandatory = $false)]
-                [switch]$AllowClobber
-            )
-            $module = Get-Module -Name $Name -ListAvailable
-            if (!$module) {
-                Install-Module -Name $Name -Repository $Repository -Force:$Force -AllowClobber:$AllowClobber
-            }
-        }
+        # function Install-ModuleIfMissing {
+        #     param(
+        #         [Parameter(Mandatory = $true)]
+        #         [string]$Name,
+        #         [Parameter(Mandatory = $false)]
+        #         [string]$Repository = 'PSGallery',
+        #         [Parameter(Mandatory = $false)]
+        #         [switch]$Force,
+        #         [Parameter(Mandatory = $false)]
+        #         [switch]$AllowClobber
+        #     )
+        #     $module = Get-Module -Name $Name -ListAvailable
+        #     if (!$module) {
+        #         Install-Module -Name $Name -Repository $Repository -Force:$Force -AllowClobber:$AllowClobber
+        #     }
+        # }
 
-        Invoke-WebRequest -Uri 'https://aka.ms/AzureConnectedMachineAgent' -OutFile "$env:TEMP\AzureConnectedMachineAgent.msi"
-        msiexec /i "$env:TEMP\AzureConnectedMachineAgent.msi" /l*v "$env:TEMP\AzureConnectedMachineAgentInstall.log" /qn
+        # Invoke-WebRequest -Uri 'https://aka.ms/AzureConnectedMachineAgent' -OutFile "$env:TEMP\AzureConnectedMachineAgent.msi"
+        # msiexec /i "$env:TEMP\AzureConnectedMachineAgent.msi" /l*v "$env:TEMP\AzureConnectedMachineAgentInstall.log" /qn
 
-        Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:$false
-        Install-ModuleIfMissing -Name Az -Repository PSGallery -Force
-        Install-ModuleIfMissing -Name Az.Accounts -Force -AllowClobber
-        Install-ModuleIfMissing -Name Az.ConnectedMachine -Force -AllowClobber
-        Install-ModuleIfMissing -Name Az.Resources -Force -AllowClobber
+        # Install-PackageProvider -Name NuGet -MinimumVersion 2.8.5.201 -Force -Confirm:$false
+        # Install-ModuleIfMissing -Name Az -Repository PSGallery -Force
+        # Install-ModuleIfMissing -Name Az.Accounts -Force -AllowClobber
+        # Install-ModuleIfMissing -Name Az.ConnectedMachine -Force -AllowClobber
+        # Install-ModuleIfMissing -Name Az.Resources -Force -AllowClobber
 
         $machineName = [System.Net.Dns]::GetHostName()
         $correlationID = New-Guid
