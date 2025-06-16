@@ -13,11 +13,11 @@ param startIpAddress string = '0.0.0.0'
 @description('Conditional. The name of the parent SQL Server. Required if the template is used in a standalone deployment.')
 param serverName string
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   name: serverName
 }
 
-resource firewallRule 'Microsoft.Sql/servers/firewallRules@2023-08-01-preview' = {
+resource firewallRule 'Microsoft.Sql/servers/firewallRules@2023-08-01' = {
   name: name
   parent: server
   properties: {
