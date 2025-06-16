@@ -35,8 +35,8 @@ on:
       - "!*/**/README.md"
 
 env:
-  modulePath: "avm/ptn/ai-platform/baseline"
-  workflowPath: ".github/workflows/avm.ptn.ai-platform.baseline.yml"
+  modulePath: "avm/ptn/ai-ml/ai-foundry"
+  workflowPath: ".github/workflows/avm.ptn.ai-ml.ai-foundry.yml"
 
 concurrency:
   group: ${{ github.workflow }}
