@@ -57,8 +57,15 @@ param maintenanceConfigurationAssignmentName string
 // Deploy Host VM Infrastructure    //
 // =================================//
 
+var blobUriOutAd = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand-ad-output.txt'
+var blobUriErrAd = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand-ad-error.txt'
+var blobUriOutArc1 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand-arc1-output.txt'
+var blobUriErrArc1 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand-arc1-error.txt'
+var blobUriOutArc2 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand-arc2-output.txt'
+var blobUriErrArc2 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand-arc2-error.txt'
+
 // vm managed identity used for HCI Arc onboarding
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   location: location
   name: userAssignedIdentityName
 }
@@ -79,6 +86,15 @@ module roleAssignment_subscriptionContributor 'modules/subscriptionRoleAssignmen
   name: '${uniqueString(deployment().name, location)}-hcihostmi-roleAssignment_subContributor'
   scope: subscription()
   params: {
+    principalId: userAssignedIdentity.properties.principalId
+  }
+}
+
+module roleAssignment_log 'modules/logRoleAssignment.bicep' = {
+  name: 'logRoleAssignment'
+  scope: resourceGroup('iacautomation-bicep')
+  params: {
+    containerName: 'avmlog/default/hcpc'
     principalId: userAssignedIdentity.properties.principalId
   }
 }
@@ -258,6 +274,8 @@ resource ad 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
     source: {
       script: loadTextContent('./scripts/provision-ad.ps1')
     }
+    errorBlobUri: blobUriErrAd
+    outputBlobUri: blobUriOutAd
     parameters: [
       {
         name: 'IP'
@@ -309,6 +327,8 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
     source: {
       script: loadTextContent('./scripts/provision-arc.ps1')
     }
+    errorBlobUri: blobUriErrArc1
+    outputBlobUri: blobUriOutArc1
     parameters: [
       {
         name: 'IP'
@@ -368,6 +388,8 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
     source: {
       script: loadTextContent('./scripts/provision-arc.ps1')
     }
+    errorBlobUri: blobUriErrArc2
+    outputBlobUri: blobUriOutArc2
     parameters: [
       {
         name: 'IP'
