@@ -179,8 +179,8 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
               allowBlobPublicAccess: storageAccountAllowBlobPublicAccess ?? false
               storageAccountHnsEnabled: storageAccountHnsEnabled ?? true
               storageAccountName: empty(storageAccountName)
-                ? 'st${uniqueString(resourceGroup().id)}'
-                : storageAccountName
+                ? 'st${uniqueString(resourceGroup().id, loc)}'
+                : '${storageAccountName}${toLower(loc)}'
               storageAccountType: !empty(storageAccountType)
                 ? storageAccountType
                 : (acrSku == 'Premium' ? 'Standard_ZRS' : 'Standard_LRS')
@@ -191,7 +191,9 @@ resource registry 'Microsoft.MachineLearningServices/registries@2024-10-01' = {
           {
             systemCreatedAcrAccount: {
               acrAccountSku: !empty(acrSku) ? acrSku : 'Premium'
-              acrAccountName: empty(acrAccountName) ? 'acr${uniqueString(resourceGroup().id)}' : acrAccountName
+              acrAccountName: empty(acrAccountName)
+                ? 'acr${uniqueString(resourceGroup().id, loc)}'
+                : '${acrAccountName}${toLower(loc)}'
             }
           }
         ]
