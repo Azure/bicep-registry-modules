@@ -73,7 +73,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeployment.bicep' = {
     hciNodeCount: length(clusterNodeNames)
     hostVMSize: 'Standard_E32bds_v5'
     localAdminPassword: localAdminPassword
-    location: location
+    location: 'westus3'
     switchlessStorageConfig: false
     diskNamePrefix: diskNamePrefix
     HCIHostVirtualMachineScaleSetName: HCIHostVirtualMachineScaleSetName
