@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11006788618635573022"
+      "templateHash": "12123336255304354464"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -1062,7 +1062,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Conditional. Enable/Disable usage telemetry for module."
+        "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
     "connections": {
@@ -1072,7 +1072,7 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Conditional. Specifies the connections to be created for the Azure AI Hub workspace. The connections are used to connect to other Azure resources and services."
+        "description": "Optional. Specifies the connections to be created for the Azure AI Hub workspace. The connections are used to connect to other Azure resources and services."
       }
     },
     "aiModelDeployments": {
@@ -1099,7 +1099,7 @@
       "type": "string",
       "defaultValue": "Standard_DS4_v2",
       "metadata": {
-        "description": "Conditional.Specifies the size of the jump-box Virtual Machine."
+        "description": "Optional.Specifies the size of the jump-box Virtual Machine."
       }
     },
     "vmAdminUsername": {
@@ -1108,7 +1108,7 @@
       "minLength": 3,
       "maxLength": 20,
       "metadata": {
-        "description": "Conditional.Specifies the name of the administrator account for the jump-box virtual machine. Defaults to \"[name]vmuser\". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion."
+        "description": "Optional.Specifies the name of the administrator account for the jump-box virtual machine. Defaults to \"[name]vmuser\". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion."
       }
     },
     "vmAdminPasswordOrKey": {
@@ -1116,7 +1116,7 @@
       "minLength": 4,
       "maxLength": 70,
       "metadata": {
-        "description": "Conditional. Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters."
+        "description": "Optional. Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters."
       }
     },
     "tags": {
@@ -1137,7 +1137,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Conditional. IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed."
+        "description": "Optional. IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed."
       }
     },
     "aiFoundryType": {
@@ -1154,7 +1154,7 @@
     "contentSafetyEnabled": {
       "type": "bool",
       "metadata": {
-        "description": "Conditional. Whether to include Azure AI Content Safety in the deployment."
+        "description": "Optional. Whether to include Azure AI Content Safety in the deployment."
       }
     },
     "networkAcls": {
@@ -1164,7 +1164,7 @@
         "bypass": "AzureServices"
       },
       "metadata": {
-        "description": "Conditional. A collection of rules governing the accessibility from specific network locations."
+        "description": "Optional. A collection of rules governing the accessibility from specific network locations."
       }
     },
     "projectName": {
@@ -1933,6 +1933,9 @@
           "name": {
             "value": "[format('kv{0}{1}', parameters('name'), variables('resourceToken'))]"
           },
+          "aiFoundryType": {
+            "value": "[parameters('aiFoundryType')]"
+          },
           "location": {
             "value": "[parameters('location')]"
           },
@@ -1955,7 +1958,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "17896566879416481561"
+              "templateHash": "7199615749092453776"
             }
           },
           "parameters": {
@@ -2001,6 +2004,12 @@
               "type": "string",
               "metadata": {
                 "description": "Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user."
+              }
+            },
+            "aiFoundryType": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
               }
             }
           },
@@ -5188,10 +5197,10 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
-                  "publicNetworkAccess": "[if(parameters('networkIsolation'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+                  "publicNetworkAccess": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "networkAcls": {
                     "value": {
-                      "defaultAction": "Allow"
+                      "defaultAction": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), 'Deny', 'Allow')]"
                     }
                   },
                   "enableVaultForDeployment": {
@@ -8550,6 +8559,9 @@
           "name": {
             "value": "[format('cr{0}{1}', parameters('name'), variables('resourceToken'))]"
           },
+          "aiFoundryType": {
+            "value": "[parameters('aiFoundryType')]"
+          },
           "location": {
             "value": "[parameters('location')]"
           },
@@ -8569,7 +8581,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "1638961604978037799"
+              "templateHash": "8876339143384420450"
             }
           },
           "parameters": {
@@ -8607,9 +8619,15 @@
             },
             "networkIsolation": {
               "type": "bool",
-              "defaultValue": true,
+              "defaultValue": "[equals(toLower(parameters('aiFoundryType')), 'standardprivate')]",
               "metadata": {
                 "description": "Specifies whether network isolation is enabled. This will create a private endpoint for the Container Registry and link the private DNS zone."
+              }
+            },
+            "aiFoundryType": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
               }
             }
           },
@@ -11812,9 +11830,9 @@
                   "networkRuleBypassOptions": {
                     "value": "AzureServices"
                   },
-                  "networkRuleSetDefaultAction": "[if(parameters('networkIsolation'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
-                  "exportPolicyStatus": "[if(parameters('networkIsolation'), createObject('value', 'disabled'), createObject('value', 'enabled'))]",
-                  "publicNetworkAccess": "[if(parameters('networkIsolation'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
+                  "networkRuleSetDefaultAction": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
+                  "exportPolicyStatus": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', 'disabled'), createObject('value', 'enabled'))]",
+                  "publicNetworkAccess": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "zoneRedundancy": {
                     "value": "Disabled"
                   },
@@ -14880,6 +14898,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "aiFoundryType": {
+            "value": "[parameters('aiFoundryType')]"
+          },
           "name": {
             "value": "[parameters('name')]"
           },
@@ -14918,7 +14939,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "663217182556981932"
+              "templateHash": "515591527308276361"
             }
           },
           "definitions": {
@@ -15095,6 +15116,12 @@
               "type": "object",
               "metadata": {
                 "description": "Required. A collection of rules governing the accessibility from specific network locations."
+              }
+            },
+            "aiFoundryType": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
               }
             }
           },
@@ -21446,9 +21473,7 @@
                   "networkIsolation": {
                     "value": "[parameters('networkIsolation')]"
                   },
-                  "networkAcls": {
-                    "value": "[parameters('networkAcls')]"
-                  },
+                  "networkAcls": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', parameters('networkAcls')), createObject('value', createObject('defaultAction', 'Allow', 'bypass', 'AzureServices')))]",
                   "virtualNetworkSubnetResourceId": "[if(parameters('networkIsolation'), createObject('value', parameters('virtualNetworkSubnetResourceId')), createObject('value', ''))]",
                   "privateDnsZonesResourceIds": "[if(parameters('networkIsolation'), createObject('value', createArray(reference('cognitiveServicesPrivateDnsZone').outputs.resourceId.value, reference('openAiPrivateDnsZone').outputs.resourceId.value)), createObject('value', createArray()))]",
                   "aiModelDeployments": {
@@ -26916,6 +26941,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "aiFoundryType": {
+            "value": "[parameters('aiFoundryType')]"
+          },
           "storageName": {
             "value": "[format('st{0}{1}', parameters('name'), variables('resourceToken'))]"
           },
@@ -26942,7 +26970,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "74176344428270319"
+              "templateHash": "6249765618799786653"
             }
           },
           "definitions": {
@@ -27076,6 +27104,12 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "aiFoundryType": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
               }
             }
           },
@@ -33496,7 +33530,8 @@
                   },
                   "networkAcls": {
                     "value": {
-                      "defaultAction": "Allow"
+                      "defaultAction": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), 'Deny', 'Allow')]",
+                      "bypass": "AzureServices"
                     }
                   },
                   "supportsHttpsTrafficOnly": {
