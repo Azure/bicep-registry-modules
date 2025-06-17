@@ -53,6 +53,7 @@ PUBLIC_KEY=$(az deployment group show \
   --only-show-errors --output tsv || true)
 
 if [[ -z "$PUBLIC_KEY" ]]; then
+  # ssh-keygen does not exists, openssl is not compatible
   az sshkey create --name "mySSHKey" --resource-group "$RESOURCE_GROUP_NAME" 2>ssh.log
   PRIVATE_KEY_FILE=$(grep 'Private key is saved to' ssh.log | sed -E 's/.*"([^"]+)".*/\1/')
   PUBLIC_KEY_FILE=$(grep 'Public key is saved to' ssh.log | sed -E 's/.*"([^"]+)".*/\1/')
