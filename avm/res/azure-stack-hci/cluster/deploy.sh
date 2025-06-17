@@ -141,22 +141,20 @@ echo "Checking if deployment-settings resource already exists..."
 # Construct the resource ID for deployment-settings
 DEPLOYMENT_SETTINGS_RESOURCE_ID="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.AzureStackHCI/clusters/$CLUSTER_NAME/deploymentSettings/default"
 
+echo "Checking resource: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
+
 # Check if the deployment-settings resource exists
-az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --output none 2>/dev/null
-
-RESOURCE_EXISTS=$?
-
-if [ $RESOURCE_EXISTS -eq 0 ]; then
+# Redirect both stdout and stderr to suppress all output, only check exit code
+if az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" >/dev/null 2>&1; then
     echo "✅ Deployment-settings resource already exists. Skipping deployment."
-    echo "Resource ID: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
 
     # Show existing resource details
     echo "Existing deployment-settings details:"
-    az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "{name: name, provisioningState: properties.provisioningState, deploymentMode: properties.deploymentMode}" --output table
+    az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "{name: name, provisioningState: properties.provisioningState, deploymentMode: properties.deploymentMode}" --output table 2>/dev/null || echo "Could not retrieve resource details"
 
     exit 0
 else
-    echo "Deployment-settings resource does not exist. Proceeding with deployment..."
+    echo "📝 Deployment-settings resource does not exist. Proceeding with deployment..."
 fi
 
 # Execute Bicep deployment
