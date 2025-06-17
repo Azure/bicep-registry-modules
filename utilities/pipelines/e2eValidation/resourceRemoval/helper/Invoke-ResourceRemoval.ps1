@@ -247,8 +247,108 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.OperationalInsights/workspaces' {
+            # Note: This resource type has a replication feature that needs to be disabled if enabled,
+            # otherwise the associated data collection endpoint cannot be removed.
+            # The replication can be disabled only after it has been fully provisioned, which can take up to 1 hour after the workspace was created.
+
             $resourceGroupName = $ResourceId.Split('/')[4]
             $resourceName = Split-Path $ResourceId -Leaf
+            $subscriptionId = $ResourceId.Split('/')[2]
+
+            # Check if the workspace replication is enabled
+            $workspaceApiPath = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.OperationalInsights/workspaces/{2}?api-version=2025-02-01' -f $subscriptionId, $resourceGroupName, $resourceName
+            $getWorkspaceStateInputObject = @{
+                Method = 'GET'
+                Path   = $workspaceApiPath
+            }
+            $workspaceState = Invoke-AzRestMethod @getWorkspaceStateInputObject
+            $workspaceStateContent = $workspaceState.Content | ConvertFrom-Json
+            if ($workspaceState.StatusCode -notlike '2*') {
+                throw ('{0} : {1}' -f $workspaceStateContent.error.code, $workspaceStateContent.error.message)
+            }
+
+            # Handle workspace replication
+            if ($workspaceStateContent.properties.replication.enabled) {
+                if ($workspaceStateContent.properties.replication.provisioningState -ne 'Succeeded') {
+                    # Workspace replication is not in a state that allows removal, which usually takes up to 1 hour after the workspace was created.
+                    # Implement a retry mechanism to wait for the replication to finish the provisioning.
+                    $retryCount = 1
+                    $retryLimit = 240
+                    $retryInterval = 15
+                    do {
+                        $getWorkspaceState = Invoke-AzRestMethod @getWorkspaceStateInputObject
+                        $workspaceStateContent = $getWorkspaceState.Content | ConvertFrom-Json
+                        if ($getWorkspaceState.StatusCode -notlike '2*') {
+                            throw ('{0} : {1}' -f $workspaceStateContent.error.code, $workspaceStateContent.error.message)
+                        }
+
+                        if ($workspaceStateContent.properties.replication.provisioningState -eq 'Succeeded') {
+                            Write-Verbose ('    [✔️] Workspace replication is in a state that allows disabling.') -Verbose
+                            $replicationFullyProvisioned = $true
+                            break
+                        } else {
+                            $replicationFullyProvisioned = $false
+                            Write-Verbose ('    [⏱️] Waiting {0} seconds for workspace replication to finish. [{1}/{2}]' -f $retryInterval, $retryCount, $retryLimit) -Verbose
+                            Start-Sleep -Seconds $retryInterval
+                            $retryCount++
+                        }
+                    } while (-not $replicationFullyProvisioned -and $retryCount -lt $retryLimit)
+
+                    if ($retryCount -ge $retryLimit) {
+                        Write-Warning ('    [!] Workspace replication was not finished after {0} seconds. Continuing with resource removal.' -f ($retryCount * $retryInterval))
+                    }
+                } else {
+                    Write-Verbose ('    [✔️] Workspace replication is in a state that allows disabling.') -Verbose
+                }
+
+                # Disable workspace replication
+                $disableReplicationInputObject = @{
+                    Method  = 'PUT'
+                    Path    = $workspaceApiPath
+                    Payload = @{
+                        properties = @{
+                            replication = @{
+                                enabled = $false
+                            }
+                        }
+                        location   = $workspaceStateContent.location
+                    } | ConvertTo-Json -Depth 10
+                }
+                Write-Verbose ('[*] Disabling workspace replication for resource [{0}] of type [{1}]' -f $resourceName, $Type) -Verbose
+                if ($PSCmdlet.ShouldProcess("Log Analytics Workspace [$resourceName]", 'Disable replication')) {
+                    $disableReplicationResponse = Invoke-AzRestMethod @disableReplicationInputObject
+                    if ($disableReplicationResponse.StatusCode -notlike '2*') {
+                        $responseContent = $disableReplicationResponse.Content | ConvertFrom-Json
+                        throw ('{0} : {1}' -f $responseContent.error.code, $responseContent.error.message)
+                    }
+
+                    # Wait for workspace replication to be disabled
+                    $retryCount = 1
+                    $retryLimit = 240
+                    $retryInterval = 15
+                    do {
+                        $getWorkspaceState = Invoke-AzRestMethod @getWorkspaceStateInputObject
+                        $workspaceStateContent = $getWorkspaceState.Content | ConvertFrom-Json
+                        if ($getWorkspaceState.StatusCode -notlike '2*') {
+                            throw ('{0} : {1}' -f $workspaceStateContent.error.code, $workspaceStateContent.error.message)
+                        }
+
+                        if (-not $workspaceStateContent.properties.replication.enabled -and $workspaceStateContent.properties.replication.provisioningState -eq 'Succeeded') {
+                            Write-Verbose ('    [✔️] Workspace replication is disabled.') -Verbose
+                            break
+                        } else {
+                            Write-Verbose ('    [⏱️] Waiting {0} seconds for workspace replication to be disabled. [{1}/{2}]' -f $retryInterval, $retryCount, $retryLimit) -Verbose
+                            Start-Sleep -Seconds $retryInterval
+                            $retryCount++
+                        }
+                    } while ($workspaceStateContent.properties.replication.enabled -and $workspaceStateContent.properties.replication.provisioningState -ne 'Succeeded' -and $retryCount -lt $retryLimit)
+
+                    if ($retryCount -ge $retryLimit) {
+                        Write-Warning ('    [!] Workspace replication was not disabled after {0} seconds. Continuing with resource removal.' -f ($retryCount * $retryInterval))
+                    }
+                }
+            }
+
             # Force delete workspace (cannot be recovered)
             if ($PSCmdlet.ShouldProcess("Log Analytics Workspace [$resourceName]", 'Remove')) {
                 Write-Verbose ('[*] Purging resource [{0}] of type [{1}]' -f $resourceName, $Type) -Verbose
