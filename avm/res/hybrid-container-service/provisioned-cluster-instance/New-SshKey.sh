@@ -44,6 +44,7 @@ PUBLIC_KEY=$(az deployment group show \
 if [[ -z "$PUBLIC_KEY" ]]; then
   # ssh-keygen does not exists, openssl is not compatible
   az sshkey create --name "$CLUSTER_NAME" --resource-group "$RESOURCE_GROUP_NAME" 2>ssh.log
+  az sshkey delete --name "$CLUSTER_NAME" --resource-group "$RESOURCE_GROUP_NAME"
   PRIVATE_KEY_FILE=$(grep 'Private key is saved to' ssh.log | sed -E 's/.*"([^"]+)".*/\1/')
   PUBLIC_KEY_FILE=$(grep 'Public key is saved to' ssh.log | sed -E 's/.*"([^"]+)".*/\1/')
 
