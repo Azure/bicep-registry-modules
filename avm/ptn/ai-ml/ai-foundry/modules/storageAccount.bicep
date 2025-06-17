@@ -22,6 +22,9 @@ param userObjectId string = deployer().objectId
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
+@description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
+param aiFoundryType string
+
 module blobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-blob-deployment'
   params: {
@@ -115,7 +118,9 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     }
     minimumTlsVersion: 'TLS1_2'
     networkAcls: {
-      defaultAction: 'Allow'
+      defaultAction: toLower(aiFoundryType) == 'standardprivate' ? 'Deny' : 'Allow'
+      bypass: 'AzureServices'
+      // Optionally add ipRules or virtualNetworkRules here
     }
     supportsHttpsTrafficOnly: true
     diagnosticSettings: [

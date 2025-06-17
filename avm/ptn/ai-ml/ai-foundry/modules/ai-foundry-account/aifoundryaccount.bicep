@@ -33,6 +33,9 @@ param contentSafetyEnabled bool
 @description('Required. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object
 
+@description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
+param aiFoundryType string
+
 module cognitiveServicesPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-cognitiveservices-deployment'
   params: {
@@ -67,7 +70,12 @@ module aiServices 'service.bicep' = {
     kind: 'AIServices'
     category: 'AIServices'
     networkIsolation: networkIsolation
-    networkAcls: networkAcls
+    networkAcls: toLower(aiFoundryType) == 'standardprivate'
+      ? networkAcls
+      : {
+          defaultAction: 'Allow'
+          bypass: 'AzureServices'
+        }
     virtualNetworkSubnetResourceId: networkIsolation ? virtualNetworkSubnetResourceId : ''
     privateDnsZonesResourceIds: networkIsolation
       ? [

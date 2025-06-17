@@ -15,7 +15,10 @@ param virtualNetworkResourceId string
 param virtualNetworkSubnetResourceId string
 
 @description('Specifies whether network isolation is enabled. This will create a private endpoint for the Container Registry and link the private DNS zone.')
-param networkIsolation bool = true
+param networkIsolation bool = toLower(aiFoundryType) == 'standardprivate'
+
+@description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
+param aiFoundryType string
 
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-acr-deployment'
@@ -43,9 +46,9 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
     anonymousPullEnabled: false
     dataEndpointEnabled: false
     networkRuleBypassOptions: 'AzureServices'
-    networkRuleSetDefaultAction: networkIsolation ? 'Deny' : 'Allow'
-    exportPolicyStatus: networkIsolation ? 'disabled' : 'enabled'
-    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
+    networkRuleSetDefaultAction: toLower(aiFoundryType) == 'standardprivate' ? 'Deny' : 'Allow'
+    exportPolicyStatus: toLower(aiFoundryType) == 'standardprivate' ? 'disabled' : 'enabled'
+    publicNetworkAccess: toLower(aiFoundryType) == 'standardprivate' ? 'Disabled' : 'Enabled'
     zoneRedundancy: 'Disabled'
     managedIdentities: {
       systemAssigned: true

@@ -19,6 +19,9 @@ param networkIsolation bool = true
 @description('Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
 param userObjectId string
 
+@description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
+param aiFoundryType string
+
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-keyvault-deployment'
   params: {
@@ -40,9 +43,9 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.0' = {
     name: nameFormatted
     location: location
     tags: tags
-    publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
+    publicNetworkAccess: toLower(aiFoundryType) == 'standardprivate' ? 'Disabled' : 'Enabled'
     networkAcls: {
-      defaultAction: 'Allow'
+      defaultAction: toLower(aiFoundryType) == 'standardprivate' ? 'Deny' : 'Allow'
     }
     enableVaultForDeployment: true
     enableVaultForDiskEncryption: true
