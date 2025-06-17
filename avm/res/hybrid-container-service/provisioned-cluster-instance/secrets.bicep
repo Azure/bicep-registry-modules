@@ -20,7 +20,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: keyVaultName
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: 'temp-${name}'
   location: location
   tags: tags
@@ -70,7 +70,7 @@ resource newSshKey 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   properties: {
     azCliVersion: '2.71.0'
     scriptContent: loadTextContent('./New-SshKey.sh')
-    arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(loadTextContent('./nested/read.json'))}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(loadTextContent('./nested/write.json'))}" "${subscription().subscriptionId}" "${resourceGroup().name}" "${name}" "${keyVaultName} "${sshPrivateKeyPemSecretName}" "${sshPublicKeySecretName}"'
+    arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(loadTextContent('./nested/read.json'))}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(loadTextContent('./nested/write.json'))}" "${subscription().subscriptionId}" "${resourceGroup().name}" "${name}" "${keyVaultName}" "${sshPrivateKeyPemSecretName}" "${sshPublicKeySecretName}"'
     timeout: 'PT30M'
     retentionInterval: 'PT60M'
     cleanupPreference: 'OnExpiration'
