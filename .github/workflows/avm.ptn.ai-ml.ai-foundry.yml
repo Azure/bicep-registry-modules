@@ -24,7 +24,7 @@ on:
         required: false
   push:
     branches:
-      - main
+      # - main
       - ptn-ai-foundry
     paths:
       - ".github/actions/templates/avm-**"
