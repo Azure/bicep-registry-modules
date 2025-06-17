@@ -10,9 +10,6 @@ metadata description = 'This instance deploys the module with most of its featur
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 param resourceGroupName string = 'dep-${namePrefix}-devcenter-devcenter-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
-
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'dcdcmax'
 
@@ -21,6 +18,10 @@ param baseTime string = utcNow('u')
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+// Hardcoded because service not available in all regions
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'uksouth'
 
 // ============ //
 // Dependencies //
@@ -31,25 +32,87 @@ param namePrefix string = '#_namePrefix_#'
 
 resource resourceGroup1 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 resource resourceGroup2 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: '${resourceGroupName}-2'
-  location: resourceLocation
+  location: enforcedLocation
 }
 
-module nestedDependencies 'dependencies.bicep' = {
+module nestedDependencies1 'dependencies1.bicep' = {
   scope: resourceGroup1
-  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies1'
   params: {
     // Adding base time to make the name unique as purge protection must be enabled (but may not be longer than 24 characters total)
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}-${substring(uniqueString(baseTime), 0, 3)}'
-    galleryName: 'dep${namePrefix}gal${serviceShort}'
     managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
     devCenterNetworkConnectionName: 'dep-${namePrefix}-dcnc-${serviceShort}'
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    location: resourceLocation
+    location: enforcedLocation
+  }
+}
+
+module nestedDependencies2 'dependencies2.bicep' = {
+  scope: resourceGroup2
+  name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies2'
+  params: {
+    galleryName: 'dep${namePrefix}gal${serviceShort}'
+    virtualNetworkName: 'dep-${namePrefix}-vnet-img-${serviceShort}'
+    managedIdentityName: 'dep-${namePrefix}-msi-img-${serviceShort}'
+    location: enforcedLocation
+  }
+}
+
+module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builder:0.1.6' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-imageBuilder'
+  params: {
+    imageTemplateName: 'dep-${namePrefix}-it-${serviceShort}'
+    deploymentsToPerform: 'All'
+    waitForImageBuild: true
+    resourceGroupName: resourceGroup2.name
+    waitForImageBuildTimeout: 'PT90M'
+    virtualNetworkName: nestedDependencies2.outputs.virtualNetworkName
+    virtualNetworkAddressPrefix: nestedDependencies2.outputs.virtualNetworkAddressSpace
+    imageSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[1].name
+    virtualNetworkSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[1].properties.addressPrefix
+    deploymentScriptSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[2].name
+    virtualNetworkDeploymentScriptSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[2].properties.addressPrefix
+    imageTemplateResourceGroupName: ''
+    location: enforcedLocation
+    assetsStorageAccountName: 'depst${namePrefix}${serviceShort}'
+    assetsStorageAccountContainerName: 'dep${namePrefix}assets${serviceShort}'
+    storageDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-storage'
+    waitDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-wait'
+    imageTemplateDeploymentScriptName: 'dep-${namePrefix}-ds-${serviceShort}-it'
+    deploymentScriptStorageAccountName: 'depst${namePrefix}${serviceShort}ds'
+    computeGalleryName: 'dep${namePrefix}gal${serviceShort}'
+    computeGalleryImageDefinitionName: 'dep-${namePrefix}-galid-${serviceShort}'
+    imageManagedIdentityName: nestedDependencies2.outputs.managedIdentityName
+    deploymentScriptManagedIdentityName: nestedDependencies2.outputs.managedIdentityName
+    computeGalleryImageDefinitions: [
+      {
+        name: 'dep-${namePrefix}-galid-${serviceShort}'
+        hyperVGeneration: 'V2'
+        identifier: {
+          offer: 'avmDevbox'
+          publisher: 'avm'
+          sku: 'devbox-avmwindows'
+        }
+        osState: 'Generalized'
+        osType: 'Windows'
+        securityType: 'TrustedLaunch'
+        isHibernateSupported: true
+        architecture: 'x64'
+      }
+    ]
+    imageTemplateImageSource: {
+      offer: 'visualstudioplustools'
+      publisher: 'microsoftvisualstudio'
+      sku: 'vs-2022-comm-general-win11-m365-gen2'
+      type: 'PlatformImage'
+      version: 'latest'
+    }
   }
 }
 
@@ -63,10 +126,10 @@ var devcenterExpectedResourceID = '${resourceGroup1.id}/providers/Microsoft.DevC
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup1
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: devcenterName
-      location: resourceLocation
+      location: enforcedLocation
       tags: {
         costCenter: '1234'
       }
@@ -77,19 +140,19 @@ module testDeployment '../../../main.bicep' = [
       managedIdentities: {
         systemAssigned: true
         userAssignedResourceIds: [
-          nestedDependencies.outputs.managedIdentityResourceId
+          nestedDependencies1.outputs.managedIdentityResourceId
         ]
       }
       roleAssignments: [
         {
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
           roleDefinitionIdOrName: 'DevCenter Project Admin'
           principalType: 'ServicePrincipal'
         }
         {
           name: guid('Custom seed ${namePrefix}${serviceShort}')
           roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
         {
@@ -97,15 +160,15 @@ module testDeployment '../../../main.bicep' = [
             'Microsoft.Authorization/roleDefinitions',
             'acdd72a7-3385-48ef-bd42-f606fba81ae7'
           )
-          principalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          principalId: nestedDependencies1.outputs.managedIdentityPrincipalId
           principalType: 'ServicePrincipal'
         }
       ]
       galleries: [
         {
           name: 'computegallery'
-          galleryResourceId: nestedDependencies.outputs.galleryResourceId
-          devCenterIdentityPrincipalId: nestedDependencies.outputs.managedIdentityPrincipalId
+          galleryResourceId: nestedDependencies2.outputs.galleryResourceId
+          devCenterIdentityPrincipalId: nestedDependencies1.outputs.managedIdentityPrincipalId
         }
       ]
       devboxDefinitions: [
@@ -139,15 +202,15 @@ module testDeployment '../../../main.bicep' = [
           adoGit: {
             uri: 'https://contoso@dev.azure.com/contoso/your-project/_git/your-repo'
             branch: 'main'
-            secretIdentifier: nestedDependencies.outputs.keyVaultSecretUri
+            secretIdentifier: nestedDependencies1.outputs.keyVaultSecretUri
           }
           syncType: 'Manual'
         }
       ]
       //customerManagedKey: {
-      //  keyName: nestedDependencies.outputs.keyVaultKeyName
-      //  keyVaultResourceId: nestedDependencies.outputs.keyVaultResourceId
-      //  userAssignedIdentityResourceId: nestedDependencies.outputs.managedIdentityResourceId
+      //  keyName: nestedDependencies1.outputs.keyVaultKeyName
+      //  keyVaultResourceId: nestedDependencies1.outputs.keyVaultResourceId
+      //  userAssignedIdentityResourceId: nestedDependencies1.outputs.managedIdentityResourceId
       //}
       displayName: 'Dev Center Test'
       devBoxProvisioningSettings: {
@@ -236,7 +299,7 @@ module testDeployment '../../../main.bicep' = [
       attachedNetworks: [
         {
           name: 'test-attached-network'
-          networkConnectionResourceId: nestedDependencies.outputs.networkConnectionResourceId
+          networkConnectionResourceId: nestedDependencies1.outputs.networkConnectionResourceId
         }
       ]
     }
