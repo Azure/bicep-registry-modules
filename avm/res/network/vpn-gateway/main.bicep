@@ -8,10 +8,10 @@ param name string
 param location string = resourceGroup().location
 
 @description('Optional. The VPN connections to create in the VPN gateway.')
-param vpnConnections array = []
+param vpnConnections vpnConnectionType[] = []
 
 @description('Optional. List of all the NAT Rules to associate with the gateway.')
-param natRules array = []
+param natRules natRuleType[] = []
 
 @description('Required. The resource ID of a virtual Hub to connect to. Note: The virtual Hub and Gateway must be deployed into the same location.')
 param virtualHubResourceId string
@@ -34,6 +34,10 @@ param tags resourceInput<'Microsoft.Network/vpnGateways@2024-07-01'>.tags?
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
 param lock lockType?
+
+// Import types from child modules
+import { ipsecPolicyType, trafficSelectorPolicyType, vpnSiteLinkConnectionType } from 'vpn-connection/main.bicep'
+import { vpnNatRuleMappingType } from 'nat-rule/main.bicep'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -69,31 +73,8 @@ resource vpnGateway 'Microsoft.Network/vpnGateways@2024-07-01' = {
     enableBgpRouteTranslationForNat: enableBgpRouteTranslationForNat
     isRoutingPreferenceInternet: isRoutingPreferenceInternet
     vpnGatewayScaleUnit: vpnGatewayScaleUnit
-    connections: [
-      for (connection, index) in vpnConnections: {
-        name: connection.name
-        properties: {
-          connectionBandwidth: connection.?connectionBandwidth
-          enableBgp: connection.?enableBgp
-          enableInternetSecurity: connection.?enableInternetSecurity
-          remoteVpnSite: contains(connection, 'remoteVpnSiteResourceId')
-            ? {
-                id: connection.remoteVpnSiteResourceId
-              }
-            : null
-          enableRateLimiting: connection.?enableRateLimiting
-          routingConfiguration: connection.?routingConfiguration
-          routingWeight: connection.?routingWeight
-          sharedKey: connection.?sharedKey
-          useLocalAzureIpAddress: connection.?useLocalAzureIpAddress
-          usePolicyBasedTrafficSelectors: connection.?usePolicyBasedTrafficSelectors
-          vpnConnectionProtocolType: connection.?vpnConnectionProtocolType
-          ipsecPolicies: connection.?ipsecPolicies
-          trafficSelectorPolicies: connection.?trafficSelectorPolicies
-          vpnLinkConnections: connection.?vpnLinkConnections
-        }
-      }
-    ]
+    // Remove connections from main resource - handle via child modules only
+    // This prevents NAT rule reference issues during initial deployment
     virtualHub: {
       id: virtualHubResourceId
     }
@@ -129,6 +110,7 @@ module vpnGateway_natRules 'nat-rule/main.bicep' = [
 module vpnGateway_vpnConnections 'vpn-connection/main.bicep' = [
   for (connection, index) in vpnConnections: {
     name: '${deployment().name}-Connection-${index}'
+    dependsOn: vpnGateway_natRules
     params: {
       name: connection.name
       vpnGatewayName: vpnGateway.name
@@ -161,6 +143,16 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = vpnGateway.location
+
+@description('The resource IDs of the NAT rules.')
+output natRuleResourceIds array = [
+  for (natRule, index) in natRules: vpnGateway_natRules[index].outputs.resourceId
+]
+
+@description('The resource IDs of the VPN connections.')
+output vpnConnectionResourceIds array = [
+  for (connection, index) in vpnConnections: vpnGateway_vpnConnections[index].outputs.resourceId
+]
 
 // =============== //
 //   Definitions   //
@@ -230,4 +222,75 @@ type routingConfigurationType = {
       vnetLocalRouteOverrideCriteria: ('Contains' | 'Equal')?
     }?
   }?
+}
+
+@export()
+@description('The type of VPN connection for VPN Gateway.')
+type vpnConnectionType = {
+  @description('Required. The name of the VPN connection.')
+  name: string
+  
+  @description('Optional. Connection bandwidth in MBPS.')
+  connectionBandwidth: int?
+  
+  @description('Optional. Enable BGP flag.')
+  enableBgp: bool?
+  
+  @description('Optional. Enable internet security.')
+  enableInternetSecurity: bool?
+  
+  @description('Optional. Remote VPN site resource ID.')
+  remoteVpnSiteResourceId: string?
+  
+  @description('Optional. Enable rate limiting.')
+  enableRateLimiting: bool?
+  
+  @description('Optional. Routing configuration.')
+  routingConfiguration: routingConfigurationType?
+  
+  @description('Optional. Routing weight.')
+  routingWeight: int?
+  
+  @description('Optional. Shared key.')
+  sharedKey: string?
+  
+  @description('Optional. Use local Azure IP address.')
+  useLocalAzureIpAddress: bool?
+  
+  @description('Optional. Use policy-based traffic selectors.')
+  usePolicyBasedTrafficSelectors: bool?
+  
+  @description('Optional. VPN connection protocol type.')
+  vpnConnectionProtocolType: ('IKEv1' | 'IKEv2')?
+  
+  @description('Optional. IPSec policies.')
+  ipsecPolicies: ipsecPolicyType[]?
+  
+  @description('Optional. Traffic selector policies.')
+  trafficSelectorPolicies: trafficSelectorPolicyType[]?
+  
+  @description('Optional. VPN link connections.')
+  vpnLinkConnections: vpnSiteLinkConnectionType[]?
+}
+
+@export()
+@description('The type of NAT rule for VPN Gateway.')
+type natRuleType = {
+  @description('Required. The name of the NAT rule.')
+  name: string
+  
+  @description('Optional. External mappings.')
+  externalMappings: vpnNatRuleMappingType[]?
+  
+  @description('Optional. Internal mappings.')
+  internalMappings: vpnNatRuleMappingType[]?
+  
+  @description('Optional. IP configuration ID.')
+  ipConfigurationId: string?
+  
+  @description('Optional. NAT rule mode.')
+  mode: ('EgressSnat' | 'IngressSnat')?
+  
+  @description('Optional. NAT rule type.')
+  type: ('Dynamic' | 'Static')?
 }
