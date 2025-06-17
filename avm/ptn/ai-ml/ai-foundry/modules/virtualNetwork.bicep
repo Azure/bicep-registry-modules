@@ -390,7 +390,9 @@ resource bastionPublicIpAddress 'Microsoft.Network/publicIPAddresses@2024-07-01'
 resource bastionHost 'Microsoft.Network/bastionHosts@2024-07-01' = if (bastionHostEnabled) {
   name: bastionHostName
   location: location
-  tags: tags
+  tags: union(tags, {
+    'resource-usage': 'azure-bastion'
+  })
   sku: {
     name: bastionHostSkuName
   }
