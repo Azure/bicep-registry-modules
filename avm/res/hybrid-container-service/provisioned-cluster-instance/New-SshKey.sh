@@ -7,7 +7,7 @@ if [[ $# -ne 11 ]]; then
   exit 1
 fi
 
-REFELCT_BICEP_B64="$1"
+REFLECT_BICEP_B64="$1"
 READ_BICEP_B64="$2"
 READ_JSON_B64="$3"
 WRITE_BICEP_B64="$4"
@@ -16,13 +16,13 @@ SUBSCRIPTION_ID="$6"
 RESOURCE_GROUP_NAME="$7"
 CLUSTER_NAME="$8"
 KEY_VAULT_NAME="$9"
-PRIVATR_KEY_SECRET_NAME="$10"
-PUBLIC_KEY_SECRET_NAME="$11"
+PRIVATE_KEY_SECRET_NAME="${10}"
+PUBLIC_KEY_SECRET_NAME="${11}"
 
 # Decode base64-encoded content to temp files
 TEMP_DIR=$(mktemp -d)
 cd "$TEMP_DIR"
-echo "$REFELCT_BICEP_B64" | base64 -d > "reflect.bicep"
+echo "$REFLECT_BICEP_B64" | base64 -d > "reflect.bicep"
 echo "$READ_BICEP_B64" | base64 -d > "read.bicep"
 echo "$READ_JSON_B64" | base64 -d > "read.json"
 echo "$WRITE_BICEP_B64" | base64 -d > "write.bicep"
@@ -65,8 +65,8 @@ if [[ -z "$PUBLIC_KEY" ]]; then
 
   sed --in-place "s/{{keyVaultName}}/$KEY_VAULT_NAME/" 'read.json'
   sed --in-place "s/{{keyVaultName}}/$KEY_VAULT_NAME/" 'write.json'
-  sed --in-place "s/{{privateKeySecretName}}/$PRIVATR_KEY_SECRET_NAME/" 'read.json'
-  sed --in-place "s/{{privateKeySecretName}}/$PRIVATR_KEY_SECRET_NAME/" 'write.json'
+  sed --in-place "s/{{privateKeySecretName}}/$PRIVATE_KEY_SECRET_NAME/" 'read.json'
+  sed --in-place "s/{{privateKeySecretName}}/$PRIVATE_KEY_SECRET_NAME/" 'write.json'
   sed --in-place "s/{{publicKeySecretName}}/$PUBLIC_KEY_SECRET_NAME/" 'read.json'
   sed --in-place "s/{{publicKeySecretName}}/$PUBLIC_KEY_SECRET_NAME/" 'write.json'
 
