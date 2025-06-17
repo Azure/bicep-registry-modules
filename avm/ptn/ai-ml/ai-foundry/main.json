@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12123336255304354464"
+      "templateHash": "2507908185987053663"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -1290,7 +1290,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14309180852183710160"
+              "templateHash": "11838195417105596706"
             }
           },
           "parameters": {
@@ -1787,7 +1787,7 @@
             {
               "condition": "[parameters('bastionHostEnabled')]",
               "type": "Microsoft.Network/publicIPAddresses",
-              "apiVersion": "2024-03-01",
+              "apiVersion": "2024-07-01",
               "name": "[parameters('bastionPublicIpAddressName')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -8581,7 +8581,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "8876339143384420450"
+              "templateHash": "1831717161962687129"
             }
           },
           "parameters": {
@@ -8635,6 +8635,15 @@
             "nameFormatted": "[take(toLower(parameters('name')), 50)]"
           },
           "resources": [
+            {
+              "type": "Microsoft.ContainerRegistry/registries/policies",
+              "apiVersion": "2023-01-01-preview",
+              "name": "[format('{0}/{1}', variables('nameFormatted'), 'contentTrustPolicy')]",
+              "properties": {
+                "status": "enabled",
+                "type": "Notary"
+              }
+            },
             {
               "condition": "[parameters('networkIsolation')]",
               "type": "Microsoft.Resources/deployments",
@@ -26970,7 +26979,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "6249765618799786653"
+              "templateHash": "11180098358675751750"
             }
           },
           "definitions": {
@@ -33463,7 +33472,7 @@
                     "value": "Hot"
                   },
                   "allowBlobPublicAccess": {
-                    "value": false
+                    "value": "[not(equals(toLower(parameters('aiFoundryType')), 'standardprivate'))]"
                   },
                   "allowSharedKeyAccess": {
                     "value": false
@@ -45074,7 +45083,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "5539695774154287488"
+              "templateHash": "14347956437912122684"
             }
           },
           "parameters": {
@@ -45564,6 +45573,30 @@
                 "principalId": "[parameters('userObjectId')]"
               },
               "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Maintenance/maintenanceConfigurations",
+              "apiVersion": "2023-10-01-preview",
+              "name": "myMaintenanceConfig",
+              "location": "[parameters('location')]",
+              "properties": {
+                "namespace": "Microsoft.Compute",
+                "extensionProperties": {}
+              }
+            },
+            {
+              "type": "Microsoft.Maintenance/configurationAssignments",
+              "apiVersion": "2023-04-01",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
+              "name": "maintenanceConfigurationAssignment",
+              "location": "[parameters('location')]",
+              "properties": {
+                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', 'myMaintenanceConfig')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', 'myMaintenanceConfig')]",
                 "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
               ]
             }
