@@ -247,15 +247,15 @@ function Invoke-ResourceRemoval {
             break
         }
         'Microsoft.OperationalInsights/workspaces' {
-            # Note: This resource type has a replication feature that needs to be disabled if enabled,
+            # If the workspace has been deployed with replication enabled, we need to disable it first,
             # otherwise the associated data collection endpoint cannot be removed.
-            # The replication can be disabled only after it has been fully provisioned, which can take up to 1 hour after the workspace was created.
-
+            # The replication cannot be disabled within the first hour after it has been enabled.
+            # If the workspace has not been deployed with replication enabled, we can remove it directly.
             $resourceGroupName = $ResourceId.Split('/')[4]
             $resourceName = Split-Path $ResourceId -Leaf
             $subscriptionId = $ResourceId.Split('/')[2]
 
-            # Check if the workspace replication is enabled
+            # Get the workspace state to check if replication is enabled
             $workspaceApiPath = '/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.OperationalInsights/workspaces/{2}?api-version=2025-02-01' -f $subscriptionId, $resourceGroupName, $resourceName
             $getWorkspaceStateInputObject = @{
                 Method = 'GET'
@@ -267,38 +267,44 @@ function Invoke-ResourceRemoval {
                 throw ('{0} : {1}' -f $workspaceStateContent.error.code, $workspaceStateContent.error.message)
             }
 
-            # Handle workspace replication
+            # Handle workspace replication if it is enabled
             if ($workspaceStateContent.properties.replication.enabled) {
-                if ($workspaceStateContent.properties.replication.provisioningState -ne 'Succeeded') {
-                    # Workspace replication is not in a state that allows removal, which usually takes up to 1 hour after the workspace was created.
-                    # Implement a retry mechanism to wait for the replication to finish the provisioning.
-                    $retryCount = 1
-                    $retryLimit = 240
-                    $retryInterval = 15
-                    do {
-                        $getWorkspaceState = Invoke-AzRestMethod @getWorkspaceStateInputObject
-                        $workspaceStateContent = $getWorkspaceState.Content | ConvertFrom-Json
-                        if ($getWorkspaceState.StatusCode -notlike '2*') {
-                            throw ('{0} : {1}' -f $workspaceStateContent.error.code, $workspaceStateContent.error.message)
-                        }
+                $retryCount = 1
+                $retryLimit = 90
+                $retryInterval = 60
+                $replicationCreated = [DateTime]$workspaceStateContent.properties.replication.createdDate
 
-                        if ($workspaceStateContent.properties.replication.provisioningState -eq 'Succeeded') {
-                            Write-Verbose ('    [✔️] Workspace replication is in a state that allows disabling.') -Verbose
-                            $replicationFullyProvisioned = $true
-                            break
-                        } else {
-                            $replicationFullyProvisioned = $false
-                            Write-Verbose ('    [⏱️] Waiting {0} seconds for workspace replication to finish. [{1}/{2}]' -f $retryInterval, $retryCount, $retryLimit) -Verbose
-                            Start-Sleep -Seconds $retryInterval
-                            $retryCount++
-                        }
-                    } while (-not $replicationFullyProvisioned -and $retryCount -lt $retryLimit)
-
-                    if ($retryCount -ge $retryLimit) {
-                        Write-Warning ('    [!] Workspace replication was not finished after {0} seconds. Continuing with resource removal.' -f ($retryCount * $retryInterval))
+                do {
+                    # No need to check the replication state in the first hour after it has been enabled, as any attempt to disable it will fail.
+                    if ([DateTime]::UtcNow -lt $replicationCreated.AddHours(1)) {
+                        $timeLeft = [int]($replicationCreated.AddHours(1) - [DateTime]::UtcNow).TotalSeconds
+                        Write-Verbose ('    [⏱️] Waiting to ensure at least 1 hour has passed since replication creation time [{1}] (UTC). Remaining time: {0} minutes.' -f [int]($timeLeft / 60), $replicationCreated) -Verbose
+                        Start-Sleep -Seconds $retryInterval
+                        $retryCount++
+                        continue
                     }
-                } else {
-                    Write-Verbose ('    [✔️] Workspace replication is in a state that allows disabling.') -Verbose
+
+                    # After the first hour, check if the workspace replication is in a state that allows disabling
+                    $getWorkspaceState = Invoke-AzRestMethod @getWorkspaceStateInputObject
+                    $workspaceStateContent = $getWorkspaceState.Content | ConvertFrom-Json
+                    if ($getWorkspaceState.StatusCode -notlike '2*') {
+                        throw ('{0} : {1}' -f $workspaceStateContent.error.code, $workspaceStateContent.error.message)
+                    }
+
+                    if ($workspaceStateContent.properties.replication.provisioningState -eq 'Succeeded') {
+                        Write-Verbose ('    [✔️] Workspace replication is in a state that allows disabling.') -Verbose
+                        $replicationFullyProvisioned = $true
+                        break
+                    } else {
+                        $replicationFullyProvisioned = $false
+                        Write-Verbose ('    [⏱️] Waiting {0} seconds for workspace replication to finish provisioning. [{1}/{2}]' -f $retryInterval, $retryCount, $retryLimit) -Verbose
+                        Start-Sleep -Seconds $retryInterval
+                        $retryCount++
+                    }
+                } while (-not $replicationFullyProvisioned -and $retryCount -lt $retryLimit)
+
+                if ($retryCount -ge $retryLimit) {
+                    Write-Warning ('    [!] Workspace replication was not finished after {0} seconds. Continuing with resource removal.' -f ($retryCount * $retryInterval))
                 }
 
                 # Disable workspace replication
@@ -341,7 +347,7 @@ function Invoke-ResourceRemoval {
                             Start-Sleep -Seconds $retryInterval
                             $retryCount++
                         }
-                    } while ($workspaceStateContent.properties.replication.enabled -and $workspaceStateContent.properties.replication.provisioningState -ne 'Succeeded' -and $retryCount -lt $retryLimit)
+                    } while (($workspaceStateContent.properties.replication.enabled -or $workspaceStateContent.properties.replication.provisioningState -ne 'Succeeded') -and $retryCount -lt $retryLimit)
 
                     if ($retryCount -ge $retryLimit) {
                         Write-Warning ('    [!] Workspace replication was not disabled after {0} seconds. Continuing with resource removal.' -f ($retryCount * $retryInterval))
