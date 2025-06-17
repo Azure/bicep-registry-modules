@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "13366072417349467027"
+      "version": "0.36.1.42791",
+      "templateHash": "3336929556126511635"
     },
     "name": "Maintenance Configuration Assignments",
     "description": "This module deploys a Maintenance Configuration Assignment."
@@ -73,9 +73,12 @@
               "type": "object",
               "properties": {},
               "additionalProperties": {
-                "type": "string",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
                 "metadata": {
-                  "description": "Required. A key-value pair."
+                  "description": "Required. A key-value pair. Note that although the value is an array, it must be a single value for each tag."
                 }
               },
               "metadata": {
