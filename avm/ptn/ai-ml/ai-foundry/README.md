@@ -345,7 +345,6 @@ param location = '<location>'
 | :-- | :-- | :-- |
 | [`aiFoundryType`](#parameter-aifoundrytype) | string | Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
-| [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project |
 
 **Optional parameters**
 
@@ -359,6 +358,7 @@ param location = '<location>'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
+| [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project |
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
 | [`userObjectId`](#parameter-userobjectid) | string | Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user. |
 | [`vmAdminPasswordOrKey`](#parameter-vmadminpasswordorkey) | securestring | Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters. |
@@ -384,14 +384,6 @@ Name of the resource to create.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `projectName`
-
-Name of the AI Foundry project
-
-- Required: No
-- Type: string
-- Default: `[format('{0}proj', parameters('name'))]`
 
 ### Parameter: `aiModelDeployments`
 
@@ -1600,6 +1592,14 @@ A collection of rules governing the accessibility from specific network location
       defaultAction: 'Deny'
   }
   ```
+
+### Parameter: `projectName`
+
+Name of the AI Foundry project
+
+- Required: No
+- Type: string
+- Default: `[format('{0}proj', parameters('name'))]`
 
 ### Parameter: `tags`
 
