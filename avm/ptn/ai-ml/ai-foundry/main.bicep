@@ -9,10 +9,10 @@ param name string
 @description('Required. Location for all Resources.')
 param location string = resourceGroup().location
 
-@description('Conditional. Enable/Disable usage telemetry for module.')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Conditional. Specifies the connections to be created for the Azure AI Hub workspace. The connections are used to connect to other Azure resources and services.')
+@description('Optional. Specifies the connections to be created for the Azure AI Hub workspace. The connections are used to connect to other Azure resources and services.')
 param connections connectionType[] = []
 
 @description('Required. Specifies the OpenAI deployments to create.')
@@ -21,17 +21,17 @@ param aiModelDeployments deploymentsType[] = []
 @description('Required. List of Cosmos DB databases to create.')
 param cosmosDatabases sqlDatabaseType[] = []
 
-@description('Conditional.Specifies the size of the jump-box Virtual Machine.')
+@description('Optional.Specifies the size of the jump-box Virtual Machine.')
 param vmSize string = 'Standard_DS4_v2'
 
 @minLength(3)
 @maxLength(20)
-@description('Conditional.Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion.')
+@description('Optional.Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion.')
 param vmAdminUsername string = '${name}vmuser'
 
 @minLength(4)
 @maxLength(70)
-@description('Conditional. Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters.')
+@description('Optional. Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters.')
 @secure()
 param vmAdminPasswordOrKey string
 
@@ -41,7 +41,7 @@ param tags object = {}
 @description('Required. Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
 param userObjectId string = deployer().objectId
 
-@description('Conditional. IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed.')
+@description('Optional. IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed.')
 param allowedIpAddress string = ''
 
 @description('Required. Specifies whether network isolation is enabled. When true, Foundry and related components will be deployed, network access parameters will be set to Disabled. This is automatically set based on aiFoundryType.')
@@ -55,10 +55,10 @@ var networkIsolation = toLower(aiFoundryType) == 'standardprivate'
 @description('Required. Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
 param aiFoundryType string
 
-@description('Conditional. Whether to include Azure AI Content Safety in the deployment.')
+@description('Optional. Whether to include Azure AI Content Safety in the deployment.')
 param contentSafetyEnabled bool
 
-@description('Conditional. A collection of rules governing the accessibility from specific network locations.')
+@description('Optional. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object = {
   defaultAction: 'Deny'
   bypass: 'AzureServices' // ✅ Allows trusted Microsoft services
