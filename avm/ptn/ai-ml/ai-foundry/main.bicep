@@ -197,6 +197,7 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
 module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-storage-account-deployment', 64)
   params: {
+    aiFoundryType: aiFoundryType
     storageName: 'st${name}${resourceToken}'
     location: location
     networkIsolation: networkIsolation
