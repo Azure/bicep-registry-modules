@@ -50,6 +50,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
     exportPolicyStatus: toLower(aiFoundryType) == 'standardprivate' ? 'disabled' : 'enabled'
     publicNetworkAccess: toLower(aiFoundryType) == 'standardprivate' ? 'Disabled' : 'Enabled'
     zoneRedundancy: 'Disabled'
+
     managedIdentities: {
       systemAssigned: true
     }
@@ -70,6 +71,20 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
           }
         ]
       : []
+  }
+}
+// Reference the registry created by the AVM module
+resource containerRegistryPol 'Microsoft.ContainerRegistry/registries@2025-04-01' existing = {
+  name: nameFormatted
+}
+
+// Enable content trust policy (Notary)
+resource acrTrustPolicy 'Microsoft.ContainerRegistry/registries/policies@2023-01-01-preview' = {
+  name: 'contentTrustPolicy'
+  parent: containerRegistryPol
+  properties: {
+    status: 'enabled'
+    type: 'Notary'
   }
 }
 
