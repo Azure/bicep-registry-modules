@@ -1,4 +1,4 @@
-name: "avm.ptn.ai-platform.baseline"
+name: "avm.ptn.ai-ml.ai-foundry"
 
 on:
   workflow_dispatch:
