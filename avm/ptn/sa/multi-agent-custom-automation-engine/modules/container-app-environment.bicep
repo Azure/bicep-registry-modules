@@ -3,11 +3,9 @@ param location string
 param logAnalyticsResourceName string?
 param tags object
 param publicNetworkAccess string
-//param vnetConfiguration object
-param zoneRedundant bool
-//param aspireDashboardEnabled bool
 param enableTelemetry bool
 param enableMonitoring bool
+param enableRedundancy bool
 param subnetResourceId string
 param applicationInsightsConnectionString string?
 
@@ -22,7 +20,10 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    //daprAIConnectionString: applicationInsights.outputs.connectionString //Troubleshoot: ContainerAppsConfiguration.DaprAIConnectionString is invalid.  DaprAIConnectionString can not be set when AppInsightsConfiguration has been set, please set DaprAIConnectionString to null. (Code:InvalidRequestParameterWithDetails
+    infrastructureSubnetResourceId: subnetResourceId
+    internal: false
+    publicNetworkAccess: publicNetworkAccess
+    // WAF aligned configuration for Monitoring
     appLogsConfiguration: enableMonitoring
       ? {
           destination: 'log-analytics'
@@ -33,18 +34,25 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2
           }
         }
       : null
-    workloadProfiles: [
-      //THIS IS REQUIRED TO ADD PRIVATE ENDPOINTS
-      {
-        name: 'Consumption'
-        workloadProfileType: 'Consumption'
-      }
-    ]
-    publicNetworkAccess: publicNetworkAccess
     appInsightsConnectionString: enableMonitoring ? applicationInsightsConnectionString : null
-    zoneRedundant: zoneRedundant
-    infrastructureSubnetResourceId: subnetResourceId
-    internal: false
+    // WAF aligned configuration for Redundancy
+    workloadProfiles: enableRedundancy
+      ? [
+          {
+            maximumCount: 3
+            minimumCount: 0
+            name: 'CAW01'
+            workloadProfileType: 'D4'
+          }
+        ]
+      : [
+          {
+            name: 'Consumption'
+            workloadProfileType: 'Consumption'
+          }
+        ]
+    zoneRedundant: enableRedundancy ? true : false
+    infrastructureResourceGroupName: enableRedundancy ? '${resourceGroup().name}-infra' : null
   }
 }
 
@@ -57,7 +65,5 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2
 //   }
 // }
 
-//output resourceId string = containerAppEnvironment.id
 output resourceId string = containerAppEnvironment.outputs.resourceId
-//output location string = containerAppEnvironment.location
 output location string = containerAppEnvironment.outputs.location

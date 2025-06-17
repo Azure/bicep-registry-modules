@@ -10,5 +10,6 @@ param enableRedundancy = true
 param enableTelemetry = true
 param virtualMachineAdminPassword = 'P@ssw0rd1234!P@ssw0rd1234!'
 param virtualMachineAdminUsername = 'adminuser'
+param failoverLocation = 'australiasoutheast'
 param backendContainerImageTag = 'hotfix_2025-06-17_704'
 param frontendContainerImageTag = 'hotfix_2025-06-17_704'

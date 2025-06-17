@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2452661031772933872"
+      "templateHash": "1459945162981124897"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -25,6 +25,13 @@
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
         "description": "Optional. Location for all Resources except AI Foundry."
+      }
+    },
+    "failoverLocation": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Failover Location for applicable resources. This location will apply if `enableScalability` is set to `true`. Check [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) for more information on supported regions."
       }
     },
     "azureOpenAILocation": {
@@ -155,6 +162,9 @@
     "networkSecurityGroupAdministrationResourceName": "[format('nsg-administration-{0}', parameters('solutionPrefix'))]",
     "virtualNetworkResourceName": "[format('vnet-{0}', parameters('solutionPrefix'))]",
     "bastionResourceName": "[format('bas-{0}', parameters('solutionPrefix'))]",
+    "maintenanceConfigurationResourceName": "[format('mc-{0}', parameters('solutionPrefix'))]",
+    "dataCollectionRulesResourceName": "[format('dcr-{0}', parameters('solutionPrefix'))]",
+    "proximityPlacementGroupResourceName": "[format('ppg-{0}', parameters('solutionPrefix'))]",
     "virtualMachineResourceName": "[format('vm{0}', parameters('solutionPrefix'))]",
     "openAiSubResource": "account",
     "openAiPrivateDnsZones": {
@@ -240,6 +250,13 @@
                 "useThisWorkspace": true
               }
             ]
+          },
+          "dailyQuotaGb": "[if(parameters('enableRedundancy'), createObject('value', 10), createObject('value', null()))]",
+          "dataSources": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('eventLogName', 'Application', 'eventTypes', createArray(createObject('eventType', 'Error'), createObject('eventType', 'Warning'), createObject('eventType', 'Information')), 'kind', 'WindowsEvent', 'name', 'applicationEvent'), createObject('counterName', '% Processor Time', 'instanceName', '*', 'intervalSeconds', 60, 'kind', 'WindowsPerformanceCounter', 'name', 'windowsPerfCounter1', 'objectName', 'Processor'), createObject('kind', 'IISLogs', 'name', 'sampleIISLog1', 'state', 'OnPremiseEnabled'))), createObject('value', null()))]",
+          "features": {
+            "value": {
+              "enableLogAccessUsingOnlyResourcePermissions": true
+            }
           }
         },
         "template": {
@@ -4013,7 +4030,24 @@
           },
           "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
           "securityRules": {
-            "value": []
+            "value": [
+              {
+                "name": "deny-hop-outbound",
+                "properties": {
+                  "access": "Deny",
+                  "destinationAddressPrefix": "*",
+                  "destinationPortRanges": [
+                    "22",
+                    "3389"
+                  ],
+                  "direction": "Outbound",
+                  "priority": 200,
+                  "protocol": "Tcp",
+                  "sourceAddressPrefix": "VirtualNetwork",
+                  "sourcePortRange": "*"
+                }
+              }
+            ]
           }
         },
         "template": {
@@ -4670,7 +4704,24 @@
           },
           "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
           "securityRules": {
-            "value": []
+            "value": [
+              {
+                "name": "deny-hop-outbound",
+                "properties": {
+                  "access": "Deny",
+                  "destinationAddressPrefix": "*",
+                  "destinationPortRanges": [
+                    "22",
+                    "3389"
+                  ],
+                  "direction": "Outbound",
+                  "priority": 200,
+                  "protocol": "Tcp",
+                  "sourceAddressPrefix": "VirtualNetwork",
+                  "sourcePortRange": "*"
+                }
+              }
+            ]
           }
         },
         "template": {
@@ -6127,7 +6178,24 @@
           },
           "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
           "securityRules": {
-            "value": []
+            "value": [
+              {
+                "name": "deny-hop-outbound",
+                "properties": {
+                  "access": "Deny",
+                  "destinationAddressPrefix": "*",
+                  "destinationPortRanges": [
+                    "22",
+                    "3389"
+                  ],
+                  "direction": "Outbound",
+                  "priority": 200,
+                  "protocol": "Tcp",
+                  "sourceAddressPrefix": "VirtualNetwork",
+                  "sourcePortRange": "*"
+                }
+              }
+            ]
           }
         },
         "template": {
@@ -6803,11 +6871,6 @@
                 "name": "AzureBastionSubnet",
                 "addressPrefix": "10.0.0.64/26",
                 "networkSecurityGroupResourceId": "[reference('networkSecurityGroupBastion').outputs.resourceId.value]"
-              },
-              {
-                "name": "ai-foundry-agents",
-                "addressPrefix": "10.0.1.0/24",
-                "delegation": "Microsoft.App/environments"
               },
               {
                 "name": "containers",
@@ -8477,21 +8540,27 @@
           },
           "publicIPAddressObject": {
             "value": {
-              "name": "[format('pip-bas{0}', parameters('solutionPrefix'))]"
+              "name": "[format('pip-bas{0}', parameters('solutionPrefix'))]",
+              "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId)), null())]",
+              "tags": "[parameters('tags')]"
             }
           },
           "disableCopyPaste": {
-            "value": false
+            "value": true
           },
           "enableFileCopy": {
             "value": false
           },
           "enableIpConnect": {
-            "value": true
+            "value": false
           },
           "enableShareableLink": {
-            "value": true
-          }
+            "value": false
+          },
+          "scaleUnits": {
+            "value": 4
+          },
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -9758,8 +9827,1710 @@
         }
       },
       "dependsOn": [
+        "logAnalyticsWorkspace",
         "virtualNetwork"
       ]
+    },
+    "maintenanceConfiguration": {
+      "condition": "[parameters('enablePrivateNetworking')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('avm.res.compute.virtual-machine.{0}', variables('maintenanceConfigurationResourceName')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('maintenanceConfigurationResourceName')]"
+          },
+          "location": {
+            "value": "[parameters('solutionLocation')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
+          "extensionProperties": {
+            "value": {
+              "InGuestPatchMode": "User"
+            }
+          },
+          "maintenanceScope": {
+            "value": "InGuestPatch"
+          },
+          "maintenanceWindow": {
+            "value": {
+              "startDateTime": "2024-06-16 00:00",
+              "duration": "03:55",
+              "timeZone": "W. Europe Standard Time",
+              "recurEvery": "1Day"
+            }
+          },
+          "visibility": {
+            "value": "Custom"
+          },
+          "installPatches": {
+            "value": {
+              "rebootSetting": "IfRequired",
+              "windowsParameters": {
+                "classificationsToInclude": [
+                  "Critical",
+                  "Security"
+                ]
+              },
+              "linuxParameters": {
+                "classificationsToInclude": [
+                  "Critical",
+                  "Security"
+                ]
+              }
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "16060601297152129929"
+            },
+            "name": "Maintenance Configurations",
+            "description": "This module deploys a Maintenance Configuration."
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Maintenance Configuration Name."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "extensionProperties": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Gets or sets extensionProperties of the maintenanceConfiguration."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "maintenanceScope": {
+              "type": "string",
+              "defaultValue": "Host",
+              "allowedValues": [
+                "Host",
+                "OSImage",
+                "Extension",
+                "InGuestPatch",
+                "SQLDB",
+                "SQLManagedInstance"
+              ],
+              "metadata": {
+                "description": "Optional. Gets or sets maintenanceScope of the configuration."
+              }
+            },
+            "maintenanceWindow": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Definition of a MaintenanceWindow."
+              }
+            },
+            "namespace": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Gets or sets namespace of the resource."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Gets or sets tags of the resource."
+              }
+            },
+            "visibility": {
+              "type": "string",
+              "defaultValue": "",
+              "allowedValues": [
+                "",
+                "Custom",
+                "Public"
+              ],
+              "metadata": {
+                "description": "Optional. Gets or sets the visibility of the configuration. The default value is 'Custom'."
+              }
+            },
+            "installPatches": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Configuration settings for VM guest patching with Azure Update Manager."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "Scheduled Patching Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'cd08ab90-6b14-449c-ad9a-8f8e549482c6')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.maintenance-maintenanceconfiguration.{0}.{1}', replace('0.3.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "maintenanceConfiguration": {
+              "type": "Microsoft.Maintenance/maintenanceConfigurations",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "extensionProperties": "[parameters('extensionProperties')]",
+                "maintenanceScope": "[parameters('maintenanceScope')]",
+                "maintenanceWindow": "[parameters('maintenanceWindow')]",
+                "namespace": "[parameters('namespace')]",
+                "visibility": "[parameters('visibility')]",
+                "installPatches": "[if(equals(parameters('maintenanceScope'), 'InGuestPatch'), parameters('installPatches'), null())]"
+              }
+            },
+            "maintenanceConfiguration_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Maintenance/maintenanceConfigurations/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "maintenanceConfiguration"
+              ]
+            },
+            "maintenanceConfiguration_roleAssignments": {
+              "copy": {
+                "name": "maintenanceConfiguration_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Maintenance/maintenanceConfigurations/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Maintenance/maintenanceConfigurations', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "maintenanceConfiguration"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the Maintenance Configuration."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the Maintenance Configuration."
+              },
+              "value": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the Maintenance Configuration was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the Maintenance Configuration was created in."
+              },
+              "value": "[reference('maintenanceConfiguration', '2023-04-01', 'full').location]"
+            }
+          }
+        }
+      }
+    },
+    "windowsVmDataCollectionRules": {
+      "condition": "[and(parameters('enablePrivateNetworking'), parameters('enableMonitoring'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('avm.res.insights.data-collection-rule.{0}', variables('dataCollectionRulesResourceName')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('dataCollectionRulesResourceName')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
+          "location": {
+            "value": "[parameters('solutionLocation')]"
+          },
+          "dataCollectionRuleProperties": {
+            "value": {
+              "kind": "Windows",
+              "dataSources": {
+                "performanceCounters": [
+                  {
+                    "streams": [
+                      "Microsoft-Perf"
+                    ],
+                    "samplingFrequencyInSeconds": 60,
+                    "counterSpecifiers": [
+                      "\\Processor Information(_Total)\\% Processor Time",
+                      "\\Processor Information(_Total)\\% Privileged Time",
+                      "\\Processor Information(_Total)\\% User Time",
+                      "\\Processor Information(_Total)\\Processor Frequency",
+                      "\\System\\Processes",
+                      "\\Process(_Total)\\Thread Count",
+                      "\\Process(_Total)\\Handle Count",
+                      "\\System\\System Up Time",
+                      "\\System\\Context Switches/sec",
+                      "\\System\\Processor Queue Length",
+                      "\\Memory\\% Committed Bytes In Use",
+                      "\\Memory\\Available Bytes",
+                      "\\Memory\\Committed Bytes",
+                      "\\Memory\\Cache Bytes",
+                      "\\Memory\\Pool Paged Bytes",
+                      "\\Memory\\Pool Nonpaged Bytes",
+                      "\\Memory\\Pages/sec",
+                      "\\Memory\\Page Faults/sec",
+                      "\\Process(_Total)\\Working Set",
+                      "\\Process(_Total)\\Working Set - Private",
+                      "\\LogicalDisk(_Total)\\% Disk Time",
+                      "\\LogicalDisk(_Total)\\% Disk Read Time",
+                      "\\LogicalDisk(_Total)\\% Disk Write Time",
+                      "\\LogicalDisk(_Total)\\% Idle Time",
+                      "\\LogicalDisk(_Total)\\Disk Bytes/sec",
+                      "\\LogicalDisk(_Total)\\Disk Read Bytes/sec",
+                      "\\LogicalDisk(_Total)\\Disk Write Bytes/sec",
+                      "\\LogicalDisk(_Total)\\Disk Transfers/sec",
+                      "\\LogicalDisk(_Total)\\Disk Reads/sec",
+                      "\\LogicalDisk(_Total)\\Disk Writes/sec",
+                      "\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer",
+                      "\\LogicalDisk(_Total)\\Avg. Disk sec/Read",
+                      "\\LogicalDisk(_Total)\\Avg. Disk sec/Write",
+                      "\\LogicalDisk(_Total)\\Avg. Disk Queue Length",
+                      "\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length",
+                      "\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length",
+                      "\\LogicalDisk(_Total)\\% Free Space",
+                      "\\LogicalDisk(_Total)\\Free Megabytes",
+                      "\\Network Interface(*)\\Bytes Total/sec",
+                      "\\Network Interface(*)\\Bytes Sent/sec",
+                      "\\Network Interface(*)\\Bytes Received/sec",
+                      "\\Network Interface(*)\\Packets/sec",
+                      "\\Network Interface(*)\\Packets Sent/sec",
+                      "\\Network Interface(*)\\Packets Received/sec",
+                      "\\Network Interface(*)\\Packets Outbound Errors",
+                      "\\Network Interface(*)\\Packets Received Errors"
+                    ],
+                    "name": "perfCounterDataSource60"
+                  }
+                ]
+              },
+              "destinations": {
+                "logAnalytics": [
+                  {
+                    "workspaceResourceId": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId]",
+                    "name": "[format('la-{0}', variables('dataCollectionRulesResourceName'))]"
+                  }
+                ]
+              },
+              "dataFlows": [
+                {
+                  "streams": [
+                    "Microsoft-Perf"
+                  ],
+                  "destinations": [
+                    "[format('la-{0}', variables('dataCollectionRulesResourceName'))]"
+                  ],
+                  "transformKql": "source",
+                  "outputStream": "Microsoft-Perf"
+                }
+              ]
+            }
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "8044804383919916904"
+            },
+            "name": "Data Collection Rules",
+            "description": "This module deploys a Data Collection Rule."
+          },
+          "definitions": {
+            "dataCollectionRulePropertiesType": {
+              "type": "object",
+              "discriminator": {
+                "propertyName": "kind",
+                "mapping": {
+                  "Linux": {
+                    "$ref": "#/definitions/linuxDcrPropertiesType"
+                  },
+                  "Windows": {
+                    "$ref": "#/definitions/windowsDcrPropertiesType"
+                  },
+                  "All": {
+                    "$ref": "#/definitions/allPlatformsDcrPropertiesType"
+                  },
+                  "AgentSettings": {
+                    "$ref": "#/definitions/agentSettingsDcrPropertiesType"
+                  },
+                  "Direct": {
+                    "$ref": "#/definitions/directDcrPropertiesType"
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The type for data collection rule properties. Depending on the kind, the properties will be different."
+              }
+            },
+            "linuxDcrPropertiesType": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Linux"
+                  ],
+                  "metadata": {
+                    "description": "Required. The platform type specifies the type of resources this rule can apply to."
+                  }
+                },
+                "dataSources": {
+                  "type": "object",
+                  "metadata": {
+                    "description": "Required. Specification of data sources that will be collected."
+                  }
+                },
+                "dataFlows": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The specification of data flows."
+                  }
+                },
+                "destinations": {
+                  "type": "object",
+                  "metadata": {
+                    "description": "Required. Specification of destinations that can be used in data flows."
+                  }
+                },
+                "dataCollectionEndpointResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of the data collection endpoint that this rule can be used with."
+                  }
+                },
+                "streamDeclarations": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Declaration of custom streams used in this rule."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Description of the data collection rule."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the properties of the 'Linux' data collection rule."
+              }
+            },
+            "windowsDcrPropertiesType": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Windows"
+                  ],
+                  "metadata": {
+                    "description": "Required. The platform type specifies the type of resources this rule can apply to."
+                  }
+                },
+                "dataSources": {
+                  "type": "object",
+                  "metadata": {
+                    "description": "Required. Specification of data sources that will be collected."
+                  }
+                },
+                "dataFlows": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The specification of data flows."
+                  }
+                },
+                "destinations": {
+                  "type": "object",
+                  "metadata": {
+                    "description": "Required. Specification of destinations that can be used in data flows."
+                  }
+                },
+                "dataCollectionEndpointResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of the data collection endpoint that this rule can be used with."
+                  }
+                },
+                "streamDeclarations": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Declaration of custom streams used in this rule."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Description of the data collection rule."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the properties of the 'Windows' data collection rule."
+              }
+            },
+            "allPlatformsDcrPropertiesType": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "All"
+                  ],
+                  "metadata": {
+                    "description": "Required. The platform type specifies the type of resources this rule can apply to."
+                  }
+                },
+                "dataSources": {
+                  "type": "object",
+                  "metadata": {
+                    "description": "Required. Specification of data sources that will be collected."
+                  }
+                },
+                "dataFlows": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The specification of data flows."
+                  }
+                },
+                "destinations": {
+                  "type": "object",
+                  "metadata": {
+                    "description": "Required. Specification of destinations that can be used in data flows."
+                  }
+                },
+                "dataCollectionEndpointResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of the data collection endpoint that this rule can be used with."
+                  }
+                },
+                "streamDeclarations": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Declaration of custom streams used in this rule."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Description of the data collection rule."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the properties of the data collection rule of the kind 'All'."
+              }
+            },
+            "agentSettingsDcrPropertiesType": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "AgentSettings"
+                  ],
+                  "metadata": {
+                    "description": "Required. The platform type specifies the type of resources this rule can apply to."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Description of the data collection rule."
+                  }
+                },
+                "agentSettings": {
+                  "$ref": "#/definitions/agentSettingsType",
+                  "metadata": {
+                    "description": "Required. Agent settings used to modify agent behavior on a given host."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the properties of the 'AgentSettings' data collection rule."
+              }
+            },
+            "agentSettingsType": {
+              "type": "object",
+              "properties": {
+                "logs": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/agentSettingType"
+                  },
+                  "metadata": {
+                    "description": "Required. All the settings that are applicable to the logs agent (AMA)."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the agent settings."
+              }
+            },
+            "agentSettingType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "allowedValues": [
+                    "MaxDiskQuotaInMB",
+                    "UseTimeReceivedForForwardedEvents"
+                  ],
+                  "metadata": {
+                    "description": "Required. The name of the agent setting."
+                  }
+                },
+                "value": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The value of the agent setting."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the (single) agent setting."
+              }
+            },
+            "directDcrPropertiesType": {
+              "type": "object",
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Direct"
+                  ],
+                  "metadata": {
+                    "description": "Required. The platform type specifies the type of resources this rule can apply to."
+                  }
+                },
+                "dataFlows": {
+                  "type": "array",
+                  "metadata": {
+                    "description": "Required. The specification of data flows."
+                  }
+                },
+                "destinations": {
+                  "type": "object",
+                  "metadata": {
+                    "description": "Required. Specification of destinations that can be used in data flows."
+                  }
+                },
+                "dataCollectionEndpointResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID of the data collection endpoint that this rule can be used with."
+                  }
+                },
+                "streamDeclarations": {
+                  "type": "object",
+                  "metadata": {
+                    "description": "Required. Declaration of custom streams used in this rule."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Description of the data collection rule."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for the properties of the 'Direct' data collection rule."
+              }
+            },
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "managedIdentityAllType": {
+              "type": "object",
+              "properties": {
+                "systemAssigned": {
+                  "type": "bool",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Enables system assigned managed identity on the resource."
+                  }
+                },
+                "userAssignedResourceIds": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The resource ID(s) to assign to the resource. Required if a user assigned identity is used for encryption."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a managed identity configuration. To be used if both a system-assigned & user-assigned identities are supported by the resource provider.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the data collection rule. The name is case insensitive."
+              }
+            },
+            "dataCollectionRuleProperties": {
+              "$ref": "#/definitions/dataCollectionRulePropertiesType",
+              "metadata": {
+                "description": "Required. The kind of data collection rule."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all Resources."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "managedIdentities": {
+              "$ref": "#/definitions/managedIdentityAllType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The managed identity definition for this resource."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource tags."
+              }
+            }
+          },
+          "variables": {
+            "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
+            "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            },
+            "dataCollectionRulePropertiesUnion": "[union(createObject('description', tryGet(parameters('dataCollectionRuleProperties'), 'description')), if(or(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), equals(parameters('dataCollectionRuleProperties').kind, 'All')), createObject('dataSources', parameters('dataCollectionRuleProperties').dataSources), createObject()), if(or(or(or(equals(parameters('dataCollectionRuleProperties').kind, 'Linux'), equals(parameters('dataCollectionRuleProperties').kind, 'Windows')), equals(parameters('dataCollectionRuleProperties').kind, 'All')), equals(parameters('dataCollectionRuleProperties').kind, 'Direct')), createObject('dataFlows', parameters('dataCollectionRuleProperties').dataFlows, 'destinations', parameters('dataCollectionRuleProperties').destinations, 'dataCollectionEndpointId', tryGet(parameters('dataCollectionRuleProperties'), 'dataCollectionEndpointResourceId'), 'streamDeclarations', tryGet(parameters('dataCollectionRuleProperties'), 'streamDeclarations')), createObject()), if(equals(parameters('dataCollectionRuleProperties').kind, 'AgentSettings'), createObject('agentSettings', parameters('dataCollectionRuleProperties').agentSettings), createObject()))]"
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.insights-datacollectionrule.{0}.{1}', replace('0.6.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "dataCollectionRule": {
+              "condition": "[not(equals(parameters('dataCollectionRuleProperties').kind, 'All'))]",
+              "type": "Microsoft.Insights/dataCollectionRules",
+              "apiVersion": "2023-03-11",
+              "name": "[parameters('name')]",
+              "kind": "[parameters('dataCollectionRuleProperties').kind]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": "[variables('identity')]",
+              "properties": "[variables('dataCollectionRulePropertiesUnion')]"
+            },
+            "dataCollectionRuleAll": {
+              "condition": "[equals(parameters('dataCollectionRuleProperties').kind, 'All')]",
+              "type": "Microsoft.Insights/dataCollectionRules",
+              "apiVersion": "2023-03-11",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "identity": "[variables('identity')]",
+              "properties": "[variables('dataCollectionRulePropertiesUnion')]"
+            },
+            "dataCollectionRule_conditionalScopeResources": {
+              "condition": "[or(and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None'))), not(empty(coalesce(parameters('roleAssignments'), createArray()))))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-DCR-ConditionalScope', uniqueString(deployment().name, parameters('location')))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "dataCollectionRuleName": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), createObject('value', parameters('name')), createObject('value', parameters('name')))]",
+                  "builtInRoleNames": {
+                    "value": "[variables('builtInRoleNames')]"
+                  },
+                  "lock": {
+                    "value": "[parameters('lock')]"
+                  },
+                  "roleAssignments": {
+                    "value": "[parameters('roleAssignments')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.33.93.31351",
+                      "templateHash": "5528885836196228785"
+                    }
+                  },
+                  "definitions": {
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
+                    },
+                    "roleAssignmentType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "roleAssignments": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Array of role assignments to create."
+                      }
+                    },
+                    "builtInRoleNames": {
+                      "type": "object",
+                      "defaultValue": {},
+                      "metadata": {
+                        "description": "Optional. Built-in role names."
+                      }
+                    },
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
+                    "dataCollectionRuleName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the Data Collection Rule to assign the role(s) to."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(parameters('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ]
+                  },
+                  "resources": {
+                    "dataCollectionRule": {
+                      "existing": true,
+                      "type": "Microsoft.Insights/dataCollectionRules",
+                      "apiVersion": "2023-03-11",
+                      "name": "[parameters('dataCollectionRuleName')]"
+                    },
+                    "dataCollectionRule_roleAssignments": {
+                      "copy": {
+                        "name": "dataCollectionRule_roleAssignments",
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleName'))]",
+                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceGroup().id, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                      "properties": {
+                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                      }
+                    },
+                    "dataCollectionRule_lock": {
+                      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                      "type": "Microsoft.Authorization/locks",
+                      "apiVersion": "2020-05-01",
+                      "scope": "[format('Microsoft.Insights/dataCollectionRules/{0}', parameters('dataCollectionRuleName'))]",
+                      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('dataCollectionRuleName')))]",
+                      "properties": {
+                        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                      }
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "dataCollectionRule",
+                "dataCollectionRuleAll"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the dataCollectionRule."
+              },
+              "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), parameters('name'), parameters('name'))]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the dataCollectionRule."
+              },
+              "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), resourceId('Microsoft.Insights/dataCollectionRules', parameters('name')), resourceId('Microsoft.Insights/dataCollectionRules', parameters('name')))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the resource group the dataCollectionRule was created in."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), reference('dataCollectionRuleAll', '2023-03-11', 'full').location, reference('dataCollectionRule', '2023-03-11', 'full').location)]"
+            },
+            "systemAssignedMIPrincipalId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "The principal ID of the system assigned identity."
+              },
+              "value": "[if(equals(parameters('dataCollectionRuleProperties').kind, 'All'), tryGet(tryGet(reference('dataCollectionRuleAll', '2023-03-11', 'full'), 'identity'), 'principalId'), tryGet(tryGet(reference('dataCollectionRule', '2023-03-11', 'full'), 'identity'), 'principalId'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "logAnalyticsWorkspace"
+      ]
+    },
+    "proximityPlacementGroup": {
+      "condition": "[parameters('enablePrivateNetworking')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('avm.res.compute.proximity-placement-group.{0}', variables('proximityPlacementGroupResourceName')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[variables('proximityPlacementGroupResourceName')]"
+          },
+          "location": {
+            "value": "[parameters('solutionLocation')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.34.44.8038",
+              "templateHash": "5270161295544128972"
+            },
+            "name": "Proximity Placement Groups",
+            "description": "This module deploys a Proximity Placement Group."
+          },
+          "definitions": {
+            "lockType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the name of lock."
+                  }
+                },
+                "kind": {
+                  "type": "string",
+                  "allowedValues": [
+                    "CanNotDelete",
+                    "None",
+                    "ReadOnly"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Specify the type of lock."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a lock.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            },
+            "roleAssignmentType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                  }
+                },
+                "roleDefinitionIdOrName": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                  }
+                },
+                "principalId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                  }
+                },
+                "principalType": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Device",
+                    "ForeignGroup",
+                    "Group",
+                    "ServicePrincipal",
+                    "User"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The principal type of the assigned principal ID."
+                  }
+                },
+                "description": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The description of the role assignment."
+                  }
+                },
+                "condition": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                  }
+                },
+                "conditionVersion": {
+                  "type": "string",
+                  "allowedValues": [
+                    "2.0"
+                  ],
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. Version of the condition."
+                  }
+                },
+                "delegatedManagedIdentityResourceId": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The Resource Id of the delegated managed identity resource."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "An AVM-aligned type for a role assignment.",
+                "__bicep_imported_from!": {
+                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                }
+              }
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the proximity placement group that is being created."
+              }
+            },
+            "type": {
+              "type": "string",
+              "defaultValue": "Standard",
+              "allowedValues": [
+                "Standard",
+                "Ultra"
+              ],
+              "metadata": {
+                "description": "Optional. Specifies the type of the proximity placement group."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Resource location."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The lock settings of the service."
+              }
+            },
+            "roleAssignments": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/roleAssignmentType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Array of role assignments to create."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the proximity placement group resource."
+              }
+            },
+            "zones": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the Availability Zone where virtual machine, virtual machine scale set or availability set associated with the proximity placement group can be created."
+              }
+            },
+            "colocationStatus": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Describes colocation status of the Proximity Placement Group."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "intent": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Specifies the user intent of the proximity placement group."
+              }
+            }
+          },
+          "variables": {
+            "copy": [
+              {
+                "name": "formattedRoleAssignments",
+                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+              }
+            ],
+            "builtInRoleNames": {
+              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+            }
+          },
+          "resources": {
+            "avmTelemetry": {
+              "condition": "[parameters('enableTelemetry')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2024-03-01",
+              "name": "[format('46d3xbcp.res.compute-proximityplacementgroup.{0}.{1}', replace('0.3.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+              "properties": {
+                "mode": "Incremental",
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "resources": [],
+                  "outputs": {
+                    "telemetry": {
+                      "type": "String",
+                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                    }
+                  }
+                }
+              }
+            },
+            "proximityPlacementGroup": {
+              "type": "Microsoft.Compute/proximityPlacementGroups",
+              "apiVersion": "2022-08-01",
+              "name": "[parameters('name')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "zones": "[parameters('zones')]",
+              "properties": {
+                "proximityPlacementGroupType": "[parameters('type')]",
+                "colocationStatus": "[parameters('colocationStatus')]",
+                "intent": "[parameters('intent')]"
+              }
+            },
+            "proximityPlacementGroup_lock": {
+              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+              "type": "Microsoft.Authorization/locks",
+              "apiVersion": "2020-05-01",
+              "scope": "[format('Microsoft.Compute/proximityPlacementGroups/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+              "properties": {
+                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+              },
+              "dependsOn": [
+                "proximityPlacementGroup"
+              ]
+            },
+            "proximityPlacementGroup_roleAssignments": {
+              "copy": {
+                "name": "proximityPlacementGroup_roleAssignments",
+                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+              },
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Compute/proximityPlacementGroups/{0}', parameters('name'))]",
+              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Compute/proximityPlacementGroups', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+              "properties": {
+                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+              },
+              "dependsOn": [
+                "proximityPlacementGroup"
+              ]
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the proximity placement group."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resourceId the proximity placement group."
+              },
+              "value": "[resourceId('Microsoft.Compute/proximityPlacementGroups', parameters('name'))]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the proximity placement group was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('proximityPlacementGroup', '2022-08-01', 'full').location]"
+            }
+          }
+        }
+      }
     },
     "virtualMachine": {
       "condition": "[parameters('enablePrivateNetworking')]",
@@ -9787,6 +11558,9 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
+          "enableAutomaticUpdates": {
+            "value": true
+          },
           "vmSize": {
             "value": "Standard_D2s_v3"
           },
@@ -9800,6 +11574,8 @@
             "value": [
               {
                 "name": "[format('nic-{0}', variables('virtualMachineResourceName'))]",
+                "tags": "[parameters('tags')]",
+                "deleteOption": "Delete",
                 "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId)), null())]",
                 "ipConfigurations": [
                   {
@@ -9822,13 +11598,23 @@
           "osDisk": {
             "value": {
               "name": "[format('osdisk-{0}', variables('virtualMachineResourceName'))]",
+              "caching": "ReadWrite",
               "createOption": "FromImage",
-              "managedDisk": {
-                "storageAccountType": "Premium_ZRS"
-              },
+              "deleteOption": "Delete",
               "diskSizeGB": 128,
-              "caching": "ReadWrite"
+              "managedDisk": {
+                "storageAccountType": "Premium_LRS"
+              }
             }
+          },
+          "patchMode": {
+            "value": "AutomaticByPlatform"
+          },
+          "bypassPlatformSafetyChecksOnUserSchedule": {
+            "value": true
+          },
+          "maintenanceConfigurationResourceId": {
+            "value": "[reference('maintenanceConfiguration').outputs.resourceId.value]"
           },
           "osType": {
             "value": "Windows"
@@ -9837,12 +11623,40 @@
             "value": false
           },
           "zone": {
-            "value": 0
+            "value": 2
+          },
+          "proximityPlacementGroupResourceId": {
+            "value": "[reference('proximityPlacementGroup').outputs.resourceId.value]"
           },
           "extensionAadJoinConfig": {
             "value": {
               "enabled": true,
+              "tags": "[parameters('tags')]",
               "typeHandlerVersion": "1.0"
+            }
+          },
+          "extensionAntiMalwareConfig": {
+            "value": {
+              "enabled": true,
+              "settings": {
+                "AntimalwareEnabled": "true",
+                "Exclusions": {},
+                "RealtimeProtectionEnabled": "true",
+                "ScheduledScanSettings": {
+                  "day": "7",
+                  "isEnabled": "true",
+                  "scanType": "Quick",
+                  "time": "120"
+                }
+              },
+              "tags": "[parameters('tags')]"
+            }
+          },
+          "extensionMonitoringAgentConfig": "[if(parameters('enableMonitoring'), createObject('value', createObject('dataCollectionRuleAssociations', createArray(createObject('dataCollectionRuleResourceId', reference('windowsVmDataCollectionRules').outputs.resourceId.value, 'name', format('send-{0}', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').name))), 'enabled', true(), 'tags', parameters('tags'))), createObject('value', null()))]",
+          "extensionNetworkWatcherAgentConfig": {
+            "value": {
+              "enabled": true,
+              "tags": "[parameters('tags')]"
             }
           }
         },
@@ -18098,7 +19912,10 @@
       },
       "dependsOn": [
         "logAnalyticsWorkspace",
-        "virtualNetwork"
+        "maintenanceConfiguration",
+        "proximityPlacementGroup",
+        "virtualNetwork",
+        "windowsVmDataCollectionRules"
       ]
     },
     "privateDnsZonesAiServices": {
@@ -28366,13 +30183,11 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
           "databaseAccountOfferType": {
             "value": "Standard"
           },
-          "enableFreeTier": {
-            "value": false
-          },
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
+          "zoneRedundant": "[if(parameters('enableRedundancy'), createObject('value', true()), createObject('value', false()))]",
           "networkRestrictions": {
             "value": {
               "networkAclBypass": "None",
@@ -28397,14 +30212,8 @@
               }
             ]
           },
-          "failoverLocations": {
-            "value": [
-              {
-                "locationName": "[parameters('solutionLocation')]",
-                "failoverPriority": 0
-              }
-            ]
-          },
+          "automaticFailover": "[if(parameters('enableScalability'), createObject('value', true()), createObject('value', false()))]",
+          "failoverLocations": "[if(parameters('enableScalability'), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', true(), 'locationName', parameters('solutionLocation')), createObject('failoverPriority', 1, 'isZoneRedundant', true(), 'locationName', parameters('failoverLocation')))), createObject('value', createArray(createObject('locationName', parameters('solutionLocation'), 'failoverPriority', 0))))]",
           "capabilitiesToAdd": {
             "value": [
               "EnableServerless"
@@ -32222,7 +34031,6 @@
           "publicNetworkAccess": {
             "value": "Enabled"
           },
-          "zoneRedundant": "[if(parameters('enablePrivateNetworking'), createObject('value', true()), createObject('value', false()))]",
           "applicationInsightsConnectionString": "[if(parameters('enableMonitoring'), createObject('value', reference('applicationInsights').outputs.connectionString.value), createObject('value', null()))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -32230,6 +34038,9 @@
           "subnetResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', coalesce(tryGet(tryGet(tryGet(reference('virtualNetwork'), 'outputs'), 'subnetResourceIds'), 'value', 4), '')), createObject('value', ''))]",
           "enableMonitoring": {
             "value": "[parameters('enableMonitoring')]"
+          },
+          "enableRedundancy": {
+            "value": "[parameters('enableRedundancy')]"
           }
         },
         "template": {
@@ -32240,7 +34051,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10706510786178170099"
+              "templateHash": "2532990073733214680"
             }
           },
           "parameters": {
@@ -32260,13 +34071,13 @@
             "publicNetworkAccess": {
               "type": "string"
             },
-            "zoneRedundant": {
-              "type": "bool"
-            },
             "enableTelemetry": {
               "type": "bool"
             },
             "enableMonitoring": {
+              "type": "bool"
+            },
+            "enableRedundancy": {
               "type": "bool"
             },
             "subnetResourceId": {
@@ -32307,28 +34118,20 @@
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   },
-                  "appLogsConfiguration": "[if(parameters('enableMonitoring'), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys('logAnalyticsWorkspace', '2023-09-01').primarySharedKey))), createObject('value', null()))]",
-                  "workloadProfiles": {
-                    "value": [
-                      {
-                        "name": "Consumption",
-                        "workloadProfileType": "Consumption"
-                      }
-                    ]
-                  },
-                  "publicNetworkAccess": {
-                    "value": "[parameters('publicNetworkAccess')]"
-                  },
-                  "appInsightsConnectionString": "[if(parameters('enableMonitoring'), createObject('value', parameters('applicationInsightsConnectionString')), createObject('value', null()))]",
-                  "zoneRedundant": {
-                    "value": "[parameters('zoneRedundant')]"
-                  },
                   "infrastructureSubnetResourceId": {
                     "value": "[parameters('subnetResourceId')]"
                   },
                   "internal": {
                     "value": false
-                  }
+                  },
+                  "publicNetworkAccess": {
+                    "value": "[parameters('publicNetworkAccess')]"
+                  },
+                  "appLogsConfiguration": "[if(parameters('enableMonitoring'), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys('logAnalyticsWorkspace', '2023-09-01').primarySharedKey))), createObject('value', null()))]",
+                  "appInsightsConnectionString": "[if(parameters('enableMonitoring'), createObject('value', parameters('applicationInsightsConnectionString')), createObject('value', null()))]",
+                  "workloadProfiles": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('maximumCount', 3, 'minimumCount', 0, 'name', 'CAW01', 'workloadProfileType', 'D4'))), createObject('value', createArray(createObject('name', 'Consumption', 'workloadProfileType', 'Consumption'))))]",
+                  "zoneRedundant": "[if(parameters('enableRedundancy'), createObject('value', true()), createObject('value', false()))]",
+                  "infrastructureResourceGroupName": "[if(parameters('enableRedundancy'), createObject('value', format('{0}-infra', resourceGroup().name)), createObject('value', null()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -34817,12 +36620,8 @@
           "location": {
             "value": "[parameters('solutionLocation')]"
           },
-          "skuName": {
-            "value": "P1v3"
-          },
-          "skuCapacity": {
-            "value": 3
-          },
+          "skuName": "[if(parameters('enableScalability'), createObject('value', 'P1v3'), createObject('value', 'B1'))]",
+          "skuCapacity": "[if(parameters('enableScalability'), createObject('value', 3), createObject('value', 1))]",
           "reserved": {
             "value": true
           },

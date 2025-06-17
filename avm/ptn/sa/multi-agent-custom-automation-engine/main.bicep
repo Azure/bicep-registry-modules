@@ -14,6 +14,9 @@ param solutionPrefix string = 'macae${uniqueString(deployer().objectId, deployer
 @description('Optional. Location for all Resources except AI Foundry.')
 param solutionLocation string = resourceGroup().location
 
+@description('Optional. Failover Location for applicable resources. This location will apply if `enableScalability` is set to `true`. Check [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) for more information on supported regions.')
+param failoverLocation string = ''
+
 // Restricting deployment to only supported Azure OpenAI regions validated with GPT-4o model
 @allowed(['australiaeast', 'eastus2', 'francecentral', 'japaneast', 'norwayeast', 'swedencentral', 'uksouth', 'westus'])
 @description('Optional. The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions.')
@@ -103,6 +106,44 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     skuName: 'PerGB2018'
     dataRetention: 365
     diagnosticSettings: [{ useThisWorkspace: true }]
+    dailyQuotaGb: enableRedundancy ? 10 : null //WAF recommendation: 10 GB per day is a good starting point for most workloads
+    dataSources: enablePrivateNetworking
+      ? [
+          {
+            eventLogName: 'Application'
+            eventTypes: [
+              {
+                eventType: 'Error'
+              }
+              {
+                eventType: 'Warning'
+              }
+              {
+                eventType: 'Information'
+              }
+            ]
+            kind: 'WindowsEvent'
+            name: 'applicationEvent'
+          }
+          {
+            counterName: '% Processor Time'
+            instanceName: '*'
+            intervalSeconds: 60
+            kind: 'WindowsPerformanceCounter'
+            name: 'windowsPerfCounter1'
+            objectName: 'Processor'
+          }
+          {
+            kind: 'IISLogs'
+            name: 'sampleIISLog1'
+            state: 'OnPremiseEnabled'
+          }
+        ]
+      : null
+    //TODO: Configure private link for Log Analytics Workspace
+    //publicNetworkAccessForIngestion: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    //publicNetworkAccessForQuery: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    features: { enableLogAccessUsingOnlyResourcePermissions: true }
   }
 }
 
@@ -142,22 +183,22 @@ module networkSecurityGroupBackend 'br/public:avm/res/network/network-security-g
     enableTelemetry: enableTelemetry
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
     securityRules: [
-      // {
-      //   name: 'DenySshRdpOutbound' //Azure Bastion
-      //   properties: {
-      //     priority: 200
-      //     access: 'Deny'
-      //     protocol: '*'
-      //     direction: 'Outbound'
-      //     sourceAddressPrefix: 'VirtualNetwork'
-      //     sourcePortRange: '*'
-      //     destinationAddressPrefix: '*'
-      //     destinationPortRanges: [
-      //       '3389'
-      //       '22'
-      //     ]
-      //   }
-      // }
+      {
+        name: 'deny-hop-outbound'
+        properties: {
+          access: 'Deny'
+          destinationAddressPrefix: '*'
+          destinationPortRanges: [
+            '22'
+            '3389'
+          ]
+          direction: 'Outbound'
+          priority: 200
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+        }
+      }
     ]
   }
 }
@@ -172,22 +213,22 @@ module networkSecurityGroupContainers 'br/public:avm/res/network/network-securit
     enableTelemetry: enableTelemetry
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
     securityRules: [
-      // {
-      //   name: 'DenySshRdpOutbound' //Azure Bastion
-      //   properties: {
-      //     priority: 200
-      //     access: 'Deny'
-      //     protocol: '*'
-      //     direction: 'Outbound'
-      //     sourceAddressPrefix: 'VirtualNetwork'
-      //     sourcePortRange: '*'
-      //     destinationAddressPrefix: '*'
-      //     destinationPortRanges: [
-      //       '3389'
-      //       '22'
-      //     ]
-      //   }
-      // }
+      {
+        name: 'deny-hop-outbound'
+        properties: {
+          access: 'Deny'
+          destinationAddressPrefix: '*'
+          destinationPortRanges: [
+            '22'
+            '3389'
+          ]
+          direction: 'Outbound'
+          priority: 200
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+        }
+      }
     ]
   }
 }
@@ -358,22 +399,22 @@ module networkSecurityGroupAdministration 'br/public:avm/res/network/network-sec
     enableTelemetry: enableTelemetry
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
     securityRules: [
-      // {
-      //   name: 'DenySshRdpOutbound' //Azure Bastion
-      //   properties: {
-      //     priority: 200
-      //     access: 'Deny'
-      //     protocol: '*'
-      //     direction: 'Outbound'
-      //     sourceAddressPrefix: 'VirtualNetwork'
-      //     sourcePortRange: '*'
-      //     destinationAddressPrefix: '*'
-      //     destinationPortRanges: [
-      //       '3389'
-      //       '22'
-      //     ]
-      //   }
-      // }
+      {
+        name: 'deny-hop-outbound'
+        properties: {
+          access: 'Deny'
+          destinationAddressPrefix: '*'
+          destinationPortRanges: [
+            '22'
+            '3389'
+          ]
+          direction: 'Outbound'
+          priority: 200
+          protocol: 'Tcp'
+          sourceAddressPrefix: 'VirtualNetwork'
+          sourcePortRange: '*'
+        }
+      }
     ]
   }
 }
@@ -412,14 +453,6 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (en
         networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
       }
       {
-        // Subnet IP address limitation: only class B and C are supported
-        // https://learn.microsoft.com/en-us/azure/ai-services/agents/how-to/virtual-networks
-        name: 'ai-foundry-agents' //This exact name is required for Azure Bastion
-        addressPrefix: '10.0.1.0/24'
-        //networkSecurityGroupResourceId: networkSecurityGroupBastion.outputs.resourceId
-        delegation: 'Microsoft.App/environments'
-      }
-      {
         // If you use your own vnw, you need to provide a subnet that is dedicated exclusively to the Container App environment you deploy. This subnet isn't available to other services
         // https://learn.microsoft.com/en-us/azure/container-apps/networking?tabs=workload-profiles-env%2Cazure-cli#custom-vnw-configuration
         name: 'containers'
@@ -447,18 +480,164 @@ module bastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (enablePr
     enableTelemetry: enableTelemetry
     tags: tags
     virtualNetworkResourceId: virtualNetwork.?outputs.?resourceId
-    publicIPAddressObject: { name: 'pip-bas${solutionPrefix}' }
-    disableCopyPaste: false
+    publicIPAddressObject: {
+      name: 'pip-bas${solutionPrefix}'
+      diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
+      tags: tags
+    }
+    disableCopyPaste: true
     enableFileCopy: false
-    enableIpConnect: true
-    //enableKerberos: bastionConfiguration.?enableKerberos
-    enableShareableLink: true
+    enableIpConnect: false
+    enableShareableLink: false
+    scaleUnits: 4
     //scaleUnits: bastionConfiguration.?scaleUnits
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
   }
 }
 
 // ========== Virtual machine ========== //
 // WAF best practices for virtual machines: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/virtual-machines
+var maintenanceConfigurationResourceName = 'mc-${solutionPrefix}'
+module maintenanceConfiguration 'br/public:avm/res/maintenance/maintenance-configuration:0.3.1' = if (enablePrivateNetworking) {
+  name: take('avm.res.compute.virtual-machine.${maintenanceConfigurationResourceName}', 64)
+  params: {
+    name: maintenanceConfigurationResourceName
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'W. Europe Standard Time'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      windowsParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
+  }
+}
+
+var dataCollectionRulesResourceName = 'dcr-${solutionPrefix}'
+module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-rule:0.6.0' = if (enablePrivateNetworking && enableMonitoring) {
+  name: take('avm.res.insights.data-collection-rule.${dataCollectionRulesResourceName}', 64)
+  params: {
+    name: dataCollectionRulesResourceName
+    tags: tags
+    enableTelemetry: enableTelemetry
+    location: solutionLocation
+    dataCollectionRuleProperties: {
+      kind: 'Windows'
+      dataSources: {
+        performanceCounters: [
+          {
+            streams: [
+              'Microsoft-Perf'
+            ]
+            samplingFrequencyInSeconds: 60
+            counterSpecifiers: [
+              '\\Processor Information(_Total)\\% Processor Time'
+              '\\Processor Information(_Total)\\% Privileged Time'
+              '\\Processor Information(_Total)\\% User Time'
+              '\\Processor Information(_Total)\\Processor Frequency'
+              '\\System\\Processes'
+              '\\Process(_Total)\\Thread Count'
+              '\\Process(_Total)\\Handle Count'
+              '\\System\\System Up Time'
+              '\\System\\Context Switches/sec'
+              '\\System\\Processor Queue Length'
+              '\\Memory\\% Committed Bytes In Use'
+              '\\Memory\\Available Bytes'
+              '\\Memory\\Committed Bytes'
+              '\\Memory\\Cache Bytes'
+              '\\Memory\\Pool Paged Bytes'
+              '\\Memory\\Pool Nonpaged Bytes'
+              '\\Memory\\Pages/sec'
+              '\\Memory\\Page Faults/sec'
+              '\\Process(_Total)\\Working Set'
+              '\\Process(_Total)\\Working Set - Private'
+              '\\LogicalDisk(_Total)\\% Disk Time'
+              '\\LogicalDisk(_Total)\\% Disk Read Time'
+              '\\LogicalDisk(_Total)\\% Disk Write Time'
+              '\\LogicalDisk(_Total)\\% Idle Time'
+              '\\LogicalDisk(_Total)\\Disk Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Read Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Write Bytes/sec'
+              '\\LogicalDisk(_Total)\\Disk Transfers/sec'
+              '\\LogicalDisk(_Total)\\Disk Reads/sec'
+              '\\LogicalDisk(_Total)\\Disk Writes/sec'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Read'
+              '\\LogicalDisk(_Total)\\Avg. Disk sec/Write'
+              '\\LogicalDisk(_Total)\\Avg. Disk Queue Length'
+              '\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length'
+              '\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length'
+              '\\LogicalDisk(_Total)\\% Free Space'
+              '\\LogicalDisk(_Total)\\Free Megabytes'
+              '\\Network Interface(*)\\Bytes Total/sec'
+              '\\Network Interface(*)\\Bytes Sent/sec'
+              '\\Network Interface(*)\\Bytes Received/sec'
+              '\\Network Interface(*)\\Packets/sec'
+              '\\Network Interface(*)\\Packets Sent/sec'
+              '\\Network Interface(*)\\Packets Received/sec'
+              '\\Network Interface(*)\\Packets Outbound Errors'
+              '\\Network Interface(*)\\Packets Received Errors'
+            ]
+            name: 'perfCounterDataSource60'
+          }
+        ]
+      }
+      destinations: {
+        logAnalytics: [
+          {
+            workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+            name: 'la-${dataCollectionRulesResourceName}'
+          }
+        ]
+      }
+      dataFlows: [
+        {
+          streams: [
+            'Microsoft-Perf'
+          ]
+          destinations: [
+            'la-${dataCollectionRulesResourceName}'
+          ]
+          transformKql: 'source'
+          outputStream: 'Microsoft-Perf'
+        }
+      ]
+    }
+  }
+}
+
+var proximityPlacementGroupResourceName = 'ppg-${solutionPrefix}'
+module proximityPlacementGroup 'br/public:avm/res/compute/proximity-placement-group:0.3.2' = if (enablePrivateNetworking) {
+  name: take('avm.res.compute.proximity-placement-group.${proximityPlacementGroupResourceName}', 64)
+  params: {
+    name: proximityPlacementGroupResourceName
+    location: solutionLocation
+    tags: tags
+    enableTelemetry: enableTelemetry
+  }
+}
+
 var virtualMachineResourceName = 'vm${solutionPrefix}'
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (enablePrivateNetworking) {
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
@@ -468,6 +647,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (e
     location: solutionLocation
     tags: tags
     enableTelemetry: enableTelemetry
+    enableAutomaticUpdates: true
     vmSize: 'Standard_D2s_v3'
     adminUsername: virtualMachineAdminUsername
     adminPassword: virtualMachineAdminPassword
@@ -476,6 +656,8 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (e
         name: 'nic-${virtualMachineResourceName}'
         //networkSecurityGroupResourceId: virtualMachineConfiguration.?nicConfigurationConfiguration.networkSecurityGroupResourceId
         //nicSuffix: 'nic-${virtualMachineResourceName}'
+        tags: tags
+        deleteOption: 'Delete'
         diagnosticSettings: enableMonitoring
           ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
           : null
@@ -498,25 +680,55 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (e
     }
     osDisk: {
       name: 'osdisk-${virtualMachineResourceName}'
-      createOption: 'FromImage'
-      managedDisk: {
-        storageAccountType: 'Premium_ZRS'
-      }
-      diskSizeGB: 128
       caching: 'ReadWrite'
+      createOption: 'FromImage'
+      deleteOption: 'Delete'
+      diskSizeGB: 128
+      managedDisk: { storageAccountType: 'Premium_LRS' }
     }
-    //patchMode: virtualMachineConfiguration.?patchMode
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
     osType: 'Windows'
     encryptionAtHost: false //The property 'securityProfile.encryptionAtHost' is not valid because the 'Microsoft.Compute/EncryptionAtHost' feature is not enabled for this subscription.
-    zone: 0
+    zone: 2
+    proximityPlacementGroupResourceId: proximityPlacementGroup.outputs.resourceId
     extensionAadJoinConfig: {
       enabled: true
+      tags: tags
       typeHandlerVersion: '1.0'
     }
-    // extensionMonitoringAgentConfig: {
-    //   enabled: true
-    // }
-    //    maintenanceConfigurationResourceId: virtualMachineConfiguration.?maintenanceConfigurationResourceId
+    extensionAntiMalwareConfig: {
+      enabled: true
+      settings: {
+        AntimalwareEnabled: 'true'
+        Exclusions: {}
+        RealtimeProtectionEnabled: 'true'
+        ScheduledScanSettings: {
+          day: '7'
+          isEnabled: 'true'
+          scanType: 'Quick'
+          time: '120'
+        }
+      }
+      tags: tags
+    }
+    extensionMonitoringAgentConfig: enableMonitoring
+      ? {
+          dataCollectionRuleAssociations: [
+            {
+              dataCollectionRuleResourceId: windowsVmDataCollectionRules.outputs.resourceId
+              name: 'send-${logAnalyticsWorkspace.outputs.name}'
+            }
+          ]
+          enabled: true
+          tags: tags
+        }
+      : null
+    extensionNetworkWatcherAgentConfig: {
+      enabled: true
+      tags: tags
+    }
   }
 }
 
@@ -729,9 +941,9 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
     location: solutionLocation
     tags: tags
     enableTelemetry: enableTelemetry
-    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
     databaseAccountOfferType: 'Standard'
-    enableFreeTier: false
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
+    zoneRedundant: enableRedundancy ? true : false
     networkRestrictions: {
       networkAclBypass: 'None'
       publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
@@ -764,12 +976,26 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
         ]
       }
     ]
-    failoverLocations: [
-      {
-        locationName: solutionLocation
-        failoverPriority: 0
-      }
-    ]
+    automaticFailover: enableScalability ? true : false
+    failoverLocations: enableScalability
+      ? [
+          {
+            failoverPriority: 0
+            isZoneRedundant: true
+            locationName: solutionLocation
+          }
+          {
+            failoverPriority: 1
+            isZoneRedundant: true
+            locationName: failoverLocation
+          }
+        ]
+      : [
+          {
+            locationName: solutionLocation
+            failoverPriority: 0
+          }
+        ]
     capabilitiesToAdd: [
       'EnableServerless'
     ]
@@ -804,11 +1030,11 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = {
     location: solutionLocation
     logAnalyticsResourceName: enableMonitoring ? logAnalyticsWorkspace.outputs.name : null
     publicNetworkAccess: 'Enabled'
-    zoneRedundant: enablePrivateNetworking ? true : false
     applicationInsightsConnectionString: enableMonitoring ? applicationInsights.outputs.connectionString : null
     enableTelemetry: enableTelemetry
     subnetResourceId: enablePrivateNetworking ? virtualNetwork.?outputs.?subnetResourceIds[4] ?? '' : ''
     enableMonitoring: enableMonitoring
+    enableRedundancy: enableRedundancy
     //aspireDashboardEnabled: !enablePrivateNetworking
     // vnetConfiguration: enablePrivateNetworking
     //   ? {
@@ -833,9 +1059,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.17.0' = {
     location: solutionLocation
     enableTelemetry: enableTelemetry
     environmentResourceId: containerAppEnvironment.outputs.resourceId
-    managedIdentities: {
-      systemAssigned: true
-    }
+    managedIdentities: { systemAssigned: true }
     ingressTargetPort: 8000
     ingressExternal: true
     activeRevisionsMode: 'Single'
@@ -864,8 +1088,25 @@ module containerApp 'br/public:avm/res/app/container-app:0.17.0' = {
       {
         name: 'backend'
         image: '${backendContainerRegistryHostname}/${backendContainerImageName}:${backendContainerImageTag}'
+        //TODO: configure probes for container app
+        // probes: [
+        //   {
+        //     httpGet: {
+        //       httpHeaders: [
+        //         {
+        //           name: 'Custom-Header'
+        //           value: 'Awesome'
+        //         }
+        //       ]
+        //       path: '/health'
+        //       port: 8080
+        //     }
+        //     initialDelaySeconds: 3
+        //     periodSeconds: 3
+        //     type: 'Liveness'
+        //   }
+        // ]
         resources: {
-          //TODO: Make cpu and memory parameterized
           cpu: '2.0'
           memory: '4.0Gi'
         }
@@ -945,8 +1186,8 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
     name: webServerFarmResourceName
     tags: tags
     location: solutionLocation
-    skuName: 'P1v3'
-    skuCapacity: 3
+    skuName: enableScalability ? 'P1v3' : 'B1'
+    skuCapacity: enableScalability ? 3 : 1
     reserved: true
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
     kind: 'linux'
@@ -958,39 +1199,8 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
 // ========== Frontend web site ========== //
 // WAF best practices for web app service: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
 
+//NOTE: AVM module adds 1 MB of overhead to the template. Keeping vanilla resource to save template size.
 var webSiteName = 'app-${solutionPrefix}'
-
-// module webSite 'br/public:avm/res/web/site:0.16.0' = {
-//   name: take('avm.res.web.site.${webSiteName}', 64)
-//   params: {
-//     name: webSiteName
-//     tags: tags
-//     location: solutionLocation
-//     kind: 'app,linux,container'
-//     enableTelemetry: enableTelemetry
-//     serverFarmResourceId: webServerFarm.?outputs.resourceId
-//     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
-//     publicNetworkAccess: 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
-//     siteConfig: {
-//       linuxFxVersion: 'DOCKER|${backendContainerRegistryHostname}/macaefrontend:${frontendContainerImageTag}'
-//     }
-//     configs: [
-//       {
-//         name: 'appsettings'
-//         applicationInsightResourceId: applicationInsights.outputs.resourceId
-//         properties: {
-//           SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
-//           DOCKER_REGISTRY_SERVER_URL: 'https://${backendContainerRegistryHostname}'
-//           WEBSITES_PORT: '3000'
-//           WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
-//           BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
-//           AUTH_ENABLED: 'false'
-//         }
-//       }
-//     ]
-//   }
-// }
-
 module webSite 'modules/web-sites.bicep' = {
   name: take('module.web-sites.${webSiteName}', 64)
   params: {
@@ -1024,8 +1234,6 @@ module webSite 'modules/web-sites.bicep' = {
 // Outputs      //
 // ============ //
 
-// Add your outputs here
-
 @description('The resource group the resources were deployed into.')
 output resourceGroupName string = resourceGroup().name
 
@@ -1035,6 +1243,3 @@ output webSiteDefaultHostname string = webSite.outputs.defaultHostname
 // ================ //
 // Definitions      //
 // ================ //
-//
-// Add your User-defined-types here, if any
-//
