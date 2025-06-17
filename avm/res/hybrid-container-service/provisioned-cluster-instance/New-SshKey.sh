@@ -58,8 +58,8 @@ if [[ -z "$PUBLIC_KEY" ]]; then
   PRIVATE_KEY_FILE=$(grep 'Private key is saved to' ssh.log | sed -E 's/.*"([^"]+)".*/\1/')
   PUBLIC_KEY_FILE=$(grep 'Public key is saved to' ssh.log | sed -E 's/.*"([^"]+)".*/\1/')
 
-  PRIVATE_KEY_B64=$(cat PRIVATE_KEY_FILE | base64 -w 0)
-  PUBLIC_KEY_B64=$(cat PUBLIC_KEY_FILE | base64 -w 0)
+  PRIVATE_KEY_B64=$(cat $PRIVATE_KEY_FILE | base64 -w 0)
+  PUBLIC_KEY_B64=$(cat $PUBLIC_KEY_FILE | base64 -w 0)
   sed --in-place "s/{{privateKeySecretValueBase64}}/$PRIVATE_KEY_B64/" 'write.json'
   sed --in-place "s/{{publicKeySecretValueBase64}}/$PUBLIC_KEY_B64/" 'write.json'
 
