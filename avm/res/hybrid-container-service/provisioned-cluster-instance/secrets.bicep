@@ -1,5 +1,5 @@
 @description('Required. The name of the provisioned cluster instance.')
-param name string = 'iactemp20250617c'
+param name string = 'iactemp20250617d'
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
@@ -8,10 +8,10 @@ param location string = resourceGroup().location
 param keyVaultName string = 'iac-bicep-kv-qa'
 
 @description('Optional. The name of the secret in the key vault that contains the SSH private key PEM.')
-param sshPrivateKeyPemSecretName string = 'iactemp20250617c-AksArcAgentSshPrivateKeyPem'
+param sshPrivateKeyPemSecretName string = 'iactemp20250617d-AksArcAgentSshPrivateKeyPem'
 
 @description('Optional. The name of the secret in the key vault that contains the SSH public key.')
-param sshPublicKeySecretName string = 'iactemp20250617c-AksArcAgentSshPublicKey'
+param sshPublicKeySecretName string = 'iactemp20250617d-AksArcAgentSshPublicKey'
 
 @description('Optional. Tags of the resource.')
 param tags object?
