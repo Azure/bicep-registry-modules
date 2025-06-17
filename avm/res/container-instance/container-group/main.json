@@ -6,13 +6,13 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14751360749563202827"
+      "templateHash": "13939702786676880377"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
   },
   "definitions": {
-    "containerProbe": {
+    "containerProbeType": {
       "type": "object",
       "properties": {
         "exec": {
@@ -150,14 +150,14 @@
               }
             },
             "livenessProbe": {
-              "$ref": "#/definitions/containerProbe",
+              "$ref": "#/definitions/containerProbeType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The liveness probe."
               }
             },
             "readinessProbe": {
-              "$ref": "#/definitions/containerProbe",
+              "$ref": "#/definitions/containerProbeType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The readiness probe."
