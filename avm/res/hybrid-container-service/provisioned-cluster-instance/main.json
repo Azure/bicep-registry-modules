@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7213828104962046356"
+      "templateHash": "17315149331889549892"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -738,13 +738,12 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "17952897707117771678"
+              "templateHash": "8017338432730421584"
             }
           },
           "parameters": {
             "name": {
               "type": "string",
-              "defaultValue": "iactemp20250617d",
               "metadata": {
                 "description": "Required. The name of the provisioned cluster instance."
               }
@@ -758,21 +757,20 @@
             },
             "keyVaultName": {
               "type": "string",
-              "defaultValue": "iac-bicep-kv-qa",
               "metadata": {
                 "description": "Required. The name of the key vault."
               }
             },
             "sshPrivateKeyPemSecretName": {
               "type": "string",
-              "defaultValue": "iactemp20250617d-AksArcAgentSshPrivateKeyPem",
+              "defaultValue": "AksArcAgentSshPrivateKeyPem",
               "metadata": {
                 "description": "Optional. The name of the secret in the key vault that contains the SSH private key PEM."
               }
             },
             "sshPublicKeySecretName": {
               "type": "string",
-              "defaultValue": "iactemp20250617d-AksArcAgentSshPublicKey",
+              "defaultValue": "AksArcAgentSshPublicKey",
               "metadata": {
                 "description": "Optional. The name of the secret in the key vault that contains the SSH public key."
               }
