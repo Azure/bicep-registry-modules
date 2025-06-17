@@ -16,7 +16,7 @@ param solutionLocation string = resourceGroup().location
 
 // Restricting deployment to only supported Azure OpenAI regions validated with GPT-4o model
 @allowed(['australiaeast', 'eastus2', 'francecentral', 'japaneast', 'norwayeast', 'swedencentral', 'uksouth', 'westus'])
-@description('Required. The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions.')
+@description('Optional. The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions.')
 param azureOpenAILocation string = 'westus'
 
 @description('Optional. The tags to apply to all deployed Azure resources.')
@@ -45,16 +45,26 @@ param virtualMachineAdminUsername string = take(newGuid(), 20) //TODO: store val
 @secure()
 param virtualMachineAdminPassword string = newGuid() //TODO: store value in Key Vault
 
-@description('Optional. The Container Image Tag to deploy on the backend from public Container Registry `biabcontainerreg.azurecr.io`.')
+@description('Optional. The Container Registry hostname where the docker images for the backend are located.')
+param backendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
+
+@description('Optional. The Container Image Name to deploy on the backend.')
+param backendContainerImageName string = 'macaebackend'
+
+@description('Optional. The Container Image Tag to deploy on the backend.')
 param backendContainerImageTag string = 'latest_2025-06-12_639'
 
-@description('Optional. The Container Image Tag to deploy on the frontend from public Container Registry `biabcontainerreg.azurecr.io`.')
+@description('Optional. The Container Registry hostname where the docker images for the frontend are located.')
+param frontendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
+
+@description('Optional. The Container Image Name to deploy on the frontend.')
+param frontendContainerImageName string = 'macaefrontend'
+
+@description('Optional. The Container Image Tag to deploy on the frontend.')
 param frontendContainerImageTag string = 'latest_2025-06-12_639'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
-
-var containerRegistryHostname = 'biabcontainerreg.azurecr.io'
 
 // ============== //
 // Resources      //
@@ -846,7 +856,7 @@ module containerApp 'br/public:avm/res/app/container-app:0.17.0' = {
     containers: [
       {
         name: 'backend'
-        image: '${containerRegistryHostname}/macaebackend:${backendContainerImageTag}'
+        image: '${backendContainerRegistryHostname}/${backendContainerImageName}:${backendContainerImageTag}'
         resources: {
           //TODO: Make cpu and memory parameterized
           cpu: '2.0'
@@ -955,7 +965,7 @@ var webSiteName = 'app-${solutionPrefix}'
 //     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
 //     publicNetworkAccess: 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
 //     siteConfig: {
-//       linuxFxVersion: 'DOCKER|${containerRegistryHostname}/macaefrontend:${frontendContainerImageTag}'
+//       linuxFxVersion: 'DOCKER|${backendContainerRegistryHostname}/macaefrontend:${frontendContainerImageTag}'
 //     }
 //     configs: [
 //       {
@@ -963,7 +973,7 @@ var webSiteName = 'app-${solutionPrefix}'
 //         applicationInsightResourceId: applicationInsights.outputs.resourceId
 //         properties: {
 //           SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
-//           DOCKER_REGISTRY_SERVER_URL: 'https://${containerRegistryHostname}'
+//           DOCKER_REGISTRY_SERVER_URL: 'https://${backendContainerRegistryHostname}'
 //           WEBSITES_PORT: '3000'
 //           WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
 //           BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'
@@ -985,7 +995,7 @@ module webSite 'modules/web-sites.bicep' = {
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
     publicNetworkAccess: 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
     siteConfig: {
-      linuxFxVersion: 'DOCKER|${containerRegistryHostname}/macaefrontend:${frontendContainerImageTag}'
+      linuxFxVersion: 'DOCKER|${frontendContainerRegistryHostname}/${frontendContainerImageName}:${frontendContainerImageTag}'
     }
     configs: [
       {
@@ -993,7 +1003,7 @@ module webSite 'modules/web-sites.bicep' = {
         applicationInsightResourceId: enableMonitoring ? applicationInsights.outputs.resourceId : null
         properties: {
           SCM_DO_BUILD_DURING_DEPLOYMENT: 'true'
-          DOCKER_REGISTRY_SERVER_URL: 'https://${containerRegistryHostname}'
+          DOCKER_REGISTRY_SERVER_URL: 'https://${frontendContainerRegistryHostname}'
           WEBSITES_PORT: '3000'
           WEBSITES_CONTAINER_START_TIME_LIMIT: '1800' // 30 minutes, adjust as needed
           BACKEND_API_URL: 'https://${containerApp.outputs.fqdn}'

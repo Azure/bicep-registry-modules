@@ -252,23 +252,22 @@ param virtualMachineAdminUsername = 'adminuser'
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`azureOpenAILocation`](#parameter-azureopenailocation) | string | The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | The Container Image Tag to deploy on the backend from public Container Registry `biabcontainerreg.azurecr.io`. |
+| [`azureOpenAILocation`](#parameter-azureopenailocation) | string | The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions. |
+| [`backendContainerImageName`](#parameter-backendcontainerimagename) | string | The Container Image Name to deploy on the backend. |
+| [`backendContainerImageTag`](#parameter-backendcontainerimagetag) | string | The Container Image Tag to deploy on the backend. |
+| [`backendContainerRegistryHostname`](#parameter-backendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the backend are located. |
 | [`enableMonitoring`](#parameter-enablemonitoring) | bool | Enable monitoring applicable resources, aligned with the Well Architected Framework recommendations. This setting enables Application Insights and Log Analytics and configures all the resources applicable resources to send logs. Defaults to false. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable private networking for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableRedundancy`](#parameter-enableredundancy) | bool | Enable redundancy for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableScalability`](#parameter-enablescalability) | bool | Enable scalability for applicable resources, aligned with the Well Architected Framework recommendations. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`frontendContainerImageTag`](#parameter-frontendcontainerimagetag) | string | The Container Image Tag to deploy on the frontend from public Container Registry `biabcontainerreg.azurecr.io`. |
+| [`frontendContainerImageName`](#parameter-frontendcontainerimagename) | string | The Container Image Name to deploy on the frontend. |
+| [`frontendContainerImageTag`](#parameter-frontendcontainerimagetag) | string | The Container Image Tag to deploy on the frontend. |
+| [`frontendContainerRegistryHostname`](#parameter-frontendcontainerregistryhostname) | string | The Container Registry hostname where the docker images for the frontend are located. |
 | [`solutionLocation`](#parameter-solutionlocation) | string | Location for all Resources except AI Foundry. |
 | [`solutionPrefix`](#parameter-solutionprefix) | string | The prefix to add in the default names given to all deployed Azure resources. |
 | [`tags`](#parameter-tags) | object | The tags to apply to all deployed Azure resources. |
@@ -296,13 +295,29 @@ The location of OpenAI related resources. This should be one of the supported Az
   ]
   ```
 
+### Parameter: `backendContainerImageName`
+
+The Container Image Name to deploy on the backend.
+
+- Required: No
+- Type: string
+- Default: `'macaebackend'`
+
 ### Parameter: `backendContainerImageTag`
 
-The Container Image Tag to deploy on the backend from public Container Registry `biabcontainerreg.azurecr.io`.
+The Container Image Tag to deploy on the backend.
 
 - Required: No
 - Type: string
 - Default: `'latest_2025-06-12_639'`
+
+### Parameter: `backendContainerRegistryHostname`
+
+The Container Registry hostname where the docker images for the backend are located.
+
+- Required: No
+- Type: string
+- Default: `'biabcontainerreg.azurecr.io'`
 
 ### Parameter: `enableMonitoring`
 
@@ -344,13 +359,29 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `frontendContainerImageName`
+
+The Container Image Name to deploy on the frontend.
+
+- Required: No
+- Type: string
+- Default: `'macaefrontend'`
+
 ### Parameter: `frontendContainerImageTag`
 
-The Container Image Tag to deploy on the frontend from public Container Registry `biabcontainerreg.azurecr.io`.
+The Container Image Tag to deploy on the frontend.
 
 - Required: No
 - Type: string
 - Default: `'latest_2025-06-12_639'`
+
+### Parameter: `frontendContainerRegistryHostname`
+
+The Container Registry hostname where the docker images for the frontend are located.
+
+- Required: No
+- Type: string
+- Default: `'biabcontainerreg.azurecr.io'`
 
 ### Parameter: `solutionLocation`
 

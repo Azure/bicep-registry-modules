@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "9690720271241055976"
+      "templateHash": "10856641640909164228"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -41,7 +41,7 @@
         "westus"
       ],
       "metadata": {
-        "description": "Required. The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions."
+        "description": "Optional. The location of OpenAI related resources. This should be one of the supported Azure OpenAI regions."
       }
     },
     "tags": {
@@ -96,18 +96,46 @@
         "description": "Optional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true."
       }
     },
+    "backendContainerRegistryHostname": {
+      "type": "string",
+      "defaultValue": "biabcontainerreg.azurecr.io",
+      "metadata": {
+        "description": "Optional. The Container Registry hostname where the docker images for the backend are located."
+      }
+    },
+    "backendContainerImageName": {
+      "type": "string",
+      "defaultValue": "macaebackend",
+      "metadata": {
+        "description": "Optional. The Container Image Name to deploy on the backend."
+      }
+    },
     "backendContainerImageTag": {
       "type": "string",
       "defaultValue": "latest_2025-06-12_639",
       "metadata": {
-        "description": "Optional. The Container Image Tag to deploy on the backend from public Container Registry `biabcontainerreg.azurecr.io`."
+        "description": "Optional. The Container Image Tag to deploy on the backend."
+      }
+    },
+    "frontendContainerRegistryHostname": {
+      "type": "string",
+      "defaultValue": "biabcontainerreg.azurecr.io",
+      "metadata": {
+        "description": "Optional. The Container Registry hostname where the docker images for the frontend are located."
+      }
+    },
+    "frontendContainerImageName": {
+      "type": "string",
+      "defaultValue": "macaefrontend",
+      "metadata": {
+        "description": "Optional. The Container Image Name to deploy on the frontend."
       }
     },
     "frontendContainerImageTag": {
       "type": "string",
       "defaultValue": "latest_2025-06-12_639",
       "metadata": {
-        "description": "Optional. The Container Image Tag to deploy on the frontend from public Container Registry `biabcontainerreg.azurecr.io`."
+        "description": "Optional. The Container Image Tag to deploy on the frontend."
       }
     },
     "enableTelemetry": {
@@ -119,7 +147,6 @@
     }
   },
   "variables": {
-    "containerRegistryHostname": "biabcontainerreg.azurecr.io",
     "logAnalyticsWorkspaceResourceName": "[format('log-{0}', parameters('solutionPrefix'))]",
     "applicationInsightsResourceName": "[format('appi-{0}', parameters('solutionPrefix'))]",
     "networkSecurityGroupBackendResourceName": "[format('nsg-backend-{0}', parameters('solutionPrefix'))]",
@@ -33011,7 +33038,7 @@
             "value": [
               {
                 "name": "backend",
-                "image": "[format('{0}/macaebackend:{1}', variables('containerRegistryHostname'), parameters('backendContainerImageTag'))]",
+                "image": "[format('{0}/{1}:{2}', parameters('backendContainerRegistryHostname'), parameters('backendContainerImageName'), parameters('backendContainerImageTag'))]",
                 "resources": {
                   "cpu": "2.0",
                   "memory": "4.0Gi"
@@ -35123,7 +35150,7 @@
           },
           "siteConfig": {
             "value": {
-              "linuxFxVersion": "[format('DOCKER|{0}/macaefrontend:{1}', variables('containerRegistryHostname'), parameters('frontendContainerImageTag'))]"
+              "linuxFxVersion": "[format('DOCKER|{0}/{1}:{2}', parameters('frontendContainerRegistryHostname'), parameters('frontendContainerImageName'), parameters('frontendContainerImageTag'))]"
             }
           },
           "configs": {
@@ -35133,7 +35160,7 @@
                 "applicationInsightResourceId": "[if(parameters('enableMonitoring'), reference('applicationInsights').outputs.resourceId.value, null())]",
                 "properties": {
                   "SCM_DO_BUILD_DURING_DEPLOYMENT": "true",
-                  "DOCKER_REGISTRY_SERVER_URL": "[format('https://{0}', variables('containerRegistryHostname'))]",
+                  "DOCKER_REGISTRY_SERVER_URL": "[format('https://{0}', parameters('frontendContainerRegistryHostname'))]",
                   "WEBSITES_PORT": "3000",
                   "WEBSITES_CONTAINER_START_TIME_LIMIT": "1800",
                   "BACKEND_API_URL": "[format('https://{0}', reference('containerApp').outputs.fqdn.value)]",
