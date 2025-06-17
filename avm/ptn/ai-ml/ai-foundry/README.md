@@ -96,10 +96,14 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/ai-ml/ai-foundry:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [ai-foundry](#example-1-ai-foundry)
+- [ai-foundry](#example-2-ai-foundry)
+- [ai-foundry](#example-3-ai-foundry)
 
-### Example 1: _Defaults_
+### Example 1: _ai-foundry_
+
+Creates an AI Foundry account and project with Basic services.
+
 
 <details>
 
@@ -112,7 +116,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     // Required parameters
     aiFoundryType: 'Basic'
     contentSafetyEnabled: false
-    name: 'aifoundry001'
+    name: 'aifoundrydefault001'
     vmAdminPasswordOrKey: 'P@ssw0rd123!'
     // Non-required parameters
     location: '<location>'
@@ -140,7 +144,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": false
     },
     "name": {
-      "value": "aifoundry001"
+      "value": "aifoundrydefault001"
     },
     "vmAdminPasswordOrKey": {
       "value": "P@ssw0rd123!"
@@ -166,7 +170,7 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 // Required parameters
 param aiFoundryType = 'Basic'
 param contentSafetyEnabled = false
-param name = 'aifoundry001'
+param name = 'aifoundrydefault001'
 param vmAdminPasswordOrKey = 'P@ssw0rd123!'
 // Non-required parameters
 param location = '<location>'
@@ -175,7 +179,89 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _ai-foundry_
+
+Creates an AI Foundry account and project with Basic services.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
+  name: 'aiFoundryDeployment'
+  params: {
+    // Required parameters
+    aiFoundryType: 'Basic'
+    contentSafetyEnabled: false
+    name: 'aifoundrymin001'
+    vmAdminPasswordOrKey: 'P@ssw0rd123!'
+    // Non-required parameters
+    location: '<location>'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "aiFoundryType": {
+      "value": "Basic"
+    },
+    "contentSafetyEnabled": {
+      "value": false
+    },
+    "name": {
+      "value": "aifoundrymin001"
+    },
+    "vmAdminPasswordOrKey": {
+      "value": "P@ssw0rd123!"
+    },
+    // Non-required parameters
+    "location": {
+      "value": "<location>"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
+
+// Required parameters
+param aiFoundryType = 'Basic'
+param contentSafetyEnabled = false
+param name = 'aifoundrymin001'
+param vmAdminPasswordOrKey = 'P@ssw0rd123!'
+// Non-required parameters
+param location = '<location>'
+```
+
+</details>
+<p>
+
+### Example 3: _ai-foundry_
+
+Creates an AI Foundry account and project with Standard Agent Services in a network.
+
 
 <details>
 
@@ -258,23 +344,23 @@ param location = '<location>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`aiFoundryType`](#parameter-aifoundrytype) | string | Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate. |
-| [`aiModelDeployments`](#parameter-aimodeldeployments) | array | Specifies the OpenAI deployments to create. |
-| [`cosmosDatabases`](#parameter-cosmosdatabases) | array | List of Cosmos DB databases to create. |
-| [`location`](#parameter-location) | string | Location for all Resources. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
 | [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project |
-| [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
-| [`userObjectId`](#parameter-userobjectid) | string | Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`aiModelDeployments`](#parameter-aimodeldeployments) | array | Specifies the OpenAI deployments to create. |
 | [`allowedIpAddress`](#parameter-allowedipaddress) | string | IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed. |
 | [`connections`](#parameter-connections) | array | Specifies the connections to be created for the Azure AI Hub workspace. The connections are used to connect to other Azure resources and services. |
 | [`contentSafetyEnabled`](#parameter-contentsafetyenabled) | bool | Whether to include Azure AI Content Safety in the deployment. |
+| [`cosmosDatabases`](#parameter-cosmosdatabases) | array | List of Cosmos DB databases to create. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`location`](#parameter-location) | string | Location for all Resources. |
 | [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
+| [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
+| [`userObjectId`](#parameter-userobjectid) | string | Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user. |
 | [`vmAdminPasswordOrKey`](#parameter-vmadminpasswordorkey) | securestring | Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters. |
 
 ### Parameter: `aiFoundryType`
@@ -291,6 +377,21 @@ Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPubl
     'StandardPublic'
   ]
   ```
+
+### Parameter: `name`
+
+Name of the resource to create.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `projectName`
+
+Name of the AI Foundry project
+
+- Required: No
+- Type: string
+- Default: `[format('{0}proj', parameters('name'))]`
 
 ### Parameter: `aiModelDeployments`
 
@@ -428,264 +529,6 @@ The version upgrade option.
 
 - Required: No
 - Type: string
-
-### Parameter: `cosmosDatabases`
-
-List of Cosmos DB databases to create.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-cosmosdatabasesname) | string | Name of the SQL database . |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`autoscaleSettingsMaxThroughput`](#parameter-cosmosdatabasesautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
-| [`containers`](#parameter-cosmosdatabasescontainers) | array | Array of containers to deploy in the SQL database. |
-| [`throughput`](#parameter-cosmosdatabasesthroughput) | int | Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
-
-### Parameter: `cosmosDatabases.name`
-
-Name of the SQL database .
-
-- Required: Yes
-- Type: string
-
-### Parameter: `cosmosDatabases.autoscaleSettingsMaxThroughput`
-
-Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
-
-- Required: No
-- Type: int
-
-### Parameter: `cosmosDatabases.containers`
-
-Array of containers to deploy in the SQL database.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`name`](#parameter-cosmosdatabasescontainersname) | string | Name of the container. |
-| [`paths`](#parameter-cosmosdatabasescontainerspaths) | array | List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`analyticalStorageTtl`](#parameter-cosmosdatabasescontainersanalyticalstoragettl) | int | Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store. |
-| [`autoscaleSettingsMaxThroughput`](#parameter-cosmosdatabasescontainersautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level. |
-| [`conflictResolutionPolicy`](#parameter-cosmosdatabasescontainersconflictresolutionpolicy) | object | The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions. |
-| [`defaultTtl`](#parameter-cosmosdatabasescontainersdefaultttl) | int | Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default. |
-| [`indexingPolicy`](#parameter-cosmosdatabasescontainersindexingpolicy) | object | Indexing policy of the container. |
-| [`kind`](#parameter-cosmosdatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
-| [`throughput`](#parameter-cosmosdatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
-| [`uniqueKeyPolicyKeys`](#parameter-cosmosdatabasescontainersuniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
-| [`version`](#parameter-cosmosdatabasescontainersversion) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
-
-### Parameter: `cosmosDatabases.containers.name`
-
-Name of the container.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `cosmosDatabases.containers.paths`
-
-List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `cosmosDatabases.containers.analyticalStorageTtl`
-
-Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store.
-
-- Required: No
-- Type: int
-
-### Parameter: `cosmosDatabases.containers.autoscaleSettingsMaxThroughput`
-
-Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level.
-
-- Required: No
-- Type: int
-- MaxValue: 1000000
-
-### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy`
-
-The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`mode`](#parameter-cosmosdatabasescontainersconflictresolutionpolicymode) | string | Indicates the conflict resolution mode. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`conflictResolutionPath`](#parameter-cosmosdatabasescontainersconflictresolutionpolicyconflictresolutionpath) | string | The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'. |
-| [`conflictResolutionProcedure`](#parameter-cosmosdatabasescontainersconflictresolutionpolicyconflictresolutionprocedure) | string | The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'. |
-
-### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy.mode`
-
-Indicates the conflict resolution mode.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Custom'
-    'LastWriterWins'
-  ]
-  ```
-
-### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy.conflictResolutionPath`
-
-The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'.
-
-- Required: No
-- Type: string
-
-### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy.conflictResolutionProcedure`
-
-The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'.
-
-- Required: No
-- Type: string
-
-### Parameter: `cosmosDatabases.containers.defaultTtl`
-
-Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default.
-
-- Required: No
-- Type: int
-- MinValue: -1
-- MaxValue: 2147483647
-
-### Parameter: `cosmosDatabases.containers.indexingPolicy`
-
-Indexing policy of the container.
-
-- Required: No
-- Type: object
-
-### Parameter: `cosmosDatabases.containers.kind`
-
-Default to Hash. Indicates the kind of algorithm used for partitioning.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Hash'
-    'MultiHash'
-  ]
-  ```
-
-### Parameter: `cosmosDatabases.containers.throughput`
-
-Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
-
-- Required: No
-- Type: int
-
-### Parameter: `cosmosDatabases.containers.uniqueKeyPolicyKeys`
-
-The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`paths`](#parameter-cosmosdatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
-
-### Parameter: `cosmosDatabases.containers.uniqueKeyPolicyKeys.paths`
-
-List of paths must be unique for each document in the Azure Cosmos DB service.
-
-- Required: Yes
-- Type: array
-
-### Parameter: `cosmosDatabases.containers.version`
-
-Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.
-
-- Required: No
-- Type: int
-- Allowed:
-  ```Bicep
-  [
-    1
-    2
-  ]
-  ```
-
-### Parameter: `cosmosDatabases.throughput`
-
-Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
-
-- Required: No
-- Type: int
-
-### Parameter: `location`
-
-Location for all Resources.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
-
-### Parameter: `name`
-
-Name of the resource to create.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `projectName`
-
-Name of the AI Foundry project
-
-- Required: No
-- Type: string
-- Default: `[format('{0}proj', parameters('name'))]`
-
-### Parameter: `tags`
-
-Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.
-
-- Required: No
-- Type: object
-- Default: `{}`
-
-### Parameter: `userObjectId`
-
-Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.
-
-- Required: No
-- Type: string
-- Default: `[deployer().objectId]`
 
 ### Parameter: `allowedIpAddress`
 
@@ -1509,6 +1352,225 @@ Whether to include Azure AI Content Safety in the deployment.
 - Required: Yes
 - Type: bool
 
+### Parameter: `cosmosDatabases`
+
+List of Cosmos DB databases to create.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cosmosdatabasesname) | string | Name of the SQL database . |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoscaleSettingsMaxThroughput`](#parameter-cosmosdatabasesautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
+| [`containers`](#parameter-cosmosdatabasescontainers) | array | Array of containers to deploy in the SQL database. |
+| [`throughput`](#parameter-cosmosdatabasesthroughput) | int | Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level. |
+
+### Parameter: `cosmosDatabases.name`
+
+Name of the SQL database .
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cosmosDatabases.autoscaleSettingsMaxThroughput`
+
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
+
+- Required: No
+- Type: int
+
+### Parameter: `cosmosDatabases.containers`
+
+Array of containers to deploy in the SQL database.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-cosmosdatabasescontainersname) | string | Name of the container. |
+| [`paths`](#parameter-cosmosdatabasescontainerspaths) | array | List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`analyticalStorageTtl`](#parameter-cosmosdatabasescontainersanalyticalstoragettl) | int | Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store. |
+| [`autoscaleSettingsMaxThroughput`](#parameter-cosmosdatabasescontainersautoscalesettingsmaxthroughput) | int | Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level. |
+| [`conflictResolutionPolicy`](#parameter-cosmosdatabasescontainersconflictresolutionpolicy) | object | The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions. |
+| [`defaultTtl`](#parameter-cosmosdatabasescontainersdefaultttl) | int | Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default. |
+| [`indexingPolicy`](#parameter-cosmosdatabasescontainersindexingpolicy) | object | Indexing policy of the container. |
+| [`kind`](#parameter-cosmosdatabasescontainerskind) | string | Default to Hash. Indicates the kind of algorithm used for partitioning. |
+| [`throughput`](#parameter-cosmosdatabasescontainersthroughput) | int | Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. |
+| [`uniqueKeyPolicyKeys`](#parameter-cosmosdatabasescontainersuniquekeypolicykeys) | array | The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service. |
+| [`version`](#parameter-cosmosdatabasescontainersversion) | int | Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition. |
+
+### Parameter: `cosmosDatabases.containers.name`
+
+Name of the container.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `cosmosDatabases.containers.paths`
+
+List of paths using which data within the container can be partitioned. For kind=MultiHash it can be up to 3. For anything else it needs to be exactly 1.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `cosmosDatabases.containers.analyticalStorageTtl`
+
+Default to 0. Indicates how long data should be retained in the analytical store, for a container. Analytical store is enabled when ATTL is set with a value other than 0. If the value is set to -1, the analytical store retains all historical data, irrespective of the retention of the data in the transactional store.
+
+- Required: No
+- Type: int
+
+### Parameter: `cosmosDatabases.containers.autoscaleSettingsMaxThroughput`
+
+Specifies the Autoscale settings and represents maximum throughput, the resource can scale up to. The autoscale throughput should have valid throughput values between 1000 and 1000000 inclusive in increments of 1000. If value is set to null, then autoscale will be disabled. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level.
+
+- Required: No
+- Type: int
+- MaxValue: 1000000
+
+### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy`
+
+The conflict resolution policy for the container. Conflicts and conflict resolution policies are applicable if the Azure Cosmos DB account is configured with multiple write regions.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`mode`](#parameter-cosmosdatabasescontainersconflictresolutionpolicymode) | string | Indicates the conflict resolution mode. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`conflictResolutionPath`](#parameter-cosmosdatabasescontainersconflictresolutionpolicyconflictresolutionpath) | string | The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'. |
+| [`conflictResolutionProcedure`](#parameter-cosmosdatabasescontainersconflictresolutionpolicyconflictresolutionprocedure) | string | The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'. |
+
+### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy.mode`
+
+Indicates the conflict resolution mode.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Custom'
+    'LastWriterWins'
+  ]
+  ```
+
+### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy.conflictResolutionPath`
+
+The conflict resolution path in the case of LastWriterWins mode. Required if `mode` is set to 'LastWriterWins'.
+
+- Required: No
+- Type: string
+
+### Parameter: `cosmosDatabases.containers.conflictResolutionPolicy.conflictResolutionProcedure`
+
+The procedure to resolve conflicts in the case of custom mode. Required if `mode` is set to 'Custom'.
+
+- Required: No
+- Type: string
+
+### Parameter: `cosmosDatabases.containers.defaultTtl`
+
+Default to -1. Default time to live (in seconds). With Time to Live or TTL, Azure Cosmos DB provides the ability to delete items automatically from a container after a certain time period. If the value is set to "-1", it is equal to infinity, and items don't expire by default.
+
+- Required: No
+- Type: int
+- MinValue: -1
+- MaxValue: 2147483647
+
+### Parameter: `cosmosDatabases.containers.indexingPolicy`
+
+Indexing policy of the container.
+
+- Required: No
+- Type: object
+
+### Parameter: `cosmosDatabases.containers.kind`
+
+Default to Hash. Indicates the kind of algorithm used for partitioning.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Hash'
+    'MultiHash'
+  ]
+  ```
+
+### Parameter: `cosmosDatabases.containers.throughput`
+
+Default to 400. Request Units per second. Will be ignored if autoscaleSettingsMaxThroughput is used.
+
+- Required: No
+- Type: int
+
+### Parameter: `cosmosDatabases.containers.uniqueKeyPolicyKeys`
+
+The unique key policy configuration containing a list of unique keys that enforces uniqueness constraint on documents in the collection in the Azure Cosmos DB service.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`paths`](#parameter-cosmosdatabasescontainersuniquekeypolicykeyspaths) | array | List of paths must be unique for each document in the Azure Cosmos DB service. |
+
+### Parameter: `cosmosDatabases.containers.uniqueKeyPolicyKeys.paths`
+
+List of paths must be unique for each document in the Azure Cosmos DB service.
+
+- Required: Yes
+- Type: array
+
+### Parameter: `cosmosDatabases.containers.version`
+
+Default to 1 for Hash and 2 for MultiHash - 1 is not allowed for MultiHash. Version of the partition key definition.
+
+- Required: No
+- Type: int
+- Allowed:
+  ```Bicep
+  [
+    1
+    2
+  ]
+  ```
+
+### Parameter: `cosmosDatabases.throughput`
+
+Default to 400. Request units per second. Will be ignored if autoscaleSettingsMaxThroughput is used. Setting throughput at the database level is only recommended for development/test or when workload across all containers in the shared throughput database is uniform. For best performance for large production workloads, it is recommended to set dedicated throughput (autoscale or manual) at the container level and not at the database level.
+
+- Required: No
+- Type: int
+
 ### Parameter: `enableTelemetry`
 
 Enable/Disable usage telemetry for module.
@@ -1516,6 +1578,14 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `location`
+
+Location for all Resources.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `networkAcls`
 
@@ -1530,6 +1600,22 @@ A collection of rules governing the accessibility from specific network location
       defaultAction: 'Deny'
   }
   ```
+
+### Parameter: `tags`
+
+Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.
+
+- Required: No
+- Type: object
+- Default: `{}`
+
+### Parameter: `userObjectId`
+
+Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.
+
+- Required: No
+- Type: string
+- Default: `[deployer().objectId]`
 
 ### Parameter: `vmAdminPasswordOrKey`
 
