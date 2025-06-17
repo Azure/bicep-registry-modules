@@ -174,6 +174,13 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   tags: tags
 }
 
+var arcNodeResourceIds = [
+  for (nodeName, index) in deploymentSettings!.clusterNodeNames: resourceId(
+    'Microsoft.HybridCompute/machines',
+    nodeName
+  )
+]
+
 module secrets './secrets.bicep' = if (useSharedKeyVault) {
   name: '${uniqueString(deployment().name, location)}-secrets'
   scope: resourceGroup(
@@ -202,7 +209,7 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     witnessStorageAccountResourceGroup: witnessStorageAccountResourceGroup ?? resourceGroup().name
     witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
     hciResourceProviderObjectId: hciResourceProviderObjectId
-    clusterNodeNames: deploymentSettings!.clusterNodeNames
+    arcNodeResourceIds: arcNodeResourceIds
   }
 }
 

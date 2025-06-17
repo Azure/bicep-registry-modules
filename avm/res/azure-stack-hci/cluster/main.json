@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "14716124869200830906"
+      "version": "0.35.1.17967",
+      "templateHash": "1012982579487101690"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -787,6 +787,11 @@
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
         "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      },
+      {
+        "name": "arcNodeResourceIds",
+        "count": "[length(parameters('deploymentSettings').clusterNodeNames)]",
+        "input": "[resourceId('Microsoft.HybridCompute/machines', parameters('deploymentSettings').clusterNodeNames[copyIndex('arcNodeResourceIds')])]"
       }
     ],
     "$fxv#0": "@description('Optional. The cluster deployment operations to execute. Defaults to \"[Validate, Deploy]\".')\n@allowed([\n  'Deploy'\n  'Validate'\n])\nparam deploymentOperations string[] = ['Validate', 'Deploy']\n\n@description('Required. The deployment settings of the cluster.')\nparam deploymentSettings deploymentSettingsType\n\n@description('Optional. Specify whether to use the shared key vault for the HCI cluster.')\nparam useSharedKeyVault bool = true\n\n@description('Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the \\'Microsoft.AzureStackHCI\\' provider was registered in the subscription.')\n@secure()\nparam hciResourceProviderObjectId string\n\nparam clusterName string\nparam cloudId string\n\n// if deployment operations requested, validation must be performed first so we reverse sort the array\nvar sortedDeploymentOperations = (!empty(deploymentOperations)) ? sort(deploymentOperations, (a, b) => a > b) : []\n\n@batchSize(1)\nmodule deploymentSetting '../deployment-setting/main.bicep' = [\n  for deploymentOperation in sortedDeploymentOperations: if (!empty(deploymentOperation) && !empty(deploymentSettings)) {\n    name: 'deploymentSettings-${deploymentOperation}'\n    params: {\n      cloudId: useSharedKeyVault ? cloudId : null\n      clusterName: clusterName\n      deploymentMode: deploymentOperation\n      clusterNodeNames: deploymentSettings!.clusterNodeNames\n      clusterWitnessStorageAccountName: deploymentSettings!.clusterWitnessStorageAccountName\n      customLocationName: deploymentSettings!.customLocationName\n      defaultGateway: deploymentSettings!.defaultGateway\n      deploymentPrefix: deploymentSettings!.deploymentPrefix\n      dnsServers: deploymentSettings!.dnsServers\n      domainFqdn: deploymentSettings!.domainFqdn\n      domainOUPath: deploymentSettings!.domainOUPath\n      endingIPAddress: deploymentSettings!.endingIPAddress\n      keyVaultName: deploymentSettings!.keyVaultName\n      networkIntents: [\n        for intent in deploymentSettings.networkIntents: {\n          ...intent\n          qosPolicyOverrides: {\n            bandwidthPercentage_SMB: intent.qosPolicyOverrides.bandwidthPercentageSMB\n            priorityValue8021Action_Cluster: intent.qosPolicyOverrides.priorityValue8021ActionCluster\n            priorityValue8021Action_SMB: intent.qosPolicyOverrides.priorityValue8021ActionSMB\n          }\n        }\n      ]\n      startingIPAddress: deploymentSettings!.startingIPAddress\n      storageConnectivitySwitchless: deploymentSettings!.storageConnectivitySwitchless\n      storageNetworks: deploymentSettings!.storageNetworks\n      subnetMask: deploymentSettings!.subnetMask\n      bitlockerBootVolume: deploymentSettings!.?bitlockerBootVolume\n      bitlockerDataVolumes: deploymentSettings!.?bitlockerDataVolumes\n      credentialGuardEnforced: deploymentSettings!.?credentialGuardEnforced\n      driftControlEnforced: deploymentSettings!.?driftControlEnforced\n      drtmProtection: deploymentSettings!.?drtmProtection\n      enableStorageAutoIp: deploymentSettings!.?enableStorageAutoIp\n      episodicDataUpload: deploymentSettings!.?episodicDataUpload\n      hvciProtection: deploymentSettings!.?hvciProtection\n      isEuropeanUnionLocation: deploymentSettings!.?isEuropeanUnionLocation\n      sideChannelMitigationEnforced: deploymentSettings!.?sideChannelMitigationEnforced\n      smbClusterEncryption: deploymentSettings!.?smbClusterEncryption\n      smbSigningEnforced: deploymentSettings!.?smbSigningEnforced\n      storageConfigurationMode: deploymentSettings!.?storageConfigurationMode\n      streamingDataClient: deploymentSettings!.?streamingDataClient\n      wdacEnforced: deploymentSettings!.?wdacEnforced\n      hciResourceProviderObjectId: hciResourceProviderObjectId\n    }\n  }\n]\n\nimport { networkIntentType, storageNetworksType } from 'br/public:avm/res/azure-stack-hci/cluster:0.1.6'\ntype deploymentSettingsType = {\n  @minLength(4)\n  @maxLength(8)\n  @description('Required. The prefix for the resource for the deployment. This value is used in key vault and storage account names in this template, as well as for the deploymentSettings.properties.deploymentConfiguration.scaleUnits.deploymentData.namingPrefix property which requires regex pattern: ^[a-zA-Z0-9-]{1,8}$.')\n  deploymentPrefix: string\n\n  @description('Required. Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2].')\n  clusterNodeNames: array\n\n  @description('Required. The domain name of the Active Directory Domain Services. Example: \"contoso.com\".')\n  domainFqdn: string\n\n  @description('Required. The ADDS OU path - ex \"OU=HCI,DC=contoso,DC=com\".')\n  domainOUPath: string\n\n  @description('Optional. The Hypervisor-protected Code Integrity setting.')\n  hvciProtection: bool?\n\n  @description('Optional. The hardware-dependent Secure Boot setting.')\n  drtmProtection: bool?\n\n  @description('Optional. When set to true, the security baseline is re-applied regularly.')\n  driftControlEnforced: bool?\n\n  @description('Optional. Enables the Credential Guard.')\n  credentialGuardEnforced: bool?\n\n  @description('Optional. When set to true, the SMB default instance requires sign in for the client and server services.')\n  smbSigningEnforced: bool?\n\n  @description('Optional. When set to true, cluster east-west traffic is encrypted.')\n  smbClusterEncryption: bool?\n\n  @description('Optional. When set to true, all the side channel mitigations are enabled.')\n  sideChannelMitigationEnforced: bool?\n\n  @description('Optional. When set to true, BitLocker XTS_AES 256-bit encryption is enabled for all data-at-rest on the OS volume of your Azure Stack HCI cluster. This setting is TPM-hardware dependent.')\n  bitlockerBootVolume: bool?\n\n  @description('Optional. When set to true, BitLocker XTS-AES 256-bit encryption is enabled for all data-at-rest on your Azure Stack HCI cluster shared volumes.')\n  bitlockerDataVolumes: bool?\n\n  @description('Optional. Limits the applications and the code that you can run on your Azure Stack HCI cluster.')\n  wdacEnforced: bool?\n\n  // cluster diagnostics and telemetry configuration\n  @description('Optional. The metrics data for deploying a HCI cluster.')\n  streamingDataClient: bool?\n\n  @description('Optional. The location data for deploying a HCI cluster.')\n  isEuropeanUnionLocation: bool?\n\n  @description('Optional. The diagnostic data for deploying a HCI cluster.')\n  episodicDataUpload: bool?\n\n  // storage configuration\n  @description('Optional. The storage volume configuration mode. See documentation for details.')\n  storageConfigurationMode: ('Express' | 'InfraOnly' | 'KeepStorage')?\n\n  // cluster network configuration details\n  @description('Required. The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0.')\n  subnetMask: string\n\n  @description('Required. The default gateway of the Management Network. Example: 192.168.0.1.')\n  defaultGateway: string\n\n  @description('Required. The starting IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs.')\n  startingIPAddress: string\n\n  @description('Required. The ending IP address for the Infrastructure Network IP pool. There must be at least 6 IPs between startingIPAddress and endingIPAddress and this pool should be not include the node IPs.')\n  endingIPAddress: string\n\n  @description('Required. The DNS servers accessible from the Management Network for the HCI cluster.')\n  dnsServers: string[]\n\n  @description('Required. An array of Network ATC Network Intent objects that define the Compute, Management, and Storage network configuration for the cluster.')\n  networkIntents: networkIntentType[]\n\n  @description('Required. Specify whether the Storage Network connectivity is switched or switchless.')\n  storageConnectivitySwitchless: bool\n\n  @description('Optional. Enable storage auto IP assignment. This should be true for most deployments except when deploying a three-node switchless cluster, in which case storage IPs should be configured before deployment and this value set to false.')\n  enableStorageAutoIp: bool?\n\n  @description('Required. An array of JSON objects that define the storage network configuration for the cluster. Each object should contain the adapterName, VLAN properties, and (optionally) IP configurations.')\n  storageNetworks: storageNetworksType[]\n\n  // other cluster configuration parameters\n  @description('Required. The name of the Custom Location associated with the Arc Resource Bridge for this cluster. This value should reflect the physical location and identifier of the HCI cluster. Example: cl-hci-den-clu01.')\n  customLocationName: string\n\n  @description('Required. The name of the storage account to be used as the witness for the HCI Windows Failover Cluster.')\n  clusterWitnessStorageAccountName: string\n\n  @description('Required. The name of the key vault to be used for storing secrets for the HCI cluster. This currently needs to be unique per HCI cluster.')\n  keyVaultName: string\n}\n",
@@ -1107,8 +1112,8 @@
           "hciResourceProviderObjectId": {
             "value": "[parameters('hciResourceProviderObjectId')]"
           },
-          "clusterNodeNames": {
-            "value": "[parameters('deploymentSettings').clusterNodeNames]"
+          "arcNodeResourceIds": {
+            "value": "[variables('arcNodeResourceIds')]"
           }
         },
         "template": {
@@ -1118,8 +1123,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "6769080034727137466"
+              "version": "0.35.1.17967",
+              "templateHash": "4025948028921602725"
             }
           },
           "parameters": {
@@ -1257,21 +1262,14 @@
                 "description": "Required. The service principal object ID of the Azure Stack HCI Resource Provider in this tenant. Can be fetched via `Get-AzADServicePrincipal -ApplicationId 1412d89f-b8a8-4111-b4fd-e82905cbd85d` after the 'Microsoft.AzureStackHCI' provider was registered in the subscription."
               }
             },
-            "clusterNodeNames": {
+            "arcNodeResourceIds": {
               "type": "array",
               "metadata": {
-                "description": "Required. Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2]."
+                "description": "Required. Resource ids of the cluster node Arc Machine resources. These are the id of the Arc Machine resources created when the new HCI nodes were Arc initialized."
               }
             }
           },
           "variables": {
-            "copy": [
-              {
-                "name": "arcNodeResourceIds",
-                "count": "[length(parameters('clusterNodeNames'))]",
-                "input": "[resourceId('Microsoft.HybridCompute/machines', parameters('clusterNodeNames')[copyIndex('arcNodeResourceIds')])]"
-              }
-            ],
             "keyVaultSecretUserRoleID": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]"
           },
           "resources": {
@@ -1292,15 +1290,15 @@
             "KeyVaultSecretsUserPermissions": {
               "copy": {
                 "name": "KeyVaultSecretsUserPermissions",
-                "count": "[length(variables('arcNodeResourceIds'))]"
+                "count": "[length(parameters('arcNodeResourceIds'))]"
               },
               "type": "Microsoft.Authorization/roleAssignments",
               "apiVersion": "2022-04-01",
               "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyVaultName'))]",
-              "name": "[guid(subscription().subscriptionId, parameters('hciResourceProviderObjectId'), 'keyVaultSecretUser', variables('arcNodeResourceIds')[copyIndex()], resourceGroup().id)]",
+              "name": "[guid(subscription().subscriptionId, parameters('hciResourceProviderObjectId'), 'keyVaultSecretUser', parameters('arcNodeResourceIds')[copyIndex()], resourceGroup().id)]",
               "properties": {
                 "roleDefinitionId": "[variables('keyVaultSecretUserRoleID')]",
-                "principalId": "[reference(variables('arcNodeResourceIds')[copyIndex()], '2023-10-03-preview', 'Full').identity.principalId]",
+                "principalId": "[reference(parameters('arcNodeResourceIds')[copyIndex()], '2023-10-03-preview', 'Full').identity.principalId]",
                 "principalType": "ServicePrincipal",
                 "description": "Created by Azure Stack HCI deployment template"
               }
