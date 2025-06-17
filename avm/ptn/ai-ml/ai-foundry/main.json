@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7450630699758892171"
+      "templateHash": "5696749492361343580"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -1099,7 +1099,7 @@
       "type": "string",
       "defaultValue": "Standard_DS4_v2",
       "metadata": {
-        "description": "Optional.Specifies the size of the jump-box Virtual Machine."
+        "description": "Optional. Specifies the size of the jump-box Virtual Machine."
       }
     },
     "vmAdminUsername": {
@@ -1108,7 +1108,7 @@
       "minLength": 3,
       "maxLength": 20,
       "metadata": {
-        "description": "Optional.Specifies the name of the administrator account for the jump-box virtual machine. Defaults to \"[name]vmuser\". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion."
+        "description": "Optional. Specifies the name of the administrator account for the jump-box virtual machine. Defaults to \"[name]vmuser\". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion."
       }
     },
     "vmAdminPasswordOrKey": {
@@ -52977,6 +52977,13 @@
     }
   },
   "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the deployed Azure Resource Group."
+      },
+      "value": "[resourceGroup().name]"
+    },
     "azureKeyVaultName": {
       "type": "string",
       "metadata": {
@@ -53060,13 +53067,6 @@
         "description": "Name of the deployed Azure Cosmos DB account."
       },
       "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('cosmosDb').outputs.cosmosDBname.value, '')]"
-    },
-    "azureResourceGroupName": {
-      "type": "string",
-      "metadata": {
-        "description": "Name of the deployed Azure Resource Group."
-      },
-      "value": "[resourceGroup().name]"
     }
   }
 }

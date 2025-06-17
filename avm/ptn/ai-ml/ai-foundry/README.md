@@ -362,6 +362,8 @@ param location = '<location>'
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
 | [`userObjectId`](#parameter-userobjectid) | string | Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user. |
 | [`vmAdminPasswordOrKey`](#parameter-vmadminpasswordorkey) | securestring | Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters. |
+| [`vmAdminUsername`](#parameter-vmadminusername) | string | Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. |
+| [`vmSize`](#parameter-vmsize) | string | Specifies the size of the jump-box Virtual Machine. |
 
 ### Parameter: `aiFoundryType`
 
@@ -1624,6 +1626,22 @@ Specifies the password for the jump-box virtual machine. This is necessary to pr
 - Required: Yes
 - Type: securestring
 
+### Parameter: `vmAdminUsername`
+
+Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion.
+
+- Required: No
+- Type: string
+- Default: `[format('{0}vmuser', parameters('name'))]`
+
+### Parameter: `vmSize`
+
+Specifies the size of the jump-box Virtual Machine.
+
+- Required: No
+- Type: string
+- Default: `'Standard_DS4_v2'`
+
 ## Outputs
 
 | Output | Type | Description |
@@ -1635,12 +1653,12 @@ Specifies the password for the jump-box virtual machine. This is necessary to pr
 | `azureContainerRegistryName` | string | Name of the deployed Azure Container Registry. |
 | `azureCosmosAccountName` | string | Name of the deployed Azure Cosmos DB account. |
 | `azureKeyVaultName` | string | Name of the deployed Azure Key Vault. |
-| `azureResourceGroupName` | string | Name of the deployed Azure Resource Group. |
 | `azureStorageAccountName` | string | Name of the deployed Azure Storage Account. |
 | `azureVirtualNetworkName` | string | Name of the deployed Azure Virtual Network. |
 | `azureVirtualNetworkSubnetName` | string | Name of the deployed Azure Virtual Network Subnet. |
 | `azureVmResourceId` | string | Resource ID of the deployed Azure VM. |
 | `azureVmUsername` | string | Username for the deployed Azure VM. |
+| `resourceGroupName` | string | Name of the deployed Azure Resource Group. |
 
 ## Cross-referenced modules
 
