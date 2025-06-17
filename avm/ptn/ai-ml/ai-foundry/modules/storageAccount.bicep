@@ -61,7 +61,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     tags: tags
     publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     accessTier: 'Hot'
-    allowBlobPublicAccess: false
+    allowBlobPublicAccess: toLower(aiFoundryType) != 'standardprivate'
     allowSharedKeyAccess: false
     allowCrossTenantReplication: false
     blobServices: {

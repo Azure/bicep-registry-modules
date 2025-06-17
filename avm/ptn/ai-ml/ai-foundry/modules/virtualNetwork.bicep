@@ -375,7 +375,7 @@ resource natGateway 'Microsoft.Network/natGateways@2024-03-01' = {
 }
 
 // Azure Bastion Host
-resource bastionPublicIpAddress 'Microsoft.Network/publicIPAddresses@2024-03-01' = if (bastionHostEnabled) {
+resource bastionPublicIpAddress 'Microsoft.Network/publicIPAddresses@2024-07-01' = if (bastionHostEnabled) {
   name: bastionPublicIpAddressName
   location: location
   tags: tags
