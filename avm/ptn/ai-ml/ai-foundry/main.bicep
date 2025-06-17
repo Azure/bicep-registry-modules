@@ -6,7 +6,7 @@ targetScope = 'resourceGroup'
 @description('Required. Name of the resource to create.')
 param name string
 
-@description('Required. Location for all Resources.')
+@description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -15,10 +15,10 @@ param enableTelemetry bool = true
 @description('Optional. Specifies the connections to be created for the Azure AI Hub workspace. The connections are used to connect to other Azure resources and services.')
 param connections connectionType[] = []
 
-@description('Required. Specifies the OpenAI deployments to create.')
+@description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentsType[] = []
 
-@description('Required. List of Cosmos DB databases to create.')
+@description('Optional. List of Cosmos DB databases to create.')
 param cosmosDatabases sqlDatabaseType[] = []
 
 @description('Optional.Specifies the size of the jump-box Virtual Machine.')
@@ -35,10 +35,10 @@ param vmAdminUsername string = '${name}vmuser'
 @secure()
 param vmAdminPasswordOrKey string
 
-@description('Required. Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.')
+@description('Optional. Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.')
 param tags object = {}
 
-@description('Required. Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
+@description('Optional. Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user.')
 param userObjectId string = deployer().objectId
 
 @description('Optional. IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed.')

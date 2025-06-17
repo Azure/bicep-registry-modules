@@ -18,10 +18,10 @@ param userObjectId string
 @description('Optional. Tags to be applied to the resources.')
 param tags object = {}
 
-@description('Required. Resource ID of the virtual network to link the private DNS zones. Conditional: Only required if networkIsolation is true.')
+@description('Required. Resource ID of the virtual network to link the private DNS zones only required if networkIsolation is true.')
 param virtualNetworkResourceId string
 
-@description('Required. Resource ID of the subnet for the private endpoint. Conditional: Only required if networkIsolation is true.')
+@description('Required. Resource ID of the subnet for the private endpoint only required if networkIsolation is true.')
 param virtualNetworkSubnetResourceId string
 
 @description('Optional. Specifies the OpenAI deployments to create.')
