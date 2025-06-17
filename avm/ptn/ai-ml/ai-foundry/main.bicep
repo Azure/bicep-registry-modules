@@ -153,6 +153,7 @@ module keyvault 'modules/keyvault.bicep' = if (toLower(aiFoundryType) != 'basic'
   name: take('${name}-keyvault-deployment', 64)
   params: {
     name: 'kv${name}${resourceToken}'
+    aiFoundryType: aiFoundryType
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
@@ -166,6 +167,7 @@ module containerRegistry 'modules/containerRegistry.bicep' = if (toLower(aiFound
   name: take('${name}-container-registry-deployment', 64)
   params: {
     name: 'cr${name}${resourceToken}'
+    aiFoundryType: aiFoundryType
     location: location
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
@@ -177,6 +179,7 @@ module containerRegistry 'modules/containerRegistry.bicep' = if (toLower(aiFound
 module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
   name: '${name}-cognitive-services-deployment'
   params: {
+    aiFoundryType: aiFoundryType
     name: name
     resourceToken: resourceToken
     location: location
