@@ -1,17 +1,17 @@
 @description('Required. The name of the provisioned cluster instance.')
-param name string
+param name string = 'iactemp20250617a'
 
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
 @description('Required. The name of the key vault.')
-param keyVaultName string
+param keyVaultName string = 'iac-bicep-kv-qa'
 
 @description('Optional. The name of the secret in the key vault that contains the SSH private key PEM.')
-param sshPrivateKeyPemSecretName string = 'AksArcAgentSshPrivateKeyPem'
+param sshPrivateKeyPemSecretName string = 'iactemp20250617a-AksArcAgentSshPrivateKeyPem'
 
 @description('Optional. The name of the secret in the key vault that contains the SSH public key.')
-param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
+param sshPublicKeySecretName string = 'iactemp20250617a-AksArcAgentSshPublicKey'
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -52,6 +52,20 @@ resource KVARole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
+var readJsonRaw = loadTextContent('./nested/read.json')
+var readJson = replace(
+  replace(replace(readJsonRaw, '{{keyVaultName}}', keyVaultName), '{{publicKeySecretName}}', sshPublicKeySecretName),
+  '{{privateKeySecretName}}',
+  sshPrivateKeyPemSecretName
+)
+
+var writeJsonRaw = loadTextContent('./nested/write.json')
+var writeJson = replace(
+  replace(replace(writeJsonRaw, '{{keyVaultName}}', keyVaultName), '{{publicKeySecretName}}', sshPublicKeySecretName),
+  '{{privateKeySecretName}}',
+  sshPrivateKeyPemSecretName
+)
+
 resource newSshKey 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'newSshKey-${name}'
   location: location
@@ -70,7 +84,7 @@ resource newSshKey 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   properties: {
     azCliVersion: '2.71.0'
     scriptContent: loadTextContent('./New-SshKey.sh')
-    arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(loadTextContent('./nested/read.json'))}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(loadTextContent('./nested/write.json'))}" "${subscription().subscriptionId}" "${resourceGroup().name}" "${name}" "${keyVaultName}" "${sshPrivateKeyPemSecretName}" "${sshPublicKeySecretName}"'
+    arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(loadTextContent('./nested/read.json'))}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(loadTextContent('./nested/write.json'))}" "${subscription().subscriptionId}" "${resourceGroup().name}" "${name}"'
     timeout: 'PT30M'
     retentionInterval: 'PT60M'
     cleanupPreference: 'OnExpiration'
