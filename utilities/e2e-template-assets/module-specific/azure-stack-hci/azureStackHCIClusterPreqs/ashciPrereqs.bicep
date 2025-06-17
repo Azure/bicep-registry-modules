@@ -84,7 +84,7 @@ resource diagnosticStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01'
 
 resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' = {
   name: clusterWitnessStorageAccountName
-  location: 'westus3'
+  location: location
   sku: {
     name: storageAccountType
   }
