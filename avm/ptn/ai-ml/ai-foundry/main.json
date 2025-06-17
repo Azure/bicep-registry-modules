@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2507908185987053663"
+      "templateHash": "5179360952859993770"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -1290,7 +1290,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "11838195417105596706"
+              "templateHash": "18328732762834860600"
             }
           },
           "parameters": {
@@ -1790,7 +1790,7 @@
               "apiVersion": "2024-07-01",
               "name": "[parameters('bastionPublicIpAddressName')]",
               "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
+              "tags": "[union(parameters('tags'), createObject('resource-usage', 'azure-bastion'))]",
               "sku": {
                 "name": "Standard"
               },
@@ -26979,7 +26979,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "11180098358675751750"
+              "templateHash": "13096569531461705009"
             }
           },
           "definitions": {
@@ -33484,6 +33484,10 @@
                     "value": {
                       "deleteRetentionPolicyEnabled": true,
                       "deleteRetentionPolicyDays": 7,
+                      "containerDeleteRetentionPolicy": {
+                        "enabled": true,
+                        "days": 7
+                      },
                       "containers": [
                         {
                           "name": "[format('{0}projUploads', variables('nameFormatted'))]",
