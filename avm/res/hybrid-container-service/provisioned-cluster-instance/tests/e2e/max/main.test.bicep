@@ -1,14 +1,14 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Using large parameter set'
+metadata description = 'This instance deploys the module with most of its features enabled.'
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 param resourceGroupName string = 'dep-${namePrefix}-hybridcontainerservice.provisionedclusterinstances-${serviceShort}-rg'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'hcpcimin'
+param serviceShort string = 'hcpcimax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -199,6 +199,11 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
     dnsServers: ['172.20.0.1']
     routeName: 'default'
     vlanId: null
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
   }
 }
 
@@ -219,12 +224,16 @@ module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, enforcedLocation)}-aks-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
+    location: enforcedLocation
     customLocationResourceId: customLocation.id
-    cloudProviderProfile: {
-      infraNetworkProfile: {
-        vnetSubnetIds: [
-          logicalNetwork.outputs.resourceId
-        ]
+    enableTelemetry: true
+    kubernetesVersion: '1.29.4'
+    storageProfile: {
+      nfsCsiDriver: {
+        enabled: true
+      }
+      smbCsiDriver: {
+        enabled: true
       }
     }
     linuxProfile: {
@@ -235,6 +244,50 @@ module testDeployment '../../../main.bicep' = {
           }
         ]
       }
+    }
+    licenseProfile: { azureHybridBenefit: 'False' }
+    cloudProviderProfile: {
+      infraNetworkProfile: {
+        vnetSubnetIds: [
+          logicalNetwork.outputs.resourceId
+        ]
+      }
+    }
+    controlPlane: {
+      count: 1
+      vmSize: 'Standard_A4_v2'
+      controlPlaneEndpoint: {
+        hostIP: null
+      }
+    }
+    agentPoolProfiles: [
+      {
+        name: 'nodepool1'
+        count: 2
+        enableAutoScaling: false
+        maxCount: 5
+        minCount: 1
+        maxPods: 110
+        nodeLabels: {}
+        nodeTaints: []
+        osSKU: 'CBLMariner'
+        osType: 'Linux'
+        vmSize: 'Standard_A4_v2'
+      }
+    ]
+    arcAgentProfile: {
+      agentAutoUpgrade: 'Enabled'
+    }
+    oidcIssuerProfile: { enabled: false }
+    securityProfile: {
+      workloadIdentity: {
+        enabled: false
+      }
+    }
+    connectClustersTags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
     }
   }
 }

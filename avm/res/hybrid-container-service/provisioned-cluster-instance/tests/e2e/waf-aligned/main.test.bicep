@@ -55,7 +55,7 @@ module nestedDependencies '../../../../../../../utilities/e2e-template-assets/mo
   name: '${uniqueString(deployment().name, enforcedLocation)}-test-nestedDependencies-${serviceShort}'
   scope: resourceGroup
   params: {
-    clusterName: '${namePrefix}${serviceShort}01'
+    clusterName: '${namePrefix}${serviceShort}1'
     clusterWitnessStorageAccountName: 'dep${namePrefix}wst${serviceShort}'
     keyVaultDiagnosticStorageAccountName: 'dep${namePrefix}st${serviceShort}'
     keyVaultName: 'dep-${namePrefix}-kv-${serviceShort}'
@@ -190,7 +190,7 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
     name: '${namePrefix}${serviceShort}logicalnetwork'
     location: enforcedLocation
     customLocationResourceId: customLocation.id
-    vmSwitchName: azlocal.outputs.vSwitchName
+    vmSwitchName: 'ConvergedSwitch(management)'
     ipAllocationMethod: 'Static'
     addressPrefix: '172.20.0.1/24'
     startingAddress: '172.20.0.171'
@@ -207,13 +207,24 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
   }
 }
 
+module secrets '../scripts/secrets.bicep' = {
+  name: '${uniqueString(deployment().name, enforcedLocation)}-secrets'
+  scope: resourceGroup
+  params: {
+    keyVaultName: nestedDependencies.outputs.keyVaultName
+    name: '${namePrefix}${serviceShort}secrets'
+    location: enforcedLocation
+    sshPrivateKeyPemSecretName: sshPrivateKeyPemSecretName
+    sshPublicKeySecretName: sshPublicKeySecretName
+  }
+}
+
 module testDeployment '../../../main.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-aks-${serviceShort}'
   params: {
     name: '${namePrefix}${serviceShort}001'
     customLocationResourceId: customLocation.id
-    keyVaultName: nestedDependencies.outputs.keyVaultName
     cloudProviderProfile: {
       infraNetworkProfile: {
         vnetSubnetIds: [
@@ -221,7 +232,15 @@ module testDeployment '../../../main.bicep' = {
         ]
       }
     }
-    linuxProfile: null
+    linuxProfile: {
+      ssh: {
+        publicKeys: [
+          {
+            keyData: secrets.outputs.sshPublicKeyPemValue
+          }
+        ]
+      }
+    }
     controlPlane: {
       count: 1
       vmSize: 'Standard_A4_v2'
