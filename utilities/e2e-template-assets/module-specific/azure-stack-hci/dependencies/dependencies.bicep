@@ -58,7 +58,7 @@ module hciHostDeployment '../azureStackHCIHost/hciHostDeploymentWithImage.bicep'
     hostVMSize: 'Standard_E32s_v5'
     localAdminPassword: localAdminPassword
     domainAdminPassword: domainAdminPassword
-    location: location
+    location: 'westus3'
     HCIHostVirtualMachineScaleSetName: HCIHostVirtualMachineScaleSetName
     maintenanceConfigurationAssignmentName: maintenanceConfigurationAssignmentName
     maintenanceConfigurationName: maintenanceConfigurationName
