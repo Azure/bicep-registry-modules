@@ -390,5 +390,23 @@ resource virtualMachineAdministratorLoginUserRoleAssignment 'Microsoft.Authoriza
   }
 }
 
+resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
+  name: 'myMaintenanceConfig'
+  location: location
+  properties: {
+    namespace: 'Microsoft.Compute'
+    extensionProperties: {}
+  }
+}
+
+resource config 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
+  name: 'maintenanceConfigurationAssignment'
+  location: location
+  scope: virtualMachine
+  properties: {
+    maintenanceConfigurationId: maintenanceConfiguration.id
+  }
+}
+
 output name string = virtualMachine.name
 output id string = virtualMachine.id
