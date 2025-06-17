@@ -1,12 +1,6 @@
 #!/bin/bash
 set -e
 
-# Check arguments
-if [[ $# -ne 11 ]]; then
-  echo "Usage: $0 <base64 of reflect.bicep> <base64 of read.bicep> <base64 of read.json> <base64 of write.bicep> <base64 of write.json> <etc.>"
-  exit 1
-fi
-
 REFLECT_BICEP_B64="$1"
 READ_BICEP_B64="$2"
 READ_JSON_B64="$3"
@@ -15,9 +9,7 @@ WRITE_JSON_B64="$5"
 SUBSCRIPTION_ID="$6"
 RESOURCE_GROUP_NAME="$7"
 CLUSTER_NAME="$8"
-KEY_VAULT_NAME="$9"
-PRIVATE_KEY_SECRET_NAME="${10}"
-PUBLIC_KEY_SECRET_NAME="${11}"
+read -r KEY_VAULT_NAME PRIVATE_KEY_SECRET_NAME PUBLIC_KEY_SECRET_NAME <<< "$9"
 
 # Decode base64-encoded content to temp files
 TEMP_DIR=$(mktemp -d)
