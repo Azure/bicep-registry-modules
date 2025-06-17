@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5179360952859993770"
+      "templateHash": "12095211677201407680"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -1055,7 +1055,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Required. Location for all Resources."
+        "description": "Optional. Location for all Resources."
       }
     },
     "enableTelemetry": {
@@ -1082,7 +1082,7 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Required. Specifies the OpenAI deployments to create."
+        "description": "Optional. Specifies the OpenAI deployments to create."
       }
     },
     "cosmosDatabases": {
@@ -1092,7 +1092,7 @@
       },
       "defaultValue": [],
       "metadata": {
-        "description": "Required. List of Cosmos DB databases to create."
+        "description": "Optional. List of Cosmos DB databases to create."
       }
     },
     "vmSize": {
@@ -1123,14 +1123,14 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "Required. Specifies the resource tags for all the resources. Tag \"azd-env-name\" is automatically added to all resources."
+        "description": "Optional. Specifies the resource tags for all the resources. Tag \"azd-env-name\" is automatically added to all resources."
       }
     },
     "userObjectId": {
       "type": "string",
       "defaultValue": "[deployer().objectId]",
       "metadata": {
-        "description": "Required. Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user."
+        "description": "Optional. Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user."
       }
     },
     "allowedIpAddress": {
@@ -14948,7 +14948,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "515591527308276361"
+              "templateHash": "9703439282560837665"
             }
           },
           "definitions": {
@@ -15096,13 +15096,13 @@
             "virtualNetworkResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Required. Resource ID of the virtual network to link the private DNS zones. Conditional: Only required if networkIsolation is true."
+                "description": "Required. Resource ID of the virtual network to link the private DNS zones only required if networkIsolation is true."
               }
             },
             "virtualNetworkSubnetResourceId": {
               "type": "string",
               "metadata": {
-                "description": "Required. Resource ID of the subnet for the private endpoint. Conditional: Only required if networkIsolation is true."
+                "description": "Required. Resource ID of the subnet for the private endpoint only required if networkIsolation is true."
               }
             },
             "aiModelDeployments": {
