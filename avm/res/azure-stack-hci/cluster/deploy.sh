@@ -135,7 +135,29 @@ echo "============================================"
 cat "$PARAM_FILE" | jq '.'
 echo "============================================"
 
-# TODO: check if deployment-settings exists or failed
+# Check if deployment-settings resource exists
+echo "Checking if deployment-settings resource already exists..."
+
+# Construct the resource ID for deployment-settings
+DEPLOYMENT_SETTINGS_RESOURCE_ID="/subscriptions/$SUBSCRIPTION_ID/resourceGroups/$RESOURCE_GROUP_NAME/providers/Microsoft.AzureStackHCI/clusters/$CLUSTER_NAME/deploymentSettings/default"
+
+# Check if the deployment-settings resource exists
+az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --output none 2>/dev/null
+
+RESOURCE_EXISTS=$?
+
+if [ $RESOURCE_EXISTS -eq 0 ]; then
+    echo "✅ Deployment-settings resource already exists. Skipping deployment."
+    echo "Resource ID: $DEPLOYMENT_SETTINGS_RESOURCE_ID"
+
+    # Show existing resource details
+    echo "Existing deployment-settings details:"
+    az resource show --ids "$DEPLOYMENT_SETTINGS_RESOURCE_ID" --query "{name: name, provisioningState: properties.provisioningState, deploymentMode: properties.deploymentMode}" --output table
+
+    exit 0
+else
+    echo "Deployment-settings resource does not exist. Proceeding with deployment..."
+fi
 
 # Execute Bicep deployment
 DEPLOYMENT_NAME="hci-deployment-$(date +%s)"
