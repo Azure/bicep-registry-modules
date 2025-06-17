@@ -1,7 +1,7 @@
-@description('Name of the Cognitive Services resource. Must be unique in the resource group.')
+@description('Required. Name of the Cognitive Services resource. Must be unique in the resource group.')
 param name string
 
-@description('The location of the Cognitive Services resource.')
+@description('Required. The location of the Cognitive Services resource.')
 param location string
 
 @description('Required. Kind of the Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')

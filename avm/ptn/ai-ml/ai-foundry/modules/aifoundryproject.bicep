@@ -11,7 +11,7 @@ param location string
   'StandardPublic'
   'StandardPrivate'
 ])
-@description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
+@description('Required. Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
 param aiFoundryType string
 
 @description('Name of the CosmosDB Resource')
@@ -21,7 +21,7 @@ param cosmosDBName string
 param storageName string
 
 @description('Foundry Account Name')
-param aiServicesName string
+param aiServicesName strings
 
 @description('Azure Search Service Name')
 param nameFormatted string

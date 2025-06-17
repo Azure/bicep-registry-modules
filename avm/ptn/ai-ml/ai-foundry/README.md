@@ -96,14 +96,11 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/ai-ml/ai-foundry:<version>`.
 
-- [ai-foundry](#example-1-ai-foundry)
-- [ai-foundry](#example-2-ai-foundry)
-- [ai-foundry](#example-3-ai-foundry)
+- [Defaults](#example-1-defaults)
+- [Min](#example-2-min)
+- [Waf-Aligned](#example-3-waf-aligned)
 
-### Example 1: _ai-foundry_
-
-Creates an AI Foundry account and project with Basic services.
-
+### Example 1: _Defaults_
 
 <details>
 
@@ -179,10 +176,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _ai-foundry_
-
-Creates an AI Foundry account and project with Basic services.
-
+### Example 2: _Min_
 
 <details>
 
@@ -258,10 +252,7 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 3: _ai-foundry_
-
-Creates an AI Foundry account and project with Standard Agent Services in a network.
-
+### Example 3: _Waf-Aligned_
 
 <details>
 

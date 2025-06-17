@@ -31,7 +31,7 @@ param vmAdminUsername string = '${name}vmuser'
 
 @minLength(4)
 @maxLength(70)
-@description('Optional. Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters.')
+@description('Required. Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters.')
 @secure()
 param vmAdminPasswordOrKey string
 
@@ -55,7 +55,7 @@ var networkIsolation = toLower(aiFoundryType) == 'standardprivate'
 @description('Required. Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
 param aiFoundryType string
 
-@description('Optional. Whether to include Azure AI Content Safety in the deployment.')
+@description('Required. Whether to include Azure AI Content Safety in the deployment.')
 param contentSafetyEnabled bool
 
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
