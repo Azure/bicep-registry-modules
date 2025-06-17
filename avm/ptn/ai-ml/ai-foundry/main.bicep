@@ -70,7 +70,7 @@ param networkAcls object = {
   // ]
 }
 
-@description('Required. Name of the AI Foundry project')
+@description('Optional. Name of the AI Foundry project')
 param projectName string = '${name}proj'
 
 var defaultTags = {
