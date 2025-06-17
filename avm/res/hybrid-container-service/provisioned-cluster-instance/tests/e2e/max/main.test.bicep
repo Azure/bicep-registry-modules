@@ -44,7 +44,7 @@ param sshPrivateKeyPemSecretName string = 'AksArcAgentSshPrivateKeyPem'
 param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
 
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
-var enforcedLocation = 'southeastasia'
+var enforcedLocation = 'australiaeast'
 
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
