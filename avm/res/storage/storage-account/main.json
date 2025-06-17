@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "5108126869588736121"
+      "version": "0.36.1.42791",
+      "templateHash": "2020404639154869260"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -1117,7 +1117,7 @@
     },
     "enableHierarchicalNamespace": {
       "type": "bool",
-      "defaultValue": false,
+      "nullable": true,
       "metadata": {
         "description": "Conditional. If true, enables Hierarchical Namespace for the storage account. Required if enableSftp or enableNfsV3 is set to true."
       }
@@ -1359,7 +1359,7 @@
       },
       "identity": "[variables('identity')]",
       "tags": "[parameters('tags')]",
-      "properties": "[shallowMerge(createArray(createObject('allowSharedKeyAccess', parameters('allowSharedKeyAccess'), 'defaultToOAuthAuthentication', parameters('defaultToOAuthAuthentication'), 'allowCrossTenantReplication', parameters('allowCrossTenantReplication'), 'allowedCopyScope', parameters('allowedCopyScope'), 'customDomain', createObject('name', parameters('customDomainName'), 'useSubDomainName', parameters('customDomainUseSubDomainName')), 'dnsEndpointType', parameters('dnsEndpointType'), 'isLocalUserEnabled', parameters('isLocalUserEnabled'), 'encryption', union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject())), 'accessTier', if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null()), 'sasPolicy', if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', parameters('sasExpirationAction'), 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null()), 'supportsHttpsTrafficOnly', parameters('supportsHttpsTrafficOnly'), 'isHnsEnabled', parameters('enableHierarchicalNamespace'), 'isSftpEnabled', parameters('enableSftp'), 'isNfsV3Enabled', if(parameters('enableNfsV3'), parameters('enableNfsV3'), ''), 'largeFileSharesState', if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null()), 'minimumTlsVersion', parameters('minimumTlsVersion'), 'networkAcls', if(not(empty(parameters('networkAcls'))), union(createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'defaultAction', coalesce(tryGet(parameters('networkAcls'), 'defaultAction'), 'Deny'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), if(contains(parameters('networkAcls'), 'bypass'), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass')), createObject())), createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), 'allowBlobPublicAccess', parameters('allowBlobPublicAccess'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))), if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), createObject('azureFilesIdentityBasedAuthentication', parameters('azureFilesIdentityBasedAuthentication')), createObject())))]",
+      "properties": "[shallowMerge(createArray(createObject('allowSharedKeyAccess', parameters('allowSharedKeyAccess'), 'defaultToOAuthAuthentication', parameters('defaultToOAuthAuthentication'), 'allowCrossTenantReplication', parameters('allowCrossTenantReplication'), 'allowedCopyScope', parameters('allowedCopyScope'), 'customDomain', createObject('name', parameters('customDomainName'), 'useSubDomainName', parameters('customDomainUseSubDomainName')), 'dnsEndpointType', parameters('dnsEndpointType'), 'isLocalUserEnabled', parameters('isLocalUserEnabled'), 'encryption', union(createObject('keySource', if(not(empty(parameters('customerManagedKey'))), 'Microsoft.Keyvault', 'Microsoft.Storage'), 'services', createObject('blob', if(variables('supportsBlobService'), createObject('enabled', true()), null()), 'file', if(variables('supportsFileService'), createObject('enabled', true()), null()), 'table', createObject('enabled', true(), 'keyType', parameters('keyType')), 'queue', createObject('enabled', true(), 'keyType', parameters('keyType'))), 'keyvaultproperties', if(not(empty(parameters('customerManagedKey'))), createObject('keyname', parameters('customerManagedKey').keyName, 'keyvaulturi', reference('cMKKeyVault').vaultUri, 'keyversion', if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), parameters('customerManagedKey').keyVersion, if(coalesce(tryGet(parameters('customerManagedKey'), 'autoRotationEnabled'), true()), null(), last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/'))))), null()), 'identity', createObject('userAssignedIdentity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()))), if(parameters('requireInfrastructureEncryption'), createObject('requireInfrastructureEncryption', if(not(equals(parameters('kind'), 'Storage')), parameters('requireInfrastructureEncryption'), null())), createObject())), 'accessTier', if(and(not(equals(parameters('kind'), 'Storage')), not(equals(parameters('kind'), 'BlockBlobStorage'))), parameters('accessTier'), null()), 'sasPolicy', if(not(empty(parameters('sasExpirationPeriod'))), createObject('expirationAction', parameters('sasExpirationAction'), 'sasExpirationPeriod', parameters('sasExpirationPeriod')), null()), 'supportsHttpsTrafficOnly', parameters('supportsHttpsTrafficOnly'), 'isSftpEnabled', parameters('enableSftp'), 'isNfsV3Enabled', if(parameters('enableNfsV3'), parameters('enableNfsV3'), ''), 'largeFileSharesState', if(or(equals(parameters('skuName'), 'Standard_LRS'), equals(parameters('skuName'), 'Standard_ZRS')), parameters('largeFileSharesState'), null()), 'minimumTlsVersion', parameters('minimumTlsVersion'), 'networkAcls', if(not(empty(parameters('networkAcls'))), union(createObject('resourceAccessRules', tryGet(parameters('networkAcls'), 'resourceAccessRules'), 'defaultAction', coalesce(tryGet(parameters('networkAcls'), 'defaultAction'), 'Deny'), 'virtualNetworkRules', tryGet(parameters('networkAcls'), 'virtualNetworkRules'), 'ipRules', tryGet(parameters('networkAcls'), 'ipRules')), if(contains(parameters('networkAcls'), 'bypass'), createObject('bypass', tryGet(parameters('networkAcls'), 'bypass')), createObject())), createObject('bypass', 'AzureServices', 'defaultAction', 'Deny')), 'allowBlobPublicAccess', parameters('allowBlobPublicAccess'), 'publicNetworkAccess', if(not(empty(parameters('publicNetworkAccess'))), parameters('publicNetworkAccess'), if(and(not(empty(parameters('privateEndpoints'))), empty(parameters('networkAcls'))), 'Disabled', null()))), if(not(empty(parameters('azureFilesIdentityBasedAuthentication'))), createObject('azureFilesIdentityBasedAuthentication', parameters('azureFilesIdentityBasedAuthentication')), createObject()), if(not(equals(parameters('enableHierarchicalNamespace'), null())), createObject('isHnsEnabled', parameters('enableHierarchicalNamespace')), createObject())))]",
       "dependsOn": [
         "cMKKeyVault",
         "cMKKeyVault::cMKKey"
@@ -2214,8 +2214,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "11585123047105458062"
+              "version": "0.36.1.42791",
+              "templateHash": "15460042769205098170"
             },
             "name": "Storage Account Management Policies",
             "description": "This module deploys a Storage Account Management Policy."
@@ -2326,8 +2326,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "18350684375691178826"
+              "version": "0.36.1.42791",
+              "templateHash": "9887081627902627152"
             },
             "name": "Storage Account Local Users",
             "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
@@ -2564,8 +2564,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "6864791231608714221"
+              "version": "0.36.1.42791",
+              "templateHash": "6022018664563587162"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -3031,8 +3031,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "16608863835956278253"
+                      "version": "0.36.1.42791",
+                      "templateHash": "8537733712696277479"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -3323,8 +3323,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.35.1.17967",
-                              "templateHash": "16507112099495773673"
+                              "version": "0.36.1.42791",
+                              "templateHash": "8550034166416361637"
                             },
                             "name": "Storage Account Blob Container Immutability Policies",
                             "description": "This module deploys a Storage Account Blob Container Immutability Policy."
@@ -3503,8 +3503,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "16585885324390135986"
+              "version": "0.36.1.42791",
+              "templateHash": "5330835559983552205"
             },
             "name": "Storage Account File Share Services",
             "description": "This module deploys a Storage Account File Share Service."
@@ -3863,8 +3863,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "190690872747761309"
+                      "version": "0.36.1.42791",
+                      "templateHash": "13660405414692054289"
                     },
                     "name": "Storage Account File Shares",
                     "description": "This module deploys a Storage Account File Share."
@@ -4298,8 +4298,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15089132876669102729"
+              "version": "0.36.1.42791",
+              "templateHash": "12083447974600668784"
             },
             "name": "Storage Account Queue Services",
             "description": "This module deploys a Storage Account Queue Service."
@@ -4617,8 +4617,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "9203389950224823099"
+                      "version": "0.36.1.42791",
+                      "templateHash": "9655936521854066340"
                     },
                     "name": "Storage Account Queues",
                     "description": "This module deploys a Storage Account Queue."
@@ -4890,8 +4890,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "17345564162551993063"
+              "version": "0.36.1.42791",
+              "templateHash": "7524420471291814386"
             },
             "name": "Storage Account Table Services",
             "description": "This module deploys a Storage Account Table Service."
@@ -5206,8 +5206,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.35.1.17967",
-                      "templateHash": "6286190839827082273"
+                      "version": "0.36.1.42791",
+                      "templateHash": "10594209871901294578"
                     },
                     "name": "Storage Account Table",
                     "description": "This module deploys a Storage Account Table."
@@ -5460,8 +5460,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "15126360152170162999"
+              "version": "0.36.1.42791",
+              "templateHash": "8120095020684817611"
             }
           },
           "definitions": {
@@ -5539,7 +5539,7 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2024-11-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secrets": {
