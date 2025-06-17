@@ -60,21 +60,6 @@ param waitDeploymentScriptPrefixName string
 // Deploy Host VM Infrastructure    //
 // =================================//
 
-var blobUriOut1 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand1-output.txt'
-var blobUriErr1 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand1-error.txt'
-var blobUriOut2 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand2-output.txt'
-var blobUriErr2 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand2-error.txt'
-var blobUriOut3 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand3-output.txt'
-var blobUriErr3 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand3-error.txt'
-var blobUriOut4 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand4-output.txt'
-var blobUriErr4 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand4-error.txt'
-var blobUriOut5 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand5-output.txt'
-var blobUriErr5 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand5-error.txt'
-var blobUriOut6 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand6-output.txt'
-var blobUriErr6 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand6-error.txt'
-var blobUriOut7 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand7-output.txt'
-var blobUriErr7 = 'https://avmlog.blob.core.windows.net/hcpc/${resourceGroup().name}.runcommand77-error.txt'
-
 // vm managed identity used for HCI Arc onboarding
 resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-07-31-preview' = {
   location: location
@@ -97,15 +82,6 @@ module roleAssignment_subscriptionContributor 'modules/subscriptionRoleAssignmen
   name: '${uniqueString(deployment().name, location)}-hcihostmi-roleAssignment_subContributor'
   scope: subscription()
   params: {
-    principalId: userAssignedIdentity.properties.principalId
-  }
-}
-
-module roleAssignment_log 'modules/logRoleAssignment.bicep' = {
-  name: 'logRoleAssignment'
-  scope: resourceGroup('iacautomation-bicep')
-  params: {
-    containerName: 'avmlog/default/hcpc'
     principalId: userAssignedIdentity.properties.principalId
   }
 }
@@ -321,8 +297,6 @@ resource runCommand1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       script: loadTextContent('./scripts/hciHostStage1.ps1')
     }
     treatFailureAsDeploymentFailure: true
-    errorBlobUri: blobUriErr1
-    outputBlobUri: blobUriOut1
   }
 }
 
@@ -336,8 +310,6 @@ resource runCommand2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       script: loadTextContent('./scripts/hciHostStage2.ps1')
     }
     treatFailureAsDeploymentFailure: true
-    errorBlobUri: blobUriErr2
-    outputBlobUri: blobUriOut2
   }
   dependsOn: [runCommand1]
 }
@@ -383,8 +355,6 @@ resource runCommand3 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       }
     ]
     treatFailureAsDeploymentFailure: true
-    errorBlobUri: blobUriErr3
-    outputBlobUri: blobUriOut3
   }
   dependsOn: [wait1]
 }
@@ -399,8 +369,6 @@ resource runCommand4 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       script: loadTextContent('./scripts/hciHostStage4.ps1')
     }
     treatFailureAsDeploymentFailure: true
-    errorBlobUri: blobUriErr4
-    outputBlobUri: blobUriOut4
   }
   dependsOn: [runCommand3]
 }
@@ -454,8 +422,6 @@ resource runCommand5 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       }
     ]
     treatFailureAsDeploymentFailure: true
-    errorBlobUri: blobUriErr5
-    outputBlobUri: blobUriOut5
   }
   dependsOn: [wait2]
 }
@@ -530,8 +496,6 @@ resource runCommand6 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       }
     ]
     treatFailureAsDeploymentFailure: true
-    errorBlobUri: blobUriErr6
-    outputBlobUri: blobUriOut6
   }
   dependsOn: [runCommand5]
 }
@@ -564,8 +528,6 @@ resource runCommand7 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' 
       }
     ]
     treatFailureAsDeploymentFailure: true
-    errorBlobUri: blobUriErr7
-    outputBlobUri: blobUriOut7
   }
   dependsOn: [runCommand6]
 }
