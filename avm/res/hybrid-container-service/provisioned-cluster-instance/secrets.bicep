@@ -40,7 +40,7 @@ resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
   properties: {
     azPowerShellVersion: '8.0'
     retentionInterval: 'P1D'
-    scriptContent: loadTextContent('./generateSshKey.ps1')
+    scriptContent: loadTextContent('./scripts/generateSshKey.ps1')
   }
 }
 
