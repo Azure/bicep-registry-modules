@@ -31,6 +31,13 @@ az bicep upgrade
 RAND_SUFFIX_1=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 6 | head -n 1)
 DEPLOYMENT_NAME_1="BicepDeployment-$RAND_SUFFIX_1"
 
+sed --in-place "s/{{keyVaultName}}/$KEY_VAULT_NAME/" 'read.json'
+sed --in-place "s/{{keyVaultName}}/$KEY_VAULT_NAME/" 'write.json'
+sed --in-place "s/{{privateKeySecretName}}/$PRIVATE_KEY_SECRET_NAME/" 'read.json'
+sed --in-place "s/{{privateKeySecretName}}/$PRIVATE_KEY_SECRET_NAME/" 'write.json'
+sed --in-place "s/{{publicKeySecretName}}/$PUBLIC_KEY_SECRET_NAME/" 'read.json'
+sed --in-place "s/{{publicKeySecretName}}/$PUBLIC_KEY_SECRET_NAME/" 'write.json'
+
 # Read
 az deployment group create \
   --name "$DEPLOYMENT_NAME_1" \
@@ -54,13 +61,6 @@ if [[ -z "$PUBLIC_KEY" ]]; then
   PUBLIC_KEY_B64=$(cat $PUBLIC_KEY_FILE | base64 -w 0)
   sed --in-place "s/{{privateKeySecretValueBase64}}/$PRIVATE_KEY_B64/" 'write.json'
   sed --in-place "s/{{publicKeySecretValueBase64}}/$PUBLIC_KEY_B64/" 'write.json'
-
-  sed --in-place "s/{{keyVaultName}}/$KEY_VAULT_NAME/" 'read.json'
-  sed --in-place "s/{{keyVaultName}}/$KEY_VAULT_NAME/" 'write.json'
-  sed --in-place "s/{{privateKeySecretName}}/$PRIVATE_KEY_SECRET_NAME/" 'read.json'
-  sed --in-place "s/{{privateKeySecretName}}/$PRIVATE_KEY_SECRET_NAME/" 'write.json'
-  sed --in-place "s/{{publicKeySecretName}}/$PUBLIC_KEY_SECRET_NAME/" 'read.json'
-  sed --in-place "s/{{publicKeySecretName}}/$PUBLIC_KEY_SECRET_NAME/" 'write.json'
 
   # Generate a random 6-character alphanumeric suffix for deployment name
   RAND_SUFFIX_2=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 6 | head -n 1)
