@@ -9,7 +9,6 @@ WRITE_JSON_B64="$5"
 SUBSCRIPTION_ID="$6"
 RESOURCE_GROUP_NAME="$7"
 CLUSTER_NAME="$8"
-read -r KEY_VAULT_NAME PRIVATE_KEY_SECRET_NAME PUBLIC_KEY_SECRET_NAME <<< "$9"
 
 # Decode base64-encoded content to temp files
 TEMP_DIR=$(mktemp -d)
@@ -27,16 +26,7 @@ az account set --subscription "$SUBSCRIPTION_ID"
 # Ensure Bicep CLI is available
 az bicep upgrade
 
-# Generate a random 6-character alphanumeric suffix for deployment name
-RAND_SUFFIX_1=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 6 | head -n 1)
-DEPLOYMENT_NAME_1="BicepDeployment-$RAND_SUFFIX_1"
-
-sed --in-place "s/{{keyVaultName}}/$KEY_VAULT_NAME/" 'read.json'
-sed --in-place "s/{{keyVaultName}}/$KEY_VAULT_NAME/" 'write.json'
-sed --in-place "s/{{privateKeySecretName}}/$PRIVATE_KEY_SECRET_NAME/" 'read.json'
-sed --in-place "s/{{privateKeySecretName}}/$PRIVATE_KEY_SECRET_NAME/" 'write.json'
-sed --in-place "s/{{publicKeySecretName}}/$PUBLIC_KEY_SECRET_NAME/" 'read.json'
-sed --in-place "s/{{publicKeySecretName}}/$PUBLIC_KEY_SECRET_NAME/" 'write.json'
+DEPLOYMENT_NAME_1="$CLUSTER_NAME-sshkey-read"
 
 # Read
 az deployment group create \
@@ -62,9 +52,7 @@ if [[ -z "$PUBLIC_KEY" ]]; then
   sed --in-place "s/{{privateKeySecretValueBase64}}/$PRIVATE_KEY_B64/" 'write.json'
   sed --in-place "s/{{publicKeySecretValueBase64}}/$PUBLIC_KEY_B64/" 'write.json'
 
-  # Generate a random 6-character alphanumeric suffix for deployment name
-  RAND_SUFFIX_2=$(cat /dev/urandom | tr -dc 'a-zA-Z' | fold -w 6 | head -n 1)
-  DEPLOYMENT_NAME_2="BicepDeployment-$RAND_SUFFIX_2"
+  DEPLOYMENT_NAME_2="$CLUSTER_NAME-sshkey-write"
 
   # write
   az deployment group create \
