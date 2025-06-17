@@ -52,20 +52,6 @@ resource KVARole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   }
 }
 
-var readJsonRaw = loadTextContent('./nested/read.json')
-var readJson = replace(
-  replace(replace(readJsonRaw, '{{keyVaultName}}', keyVaultName), '{{publicKeySecretName}}', sshPublicKeySecretName),
-  '{{privateKeySecretName}}',
-  sshPrivateKeyPemSecretName
-)
-
-var writeJsonRaw = loadTextContent('./nested/write.json')
-var writeJson = replace(
-  replace(replace(writeJsonRaw, '{{keyVaultName}}', keyVaultName), '{{publicKeySecretName}}', sshPublicKeySecretName),
-  '{{privateKeySecretName}}',
-  sshPrivateKeyPemSecretName
-)
-
 resource newSshKey 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'newSshKey-${name}'
   location: location
@@ -84,7 +70,7 @@ resource newSshKey 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   properties: {
     azCliVersion: '2.71.0'
     scriptContent: loadTextContent('./New-SshKey.sh')
-    arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(readJson)}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(writeJson)}" "${resourceGroup().name}" "${subscription().subscriptionId}"'
+    arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(loadTextContent('./nested/read.json'))}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(loadTextContent('./nested/write.json'))}" "${subscription().subscriptionId}" "${resourceGroup().name}" "${name}" "${keyVaultName} "${sshPrivateKeyPemSecretName}" "${sshPublicKeySecretName}"'
     timeout: 'PT30M'
     retentionInterval: 'PT60M'
     cleanupPreference: 'OnExpiration'
