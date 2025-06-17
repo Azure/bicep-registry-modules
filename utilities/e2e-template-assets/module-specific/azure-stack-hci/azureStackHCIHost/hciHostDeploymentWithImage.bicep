@@ -262,6 +262,24 @@ resource maintenanceAssignment_hciHost 'Microsoft.Maintenance/configurationAssig
   scope: vm
 }
 
+resource wait 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
+  parent: vm
+  name: 'wait'
+  location: location
+  properties: {
+    source: {
+      script: loadTextContent('./scripts/wait.ps1')
+    }
+    treatFailureAsDeploymentFailure: true
+    parameters: [
+      {
+        name: 'Minutes'
+        value: '5'
+      }
+    ]
+  }
+}
+
 // ================================================//
 // Initialize Arc on HCI Node VMs and AD for HCI  //
 // ==============================================//
@@ -270,6 +288,9 @@ resource ad 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   name: 'ad'
   location: location
+  dependsOn: [
+    wait
+  ]
   properties: {
     source: {
       script: loadTextContent('./scripts/provision-ad.ps1')
@@ -324,6 +345,9 @@ resource arc1 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   name: 'arc1'
   location: location
+  dependsOn: [
+    wait
+  ]
   properties: {
     source: {
       script: loadTextContent('./scripts/provision-arc.ps1')
@@ -386,6 +410,9 @@ resource arc2 'Microsoft.Compute/virtualMachines/runCommands@2024-03-01' = {
   parent: vm
   name: 'arc2'
   location: location
+  dependsOn: [
+    wait
+  ]
   properties: {
     source: {
       script: loadTextContent('./scripts/provision-arc.ps1')
