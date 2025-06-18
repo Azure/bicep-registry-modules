@@ -216,7 +216,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' = {
+resource server 'Microsoft.Sql/servers@2023-08-01' = {
   location: location
   name: name
   tags: tags
@@ -290,13 +290,13 @@ module server_databases 'database/main.bicep' = [
       collation: database.?collation
       createMode: database.?createMode
       elasticPoolResourceId: database.?elasticPoolResourceId
-      encryptionProtector: database.?encryptionProtector
-      encryptionProtectorAutoRotation: database.?encryptionProtectorAutoRotation
+      customerManagedKey: database.?customerManagedKey
       federatedClientId: database.?federatedClientId
       freeLimitExhaustionBehavior: database.?freeLimitExhaustionBehavior
       highAvailabilityReplicaCount: database.?highAvailabilityReplicaCount
       isLedgerOn: database.?isLedgerOn
       licenseType: database.?licenseType
+      lock: database.?lock
       longTermRetentionBackupResourceId: database.?longTermRetentionBackupResourceId
       maintenanceConfigurationId: database.?maintenanceConfigurationId
       manualCutover: database.?manualCutover
@@ -346,6 +346,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
       availabilityZone: elasticPool.?availabilityZone
       highAvailabilityReplicaCount: elasticPool.?highAvailabilityReplicaCount
       licenseType: elasticPool.?licenseType
+      lock: elasticPool.?lock
       maintenanceConfigurationId: elasticPool.?maintenanceConfigurationId
       maxSizeBytes: elasticPool.?maxSizeBytes
       minCapacity: elasticPool.?minCapacity
@@ -356,7 +357,7 @@ module server_elasticPools 'elastic-pool/main.bicep' = [
   }
 ]
 
-module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.10.1' = [
+module server_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-server-PrivateEndpoint-${index}'
     scope: resourceGroup(
@@ -501,7 +502,7 @@ module server_encryptionProtector 'encryption-protector/main.bicep' = if (custom
   }
 }
 
-module server_audit_settings 'audit-settings/main.bicep' = if (!empty(auditSettings)) {
+module server_audit_settings 'audit-setting/main.bicep' = if (!empty(auditSettings)) {
   name: '${uniqueString(deployment().name, location)}-Sql-AuditSettings'
   params: {
     serverName: server.name
@@ -536,10 +537,10 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSercretName')
+      contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSecretName')
         ? [
             {
-              name: secretsExportConfiguration!.?sqlAzureConnectionStringSercretName
+              name: secretsExportConfiguration!.?sqlAzureConnectionStringSecretName
               value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[?0].name : ''}; User=${administratorLogin}; Password=${administratorLoginPassword}'
             }
           ]
@@ -681,7 +682,7 @@ type secretsExportConfigurationType = {
   sqlAdminPasswordSecretName: string?
 
   @description('Optional. The sqlAzureConnectionString secret name to create.')
-  sqlAzureConnectionStringSercretName: string?
+  sqlAzureConnectionStringSecretName: string?
 }
 
 @export()
@@ -714,6 +715,9 @@ type databaseType = {
 
   @description('Optional. Tags of the resource.')
   tags: object?
+
+  @description('Optional. The lock settings of the database.')
+  lock: lockType?
 
   @description('Optional. The managed identities for the database.')
   managedIdentities: managedIdentityOnlyUserAssignedType?
@@ -749,11 +753,8 @@ type databaseType = {
   @description('Optional. The resource identifier of the elastic pool containing this database.')
   elasticPoolResourceId: string?
 
-  @description('Optional. The azure key vault URI of the database if it\'s configured with per Database Customer Managed Keys.')
-  encryptionProtector: string?
-
-  @description('Optional. The flag to enable or disable auto rotation of database encryption protector AKV key.')
-  encryptionProtectorAutoRotation: bool?
+  @description('Optional. The customer managed key definition for database TDE.')
+  customerManagedKey: customerManagedKeyWithAutoRotateType?
 
   @description('Optional. The Client id used for cross tenant per database CMK scenario.')
   @minLength(36)
@@ -852,6 +853,9 @@ type elasticPoolType = {
 
   @description('Optional. Tags of the resource.')
   tags: object?
+
+  @description('Optional. The lock settings of the elastic pool.')
+  lock: lockType?
 
   @description('Optional. The elastic pool SKU.')
   sku: skuType?
