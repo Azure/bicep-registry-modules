@@ -4,6 +4,9 @@ metadata description = 'This module deploys a Virtual Network (vNet).'
 @description('Required. The name of the Virtual Network (vNet).')
 param name string
 
+@description('Optional. Location of extended zone. Only required if the vNet will be deployed in an extended zone. List of available extended zones can be found at using the PowerShell command \'Get-AzEdgeZonesExtendedZone\'. See https://learn.microsoft.com/en-us/powershell/module/az.edgezones/get-azedgezonesextendedzone?view=azps-14.1.0')
+param extendedLocation string?
+
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
@@ -117,8 +120,14 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-05-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: name
+  extendedLocation: !empty(extendedLocation)
+    ? {
+        name: extendedLocation
+        type: 'EdgeZone'
+      }
+    : null
   location: location
   tags: tags
   properties: {
