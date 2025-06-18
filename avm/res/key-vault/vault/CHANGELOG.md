@@ -17,13 +17,3 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 ### Breaking Changes
 
 - Values for the property `KeyVault.Key.rotationPolicy.lifetimeActions.type` are now `rotate|notify` instead of `Rotate|Notify` to align to the RP
-
-## 0.1.0
-
-### Changes
-
-- Initial version
-
-### Breaking Changes
-
-- None
