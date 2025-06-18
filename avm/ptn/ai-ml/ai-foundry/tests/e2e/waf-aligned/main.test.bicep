@@ -8,7 +8,7 @@ metadata description = 'Creates an AI Foundry account and project with Standard 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-${namePrefix}-<provider>-<resourceType>-${serviceShort}-rg'
+param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
@@ -18,7 +18,7 @@ param resourceLocation string = deployment().location
 param serviceShort string = 'aifoundrywaf'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
-param namePrefix string = '#_namePrefix_#'
+param namePrefix string = 'stprivate'
 
 // ============ //
 // Dependencies //
