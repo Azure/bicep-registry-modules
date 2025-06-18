@@ -130,7 +130,7 @@ output foundryConnection object = {
   }
   isSharedToAll: true
   metadata: {
-    ApiType: 'Azure'
+    apiType: 'Azure'
     Kind: kind
     ResourceId: cognitiveService.outputs.resourceId
   }

@@ -24169,7 +24169,7 @@
                         },
                         "isSharedToAll": true,
                         "metadata": {
-                          "ApiType": "Azure",
+                          "apiType": "Azure",
                           "Kind": "[parameters('kind')]",
                           "ResourceId": "[reference('cognitiveService').outputs.resourceId.value]"
                         }
@@ -26894,7 +26894,7 @@
                         },
                         "isSharedToAll": true,
                         "metadata": {
-                          "ApiType": "Azure",
+                          "apiType": "Azure",
                           "Kind": "[parameters('kind')]",
                           "ResourceId": "[reference('cognitiveService').outputs.resourceId.value]"
                         }
