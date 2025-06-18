@@ -5,11 +5,11 @@ metadata name = 'Content Processing Solution Accelerator'
 metadata description = 'Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance.'
 
 // ========== get up parameters from parameter file ========== //
-@description('Optional. Name of the environment to deploy the solution into.')
+@description('Required. Name of the environment to deploy the solution into.')
 param environmentName string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
-@description('Optional. Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast.')
+@description('Required. Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast.')
 param contentUnderstandingLocation string
 @description('Optional. Type of GPT deployment to use: Standard | GlobalStandard.')
 param deploymentType string = 'GlobalStandard'
@@ -22,7 +22,7 @@ param gptModelName string = 'gpt-4o'
 ])
 param gptModelVersion string = '2024-08-06'
 @minValue(10)
-@description('Optional. Capacity of the GPT deployment: (minimum 10).')
+@description('Required. Capacity of the GPT deployment: (minimum 10).')
 param gptDeploymentCapacity int
 // @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment')
 // param secondaryLocation string = 'EastUs2'
