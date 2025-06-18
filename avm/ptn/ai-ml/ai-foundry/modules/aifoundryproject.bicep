@@ -21,7 +21,7 @@ param cosmosDBName string
 param storageName string
 
 @description('Foundry Account Name')
-param aiServicesName strings
+param aiServicesName string
 
 @description('Azure Search Service Name')
 param nameFormatted string
