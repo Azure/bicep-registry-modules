@@ -45,7 +45,7 @@ param userObjectId string = deployer().objectId
 param allowedIpAddress string = ''
 
 @description('Required. Specifies whether network isolation is enabled. When true, Foundry and related components will be deployed, network access parameters will be set to Disabled. This is automatically set based on aiFoundryType.')
-var networkIsolation = toLower(aiFoundryType) == 'standardprivate'
+var networkIsolation = toLower(aiFoundryType) == 'StandardPrivate'
 
 @allowed([
   'Basic'
