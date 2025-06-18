@@ -265,7 +265,7 @@ param location = '<location>'
 | [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast |
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable telemetry for the deployment |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module |
 | [`environmentName`](#parameter-environmentname) | string | Name of the environment to deploy the solution into: |
 | [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment: (minimum 10) |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4 |
@@ -274,7 +274,6 @@ param location = '<location>'
 | [`publicContainerImageEndpoint`](#parameter-publiccontainerimageendpoint) | string | The public container image endpoint |
 | [`resourceGroupLocation`](#parameter-resourcegrouplocation) | string | The resource group location |
 | [`resourceNameFormatString`](#parameter-resourcenameformatstring) | string | The resource name format string |
-| [`secondaryLocation`](#parameter-secondarylocation) | string | Location used for Azure Cosmos DB, Azure Container App deployment |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources |
 | [`useLocalBuild`](#parameter-uselocalbuild) | bool | Set to true to use local build for container app images, otherwise use container registry images |
 
@@ -303,7 +302,7 @@ Enable WAF for the deployment
 
 ### Parameter: `enableTelemetry`
 
-Enable/Disable telemetry for the deployment
+Enable/Disable usage telemetry for module
 
 - Required: No
 - Type: bool
@@ -378,14 +377,6 @@ The resource name format string
 - Type: string
 - Default: `'{0}avm-cps'`
 
-### Parameter: `secondaryLocation`
-
-Location used for Azure Cosmos DB, Azure Container App deployment
-
-- Required: No
-- Type: string
-- Default: `'EastUs2'`
-
 ### Parameter: `tags`
 
 Tags to be applied to the resources
@@ -412,10 +403,10 @@ Set to true to use local build for container app images, otherwise use container
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
-| `CONTAINER_API_APP_FQDN` | string | The resource ID of the Container App API. |
-| `CONTAINER_API_APP_NAME` | string | The resource ID of the Container App API. |
-| `CONTAINER_WEB_APP_FQDN` | string | The resource ID of the Container App Environment. |
-| `CONTAINER_WEB_APP_NAME` | string | The resource ID of the Container App Environment. |
+| `containerApiAppFqdn` | string | The resource ID of the Container App API. |
+| `containerApiAppName` | string | The resource ID of the Container App API. |
+| `containerWebAppFqdn` | string | The resource ID of the Container App Environment. |
+| `containerWebAppName` | string | The resource ID of the Container App Environment. |
 | `resourceGroupName` | string | The resource group the resources were deployed into. |
 
 ## Cross-referenced modules

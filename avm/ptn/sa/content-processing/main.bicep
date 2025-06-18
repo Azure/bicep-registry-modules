@@ -34,7 +34,7 @@ param resourceGroupLocation string = resourceGroup().location
 param resourceNameFormatString string = '{0}avm-cps'
 @description('Optional. Enable WAF for the deployment')
 param enablePrivateNetworking bool = true
-@description('Optional. Enable/Disable telemetry for the deployment')
+@description('Optional. Enable/Disable usage telemetry for module')
 param enableTelemetry bool = true
 //@description('Resource naming abbreviations')
 //param namingAbbrs object
@@ -1852,13 +1852,13 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.16.0' =
 // output location string = <Resource>.location
 
 @description('The resource ID of the Container App Environment.')
-output CONTAINER_WEB_APP_NAME string = avmContainerApp_Web.outputs.name
+output containerWebAppName string = avmContainerApp_Web.outputs.name
 @description('The resource ID of the Container App API.')
-output CONTAINER_API_APP_NAME string = avmContainerApp_API.outputs.name
+output containerApiAppName string = avmContainerApp_API.outputs.name
 @description('The resource ID of the Container App Environment.')
-output CONTAINER_WEB_APP_FQDN string = avmContainerApp_Web.outputs.fqdn
+output containerWebAppFqdn string = avmContainerApp_Web.outputs.fqdn
 @description('The resource ID of the Container App API.')
-output CONTAINER_API_APP_FQDN string = avmContainerApp_API.outputs.fqdn
+output containerApiAppFqdn string = avmContainerApp_API.outputs.fqdn
 
 @description('The resource group the resources were deployed into.')
 output resourceGroupName string = resourceGroup().name
