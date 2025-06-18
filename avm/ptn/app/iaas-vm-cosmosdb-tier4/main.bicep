@@ -15,7 +15,26 @@ param enableTelemetry bool = true
 
 // Network security group parameters
 @description('Security. Network security group rules for the ApplicationSubnet.')
-param applicationNsgRules array = []
+param applicationNsgRules array = [
+  {
+    name: 'DenyManagementOutbound'
+    properties: {
+      protocol: '*'
+      sourcePortRange: '*'
+      destinationPortRanges: [
+        '22'
+        '3389'
+        '5985'
+        '5986'
+      ]
+      sourceAddressPrefix: '*'
+      destinationAddressPrefix: '*'
+      access: 'Deny'
+      priority: 4000
+      direction: 'Outbound'
+    }
+  }
+]
 
 @description('Security. Network security group rules for the VM.')
 param vmNsgRules array = [
@@ -25,11 +44,29 @@ param vmNsgRules array = [
       protocol: 'Tcp'
       sourcePortRange: '*'
       destinationPortRange: '80'
-      sourceAddressPrefix: '*'
+      sourceAddressPrefix: 'VirtualNetwork'
       destinationAddressPrefix: '*'
       access: 'Allow'
       priority: 300
       direction: 'Inbound'
+    }
+  }
+  {
+    name: 'DenyManagementOutbound'
+    properties: {
+      protocol: '*'
+      sourcePortRange: '*'
+      destinationPortRanges: [
+        '22'
+        '3389'
+        '5985'
+        '5986'
+      ]
+      sourceAddressPrefix: '*'
+      destinationAddressPrefix: '*'
+      access: 'Deny'
+      priority: 4000
+      direction: 'Outbound'
     }
   }
 ]
@@ -128,7 +165,26 @@ module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.
     name: 'PrivateEndpointSubnet'
     location: location
     tags: tags
-    securityRules: []
+    securityRules: [
+      {
+        name: 'DenyManagementOutbound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: [
+            '22'
+            '3389'
+            '5985'
+            '5986'
+          ]
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          access: 'Deny'
+          priority: 4000
+          direction: 'Outbound'
+        }
+      }
+    ]
     enableTelemetry: enableTelemetry
   }
 }
@@ -139,7 +195,26 @@ module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.5.
     name: 'BootDiagnosticsSubnet'
     location: location
     tags: tags
-    securityRules: []
+    securityRules: [
+      {
+        name: 'DenyManagementOutbound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: [
+            '22'
+            '3389'
+            '5985'
+            '5986'
+          ]
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          access: 'Deny'
+          priority: 4000
+          direction: 'Outbound'
+        }
+      }
+    ]
     enableTelemetry: enableTelemetry
   }
 }
@@ -293,6 +368,24 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
           direction: 'Outbound'
         }
       }
+      {
+        name: 'DenyManagementOutbound'
+        properties: {
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: [
+            '22'
+            '3389'
+            '5985'
+            '5986'
+          ]
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
+          access: 'Deny'
+          priority: 4000
+          direction: 'Outbound'
+        }
+      }
     ]
     enableTelemetry: enableTelemetry
   }
@@ -338,7 +431,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
 module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   name: '${name}-storage'
   params: {
-    name: replace('${name}stdiag', '-', '')
+    name: toLower(replace('${take(name, 11)}${uniqueString(resourceGroup().id)}stdiag', '-', ''))
     location: location
     tags: tags
     skuName: storageAccountSku.name
@@ -509,6 +602,7 @@ module recoveryServicesVault 'br/public:avm/res/recovery-services/vault:0.9.1' =
       locale: 'en-US'
       sendToOwners: 'Send'
     }
+    immutabilitySettingState: 'Unlocked'
     enableTelemetry: enableTelemetry
   }
 }

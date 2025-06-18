@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5423453419402149213"
+      "templateHash": "18243688521634613482"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -41,7 +41,26 @@
     },
     "applicationNsgRules": {
       "type": "array",
-      "defaultValue": [],
+      "defaultValue": [
+        {
+          "name": "DenyManagementOutbound",
+          "properties": {
+            "protocol": "*",
+            "sourcePortRange": "*",
+            "destinationPortRanges": [
+              "22",
+              "3389",
+              "5985",
+              "5986"
+            ],
+            "sourceAddressPrefix": "*",
+            "destinationAddressPrefix": "*",
+            "access": "Deny",
+            "priority": 4000,
+            "direction": "Outbound"
+          }
+        }
+      ],
       "metadata": {
         "description": "Security. Network security group rules for the ApplicationSubnet."
       }
@@ -55,11 +74,29 @@
             "protocol": "Tcp",
             "sourcePortRange": "*",
             "destinationPortRange": "80",
-            "sourceAddressPrefix": "*",
+            "sourceAddressPrefix": "VirtualNetwork",
             "destinationAddressPrefix": "*",
             "access": "Allow",
             "priority": 300,
             "direction": "Inbound"
+          }
+        },
+        {
+          "name": "DenyManagementOutbound",
+          "properties": {
+            "protocol": "*",
+            "sourcePortRange": "*",
+            "destinationPortRanges": [
+              "22",
+              "3389",
+              "5985",
+              "5986"
+            ],
+            "sourceAddressPrefix": "*",
+            "destinationAddressPrefix": "*",
+            "access": "Deny",
+            "priority": 4000,
+            "direction": "Outbound"
           }
         }
       ],
@@ -1482,7 +1519,26 @@
             "value": "[parameters('tags')]"
           },
           "securityRules": {
-            "value": []
+            "value": [
+              {
+                "name": "DenyManagementOutbound",
+                "properties": {
+                  "protocol": "*",
+                  "sourcePortRange": "*",
+                  "destinationPortRanges": [
+                    "22",
+                    "3389",
+                    "5985",
+                    "5986"
+                  ],
+                  "sourceAddressPrefix": "*",
+                  "destinationAddressPrefix": "*",
+                  "access": "Deny",
+                  "priority": 4000,
+                  "direction": "Outbound"
+                }
+              }
+            ]
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -2134,7 +2190,26 @@
             "value": "[parameters('tags')]"
           },
           "securityRules": {
-            "value": []
+            "value": [
+              {
+                "name": "DenyManagementOutbound",
+                "properties": {
+                  "protocol": "*",
+                  "sourcePortRange": "*",
+                  "destinationPortRanges": [
+                    "22",
+                    "3389",
+                    "5985",
+                    "5986"
+                  ],
+                  "sourceAddressPrefix": "*",
+                  "destinationAddressPrefix": "*",
+                  "access": "Deny",
+                  "priority": 4000,
+                  "direction": "Outbound"
+                }
+              }
+            ]
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -2926,6 +3001,24 @@
                   "destinationAddressPrefix": "*",
                   "access": "Deny",
                   "priority": 1000,
+                  "direction": "Outbound"
+                }
+              },
+              {
+                "name": "DenyManagementOutbound",
+                "properties": {
+                  "protocol": "*",
+                  "sourcePortRange": "*",
+                  "destinationPortRanges": [
+                    "22",
+                    "3389",
+                    "5985",
+                    "5986"
+                  ],
+                  "sourceAddressPrefix": "*",
+                  "destinationAddressPrefix": "*",
+                  "access": "Deny",
+                  "priority": 4000,
                   "direction": "Outbound"
                 }
               }
@@ -5250,7 +5343,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[replace(format('{0}stdiag', parameters('name')), '-', '')]"
+            "value": "[toLower(replace(format('{0}{1}stdiag', take(parameters('name'), 11), uniqueString(resourceGroup().id)), '-', ''))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -21742,6 +21835,9 @@
               "locale": "en-US",
               "sendToOwners": "Send"
             }
+          },
+          "immutabilitySettingState": {
+            "value": "Unlocked"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
