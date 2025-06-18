@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3984212385651629580"
+      "templateHash": "8689369549379140766"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -14187,7 +14187,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "8362575394271864515"
+              "templateHash": "2059035764820716190"
             }
           },
           "definitions": {
@@ -14295,8 +14295,6 @@
           "parameters": {
             "name": {
               "type": "string",
-              "minLength": 3,
-              "maxLength": 12,
               "metadata": {
                 "description": "Required. Name of the Cognitive Services resource. Must be unique in the resource group."
               }

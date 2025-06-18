@@ -1,5 +1,3 @@
-@minLength(3)
-@maxLength(12)
 @description('Required. Name of the Cognitive Services resource. Must be unique in the resource group.')
 param name string
 
