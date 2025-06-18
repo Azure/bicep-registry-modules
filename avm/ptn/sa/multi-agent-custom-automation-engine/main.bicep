@@ -1030,6 +1030,7 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = {
     enableTelemetry: enableTelemetry
     //aspireDashboardEnabled: TODO
     // WAF aligned configuration for Private Networking
+    enablePrivateNetworking: enablePrivateNetworking
     subnetResourceId: enablePrivateNetworking ? virtualNetwork.?outputs.?subnetResourceIds[3] : null
     // WAF aligned configuration for Monitoring
     logAnalyticsResourceName: enableMonitoring ? logAnalyticsWorkspace.outputs.name : null

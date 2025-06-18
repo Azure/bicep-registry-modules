@@ -2,6 +2,7 @@ param name string
 param location string
 param logAnalyticsResourceName string?
 param tags object
+param enablePrivateNetworking bool
 param enableTelemetry bool
 param enableMonitoring bool
 param enableRedundancy bool
@@ -19,9 +20,9 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    internal: false
     publicNetworkAccess: 'Enabled'
     // WAF aligned configuration for Private Networking
+    internal: enablePrivateNetworking ? true : false
     infrastructureSubnetResourceId: subnetResourceId
     // WAF aligned configuration for Monitoring
     appLogsConfiguration: enableMonitoring
@@ -29,18 +30,19 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2
           destination: 'log-analytics'
           logAnalyticsConfiguration: {
             customerId: logAnalyticsWorkspace.properties.customerId
-            #disable-next-line use-secure-value-for-secure-inputs
             sharedKey: logAnalyticsWorkspace.listKeys().primarySharedKey
           }
         }
       : null
     appInsightsConnectionString: enableMonitoring ? applicationInsightsConnectionString : null
     // WAF aligned configuration for Redundancy
+    zoneRedundant: enableRedundancy ? true : false
+    infrastructureResourceGroupName: enableRedundancy ? '${resourceGroup().name}-infra' : null
     workloadProfiles: enableRedundancy
       ? [
           {
             maximumCount: 3
-            minimumCount: 0
+            minimumCount: 1
             name: 'CAW01'
             workloadProfileType: 'D4'
           }
@@ -51,8 +53,6 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2
             workloadProfileType: 'Consumption'
           }
         ]
-    zoneRedundant: enableRedundancy ? true : false
-    infrastructureResourceGroupName: enableRedundancy ? '${resourceGroup().name}-infra' : null
   }
 }
 
