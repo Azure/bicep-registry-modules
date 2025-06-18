@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "18243688521634613482"
+      "templateHash": "609807473393430290"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -62,7 +62,7 @@
         }
       ],
       "metadata": {
-        "description": "Security. Network security group rules for the ApplicationSubnet."
+        "description": "Security. Network security group rules for the application subnet."
       }
     },
     "vmNsgRules": {
@@ -115,15 +115,15 @@
       "type": "array",
       "defaultValue": [
         {
-          "name": "ApplicationSubnet",
+          "name": "snet-app",
           "addressPrefix": "10.0.0.0/24"
         },
         {
-          "name": "PrivateEndpointsSubnet",
+          "name": "snet-pep",
           "addressPrefix": "10.0.1.0/24"
         },
         {
-          "name": "BootDiagnosticsSubnet",
+          "name": "snet-bootdiag",
           "addressPrefix": "10.0.2.0/24"
         },
         {
@@ -172,6 +172,13 @@
       "metadata": {
         "description": "Networking. Load balancer backend port."
       }
+    },
+    "utcValue": {
+      "type": "string",
+      "defaultValue": "[utcNow()]",
+      "metadata": {
+        "description": "Optional. Do not provide a value. Used to force the deployment script to rerun on every redeployment."
+      }
     }
   },
   "resources": {
@@ -195,10 +202,56 @@
         }
       }
     },
+    "managedIdentity": {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2024-11-30",
+      "name": "[format('id-{0}-sshkey', parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]"
+    },
+    "contributorRoleAssignment": {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceGroup().id, 'ManagedIdentityContributor', parameters('name'))]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+        "principalId": "[reference('managedIdentity').principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "managedIdentity"
+      ]
+    },
+    "sshKeyGenerationScript": {
+      "type": "Microsoft.Resources/deploymentScripts",
+      "apiVersion": "2023-08-01",
+      "name": "[format('ds-{0}-sshkey', parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "kind": "AzurePowerShell",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}-sshkey', parameters('name'))))]": {}
+        }
+      },
+      "properties": {
+        "azPowerShellVersion": "8.0",
+        "retentionInterval": "P1D",
+        "arguments": "[format('-ResourceGroupName {0} -SSHKeyName {1}-vm-key', resourceGroup().name, parameters('name'))]",
+        "scriptContent": "<#\n.SYNOPSIS\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.DESCRIPTION\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.PARAMETER SSHKeyName\nMandatory. The name of the Public SSH Key Resource as it would be deployed in Azure\n\n.PARAMETER ResourceGroupName\nMandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure\n\n.EXAMPLE\n./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'\n\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $SSHKeyName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ResourceGroupName\n)\n\nif (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {\n    Write-Verbose \"No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new.\" -Verbose\n    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)\n    $publicKey = Get-Content 'generated.pub' -Raw\n    # $privateKey = cat generated | Out-String\n} else {\n    Write-Verbose \"SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning.\" -Verbose\n    $publicKey = $sshKey.publicKey\n}\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    # Requires conversion as the script otherwise returns an object instead of the plain public key string\n    publicKey = $publicKey | Out-String\n}\n",
+        "cleanupPreference": "OnExpiration",
+        "forceUpdateTag": "[parameters('utcValue')]"
+      },
+      "dependsOn": [
+        "contributorRoleAssignment",
+        "managedIdentity"
+      ]
+    },
     "vmNetworkSecurityGroup": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-vm-nsg', parameters('name'))]",
+      "name": "[format('{0}-vm-nsg', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -206,7 +259,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-vm-nsg', parameters('name'))]"
+            "value": "[format('nsg-{0}-vm', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -850,7 +903,7 @@
     "applicationNsg": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-application-nsg', parameters('name'))]",
+      "name": "[format('{0}-application-nsg', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -858,7 +911,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "ApplicationSubnet"
+            "value": "[format('nsg-{0}-app', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -1502,7 +1555,7 @@
     "privateEndpointNsg": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-privateendpoint-nsg', parameters('name'))]",
+      "name": "[format('{0}-privateendpoint-nsg', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1510,7 +1563,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "PrivateEndpointSubnet"
+            "value": "[format('nsg-{0}-pep', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -2173,7 +2226,7 @@
     "bootDiagnosticsNsg": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-bootdiagnostics-nsg', parameters('name'))]",
+      "name": "[format('{0}-bootdiagnostics-nsg', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2181,7 +2234,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "BootDiagnosticsSubnet"
+            "value": "[format('nsg-{0}-bootdiag', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -2844,7 +2897,7 @@
     "bastionNsg": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-bastion-nsg', parameters('name'))]",
+      "name": "[format('{0}-bastion-nsg', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -2852,7 +2905,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "AzureBastionSubnet"
+            "value": "[format('nsg-{0}-bastion', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -3001,24 +3054,6 @@
                   "destinationAddressPrefix": "*",
                   "access": "Deny",
                   "priority": 1000,
-                  "direction": "Outbound"
-                }
-              },
-              {
-                "name": "DenyManagementOutbound",
-                "properties": {
-                  "protocol": "*",
-                  "sourcePortRange": "*",
-                  "destinationPortRanges": [
-                    "22",
-                    "3389",
-                    "5985",
-                    "5986"
-                  ],
-                  "sourceAddressPrefix": "*",
-                  "destinationAddressPrefix": "*",
-                  "access": "Deny",
-                  "priority": 4000,
                   "direction": "Outbound"
                 }
               }
@@ -3657,7 +3692,7 @@
     "virtualNetwork": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-vnet', parameters('name'))]",
+      "name": "[format('{0}-vnet', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -3665,7 +3700,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-vnet', parameters('name'))]"
+            "value": "[format('vnet-{0}', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -3681,17 +3716,17 @@
           "subnets": {
             "value": [
               {
-                "name": "ApplicationSubnet",
+                "name": "[format('snet-{0}-app', parameters('name'))]",
                 "addressPrefix": "[parameters('subnets')[0].addressPrefix]",
                 "networkSecurityGroupResourceId": "[reference('applicationNsg').outputs.resourceId.value]"
               },
               {
-                "name": "PrivateEndpointsSubnet",
+                "name": "[format('snet-{0}-pep', parameters('name'))]",
                 "addressPrefix": "[parameters('subnets')[1].addressPrefix]",
                 "networkSecurityGroupResourceId": "[reference('privateEndpointNsg').outputs.resourceId.value]"
               },
               {
-                "name": "BootDiagnosticsSubnet",
+                "name": "[format('snet-{0}-bootdiag', parameters('name'))]",
                 "addressPrefix": "[parameters('subnets')[2].addressPrefix]",
                 "networkSecurityGroupResourceId": "[reference('bootDiagnosticsNsg').outputs.resourceId.value]"
               },
@@ -5335,7 +5370,7 @@
     "storageAccount": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-storage', parameters('name'))]",
+      "name": "[format('{0}-storage', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -5343,7 +5378,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[toLower(replace(format('{0}{1}stdiag', take(parameters('name'), 11), uniqueString(resourceGroup().id)), '-', ''))]"
+            "value": "[format('st{0}{1}diag', toLower(replace(parameters('name'), '-', '')), take(uniqueString(resourceGroup().id), 6))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -11062,7 +11097,7 @@
     "sshPublicKey": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-ssh-key', parameters('name'))]",
+      "name": "[format('{0}-ssh-key', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -11077,6 +11112,9 @@
           },
           "tags": {
             "value": "[parameters('tags')]"
+          },
+          "publicKey": {
+            "value": "[reference('sshKeyGenerationScript').outputs.publicKey]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -11370,12 +11408,15 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "sshKeyGenerationScript"
+      ]
     },
     "loadBalancer": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-lb', parameters('name'))]",
+      "name": "[format('{0}-lb', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -11383,7 +11424,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-lb', parameters('name'))]"
+            "value": "[format('lb-{0}', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -13456,7 +13497,7 @@
     "virtualMachine": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-vm', parameters('name'))]",
+      "name": "[format('{0}-vm', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -13464,7 +13505,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-vm', parameters('name'))]"
+            "value": "[format('vm-{0}', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -13495,7 +13536,7 @@
           "publicKeys": {
             "value": [
               {
-                "keyData": "[reference('sshPublicKey').outputs.resourceId.value]",
+                "keyData": "[reference('sshKeyGenerationScript').outputs.publicKey]",
                 "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]"
               }
             ]
@@ -13541,7 +13582,7 @@
             "value": true
           },
           "bootDiagnosticStorageAccountName": {
-            "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('{0}-storage', parameters('name'))), '2022-09-01').name]"
+            "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('{0}-storage', uniqueString(deployment().name, parameters('location')))), '2022-09-01').name]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -21799,7 +21840,7 @@
       },
       "dependsOn": [
         "loadBalancer",
-        "sshPublicKey",
+        "sshKeyGenerationScript",
         "storageAccount",
         "virtualNetwork",
         "vmNetworkSecurityGroup"
@@ -21808,7 +21849,7 @@
     "recoveryServicesVault": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-rsv', parameters('name'))]",
+      "name": "[format('{0}-rsv', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -21816,7 +21857,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-rsv', parameters('name'))]"
+            "value": "[format('rsv-{0}', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -25606,7 +25647,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-cosmos', parameters('name'))]"
+            "value": "[format('cosmos-{0}', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -29429,7 +29470,7 @@
     "privateDnsZone": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-dns', parameters('name'))]",
+      "name": "[format('{0}-dns', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -32600,7 +32641,7 @@
     "privateEndpoint": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-cosmos-pe', parameters('name'))]",
+      "name": "[format('{0}-cosmos-pe', uniqueString(deployment().name, parameters('location')))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -32608,7 +32649,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}-cosmos-pe', parameters('name'))]"
+            "value": "[format('pep-{0}-cosmos', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -32622,7 +32663,7 @@
           "privateLinkServiceConnections": {
             "value": [
               {
-                "name": "[format('{0}-cosmos-pe-conn', parameters('name'))]",
+                "name": "[format('pep-{0}-cosmos-conn', parameters('name'))]",
                 "properties": {
                   "groupIds": [
                     "MongoCluster"
