@@ -46,6 +46,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
     anonymousPullEnabled: false
     dataEndpointEnabled: false
     networkRuleBypassOptions: 'AzureServices'
+    trustPolicyStatus: 'enabled'
     networkRuleSetDefaultAction: toLower(aiFoundryType) == 'standardprivate' ? 'Deny' : 'Allow'
     exportPolicyStatus: toLower(aiFoundryType) == 'standardprivate' ? 'disabled' : 'enabled'
     publicNetworkAccess: toLower(aiFoundryType) == 'standardprivate' ? 'Disabled' : 'Enabled'

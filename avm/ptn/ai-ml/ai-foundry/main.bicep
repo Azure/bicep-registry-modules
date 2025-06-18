@@ -6,6 +6,9 @@ targetScope = 'resourceGroup'
 @description('Required. Name of the resource to create.')
 param name string
 
+@description('Optional. Name of the AI Foundry project.')
+param projectName string = '${name}proj'
+
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
 
@@ -66,9 +69,6 @@ param networkAcls object = {
   //   }
   // ]
 }
-
-@description('Required. Name of the AI Foundry project')
-param projectName string = '${name}proj'
 
 var defaultTags = {
   'azd-env-name': name

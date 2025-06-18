@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "9571795479564695963"
+      "templateHash": "15139858429547656824"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -1051,6 +1051,13 @@
         "description": "Required. Name of the resource to create."
       }
     },
+    "projectName": {
+      "type": "string",
+      "defaultValue": "[format('{0}proj', parameters('name'))]",
+      "metadata": {
+        "description": "Optional. Name of the AI Foundry project."
+      }
+    },
     "location": {
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
@@ -1155,13 +1162,6 @@
       },
       "metadata": {
         "description": "Optional. A collection of rules governing the accessibility from specific network locations."
-      }
-    },
-    "projectName": {
-      "type": "string",
-      "defaultValue": "[format('{0}proj', parameters('name'))]",
-      "metadata": {
-        "description": "Required. Name of the AI Foundry project"
       }
     }
   },
@@ -8571,7 +8571,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "1831717161962687129"
+              "templateHash": "9879478258257388780"
             }
           },
           "parameters": {
@@ -11828,6 +11828,9 @@
                   },
                   "networkRuleBypassOptions": {
                     "value": "AzureServices"
+                  },
+                  "trustPolicyStatus": {
+                    "value": "enabled"
                   },
                   "networkRuleSetDefaultAction": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', 'Deny'), createObject('value', 'Allow'))]",
                   "exportPolicyStatus": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', 'disabled'), createObject('value', 'enabled'))]",
