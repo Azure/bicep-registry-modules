@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "1948741994122842698"
+      "templateHash": "18064359597836132134"
     },
     "name": "Azure Stack HCI Cluster",
     "description": "This module deploys an Azure Stack HCI Cluster on the provided Arc Machines."
@@ -680,14 +680,14 @@
       "type": "string",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The service principal ID for ARB. Required if useSharedKeyVault is true."
+        "description": "Conditional. The service principal ID for ARB. Required if useSharedKeyVault is true and need ARB service principal id."
       }
     },
     "servicePrincipalSecret": {
       "type": "securestring",
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true."
+        "description": "Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true and need ARB service principal id."
       }
     },
     "azureStackLCMUserCredentialContentType": {

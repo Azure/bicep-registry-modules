@@ -50,11 +50,11 @@ param localAdminUser string?
 @description('Conditional. The password of the local admin user. Required if useSharedKeyVault is true.')
 param localAdminPassword string?
 
-@description('Conditional. The service principal ID for ARB. Required if useSharedKeyVault is true.')
+@description('Conditional. The service principal ID for ARB. Required if useSharedKeyVault is true and need ARB service principal id.')
 param servicePrincipalId string?
 
 @secure()
-@description('Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true.')
+@description('Conditional. The service principal secret for ARB. Required if useSharedKeyVault is true and need ARB service principal id.')
 param servicePrincipalSecret string?
 
 @description('Optional. Content type of the azure stack lcm user credential.')
