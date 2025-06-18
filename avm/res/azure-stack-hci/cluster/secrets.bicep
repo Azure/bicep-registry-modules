@@ -65,8 +65,8 @@ param witnessStorageAccountResourceGroup string
 @secure()
 param hciResourceProviderObjectId string
 
-@description('Required. Names of the cluster node Arc Machine resources. These are the name of the Arc Machine resources created when the new HCI nodes were Arc initialized. Example: [hci-node-1, hci-node-2].')
-param clusterNodeNames array
+@description('Required. Resource ids of the cluster node Arc Machine resources. These are the id of the Arc Machine resources created when the new HCI nodes were Arc initialized.')
+param arcNodeResourceIds array
 
 resource witnessStorageAccount 'Microsoft.Storage/storageAccounts@2023-01-01' existing = {
   name: storageAccountName
@@ -81,10 +81,6 @@ var keyVaultSecretUserRoleID = subscriptionResourceId(
   'Microsoft.Authorization/roleDefinitions',
   '4633458b-17de-408a-b874-0445c86b69e6'
 )
-
-var arcNodeResourceIds = [
-  for (nodeName, index) in clusterNodeNames: resourceId('Microsoft.HybridCompute/machines', nodeName)
-]
 
 resource KeyVaultSecretsUserPermissions 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for hciNode in arcNodeResourceIds: {
