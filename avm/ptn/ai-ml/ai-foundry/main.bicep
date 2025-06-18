@@ -27,7 +27,7 @@ param vmSize string = 'Standard_DS4_v2'
 @minLength(3)
 @maxLength(20)
 @description('Optional. Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion.')
-param vmAdminUsername string = '${name}vmuser'
+param vmAdminUsername string = take('${name}vmuser', 20)
 
 @minLength(4)
 @maxLength(70)
