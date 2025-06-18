@@ -21,7 +21,7 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2
     tags: tags
     enableTelemetry: enableTelemetry
     publicNetworkAccess: 'Enabled'
-    internal: false
+    internal: enableRedundancy ? true : false
     // WAF aligned configuration for Private Networking
     infrastructureSubnetResourceId: enablePrivateNetworking ? subnetResourceId : null
     // WAF aligned configuration for Monitoring

@@ -31,8 +31,6 @@ param virtualMachineAdminPassword string = newGuid()
 // ============ //
 
 var enforcedLocation = 'australiaeast'
-var enforcedOpenAiLocation = 'australiaeast'
-var enforcedFailoverLocation = 'uksouth'
 var resourceGroupLocation = enforcedLocation
 
 // General resources

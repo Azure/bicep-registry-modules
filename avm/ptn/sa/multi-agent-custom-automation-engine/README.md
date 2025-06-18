@@ -113,7 +113,6 @@ This instance deploys the [Multi-Agent Custom Automation Engine solution acceler
 module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>' = {
   name: 'multiAgentCustomAutomationEngineDeployment'
   params: {
-    azureOpenAILocation: 'australiaeast'
     solutionPrefix: 'macaemin'
   }
 }
@@ -131,9 +130,6 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "azureOpenAILocation": {
-      "value": "australiaeast"
-    },
     "solutionPrefix": {
       "value": "macaemin"
     }
@@ -151,7 +147,6 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
 ```bicep-params
 using 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>'
 
-param azureOpenAILocation = 'australiaeast'
 param solutionPrefix = 'macaemin'
 ```
 
