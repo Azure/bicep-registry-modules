@@ -429,6 +429,7 @@ module avmRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignme
     principalId: avmManagedIdentity.outputs.principalId
     roleDefinitionId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
   scope: resourceGroup(resourceGroup().name)
 }
@@ -451,7 +452,7 @@ module avmKeyVault './modules/key-vault.bicep' = {
     keyvaultsku: 'standard'
     enableRbacAuthorization: true
     createMode: 'default'
-    enableTelemetry: false
+    enableTelemetry: enableTelemetry
     enableVaultForDiskEncryption: true
     enableVaultForTemplateDeployment: true
     softDeleteRetentionInDays: 7
@@ -469,6 +470,7 @@ module avmKeyVault_RoleAssignment_appConfig 'br/public:avm/ptn/authorization/res
     roleDefinitionId: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7' // 'Key Vault Secrets User'
     roleName: 'Key Vault Secret User'
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -571,6 +573,7 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_blob 'br/public:avm/ptn/
     roleName: 'Storage Blob Data Contributor'
     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -582,6 +585,7 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_API_blob 'br/public:avm/
     roleName: 'Storage Blob Data Contributor'
     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -593,6 +597,7 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_queue 'br/public:avm/ptn
     roleName: 'Storage Queue Data Contributor'
     roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
 }
 
