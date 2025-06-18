@@ -37,12 +37,6 @@ param arbDeploymentServicePrincipalSecret string = ''
 #disable-next-line secure-parameter-default
 param hciResourceProviderObjectId string = ''
 
-@description('Optional. The name of the secret in the key vault that contains the SSH private key PEM.')
-param sshPrivateKeyPemSecretName string = 'AksArcAgentSshPrivateKeyPem'
-
-@description('Optional. The name of the secret in the key vault that contains the SSH public key.')
-param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
-
 #disable-next-line no-hardcoded-location // Due to quotas and capacity challenges, this region must be used in the AVM testing subscription
 var enforcedLocation = 'australiaeast'
 
@@ -188,15 +182,8 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
   scope: resourceGroup
   params: {
     name: '${namePrefix}${serviceShort}logicalnetwork'
-    location: enforcedLocation
     customLocationResourceId: customLocation.id
     vmSwitchName: azlocal.outputs.vSwitchName
-    ipAllocationMethod: 'Static'
-    addressPrefix: '172.20.0.1/24'
-    startingAddress: '172.20.0.171'
-    endingAddress: '172.20.0.190'
-    defaultGateway: '172.20.0.1'
-    dnsServers: ['172.20.0.1']
     routeName: 'default'
     vlanId: null
     tags: {
