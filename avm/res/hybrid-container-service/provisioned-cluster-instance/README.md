@@ -184,7 +184,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     licenseProfile: {
       azureHybridBenefit: 'False'
     }
-    linuxProfile: '<linuxProfile>'
     location: '<location>'
     oidcIssuerProfile: {
       enabled: false
@@ -287,9 +286,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "azureHybridBenefit": "False"
       }
     },
-    "linuxProfile": {
-      "value": "<linuxProfile>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -376,7 +372,6 @@ param kubernetesVersion = '1.29.4'
 param licenseProfile = {
   azureHybridBenefit: 'False'
 }
-param linuxProfile = '<linuxProfile>'
 param location = '<location>'
 param oidcIssuerProfile = {
   enabled: false
@@ -451,7 +446,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       vmSize: 'Standard_A4_v2'
     }
     keyVaultName: '<keyVaultName>'
-    linuxProfile: '<linuxProfile>'
   }
 }
 ```
@@ -520,9 +514,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     },
     "keyVaultName": {
       "value": "<keyVaultName>"
-    },
-    "linuxProfile": {
-      "value": "<linuxProfile>"
     }
   }
 }
@@ -577,7 +568,6 @@ param controlPlane = {
   vmSize: 'Standard_A4_v2'
 }
 param keyVaultName = '<keyVaultName>'
-param linuxProfile = '<linuxProfile>'
 ```
 
 </details>
