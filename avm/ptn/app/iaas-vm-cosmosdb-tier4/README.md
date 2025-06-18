@@ -273,7 +273,7 @@ Network security group rules for the VM.
         destinationPortRange: '80'
         direction: 'Inbound'
         priority: 300
-        protocol: 'TCP'
+        protocol: 'Tcp'
         sourceAddressPrefix: '*'
         sourcePortRange: '*'
       }
