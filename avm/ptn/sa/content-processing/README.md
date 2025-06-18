@@ -105,10 +105,13 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/content-processing:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Waf-Aligned](#example-2-waf-aligned)
+- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
+- [WAF-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
 
-### Example 1: _Defaults_
+### Example 1: _Sandbox configuration with default parameter values_
+
+This instance deploys the [Content Processing Solution Accelerator] using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
+
 
 <details>
 
@@ -179,7 +182,10 @@ param location = '<location>'
 </details>
 <p>
 
-### Example 2: _Waf-Aligned_
+### Example 2: _WAF-aligned configuration with default parameter values_
+
+This instance deploys the [Content Processing Solution Accelerator]
+
 
 <details>
 
@@ -259,7 +265,7 @@ param location = '<location>'
 | [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast |
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable telemetry for the deployment |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable telemetry for the deployment |
 | [`environmentName`](#parameter-environmentname) | string | Name of the environment to deploy the solution into: |
 | [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment: (minimum 10) |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4 |
@@ -297,7 +303,7 @@ Enable WAF for the deployment
 
 ### Parameter: `enableTelemetry`
 
-Enable telemetry for the deployment
+Enable/Disable telemetry for the deployment
 
 - Required: No
 - Type: bool

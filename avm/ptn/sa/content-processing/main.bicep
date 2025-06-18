@@ -34,7 +34,7 @@ param resourceGroupLocation string = resourceGroup().location
 param resourceNameFormatString string = '{0}avm-cps'
 @description('Optional. Enable WAF for the deployment')
 param enablePrivateNetworking bool = true
-@description('Optional. Enable telemetry for the deployment')
+@description('Optional. Enable/Disable telemetry for the deployment')
 param enableTelemetry bool = true
 //@description('Resource naming abbreviations')
 //param namingAbbrs object
@@ -47,7 +47,7 @@ param tags object = {
 param useLocalBuild bool = false
 
 // ========== Solution Prefix Variable ========== //
-var solution_prefix = 'cps-${padLeft(take(toLower(uniqueString(subscription().id, environmentName, resourceGroup().location)), 12), 12, '0')}'
+var solutionPrefix = 'cps-${padLeft(take(toLower(uniqueString(subscription().id, environmentName, resourceGroup().location)), 12), 12, '0')}'
 // ========== Resource Naming Abbreviations ========== //
 @description('Optional. Resource naming abbreviations')
 var namingAbbrs = loadJsonContent('abbreviations.json')
@@ -92,7 +92,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 module avmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.1' = if (enablePrivateNetworking) {
   name: format(resourceNameFormatString, '${namingAbbrs.networking.networkSecurityGroup}backend')
   params: {
-    name: '${namingAbbrs.networking.networkSecurityGroup}${solution_prefix}-backend'
+    name: '${namingAbbrs.networking.networkSecurityGroup}${solutionPrefix}-backend'
     location: resourceGroupLocation
     tags: tags
     enableTelemetry: enableTelemetry
@@ -108,7 +108,7 @@ module avmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group
 module avmNetworkSecurityGroup_Containers 'br/public:avm/res/network/network-security-group:0.5.1' = if (enablePrivateNetworking) {
   name: format(resourceNameFormatString, '${namingAbbrs.networking.networkSecurityGroup}containers')
   params: {
-    name: '${namingAbbrs.networking.networkSecurityGroup}${solution_prefix}-containers'
+    name: '${namingAbbrs.networking.networkSecurityGroup}${solutionPrefix}-containers'
     location: resourceGroupLocation
     tags: tags
     enableTelemetry: enableTelemetry
@@ -177,7 +177,7 @@ module avmNetworkSecurityGroup_Containers 'br/public:avm/res/network/network-sec
 module avmNetworkSecurityGroup_Bastion 'br/public:avm/res/network/network-security-group:0.5.1' = if (enablePrivateNetworking) {
   name: format(resourceNameFormatString, '${namingAbbrs.networking.networkSecurityGroup}bastion')
   params: {
-    name: '${namingAbbrs.networking.networkSecurityGroup}${solution_prefix}-bastion'
+    name: '${namingAbbrs.networking.networkSecurityGroup}${solutionPrefix}-bastion'
     location: resourceGroupLocation
     tags: tags
     enableTelemetry: enableTelemetry
@@ -191,7 +191,7 @@ module avmNetworkSecurityGroup_Bastion 'br/public:avm/res/network/network-securi
 module avmNetworkSecurityGroup_Admin 'br/public:avm/res/network/network-security-group:0.5.1' = if (enablePrivateNetworking) {
   name: format(resourceNameFormatString, '${namingAbbrs.networking.networkSecurityGroup}admin')
   params: {
-    name: '${namingAbbrs.networking.networkSecurityGroup}${solution_prefix}-admin'
+    name: '${namingAbbrs.networking.networkSecurityGroup}${solutionPrefix}-admin'
     location: resourceGroupLocation
     tags: tags
     enableTelemetry: enableTelemetry
@@ -212,7 +212,7 @@ module avmNetworkSecurityGroup_Admin 'br/public:avm/res/network/network-security
 module avmVirtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (enablePrivateNetworking) {
   name: format(resourceNameFormatString, namingAbbrs.networking.virtualNetwork)
   params: {
-    name: '${namingAbbrs.networking.virtualNetwork}${solution_prefix}'
+    name: '${namingAbbrs.networking.virtualNetwork}${solutionPrefix}'
     location: resourceGroupLocation
     tags: tags
     enableTelemetry: enableTelemetry
@@ -395,7 +395,7 @@ module avmPrivateDnsZoneContainerRegistry 'br/public:avm/res/network/private-dns
 module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
   //name: format(deployment_param.resource_name_format_string, abbrs.managementGovernance.logAnalyticsWorkspace)
   params: {
-    appInsightsName: '${namingAbbrs.managementGovernance.applicationInsights}${solution_prefix}'
+    appInsightsName: '${namingAbbrs.managementGovernance.applicationInsights}${solutionPrefix}'
     location: resourceGroupLocation
     //diagnosticSettings: [{ useThisWorkspace: true }]
     skuName: 'PerGB2018'
@@ -404,7 +404,7 @@ module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
     disableLocalAuth: false
     flowType: 'Bluefield'
     kind: 'web'
-    logAnalyticsWorkspaceName: '${namingAbbrs.managementGovernance.logAnalyticsWorkspace}${solution_prefix}'
+    logAnalyticsWorkspaceName: '${namingAbbrs.managementGovernance.logAnalyticsWorkspace}${solutionPrefix}'
     publicNetworkAccessForQuery: 'Enabled'
     requestSource: 'rest'
     retentionInDays: 30
@@ -415,7 +415,7 @@ module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
 module avmManagedIdentity './modules/managed-identity.bicep' = {
   //name: format(resourceNameFormatString, namingAbbrs.security.managedIdentity)
   params: {
-    name: '${namingAbbrs.security.managedIdentity}${solution_prefix}'
+    name: '${namingAbbrs.security.managedIdentity}${solutionPrefix}'
     location: resourceGroupLocation
     tags: tags
   }
@@ -437,7 +437,7 @@ module avmRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignme
 module avmKeyVault './modules/key-vault.bicep' = {
   //name: format(resourceNameFormatString, namingAbbrs.security.keyVault)
   params: {
-    keyvaultName: '${namingAbbrs.security.keyVault}${solution_prefix}'
+    keyvaultName: '${namingAbbrs.security.keyVault}${solutionPrefix}'
     location: resourceGroupLocation
     tags: tags
     roleAssignments: [
@@ -475,7 +475,7 @@ module avmKeyVault_RoleAssignment_appConfig 'br/public:avm/ptn/authorization/res
 module avmContainerRegistry 'modules/container-registry.bicep' = {
   //name: format(deployment_param.resource_name_format_string, abbrs.containers.containerRegistry)
   params: {
-    acrName: '${namingAbbrs.containers.containerRegistry}${replace(solution_prefix, '-', '')}'
+    acrName: '${namingAbbrs.containers.containerRegistry}${replace(solutionPrefix, '-', '')}'
     location: resourceGroupLocation
     acrSku: 'Basic'
     publicNetworkAccess: 'Enabled'
@@ -488,7 +488,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
 module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   name: format(resourceNameFormatString, namingAbbrs.storage.storageAccount)
   params: {
-    name: '${namingAbbrs.storage.storageAccount}${replace(solution_prefix, '-', '')}'
+    name: '${namingAbbrs.storage.storageAccount}${replace(solutionPrefix, '-', '')}'
     location: resourceGroupLocation
     skuName: 'Standard_LRS'
     kind: 'StorageV2'
@@ -610,7 +610,7 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm
 // module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
 //   //name: format(deployment_param.resource_name_format_string, abbrs.managementGovernance.logAnalyticsWorkspace)
 //   params: {
-//       appInsightsName: '${namingAbbrs.managementGovernance.applicationInsights}${solution_prefix}'
+//       appInsightsName: '${namingAbbrs.managementGovernance.applicationInsights}${solutionPrefix}'
 //       location: resourceGroupLocation
 //       //diagnosticSettings: [{ useThisWorkspace: true }]
 //       skuName: 'PerGB2018'
@@ -619,7 +619,7 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm
 //       disableLocalAuth: false
 //       flowType: 'Bluefield'
 //       kind: 'web'
-//       logAnalyticsWorkspaceName: '${namingAbbrs.managementGovernance.logAnalyticsWorkspace}${solution_prefix}'
+//       logAnalyticsWorkspaceName: '${namingAbbrs.managementGovernance.logAnalyticsWorkspace}${solutionPrefix}'
 //       publicNetworkAccessForQuery: 'Enabled'
 //       requestSource: 'rest'
 //       retentionInDays: 30
@@ -630,7 +630,7 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm
 // module avmManagedIdentity './modules/managed-identity.bicep' = {
 //   name: format(resourceNameFormatString, namingAbbrs.security.managedIdentity)
 //   params: {
-//     name: '${namingAbbrs.security.managedIdentity}${solution_prefix}'
+//     name: '${namingAbbrs.security.managedIdentity}${solutionPrefix}'
 //     location: resourceGroupLocation
 //     tags: tags
 //   }
@@ -652,7 +652,7 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm
 // module avmKeyVault './modules/key-vault.bicep' = {
 //   name: format(resourceNameFormatString, namingAbbrs.security.keyVault)
 //   params: {
-//     keyvaultName: '${namingAbbrs.security.keyVault}${solution_prefix}'
+//     keyvaultName: '${namingAbbrs.security.keyVault}${solutionPrefix}'
 //     location: resourceGroupLocation
 //     tags: tags
 //     roleAssignments: [
@@ -688,9 +688,9 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm
 // }
 
 // module avmContainerRegistry 'modules/container-registry.bicep' = {
-//   name: '${namingAbbrs.containers.containerRegistry}${replace(solution_prefix, '-', '')}'
+//   name: '${namingAbbrs.containers.containerRegistry}${replace(solutionPrefix, '-', '')}'
 //   params: {
-//     acrName: '${namingAbbrs.containers.containerRegistry}${replace(solution_prefix, '-', '')}'
+//     acrName: '${namingAbbrs.containers.containerRegistry}${replace(solutionPrefix, '-', '')}'
 //     location: resourceGroupLocation
 //     acrSku: 'Basic'
 //     publicNetworkAccess: 'Enabled'
@@ -703,7 +703,7 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm
 // module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
 //   name: format(resourceNameFormatString, namingAbbrs.storage.storageAccount)
 //   params: {
-//     name: '${namingAbbrs.storage.storageAccount}${replace(solution_prefix, '-', '')}'
+//     name: '${namingAbbrs.storage.storageAccount}${replace(solutionPrefix, '-', '')}'
 //     location: resourceGroupLocation
 //     skuName: 'Standard_LRS'
 //     kind: 'StorageV2'
@@ -826,16 +826,16 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm
 module avmAiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
   name: format(resourceNameFormatString, namingAbbrs.ai.aiServices)
   params: {
-    name: '${namingAbbrs.ai.aiServices}${solution_prefix}'
+    name: '${namingAbbrs.ai.aiServices}${solutionPrefix}'
     location: resourceGroupLocation
     sku: 'S0'
     managedIdentities: { systemAssigned: true }
     kind: 'AIServices'
     tags: {
-      app: solution_prefix
+      app: solutionPrefix
       location: resourceGroupLocation
     }
-    customSubDomainName: '${namingAbbrs.ai.aiServices}${solution_prefix}'
+    customSubDomainName: '${namingAbbrs.ai.aiServices}${solutionPrefix}'
     diagnosticSettings: [
       {
         workspaceResourceId: avmAppInsightsLogAnalyticsWorkspace.outputs.logAnalyticsWorkspaceResourceId
@@ -910,16 +910,16 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.10.2' = 
   name: format(resourceNameFormatString, 'aicu-')
 
   params: {
-    name: 'aicu-${solution_prefix}'
+    name: 'aicu-${solutionPrefix}'
     location: contentUnderstandingLocation
     sku: 'S0'
     managedIdentities: { systemAssigned: true }
     kind: 'AIServices'
     tags: {
-      app: solution_prefix
+      app: solutionPrefix
       location: resourceGroupLocation
     }
-    customSubDomainName: 'aicu-${solution_prefix}'
+    customSubDomainName: 'aicu-${solutionPrefix}'
     disableLocalAuth: true
 
     publicNetworkAccess: 'Enabled' // Always enabled for AI Services
@@ -962,7 +962,7 @@ module avmAiServices_cu_roleAssignment 'br/public:avm/ptn/authorization/resource
 module avmAiServices_storage_hub 'br/public:avm/res/storage/storage-account:0.20.0' = {
   name: format(resourceNameFormatString, 'aistoragehub-')
   params: {
-    name: 'aisthub${replace(solution_prefix, '-', '')}'
+    name: 'aisthub${replace(solutionPrefix, '-', '')}'
     location: resourceGroupLocation
     skuName: 'Standard_LRS'
     kind: 'StorageV2'
@@ -1043,14 +1043,14 @@ module avmAiServices_storage_hub 'br/public:avm/res/storage/storage-account:0.20
 module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = {
   name: format(resourceNameFormatString, namingAbbrs.ai.aiHub)
   params: {
-    name: '${namingAbbrs.ai.aiHub}${solution_prefix}'
-    friendlyName: '${namingAbbrs.ai.aiHub}${solution_prefix}'
+    name: '${namingAbbrs.ai.aiHub}${solutionPrefix}'
+    friendlyName: '${namingAbbrs.ai.aiHub}${solutionPrefix}'
     description: 'AI Hub for CPS template'
     location: resourceGroupLocation
     sku: 'Basic'
     managedIdentities: { systemAssigned: true }
     tags: {
-      app: solution_prefix
+      app: solutionPrefix
       location: resourceGroupLocation
     }
     // dependent resources
@@ -1108,12 +1108,12 @@ module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' =
 module avmAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = {
   name: format(resourceNameFormatString, namingAbbrs.ai.aiHubProject)
   params: {
-    name: '${namingAbbrs.ai.aiHubProject}${solution_prefix}'
+    name: '${namingAbbrs.ai.aiHubProject}${solutionPrefix}'
     location: resourceGroupLocation
     managedIdentities: { systemAssigned: true }
     kind: 'Project'
     sku: 'Basic'
-    friendlyName: '${namingAbbrs.ai.aiHubProject}${solution_prefix}'
+    friendlyName: '${namingAbbrs.ai.aiHubProject}${solutionPrefix}'
     hubResourceId: avmAiHub.outputs.resourceId
   }
 }
@@ -1122,10 +1122,10 @@ module avmAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.
 module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.1' = {
   name: format(resourceNameFormatString, namingAbbrs.containers.containerAppsEnvironment)
   params: {
-    name: '${namingAbbrs.containers.containerAppsEnvironment}${solution_prefix}'
+    name: '${namingAbbrs.containers.containerAppsEnvironment}${solutionPrefix}'
     location: resourceGroupLocation
     tags: {
-      app: solution_prefix
+      app: solutionPrefix
       location: resourceGroupLocation
     }
     managedIdentities: { systemAssigned: true }
@@ -1160,7 +1160,7 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.1' = {
 module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = {
   name: format(resourceNameFormatString, 'acr-reader-mid-')
   params: {
-    name: 'acr-reader-mid${solution_prefix}'
+    name: 'acr-reader-mid${solutionPrefix}'
     location: resourceGroupLocation
   }
   scope: resourceGroup(resourceGroup().name)
@@ -1181,7 +1181,7 @@ module bicepAcrPullRoleAssignment 'br/public:avm/ptn/authorization/resource-role
 module avmContainerApp 'br/public:avm/res/app/container-app:0.16.0' = {
   name: format(resourceNameFormatString, 'caapp-')
   params: {
-    name: '${namingAbbrs.containers.containerApp}${solution_prefix}-app'
+    name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-app'
     location: resourceGroupLocation
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
@@ -1203,7 +1203,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.16.0' = {
 
     containers: [
       {
-        name: '${namingAbbrs.containers.containerApp}${solution_prefix}'
+        name: '${namingAbbrs.containers.containerApp}${solutionPrefix}'
         image: '${publicContainerImageEndpoint}/contentprocessor:latest'
 
         resources: {
@@ -1232,7 +1232,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.16.0' = {
 module avmContainerApp_API 'br/public:avm/res/app/container-app:0.16.0' = {
   name: format(resourceNameFormatString, 'caapi-')
   params: {
-    name: '${namingAbbrs.containers.containerApp}${solution_prefix}-api'
+    name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
     location: resourceGroupLocation
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
@@ -1255,7 +1255,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.16.0' = {
 
     containers: [
       {
-        name: '${namingAbbrs.containers.containerApp}${solution_prefix}-api'
+        name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
         image: '${publicContainerImageEndpoint}/contentprocessorapi:latest'
         resources: {
           cpu: '4'
@@ -1348,7 +1348,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.16.0' = {
 module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.16.0' = {
   name: format(resourceNameFormatString, 'caweb-')
   params: {
-    name: '${namingAbbrs.containers.containerApp}${solution_prefix}-web'
+    name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-web'
     location: resourceGroupLocation
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
@@ -1388,7 +1388,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.16.0' = {
     }
     containers: [
       {
-        name: '${namingAbbrs.containers.containerApp}${solution_prefix}-web'
+        name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-web'
         image: '${publicContainerImageEndpoint}/contentprocessorweb:latest'
         resources: {
           cpu: '4'
@@ -1428,7 +1428,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.16.0' = {
 module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
   name: format(resourceNameFormatString, namingAbbrs.databases.cosmosDBDatabase)
   params: {
-    name: '${namingAbbrs.databases.cosmosDBDatabase}${solution_prefix}'
+    name: '${namingAbbrs.databases.cosmosDBDatabase}${solutionPrefix}'
     location: resourceGroupLocation
     mongodbDatabases: [
       {
@@ -1481,11 +1481,11 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
 module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = {
   name: format(resourceNameFormatString, namingAbbrs.developerTools.appConfigurationStore)
   params: {
-    name: '${namingAbbrs.developerTools.appConfigurationStore}${solution_prefix}'
+    name: '${namingAbbrs.developerTools.appConfigurationStore}${solutionPrefix}'
     location: resourceGroupLocation
 
     tags: {
-      app: solution_prefix
+      app: solutionPrefix
       location: resourceGroupLocation
     }
     managedIdentities: { systemAssigned: true }
@@ -1602,7 +1602,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
 module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = if (enablePrivateNetworking) {
   name: format(resourceNameFormatString, '${namingAbbrs.developerTools.appConfigurationStore}-update')
   params: {
-    name: '${namingAbbrs.developerTools.appConfigurationStore}${solution_prefix}'
+    name: '${namingAbbrs.developerTools.appConfigurationStore}${solutionPrefix}'
     location: resourceGroupLocation
 
     publicNetworkAccess: 'Disabled'
@@ -1664,7 +1664,7 @@ module avmRoleAssignment_container_app_web 'br/public:avm/ptn/authorization/reso
 module avmContainerApp_update 'br/public:avm/res/app/container-app:0.16.0' = {
   name: format(resourceNameFormatString, 'caapp-update-')
   params: {
-    name: '${namingAbbrs.containers.containerApp}${solution_prefix}-app'
+    name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-app'
     location: resourceGroupLocation
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
@@ -1686,7 +1686,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.16.0' = {
 
     containers: [
       {
-        name: '${namingAbbrs.containers.containerApp}${solution_prefix}'
+        name: '${namingAbbrs.containers.containerApp}${solutionPrefix}'
         image: '${publicContainerImageEndpoint}/contentprocessor:latest'
 
         resources: {
@@ -1719,7 +1719,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.16.0' = {
 module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.16.0' = {
   name: format(resourceNameFormatString, 'caapi-update-')
   params: {
-    name: '${namingAbbrs.containers.containerApp}${solution_prefix}-api'
+    name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
     location: resourceGroupLocation
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
@@ -1742,7 +1742,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.16.0' =
 
     containers: [
       {
-        name: '${namingAbbrs.containers.containerApp}${solution_prefix}-api'
+        name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
         image: '${publicContainerImageEndpoint}/contentprocessorapi:latest'
         resources: {
           cpu: '4'
