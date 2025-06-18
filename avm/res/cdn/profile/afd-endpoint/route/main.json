@@ -1,0 +1,398 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.36.1.42791",
+      "templateHash": "9880354439474902054"
+    },
+    "name": "CDN Profiles AFD Endpoint Route",
+    "description": "This module deploys a CDN Profile AFD Endpoint route."
+  },
+  "definitions": {
+    "routeType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the route."
+          }
+        },
+        "cacheConfiguration": {
+          "$ref": "#/definitions/afdRoutecacheConfigurationType",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object."
+          }
+        },
+        "customDomainNames": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The names of the custom domains."
+          }
+        },
+        "enabledState": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to enable use of this rule."
+          }
+        },
+        "forwardingProtocol": {
+          "type": "string",
+          "allowedValues": [
+            "HttpOnly",
+            "HttpsOnly",
+            "MatchRequest"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The protocol this rule will use when forwarding traffic to backends."
+          }
+        },
+        "httpsRedirect": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to automatically redirect HTTP traffic to HTTPS traffic."
+          }
+        },
+        "linkToDefaultDomain": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether this route will be linked to the default endpoint domain."
+          }
+        },
+        "originGroupName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the origin group."
+          }
+        },
+        "originPath": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath."
+          }
+        },
+        "patternsToMatch": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The route patterns of the rule."
+          }
+        },
+        "ruleSets": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The rule sets of the rule."
+          }
+        },
+        "supportedProtocols": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The supported protocols of the rule."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the route."
+      }
+    },
+    "afdRoutecacheConfigurationType": {
+      "type": "object",
+      "properties": {
+        "compressionSettings": {
+          "type": "object",
+          "properties": {
+            "contentTypesToCompress": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "metadata": {
+                "description": "Required. List of content types on which compression applies. The value should be a valid MIME type."
+              }
+            },
+            "isCompressionEnabled": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Indicates whether content compression is enabled on AzureFrontDoor. Default value is false. If compression is enabled, content will be served as compressed if user requests for a compressed version. Content won't be compressed on AzureFrontDoor when requested content is smaller than 1 byte or larger than 1 MB."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Compression settings."
+          }
+        },
+        "queryParameters": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Query parameters to include or exclude (comma separated)."
+          }
+        },
+        "queryStringCachingBehavior": {
+          "type": "string",
+          "allowedValues": [
+            "IgnoreQueryString",
+            "IgnoreSpecifiedQueryStrings",
+            "IncludeSpecifiedQueryStrings",
+            "UseQueryString"
+          ],
+          "metadata": {
+            "description": "Required. Defines how Frontdoor caches requests that include query strings."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type of the route cache configuration."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the route."
+      }
+    },
+    "profileName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the parent CDN profile."
+      }
+    },
+    "afdEndpointName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the AFD endpoint."
+      }
+    },
+    "cacheConfiguration": {
+      "type": "object",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The caching configuration for this route. To disable caching, do not provide a cacheConfiguration object."
+      }
+    },
+    "customDomainNames": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The names of the custom domains. The custom domains must be defined in the profile customDomains array."
+      }
+    },
+    "forwardingProtocol": {
+      "type": "string",
+      "defaultValue": "MatchRequest",
+      "allowedValues": [
+        "HttpOnly",
+        "HttpsOnly",
+        "MatchRequest"
+      ],
+      "metadata": {
+        "description": "Optional. The protocol this rule will use when forwarding traffic to backends."
+      }
+    },
+    "enabledState": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether this route is enabled."
+      }
+    },
+    "httpsRedirect": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether to automatically redirect HTTP traffic to HTTPS traffic."
+      }
+    },
+    "linkToDefaultDomain": {
+      "type": "string",
+      "defaultValue": "Enabled",
+      "allowedValues": [
+        "Disabled",
+        "Enabled"
+      ],
+      "metadata": {
+        "description": "Optional. Whether this route will be linked to the default endpoint domain."
+      }
+    },
+    "originGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the origin group. The origin group must be defined in the profile originGroups."
+      }
+    },
+    "originPath": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. A directory path on the origin that AzureFrontDoor can use to retrieve content from, e.g. contoso.cloudapp.net/originpath."
+      }
+    },
+    "patternsToMatch": {
+      "type": "array",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The route patterns of the rule."
+      }
+    },
+    "ruleSets": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The rule sets of the rule. The rule sets must be defined in the profile ruleSets."
+      }
+    },
+    "supportedProtocols": {
+      "type": "array",
+      "nullable": true,
+      "allowedValues": [
+        "Http",
+        "Https"
+      ],
+      "metadata": {
+        "description": "Optional. The supported protocols of the rule."
+      }
+    }
+  },
+  "resources": {
+    "profile::afdEndpoint": {
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles/afdEndpoints",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('afdEndpointName'))]"
+    },
+    "profile::customDomains": {
+      "copy": {
+        "name": "profile::customDomains",
+        "count": "[length(coalesce(parameters('customDomainNames'), createArray()))]"
+      },
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles/customDomains",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[copyIndex()])]"
+    },
+    "profile::originGroup": {
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles/originGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('originGroupName'))]"
+    },
+    "profile::ruleSet": {
+      "copy": {
+        "name": "profile::ruleSet",
+        "count": "[length(parameters('ruleSets'))]"
+      },
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles/ruleSets",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}', parameters('profileName'), parameters('ruleSets')[copyIndex()].name)]"
+    },
+    "profile": {
+      "existing": true,
+      "type": "Microsoft.Cdn/profiles",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('profileName')]"
+    },
+    "route": {
+      "type": "Microsoft.Cdn/profiles/afdEndpoints/routes",
+      "apiVersion": "2023-05-01",
+      "name": "[format('{0}/{1}/{2}', parameters('profileName'), parameters('afdEndpointName'), parameters('name'))]",
+      "properties": {
+        "copy": [
+          {
+            "name": "customDomains",
+            "count": "[length(range(0, length(coalesce(parameters('customDomainNames'), createArray()))))]",
+            "input": {
+              "id": "[resourceId('Microsoft.Cdn/profiles/customDomains', parameters('profileName'), coalesce(parameters('customDomainNames'), createArray())[range(0, length(coalesce(parameters('customDomainNames'), createArray())))[copyIndex('customDomains')]])]"
+            }
+          },
+          {
+            "name": "ruleSets",
+            "count": "[length(parameters('ruleSets'))]",
+            "input": {
+              "id": "[resourceId('Microsoft.Cdn/profiles/ruleSets', parameters('profileName'), parameters('ruleSets')[copyIndex('ruleSets')].name)]"
+            }
+          }
+        ],
+        "cacheConfiguration": "[parameters('cacheConfiguration')]",
+        "enabledState": "[parameters('enabledState')]",
+        "forwardingProtocol": "[parameters('forwardingProtocol')]",
+        "httpsRedirect": "[parameters('httpsRedirect')]",
+        "linkToDefaultDomain": "[parameters('linkToDefaultDomain')]",
+        "originGroup": {
+          "id": "[resourceId('Microsoft.Cdn/profiles/originGroups', parameters('profileName'), parameters('originGroupName'))]"
+        },
+        "originPath": "[parameters('originPath')]",
+        "patternsToMatch": "[parameters('patternsToMatch')]",
+        "supportedProtocols": "[parameters('supportedProtocols')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the route."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The ID of the route."
+      },
+      "value": "[resourceId('Microsoft.Cdn/profiles/afdEndpoints/routes', parameters('profileName'), parameters('afdEndpointName'), parameters('name'))]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the route was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

@@ -14,7 +14,7 @@ This module deploys a Key Vault Secret.
 | Resource Type | API Version |
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
 
 ## Parameters
 
@@ -22,7 +22,7 @@ This module deploys a Key Vault Secret.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the secret. |
+| [`name`](#parameter-name) | string | The name of the secret (letters (upper and lower case), numbers, -). |
 | [`value`](#parameter-value) | securestring | The value of the secret. NOTE: "value" will never be returned from the service, as APIs using this model are is intended for internal use in ARM deployments. Users should use the data-plane REST service for interaction with vault secrets. |
 
 **Conditional parameters**
@@ -44,7 +44,7 @@ This module deploys a Key Vault Secret.
 
 ### Parameter: `name`
 
-The name of the secret.
+The name of the secret (letters (upper and lower case), numbers, -).
 
 - Required: Yes
 - Type: string

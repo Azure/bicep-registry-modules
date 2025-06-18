@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11441913607220871799"
+      "templateHash": "16911264602813109884"
     },
     "name": "Virtual Network Gateways",
     "description": "This module deploys a Virtual Network Gateway."
@@ -95,6 +95,65 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "Configuration for VPN client AAD authentication."
+      }
+    },
+    "ipamPoolPrefixAllocationType": {
+      "type": "object",
+      "properties": {
+        "numberOfIpAddresses": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Number of IP addresses to allocate."
+          }
+        },
+        "pool": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Resource id of the associated Azure IpamPool resource."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Pool configuration for IPAM."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Configuration for IPAM Pool Prefix Allocation."
+      }
+    },
+    "customRoutesType": {
+      "type": "object",
+      "properties": {
+        "addressPrefixes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of address blocks reserved for this virtual network in CIDR notation."
+          }
+        },
+        "ipamPoolPrefixAllocations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ipamPoolPrefixAllocationType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A list of IPAM Pools allocating IP address prefixes."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "Configuration for custom routes address space."
       }
     },
     "clusterSettingType": {
@@ -924,6 +983,13 @@
       "metadata": {
         "description": "Optional. Autoscale configuration for virtual network gateway. Only applicable for certain SKUs."
       }
+    },
+    "customRoutes": {
+      "$ref": "#/definitions/customRoutesType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients."
+      }
     }
   },
   "variables": {
@@ -1032,6 +1098,7 @@
         "vpnType": "[if(not(variables('isExpressRoute')), parameters('vpnType'), 'PolicyBased')]",
         "vpnClientConfiguration": "[if(not(empty(parameters('vpnClientAddressPoolPrefix'))), variables('vpnClientConfiguration'), null())]",
         "vpnGatewayGeneration": "[if(equals(parameters('gatewayType'), 'Vpn'), parameters('vpnGatewayGeneration'), 'None')]",
+        "customRoutes": "[parameters('customRoutes')]",
         "adminState": "[if(variables('isExpressRoute'), parameters('adminState'), null())]",
         "resiliencyModel": "[if(variables('isExpressRoute'), parameters('resiliencyModel'), null())]",
         "autoScaleConfiguration": "[parameters('autoScaleConfiguration')]"

@@ -19,22 +19,22 @@ This module deploys an Azure SQL Server.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Sql/servers` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers) |
-| `Microsoft.Sql/servers/auditingSettings` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/auditingSettings) |
-| `Microsoft.Sql/servers/databases` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/databases) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Sql/servers` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers) |
+| `Microsoft.Sql/servers/auditingSettings` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/auditingSettings) |
+| `Microsoft.Sql/servers/databases` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases) |
 | `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/servers/databases/backupLongTermRetentionPolicies) |
-| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/databases/backupShortTermRetentionPolicies) |
-| `Microsoft.Sql/servers/elasticPools` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/elasticPools) |
-| `Microsoft.Sql/servers/encryptionProtector` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/encryptionProtector) |
+| `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupShortTermRetentionPolicies) |
+| `Microsoft.Sql/servers/elasticPools` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/elasticPools) |
+| `Microsoft.Sql/servers/encryptionProtector` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/encryptionProtector) |
 | `Microsoft.Sql/servers/failoverGroups` | [2024-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2024-05-01-preview/servers/failoverGroups) |
-| `Microsoft.Sql/servers/firewallRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/firewallRules) |
-| `Microsoft.Sql/servers/keys` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/keys) |
-| `Microsoft.Sql/servers/securityAlertPolicies` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/securityAlertPolicies) |
-| `Microsoft.Sql/servers/virtualNetworkRules` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/virtualNetworkRules) |
-| `Microsoft.Sql/servers/vulnerabilityAssessments` | [2023-08-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01-preview/servers/vulnerabilityAssessments) |
+| `Microsoft.Sql/servers/firewallRules` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/firewallRules) |
+| `Microsoft.Sql/servers/keys` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/keys) |
+| `Microsoft.Sql/servers/securityAlertPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/securityAlertPolicies) |
+| `Microsoft.Sql/servers/virtualNetworkRules` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/virtualNetworkRules) |
+| `Microsoft.Sql/servers/vulnerabilityAssessments` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/vulnerabilityAssessments) |
 
 ## Usage examples
 
@@ -271,6 +271,29 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       keyVaultResourceId: '<keyVaultResourceId>'
       keyVersion: '<keyVersion>'
     }
+    databases: [
+      {
+        availabilityZone: -1
+        customerManagedKey: {
+          autoRotationEnabled: true
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          keyVersion: '<keyVersion>'
+        }
+        managedIdentities: {
+          userAssignedResourceIds: [
+            '<databaseIdentityResourceId>'
+          ]
+        }
+        maxSizeBytes: 2147483648
+        name: 'sscmk-db'
+        sku: {
+          name: 'Basic'
+          tier: 'Basic'
+        }
+        zoneRedundant: false
+      }
+    ]
     managedIdentities: {
       systemAssigned: false
       userAssignedResourceIds: [
@@ -316,6 +339,31 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         "keyVersion": "<keyVersion>"
       }
     },
+    "databases": {
+      "value": [
+        {
+          "availabilityZone": -1,
+          "customerManagedKey": {
+            "autoRotationEnabled": true,
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "keyVersion": "<keyVersion>"
+          },
+          "managedIdentities": {
+            "userAssignedResourceIds": [
+              "<databaseIdentityResourceId>"
+            ]
+          },
+          "maxSizeBytes": 2147483648,
+          "name": "sscmk-db",
+          "sku": {
+            "name": "Basic",
+            "tier": "Basic"
+          },
+          "zoneRedundant": false
+        }
+      ]
+    },
     "managedIdentities": {
       "value": {
         "systemAssigned": false,
@@ -357,6 +405,29 @@ param customerManagedKey = {
   keyVaultResourceId: '<keyVaultResourceId>'
   keyVersion: '<keyVersion>'
 }
+param databases = [
+  {
+    availabilityZone: -1
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<databaseIdentityResourceId>'
+      ]
+    }
+    maxSizeBytes: 2147483648
+    name: 'sscmk-db'
+    sku: {
+      name: 'Basic'
+      tier: 'Basic'
+    }
+    zoneRedundant: false
+  }
+]
 param managedIdentities = {
   systemAssigned: false
   userAssignedResourceIds: [
@@ -1055,6 +1126,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           retentionDays: 14
         }
         collation: 'SQL_Latin1_General_CP1_CI_AS'
+        customerManagedKey: {
+          autoRotationEnabled: true
+          keyName: '<keyName>'
+          keyVaultResourceId: '<keyVaultResourceId>'
+          keyVersion: '<keyVersion>'
+        }
         diagnosticSettings: [
           {
             eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1066,6 +1143,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         ]
         elasticPoolResourceId: '<elasticPoolResourceId>'
         licenseType: 'LicenseIncluded'
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
         managedIdentities: {
           userAssignedResourceIds: [
             '<databaseIdentityResourceId>'
@@ -1083,6 +1164,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     elasticPools: [
       {
         availabilityZone: -1
+        lock: {
+          kind: 'CanNotDelete'
+          name: 'myCustomLockName'
+        }
         name: 'sqlsmax-ep-001'
         sku: {
           capacity: 10
@@ -1234,6 +1319,12 @@ module server 'br/public:avm/res/sql/server:<version>' = {
             "retentionDays": 14
           },
           "collation": "SQL_Latin1_General_CP1_CI_AS",
+          "customerManagedKey": {
+            "autoRotationEnabled": true,
+            "keyName": "<keyName>",
+            "keyVaultResourceId": "<keyVaultResourceId>",
+            "keyVersion": "<keyVersion>"
+          },
           "diagnosticSettings": [
             {
               "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
@@ -1245,6 +1336,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
           ],
           "elasticPoolResourceId": "<elasticPoolResourceId>",
           "licenseType": "LicenseIncluded",
+          "lock": {
+            "kind": "CanNotDelete",
+            "name": "myCustomLockName"
+          },
           "managedIdentities": {
             "userAssignedResourceIds": [
               "<databaseIdentityResourceId>"
@@ -1264,6 +1359,10 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": [
         {
           "availabilityZone": -1,
+          "lock": {
+            "kind": "CanNotDelete",
+            "name": "myCustomLockName"
+          },
           "name": "sqlsmax-ep-001",
           "sku": {
             "capacity": 10,
@@ -1429,6 +1528,12 @@ param databases = [
       retentionDays: 14
     }
     collation: 'SQL_Latin1_General_CP1_CI_AS'
+    customerManagedKey: {
+      autoRotationEnabled: true
+      keyName: '<keyName>'
+      keyVaultResourceId: '<keyVaultResourceId>'
+      keyVersion: '<keyVersion>'
+    }
     diagnosticSettings: [
       {
         eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
@@ -1440,6 +1545,10 @@ param databases = [
     ]
     elasticPoolResourceId: '<elasticPoolResourceId>'
     licenseType: 'LicenseIncluded'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     managedIdentities: {
       userAssignedResourceIds: [
         '<databaseIdentityResourceId>'
@@ -1457,6 +1566,10 @@ param databases = [
 param elasticPools = [
   {
     availabilityZone: -1
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
     name: 'sqlsmax-ep-001'
     sku: {
       capacity: 10
@@ -2647,15 +2760,15 @@ The databases to create in the server.
 | [`catalogCollation`](#parameter-databasescatalogcollation) | string | Collation of the metadata catalog. |
 | [`collation`](#parameter-databasescollation) | string | The collation of the database. |
 | [`createMode`](#parameter-databasescreatemode) | string | Specifies the mode of database creation. |
+| [`customerManagedKey`](#parameter-databasescustomermanagedkey) | object | The customer managed key definition for database TDE. |
 | [`diagnosticSettings`](#parameter-databasesdiagnosticsettings) | array | The diagnostic settings of the service. |
 | [`elasticPoolResourceId`](#parameter-databaseselasticpoolresourceid) | string | The resource identifier of the elastic pool containing this database. |
-| [`encryptionProtector`](#parameter-databasesencryptionprotector) | string | The azure key vault URI of the database if it's configured with per Database Customer Managed Keys. |
-| [`encryptionProtectorAutoRotation`](#parameter-databasesencryptionprotectorautorotation) | bool | The flag to enable or disable auto rotation of database encryption protector AKV key. |
 | [`federatedClientId`](#parameter-databasesfederatedclientid) | string | The Client id used for cross tenant per database CMK scenario. |
 | [`freeLimitExhaustionBehavior`](#parameter-databasesfreelimitexhaustionbehavior) | string | Specifies the behavior when monthly free limits are exhausted for the free database. |
 | [`highAvailabilityReplicaCount`](#parameter-databaseshighavailabilityreplicacount) | int | The number of secondary replicas associated with the database that are used to provide high availability. Not applicable to a Hyperscale database within an elastic pool. |
 | [`isLedgerOn`](#parameter-databasesisledgeron) | bool | Whether or not this database is a ledger database, which means all tables in the database are ledger tables. |
 | [`licenseType`](#parameter-databaseslicensetype) | string | The license type to apply for this database. |
+| [`lock`](#parameter-databaseslock) | object | The lock settings of the database. |
 | [`longTermRetentionBackupResourceId`](#parameter-databaseslongtermretentionbackupresourceid) | string | The resource identifier of the long term retention backup associated with create operation of this database. |
 | [`maintenanceConfigurationId`](#parameter-databasesmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the database. This configuration defines the period when the maintenance updates will occur. |
 | [`managedIdentities`](#parameter-databasesmanagedidentities) | object | The managed identities for the database. |
@@ -2841,6 +2954,63 @@ Specifies the mode of database creation.
   ]
   ```
 
+### Parameter: `databases.customerManagedKey`
+
+The customer managed key definition for database TDE.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`keyName`](#parameter-databasescustomermanagedkeykeyname) | string | The name of the customer managed key to use for encryption. |
+| [`keyVaultResourceId`](#parameter-databasescustomermanagedkeykeyvaultresourceid) | string | The resource ID of a key vault to reference a customer managed key for encryption from. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`autoRotationEnabled`](#parameter-databasescustomermanagedkeyautorotationenabled) | bool | Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used. |
+| [`keyVersion`](#parameter-databasescustomermanagedkeykeyversion) | string | The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting. |
+| [`userAssignedIdentityResourceId`](#parameter-databasescustomermanagedkeyuserassignedidentityresourceid) | string | User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use. |
+
+### Parameter: `databases.customerManagedKey.keyName`
+
+The name of the customer managed key to use for encryption.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `databases.customerManagedKey.keyVaultResourceId`
+
+The resource ID of a key vault to reference a customer managed key for encryption from.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `databases.customerManagedKey.autoRotationEnabled`
+
+Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used.
+
+- Required: No
+- Type: bool
+
+### Parameter: `databases.customerManagedKey.keyVersion`
+
+The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting.
+
+- Required: No
+- Type: string
+
+### Parameter: `databases.customerManagedKey.userAssignedIdentityResourceId`
+
+User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use.
+
+- Required: No
+- Type: string
+
 ### Parameter: `databases.diagnosticSettings`
 
 The diagnostic settings of the service.
@@ -2994,20 +3164,6 @@ The resource identifier of the elastic pool containing this database.
 - Required: No
 - Type: string
 
-### Parameter: `databases.encryptionProtector`
-
-The azure key vault URI of the database if it's configured with per Database Customer Managed Keys.
-
-- Required: No
-- Type: string
-
-### Parameter: `databases.encryptionProtectorAutoRotation`
-
-The flag to enable or disable auto rotation of database encryption protector AKV key.
-
-- Required: No
-- Type: bool
-
 ### Parameter: `databases.federatedClientId`
 
 The Client id used for cross tenant per database CMK scenario.
@@ -3056,6 +3212,42 @@ The license type to apply for this database.
     'LicenseIncluded'
   ]
   ```
+
+### Parameter: `databases.lock`
+
+The lock settings of the database.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-databaseslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-databaseslockname) | string | Specify the name of lock. |
+
+### Parameter: `databases.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `databases.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `databases.longTermRetentionBackupResourceId`
 
@@ -3333,6 +3525,7 @@ The Elastic Pools to create in the server.
 | [`autoPauseDelay`](#parameter-elasticpoolsautopausedelay) | int | Time in minutes after which elastic pool is automatically paused. A value of -1 means that automatic pause is disabled. |
 | [`highAvailabilityReplicaCount`](#parameter-elasticpoolshighavailabilityreplicacount) | int | The number of secondary replicas associated with the elastic pool that are used to provide high availability. Applicable only to Hyperscale elastic pools. |
 | [`licenseType`](#parameter-elasticpoolslicensetype) | string | The license type to apply for this elastic pool. |
+| [`lock`](#parameter-elasticpoolslock) | object | The lock settings of the elastic pool. |
 | [`maintenanceConfigurationId`](#parameter-elasticpoolsmaintenanceconfigurationid) | string | Maintenance configuration id assigned to the elastic pool. This configuration defines the period when the maintenance updates will will occur. |
 | [`maxSizeBytes`](#parameter-elasticpoolsmaxsizebytes) | int | The storage limit for the database elastic pool in bytes. |
 | [`minCapacity`](#parameter-elasticpoolsmincapacity) | int | Minimal capacity that serverless pool will not shrink below, if not paused. |
@@ -3392,6 +3585,42 @@ The license type to apply for this elastic pool.
     'LicenseIncluded'
   ]
   ```
+
+### Parameter: `elasticPools.lock`
+
+The lock settings of the elastic pool.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-elasticpoolslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-elasticpoolslockname) | string | Specify the name of lock. |
+
+### Parameter: `elasticPools.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `elasticPools.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `elasticPools.maintenanceConfigurationId`
 
@@ -4471,7 +4700,7 @@ Key vault reference and secret settings for the module's secrets export.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`sqlAdminPasswordSecretName`](#parameter-secretsexportconfigurationsqladminpasswordsecretname) | string | The sqlAdminPassword secret name to create. |
-| [`sqlAzureConnectionStringSercretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsercretname) | string | The sqlAzureConnectionString secret name to create. |
+| [`sqlAzureConnectionStringSecretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsecretname) | string | The sqlAzureConnectionString secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -4487,7 +4716,7 @@ The sqlAdminPassword secret name to create.
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.sqlAzureConnectionStringSercretName`
+### Parameter: `secretsExportConfiguration.sqlAzureConnectionStringSecretName`
 
 The sqlAzureConnectionString secret name to create.
 
@@ -4751,7 +4980,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/network/private-endpoint:0.10.1` | Remote reference |
+| `br/public:avm/res/network/private-endpoint:0.11.0` | Remote reference |
 | `br/public:avm/utl/types/avm-common-types:0.5.1` | Remote reference |
 
 ## Notes

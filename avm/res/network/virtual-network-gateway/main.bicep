@@ -41,6 +41,29 @@ type vpnClientAadConfigurationType = {
   vpnClientProtocols: ('IkeV2' | 'SSTP' | 'OpenVPN')[]
 }
 
+@export()
+@description('Configuration for IPAM Pool Prefix Allocation.')
+type ipamPoolPrefixAllocationType = {
+  @description('Optional. Number of IP addresses to allocate.')
+  numberOfIpAddresses: string?
+
+  @description('Required. Pool configuration for IPAM.')
+  pool: {
+    @description('Required. Resource id of the associated Azure IpamPool resource.')
+    id: string
+  }
+}
+
+@export()
+@description('Configuration for custom routes address space.')
+type customRoutesType = {
+  @description('Optional. A list of address blocks reserved for this virtual network in CIDR notation.')
+  addressPrefixes: string[]?
+
+  @description('Optional. A list of IPAM Pools allocating IP address prefixes.')
+  ipamPoolPrefixAllocations: ipamPoolPrefixAllocationType[]?
+}
+
 // ============= //
 // Parameters    //
 // ============= //
@@ -198,6 +221,9 @@ param resiliencyModel string = 'SingleHomed'
 
 @description('Optional. Autoscale configuration for virtual network gateway. Only applicable for certain SKUs.')
 param autoScaleConfiguration autoScaleConfigurationType?
+
+@description('Optional. The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients.')
+param customRoutes customRoutesType?
 
 // ================//
 // Variables       //
@@ -562,6 +588,7 @@ resource virtualNetworkGateway 'Microsoft.Network/virtualNetworkGateways@2024-05
     vpnType: !isExpressRoute ? vpnType : 'PolicyBased'
     vpnClientConfiguration: !empty(vpnClientAddressPoolPrefix) ? vpnClientConfiguration : null
     vpnGatewayGeneration: gatewayType == 'Vpn' ? vpnGatewayGeneration : 'None'
+    customRoutes: customRoutes
     adminState: isExpressRoute ? adminState : null
     resiliencyModel: isExpressRoute ? resiliencyModel : null
     autoScaleConfiguration: autoScaleConfiguration

@@ -13,6 +13,10 @@ param tags object?
 @description('Optional. Location for all resources.')
 param location string = resourceGroup().location
 
+import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@description('Optional. The lock settings of the elastic pool.')
+param lock lockType?
+
 @description('Optional. The elastic pool SKU.')
 param sku skuType = {
   capacity: 2
@@ -64,11 +68,11 @@ param preferredEnclaveType 'Default' | 'VBS' = 'Default'
 @description('Optional. Whether or not this elastic pool is zone redundant, which means the replicas of this elastic pool will be spread across multiple availability zones.')
 param zoneRedundant bool = true
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   name: serverName
 }
 
-resource elasticPool 'Microsoft.Sql/servers/elasticPools@2023-08-01-preview' = {
+resource elasticPool 'Microsoft.Sql/servers/elasticPools@2023-08-01' = {
   name: name
   location: location
   parent: server
@@ -93,6 +97,17 @@ resource elasticPool 'Microsoft.Sql/servers/elasticPools@2023-08-01-preview' = {
     preferredEnclaveType: preferredEnclaveType
     zoneRedundant: zoneRedundant
   }
+}
+
+resource elasticPool_lock 'Microsoft.Authorization/locks@2020-05-01' = if (!empty(lock ?? {}) && lock.?kind != 'None') {
+  name: lock.?name ?? 'lock-${name}'
+  properties: {
+    level: lock.?kind ?? ''
+    notes: lock.?kind == 'CanNotDelete'
+      ? 'Cannot delete resource or child resources.'
+      : 'Cannot delete or modify the resource or child resources.'
+  }
+  scope: elasticPool
 }
 
 @description('The name of the deployed Elastic Pool.')

@@ -169,7 +169,7 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   }
 }
 
-module linkedStorageAccount 'linkedStorageAccounts/main.bicep' = if (!empty(linkedStorageAccountResourceId)) {
+module linkedStorageAccount 'linked-storage-account/main.bicep' = if (!empty(linkedStorageAccountResourceId)) {
   name: '${uniqueString(deployment().name, location)}-appInsights-linkedStorageAccount'
   params: {
     appInsightsName: appInsights.name

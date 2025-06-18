@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "16705539934522968897"
+      "version": "0.36.1.42791",
+      "templateHash": "7002329445517579297"
     },
     "name": "Azure SQL Server failover group",
     "description": "This module deploys Azure SQL Server failover group."
@@ -130,7 +130,7 @@
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[parameters('serverName')]"
     },
     "failoverGroup": {

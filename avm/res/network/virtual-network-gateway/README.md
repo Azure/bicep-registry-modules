@@ -37,12 +37,13 @@ The following section provides usage examples for the module, which were used to
 - [VPN Active Passive with BGP settings](#example-5-vpn-active-passive-with-bgp-settings)
 - [VPN Active Passive with BGP settings using existing Public IP](#example-6-vpn-active-passive-with-bgp-settings-using-existing-public-ip)
 - [VPN Active Passive without BGP settings](#example-7-vpn-active-passive-without-bgp-settings)
-- [Using only defaults](#example-8-using-only-defaults)
-- [ExpressRoute](#example-9-expressroute)
-- [Using large parameter set](#example-10-using-large-parameter-set)
-- [Using SKU without Availability Zones](#example-11-using-sku-without-availability-zones)
-- [VPN](#example-12-vpn)
-- [WAF-aligned](#example-13-waf-aligned)
+- [Custom Routes](#example-8-custom-routes)
+- [Using only defaults](#example-9-using-only-defaults)
+- [ExpressRoute](#example-10-expressroute)
+- [Using large parameter set](#example-11-using-large-parameter-set)
+- [Using SKU without Availability Zones](#example-12-using-sku-without-availability-zones)
+- [VPN](#example-13-vpn)
+- [WAF-aligned](#example-14-waf-aligned)
 
 ### Example 1: _VPN Active Active with BGP settings_
 
@@ -1147,7 +1148,133 @@ param vpnType = 'RouteBased'
 </details>
 <p>
 
-### Example 8: _Using only defaults_
+### Example 8: _Custom Routes_
+
+This instance deploys the module with custom routes configuration for Point-to-Site VPN clients.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualNetworkGateway 'br/public:avm/res/network/virtual-network-gateway:<version>' = {
+  name: 'virtualNetworkGatewayDeployment'
+  params: {
+    // Required parameters
+    clusterSettings: {
+      clusterMode: 'activePassiveNoBgp'
+    }
+    gatewayType: 'Vpn'
+    name: 'nvgcr001'
+    virtualNetworkResourceId: '<virtualNetworkResourceId>'
+    // Non-required parameters
+    customRoutes: {
+      addressPrefixes: [
+        '10.1.0.0/16'
+        '10.2.0.0/16'
+        '192.168.100.0/24'
+        '192.168.200.0/24'
+      ]
+    }
+    skuName: 'VpnGw2AZ'
+    vpnClientAddressPoolPrefix: '172.16.0.0/24'
+    vpnGatewayGeneration: 'Generation2'
+    vpnType: 'RouteBased'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "clusterSettings": {
+      "value": {
+        "clusterMode": "activePassiveNoBgp"
+      }
+    },
+    "gatewayType": {
+      "value": "Vpn"
+    },
+    "name": {
+      "value": "nvgcr001"
+    },
+    "virtualNetworkResourceId": {
+      "value": "<virtualNetworkResourceId>"
+    },
+    // Non-required parameters
+    "customRoutes": {
+      "value": {
+        "addressPrefixes": [
+          "10.1.0.0/16",
+          "10.2.0.0/16",
+          "192.168.100.0/24",
+          "192.168.200.0/24"
+        ]
+      }
+    },
+    "skuName": {
+      "value": "VpnGw2AZ"
+    },
+    "vpnClientAddressPoolPrefix": {
+      "value": "172.16.0.0/24"
+    },
+    "vpnGatewayGeneration": {
+      "value": "Generation2"
+    },
+    "vpnType": {
+      "value": "RouteBased"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/res/network/virtual-network-gateway:<version>'
+
+// Required parameters
+param clusterSettings = {
+  clusterMode: 'activePassiveNoBgp'
+}
+param gatewayType = 'Vpn'
+param name = 'nvgcr001'
+param virtualNetworkResourceId = '<virtualNetworkResourceId>'
+// Non-required parameters
+param customRoutes = {
+  addressPrefixes: [
+    '10.1.0.0/16'
+    '10.2.0.0/16'
+    '192.168.100.0/24'
+    '192.168.200.0/24'
+  ]
+}
+param skuName = 'VpnGw2AZ'
+param vpnClientAddressPoolPrefix = '172.16.0.0/24'
+param vpnGatewayGeneration = 'Generation2'
+param vpnType = 'RouteBased'
+```
+
+</details>
+<p>
+
+### Example 9: _Using only defaults_
 
 This instance deploys the module with the minimum set of required parameters.
 
@@ -1224,7 +1351,7 @@ param virtualNetworkResourceId = '<virtualNetworkResourceId>'
 </details>
 <p>
 
-### Example 9: _ExpressRoute_
+### Example 10: _ExpressRoute_
 
 This instance deploys the module with the ExpressRoute set of required parameters.
 
@@ -1342,7 +1469,7 @@ param skuName = 'ErGw1AZ'
 </details>
 <p>
 
-### Example 10: _Using large parameter set_
+### Example 11: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -1760,7 +1887,7 @@ param vpnType = 'RouteBased'
 </details>
 <p>
 
-### Example 11: _Using SKU without Availability Zones_
+### Example 12: _Using SKU without Availability Zones_
 
 This instance deploys the module with a SKU that does not support Availability Zones.
 
@@ -1850,7 +1977,7 @@ param skuName = 'VpnGw1'
 </details>
 <p>
 
-### Example 12: _VPN_
+### Example 13: _VPN_
 
 This instance deploys the module with the VPN set of required parameters.
 
@@ -1998,7 +2125,7 @@ param vpnType = 'RouteBased'
 </details>
 <p>
 
-### Example 13: _WAF-aligned_
+### Example 14: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
@@ -2359,6 +2486,7 @@ param vpnType = 'RouteBased'
 | [`autoScaleConfiguration`](#parameter-autoscaleconfiguration) | object | Autoscale configuration for virtual network gateway. Only applicable for certain SKUs. |
 | [`clientRevokedCertThumbprint`](#parameter-clientrevokedcertthumbprint) | string | Thumbprint of the revoked certificate. This would revoke VPN client certificates matching this thumbprint from connecting to the VNet. |
 | [`clientRootCertData`](#parameter-clientrootcertdata) | string | Client root certificate data used to authenticate VPN clients. Cannot be configured if vpnClientAadConfiguration is provided. |
+| [`customRoutes`](#parameter-customroutes) | object | The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients. |
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`disableIPSecReplayProtection`](#parameter-disableipsecreplayprotection) | bool | disableIPSecReplayProtection flag. Used for VPN Gateways. |
 | [`domainNameLabel`](#parameter-domainnamelabel) | array | DNS name(s) of the Public IP resource(s). If you enabled Active-Active mode, you need to provide 2 DNS names, if you want to use this feature. A region specific suffix will be appended to it, e.g.: your-DNS-name.westeurope.cloudapp.azure.com. |
@@ -2720,6 +2848,73 @@ Client root certificate data used to authenticate VPN clients. Cannot be configu
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `customRoutes`
+
+The reference to the address space resource which represents the custom routes address space specified by the customer for virtual network gateway and VpnClient. This is used to specify custom routes for Point-to-Site VPN clients.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefixes`](#parameter-customroutesaddressprefixes) | array | A list of address blocks reserved for this virtual network in CIDR notation. |
+| [`ipamPoolPrefixAllocations`](#parameter-customroutesipampoolprefixallocations) | array | A list of IPAM Pools allocating IP address prefixes. |
+
+### Parameter: `customRoutes.addressPrefixes`
+
+A list of address blocks reserved for this virtual network in CIDR notation.
+
+- Required: No
+- Type: array
+
+### Parameter: `customRoutes.ipamPoolPrefixAllocations`
+
+A list of IPAM Pools allocating IP address prefixes.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`pool`](#parameter-customroutesipampoolprefixallocationspool) | object | Pool configuration for IPAM. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`numberOfIpAddresses`](#parameter-customroutesipampoolprefixallocationsnumberofipaddresses) | string | Number of IP addresses to allocate. |
+
+### Parameter: `customRoutes.ipamPoolPrefixAllocations.pool`
+
+Pool configuration for IPAM.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`id`](#parameter-customroutesipampoolprefixallocationspoolid) | string | Resource id of the associated Azure IpamPool resource. |
+
+### Parameter: `customRoutes.ipamPoolPrefixAllocations.pool.id`
+
+Resource id of the associated Azure IpamPool resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `customRoutes.ipamPoolPrefixAllocations.numberOfIpAddresses`
+
+Number of IP addresses to allocate.
+
+- Required: No
+- Type: string
 
 ### Parameter: `diagnosticSettings`
 

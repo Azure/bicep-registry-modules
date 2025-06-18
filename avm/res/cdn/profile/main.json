@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.1.11899",
-      "templateHash": "17701152838473898328"
+      "version": "0.35.1.17967",
+      "templateHash": "13325054396875269191"
     },
     "name": "CDN Profiles",
     "description": "This module deploys a CDN Profile."
@@ -90,7 +90,7 @@
       "metadata": {
         "description": "The type of the route cache configuration.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "afdEndpoint/route/main.bicep"
+          "sourceTemplate": "afd-endpoint/route/main.bicep"
         }
       }
     },
@@ -206,7 +206,7 @@
       "metadata": {
         "description": "The type of the route.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "afdEndpoint/route/main.bicep"
+          "sourceTemplate": "afd-endpoint/route/main.bicep"
         }
       }
     },
@@ -255,7 +255,7 @@
       "metadata": {
         "description": "The type of the health probe settings.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "origingroup/main.bicep"
+          "sourceTemplate": "origin-group/main.bicep"
         }
       }
     },
@@ -284,7 +284,7 @@
       "metadata": {
         "description": "The type of the load balancing settings.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "origingroup/main.bicep"
+          "sourceTemplate": "origin-group/main.bicep"
         }
       }
     },
@@ -342,7 +342,7 @@
       "metadata": {
         "description": "The type of the AFD Endpoint.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "afdEndpoint/main.bicep"
+          "sourceTemplate": "afd-endpoint/main.bicep"
         }
       }
     },
@@ -379,7 +379,7 @@
       "metadata": {
         "description": "The type of the associations.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "securityPolicies/main.bicep"
+          "sourceTemplate": "security-policy/main.bicep"
         }
       }
     },
@@ -447,12 +447,26 @@
           "metadata": {
             "description": "Optional. Extended properties."
           }
+        },
+        "cipherSuiteSetType": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The cipher suite set type that will be used for Https."
+          }
+        },
+        "customizedCipherSuiteSet": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The customized cipher suite set that will be used for Https."
+          }
         }
       },
       "metadata": {
         "description": "The type of the custom domain.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "customdomain/main.bicep"
+          "sourceTemplate": "custom-domain/main.bicep"
         }
       }
     },
@@ -606,7 +620,7 @@
       "metadata": {
         "description": "The type of the DNS validation.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "customdomain/main.bicep"
+          "sourceTemplate": "custom-domain/main.bicep"
         }
       }
     },
@@ -721,7 +735,7 @@
       "metadata": {
         "description": "The type of the origin group.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "origingroup/main.bicep"
+          "sourceTemplate": "origin-group/main.bicep"
         }
       }
     },
@@ -804,7 +818,7 @@
       "metadata": {
         "description": "The name of the origin type.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "origingroup/origin/main.bicep"
+          "sourceTemplate": "origin-group/origin/main.bicep"
         }
       }
     },
@@ -906,7 +920,7 @@
       "metadata": {
         "description": "The type of the rule set.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "ruleset/main.bicep"
+          "sourceTemplate": "rule-set/main.bicep"
         }
       }
     },
@@ -954,7 +968,7 @@
       "metadata": {
         "description": "The type of the rule.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "ruleset/rule/main.bicep"
+          "sourceTemplate": "rule-set/rule/main.bicep"
         }
       }
     }
@@ -1143,7 +1157,7 @@
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2024-03-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('46d3xbcp.res.cdn-profile.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
       "properties": {
         "mode": "Incremental",
@@ -1162,7 +1176,7 @@
     },
     "profile": {
       "type": "Microsoft.Cdn/profiles",
-      "apiVersion": "2023-05-01",
+      "apiVersion": "2025-04-15",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "identity": "[variables('identity')]",
@@ -1282,8 +1296,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "6664761063089970451"
+              "version": "0.35.1.17967",
+              "templateHash": "16652614692219724308"
             },
             "name": "CDN Profiles Endpoints",
             "description": "This module deploys a CDN Profile Endpoint."
@@ -1398,8 +1412,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.1.11899",
-                      "templateHash": "16716362285142179248"
+                      "version": "0.35.1.17967",
+                      "templateHash": "15429927124213216647"
                     },
                     "name": "CDN Profiles Endpoints Origins",
                     "description": "This module deploys a CDN Profile Endpoint Origin."
@@ -1643,8 +1657,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "5888833893722348732"
+              "version": "0.35.1.17967",
+              "templateHash": "6730394898920724755"
             },
             "name": "CDN Profiles Secret",
             "description": "This module deploys a CDN Profile Secret."
@@ -1783,6 +1797,12 @@
           },
           "secretName": {
             "value": "[tryGet(parameters('customDomains')[copyIndex()], 'secretName')]"
+          },
+          "cipherSuiteSetType": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'cipherSuiteSetType')]"
+          },
+          "customizedCipherSuiteSet": {
+            "value": "[tryGet(parameters('customDomains')[copyIndex()], 'customizedCipherSuiteSet')]"
           }
         },
         "template": {
@@ -1792,8 +1812,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "16176516087789568863"
+              "version": "0.35.1.17967",
+              "templateHash": "4242601312356142194"
             },
             "name": "CDN Profiles Custom Domains",
             "description": "This module deploys a CDN Profile Custom Domains."
@@ -1862,6 +1882,20 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Extended properties."
+                  }
+                },
+                "cipherSuiteSetType": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The cipher suite set type that will be used for Https."
+                  }
+                },
+                "customizedCipherSuiteSet": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The customized cipher suite set that will be used for Https."
                   }
                 }
               },
@@ -1969,6 +2003,20 @@
               "metadata": {
                 "description": "Optional. The name of the secret. ie. subs/rg/profile/secret."
               }
+            },
+            "cipherSuiteSetType": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. The cipher suite set type that will be used for Https."
+              }
+            },
+            "customizedCipherSuiteSet": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. The customized cipher suite set that will be used for Https. Required if cipherSuiteSetType is Customized."
+              }
             }
           },
           "resources": {
@@ -1976,18 +2024,18 @@
               "condition": "[not(empty(parameters('secretName')))]",
               "existing": true,
               "type": "Microsoft.Cdn/profiles/secrets",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('secretName'))]"
             },
             "profile": {
               "existing": true,
               "type": "Microsoft.Cdn/profiles",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[parameters('profileName')]"
             },
             "customDomain": {
               "type": "Microsoft.Cdn/profiles/customDomains",
-              "apiVersion": "2023-05-01",
+              "apiVersion": "2025-04-15",
               "name": "[format('{0}/{1}', parameters('profileName'), parameters('name'))]",
               "properties": {
                 "azureDnsZone": "[if(not(empty(parameters('azureDnsZoneResourceId'))), createObject('id', parameters('azureDnsZoneResourceId')), null())]",
@@ -1996,6 +2044,8 @@
                 "preValidatedCustomDomainResourceId": "[if(not(empty(parameters('preValidatedCustomDomainResourceId'))), createObject('id', parameters('preValidatedCustomDomainResourceId')), null())]",
                 "tlsSettings": {
                   "certificateType": "[parameters('certificateType')]",
+                  "cipherSuiteSetType": "[if(not(empty(parameters('cipherSuiteSetType'))), parameters('cipherSuiteSetType'), null())]",
+                  "customizedCipherSuiteSet": "[if(not(empty(parameters('customizedCipherSuiteSet'))), parameters('customizedCipherSuiteSet'), null())]",
                   "minimumTlsVersion": "[parameters('minimumTlsVersion')]",
                   "secret": "[if(not(empty(parameters('secretName'))), createObject('id', resourceId('Microsoft.Cdn/profiles/secrets', parameters('profileName'), parameters('secretName'))), null())]"
                 }
@@ -2030,9 +2080,9 @@
                 "description": "The DNS validation records."
               },
               "value": {
-                "dnsTxtRecordName": "[format('_dnsauth.{0}', reference('customDomain').hostName)]",
-                "dnsTxtRecordValue": "[reference('customDomain').validationProperties.validationToken]",
-                "dnsTxtRecordExpiry": "[reference('customDomain').validationProperties.expirationDate]"
+                "dnsTxtRecordName": "[if(not(empty(reference('customDomain').validationProperties)), format('_dnsauth.{0}', reference('customDomain').hostName), null())]",
+                "dnsTxtRecordValue": "[tryGet(tryGet(reference('customDomain'), 'validationProperties'), 'validationToken')]",
+                "dnsTxtRecordExpiry": "[tryGet(tryGet(reference('customDomain'), 'validationProperties'), 'expirationDate')]"
               }
             }
           }
@@ -2086,8 +2136,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "14114649402369146252"
+              "version": "0.35.1.17967",
+              "templateHash": "2573940917391691147"
             },
             "name": "CDN Profiles Origin Group",
             "description": "This module deploys a CDN Profile Origin Group."
@@ -2433,8 +2483,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.1.11899",
-                      "templateHash": "3299448810125740577"
+                      "version": "0.35.1.17967",
+                      "templateHash": "10015219457323437112"
                     },
                     "name": "CDN Profiles Origin",
                     "description": "This module deploys a CDN Profile Origin."
@@ -2735,8 +2785,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "15877646874005216929"
+              "version": "0.35.1.17967",
+              "templateHash": "9131345244192875724"
             },
             "name": "CDN Profiles Rule Sets",
             "description": "This module deploys a CDN Profile rule set."
@@ -2895,8 +2945,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.1.11899",
-                      "templateHash": "9504457217668690067"
+                      "version": "0.35.1.17967",
+                      "templateHash": "7726456348704922010"
                     },
                     "name": "CDN Profiles Rules",
                     "description": "This module deploys a CDN Profile rule."
@@ -3124,8 +3174,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "11569548485086414235"
+              "version": "0.35.1.17967",
+              "templateHash": "15906956770187123226"
             },
             "name": "CDN Profiles AFD Endpoints",
             "description": "This module deploys a CDN Profile AFD Endpoint."
@@ -3501,8 +3551,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.34.1.11899",
-                      "templateHash": "1335284301571538933"
+                      "version": "0.35.1.17967",
+                      "templateHash": "17778605191940828075"
                     },
                     "name": "CDN Profiles AFD Endpoint Route",
                     "description": "This module deploys a CDN Profile AFD Endpoint route."
@@ -3985,8 +4035,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.1.11899",
-              "templateHash": "62661794416974930"
+              "version": "0.35.1.17967",
+              "templateHash": "3067274064094512341"
             },
             "name": "CDN Profiles Security Policy",
             "description": "This module deploys a CDN Profile Security Policy."
@@ -4145,7 +4195,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('profile', '2023-05-01', 'full').location]"
+      "value": "[reference('profile', '2025-04-15', 'full').location]"
     },
     "endpointName": {
       "type": "string",
@@ -4174,7 +4224,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('profile', '2023-05-01', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('profile', '2025-04-15', 'full'), 'identity'), 'principalId')]"
     },
     "dnsValidation": {
       "type": "array",

@@ -22,7 +22,7 @@ param location string = resourceGroup().location
 // Dependencies //
 // ============ //
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2024-01-01' = {
   name: storageAccountName
   location: location
   kind: 'StorageV2'
@@ -34,20 +34,20 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-08-01' = {
   }
 }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2021-12-01-preview' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   name: logAnalyticsWorkspaceName
   location: location
 }
 
-resource eventHubNamespace 'Microsoft.EventHub/namespaces@2021-11-01' = {
+resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
   name: eventHubNamespaceName
   location: location
 
-  resource eventHub 'eventhubs@2021-11-01' = {
+  resource eventHub 'eventhubs@2024-01-01' = {
     name: eventHubNamespaceEventHubName
   }
 
-  resource authorizationRule 'authorizationRules@2021-06-01-preview' = {
+  resource authorizationRule 'authorizationRules@2024-01-01' = {
     name: 'RootManageSharedAccessKey'
     properties: {
       rights: [

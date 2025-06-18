@@ -1,0 +1,290 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.35.1.17967",
+      "templateHash": "5277243266260311517"
+    },
+    "name": "Azure NetApp Files Snapshot Policy",
+    "description": "This module deploys a Snapshot Policy for an Azure NetApp File."
+  },
+  "definitions": {
+    "dailyScheduleType": {
+      "type": "object",
+      "properties": {
+        "hour": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 23,
+          "metadata": {
+            "description": "Required. The daily snapshot hour."
+          }
+        },
+        "minute": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 59,
+          "metadata": {
+            "description": "Required. The daily snapshot minute."
+          }
+        },
+        "snapshotsToKeep": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 255,
+          "metadata": {
+            "description": "Required. Daily snapshot count to keep."
+          }
+        },
+        "usedBytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a daily schedule for the snapshot policy."
+      }
+    },
+    "hourlyScheduleType": {
+      "type": "object",
+      "properties": {
+        "minute": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 59,
+          "metadata": {
+            "description": "Required. The hourly snapshot minute."
+          }
+        },
+        "snapshotsToKeep": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 255,
+          "metadata": {
+            "description": "Required. Hourly snapshot count to keep."
+          }
+        },
+        "usedBytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for an hourly schedule for the snapshot policy."
+      }
+    },
+    "weeklyScheduleType": {
+      "type": "object",
+      "properties": {
+        "day": {
+          "type": "string",
+          "allowedValues": [
+            "Friday",
+            "Monday",
+            "Saturday",
+            "Sunday",
+            "Thursday",
+            "Tuesday",
+            "Wednesday"
+          ],
+          "metadata": {
+            "description": "Required. The weekly snapshot day."
+          }
+        },
+        "hour": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 23,
+          "metadata": {
+            "description": "Required. The weekly snapshot hour."
+          }
+        },
+        "minute": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 59,
+          "metadata": {
+            "description": "Required. The weekly snapshot minute."
+          }
+        },
+        "snapshotsToKeep": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 255,
+          "metadata": {
+            "description": "Required. Weekly snapshot count to keep."
+          }
+        },
+        "usedBytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a weekly schedule for the snapshot policy."
+      }
+    },
+    "monthlyScheduleType": {
+      "type": "object",
+      "properties": {
+        "daysOfMonth": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Indicates which days of the month snapshot should be taken. A comma delimited string. E.g., '10,11,12'."
+          }
+        },
+        "hour": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 23,
+          "metadata": {
+            "description": "Required. The monthly snapshot hour."
+          }
+        },
+        "minute": {
+          "type": "int",
+          "minValue": 0,
+          "maxValue": 59,
+          "metadata": {
+            "description": "Required. The monthly snapshot minute."
+          }
+        },
+        "snapshotsToKeep": {
+          "type": "int",
+          "minValue": 1,
+          "maxValue": 255,
+          "metadata": {
+            "description": "Required. Monthly snapshot count to keep."
+          }
+        },
+        "usedBytes": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Resource size in bytes, current storage usage for the volume in bytes."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for a monthly schedule for the snapshot policy."
+      }
+    }
+  },
+  "parameters": {
+    "netAppAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent NetApp account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "defaultValue": "snapshotPolicy",
+      "metadata": {
+        "description": "Optional. The name of the snapshot policy."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. The location of the snapshot policy."
+      }
+    },
+    "hourlySchedule": {
+      "$ref": "#/definitions/hourlyScheduleType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Schedule for hourly snapshots."
+      }
+    },
+    "dailySchedule": {
+      "$ref": "#/definitions/dailyScheduleType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Schedule for daily snapshots."
+      }
+    },
+    "monthlySchedule": {
+      "$ref": "#/definitions/monthlyScheduleType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Schedule for monthly snapshots."
+      }
+    },
+    "weeklySchedule": {
+      "$ref": "#/definitions/weeklyScheduleType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Schedule for weekly snapshots."
+      }
+    },
+    "snapEnabled": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether the snapshot policy is enabled."
+      }
+    }
+  },
+  "resources": {
+    "netAppAccount": {
+      "existing": true,
+      "type": "Microsoft.NetApp/netAppAccounts",
+      "apiVersion": "2025-01-01",
+      "name": "[parameters('netAppAccountName')]"
+    },
+    "snapshotPolicies": {
+      "type": "Microsoft.NetApp/netAppAccounts/snapshotPolicies",
+      "apiVersion": "2025-01-01",
+      "name": "[format('{0}/{1}', parameters('netAppAccountName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "enabled": "[parameters('snapEnabled')]",
+        "dailySchedule": "[parameters('dailySchedule')]",
+        "hourlySchedule": "[parameters('hourlySchedule')]",
+        "monthlySchedule": "[parameters('monthlySchedule')]",
+        "weeklySchedule": "[parameters('weeklySchedule')]"
+      }
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource IDs of the snapshot Policy created within volume."
+      },
+      "value": "[resourceId('Microsoft.NetApp/netAppAccounts/snapshotPolicies', parameters('netAppAccountName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Backup Policy."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the Resource Group the Snapshot was created in."
+      },
+      "value": "[resourceGroup().name]"
+    }
+  }
+}

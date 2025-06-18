@@ -28,13 +28,13 @@ module dependencies 'dependencies.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-dependencies'
   scope: resourceGroup
   params: {
-    acrName: 'dep${namePrefix}acr${serviceShort}'
+    acrName: 'dep${namePrefix}acr${serviceShort}${take(uniqueString(subscription().subscriptionId, resourceGroupName), 10)}'
   }
 }
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: resourceLocation
 }

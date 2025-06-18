@@ -25,11 +25,11 @@ var serverKeyName = empty(uri)
   ? 'ServiceManaged'
   : '${split(splittedKeyUri[2], '.')[0]}_${splittedKeyUri[4]}_${splittedKeyUri[5]}'
 
-resource server 'Microsoft.Sql/servers@2023-08-01-preview' existing = {
+resource server 'Microsoft.Sql/servers@2023-08-01' existing = {
   name: serverName
 }
 
-resource key 'Microsoft.Sql/servers/keys@2023-08-01-preview' = {
+resource key 'Microsoft.Sql/servers/keys@2023-08-01' = {
   name: name ?? serverKeyName
   parent: server
   properties: {

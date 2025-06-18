@@ -21,7 +21,7 @@ param eventGridTopicName string
 
 var addressPrefix = '10.0.0.0/16'
 
-resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: virtualNetworkName
   location: location
   properties: {
@@ -46,16 +46,16 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2023-04-01' = {
   }
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-11-30' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: managedIdentityName
   location: location
 }
 
-resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource privateDNSZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
   name: 'privatelink.digitaltwins.azure.net'
   location: 'global'
 
-  resource virtualNetworkLinks 'virtualNetworkLinks@2020-06-01' = {
+  resource virtualNetworkLinks 'virtualNetworkLinks@2024-06-01' = {
     name: '${virtualNetwork.name}-vnetlink'
     location: 'global'
     properties: {
@@ -67,12 +67,12 @@ resource privateDNSZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
   }
 }
 
-resource eventGridTopic 'Microsoft.EventGrid/topics@2022-06-15' = {
+resource eventGridTopic 'Microsoft.EventGrid/topics@2025-02-15' = {
   name: eventGridTopicName
   location: location
 }
 
-resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = {
+resource eventHubNamespace 'Microsoft.EventHub/namespaces@2024-01-01' = {
   name: eventHubNamespaceName
   location: location
   properties: {
@@ -81,7 +81,7 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = 
     maximumThroughputUnits: 0
   }
 
-  resource eventHub 'eventhubs@2022-10-01-preview' = {
+  resource eventHub 'eventhubs@2024-01-01' = {
     name: eventHubName
 
     resource authorizationRule 'authorizationRules@2024-01-01' = {
@@ -96,14 +96,14 @@ resource eventHubNamespace 'Microsoft.EventHub/namespaces@2022-10-01-preview' = 
   }
 }
 
-resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2022-10-01-preview' = {
+resource serviceBusNamespace 'Microsoft.ServiceBus/namespaces@2024-01-01' = {
   name: serviceBusNamespaceName
   location: location
   properties: {
     zoneRedundant: false
   }
 
-  resource topic 'topics@2022-10-01-preview' = {
+  resource topic 'topics@2024-01-01' = {
     name: 'topic'
 
     resource authorizationRule 'authorizationRules@2024-01-01' = {

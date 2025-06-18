@@ -4,11 +4,13 @@ metadata description = 'This module deploys a Key Vault Secret.'
 @description('Conditional. The name of the parent key vault. Required if the template is used in a standalone deployment.')
 param keyVaultName string
 
-@description('Required. The name of the secret.')
+@description('Required. The name of the secret (letters (upper and lower case), numbers, -).')
+@minLength(1)
+@maxLength(127)
 param name string
 
 @description('Optional. Resource tags.')
-param tags object?
+param tags resourceInput<'Microsoft.KeyVault/vaults@2024-11-01'>.tags?
 
 @description('Optional. Determines whether the object is enabled.')
 param attributesEnabled bool = true
@@ -76,11 +78,11 @@ var formattedRoleAssignments = [
   })
 ]
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
   name: keyVaultName
 }
 
-resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+resource secret 'Microsoft.KeyVault/vaults/secrets@2024-11-01' = {
   name: name
   parent: keyVault
   tags: tags
