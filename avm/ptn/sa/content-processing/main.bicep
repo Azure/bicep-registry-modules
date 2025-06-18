@@ -5,51 +5,51 @@ metadata name = 'Content Processing Solution Accelerator'
 metadata description = 'Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance.'
 
 // ========== get up parameters from parameter file ========== //
-@description('Name of the environment to deploy the solution into:')
+@description('Optional. Name of the environment to deploy the solution into:')
 param environmentName string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
-@description('Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast')
+@description('Optional. Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast')
 param contentUnderstandingLocation string
-@description('Type of GPT deployment to use: Standard | GlobalStandard')
+@description('Optional. Type of GPT deployment to use: Standard | GlobalStandard')
 param deploymentType string = 'GlobalStandard'
-@description('Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4')
+@description('Optional. Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4')
 param gptModelName string = 'gpt-4o'
 @minLength(1)
-@description('Version of the GPT model to deploy:')
+@description('Optional. Version of the GPT model to deploy:')
 @allowed([
   '2024-08-06'
 ])
 param gptModelVersion string = '2024-08-06'
 @minValue(10)
-@description('Capacity of the GPT deployment: (minimum 10)')
+@description('Optional. Capacity of the GPT deployment: (minimum 10)')
 param gptDeploymentCapacity int
-@description('Location used for Azure Cosmos DB, Azure Container App deployment')
+@description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment')
 param secondaryLocation string = 'EastUs2'
-@description('The public container image endpoint')
+@description('Optional. The public container image endpoint')
 param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
-@description('The resource group location')
+@description('Optional. The resource group location')
 param resourceGroupLocation string = resourceGroup().location
-@description('The resource name format string')
+@description('Optional. The resource name format string')
 param resourceNameFormatString string = '{0}avm-cps'
-@description('Enable WAF for the deployment')
+@description('Optional. Enable WAF for the deployment')
 param enablePrivateNetworking bool = true
-@description('Enable telemetry for the deployment')
+@description('Optional. Enable telemetry for the deployment')
 param enableTelemetry bool = true
 //@description('Resource naming abbreviations')
 //param namingAbbrs object
-@description('Tags to be applied to the resources')
+@description('Optional. Tags to be applied to the resources')
 param tags object = {
   app: 'Content Processing Solution Accelerator'
   location: resourceGroup().location
 }
-@description('Set to true to use local build for container app images, otherwise use container registry images')
+@description('Optional. Set to true to use local build for container app images, otherwise use container registry images')
 param useLocalBuild bool = false
 
 // ========== Solution Prefix Variable ========== //
 var solution_prefix = 'cps-${padLeft(take(toLower(uniqueString(subscription().id, environmentName, resourceGroup().location)), 12), 12, '0')}'
 // ========== Resource Naming Abbreviations ========== //
-@description('Resource naming abbreviations')
+@description('Optional. Resource naming abbreviations')
 var namingAbbrs = loadJsonContent('abbreviations.json')
 
 //
@@ -60,9 +60,10 @@ var namingAbbrs = loadJsonContent('abbreviations.json')
 // Resources      //
 // ============== //
 
+// ========== AVM Telemetry ========== //
 #disable-next-line no-deployments-resources
 resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.ptn.sa-contentprocessing.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
+  name: '46d3xbcp.ptn.sa-contentprocessing.   ${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
     template: {
