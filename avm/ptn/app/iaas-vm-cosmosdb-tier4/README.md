@@ -188,7 +188,7 @@ param location = '<location>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`adminUsername`](#parameter-adminusername) | string | Admin username for the virtual machine. |
-| [`applicationNsgRules`](#parameter-applicationnsgrules) | array | Network security group rules for the ApplicationSubnet. |
+| [`applicationNsgRules`](#parameter-applicationnsgrules) | array | Network security group rules for the application subnet. |
 | [`vmNsgRules`](#parameter-vmnsgrules) | array | Network security group rules for the VM. |
 
 **Networking parameters**
@@ -261,7 +261,7 @@ Admin username for the virtual machine.
 
 ### Parameter: `applicationNsgRules`
 
-Network security group rules for the ApplicationSubnet.
+Network security group rules for the application subnet.
 
 - Required: No
 - Type: array

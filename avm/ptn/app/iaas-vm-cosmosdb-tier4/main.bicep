@@ -14,7 +14,7 @@ param tags object = {}
 param enableTelemetry bool = true
 
 // Network security group parameters
-@description('Security. Network security group rules for the ApplicationSubnet.')
+@description('Security. Network security group rules for the application subnet.')
 param applicationNsgRules array = [
   {
     name: 'DenyManagementOutbound'
