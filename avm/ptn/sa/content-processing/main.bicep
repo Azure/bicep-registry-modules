@@ -11,7 +11,7 @@ param environmentName string
 param location string = resourceGroup().location
 @description('Optional. Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast.')
 param contentUnderstandingLocation string
-@description('Optional. Type of GPT deployment to use: Standard | GlobalStandard')
+@description('Optional. Type of GPT deployment to use: Standard | GlobalStandard.')
 param deploymentType string = 'GlobalStandard'
 @description('Optional. Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4.')
 param gptModelName string = 'gpt-4o'
@@ -28,7 +28,7 @@ param gptDeploymentCapacity int
 // param secondaryLocation string = 'EastUs2'
 @description('Optional. The public container image endpoint.')
 param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
-@description('Optional. The resource group location')
+@description('Optional. The resource group location. ')
 param resourceGroupLocation string = resourceGroup().location
 @description('Optional. The resource name format string.')
 param resourceNameFormatString string = '{0}avm-cps'

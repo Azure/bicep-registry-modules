@@ -263,7 +263,7 @@ param location = '<location>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast. |
-| [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard |
+| [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`environmentName`](#parameter-environmentname) | string | Name of the environment to deploy the solution into. |
@@ -272,7 +272,7 @@ param location = '<location>'
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy:. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`publicContainerImageEndpoint`](#parameter-publiccontainerimageendpoint) | string | The public container image endpoint. |
-| [`resourceGroupLocation`](#parameter-resourcegrouplocation) | string | The resource group location |
+| [`resourceGroupLocation`](#parameter-resourcegrouplocation) | string | The resource group location.  |
 | [`resourceNameFormatString`](#parameter-resourcenameformatstring) | string | The resource name format string. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
 | [`useLocalBuild`](#parameter-uselocalbuild) | bool | Set to true to use local build for container app images, otherwise use container registry images. |
@@ -286,7 +286,7 @@ Location for the content understanding service: WestUS | SwedenCentral | Austral
 
 ### Parameter: `deploymentType`
 
-Type of GPT deployment to use: Standard | GlobalStandard
+Type of GPT deployment to use: Standard | GlobalStandard.
 
 - Required: No
 - Type: string
@@ -363,7 +363,7 @@ The public container image endpoint.
 
 ### Parameter: `resourceGroupLocation`
 
-The resource group location
+The resource group location. 
 
 - Required: No
 - Type: string
