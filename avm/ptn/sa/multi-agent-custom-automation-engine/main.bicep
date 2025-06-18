@@ -610,7 +610,7 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
         logAnalytics: [
           {
             workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-            name: 'la-${dataCollectionRulesResourceName}'
+            name: 'la--1264800308'
           }
         ]
       }
@@ -620,7 +620,7 @@ module windowsVmDataCollectionRules 'br/public:avm/res/insights/data-collection-
             'Microsoft-Perf'
           ]
           destinations: [
-            'la-${dataCollectionRulesResourceName}'
+            'la--1264800308'
           ]
           transformKql: 'source'
           outputStream: 'Microsoft-Perf'
