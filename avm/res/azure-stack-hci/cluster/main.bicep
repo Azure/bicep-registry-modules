@@ -296,41 +296,6 @@ resource roleAssignmentWACAdmin 'Microsoft.Authorization/roleAssignments@2022-04
   }
 }
 
-// var deploymentSettingJsonRaw = loadTextContent('./nested/deployment-setting.json')
-// var deploymentSettingJson = replace(
-//   replace(
-//     replace(deploymentSettingJsonRaw, '{{deploymentOperations}}', join(deploymentOperations, ',')),
-//     '{{deploymentSettings}}',
-//     deploymentSettings
-//   ),
-//   '{{privateKeySecretName}}',
-//   sshPrivateKeyPemSecretName
-// )
-
-// resource deploy 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
-//   name: 'deploy-${name}'
-//   location: location
-//   tags: tags
-//   dependsOn: [
-//     CRole
-//   ]
-//   kind: 'AzureCLI'
-//   identity: {
-//     type: 'UserAssigned'
-//     userAssignedIdentities: {
-//       '${managedIdentity.id}': {}
-//     }
-//   }
-//   properties: {
-//     azCliVersion: '2.71.0'
-//     scriptContent: loadTextContent('./deploy.sh')
-//     arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(readJson)}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(writeJson)}" "${resourceGroup().name}" "${subscription().subscriptionId}"'
-//     timeout: 'PT30M'
-//     retentionInterval: 'PT60M'
-//     cleanupPreference: 'OnExpiration'
-//   }
-// }
-
 // Use deployment script to run the shell script
 resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'hci-deployment-script-${uniqueString(resourceGroup().id)}'
@@ -402,58 +367,6 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
     roleAssignmentWACAdmin
   ]
 }
-
-// @batchSize(1)
-// module deploymentSetting 'deployment-setting/main.bicep' = [
-//   for deploymentOperation in sortedDeploymentOperations: if (!empty(deploymentOperation) && !empty(deploymentSettings)) {
-//     name: 'deploymentSettings-${deploymentOperation}'
-//     params: {
-//       cloudId: useSharedKeyVault ? cluster.properties.cloudId : null
-//       clusterName: cluster.name
-//       deploymentMode: deploymentOperation
-//       clusterNodeNames: deploymentSettings!.clusterNodeNames
-//       clusterWitnessStorageAccountName: deploymentSettings!.clusterWitnessStorageAccountName
-//       customLocationName: deploymentSettings!.customLocationName
-//       defaultGateway: deploymentSettings!.defaultGateway
-//       deploymentPrefix: deploymentSettings!.deploymentPrefix
-//       dnsServers: deploymentSettings!.dnsServers
-//       domainFqdn: deploymentSettings!.domainFqdn
-//       domainOUPath: deploymentSettings!.domainOUPath
-//       endingIPAddress: deploymentSettings!.endingIPAddress
-//       keyVaultName: deploymentSettings!.keyVaultName
-//       networkIntents: [
-//         for intent in deploymentSettings.networkIntents: {
-//           ...intent
-//           qosPolicyOverrides: {
-//             bandwidthPercentage_SMB: intent.qosPolicyOverrides.bandwidthPercentageSMB
-//             priorityValue8021Action_Cluster: intent.qosPolicyOverrides.priorityValue8021ActionCluster
-//             priorityValue8021Action_SMB: intent.qosPolicyOverrides.priorityValue8021ActionSMB
-//           }
-//         }
-//       ]
-//       startingIPAddress: deploymentSettings!.startingIPAddress
-//       storageConnectivitySwitchless: deploymentSettings!.storageConnectivitySwitchless
-//       storageNetworks: deploymentSettings!.storageNetworks
-//       subnetMask: deploymentSettings!.subnetMask
-//       bitlockerBootVolume: deploymentSettings!.?bitlockerBootVolume
-//       bitlockerDataVolumes: deploymentSettings!.?bitlockerDataVolumes
-//       credentialGuardEnforced: deploymentSettings!.?credentialGuardEnforced
-//       driftControlEnforced: deploymentSettings!.?driftControlEnforced
-//       drtmProtection: deploymentSettings!.?drtmProtection
-//       enableStorageAutoIp: deploymentSettings!.?enableStorageAutoIp
-//       episodicDataUpload: deploymentSettings!.?episodicDataUpload
-//       hvciProtection: deploymentSettings!.?hvciProtection
-//       isEuropeanUnionLocation: deploymentSettings!.?isEuropeanUnionLocation
-//       sideChannelMitigationEnforced: deploymentSettings!.?sideChannelMitigationEnforced
-//       smbClusterEncryption: deploymentSettings!.?smbClusterEncryption
-//       smbSigningEnforced: deploymentSettings!.?smbSigningEnforced
-//       storageConfigurationMode: deploymentSettings!.?storageConfigurationMode
-//       streamingDataClient: deploymentSettings!.?streamingDataClient
-//       wdacEnforced: deploymentSettings!.?wdacEnforced
-//       hciResourceProviderObjectId: hciResourceProviderObjectId
-//     }
-//   }
-// ]
 
 resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
