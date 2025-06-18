@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14256647321024792804"
+      "templateHash": "16574885166976035135"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -29,7 +29,13 @@
       "type": "object",
       "defaultValue": {},
       "metadata": {
-        "description": "General. Tags for all resources."
+        "example": {
+          "Environment": "Production",
+          "Owner": "TeamName",
+          "CostCenter": "IT",
+          "Application": "MyApp"
+        },
+        "description": "General. Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc."
       }
     },
     "enableTelemetry": {
@@ -115,15 +121,15 @@
       "type": "array",
       "defaultValue": [
         {
-          "name": "snet-app",
+          "name": "snet-application",
           "addressPrefix": "10.0.0.0/24"
         },
         {
-          "name": "snet-pep",
+          "name": "snet-privateendpoints",
           "addressPrefix": "10.0.1.0/24"
         },
         {
-          "name": "snet-bootdiag",
+          "name": "snet-bootdiagnostics",
           "addressPrefix": "10.0.2.0/24"
         },
         {
@@ -911,7 +917,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('nsg-{0}-app', parameters('name'))]"
+            "value": "[format('nsg-{0}-application', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -1563,7 +1569,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('nsg-{0}-pep', parameters('name'))]"
+            "value": "[format('nsg-{0}-privateendpoints', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -2234,7 +2240,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('nsg-{0}-bootdiag', parameters('name'))]"
+            "value": "[format('nsg-{0}-bootdiagnostics', parameters('name'))]"
           },
           "location": {
             "value": "[parameters('location')]"
