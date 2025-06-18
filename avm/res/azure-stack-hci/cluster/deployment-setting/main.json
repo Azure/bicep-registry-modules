@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "15882025976662734985"
+      "templateHash": "2449414576443390469"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -171,9 +171,8 @@
     },
     "needArbSecret": {
       "type": "bool",
-      "defaultValue": true,
       "metadata": {
-        "description": "Conditional. If true, the service principal secret for ARB is required. If false, the secrets wiil not be required."
+        "description": "Required. If true, the service principal secret for ARB is required. If false, the secrets wiil not be required."
       }
     },
     "subnetMask": {
