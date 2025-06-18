@@ -16,21 +16,65 @@ param sshPublicKeySecretName string = 'AksArcAgentSshPublicKey'
 @description('Optional. Tags of the resource.')
 param tags object?
 
-resource kv 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
-  name: keyVaultName!
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+  name: keyVaultName
 }
 
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
   name: 'temp-${name}'
   location: location
   tags: tags
 }
 
-resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
-  name: 'generateSSHKey-${name}'
+resource CRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${managedIdentity.name}-C-RoleAssignment')
+  scope: resourceGroup()
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor role
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource KVARole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('msi-${managedIdentity.name}-KVA-RoleAssignment')
+  scope: keyVault
+  properties: {
+    principalId: managedIdentity.properties.principalId
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
+    ) // Key Vault Administrator
+    principalType: 'ServicePrincipal'
+  }
+}
+
+var readJsonRaw = loadTextContent('./nested/read.json')
+var readJson = replace(
+  replace(replace(readJsonRaw, '{{keyVaultName}}', keyVaultName), '{{publicKeySecretName}}', sshPublicKeySecretName),
+  '{{privateKeySecretName}}',
+  sshPrivateKeyPemSecretName
+)
+
+var writeJsonRaw = loadTextContent('./nested/write.json')
+var writeJson = replace(
+  replace(replace(writeJsonRaw, '{{keyVaultName}}', keyVaultName), '{{publicKeySecretName}}', sshPublicKeySecretName),
+  '{{privateKeySecretName}}',
+  sshPrivateKeyPemSecretName
+)
+
+resource newSshKey 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: 'newSshKey-${name}'
   location: location
   tags: tags
-  kind: 'AzurePowerShell'
+  dependsOn: [
+    CRole
+    KVARole
+  ]
+  kind: 'AzureCLI'
   identity: {
     type: 'UserAssigned'
     userAssignedIdentities: {
@@ -38,28 +82,13 @@ resource generateSSHKey 'Microsoft.Resources/deploymentScripts@2020-10-01' = {
     }
   }
   properties: {
-    azPowerShellVersion: '8.0'
-    retentionInterval: 'P1D'
-    scriptContent: loadTextContent('./scripts/generateSshKey.ps1')
+    azCliVersion: '2.71.0'
+    scriptContent: loadTextContent('./New-SshKey.sh')
+    arguments: '"${base64(loadTextContent('./nested/reflect.bicep'))}" "${base64(loadTextContent('./nested/read.bicep'))}" "${base64(readJson)}" "${base64(loadTextContent('./nested/write.bicep'))}" "${base64(writeJson)}" "${subscription().subscriptionId}" "${resourceGroup().name}" "${name}"'
+    timeout: 'PT30M'
+    retentionInterval: 'PT60M'
+    cleanupPreference: 'OnExpiration'
   }
 }
 
-resource sshPublicKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: kv
-  name: sshPublicKeySecretName
-  properties: {
-    contentType: 'Secret'
-    value: generateSSHKey.properties.outputs.publicKey
-  }
-}
-
-resource sshPrivateKeyPem 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
-  parent: kv
-  name: sshPrivateKeyPemSecretName
-  properties: {
-    contentType: 'Secret'
-    value: generateSSHKey.properties.outputs.privateKey
-  }
-}
-
-output sshPublicKeyPemValue string = generateSSHKey.properties.outputs.publicKey
+output sshPublicKeyPemValue string = newSshKey.properties.outputs.output
