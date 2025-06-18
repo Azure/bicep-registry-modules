@@ -582,29 +582,6 @@ module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
   }
 }
 
-// Network interface for VM
-module networkInterface 'br/public:avm/res/network/network-interface:0.5.2' = {
-  name: '${name}-vm-nic'
-  params: {
-    name: '${name}-vm-nic'
-    location: location
-    tags: tags
-    ipConfigurations: [
-      {
-        name: 'ipconfig1'
-        subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
-        loadBalancerBackendAddressPools: [
-          {
-            id: loadBalancer.outputs.backendpools[0].id
-          }
-        ]
-      }
-    ]
-    networkSecurityGroupResourceId: vmNetworkSecurityGroup.outputs.resourceId
-    enableTelemetry: enableTelemetry
-  }
-}
-
 // Virtual machine
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
   name: '${uniqueString(deployment().name, location)}-vm'
