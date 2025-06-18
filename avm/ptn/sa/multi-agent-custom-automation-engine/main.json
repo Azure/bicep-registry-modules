@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "486917040371262555"
+      "templateHash": "9354563295959262153"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -34048,7 +34048,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3986580199049963800"
+              "templateHash": "1247043739668906740"
             }
           },
           "parameters": {
@@ -34127,7 +34127,7 @@
                   "appInsightsConnectionString": "[if(parameters('enableMonitoring'), createObject('value', parameters('applicationInsightsConnectionString')), createObject('value', null()))]",
                   "zoneRedundant": "[if(parameters('enableRedundancy'), createObject('value', true()), createObject('value', false()))]",
                   "infrastructureResourceGroupName": "[if(parameters('enableRedundancy'), createObject('value', format('{0}-infra', resourceGroup().name)), createObject('value', null()))]",
-                  "workloadProfiles": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('maximumCount', 3, 'minimumCount', 1, 'name', 'CAW01', 'workloadProfileType', 'D4'))), createObject('value', createArray(createObject('name', 'Consumption', 'workloadProfileType', 'Consumption'))))]"
+                  "workloadProfiles": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('maximumCount', 3, 'minimumCount', 3, 'name', 'CAW01', 'workloadProfileType', 'D4'))), createObject('value', createArray(createObject('name', 'Consumption', 'workloadProfileType', 'Consumption'))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",

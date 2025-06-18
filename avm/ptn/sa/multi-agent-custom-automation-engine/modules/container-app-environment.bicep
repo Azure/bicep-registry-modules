@@ -42,7 +42,7 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2
       ? [
           {
             maximumCount: 3
-            minimumCount: 1
+            minimumCount: 3
             name: 'CAW01'
             workloadProfileType: 'D4'
           }
