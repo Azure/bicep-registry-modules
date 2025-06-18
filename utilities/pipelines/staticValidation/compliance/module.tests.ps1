@@ -163,7 +163,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
         }
 
         # Changelogs are required for all (child-)modules that are published (having a version.json file)
-        It '[<moduleFolderName>] Module must contain a [` CHANGELOG.md `] file.' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists -and $_.includeInTestPhase }) {
+        It '[<moduleFolderName>] Module must contain a [` CHANGELOG.md `] file.' -Tag 'Changelog' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists -and $_.includeInTestPhase }) {
 
             param(
                 [string] $moduleFolderPath
