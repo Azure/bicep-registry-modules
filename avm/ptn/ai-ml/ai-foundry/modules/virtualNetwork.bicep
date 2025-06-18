@@ -347,7 +347,7 @@ resource natGatewayPublicIp 'Microsoft.Network/publicIPAddresses@2024-03-01' = [
     sku: {
       name: 'Standard'
     }
-    zones: !empty(natGatewayZones) ? natGatewayZones : ['1'] // Default to zone 1 for high availability if not specified
+    zones: ['1', '2', '3'] // Use all supported zones for high availability
     properties: {
       publicIPAllocationMethod: 'Static'
     }

@@ -67,10 +67,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     blobServices: {
       deleteRetentionPolicyEnabled: true // Enable soft delete for containers
       deleteRetentionPolicyDays: 7 // Retain deleted containers for 7 days (customize as needed)
-      containerDeleteRetentionPolicy: {
-        enabled: true
-        days: 7 // Retain deleted containers for 7 days (customize as needed)
-      }
       containers: [
         {
           name: '${nameFormatted}projUploads'
@@ -158,6 +154,19 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
       : []
     roleAssignments: roleAssignments
   }
+}
+
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
+  name: '${nameFormatted}/default'
+  properties: {
+    containerDeleteRetentionPolicy: {
+      enabled: true
+      days: 7
+    }
+  }
+  dependsOn: [
+    storageAccount
+  ]
 }
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'

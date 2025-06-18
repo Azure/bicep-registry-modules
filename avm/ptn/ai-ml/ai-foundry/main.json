@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "15139858429547656824"
+      "templateHash": "11161516002987349308"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -1280,7 +1280,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "18328732762834860600"
+              "templateHash": "14316640921557133275"
             }
           },
           "parameters": {
@@ -1744,7 +1744,11 @@
               "sku": {
                 "name": "Standard"
               },
-              "zones": "[if(not(empty(parameters('natGatewayZones'))), parameters('natGatewayZones'), createArray('1'))]",
+              "zones": [
+                "1",
+                "2",
+                "3"
+              ],
               "properties": {
                 "publicIPAllocationMethod": "Static"
               }
@@ -26972,7 +26976,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13096569531461705009"
+              "templateHash": "9022071221377659228"
             }
           },
           "definitions": {
@@ -27119,6 +27123,20 @@
             "nameFormatted": "[take(toLower(parameters('storageName')), 24)]"
           },
           "resources": {
+            "blobService": {
+              "type": "Microsoft.Storage/storageAccounts/blobServices",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}/default', variables('nameFormatted'))]",
+              "properties": {
+                "containerDeleteRetentionPolicy": {
+                  "enabled": true,
+                  "days": 7
+                }
+              },
+              "dependsOn": [
+                "storageAccount"
+              ]
+            },
             "blobPrivateDnsZone": {
               "condition": "[parameters('networkIsolation')]",
               "type": "Microsoft.Resources/deployments",
@@ -33477,10 +33495,6 @@
                     "value": {
                       "deleteRetentionPolicyEnabled": true,
                       "deleteRetentionPolicyDays": 7,
-                      "containerDeleteRetentionPolicy": {
-                        "enabled": true,
-                        "days": 7
-                      },
                       "containers": [
                         {
                           "name": "[format('{0}projUploads', variables('nameFormatted'))]",
