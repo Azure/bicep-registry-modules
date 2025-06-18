@@ -18,6 +18,8 @@ param hciResourceProviderObjectId string
 param clusterName string
 param cloudId string
 
+param needArbSecret bool
+
 // if deployment operations requested, validation must be performed first so we reverse sort the array
 var sortedDeploymentOperations = (!empty(deploymentOperations)) ? sort(deploymentOperations, (a, b) => a > b) : []
 
@@ -69,6 +71,7 @@ module deploymentSetting '../deployment-setting/main.bicep' = [
       streamingDataClient: deploymentSettings!.?streamingDataClient
       wdacEnforced: deploymentSettings!.?wdacEnforced
       hciResourceProviderObjectId: hciResourceProviderObjectId
+      needArbSecret: needArbSecret
     }
   }
 ]

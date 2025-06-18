@@ -230,17 +230,6 @@ resource roleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2022
   }
 }
 
-// Owner
-resource roleAssignmentOwner 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(managedIdentity.id, builtInRoleNames.Owner, resourceGroup().id)
-  scope: resourceGroup()
-  properties: {
-    roleDefinitionId: builtInRoleNames.Owner
-    principalId: managedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
 // Reader
 resource roleAssignmentReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid(managedIdentity.id, builtInRoleNames.Reader, resourceGroup().id)
@@ -258,39 +247,6 @@ resource roleAssignmentRBACAdmin 'Microsoft.Authorization/roleAssignments@2022-0
   scope: resourceGroup()
   properties: {
     roleDefinitionId: builtInRoleNames['Role Based Access Control Administrator']
-    principalId: managedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-// User Access Administrator
-resource roleAssignmentUserAccessAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(managedIdentity.id, builtInRoleNames['User Access Administrator'], resourceGroup().id)
-  scope: resourceGroup()
-  properties: {
-    roleDefinitionId: builtInRoleNames['User Access Administrator']
-    principalId: managedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-// Azure Stack HCI Administrator
-resource roleAssignmentHCIAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(managedIdentity.id, builtInRoleNames['Azure Stack HCI Administrator'], resourceGroup().id)
-  scope: resourceGroup()
-  properties: {
-    roleDefinitionId: builtInRoleNames['Azure Stack HCI Administrator']
-    principalId: managedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
-  }
-}
-
-// Windows Admin Center Administrator Login
-resource roleAssignmentWACAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(managedIdentity.id, builtInRoleNames['Windows Admin Center Administrator Login'], resourceGroup().id)
-  scope: resourceGroup()
-  properties: {
-    roleDefinitionId: builtInRoleNames['Windows Admin Center Administrator Login']
     principalId: managedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }
@@ -353,18 +309,18 @@ resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
         name: 'DEPLOYMENT_SETTING_MAIN_BICEP_BASE64'
         value: base64(loadTextContent('./deployment-setting/main.bicep'))
       }
+      {
+        name: 'NEED_ARB_SECRET'
+        value: empty(servicePrincipalId) || empty(servicePrincipalSecret) ? string(false) : string(true)
+      }
     ]
     scriptContent: loadTextContent('./deploy.sh')
   }
   dependsOn: [
     secrets
     roleAssignmentContributor
-    roleAssignmentOwner
     roleAssignmentReader
     roleAssignmentRBACAdmin
-    roleAssignmentUserAccessAdmin
-    roleAssignmentHCIAdmin
-    roleAssignmentWACAdmin
   ]
 }
 

@@ -140,8 +140,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     deploymentUserPassword: '<deploymentUserPassword>'
     localAdminPassword: '<localAdminPassword>'
     localAdminUser: 'Administrator'
-    servicePrincipalId: '<servicePrincipalId>'
-    servicePrincipalSecret: '<servicePrincipalSecret>'
   }
 }
 ```
@@ -266,12 +264,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     },
     "localAdminUser": {
       "value": "Administrator"
-    },
-    "servicePrincipalId": {
-      "value": "<servicePrincipalId>"
-    },
-    "servicePrincipalSecret": {
-      "value": "<servicePrincipalSecret>"
     }
   }
 }
@@ -382,8 +374,6 @@ param deploymentUser = 'deployUser'
 param deploymentUserPassword = '<deploymentUserPassword>'
 param localAdminPassword = '<localAdminPassword>'
 param localAdminUser = 'Administrator'
-param servicePrincipalId = '<servicePrincipalId>'
-param servicePrincipalSecret = '<servicePrincipalSecret>'
 ```
 
 </details>

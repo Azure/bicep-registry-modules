@@ -82,6 +82,9 @@ param episodicDataUpload bool = true
 ])
 param storageConfigurationMode string = 'Express'
 
+@description('Conditional. If true, the service principal secret for ARB is required. If false, the secrets wiil not be required.')
+param needArbSecret bool = true
+
 // cluster network configuration details
 @description('Required. The subnet mask pf the Management Network for the HCI cluster - ex: 255.255.252.0.')
 param subnetMask string
@@ -212,6 +215,14 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' existing = {
   name: clusterName
 }
 
+var baseSecretNames = [
+  'LocalAdminCredential'
+  'AzureStackLCMUserCredential'
+  'WitnessStorageKey'
+]
+
+var allSecretNames = needArbSecret ? concat(baseSecretNames, ['DefaultARBApplication']) : baseSecretNames
+
 resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings@2024-04-01' = {
   name: name
   parent: cluster
@@ -297,12 +308,7 @@ resource deploymentSettings 'Microsoft.AzureStackHCI/clusters/deploymentSettings
               customLocation: customLocationName
             }
             secrets: [
-              for secretName in [
-                'LocalAdminCredential'
-                'AzureStackLCMUserCredential'
-                'DefaultARBApplication'
-                'WitnessStorageKey'
-              ]: {
+              for secretName in allSecretNames: {
                 secretName: empty(cloudId) ? secretName : '${clusterName}-${secretName}-${cloudId}'
                 eceSecretName: secretName
                 secretLocation: empty(cloudId)
