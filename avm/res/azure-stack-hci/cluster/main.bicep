@@ -174,6 +174,13 @@ resource cluster 'Microsoft.AzureStackHCI/clusters@2024-04-01' = {
   tags: tags
 }
 
+var arcNodeResourceIds = [
+  for (nodeName, index) in deploymentSettings!.clusterNodeNames: resourceId(
+    'Microsoft.HybridCompute/machines',
+    nodeName
+  )
+]
+
 module secrets './secrets.bicep' = if (useSharedKeyVault) {
   name: '${uniqueString(deployment().name, location)}-secrets'
   scope: resourceGroup(
@@ -202,61 +209,164 @@ module secrets './secrets.bicep' = if (useSharedKeyVault) {
     witnessStorageAccountResourceGroup: witnessStorageAccountResourceGroup ?? resourceGroup().name
     witnessStorageAccountSubscriptionId: witnessStorageAccountSubscriptionId ?? subscription().subscriptionId
     hciResourceProviderObjectId: hciResourceProviderObjectId
-    clusterNodeNames: deploymentSettings!.clusterNodeNames
+    arcNodeResourceIds: arcNodeResourceIds
   }
 }
 
-@batchSize(1)
-module deploymentSetting 'deployment-setting/main.bicep' = [
-  for deploymentOperation in sortedDeploymentOperations: if (!empty(deploymentOperation) && !empty(deploymentSettings)) {
-    name: 'deploymentSettings-${deploymentOperation}'
-    params: {
-      cloudId: useSharedKeyVault ? cluster.properties.cloudId : null
-      clusterName: cluster.name
-      deploymentMode: deploymentOperation
-      clusterNodeNames: deploymentSettings!.clusterNodeNames
-      clusterWitnessStorageAccountName: deploymentSettings!.clusterWitnessStorageAccountName
-      customLocationName: deploymentSettings!.customLocationName
-      defaultGateway: deploymentSettings!.defaultGateway
-      deploymentPrefix: deploymentSettings!.deploymentPrefix
-      dnsServers: deploymentSettings!.dnsServers
-      domainFqdn: deploymentSettings!.domainFqdn
-      domainOUPath: deploymentSettings!.domainOUPath
-      endingIPAddress: deploymentSettings!.endingIPAddress
-      keyVaultName: deploymentSettings!.keyVaultName
-      networkIntents: [
-        for intent in deploymentSettings.networkIntents: {
-          ...intent
-          qosPolicyOverrides: {
-            bandwidthPercentage_SMB: intent.qosPolicyOverrides.bandwidthPercentageSMB
-            priorityValue8021Action_Cluster: intent.qosPolicyOverrides.priorityValue8021ActionCluster
-            priorityValue8021Action_SMB: intent.qosPolicyOverrides.priorityValue8021ActionSMB
-          }
-        }
-      ]
-      startingIPAddress: deploymentSettings!.startingIPAddress
-      storageConnectivitySwitchless: deploymentSettings!.storageConnectivitySwitchless
-      storageNetworks: deploymentSettings!.storageNetworks
-      subnetMask: deploymentSettings!.subnetMask
-      bitlockerBootVolume: deploymentSettings!.?bitlockerBootVolume
-      bitlockerDataVolumes: deploymentSettings!.?bitlockerDataVolumes
-      credentialGuardEnforced: deploymentSettings!.?credentialGuardEnforced
-      driftControlEnforced: deploymentSettings!.?driftControlEnforced
-      drtmProtection: deploymentSettings!.?drtmProtection
-      enableStorageAutoIp: deploymentSettings!.?enableStorageAutoIp
-      episodicDataUpload: deploymentSettings!.?episodicDataUpload
-      hvciProtection: deploymentSettings!.?hvciProtection
-      isEuropeanUnionLocation: deploymentSettings!.?isEuropeanUnionLocation
-      sideChannelMitigationEnforced: deploymentSettings!.?sideChannelMitigationEnforced
-      smbClusterEncryption: deploymentSettings!.?smbClusterEncryption
-      smbSigningEnforced: deploymentSettings!.?smbSigningEnforced
-      storageConfigurationMode: deploymentSettings!.?storageConfigurationMode
-      streamingDataClient: deploymentSettings!.?streamingDataClient
-      wdacEnforced: deploymentSettings!.?wdacEnforced
-      hciResourceProviderObjectId: hciResourceProviderObjectId
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+  name: 'temp-${name}'
+  location: location
+  tags: tags
+}
+
+// Contributor
+resource roleAssignmentContributor 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames.Contributor, resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames.Contributor
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Owner
+resource roleAssignmentOwner 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames.Owner, resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames.Owner
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Reader
+resource roleAssignmentReader 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames.Reader, resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames.Reader
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Role Based Access Control Administrator
+resource roleAssignmentRBACAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames['Role Based Access Control Administrator'], resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames['Role Based Access Control Administrator']
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// User Access Administrator
+resource roleAssignmentUserAccessAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames['User Access Administrator'], resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames['User Access Administrator']
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Azure Stack HCI Administrator
+resource roleAssignmentHCIAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames['Azure Stack HCI Administrator'], resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames['Azure Stack HCI Administrator']
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Windows Admin Center Administrator Login
+resource roleAssignmentWACAdmin 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(managedIdentity.id, builtInRoleNames['Windows Admin Center Administrator Login'], resourceGroup().id)
+  scope: resourceGroup()
+  properties: {
+    roleDefinitionId: builtInRoleNames['Windows Admin Center Administrator Login']
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+// Use deployment script to run the shell script
+resource deploymentScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: 'hci-deployment-script-${uniqueString(resourceGroup().id)}'
+  location: resourceGroup().location
+  kind: 'AzureCLI'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
     }
   }
-]
+  properties: {
+    azCliVersion: '2.50.0'
+    timeout: 'PT5H'
+    retentionInterval: 'P1D'
+    cleanupPreference: 'OnSuccess'
+    environmentVariables: [
+      {
+        name: 'RESOURCE_GROUP_NAME'
+        value: resourceGroup().name
+      }
+      {
+        name: 'SUBSCRIPTION_ID'
+        value: subscription().subscriptionId
+      }
+      {
+        name: 'CLUSTER_NAME'
+        value: cluster.name
+      }
+      {
+        name: 'CLOUD_ID'
+        value: cluster.properties.cloudId
+      }
+      {
+        name: 'USE_SHARED_KEYVAULT'
+        value: string(useSharedKeyVault)
+      }
+      {
+        name: 'DEPLOYMENT_OPERATIONS'
+        value: join(deploymentOperations, ',')
+      }
+      {
+        name: 'HCI_RESOURCE_PROVIDER_OBJECT_ID'
+        secureValue: hciResourceProviderObjectId
+      }
+      {
+        name: 'DEPLOYMENT_SETTINGS'
+        value: string(deploymentSettings)
+      }
+      {
+        name: 'DEPLOYMENT_SETTING_BICEP_BASE64'
+        value: base64(loadTextContent('./nested/deployment-setting.bicep'))
+      }
+      {
+        name: 'DEPLOYMENT_SETTING_MAIN_BICEP_BASE64'
+        value: base64(loadTextContent('./deployment-setting/main.bicep'))
+      }
+    ]
+    scriptContent: loadTextContent('./deploy.sh')
+  }
+  dependsOn: [
+    secrets
+    roleAssignmentContributor
+    roleAssignmentOwner
+    roleAssignmentReader
+    roleAssignmentRBACAdmin
+    roleAssignmentUserAccessAdmin
+    roleAssignmentHCIAdmin
+    roleAssignmentWACAdmin
+  ]
+}
 
 resource cluster_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
   for (roleAssignment, index) in (formattedRoleAssignments ?? []): {
@@ -416,6 +526,7 @@ type securityConfigurationType = {
   wdacEnforced: bool
 }
 
+@export()
 type deploymentSettingsType = {
   @minLength(4)
   @maxLength(8)
