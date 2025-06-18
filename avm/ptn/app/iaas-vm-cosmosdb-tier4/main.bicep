@@ -307,7 +307,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
         properties: {
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet only
+          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet
           destinationAddressPrefix: '10.0.0.0/24' // Only allow to application subnet
           access: 'Allow'
           priority: 100
@@ -324,7 +324,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
           protocol: 'Tcp'
           sourcePortRange: '*'
           destinationPortRange: '443'
-          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet only
+          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet
           destinationAddressPrefix: 'AzureCloud'
           access: 'Allow'
           priority: 110
@@ -336,7 +336,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
         properties: {
           protocol: '*'
           sourcePortRange: '*'
-          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet only
+          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet
           destinationAddressPrefix: '10.0.1.0/24' // Only within Bastion subnet
           access: 'Allow'
           priority: 120
@@ -352,7 +352,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
         properties: {
           protocol: '*'
           sourcePortRange: '*'
-          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet only
+          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet
           destinationAddressPrefix: 'Internet'
           access: 'Allow'
           priority: 130
