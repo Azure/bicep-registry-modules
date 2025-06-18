@@ -2,11 +2,10 @@ param name string
 param location string
 param logAnalyticsResourceName string?
 param tags object
-param publicNetworkAccess string
 param enableTelemetry bool
 param enableMonitoring bool
 param enableRedundancy bool
-param subnetResourceId string
+param subnetResourceId string?
 param applicationInsightsConnectionString string?
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (enableMonitoring) {
@@ -20,9 +19,10 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2
     location: location
     tags: tags
     enableTelemetry: enableTelemetry
-    infrastructureSubnetResourceId: subnetResourceId
     internal: false
-    publicNetworkAccess: publicNetworkAccess
+    publicNetworkAccess: 'Enabled'
+    // WAF aligned configuration for Private Networking
+    infrastructureSubnetResourceId: subnetResourceId
     // WAF aligned configuration for Monitoring
     appLogsConfiguration: enableMonitoring
       ? {

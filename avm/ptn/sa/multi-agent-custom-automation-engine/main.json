@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "1459945162981124897"
+      "templateHash": "42081981394574443"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -244,6 +244,11 @@
           "dataRetention": {
             "value": 365
           },
+          "features": {
+            "value": {
+              "enableLogAccessUsingOnlyResourcePermissions": true
+            }
+          },
           "diagnosticSettings": {
             "value": [
               {
@@ -252,12 +257,7 @@
             ]
           },
           "dailyQuotaGb": "[if(parameters('enableRedundancy'), createObject('value', 10), createObject('value', null()))]",
-          "dataSources": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('eventLogName', 'Application', 'eventTypes', createArray(createObject('eventType', 'Error'), createObject('eventType', 'Warning'), createObject('eventType', 'Information')), 'kind', 'WindowsEvent', 'name', 'applicationEvent'), createObject('counterName', '% Processor Time', 'instanceName', '*', 'intervalSeconds', 60, 'kind', 'WindowsPerformanceCounter', 'name', 'windowsPerfCounter1', 'objectName', 'Processor'), createObject('kind', 'IISLogs', 'name', 'sampleIISLog1', 'state', 'OnPremiseEnabled'))), createObject('value', null()))]",
-          "features": {
-            "value": {
-              "enableLogAccessUsingOnlyResourcePermissions": true
-            }
-          }
+          "dataSources": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('eventLogName', 'Application', 'eventTypes', createArray(createObject('eventType', 'Error'), createObject('eventType', 'Warning'), createObject('eventType', 'Information')), 'kind', 'WindowsEvent', 'name', 'applicationEvent'), createObject('counterName', '% Processor Time', 'instanceName', '*', 'intervalSeconds', 60, 'kind', 'WindowsPerformanceCounter', 'name', 'windowsPerfCounter1', 'objectName', 'Processor'), createObject('kind', 'IISLogs', 'name', 'sampleIISLog1', 'state', 'OnPremiseEnabled'))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -34027,15 +34027,11 @@
           "location": {
             "value": "[parameters('solutionLocation')]"
           },
-          "logAnalyticsResourceName": "[if(parameters('enableMonitoring'), createObject('value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').name), createObject('value', null()))]",
-          "publicNetworkAccess": {
-            "value": "Enabled"
-          },
-          "applicationInsightsConnectionString": "[if(parameters('enableMonitoring'), createObject('value', reference('applicationInsights').outputs.connectionString.value), createObject('value', null()))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "subnetResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', coalesce(tryGet(tryGet(tryGet(reference('virtualNetwork'), 'outputs'), 'subnetResourceIds'), 'value', 4), '')), createObject('value', ''))]",
+          "subnetResourceId": "[if(parameters('enablePrivateNetworking'), createObject('value', tryGet(tryGet(tryGet(reference('virtualNetwork'), 'outputs'), 'subnetResourceIds'), 'value', 3)), createObject('value', null()))]",
+          "logAnalyticsResourceName": "[if(parameters('enableMonitoring'), createObject('value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').name), createObject('value', null()))]",
           "enableMonitoring": {
             "value": "[parameters('enableMonitoring')]"
           },
@@ -34051,7 +34047,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "2532990073733214680"
+              "templateHash": "4876810842198527571"
             }
           },
           "parameters": {
@@ -34068,9 +34064,6 @@
             "tags": {
               "type": "object"
             },
-            "publicNetworkAccess": {
-              "type": "string"
-            },
             "enableTelemetry": {
               "type": "bool"
             },
@@ -34081,7 +34074,8 @@
               "type": "bool"
             },
             "subnetResourceId": {
-              "type": "string"
+              "type": "string",
+              "nullable": true
             },
             "applicationInsightsConnectionString": {
               "type": "string",
@@ -34118,14 +34112,14 @@
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
                   },
-                  "infrastructureSubnetResourceId": {
-                    "value": "[parameters('subnetResourceId')]"
-                  },
                   "internal": {
                     "value": false
                   },
                   "publicNetworkAccess": {
-                    "value": "[parameters('publicNetworkAccess')]"
+                    "value": "Enabled"
+                  },
+                  "infrastructureSubnetResourceId": {
+                    "value": "[parameters('subnetResourceId')]"
                   },
                   "appLogsConfiguration": "[if(parameters('enableMonitoring'), createObject('value', createObject('destination', 'log-analytics', 'logAnalyticsConfiguration', createObject('customerId', reference('logAnalyticsWorkspace').customerId, 'sharedKey', listKeys('logAnalyticsWorkspace', '2023-09-01').primarySharedKey))), createObject('value', null()))]",
                   "appInsightsConnectionString": "[if(parameters('enableMonitoring'), createObject('value', parameters('applicationInsightsConnectionString')), createObject('value', null()))]",
@@ -35021,7 +35015,6 @@
         }
       },
       "dependsOn": [
-        "applicationInsights",
         "logAnalyticsWorkspace",
         "virtualNetwork"
       ]
@@ -35075,8 +35068,8 @@
           },
           "scaleSettings": {
             "value": {
-              "maxReplicas": 1,
-              "minReplicas": 1,
+              "maxReplicas": "[if(parameters('enableScalability'), 3, 1)]",
+              "minReplicas": "[if(parameters('enableScalability'), 2, 1)]",
               "rules": [
                 {
                   "name": "http-scaler",
@@ -37200,7 +37193,8 @@
           },
           "siteConfig": {
             "value": {
-              "linuxFxVersion": "[format('DOCKER|{0}/{1}:{2}', parameters('frontendContainerRegistryHostname'), parameters('frontendContainerImageName'), parameters('frontendContainerImageTag'))]"
+              "linuxFxVersion": "[format('DOCKER|{0}/{1}:{2}', parameters('frontendContainerRegistryHostname'), parameters('frontendContainerImageName'), parameters('frontendContainerImageTag'))]",
+              "minTlsVersion": "1.2"
             }
           },
           "configs": {

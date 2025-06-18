@@ -94,7 +94,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 // ========== Log Analytics Workspace ========== //
 // WAF best practices for Log Analytics: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-log-analytics
-// Log Analytics configuration defaults
+// WAF PSRules for Log Analytics: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#azure-monitor-logs
 var logAnalyticsWorkspaceResourceName = 'log-${solutionPrefix}'
 module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (enableMonitoring) {
   name: take('avm.res.operational-insights.workspace.${logAnalyticsWorkspaceResourceName}', 64)
@@ -105,8 +105,14 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     enableTelemetry: enableTelemetry
     skuName: 'PerGB2018'
     dataRetention: 365
+    features: { enableLogAccessUsingOnlyResourcePermissions: true }
     diagnosticSettings: [{ useThisWorkspace: true }]
+    // WAF aligned configuration for Redundancy
     dailyQuotaGb: enableRedundancy ? 10 : null //WAF recommendation: 10 GB per day is a good starting point for most workloads
+    // WAF aligned configuration for Private Networking
+    //TODO: Configure private link for Log Analytics Workspace
+    //publicNetworkAccessForIngestion: enablePrivateNetworking ? 'Disabled' : 'Enabled'
+    //publicNetworkAccessForQuery: enablePrivateNetworking ? 'Disabled' : 'Enabled'
     dataSources: enablePrivateNetworking
       ? [
           {
@@ -140,10 +146,6 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
           }
         ]
       : null
-    //TODO: Configure private link for Log Analytics Workspace
-    //publicNetworkAccessForIngestion: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    //publicNetworkAccessForQuery: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    features: { enableLogAccessUsingOnlyResourcePermissions: true }
   }
 }
 
@@ -1021,6 +1023,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
 
 // ========== Backend Container App Environment ========== //
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
+// PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppEnvironmentResourceName = 'cae-${solutionPrefix}'
 module containerAppEnvironment 'modules/container-app-environment.bicep' = {
   name: take('module.container-app-environment.${containerAppEnvironmentResourceName}', 64)
@@ -1028,20 +1031,15 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = {
     name: containerAppEnvironmentResourceName
     tags: tags
     location: solutionLocation
-    logAnalyticsResourceName: enableMonitoring ? logAnalyticsWorkspace.outputs.name : null
-    publicNetworkAccess: 'Enabled'
-    applicationInsightsConnectionString: enableMonitoring ? applicationInsights.outputs.connectionString : null
     enableTelemetry: enableTelemetry
-    subnetResourceId: enablePrivateNetworking ? virtualNetwork.?outputs.?subnetResourceIds[4] ?? '' : ''
+    //aspireDashboardEnabled: TODO
+    // WAF aligned configuration for Private Networking
+    subnetResourceId: enablePrivateNetworking ? virtualNetwork.?outputs.?subnetResourceIds[3] : null
+    // WAF aligned configuration for Monitoring
+    logAnalyticsResourceName: enableMonitoring ? logAnalyticsWorkspace.outputs.name : null
     enableMonitoring: enableMonitoring
+    // WAF aligned configuration for Redundancy
     enableRedundancy: enableRedundancy
-    //aspireDashboardEnabled: !enablePrivateNetworking
-    // vnetConfiguration: enablePrivateNetworking
-    //   ? {
-    //       internal: false
-    //       infrastructureSubnetId: containerAppEnvironmentConfiguration.?subnetResourceId ?? virtualNetwork.?outputs.?subnetResourceIds[3] ?? ''
-    //     }
-    //   : {}
   }
 }
 
@@ -1050,6 +1048,7 @@ var userAssignedManagedIdentityContainerAppResourceName = 'id-${containerAppReso
 
 // ========== Backend Container App Service ========== //
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
+// PSRule for Container App: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#container-app
 var containerAppResourceName = 'ca-${solutionPrefix}'
 module containerApp 'br/public:avm/res/app/container-app:0.17.0' = {
   name: take('avm.res.app.container-app.${containerAppResourceName}', 64)
@@ -1069,10 +1068,10 @@ module containerApp 'br/public:avm/res/app/container-app:0.17.0' = {
         'http://${webSiteName}.azurewebsites.net'
       ]
     }
+    // WAF aligned configuration for Scalability
     scaleSettings: {
-      //TODO: Make maxReplicas and minReplicas parameterized
-      maxReplicas: 1
-      minReplicas: 1
+      maxReplicas: enableScalability ? 3 : 1
+      minReplicas: enableScalability ? 2 : 1
       rules: [
         {
           name: 'http-scaler'
@@ -1178,7 +1177,8 @@ module containerApp 'br/public:avm/res/app/container-app:0.17.0' = {
 }
 
 // ========== Frontend server farm ========== //
-// WAF best practices for web app service: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
+// WAF best practices for Web Application Services: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
+// PSRule for Web Server Farm: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#app-service
 var webServerFarmResourceName = 'asp-${solutionPrefix}'
 module webServerFarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
   name: take('avm.res.web.serverfarm.${webServerFarmResourceName}', 64)
@@ -1198,6 +1198,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
 
 // ========== Frontend web site ========== //
 // WAF best practices for web app service: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/app-service-web-apps
+// PSRule for Web Server Farm: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#app-service
 
 //NOTE: AVM module adds 1 MB of overhead to the template. Keeping vanilla resource to save template size.
 var webSiteName = 'app-${solutionPrefix}'
@@ -1213,6 +1214,7 @@ module webSite 'modules/web-sites.bicep' = {
     publicNetworkAccess: 'Enabled' //TODO: use Azure Front Door WAF or Application Gateway WAF instead
     siteConfig: {
       linuxFxVersion: 'DOCKER|${frontendContainerRegistryHostname}/${frontendContainerImageName}:${frontendContainerImageTag}'
+      minTlsVersion: '1.2'
     }
     configs: [
       {
