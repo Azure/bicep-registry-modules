@@ -385,22 +385,22 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
     ]
     subnets: [
       {
-        name: 'snet-${name}-app'
+        name: subnets[0].name
         addressPrefix: subnets[0].addressPrefix
         networkSecurityGroupResourceId: applicationNsg.outputs.resourceId
       }
       {
-        name: 'snet-${name}-pep'
+        name: subnets[1].name
         addressPrefix: subnets[1].addressPrefix
         networkSecurityGroupResourceId: privateEndpointNsg.outputs.resourceId
       }
       {
-        name: 'snet-${name}-bootdiag'
+        name: subnets[2].name
         addressPrefix: subnets[2].addressPrefix
         networkSecurityGroupResourceId: bootDiagnosticsNsg.outputs.resourceId
       }
       {
-        name: 'AzureBastionSubnet'
+        name: subnets[3].name
         addressPrefix: subnets[3].addressPrefix
         networkSecurityGroupResourceId: bastionNsg.outputs.resourceId
       }
@@ -413,7 +413,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
 module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   name: '${uniqueString(deployment().name, location)}-storage'
   params: {
-    name: 'st${toLower(replace(name, '-', ''))}${take(uniqueString(resourceGroup().id), 6)}diag'
+    name: 'st${take(replace(replace(replace(replace(toLower(name), '-', ''), '_', ''), '#', ''), '.', ''), 6)}${take(uniqueString(resourceGroup().id), 10)}'
     location: location
     tags: tags
     skuName: storageAccountSku.name
@@ -631,6 +631,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     osDisk: {
       createOption: 'FromImage'
       diskSizeGB: 30
+      caching: 'ReadWrite'
       managedDisk: {
         storageAccountType: 'Premium_LRS'
       }
@@ -638,6 +639,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     nicConfigurations: [
       {
         name: 'primary-nic'
+        tags: tags
         ipConfigurations: [
           {
             name: 'ipconfig1'
