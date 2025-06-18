@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12810467141935447786"
+      "templateHash": "441156217882584740"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -178,7 +178,7 @@
             "description": "Optional. The sqlAdminPassword secret name to create."
           }
         },
-        "sqlAzureConnectionStringSercretName": {
+        "sqlAzureConnectionStringSecretName": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -6016,7 +6016,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), tryGet(parameters('databases'), 0, 'name'), ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSecretName'), 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), tryGet(parameters('databases'), 0, 'name'), ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
           }
         },
         "template": {
