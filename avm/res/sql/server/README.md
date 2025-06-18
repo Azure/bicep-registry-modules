@@ -4700,7 +4700,7 @@ Key vault reference and secret settings for the module's secrets export.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`sqlAdminPasswordSecretName`](#parameter-secretsexportconfigurationsqladminpasswordsecretname) | string | The sqlAdminPassword secret name to create. |
-| [`sqlAzureConnectionStringSercretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsercretname) | string | The sqlAzureConnectionString secret name to create. |
+| [`sqlAzureConnectionStringSecretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsecretname) | string | The sqlAzureConnectionString secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -4716,7 +4716,7 @@ The sqlAdminPassword secret name to create.
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.sqlAzureConnectionStringSercretName`
+### Parameter: `secretsExportConfiguration.sqlAzureConnectionStringSecretName`
 
 The sqlAzureConnectionString secret name to create.
 
