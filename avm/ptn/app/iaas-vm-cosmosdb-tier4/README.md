@@ -254,7 +254,29 @@ Network security group rules for the ApplicationSubnet.
 
 - Required: No
 - Type: array
-- Default: `[]`
+- Default:
+  ```Bicep
+  [
+    {
+      name: 'DenyManagementOutbound'
+      properties: {
+        access: 'Deny'
+        destinationAddressPrefix: '*'
+        destinationPortRanges: [
+          '22'
+          '3389'
+          '5985'
+          '5986'
+        ]
+        direction: 'Outbound'
+        priority: 4000
+        protocol: '*'
+        sourceAddressPrefix: '*'
+        sourcePortRange: '*'
+      }
+    }
+  ]
+  ```
 
 ### Parameter: `vmNsgRules`
 
@@ -274,6 +296,24 @@ Network security group rules for the VM.
         direction: 'Inbound'
         priority: 300
         protocol: 'Tcp'
+        sourceAddressPrefix: 'VirtualNetwork'
+        sourcePortRange: '*'
+      }
+    }
+    {
+      name: 'DenyManagementOutbound'
+      properties: {
+        access: 'Deny'
+        destinationAddressPrefix: '*'
+        destinationPortRanges: [
+          '22'
+          '3389'
+          '5985'
+          '5986'
+        ]
+        direction: 'Outbound'
+        priority: 4000
+        protocol: '*'
         sourceAddressPrefix: '*'
         sourcePortRange: '*'
       }
