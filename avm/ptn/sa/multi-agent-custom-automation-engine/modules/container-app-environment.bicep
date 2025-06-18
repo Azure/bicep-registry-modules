@@ -1,12 +1,22 @@
+@description('Required. Name of the Container App Environment.')
 param name string
+@description('Required. Location of the Container App Environment.')
 param location string
+@description('Required. Resource name of the log analytics workspace to send logs.')
 param logAnalyticsResourceName string?
+@description('Required. Tags to set for the Container App Environment.')
 param tags object
+@description('Required. If private networking should be enabled.')
 param enablePrivateNetworking bool
+@description('Required. If AVM telemetry should be enabled.')
 param enableTelemetry bool
+@description('Required. If monitoring should be enabled.')
 param enableMonitoring bool
+@description('Required. If redundancy should be enabled.')
 param enableRedundancy bool
+@description('Required. Resource Id of the subnet to deploy the Container App Environment.')
 param subnetResourceId string?
+@description('Required. Connection String of the Application Insights resource to send logs to.')
 param applicationInsightsConnectionString string?
 
 resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = if (enableMonitoring) {
@@ -55,15 +65,6 @@ module containerAppEnvironment 'br/public:avm/res/app/managed-environment:0.11.2
         ]
   }
 }
-
-//TODO: FIX when deployed to vnet. This needs access to Azure to work
-// resource aspireDashboard 'Microsoft.App/managedEnvironments/dotNetComponents@2024-10-02-preview' = if (aspireDashboardEnabled) {
-//   parent: containerAppEnvironment
-//   name: 'aspire-dashboard'
-//   properties: {
-//     componentType: 'AspireDashboard'
-//   }
-// }
 
 output resourceId string = containerAppEnvironment.outputs.resourceId
 output location string = containerAppEnvironment.outputs.location

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10763802288143531183"
+      "templateHash": "8286427189294969160"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -189,7 +189,6 @@
     "cosmosDbDatabaseName": "macae",
     "cosmosDbDatabaseMemoryContainerName": "memory",
     "containerAppEnvironmentResourceName": "[format('cae-{0}', parameters('solutionPrefix'))]",
-    "userAssignedManagedIdentityContainerAppResourceName": "[format('id-{0}', variables('containerAppResourceName'))]",
     "containerAppResourceName": "[format('ca-{0}', parameters('solutionPrefix'))]",
     "webServerFarmResourceName": "[format('asp-{0}', parameters('solutionPrefix'))]",
     "webSiteName": "[format('app-{0}', parameters('solutionPrefix'))]"
@@ -25483,7 +25482,7 @@
     "resourceRoleAssignmentAiServicesAiUser": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesResourceName'), variables('userAssignedManagedIdentityContainerAppResourceName'), 'Azure AI User'))]",
+      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesResourceName'), variables('containerAppResourceName'), 'Azure AI User'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -25736,7 +25735,7 @@
     "resourceRoleAssignmentAiServicesAiDeveloper": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesResourceName'), variables('userAssignedManagedIdentityContainerAppResourceName'), 'Azure AI Developer'))]",
+      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesResourceName'), variables('containerAppResourceName'), 'Azure AI Developer'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -25989,7 +25988,7 @@
     "resourceRoleAssignmentAiServicesCognitiveServicesOpenAiUser": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesResourceName'), variables('userAssignedManagedIdentityContainerAppResourceName'), 'Cognitive Services OpenAI User'))]",
+      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesResourceName'), variables('containerAppResourceName'), 'Cognitive Services OpenAI User'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -26242,7 +26241,7 @@
     "resourceRoleAssignmentAiServicesAiProjectAiUser": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesAiProjectResourceName'), variables('userAssignedManagedIdentityContainerAppResourceName'), 'Azure AI User'))]",
+      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesAiProjectResourceName'), variables('containerAppResourceName'), 'Azure AI User'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -26495,7 +26494,7 @@
     "resourceRoleAssignmentAiServicesAiProjectAiDeveloper": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesAiProjectResourceName'), variables('userAssignedManagedIdentityContainerAppResourceName'), 'Azure AI Developer'))]",
+      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesAiProjectResourceName'), variables('containerAppResourceName'), 'Azure AI Developer'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -26748,7 +26747,7 @@
     "resourceRoleAssignmentAiServicesAiProjectCognitiveServicesOpenAiUser": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesAiProjectResourceName'), variables('userAssignedManagedIdentityContainerAppResourceName'), 'Cognitive Services OpenAI User'))]",
+      "name": "[format('avm.ptn.authorization.resource-role-assignment.{0}', uniqueString(variables('aiFoundryAiServicesAiProjectResourceName'), variables('containerAppResourceName'), 'Cognitive Services OpenAI User'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -34048,42 +34047,72 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "16009997770473060393"
+              "templateHash": "14632687001506177934"
             }
           },
           "parameters": {
             "name": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the Container App Environment."
+              }
             },
             "location": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. Location of the Container App Environment."
+              }
             },
             "logAnalyticsResourceName": {
               "type": "string",
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Required. Resource name of the log analytics workspace to send logs."
+              }
             },
             "tags": {
-              "type": "object"
+              "type": "object",
+              "metadata": {
+                "description": "Required. Tags to set for the Container App Environment."
+              }
             },
             "enablePrivateNetworking": {
-              "type": "bool"
+              "type": "bool",
+              "metadata": {
+                "description": "Required. If private networking should be enabled."
+              }
             },
             "enableTelemetry": {
-              "type": "bool"
+              "type": "bool",
+              "metadata": {
+                "description": "Required. If AVM telemetry should be enabled."
+              }
             },
             "enableMonitoring": {
-              "type": "bool"
+              "type": "bool",
+              "metadata": {
+                "description": "Required. If monitoring should be enabled."
+              }
             },
             "enableRedundancy": {
-              "type": "bool"
+              "type": "bool",
+              "metadata": {
+                "description": "Required. If redundancy should be enabled."
+              }
             },
             "subnetResourceId": {
               "type": "string",
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Required. Resource Id of the subnet to deploy the Container App Environment."
+              }
             },
             "applicationInsightsConnectionString": {
               "type": "string",
-              "nullable": true
+              "nullable": true,
+              "metadata": {
+                "description": "Required. Connection String of the Application Insights resource to send logs to."
+              }
             }
           },
           "resources": {

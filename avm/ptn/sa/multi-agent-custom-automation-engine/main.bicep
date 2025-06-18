@@ -841,7 +841,7 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
 //Role assignments for AI Foundry
 
 module resourceRoleAssignmentAiServicesAiUser 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesResourceName,userAssignedManagedIdentityContainerAppResourceName,'Azure AI User')}'
+  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesResourceName,containerAppResourceName,'Azure AI User')}'
   params: {
     roleName: 'Azure AI User'
     roleDefinitionId: '53ca6127-db72-4b80-b1b0-d745d6d5456d'
@@ -853,7 +853,7 @@ module resourceRoleAssignmentAiServicesAiUser 'br/public:avm/ptn/authorization/r
 }
 
 module resourceRoleAssignmentAiServicesAiDeveloper 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesResourceName,userAssignedManagedIdentityContainerAppResourceName,'Azure AI Developer')}'
+  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesResourceName,containerAppResourceName,'Azure AI Developer')}'
   params: {
     roleName: 'Azure AI Developer'
     roleDefinitionId: '64702f94-c441-49e6-a78b-ef80e0188fee'
@@ -865,7 +865,7 @@ module resourceRoleAssignmentAiServicesAiDeveloper 'br/public:avm/ptn/authorizat
 }
 
 module resourceRoleAssignmentAiServicesCognitiveServicesOpenAiUser 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesResourceName,userAssignedManagedIdentityContainerAppResourceName,'Cognitive Services OpenAI User')}'
+  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesResourceName,containerAppResourceName,'Cognitive Services OpenAI User')}'
   params: {
     roleName: 'Cognitive Services OpenAI User'
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
@@ -879,7 +879,7 @@ module resourceRoleAssignmentAiServicesCognitiveServicesOpenAiUser 'br/public:av
 //Role assignments for AI Project
 
 module resourceRoleAssignmentAiServicesAiProjectAiUser 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesAiProjectResourceName,userAssignedManagedIdentityContainerAppResourceName,'Azure AI User')}'
+  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesAiProjectResourceName,containerAppResourceName,'Azure AI User')}'
   params: {
     roleName: 'Azure AI User'
     roleDefinitionId: '53ca6127-db72-4b80-b1b0-d745d6d5456d'
@@ -891,7 +891,7 @@ module resourceRoleAssignmentAiServicesAiProjectAiUser 'br/public:avm/ptn/author
 }
 
 module resourceRoleAssignmentAiServicesAiProjectAiDeveloper 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesAiProjectResourceName,userAssignedManagedIdentityContainerAppResourceName,'Azure AI Developer')}'
+  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesAiProjectResourceName,containerAppResourceName,'Azure AI Developer')}'
   params: {
     roleName: 'Azure AI Developer'
     roleDefinitionId: '64702f94-c441-49e6-a78b-ef80e0188fee'
@@ -903,7 +903,7 @@ module resourceRoleAssignmentAiServicesAiProjectAiDeveloper 'br/public:avm/ptn/a
 }
 
 module resourceRoleAssignmentAiServicesAiProjectCognitiveServicesOpenAiUser 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesAiProjectResourceName,userAssignedManagedIdentityContainerAppResourceName,'Cognitive Services OpenAI User')}'
+  name: 'avm.ptn.authorization.resource-role-assignment.${uniqueString(aiFoundryAiServicesAiProjectResourceName,containerAppResourceName,'Cognitive Services OpenAI User')}'
   params: {
     roleName: 'Cognitive Services OpenAI User'
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd'
@@ -1039,9 +1039,6 @@ module containerAppEnvironment 'modules/container-app-environment.bicep' = {
     enableRedundancy: enableRedundancy
   }
 }
-
-// ========== User assigned identity for Container App Service ========== //
-var userAssignedManagedIdentityContainerAppResourceName = 'id-${containerAppResourceName}'
 
 // ========== Backend Container App Service ========== //
 // WAF best practices for container apps: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/azure-container-apps
