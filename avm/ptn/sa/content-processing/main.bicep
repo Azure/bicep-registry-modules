@@ -5,51 +5,51 @@ metadata name = 'Content Processing Solution Accelerator'
 metadata description = 'Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance.'
 
 // ========== get up parameters from parameter file ========== //
-@description('Optional. Name of the environment to deploy the solution into:')
+@description('Optional. Name of the environment to deploy the solution into:.')
 param environmentName string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location
-@description('Optional. Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast')
+@description('Optional. Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast.')
 param contentUnderstandingLocation string
 @description('Optional. Type of GPT deployment to use: Standard | GlobalStandard')
 param deploymentType string = 'GlobalStandard'
-@description('Optional. Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4')
+@description('Optional. Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4.')
 param gptModelName string = 'gpt-4o'
 @minLength(1)
-@description('Optional. Version of the GPT model to deploy:')
+@description('Optional. Version of the GPT model to deploy:.')
 @allowed([
   '2024-08-06'
 ])
 param gptModelVersion string = '2024-08-06'
 @minValue(10)
-@description('Optional. Capacity of the GPT deployment: (minimum 10)')
+@description('Optional. Capacity of the GPT deployment: (minimum 10).')
 param gptDeploymentCapacity int
 // @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment')
 // param secondaryLocation string = 'EastUs2'
-@description('Optional. The public container image endpoint')
+@description('Optional. The public container image endpoint.')
 param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
 @description('Optional. The resource group location')
 param resourceGroupLocation string = resourceGroup().location
-@description('Optional. The resource name format string')
+@description('Optional. The resource name format string.')
 param resourceNameFormatString string = '{0}avm-cps'
-@description('Optional. Enable WAF for the deployment')
+@description('Optional. Enable WAF for the deployment.')
 param enablePrivateNetworking bool = true
-@description('Optional. Enable/Disable usage telemetry for module')
+@description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 //@description('Resource naming abbreviations')
 //param namingAbbrs object
-@description('Optional. Tags to be applied to the resources')
+@description('Optional. Tags to be applied to the resources.')
 param tags object = {
   app: 'Content Processing Solution Accelerator'
   location: resourceGroup().location
 }
-@description('Optional. Set to true to use local build for container app images, otherwise use container registry images')
+@description('Optional. Set to true to use local build for container app images, otherwise use container registry images.')
 param useLocalBuild bool = false
 
 // ========== Solution Prefix Variable ========== //
 var solutionPrefix = 'cps-${padLeft(take(toLower(uniqueString(subscription().id, environmentName, resourceGroup().location)), 12), 12, '0')}'
 // ========== Resource Naming Abbreviations ========== //
-@description('Optional. Resource naming abbreviations')
+@description('Resource naming abbreviations.')
 var namingAbbrs = loadJsonContent('abbreviations.json')
 
 //
@@ -496,6 +496,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     kind: 'StorageV2'
     managedIdentities: { systemAssigned: true }
     minimumTlsVersion: 'TLS1_2'
+    enableTelemetry: enableTelemetry
     roleAssignments: [
       {
         principalId: avmManagedIdentity.outputs.principalId
@@ -609,6 +610,7 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm
     roleName: 'Storage Queue Data Contributor'
     roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -847,7 +849,7 @@ module avmAiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
       }
     ]
     disableLocalAuth: true
-
+    enableTelemetry: enableTelemetry
     deployments: [
       {
         name: gptModelName
@@ -908,6 +910,7 @@ module avmAiServices_roleAssignment 'br/public:avm/ptn/authorization/resource-ro
     roleName: 'Cognitive Services OpenAI User'
     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' //'Cognitive Services OpenAI User'
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -926,6 +929,7 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.10.2' = 
     }
     customSubDomainName: 'aicu-${solutionPrefix}'
     disableLocalAuth: true
+    enableTelemetry: enableTelemetry
 
     publicNetworkAccess: 'Enabled' // Always enabled for AI Services
     // WAF related parameters
@@ -961,6 +965,7 @@ module avmAiServices_cu_roleAssignment 'br/public:avm/ptn/authorization/resource
     principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId
     roleDefinitionId: 'a97b65f3-24c7-4388-baec-2e87135dc908' //'Cognitive Services User'
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -999,7 +1004,7 @@ module avmAiServices_storage_hub 'br/public:avm/res/storage/storage-account:0.20
         }
       ]
     }
-
+    enableTelemetry: enableTelemetry
     roleAssignments: [
       {
         principalId: avmManagedIdentity.outputs.principalId
@@ -1063,7 +1068,7 @@ module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' =
     associatedStorageAccountResourceId: avmAiServices_storage_hub.outputs.resourceId
     associatedContainerRegistryResourceId: avmContainerRegistry.outputs.resourceId
     associatedApplicationInsightsResourceId: avmAppInsightsLogAnalyticsWorkspace.outputs.applicationInsightsId
-
+    enableTelemetry: enableTelemetry
     kind: 'Hub'
     connections: [
       {
@@ -1120,6 +1125,7 @@ module avmAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.
     sku: 'Basic'
     friendlyName: '${namingAbbrs.ai.aiHubProject}${solutionPrefix}'
     hubResourceId: avmAiHub.outputs.resourceId
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -1147,7 +1153,7 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.1' = {
         workloadProfileType: 'Consumption'
       }
     ]
-
+    enableTelemetry: enableTelemetry
     publicNetworkAccess: 'Enabled' // Always enabled for Container Apps Environment
     zoneRedundant: false
     // <========== WAF related parameters
@@ -1167,6 +1173,7 @@ module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assig
   params: {
     name: 'acr-reader-mid${solutionPrefix}'
     location: resourceGroupLocation
+    enableTelemetry: enableTelemetry
   }
   scope: resourceGroup(resourceGroup().name)
 }
@@ -1178,6 +1185,7 @@ module bicepAcrPullRoleAssignment 'br/public:avm/ptn/authorization/resource-role
     principalId: avmContainerRegistryReader.outputs.principalId
     roleDefinitionId: '7f951dda-4ed3-4680-a7ca-43fe172d538d' // AcrPull role
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
   scope: resourceGroup(resourceGroup().name)
 }
@@ -1190,6 +1198,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.16.0' = {
     location: resourceGroupLocation
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
+    enableTelemetry: enableTelemetry
     registries: useLocalBuild == 'localbuild'
       ? [
           {
@@ -1241,6 +1250,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.16.0' = {
     location: resourceGroupLocation
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
+    enableTelemetry: enableTelemetry
     registries: useLocalBuild == 'localbuild'
       ? [
           {
@@ -1357,6 +1367,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.16.0' = {
     location: resourceGroupLocation
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
+    enableTelemetry: enableTelemetry
     registries: useLocalBuild == 'localbuild'
       ? [
           {
@@ -1442,6 +1453,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
       }
     ]
     tags: tags
+    enableTelemetry: enableTelemetry
     databaseAccountOfferType: 'Standard'
     automaticFailover: false
     serverVersion: '7.0'
@@ -1488,11 +1500,11 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
   params: {
     name: '${namingAbbrs.developerTools.appConfigurationStore}${solutionPrefix}'
     location: resourceGroupLocation
-
     tags: {
       app: solutionPrefix
       location: resourceGroupLocation
     }
+    enableTelemetry: enableTelemetry
     managedIdentities: { systemAssigned: true }
     sku: 'Standard'
 
@@ -1609,6 +1621,7 @@ module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-st
   params: {
     name: '${namingAbbrs.developerTools.appConfigurationStore}${solutionPrefix}'
     location: resourceGroupLocation
+    enableTelemetry: enableTelemetry
 
     publicNetworkAccess: 'Disabled'
     privateEndpoints: [
@@ -1640,6 +1653,7 @@ module avmRoleAssignment_container_app 'br/public:avm/ptn/authorization/resource
     roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
     roleName: 'App Configuration Data Reader'
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -1651,6 +1665,7 @@ module avmRoleAssignment_container_app_api 'br/public:avm/ptn/authorization/reso
     roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
     roleName: 'App Configuration Data Reader'
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -1662,6 +1677,7 @@ module avmRoleAssignment_container_app_web 'br/public:avm/ptn/authorization/reso
     roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
     roleName: 'App Configuration Data Reader'
     principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -1671,6 +1687,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.16.0' = {
   params: {
     name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-app'
     location: resourceGroupLocation
+    enableTelemetry: enableTelemetry
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     registries: useLocalBuild == 'localbuild'
@@ -1726,6 +1743,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.16.0' =
   params: {
     name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
     location: resourceGroupLocation
+    enableTelemetry: enableTelemetry
     environmentResourceId: avmContainerAppEnv.outputs.resourceId
     workloadProfileName: 'Consumption'
     registries: useLocalBuild == 'localbuild'
