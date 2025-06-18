@@ -78,15 +78,15 @@ param vnetAddressPrefix string = '10.0.0.0/16'
 @description('Networking. Subnet configuration for the virtual network.')
 param subnets array = [
   {
-    name: 'ApplicationSubnet'
+    name: 'snet-app'
     addressPrefix: '10.0.0.0/24'
   }
   {
-    name: 'PrivateEndpointsSubnet'
+    name: 'snet-pep'
     addressPrefix: '10.0.1.0/24'
   }
   {
-    name: 'BootDiagnosticsSubnet'
+    name: 'snet-bootdiag'
     addressPrefix: '10.0.2.0/24'
   }
   {
@@ -137,9 +137,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 
 // Network security group for VM
 module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:0.5.1' = {
-  name: '${name}-vm-nsg'
+  name: '${uniqueString(deployment().name, location)}-vm-nsg'
   params: {
-    name: '${name}-vm-nsg'
+    name: 'nsg-${name}-vm'
     location: location
     tags: tags
     securityRules: vmNsgRules
@@ -149,9 +149,9 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
 
 // Network security groups for subnets
 module applicationNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
-  name: '${name}-application-nsg'
+  name: '${uniqueString(deployment().name, location)}-application-nsg'
   params: {
-    name: 'ApplicationSubnet'
+    name: 'nsg-${name}-app'
     location: location
     tags: tags
     securityRules: applicationNsgRules
@@ -160,9 +160,9 @@ module applicationNsg 'br/public:avm/res/network/network-security-group:0.5.1' =
 }
 
 module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
-  name: '${name}-privateendpoint-nsg'
+  name: '${uniqueString(deployment().name, location)}-privateendpoint-nsg'
   params: {
-    name: 'PrivateEndpointSubnet'
+    name: 'nsg-${name}-pep'
     location: location
     tags: tags
     securityRules: [
@@ -190,9 +190,9 @@ module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.
 }
 
 module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
-  name: '${name}-bootdiagnostics-nsg'
+  name: '${uniqueString(deployment().name, location)}-bootdiagnostics-nsg'
   params: {
-    name: 'BootDiagnosticsSubnet'
+    name: 'nsg-${name}-bootdiag'
     location: location
     tags: tags
     securityRules: [
@@ -220,9 +220,9 @@ module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.5.
 }
 
 module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
-  name: '${name}-bastion-nsg'
+  name: '${uniqueString(deployment().name, location)}-bastion-nsg'
   params: {
-    name: 'AzureBastionSubnet'
+    name: 'nsg-${name}-bastion'
     location: location
     tags: tags
     securityRules: [
@@ -368,24 +368,6 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
           direction: 'Outbound'
         }
       }
-      {
-        name: 'DenyManagementOutbound'
-        properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRanges: [
-            '22'
-            '3389'
-            '5985'
-            '5986'
-          ]
-          sourceAddressPrefix: '*'
-          destinationAddressPrefix: '*'
-          access: 'Deny'
-          priority: 4000
-          direction: 'Outbound'
-        }
-      }
     ]
     enableTelemetry: enableTelemetry
   }
@@ -393,9 +375,9 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
 
 // Virtual network with subnets
 module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
-  name: '${name}-vnet'
+  name: '${uniqueString(deployment().name, location)}-vnet'
   params: {
-    name: '${name}-vnet'
+    name: 'vnet-${name}'
     location: location
     tags: tags
     addressPrefixes: [
@@ -403,17 +385,17 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
     ]
     subnets: [
       {
-        name: 'ApplicationSubnet'
+        name: 'snet-${name}-app'
         addressPrefix: subnets[0].addressPrefix
         networkSecurityGroupResourceId: applicationNsg.outputs.resourceId
       }
       {
-        name: 'PrivateEndpointsSubnet'
+        name: 'snet-${name}-pep'
         addressPrefix: subnets[1].addressPrefix
         networkSecurityGroupResourceId: privateEndpointNsg.outputs.resourceId
       }
       {
-        name: 'BootDiagnosticsSubnet'
+        name: 'snet-${name}-bootdiag'
         addressPrefix: subnets[2].addressPrefix
         networkSecurityGroupResourceId: bootDiagnosticsNsg.outputs.resourceId
       }
@@ -429,9 +411,9 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
 
 // Storage account for boot diagnostics
 module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
-  name: '${name}-storage'
+  name: '${uniqueString(deployment().name, location)}-storage'
   params: {
-    name: toLower(replace('${take(name, 11)}${uniqueString(resourceGroup().id)}stdiag', '-', ''))
+    name: 'st${toLower(replace(name, '-', ''))}${take(uniqueString(resourceGroup().id), 6)}diag'
     location: location
     tags: tags
     skuName: storageAccountSku.name
@@ -442,22 +424,110 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   }
 }
 
+// SSH public key generation via deployment script
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+  name: 'id-${name}-sshkey'
+  location: location
+  tags: tags
+}
+
+resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, 'ManagedIdentityContributor', name)
+  properties: {
+    roleDefinitionId: subscriptionResourceId(
+      'Microsoft.Authorization/roleDefinitions',
+      'b24988ac-6180-42a0-ab88-20f7382dd24c'
+    ) // Contributor
+    principalId: managedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+@description('Optional. Do not provide a value. Used to force the deployment script to rerun on every redeployment.')
+param utcValue string = utcNow()
+
+resource sshKeyGenerationScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+  name: 'ds-${name}-sshkey'
+  location: location
+  tags: tags
+  kind: 'AzurePowerShell'
+  identity: {
+    type: 'UserAssigned'
+    userAssignedIdentities: {
+      '${managedIdentity.id}': {}
+    }
+  }
+  properties: {
+    azPowerShellVersion: '8.0'
+    retentionInterval: 'P1D'
+    arguments: '-ResourceGroupName ${resourceGroup().name} -SSHKeyName ${name}-vm-key'
+    scriptContent: '''
+<#
+.SYNOPSIS
+Generate a new Public SSH Key or fetch it from an existing Public SSH Key resource.
+
+.DESCRIPTION
+Generate a new Public SSH Key or fetch it from an existing Public SSH Key resource.
+
+.PARAMETER SSHKeyName
+Mandatory. The name of the Public SSH Key Resource as it would be deployed in Azure
+
+.PARAMETER ResourceGroupName
+Mandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure
+
+.EXAMPLE
+./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'
+
+Generate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'
+#>
+param(
+    [Parameter(Mandatory = $true)]
+    [string] $SSHKeyName,
+
+    [Parameter(Mandatory = $true)]
+    [string] $ResourceGroupName
+)
+
+if (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {
+    Write-Verbose "No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new." -Verbose
+    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)
+    $publicKey = Get-Content 'generated.pub' -Raw
+    # $privateKey = cat generated | Out-String
+} else {
+    Write-Verbose "SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning." -Verbose
+    $publicKey = $sshKey.publicKey
+}
+# Write into Deployment Script output stream
+$DeploymentScriptOutputs = @{
+    # Requires conversion as the script otherwise returns an object instead of the plain public key string
+    publicKey = $publicKey | Out-String
+}
+'''
+    cleanupPreference: 'OnExpiration'
+    forceUpdateTag: utcValue
+  }
+  dependsOn: [
+    contributorRoleAssignment
+  ]
+}
+
 // SSH public key for VM
 module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:0.4.3' = {
-  name: '${name}-ssh-key'
+  name: '${uniqueString(deployment().name, location)}-ssh-key'
   params: {
     name: '${name}-vm-key'
     location: location
     tags: tags
+    publicKey: sshKeyGenerationScript.properties.outputs.publicKey
     enableTelemetry: enableTelemetry
   }
 }
 
 // Load balancer
 module loadBalancer 'br/public:avm/res/network/load-balancer:0.4.2' = {
-  name: '${name}-lb'
+  name: '${uniqueString(deployment().name, location)}-lb'
   params: {
-    name: '${name}-lb'
+    name: 'lb-${name}'
     location: location
     tags: tags
     frontendIPConfigurations: [
@@ -531,9 +601,9 @@ module networkInterface 'br/public:avm/res/network/network-interface:0.5.2' = {
 
 // Virtual machine
 module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
-  name: '${name}-vm'
+  name: '${uniqueString(deployment().name, location)}-vm'
   params: {
-    name: '${name}-vm'
+    name: 'vm-${name}'
     location: location
     tags: tags
     zone: 1
@@ -546,7 +616,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     disablePasswordAuthentication: true
     publicKeys: [
       {
-        keyData: sshPublicKey.outputs.resourceId
+        keyData: sshKeyGenerationScript.properties.outputs.publicKey
         path: '/home/${adminUsername}/.ssh/authorized_keys'
       }
     ]
@@ -589,9 +659,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
 
 // Recovery Services Vault
 module recoveryServicesVault 'br/public:avm/res/recovery-services/vault:0.9.1' = {
-  name: '${name}-rsv'
+  name: '${uniqueString(deployment().name, location)}-rsv'
   params: {
-    name: '${name}-rsv'
+    name: 'rsv-${name}'
     location: location
     tags: tags
     publicNetworkAccess: 'Disabled'
@@ -611,7 +681,7 @@ module recoveryServicesVault 'br/public:avm/res/recovery-services/vault:0.9.1' =
 module cosmosdbAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
   name: 'cosmosdbAccount-${uniqueString(deployment().name, location)}'
   params: {
-    name: '${name}-cosmos'
+    name: 'cosmos-${name}'
     location: location
     tags: tags
     defaultConsistencyLevel: 'Session'
@@ -654,7 +724,7 @@ module cosmosdbAccount 'br/public:avm/res/document-db/database-account:0.15.0' =
 
 // Private DNS Zone for CosmosDB
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
-  name: '${name}-dns'
+  name: '${uniqueString(deployment().name, location)}-dns'
   params: {
     name: 'privatelink.mongocluster.cosmos.azure.com'
     location: 'global'
@@ -672,15 +742,15 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
 
 // Private Endpoint for CosmosDB
 module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = {
-  name: '${name}-cosmos-pe'
+  name: '${uniqueString(deployment().name, location)}-cosmos-pe'
   params: {
-    name: '${name}-cosmos-pe'
+    name: 'pep-${name}-cosmos'
     location: location
     tags: tags
     subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
     privateLinkServiceConnections: [
       {
-        name: '${name}-cosmos-pe-conn'
+        name: 'pep-${name}-cosmos-conn'
         properties: {
           groupIds: [
             'MongoCluster'
