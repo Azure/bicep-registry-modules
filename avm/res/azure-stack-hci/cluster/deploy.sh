@@ -125,7 +125,7 @@ cat > "$PARAM_FILE" << EOF
     },
     "needArbSecret": {
       "value": $NEED_ARB_SECRET_JSON
-    },
+    }
   }
 }
 EOF
