@@ -1,11 +1,12 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
   "contentVersion": "1.0.0.0",
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "15466737917470710132"
+      "version": "0.36.1.42791",
+      "templateHash": "5423453419402149213"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -136,8 +137,8 @@
       }
     }
   },
-  "resources": [
-    {
+  "resources": {
+    "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2024-03-01",
@@ -157,7 +158,7 @@
         }
       }
     },
-    {
+    "vmNetworkSecurityGroup": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-vm-nsg', parameters('name'))]",
@@ -809,7 +810,7 @@
         }
       }
     },
-    {
+    "applicationNsg": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-application-nsg', parameters('name'))]",
@@ -1461,7 +1462,7 @@
         }
       }
     },
-    {
+    "privateEndpointNsg": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-privateendpoint-nsg', parameters('name'))]",
@@ -2113,7 +2114,7 @@
         }
       }
     },
-    {
+    "bootDiagnosticsNsg": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-bootdiagnostics-nsg', parameters('name'))]",
@@ -2765,7 +2766,7 @@
         }
       }
     },
-    {
+    "bastionNsg": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-bastion-nsg', parameters('name'))]",
@@ -3560,7 +3561,7 @@
         }
       }
     },
-    {
+    "virtualNetwork": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-vnet', parameters('name'))]",
@@ -3589,22 +3590,22 @@
               {
                 "name": "ApplicationSubnet",
                 "addressPrefix": "[parameters('subnets')[0].addressPrefix]",
-                "networkSecurityGroupResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-application-nsg', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+                "networkSecurityGroupResourceId": "[reference('applicationNsg').outputs.resourceId.value]"
               },
               {
                 "name": "PrivateEndpointsSubnet",
                 "addressPrefix": "[parameters('subnets')[1].addressPrefix]",
-                "networkSecurityGroupResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-privateendpoint-nsg', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+                "networkSecurityGroupResourceId": "[reference('privateEndpointNsg').outputs.resourceId.value]"
               },
               {
                 "name": "BootDiagnosticsSubnet",
                 "addressPrefix": "[parameters('subnets')[2].addressPrefix]",
-                "networkSecurityGroupResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-bootdiagnostics-nsg', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+                "networkSecurityGroupResourceId": "[reference('bootDiagnosticsNsg').outputs.resourceId.value]"
               },
               {
                 "name": "AzureBastionSubnet",
                 "addressPrefix": "[parameters('subnets')[3].addressPrefix]",
-                "networkSecurityGroupResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-bastion-nsg', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+                "networkSecurityGroupResourceId": "[reference('bastionNsg').outputs.resourceId.value]"
               }
             ]
           },
@@ -5232,13 +5233,13 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-application-nsg', parameters('name')))]",
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-bastion-nsg', parameters('name')))]",
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-bootdiagnostics-nsg', parameters('name')))]",
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-privateendpoint-nsg', parameters('name')))]"
+        "applicationNsg",
+        "bastionNsg",
+        "bootDiagnosticsNsg",
+        "privateEndpointNsg"
       ]
     },
-    {
+    "storageAccount": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-storage', parameters('name'))]",
@@ -10965,7 +10966,7 @@
         }
       }
     },
-    {
+    "sshPublicKey": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-ssh-key', parameters('name'))]",
@@ -11278,7 +11279,7 @@
         }
       }
     },
-    {
+    "loadBalancer": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-lb', parameters('name'))]",
@@ -11301,7 +11302,7 @@
             "value": [
               {
                 "name": "[format('{0}-lb-frontendconfig01', parameters('name'))]",
-                "subnetId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name'))), '2022-09-01').outputs.subnetResourceIds.value[0]]",
+                "subnetId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]",
                 "zones": [
                   1,
                   2,
@@ -12307,10 +12308,10 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name')))]"
+        "virtualNetwork"
       ]
     },
-    {
+    "networkInterface": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-vm-nic', parameters('name'))]",
@@ -12333,17 +12334,17 @@
             "value": [
               {
                 "name": "ipconfig1",
-                "subnetResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name'))), '2022-09-01').outputs.subnetResourceIds.value[0]]",
+                "subnetResourceId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]",
                 "loadBalancerBackendAddressPools": [
                   {
-                    "id": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-lb', parameters('name'))), '2022-09-01').outputs.backendpools.value[0].id]"
+                    "id": "[reference('loadBalancer').outputs.backendpools.value[0].id]"
                   }
                 ]
               }
             ]
           },
           "networkSecurityGroupResourceId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vm-nsg', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+            "value": "[reference('vmNetworkSecurityGroup').outputs.resourceId.value]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -13354,12 +13355,12 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-lb', parameters('name')))]",
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name')))]",
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-vm-nsg', parameters('name')))]"
+        "loadBalancer",
+        "virtualNetwork",
+        "vmNetworkSecurityGroup"
       ]
     },
-    {
+    "virtualMachine": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-vm', parameters('name'))]",
@@ -13401,7 +13402,7 @@
           "publicKeys": {
             "value": [
               {
-                "keyData": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-ssh-key', parameters('name'))), '2022-09-01').outputs.resourceId.value]",
+                "keyData": "[reference('sshPublicKey').outputs.resourceId.value]",
                 "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]"
               }
             ]
@@ -13430,15 +13431,15 @@
                 "ipConfigurations": [
                   {
                     "name": "ipconfig1",
-                    "subnetResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name'))), '2022-09-01').outputs.subnetResourceIds.value[0]]",
+                    "subnetResourceId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]",
                     "loadBalancerBackendAddressPools": [
                       {
-                        "id": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-lb', parameters('name'))), '2022-09-01').outputs.backendpools.value[0].id]"
+                        "id": "[reference('loadBalancer').outputs.backendpools.value[0].id]"
                       }
                     ]
                   }
                 ],
-                "networkSecurityGroupResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vm-nsg', parameters('name'))), '2022-09-01').outputs.resourceId.value]",
+                "networkSecurityGroupResourceId": "[reference('vmNetworkSecurityGroup').outputs.resourceId.value]",
                 "deleteOption": "Delete"
               }
             ]
@@ -13447,7 +13448,7 @@
             "value": true
           },
           "bootDiagnosticStorageAccountName": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-storage', parameters('name'))), '2022-09-01').outputs.name.value]"
+            "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('{0}-storage', parameters('name'))), '2022-09-01').name]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -21704,14 +21705,14 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-lb', parameters('name')))]",
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-ssh-key', parameters('name')))]",
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-storage', parameters('name')))]",
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name')))]",
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-vm-nsg', parameters('name')))]"
+        "loadBalancer",
+        "sshPublicKey",
+        "storageAccount",
+        "virtualNetwork",
+        "vmNetworkSecurityGroup"
       ]
     },
-    {
+    "recoveryServicesVault": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-rsv', parameters('name'))]",
@@ -25498,7 +25499,7 @@
         }
       }
     },
-    {
+    "cosmosdbAccount": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('cosmosdbAccount-{0}', uniqueString(deployment().name, parameters('location')))]",
@@ -29329,7 +29330,7 @@
         }
       }
     },
-    {
+    "privateDnsZone": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-dns', parameters('name'))]",
@@ -29351,8 +29352,8 @@
           "virtualNetworkLinks": {
             "value": [
               {
-                "name": "[uniqueString(reference(resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name'))), '2022-09-01').outputs.resourceId.value)]",
-                "virtualNetworkResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name'))), '2022-09-01').outputs.resourceId.value]",
+                "name": "[uniqueString(reference('virtualNetwork').outputs.resourceId.value)]",
+                "virtualNetworkResourceId": "[reference('virtualNetwork').outputs.resourceId.value]",
                 "registrationEnabled": false
               }
             ]
@@ -32497,10 +32498,10 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name')))]"
+        "virtualNetwork"
       ]
     },
-    {
+    "privateEndpoint": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('{0}-cosmos-pe', parameters('name'))]",
@@ -32520,7 +32521,7 @@
             "value": "[parameters('tags')]"
           },
           "subnetResourceId": {
-            "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name'))), '2022-09-01').outputs.subnetResourceIds.value[1]]"
+            "value": "[reference('virtualNetwork').outputs.subnetResourceIds.value[1]]"
           },
           "privateLinkServiceConnections": {
             "value": [
@@ -32530,7 +32531,7 @@
                   "groupIds": [
                     "MongoCluster"
                   ],
-                  "privateLinkServiceId": "[reference(resourceId('Microsoft.Resources/deployments', format('cosmosdbAccount-{0}', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
+                  "privateLinkServiceId": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('cosmosdbAccount-{0}', uniqueString(deployment().name, parameters('location')))), '2022-09-01').resourceId]"
                 }
               }
             ]
@@ -32540,7 +32541,7 @@
               "name": "default",
               "privateDnsZoneGroupConfigs": [
                 {
-                  "privateDnsZoneResourceId": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-dns', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+                  "privateDnsZoneResourceId": "[reference('privateDnsZone').outputs.resourceId.value]"
                 }
               ]
             }
@@ -33248,47 +33249,47 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', format('cosmosdbAccount-{0}', uniqueString(deployment().name, parameters('location'))))]",
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-dns', parameters('name')))]",
-        "[resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name')))]"
+        "cosmosdbAccount",
+        "privateDnsZone",
+        "virtualNetwork"
       ]
     }
-  ],
+  },
   "outputs": {
     "virtualMachineResourceId": {
       "type": "string",
       "metadata": {
         "description": "Resource. The resource ID of the virtual machine."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vm', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+      "value": "[reference('virtualMachine').outputs.resourceId.value]"
     },
     "cosmosDbResourceId": {
       "type": "string",
       "metadata": {
         "description": "Resource. The resource ID of the CosmosDB MongoDB vCore cluster."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('cosmosdbAccount-{0}', uniqueString(deployment().name, parameters('location')))), '2022-09-01').outputs.resourceId.value]"
+      "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('cosmosdbAccount-{0}', uniqueString(deployment().name, parameters('location')))), '2022-09-01').resourceId]"
     },
     "virtualNetworkResourceId": {
       "type": "string",
       "metadata": {
         "description": "Resource. The resource ID of the virtual network."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vnet', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+      "value": "[reference('virtualNetwork').outputs.resourceId.value]"
     },
     "loadBalancerResourceId": {
       "type": "string",
       "metadata": {
         "description": "Resource. The resource ID of the load balancer."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-lb', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+      "value": "[reference('loadBalancer').outputs.resourceId.value]"
     },
     "resourceId": {
       "type": "string",
       "metadata": {
         "description": "Resource. The resource ID."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vm', parameters('name'))), '2022-09-01').outputs.resourceId.value]"
+      "value": "[reference('virtualMachine').outputs.resourceId.value]"
     },
     "resourceGroupName": {
       "type": "string",
@@ -33302,7 +33303,7 @@
       "metadata": {
         "description": "Resource. The name of the virtual machine."
       },
-      "value": "[reference(resourceId('Microsoft.Resources/deployments', format('{0}-vm', parameters('name'))), '2022-09-01').outputs.name.value]"
+      "value": "[reference('virtualMachine').outputs.name.value]"
     }
   }
 }
