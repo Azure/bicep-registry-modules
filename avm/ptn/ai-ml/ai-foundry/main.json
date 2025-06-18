@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5696749492361343580"
+      "templateHash": "9571795479564695963"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -1065,16 +1065,6 @@
         "description": "Optional. Enable/Disable usage telemetry for module."
       }
     },
-    "connections": {
-      "type": "array",
-      "items": {
-        "$ref": "#/definitions/connectionType"
-      },
-      "defaultValue": [],
-      "metadata": {
-        "description": "Optional. Specifies the connections to be created for the Azure AI Hub workspace. The connections are used to connect to other Azure resources and services."
-      }
-    },
     "aiModelDeployments": {
       "type": "array",
       "items": {
@@ -1116,7 +1106,7 @@
       "minLength": 4,
       "maxLength": 70,
       "metadata": {
-        "description": "Optional. Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters."
+        "description": "Required. Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters."
       }
     },
     "tags": {
@@ -1154,7 +1144,7 @@
     "contentSafetyEnabled": {
       "type": "bool",
       "metadata": {
-        "description": "Optional. Whether to include Azure AI Content Safety in the deployment."
+        "description": "Required. Whether to include Azure AI Content Safety in the deployment."
       }
     },
     "networkAcls": {
@@ -1171,12 +1161,12 @@
       "type": "string",
       "defaultValue": "[format('{0}proj', parameters('name'))]",
       "metadata": {
-        "description": "Optional. Name of the AI Foundry project"
+        "description": "Required. Name of the AI Foundry project"
       }
     }
   },
   "variables": {
-    "networkIsolation": "[equals(toLower(parameters('aiFoundryType')), 'standardprivate')]",
+    "networkIsolation": "[equals(toLower(parameters('aiFoundryType')), 'StandardPrivate')]",
     "defaultTags": {
       "azd-env-name": "[parameters('name')]"
     },
@@ -14948,7 +14938,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "9703439282560837665"
+              "templateHash": "14584490138593358442"
             }
           },
           "definitions": {
@@ -21501,7 +21491,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6208916097139093855"
+                      "templateHash": "16060266986174260743"
                     }
                   },
                   "definitions": {
@@ -21685,13 +21675,13 @@
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "Name of the Cognitive Services resource. Must be unique in the resource group."
+                        "description": "Required. Name of the Cognitive Services resource. Must be unique in the resource group."
                       }
                     },
                     "location": {
                       "type": "string",
                       "metadata": {
-                        "description": "The location of the Cognitive Services resource."
+                        "description": "Required. The location of the Cognitive Services resource."
                       }
                     },
                     "kind": {
@@ -24226,7 +24216,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "6208916097139093855"
+                      "templateHash": "16060266986174260743"
                     }
                   },
                   "definitions": {
@@ -24410,13 +24400,13 @@
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "Name of the Cognitive Services resource. Must be unique in the resource group."
+                        "description": "Required. Name of the Cognitive Services resource. Must be unique in the resource group."
                       }
                     },
                     "location": {
                       "type": "string",
                       "metadata": {
-                        "description": "The location of the Cognitive Services resource."
+                        "description": "Required. The location of the Cognitive Services resource."
                       }
                     },
                     "kind": {
@@ -39310,7 +39300,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "9386127522259579033"
+              "templateHash": "11007488021210390481"
             }
           },
           "parameters": {
@@ -39336,7 +39326,7 @@
                 "StandardPrivate"
               ],
               "metadata": {
-                "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
+                "description": "Required. Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
               }
             },
             "cosmosDBName": {

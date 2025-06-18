@@ -12,9 +12,6 @@ param location string = resourceGroup().location
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Specifies the connections to be created for the Azure AI Hub workspace. The connections are used to connect to other Azure resources and services.')
-param connections connectionType[] = []
-
 @description('Optional. Specifies the OpenAI deployments to create.')
 param aiModelDeployments deploymentsType[] = []
 
@@ -70,7 +67,7 @@ param networkAcls object = {
   // ]
 }
 
-@description('Optional. Name of the AI Foundry project')
+@description('Required. Name of the AI Foundry project')
 param projectName string = '${name}proj'
 
 var defaultTags = {
