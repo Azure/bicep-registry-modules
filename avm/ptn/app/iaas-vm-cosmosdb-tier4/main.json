@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "3128150688611286407"
+      "version": "0.35.1.17967",
+      "templateHash": "10431124799840104111"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -155,6 +155,13 @@
         "description": "Security. Admin username for the virtual machine."
       }
     },
+    "sshPublicKey": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Security. SSH public key for the virtual machine. If empty, a new SSH key will be generated."
+      }
+    },
     "storageAccountSku": {
       "type": "object",
       "defaultValue": {
@@ -178,14 +185,10 @@
       "metadata": {
         "description": "Networking. Load balancer backend port."
       }
-    },
-    "utcValue": {
-      "type": "string",
-      "defaultValue": "[utcNow()]",
-      "metadata": {
-        "description": "Optional. Do not provide a value. Used to force the deployment script to rerun on every redeployment."
-      }
     }
+  },
+  "variables": {
+    "$fxv#0": "<#\n.SYNOPSIS\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.DESCRIPTION\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.PARAMETER SSHKeyName\nMandatory. The name of the Public SSH Key Resource as it would be deployed in Azure\n\n.PARAMETER ResourceGroupName\nMandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure\n\n.EXAMPLE\n./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'\n\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $SSHKeyName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ResourceGroupName\n)\n\nif (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {\n    Write-Verbose \"No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new.\" -Verbose\n    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)\n    $publicKey = Get-Content 'generated.pub' -Raw\n    # $privateKey = cat generated | Out-String\n} else {\n    Write-Verbose \"SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning.\" -Verbose\n    $publicKey = $sshKey.publicKey\n}\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    # Requires conversion as the script otherwise returns an object instead of the plain public key string\n    publicKey = $publicKey | Out-String\n}\n"
   },
   "resources": {
     "avmTelemetry": {
@@ -209,6 +212,7 @@
       }
     },
     "managedIdentity": {
+      "condition": "[empty(parameters('sshPublicKey'))]",
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
       "name": "[format('id-{0}-sshkey', parameters('name'))]",
@@ -216,6 +220,7 @@
       "tags": "[parameters('tags')]"
     },
     "contributorRoleAssignment": {
+      "condition": "[empty(parameters('sshPublicKey'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
       "name": "[guid(resourceGroup().id, 'ManagedIdentityContributor', parameters('name'))]",
@@ -229,6 +234,7 @@
       ]
     },
     "sshKeyGenerationScript": {
+      "condition": "[empty(parameters('sshPublicKey'))]",
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2023-08-01",
       "name": "[format('ds-{0}-sshkey', parameters('name'))]",
@@ -242,16 +248,28 @@
         }
       },
       "properties": {
-        "azPowerShellVersion": "8.0",
+        "azPowerShellVersion": "9.0",
         "retentionInterval": "P1D",
-        "arguments": "[format('-ResourceGroupName {0} -SSHKeyName {1}-vm-key', resourceGroup().name, parameters('name'))]",
-        "scriptContent": "<#\n.SYNOPSIS\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.DESCRIPTION\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.PARAMETER SSHKeyName\nMandatory. The name of the Public SSH Key Resource as it would be deployed in Azure\n\n.PARAMETER ResourceGroupName\nMandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure\n\n.EXAMPLE\n./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'\n\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $SSHKeyName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ResourceGroupName\n)\n\nif (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {\n    Write-Verbose \"No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new.\" -Verbose\n    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)\n    $publicKey = Get-Content 'generated.pub' -Raw\n    # $privateKey = cat generated | Out-String\n} else {\n    Write-Verbose \"SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning.\" -Verbose\n    $publicKey = $sshKey.publicKey\n}\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    # Note: This output is needed for the SSH public key resource\n    # PSRule exception: This is infrastructure setup data, not user secrets\n    publicKey = $publicKey | Out-String\n}\n",
-        "cleanupPreference": "OnExpiration",
-        "forceUpdateTag": "[parameters('utcValue')]"
+        "arguments": "[format('-SSHKeyName \"{0}-vm-key\" -ResourceGroupName \"{1}\"', parameters('name'), resourceGroup().name)]",
+        "scriptContent": "[variables('$fxv#0')]",
+        "cleanupPreference": "OnExpiration"
       },
       "dependsOn": [
         "contributorRoleAssignment",
         "managedIdentity"
+      ]
+    },
+    "sshKeyResource": {
+      "type": "Microsoft.Compute/sshPublicKeys",
+      "apiVersion": "2024-07-01",
+      "name": "[format('{0}-vm-key', parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "publicKey": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshKeyGenerationScript').outputs.publicKey)]"
+      },
+      "dependsOn": [
+        "sshKeyGenerationScript"
       ]
     },
     "vmNetworkSecurityGroup": {
@@ -11097,325 +11115,6 @@
         }
       }
     },
-    "sshPublicKey": {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('{0}-ssh-key', uniqueString(deployment().name, parameters('location')))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "name": {
-            "value": "[format('{0}-vm-key', parameters('name'))]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "tags": {
-            "value": "[parameters('tags')]"
-          },
-          "publicKey": {
-            "value": "[reference('sshKeyGenerationScript').outputs.publicKey]"
-          },
-          "enableTelemetry": {
-            "value": "[parameters('enableTelemetry')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "languageVersion": "2.0",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "2126998559324528690"
-            },
-            "name": "Public SSH Keys",
-            "description": "This module deploys a Public SSH Key.\n\n> Note: The resource does not auto-generate the key for you."
-          },
-          "definitions": {
-            "lockType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the name of lock."
-                  }
-                },
-                "kind": {
-                  "type": "string",
-                  "allowedValues": [
-                    "CanNotDelete",
-                    "None",
-                    "ReadOnly"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Specify the type of lock."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "An AVM-aligned type for a lock.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                }
-              }
-            },
-            "roleAssignmentType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-                  }
-                },
-                "roleDefinitionIdOrName": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-                  }
-                },
-                "principalId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-                  }
-                },
-                "principalType": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Device",
-                    "ForeignGroup",
-                    "Group",
-                    "ServicePrincipal",
-                    "User"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The principal type of the assigned principal ID."
-                  }
-                },
-                "description": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The description of the role assignment."
-                  }
-                },
-                "condition": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-                  }
-                },
-                "conditionVersion": {
-                  "type": "string",
-                  "allowedValues": [
-                    "2.0"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. Version of the condition."
-                  }
-                },
-                "delegatedManagedIdentityResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The Resource Id of the delegated managed identity resource."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "An AVM-aligned type for a role assignment.",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                }
-              }
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the SSH public Key that is being created."
-              }
-            },
-            "location": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().location]",
-              "metadata": {
-                "description": "Optional. Resource location."
-              }
-            },
-            "publicKey": {
-              "type": "string",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. SSH public key used to authenticate to a virtual machine through SSH. If this property is not initially provided when the resource is created, the publicKey property will be populated when generateKeyPair is called. If the public key is provided upon resource creation, the provided public key needs to be at least 2048-bit and in ssh-rsa format."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Tags of the availability set resource."
-              }
-            },
-            "lock": {
-              "$ref": "#/definitions/lockType",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The lock settings of the service."
-              }
-            },
-            "roleAssignments": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/roleAssignmentType"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Array of role assignments to create."
-              }
-            },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
-            }
-          },
-          "variables": {
-            "copy": [
-              {
-                "name": "formattedRoleAssignments",
-                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
-                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
-              }
-            ],
-            "builtInRoleNames": {
-              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
-              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
-              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
-            }
-          },
-          "resources": {
-            "avmTelemetry": {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.compute-sshpublickey.{0}.{1}', replace('0.4.3', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
-            },
-            "sshPublicKey": {
-              "type": "Microsoft.Compute/sshPublicKeys",
-              "apiVersion": "2024-03-01",
-              "name": "[parameters('name')]",
-              "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
-              "properties": {
-                "publicKey": "[parameters('publicKey')]"
-              }
-            },
-            "sshPublicKeyLock": {
-              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
-              "type": "Microsoft.Authorization/locks",
-              "apiVersion": "2020-05-01",
-              "scope": "[format('Microsoft.Compute/sshPublicKeys/{0}', parameters('name'))]",
-              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
-              "properties": {
-                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
-                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
-              },
-              "dependsOn": [
-                "sshPublicKey"
-              ]
-            },
-            "sshPublicKey_roleAssignments": {
-              "copy": {
-                "name": "sshPublicKey_roleAssignments",
-                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
-              },
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Compute/sshPublicKeys/{0}', parameters('name'))]",
-              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Compute/sshPublicKeys', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
-              "properties": {
-                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
-                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
-                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
-                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
-                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
-                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
-                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
-              },
-              "dependsOn": [
-                "sshPublicKey"
-              ]
-            }
-          },
-          "outputs": {
-            "resourceGroupName": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the Resource Group the Public SSH Key was created in."
-              },
-              "value": "[resourceGroup().name]"
-            },
-            "resourceId": {
-              "type": "string",
-              "metadata": {
-                "description": "The resource ID of the Public SSH Key."
-              },
-              "value": "[resourceId('Microsoft.Compute/sshPublicKeys', parameters('name'))]"
-            },
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "The name of the Public SSH Key."
-              },
-              "value": "[parameters('name')]"
-            },
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "The location the resource was deployed into."
-              },
-              "value": "[reference('sshPublicKey', '2024-03-01', 'full').location]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "sshKeyGenerationScript"
-      ]
-    },
     "loadBalancer": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -12490,7 +12189,7 @@
           "publicKeys": {
             "value": [
               {
-                "keyData": "[reference('sshKeyGenerationScript').outputs.publicKey]",
+                "keyData": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshKeyResource').publicKey)]",
                 "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]"
               }
             ]
@@ -20796,7 +20495,7 @@
       },
       "dependsOn": [
         "loadBalancer",
-        "sshKeyGenerationScript",
+        "sshKeyResource",
         "storageAccount",
         "virtualNetwork",
         "vmNetworkSecurityGroup"

@@ -19,7 +19,7 @@ Creates an IaaS VM with CosmosDB Tier 4 configuration.
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.Automanage/configurationProfileAssignments` | [2022-05-04](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Automanage/2022-05-04/configurationProfileAssignments) |
 | `Microsoft.Compute/disks` | [2024-03-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-02/disks) |
-| `Microsoft.Compute/sshPublicKeys` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-03-01/sshPublicKeys) |
+| `Microsoft.Compute/sshPublicKeys` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/sshPublicKeys) |
 | `Microsoft.Compute/virtualMachines` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2024-07-01/virtualMachines) |
 | `Microsoft.Compute/virtualMachines/extensions` | [2022-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Compute/2022-11-01/virtualMachines/extensions) |
 | `Microsoft.DevTestLab/schedules` | [2018-09-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DevTestLab/2018-09-15/schedules) |
@@ -114,6 +114,12 @@ module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<versio
     name: '<name>'
     // Non-required parameters
     location: '<location>'
+    tags: {
+      Application: 'IaaSVMCosmosDB'
+      CostCenter: 'IT'
+      Environment: 'Test'
+      Owner: 'TeamName'
+    }
   }
 }
 ```
@@ -137,6 +143,14 @@ module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<versio
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "tags": {
+      "value": {
+        "Application": "IaaSVMCosmosDB",
+        "CostCenter": "IT",
+        "Environment": "Test",
+        "Owner": "TeamName"
+      }
     }
   }
 }
@@ -156,6 +170,12 @@ using 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<version>'
 param name = '<name>'
 // Non-required parameters
 param location = '<location>'
+param tags = {
+  Application: 'IaaSVMCosmosDB'
+  CostCenter: 'IT'
+  Environment: 'Test'
+  Owner: 'TeamName'
+}
 ```
 
 </details>
@@ -174,7 +194,6 @@ param location = '<location>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`utcValue`](#parameter-utcvalue) | string | Do not provide a value. Used to force the deployment script to rerun on every redeployment. |
 
 **General parameters**
 
@@ -189,6 +208,7 @@ param location = '<location>'
 | :-- | :-- | :-- |
 | [`adminUsername`](#parameter-adminusername) | string | Admin username for the virtual machine. |
 | [`applicationNsgRules`](#parameter-applicationnsgrules) | array | Network security group rules for the application subnet. |
+| [`sshPublicKey`](#parameter-sshpublickey) | securestring | SSH public key for the virtual machine. If empty, a new SSH key will be generated. |
 | [`vmNsgRules`](#parameter-vmnsgrules) | array | Network security group rules for the VM. |
 
 **Networking parameters**
@@ -226,14 +246,6 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
-
-### Parameter: `utcValue`
-
-Do not provide a value. Used to force the deployment script to rerun on every redeployment.
-
-- Required: No
-- Type: string
-- Default: `[utcNow()]`
 
 ### Parameter: `location`
 
@@ -289,6 +301,14 @@ Network security group rules for the application subnet.
     }
   ]
   ```
+
+### Parameter: `sshPublicKey`
+
+SSH public key for the virtual machine. If empty, a new SSH key will be generated.
+
+- Required: No
+- Type: securestring
+- Default: `''`
 
 ### Parameter: `vmNsgRules`
 
@@ -425,7 +445,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/res/compute/ssh-public-key:0.4.3` | Remote reference |
 | `br/public:avm/res/compute/virtual-machine:0.15.0` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
 | `br/public:avm/res/network/load-balancer:0.4.2` | Remote reference |
