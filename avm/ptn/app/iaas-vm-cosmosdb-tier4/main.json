@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7028702343700696151"
+      "templateHash": "14256647321024792804"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -3716,22 +3716,22 @@
           "subnets": {
             "value": [
               {
-                "name": "[format('snet-{0}-app', parameters('name'))]",
+                "name": "[parameters('subnets')[0].name]",
                 "addressPrefix": "[parameters('subnets')[0].addressPrefix]",
                 "networkSecurityGroupResourceId": "[reference('applicationNsg').outputs.resourceId.value]"
               },
               {
-                "name": "[format('snet-{0}-pep', parameters('name'))]",
+                "name": "[parameters('subnets')[1].name]",
                 "addressPrefix": "[parameters('subnets')[1].addressPrefix]",
                 "networkSecurityGroupResourceId": "[reference('privateEndpointNsg').outputs.resourceId.value]"
               },
               {
-                "name": "[format('snet-{0}-bootdiag', parameters('name'))]",
+                "name": "[parameters('subnets')[2].name]",
                 "addressPrefix": "[parameters('subnets')[2].addressPrefix]",
                 "networkSecurityGroupResourceId": "[reference('bootDiagnosticsNsg').outputs.resourceId.value]"
               },
               {
-                "name": "AzureBastionSubnet",
+                "name": "[parameters('subnets')[3].name]",
                 "addressPrefix": "[parameters('subnets')[3].addressPrefix]",
                 "networkSecurityGroupResourceId": "[reference('bastionNsg').outputs.resourceId.value]"
               }
@@ -5378,7 +5378,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('st{0}{1}diag', toLower(replace(parameters('name'), '-', '')), take(uniqueString(resourceGroup().id), 6))]"
+            "value": "[format('st{0}{1}', take(replace(replace(replace(replace(toLower(parameters('name')), '-', ''), '_', ''), '#', ''), '.', ''), 6), take(uniqueString(resourceGroup().id), 10))]"
           },
           "location": {
             "value": "[parameters('location')]"
@@ -13553,6 +13553,7 @@
             "value": {
               "createOption": "FromImage",
               "diskSizeGB": 30,
+              "caching": "ReadWrite",
               "managedDisk": {
                 "storageAccountType": "Premium_LRS"
               }
@@ -13562,6 +13563,7 @@
             "value": [
               {
                 "name": "primary-nic",
+                "tags": "[parameters('tags')]",
                 "ipConfigurations": [
                   {
                     "name": "ipconfig1",
