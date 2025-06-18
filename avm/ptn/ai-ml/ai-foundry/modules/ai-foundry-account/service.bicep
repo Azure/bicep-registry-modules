@@ -1,4 +1,5 @@
-@description('Required. Name of the Cognitive Services resource. Must be unique in the resource group.')
+@description('Required. Name of the Cognitive Services resource. Must be unique in the resource group. Maximum 12 characters.')
+@maxLength(12)
 param name string
 
 @description('Required. The location of the Cognitive Services resource.')
@@ -78,7 +79,7 @@ var privateDnsZones = [
   }
 ]
 
-var nameFormatted = take(toLower(name), 24)
+var nameFormatted = take(toLower(name), 12)
 
 module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = {
   name: take('cog-${kind}-${name}-deployment', 64)
@@ -93,7 +94,7 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = 
       systemAssigned: true
     }
     deployments: aiModelDeployments
-    customSubDomainName: name
+    customSubDomainName: nameFormatted
     disableLocalAuth: networkIsolation
     publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     roleAssignments: roleAssignments
