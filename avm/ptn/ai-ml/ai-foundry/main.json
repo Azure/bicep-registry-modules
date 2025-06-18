@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12239580136388665147"
+      "templateHash": "3984212385651629580"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -14187,7 +14187,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14584490138593358442"
+              "templateHash": "8362575394271864515"
             }
           },
           "definitions": {
@@ -20740,7 +20740,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "16060266986174260743"
+                      "templateHash": "6504158764956712223"
                     }
                   },
                   "definitions": {
@@ -20923,8 +20923,9 @@
                   "parameters": {
                     "name": {
                       "type": "string",
+                      "maxLength": 12,
                       "metadata": {
-                        "description": "Required. Name of the Cognitive Services resource. Must be unique in the resource group."
+                        "description": "Required. Name of the Cognitive Services resource. Must be unique in the resource group. Maximum 12 characters."
                       }
                     },
                     "location": {
@@ -21057,7 +21058,7 @@
                         }
                       }
                     ],
-                    "nameFormatted": "[take(toLower(parameters('name')), 24)]"
+                    "nameFormatted": "[take(toLower(parameters('name')), 12)]"
                   },
                   "resources": {
                     "cognitiveService": {
@@ -21097,7 +21098,7 @@
                             "value": "[parameters('aiModelDeployments')]"
                           },
                           "customSubDomainName": {
-                            "value": "[parameters('name')]"
+                            "value": "[variables('nameFormatted')]"
                           },
                           "disableLocalAuth": {
                             "value": "[parameters('networkIsolation')]"
@@ -23465,7 +23466,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "16060266986174260743"
+                      "templateHash": "6504158764956712223"
                     }
                   },
                   "definitions": {
@@ -23648,8 +23649,9 @@
                   "parameters": {
                     "name": {
                       "type": "string",
+                      "maxLength": 12,
                       "metadata": {
-                        "description": "Required. Name of the Cognitive Services resource. Must be unique in the resource group."
+                        "description": "Required. Name of the Cognitive Services resource. Must be unique in the resource group. Maximum 12 characters."
                       }
                     },
                     "location": {
@@ -23782,7 +23784,7 @@
                         }
                       }
                     ],
-                    "nameFormatted": "[take(toLower(parameters('name')), 24)]"
+                    "nameFormatted": "[take(toLower(parameters('name')), 12)]"
                   },
                   "resources": {
                     "cognitiveService": {
@@ -23822,7 +23824,7 @@
                             "value": "[parameters('aiModelDeployments')]"
                           },
                           "customSubDomainName": {
-                            "value": "[parameters('name')]"
+                            "value": "[variables('nameFormatted')]"
                           },
                           "disableLocalAuth": {
                             "value": "[parameters('networkIsolation')]"
