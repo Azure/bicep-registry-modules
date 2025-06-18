@@ -1,6 +1,6 @@
 using './main.bicep'
 
-param solutionPrefix = 'macaewaf104'
+param solutionPrefix = 'macaewaf105'
 param solutionLocation = 'australiaeast'
 param azureOpenAILocation = 'australiaeast'
 param enableMonitoring = true
