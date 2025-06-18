@@ -5,7 +5,7 @@ metadata name = 'Content Processing Solution Accelerator'
 metadata description = 'Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance.'
 
 // ========== get up parameters from parameter file ========== //
-@description('Optional. Name of the environment to deploy the solution into:.')
+@description('Optional. Name of the environment to deploy the solution into.')
 param environmentName string
 @description('Optional. Location for all Resources.')
 param location string = resourceGroup().location

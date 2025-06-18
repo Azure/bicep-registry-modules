@@ -266,7 +266,7 @@ param location = '<location>'
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
-| [`environmentName`](#parameter-environmentname) | string | Name of the environment to deploy the solution into:. |
+| [`environmentName`](#parameter-environmentname) | string | Name of the environment to deploy the solution into. |
 | [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment: (minimum 10). |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy:. |
@@ -310,7 +310,7 @@ Enable/Disable usage telemetry for module.
 
 ### Parameter: `environmentName`
 
-Name of the environment to deploy the solution into:.
+Name of the environment to deploy the solution into.
 
 - Required: Yes
 - Type: string
