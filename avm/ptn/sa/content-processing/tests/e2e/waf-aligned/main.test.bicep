@@ -1,4 +1,4 @@
-targetScope = 'resourceGroup'
+targetScope = 'subscription'
 
 metadata name = 'WAF-aligned configuration with default parameter values'
 metadata description = 'This instance deploys the [Content Processing Solution Accelerator]'
