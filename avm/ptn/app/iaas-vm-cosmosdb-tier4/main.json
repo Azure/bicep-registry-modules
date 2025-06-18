@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "609807473393430290"
+      "templateHash": "7028702343700696151"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -239,7 +239,7 @@
         "azPowerShellVersion": "8.0",
         "retentionInterval": "P1D",
         "arguments": "[format('-ResourceGroupName {0} -SSHKeyName {1}-vm-key', resourceGroup().name, parameters('name'))]",
-        "scriptContent": "<#\n.SYNOPSIS\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.DESCRIPTION\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.PARAMETER SSHKeyName\nMandatory. The name of the Public SSH Key Resource as it would be deployed in Azure\n\n.PARAMETER ResourceGroupName\nMandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure\n\n.EXAMPLE\n./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'\n\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $SSHKeyName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ResourceGroupName\n)\n\nif (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {\n    Write-Verbose \"No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new.\" -Verbose\n    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)\n    $publicKey = Get-Content 'generated.pub' -Raw\n    # $privateKey = cat generated | Out-String\n} else {\n    Write-Verbose \"SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning.\" -Verbose\n    $publicKey = $sshKey.publicKey\n}\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    # Requires conversion as the script otherwise returns an object instead of the plain public key string\n    publicKey = $publicKey | Out-String\n}\n",
+        "scriptContent": "<#\n.SYNOPSIS\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.DESCRIPTION\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.PARAMETER SSHKeyName\nMandatory. The name of the Public SSH Key Resource as it would be deployed in Azure\n\n.PARAMETER ResourceGroupName\nMandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure\n\n.EXAMPLE\n./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'\n\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $SSHKeyName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ResourceGroupName\n)\n\nif (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {\n    Write-Verbose \"No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new.\" -Verbose\n    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)\n    $publicKey = Get-Content 'generated.pub' -Raw\n    # $privateKey = cat generated | Out-String\n} else {\n    Write-Verbose \"SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning.\" -Verbose\n    $publicKey = $sshKey.publicKey\n}\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    # Note: This output is needed for the SSH public key resource\n    # PSRule exception: This is infrastructure setup data, not user secrets\n    publicKey = $publicKey | Out-String\n}\n",
         "cleanupPreference": "OnExpiration",
         "forceUpdateTag": "[parameters('utcValue')]"
       },
@@ -2988,8 +2988,8 @@
                 "properties": {
                   "protocol": "Tcp",
                   "sourcePortRange": "*",
-                  "sourceAddressPrefix": "*",
-                  "destinationAddressPrefix": "VirtualNetwork",
+                  "sourceAddressPrefix": "10.0.1.0/24",
+                  "destinationAddressPrefix": "10.0.0.0/24",
                   "access": "Allow",
                   "priority": 100,
                   "direction": "Outbound",
@@ -3005,7 +3005,7 @@
                   "protocol": "Tcp",
                   "sourcePortRange": "*",
                   "destinationPortRange": "443",
-                  "sourceAddressPrefix": "*",
+                  "sourceAddressPrefix": "10.0.1.0/24",
                   "destinationAddressPrefix": "AzureCloud",
                   "access": "Allow",
                   "priority": 110,
@@ -3017,8 +3017,8 @@
                 "properties": {
                   "protocol": "*",
                   "sourcePortRange": "*",
-                  "sourceAddressPrefix": "VirtualNetwork",
-                  "destinationAddressPrefix": "VirtualNetwork",
+                  "sourceAddressPrefix": "10.0.1.0/24",
+                  "destinationAddressPrefix": "10.0.1.0/24",
                   "access": "Allow",
                   "priority": 120,
                   "direction": "Outbound",
@@ -3033,7 +3033,7 @@
                 "properties": {
                   "protocol": "*",
                   "sourcePortRange": "*",
-                  "sourceAddressPrefix": "*",
+                  "sourceAddressPrefix": "10.0.1.0/24",
                   "destinationAddressPrefix": "Internet",
                   "access": "Allow",
                   "priority": 130,

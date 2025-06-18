@@ -299,8 +299,8 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
         properties: {
           protocol: 'Tcp'
           sourcePortRange: '*'
-          sourceAddressPrefix: '*'
-          destinationAddressPrefix: 'VirtualNetwork'
+          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet only
+          destinationAddressPrefix: '10.0.0.0/24' // Only allow to application subnet
           access: 'Allow'
           priority: 100
           direction: 'Outbound'
@@ -316,7 +316,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
           protocol: 'Tcp'
           sourcePortRange: '*'
           destinationPortRange: '443'
-          sourceAddressPrefix: '*'
+          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet only
           destinationAddressPrefix: 'AzureCloud'
           access: 'Allow'
           priority: 110
@@ -328,8 +328,8 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
         properties: {
           protocol: '*'
           sourcePortRange: '*'
-          sourceAddressPrefix: 'VirtualNetwork'
-          destinationAddressPrefix: 'VirtualNetwork'
+          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet only
+          destinationAddressPrefix: '10.0.1.0/24' // Only within Bastion subnet
           access: 'Allow'
           priority: 120
           direction: 'Outbound'
@@ -344,7 +344,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
         properties: {
           protocol: '*'
           sourcePortRange: '*'
-          sourceAddressPrefix: '*'
+          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet only
           destinationAddressPrefix: 'Internet'
           access: 'Allow'
           priority: 130
@@ -446,6 +446,7 @@ resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022
 @description('Optional. Do not provide a value. Used to force the deployment script to rerun on every redeployment.')
 param utcValue string = utcNow()
 
+// PSRule: Azure.Deployment.OutputSecretValue - SSH public key is infrastructure data, not user secrets
 resource sshKeyGenerationScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   name: 'ds-${name}-sshkey'
   location: location
@@ -499,7 +500,8 @@ if (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-O
 }
 # Write into Deployment Script output stream
 $DeploymentScriptOutputs = @{
-    # Requires conversion as the script otherwise returns an object instead of the plain public key string
+    # Note: This output is needed for the SSH public key resource
+    # PSRule exception: This is infrastructure setup data, not user secrets
     publicKey = $publicKey | Out-String
 }
 '''
