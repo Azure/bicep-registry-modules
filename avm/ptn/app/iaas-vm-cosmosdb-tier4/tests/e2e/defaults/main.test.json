@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "8740634041159707409"
+      "version": "0.35.1.17967",
+      "templateHash": "5829615023966593290"
     },
     "name": "Using only defaults",
     "description": "This instance deploys the module with the minimum set of required parameters."
@@ -86,8 +86,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "16574885166976035135"
+              "version": "0.35.1.17967",
+              "templateHash": "9815933002282365446"
             },
             "name": "IaaS VM with CosmosDB Tier 4",
             "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -25736,7 +25736,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[format('cosmos-{0}', parameters('name'))]"
+                    "value": "[format('cosmos-{0}', toLower(parameters('name')))]"
                   },
                   "location": {
                     "value": "[parameters('location')]"

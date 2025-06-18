@@ -234,113 +234,56 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
     location: location
     tags: tags
     securityRules: [
+      // Inbound Rules
       {
-        name: 'AllowHttpsInBound'
+        name: 'AllowHttpsInbound'
         properties: {
-          protocol: 'Tcp'
-          sourcePortRange: '*'
-          destinationPortRange: '443'
+          access: 'Allow'
+          direction: 'Inbound'
+          priority: 120
           sourceAddressPrefix: 'Internet'
           destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 100
-          direction: 'Inbound'
-        }
-      }
-      {
-        name: 'AllowGatewayManagerInBound'
-        properties: {
           protocol: 'Tcp'
           sourcePortRange: '*'
           destinationPortRange: '443'
+        }
+      }
+      {
+        name: 'AllowGatewayManagerInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          priority: 130
           sourceAddressPrefix: 'GatewayManager'
           destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 110
-          direction: 'Inbound'
-        }
-      }
-      {
-        name: 'AllowLoadBalancerInBound'
-        properties: {
           protocol: 'Tcp'
           sourcePortRange: '*'
           destinationPortRange: '443'
+        }
+      }
+      {
+        name: 'AllowAzureLoadBalancerInbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Inbound'
+          priority: 140
           sourceAddressPrefix: 'AzureLoadBalancer'
           destinationAddressPrefix: '*'
-          access: 'Allow'
-          priority: 120
-          direction: 'Inbound'
-        }
-      }
-      {
-        name: 'AllowBastionHostCommunicationInBound'
-        properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          sourceAddressPrefix: 'VirtualNetwork'
-          destinationAddressPrefix: 'VirtualNetwork'
-          access: 'Allow'
-          priority: 130
-          direction: 'Inbound'
-          destinationPortRanges: [
-            '8080'
-            '5701'
-          ]
-        }
-      }
-      {
-        name: 'DenyAllInBound'
-        properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRange: '*'
-          sourceAddressPrefix: '*'
-          destinationAddressPrefix: '*'
-          access: 'Deny'
-          priority: 1000
-          direction: 'Inbound'
-        }
-      }
-      {
-        name: 'AllowSshRdpOutBound'
-        properties: {
-          protocol: 'Tcp'
-          sourcePortRange: '*'
-          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet
-          destinationAddressPrefix: '10.0.0.0/24' // Only allow to application subnet
-          access: 'Allow'
-          priority: 100
-          direction: 'Outbound'
-          destinationPortRanges: [
-            '22'
-            '3389'
-          ]
-        }
-      }
-      {
-        name: 'AllowAzureCloudCommunicationOutBound'
-        properties: {
           protocol: 'Tcp'
           sourcePortRange: '*'
           destinationPortRange: '443'
-          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet
-          destinationAddressPrefix: 'AzureCloud'
-          access: 'Allow'
-          priority: 110
-          direction: 'Outbound'
         }
       }
       {
-        name: 'AllowBastionHostCommunicationOutBound'
+        name: 'AllowBastionHostCommunication'
         properties: {
-          protocol: '*'
-          sourcePortRange: '*'
-          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet
-          destinationAddressPrefix: '10.0.1.0/24' // Only within Bastion subnet
           access: 'Allow'
-          priority: 120
-          direction: 'Outbound'
+          direction: 'Inbound'
+          priority: 150
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: 'VirtualNetwork'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
           destinationPortRanges: [
             '8080'
             '5701'
@@ -348,32 +291,85 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
         }
       }
       {
-        name: 'AllowGetSessionInformationOutBound'
+        name: 'DenyAllInbound'
         properties: {
+          access: 'Deny'
+          direction: 'Inbound'
+          priority: 4096
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
           protocol: '*'
           sourcePortRange: '*'
-          sourceAddressPrefix: '10.0.1.0/24' // Restrict to Bastion subnet
-          destinationAddressPrefix: 'Internet'
+          destinationPortRange: '*'
+        }
+      }
+      // Outbound Rules
+      {
+        name: 'AllowSshRdpOutbound'
+        properties: {
           access: 'Allow'
-          priority: 130
           direction: 'Outbound'
+          priority: 100
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: 'VirtualNetwork'
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: ['22', '3389']
+        }
+      }
+      {
+        name: 'AllowAzureCloudOutbound'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 110
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: 'AzureCloud'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          destinationPortRange: '443'
+        }
+      }
+      {
+        name: 'AllowBastionCommunication'
+        properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 120
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: 'VirtualNetwork'
+          protocol: '*'
+          sourcePortRange: '*'
           destinationPortRanges: [
-            '80'
-            '443'
+            '8080'
+            '5701'
           ]
         }
       }
       {
-        name: 'DenyAllOutBound'
+        name: 'AllowGetSessionInformation'
         properties: {
+          access: 'Allow'
+          direction: 'Outbound'
+          priority: 130
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: 'Internet'
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRange: '80'
+        }
+      }
+      {
+        name: 'DenyAllOutbound'
+        properties: {
+          access: 'Deny'
+          direction: 'Outbound'
+          priority: 4096
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
           protocol: '*'
           sourcePortRange: '*'
           destinationPortRange: '*'
-          sourceAddressPrefix: '*'
-          destinationAddressPrefix: '*'
-          access: 'Deny'
-          priority: 1000
-          direction: 'Outbound'
         }
       }
     ]
@@ -693,7 +689,7 @@ module recoveryServicesVault 'br/public:avm/res/recovery-services/vault:0.9.1' =
 module cosmosdbAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
   name: 'cosmosdbAccount-${uniqueString(deployment().name, location)}'
   params: {
-    name: 'cosmos-${name}'
+    name: 'cosmos-${toLower(name)}'
     location: location
     tags: tags
     defaultConsistencyLevel: 'Session'
