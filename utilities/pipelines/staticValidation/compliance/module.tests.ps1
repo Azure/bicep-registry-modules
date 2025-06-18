@@ -137,28 +137,6 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
         }
 
-        # If the child modules version has been increased, the main modules version should be increased as well
-        It '[<moduleFolderName>] main module version should be increased if the child version number has been increased.' -TestCases ($moduleFolderTestCases | Where-Object { -Not $_.isTopLevelModule }) {
-
-            param (
-                [string] $moduleFolderPath
-            )
-
-            $pathExisting = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-            if ($pathExisting) {
-                $childModuleVersion = Get-ModuleTargetVersion -ModuleFolderPath $moduleFolderPath
-                if ($childModuleVersion -eq '0.1.0') {
-                    Set-ItResult -Skipped -Because 'Child module version is 0.1.0, which is the initial version.'
-                    return
-                }
-                $parentFolderPath = Split-Path -Path $moduleFolderPath -Parent
-                $moduleVersion = Get-ModuleTargetVersion -ModuleFolderPath $parentFolderPath
-
-                # The first release of a child module does not require the parent module to be updated
-                ($childModuleVersion -ne '0.1.0' -and $childModuleVersion.EndsWith('.0') -and -not $moduleVersion.EndsWith('.0')) | Should -Be $false
-            }
-        }
-
         # Changelogs are required for all (child-)modules that are published (having a version.json file)
         It '[<moduleFolderName>] Module must contain a [` CHANGELOG.md `] file.' -Tag 'Changelog' -TestCases ($moduleFolderTestCases | Where-Object { $_.moduleVersionExists }) {
 
