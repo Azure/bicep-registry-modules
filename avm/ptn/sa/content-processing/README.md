@@ -272,7 +272,7 @@ param location = '<location>'
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy:. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`publicContainerImageEndpoint`](#parameter-publiccontainerimageendpoint) | string | The public container image endpoint. |
-| [`resourceGroupLocation`](#parameter-resourcegrouplocation) | string | The resource group location.  |
+| [`resourceGroupLocation`](#parameter-resourcegrouplocation) | string | The resource group location. |
 | [`resourceNameFormatString`](#parameter-resourcenameformatstring) | string | The resource name format string. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
 | [`useLocalBuild`](#parameter-uselocalbuild) | bool | Set to true to use local build for container app images, otherwise use container registry images. |
@@ -363,7 +363,7 @@ The public container image endpoint.
 
 ### Parameter: `resourceGroupLocation`
 
-The resource group location. 
+The resource group location.
 
 - Required: No
 - Type: string

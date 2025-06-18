@@ -28,7 +28,7 @@ param gptDeploymentCapacity int
 // param secondaryLocation string = 'EastUs2'
 @description('Optional. The public container image endpoint.')
 param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
-@description('Optional. The resource group location. ')
+@description('Optional. The resource group location.')
 param resourceGroupLocation string = resourceGroup().location
 @description('Optional. The resource name format string.')
 param resourceNameFormatString string = '{0}avm-cps'
