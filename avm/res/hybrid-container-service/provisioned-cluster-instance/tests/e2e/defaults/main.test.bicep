@@ -84,7 +84,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
     hciResourceProviderObjectId: hciResourceProviderObjectId
     deploymentSettings: {
-      customLocationName: '${namePrefix}${serviceShort}-ltemp'
+      customLocationName: '${namePrefix}${serviceShort}-cl'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
       clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
       defaultGateway: '192.168.1.1'
@@ -171,7 +171,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
 
 resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-preview' existing = {
   scope: resourceGroup
-  name: '${namePrefix}${serviceShort}-ltemp'
+  name: '${namePrefix}${serviceShort}-cl'
   dependsOn: [
     azlocal
   ]
@@ -184,6 +184,12 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
     name: '${namePrefix}${serviceShort}logicalnetwork'
     customLocationResourceId: customLocation.id
     vmSwitchName: azlocal.outputs.vSwitchName
+    ipAllocationMethod: 'Static'
+    addressPrefix: '192.168.1.0/24'
+    startingAddress: '192.168.1.171'
+    endingAddress: '192.168.1.190'
+    defaultGateway: '192.168.1.1'
+    dnsServers: ['192.168.1.254']
     routeName: 'default'
     vlanId: null
   }
