@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "17934255231793918358"
+      "templateHash": "13047107798240909624"
     },
     "name": "Synapse Workspaces",
     "description": "This module deploys a Synapse Workspace."
@@ -339,11 +339,11 @@
             "description": "Optional. The restore point in time to restore from (ISO8601 format)."
           }
         },
-        "recoverableDatabaseId": {
+        "recoverableDatabaseResourceId": {
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The recoverable database ID to restore from."
+            "description": "Optional. The recoverable database resource ID to restore from."
           }
         },
         "storageAccountType": {
@@ -2827,8 +2827,8 @@
           "restorePointInTime": {
             "value": "[tryGet(coalesce(parameters('sqlPools'), createArray())[copyIndex()], 'restorePointInTime')]"
           },
-          "recoverableDatabaseId": {
-            "value": "[tryGet(coalesce(parameters('sqlPools'), createArray())[copyIndex()], 'recoverableDatabaseId')]"
+          "recoverableDatabaseResourceId": {
+            "value": "[tryGet(coalesce(parameters('sqlPools'), createArray())[copyIndex()], 'recoverableDatabaseResourceId')]"
           },
           "storageAccountType": {
             "value": "[tryGet(coalesce(parameters('sqlPools'), createArray())[copyIndex()], 'storageAccountType')]"
@@ -2837,10 +2837,10 @@
             "value": "[tryGet(coalesce(parameters('sqlPools'), createArray())[copyIndex()], 'transparentDataEncryption')]"
           },
           "diagnosticSettings": {
-            "value": "[coalesce(tryGet(coalesce(parameters('sqlPools'), createArray())[copyIndex()], 'diagnosticSettings'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('sqlPools'), createArray())[copyIndex()], 'diagnosticSettings')]"
           },
           "roleAssignments": {
-            "value": "[coalesce(tryGet(coalesce(parameters('sqlPools'), createArray())[copyIndex()], 'roleAssignments'), createArray())]"
+            "value": "[tryGet(coalesce(parameters('sqlPools'), createArray())[copyIndex()], 'roleAssignments')]"
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('sqlPools'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
@@ -2857,7 +2857,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "4496454105046968460"
+              "templateHash": "9532374176310788818"
             },
             "name": "Synapse Workspaces SQL Pools",
             "description": "This module deploys a Synapse Workspaces SQL Pool."
@@ -3157,11 +3157,11 @@
                 "description": "Optional. The restore point in time to restore from (ISO8601 format)."
               }
             },
-            "recoverableDatabaseId": {
+            "recoverableDatabaseResourceId": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. The recoverable database ID to restore from."
+                "description": "Optional. The recoverable database resource ID to restore from."
               }
             },
             "storageAccountType": {
@@ -3258,7 +3258,7 @@
               "properties": {
                 "collation": "[parameters('collation')]",
                 "maxSizeBytes": "[parameters('maxSizeBytes')]",
-                "recoverableDatabaseId": "[parameters('recoverableDatabaseId')]",
+                "recoverableDatabaseId": "[parameters('recoverableDatabaseResourceId')]",
                 "restorePointInTime": "[parameters('restorePointInTime')]",
                 "storageAccountType": "[parameters('storageAccountType')]"
               }

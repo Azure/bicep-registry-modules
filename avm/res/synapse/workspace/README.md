@@ -3264,7 +3264,7 @@ List of SQL Pools to be created in the workspace.
 | [`diagnosticSettings`](#parameter-sqlpoolsdiagnosticsettings) | array | The diagnostic settings of the service. |
 | [`lock`](#parameter-sqlpoolslock) | object | The lock settings of the service. |
 | [`maxSizeBytes`](#parameter-sqlpoolsmaxsizebytes) | int | The max size of the SQL pool in bytes. |
-| [`recoverableDatabaseId`](#parameter-sqlpoolsrecoverabledatabaseid) | string | The recoverable database ID to restore from. |
+| [`recoverableDatabaseResourceId`](#parameter-sqlpoolsrecoverabledatabaseresourceid) | string | The recoverable database resource ID to restore from. |
 | [`restorePointInTime`](#parameter-sqlpoolsrestorepointintime) | string | The restore point in time to restore from (ISO8601 format). |
 | [`roleAssignments`](#parameter-sqlpoolsroleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sqlpoolssku) | string | The performance level of the SQL pool. |
@@ -3475,9 +3475,9 @@ The max size of the SQL pool in bytes.
 - Required: No
 - Type: int
 
-### Parameter: `sqlPools.recoverableDatabaseId`
+### Parameter: `sqlPools.recoverableDatabaseResourceId`
 
-The recoverable database ID to restore from.
+The recoverable database resource ID to restore from.
 
 - Required: No
 - Type: string

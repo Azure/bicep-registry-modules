@@ -398,11 +398,11 @@ module workspace_sqlPools 'sql-pool/main.bicep' = [
       maxSizeBytes: sqlPool.?maxSizeBytes
       sku: sqlPool.?sku
       restorePointInTime: sqlPool.?restorePointInTime
-      recoverableDatabaseId: sqlPool.?recoverableDatabaseId
+      recoverableDatabaseResourceId: sqlPool.?recoverableDatabaseResourceId
       storageAccountType: sqlPool.?storageAccountType
       transparentDataEncryption: sqlPool.?transparentDataEncryption
-      diagnosticSettings: sqlPool.?diagnosticSettings ?? []
-      roleAssignments: sqlPool.?roleAssignments ?? []
+      diagnosticSettings: sqlPool.?diagnosticSettings
+      roleAssignments: sqlPool.?roleAssignments
       lock: sqlPool.?lock ?? lock
       tags: sqlPool.?tags ?? tags
     }
@@ -675,8 +675,8 @@ type sqlPoolType = {
   @description('Optional. The restore point in time to restore from (ISO8601 format).')
   restorePointInTime: string?
 
-  @description('Optional. The recoverable database ID to restore from.')
-  recoverableDatabaseId: string?
+  @description('Optional. The recoverable database resource ID to restore from.')
+  recoverableDatabaseResourceId: string?
 
   @description('Optional. The storage account type to use for the SQL pool.')
   storageAccountType: (

@@ -42,8 +42,8 @@ param sku (
 @description('Optional. The restore point in time to restore from (ISO8601 format).')
 param restorePointInTime string?
 
-@description('Optional. The recoverable database ID to restore from.')
-param recoverableDatabaseId string?
+@description('Optional. The recoverable database resource ID to restore from.')
+param recoverableDatabaseResourceId string?
 
 @description('Optional. The storage account type to use for the SQL pool.')
 param storageAccountType (
@@ -111,7 +111,7 @@ resource sqlPool 'Microsoft.Synapse/workspaces/sqlPools@2021-06-01' = {
   properties: {
     collation: collation
     maxSizeBytes: maxSizeBytes
-    recoverableDatabaseId: recoverableDatabaseId
+    recoverableDatabaseId: recoverableDatabaseResourceId
     restorePointInTime: restorePointInTime
     storageAccountType: storageAccountType
   }

@@ -42,7 +42,7 @@ This module deploys a Synapse Workspaces SQL Pool.
 | [`location`](#parameter-location) | string | The geo-location where the resource lives. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`maxSizeBytes`](#parameter-maxsizebytes) | int | The max size of the SQL pool in bytes. |
-| [`recoverableDatabaseId`](#parameter-recoverabledatabaseid) | string | The recoverable database ID to restore from. |
+| [`recoverableDatabaseResourceId`](#parameter-recoverabledatabaseresourceid) | string | The recoverable database resource ID to restore from. |
 | [`restorePointInTime`](#parameter-restorepointintime) | string | The restore point in time to restore from (ISO8601 format). |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`sku`](#parameter-sku) | string | The performance level of the SQL pool. |
@@ -268,9 +268,9 @@ The max size of the SQL pool in bytes.
 - Required: No
 - Type: int
 
-### Parameter: `recoverableDatabaseId`
+### Parameter: `recoverableDatabaseResourceId`
 
-The recoverable database ID to restore from.
+The recoverable database resource ID to restore from.
 
 - Required: No
 - Type: string
