@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "8689369549379140766"
+      "templateHash": "8906121013251993704"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -26218,7 +26218,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "9022071221377659228"
+              "templateHash": "8276131365320873239"
             }
           },
           "definitions": {
@@ -26362,7 +26362,7 @@
             }
           },
           "variables": {
-            "nameFormatted": "[take(toLower(parameters('storageName')), 24)]"
+            "nameFormatted": "[take(toLower(parameters('storageName')), 12)]"
           },
           "resources": {
             "blobService": {

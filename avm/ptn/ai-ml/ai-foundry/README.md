@@ -116,7 +116,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     // Required parameters
     aiFoundryType: 'Basic'
     contentSafetyEnabled: false
-    name: 'aifoundrymin001'
+    name: 'fndrymin001'
     vmAdminPasswordOrKey: 'P@ssw0rd123!'
     // Non-required parameters
     location: '<location>'
@@ -144,7 +144,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": false
     },
     "name": {
-      "value": "aifoundrymin001"
+      "value": "fndrymin001"
     },
     "vmAdminPasswordOrKey": {
       "value": "P@ssw0rd123!"
@@ -170,7 +170,7 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 // Required parameters
 param aiFoundryType = 'Basic'
 param contentSafetyEnabled = false
-param name = 'aifoundrymin001'
+param name = 'fndrymin001'
 param vmAdminPasswordOrKey = 'P@ssw0rd123!'
 // Non-required parameters
 param location = '<location>'
@@ -195,7 +195,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     // Required parameters
     aiFoundryType: 'StandardPrivate'
     contentSafetyEnabled: true
-    name: 'aifoundrywaf001'
+    name: 'fndrywaf001'
     vmAdminPasswordOrKey: '$tart12345'
     // Non-required parameters
     location: '<location>'
@@ -223,7 +223,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": true
     },
     "name": {
-      "value": "aifoundrywaf001"
+      "value": "fndrywaf001"
     },
     "vmAdminPasswordOrKey": {
       "value": "$tart12345"
@@ -249,7 +249,7 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 // Required parameters
 param aiFoundryType = 'StandardPrivate'
 param contentSafetyEnabled = true
-param name = 'aifoundrywaf001'
+param name = 'fndrywaf001'
 param vmAdminPasswordOrKey = '$tart12345'
 // Non-required parameters
 param location = '<location>'
