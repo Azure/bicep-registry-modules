@@ -7,7 +7,15 @@ param name string
 @description('General. Location for all resources.')
 param location string = resourceGroup().location
 
-@description('General. Tags for all resources.')
+@description('General. Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc.')
+@metadata({
+  example: {
+    Environment: 'Production'
+    Owner: 'TeamName'
+    CostCenter: 'IT'
+    Application: 'MyApp'
+  }
+})
 param tags object = {}
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -78,15 +86,15 @@ param vnetAddressPrefix string = '10.0.0.0/16'
 @description('Networking. Subnet configuration for the virtual network.')
 param subnets array = [
   {
-    name: 'snet-app'
+    name: 'snet-application'
     addressPrefix: '10.0.0.0/24'
   }
   {
-    name: 'snet-pep'
+    name: 'snet-privateendpoints'
     addressPrefix: '10.0.1.0/24'
   }
   {
-    name: 'snet-bootdiag'
+    name: 'snet-bootdiagnostics'
     addressPrefix: '10.0.2.0/24'
   }
   {
@@ -151,7 +159,7 @@ module vmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group:
 module applicationNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
   name: '${uniqueString(deployment().name, location)}-application-nsg'
   params: {
-    name: 'nsg-${name}-app'
+    name: 'nsg-${name}-application'
     location: location
     tags: tags
     securityRules: applicationNsgRules
@@ -162,7 +170,7 @@ module applicationNsg 'br/public:avm/res/network/network-security-group:0.5.1' =
 module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
   name: '${uniqueString(deployment().name, location)}-privateendpoint-nsg'
   params: {
-    name: 'nsg-${name}-pep'
+    name: 'nsg-${name}-privateendpoints'
     location: location
     tags: tags
     securityRules: [
@@ -192,7 +200,7 @@ module privateEndpointNsg 'br/public:avm/res/network/network-security-group:0.5.
 module bootDiagnosticsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
   name: '${uniqueString(deployment().name, location)}-bootdiagnostics-nsg'
   params: {
-    name: 'nsg-${name}-bootdiag'
+    name: 'nsg-${name}-bootdiagnostics'
     location: location
     tags: tags
     securityRules: [

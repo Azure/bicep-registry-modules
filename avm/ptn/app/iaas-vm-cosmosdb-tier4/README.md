@@ -181,7 +181,7 @@ param location = '<location>'
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`location`](#parameter-location) | string | Location for all resources. |
-| [`tags`](#parameter-tags) | object | Tags for all resources. |
+| [`tags`](#parameter-tags) | object | Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc. |
 
 **Security parameters**
 
@@ -245,11 +245,12 @@ Location for all resources.
 
 ### Parameter: `tags`
 
-Tags for all resources.
+Tags for all resources. Should include standard tags like Environment, Owner, CostCenter, etc.
 
 - Required: No
 - Type: object
 - Default: `{}`
+- Example: `System.Management.Automation.OrderedHashtable`
 
 ### Parameter: `adminUsername`
 
@@ -359,15 +360,15 @@ Subnet configuration for the virtual network.
   [
     {
       addressPrefix: '10.0.0.0/24'
-      name: 'snet-app'
+      name: 'snet-application'
     }
     {
       addressPrefix: '10.0.1.0/24'
-      name: 'snet-pep'
+      name: 'snet-privateendpoints'
     }
     {
       addressPrefix: '10.0.2.0/24'
-      name: 'snet-bootdiag'
+      name: 'snet-bootdiagnostics'
     }
     {
       addressPrefix: '10.0.3.0/26'
