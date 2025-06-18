@@ -110,6 +110,10 @@ param vmSize string = 'Standard_D2s_v3'
 @description('Security. Admin username for the virtual machine.')
 param adminUsername string = 'azureuser'
 
+@description('Security. SSH public key for the virtual machine. If empty, a new SSH key will be generated.')
+@secure()
+param sshPublicKey string = ''
+
 // Storage account parameters
 @description('Storage. Storage account SKU.')
 param storageAccountSku object = {
@@ -428,14 +432,15 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   }
 }
 
-// SSH public key generation via deployment script
-resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = {
+// SSH Key Resource - generates or uses provided SSH key
+// PSRule: Azure.Deployment.OutputSecretValue - SSH public keys are not sensitive and are safe to output
+resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if (empty(sshPublicKey)) {
   name: 'id-${name}-sshkey'
   location: location
   tags: tags
 }
 
-resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = if (empty(sshPublicKey)) {
   name: guid(resourceGroup().id, 'ManagedIdentityContributor', name)
   properties: {
     roleDefinitionId: subscriptionResourceId(
@@ -447,11 +452,8 @@ resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022
   }
 }
 
-@description('Optional. Do not provide a value. Used to force the deployment script to rerun on every redeployment.')
-param utcValue string = utcNow()
-
-// PSRule: Azure.Deployment.OutputSecretValue - SSH public key is infrastructure data, not user secrets
-resource sshKeyGenerationScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
+// @suppression Azure.Deployment.OutputSecretValue SSH public keys are not sensitive and are meant to be shared publicly
+resource sshKeyGenerationScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (empty(sshPublicKey)) {
   name: 'ds-${name}-sshkey'
   location: location
   tags: tags
@@ -463,69 +465,23 @@ resource sshKeyGenerationScript 'Microsoft.Resources/deploymentScripts@2023-08-0
     }
   }
   properties: {
-    azPowerShellVersion: '8.0'
+    azPowerShellVersion: '9.0'
     retentionInterval: 'P1D'
-    arguments: '-ResourceGroupName ${resourceGroup().name} -SSHKeyName ${name}-vm-key'
-    scriptContent: '''
-<#
-.SYNOPSIS
-Generate a new Public SSH Key or fetch it from an existing Public SSH Key resource.
-
-.DESCRIPTION
-Generate a new Public SSH Key or fetch it from an existing Public SSH Key resource.
-
-.PARAMETER SSHKeyName
-Mandatory. The name of the Public SSH Key Resource as it would be deployed in Azure
-
-.PARAMETER ResourceGroupName
-Mandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure
-
-.EXAMPLE
-./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'
-
-Generate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'
-#>
-param(
-    [Parameter(Mandatory = $true)]
-    [string] $SSHKeyName,
-
-    [Parameter(Mandatory = $true)]
-    [string] $ResourceGroupName
-)
-
-if (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {
-    Write-Verbose "No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new." -Verbose
-    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)
-    $publicKey = Get-Content 'generated.pub' -Raw
-    # $privateKey = cat generated | Out-String
-} else {
-    Write-Verbose "SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning." -Verbose
-    $publicKey = $sshKey.publicKey
-}
-# Write into Deployment Script output stream
-$DeploymentScriptOutputs = @{
-    # Note: This output is needed for the SSH public key resource
-    # PSRule exception: This is infrastructure setup data, not user secrets
-    publicKey = $publicKey | Out-String
-}
-'''
+    arguments: '-SSHKeyName "${name}-vm-key" -ResourceGroupName "${resourceGroup().name}"'
+    scriptContent: loadTextContent('../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
     cleanupPreference: 'OnExpiration'
-    forceUpdateTag: utcValue
   }
   dependsOn: [
     contributorRoleAssignment
   ]
 }
 
-// SSH public key for VM
-module sshPublicKey 'br/public:avm/res/compute/ssh-public-key:0.4.3' = {
-  name: '${uniqueString(deployment().name, location)}-ssh-key'
-  params: {
-    name: '${name}-vm-key'
-    location: location
-    tags: tags
-    publicKey: sshKeyGenerationScript.properties.outputs.publicKey
-    enableTelemetry: enableTelemetry
+resource sshKeyResource 'Microsoft.Compute/sshPublicKeys@2024-07-01' = {
+  name: '${name}-vm-key'
+  location: location
+  tags: tags
+  properties: {
+    publicKey: (!empty(sshPublicKey)) ? sshPublicKey : sshKeyGenerationScript.properties.outputs.publicKey
   }
 }
 
@@ -599,7 +555,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     disablePasswordAuthentication: true
     publicKeys: [
       {
-        keyData: sshKeyGenerationScript.properties.outputs.publicKey
+        keyData: (!empty(sshPublicKey)) ? sshPublicKey : sshKeyResource.properties.publicKey
         path: '/home/${adminUsername}/.ssh/authorized_keys'
       }
     ]
