@@ -24,12 +24,12 @@ param localAdminUser string
 @description('Required. The password of the local admin user.')
 param localAdminPassword string
 
-@description('Required. The service principal ID for ARB.')
-param servicePrincipalId string
+@description('Conditional. The service principal ID for ARB.')
+param servicePrincipalId string?
 
 @secure()
-@description('Required. The service principal secret for ARB.')
-param servicePrincipalSecret string
+@description('Conditional. The service principal secret for ARB.')
+param servicePrincipalSecret string?
 
 @description('Optional. Content type of the azure stack lcm user credential.')
 param azureStackLCMUserCredentialContentType string = 'Secret'
@@ -142,7 +142,7 @@ resource witnessStorageKey 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   tags: witnessStoragekeyTags
 }
 
-resource defaultARBApplication 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
+resource defaultARBApplication 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = if (!empty(servicePrincipalId) && !empty(servicePrincipalSecret)) {
   parent: keyVault
   name: '${clusterName}-DefaultARBApplication-${cloudId}'
   properties: {
