@@ -218,7 +218,6 @@ module testDeployment '../../../main.bicep' = {
         enabled: true
       }
     }
-    linuxProfile: null
     licenseProfile: { azureHybridBenefit: 'False' }
     cloudProviderProfile: {
       infraNetworkProfile: {

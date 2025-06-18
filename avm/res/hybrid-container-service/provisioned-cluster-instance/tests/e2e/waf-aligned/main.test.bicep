@@ -214,7 +214,6 @@ module testDeployment '../../../main.bicep' = {
         ]
       }
     }
-    linuxProfile: null
     controlPlane: {
       count: 1
       vmSize: 'Standard_A4_v2'
