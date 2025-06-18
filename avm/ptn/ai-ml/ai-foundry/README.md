@@ -745,7 +745,7 @@ Specifies the name of the administrator account for the jump-box virtual machine
 
 - Required: No
 - Type: string
-- Default: `[format('{0}vmuser', parameters('name'))]`
+- Default: `[take(format('{0}vmuser', parameters('name')), 20)]`
 
 ### Parameter: `vmSize`
 

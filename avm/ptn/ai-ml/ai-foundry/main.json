@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11861106929129230638"
+      "templateHash": "12239580136388665147"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -343,7 +343,7 @@
     },
     "vmAdminUsername": {
       "type": "string",
-      "defaultValue": "[format('{0}vmuser', parameters('name'))]",
+      "defaultValue": "[take(format('{0}vmuser', parameters('name')), 20)]",
       "minLength": 3,
       "maxLength": 20,
       "metadata": {
