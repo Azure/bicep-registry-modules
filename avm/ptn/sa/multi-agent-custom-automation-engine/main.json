@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "9354563295959262153"
+      "templateHash": "7278996627364104507"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -22,14 +22,14 @@
     },
     "solutionLocation": {
       "type": "string",
-      "defaultValue": "[resourceGroup().location]",
+      "defaultValue": "australiaeast",
       "metadata": {
         "description": "Optional. Location for all Resources except AI Foundry."
       }
     },
     "failoverLocation": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "uksouth",
       "metadata": {
         "description": "Optional. Failover Location for applicable resources. This location will apply if `enableScalability` is set to `true`. Check [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) for more information on supported regions, and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported regions for CosmosDB."
       }
@@ -119,7 +119,7 @@
     },
     "backendContainerImageTag": {
       "type": "string",
-      "defaultValue": "latest_2025-06-12_639",
+      "defaultValue": "hotfix_2025-06-17_704",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the backend."
       }
@@ -140,7 +140,7 @@
     },
     "frontendContainerImageTag": {
       "type": "string",
-      "defaultValue": "latest_2025-06-12_639",
+      "defaultValue": "hotfix_2025-06-17_704",
       "metadata": {
         "description": "Optional. The Container Image Tag to deploy on the frontend."
       }

@@ -171,7 +171,6 @@ This instance deploys the [Multi-Agent Custom Automation Engine solution acceler
 module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>' = {
   name: 'multiAgentCustomAutomationEngineDeployment'
   params: {
-    azureOpenAILocation: 'australiaeast'
     enableMonitoring: true
     enablePrivateNetworking: true
     enableRedundancy: true
@@ -196,9 +195,6 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "azureOpenAILocation": {
-      "value": "australiaeast"
-    },
     "enableMonitoring": {
       "value": true
     },
@@ -237,7 +233,6 @@ module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom
 ```bicep-params
 using 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>'
 
-param azureOpenAILocation = 'australiaeast'
 param enableMonitoring = true
 param enablePrivateNetworking = true
 param enableRedundancy = true
@@ -311,7 +306,7 @@ The Container Image Tag to deploy on the backend.
 
 - Required: No
 - Type: string
-- Default: `'latest_2025-06-12_639'`
+- Default: `'hotfix_2025-06-17_704'`
 
 ### Parameter: `backendContainerRegistryHostname`
 
@@ -367,7 +362,7 @@ Failover Location for applicable resources. This location will apply if `enableS
 
 - Required: No
 - Type: string
-- Default: `''`
+- Default: `'uksouth'`
 
 ### Parameter: `frontendContainerImageName`
 
@@ -383,7 +378,7 @@ The Container Image Tag to deploy on the frontend.
 
 - Required: No
 - Type: string
-- Default: `'latest_2025-06-12_639'`
+- Default: `'hotfix_2025-06-17_704'`
 
 ### Parameter: `frontendContainerRegistryHostname`
 
@@ -399,7 +394,7 @@ Location for all Resources except AI Foundry.
 
 - Required: No
 - Type: string
-- Default: `[resourceGroup().location]`
+- Default: `'australiaeast'`
 
 ### Parameter: `solutionPrefix`
 

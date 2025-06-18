@@ -12,10 +12,10 @@ metadata description = '''This module contains the resources required to deploy 
 param solutionPrefix string = 'macae${uniqueString(deployer().objectId, deployer().tenantId, subscription().subscriptionId, resourceGroup().id)}'
 
 @description('Optional. Location for all Resources except AI Foundry.')
-param solutionLocation string = resourceGroup().location
+param solutionLocation string = 'australiaeast'
 
 @description('Optional. Failover Location for applicable resources. This location will apply if `enableScalability` is set to `true`. Check [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) for more information on supported regions, and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported regions for CosmosDB.')
-param failoverLocation string = ''
+param failoverLocation string = 'uksouth'
 
 // Restricting deployment to only supported Azure OpenAI regions validated with GPT-4o model
 @allowed(['australiaeast', 'eastus2', 'francecentral', 'japaneast', 'norwayeast', 'swedencentral', 'uksouth', 'westus'])
@@ -42,11 +42,11 @@ param enablePrivateNetworking bool = false
 
 @secure()
 @description('Optional. The user name for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
-param virtualMachineAdminUsername string = take(newGuid(), 20) //TODO: store value in Key Vault
+param virtualMachineAdminUsername string = take(newGuid(), 20)
 
 @description('Optional. The password for the administrator account of the virtual machine. Allows to customize credentials if `enablePrivateNetworking` is set to true.')
 @secure()
-param virtualMachineAdminPassword string = newGuid() //TODO: store value in Key Vault
+param virtualMachineAdminPassword string = newGuid()
 
 @description('Optional. The Container Registry hostname where the docker images for the backend are located.')
 param backendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
@@ -55,7 +55,7 @@ param backendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 param backendContainerImageName string = 'macaebackend'
 
 @description('Optional. The Container Image Tag to deploy on the backend.')
-param backendContainerImageTag string = 'latest_2025-06-12_639'
+param backendContainerImageTag string = 'hotfix_2025-06-17_704'
 
 @description('Optional. The Container Registry hostname where the docker images for the frontend are located.')
 param frontendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
@@ -64,7 +64,7 @@ param frontendContainerRegistryHostname string = 'biabcontainerreg.azurecr.io'
 param frontendContainerImageName string = 'macaefrontend'
 
 @description('Optional. The Container Image Tag to deploy on the frontend.')
-param frontendContainerImageTag string = 'latest_2025-06-12_639'
+param frontendContainerImageTag string = 'hotfix_2025-06-17_704'
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true

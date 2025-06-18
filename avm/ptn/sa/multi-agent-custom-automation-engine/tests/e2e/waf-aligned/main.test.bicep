@@ -30,8 +30,9 @@ param virtualMachineAdminPassword string = newGuid()
 // Dependencies //
 // ============ //
 
-#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
 var enforcedLocation = 'australiaeast'
+var enforcedOpenAiLocation = 'australiaeast'
+var enforcedFailoverLocation = 'uksouth'
 var resourceGroupLocation = enforcedLocation
 
 // General resources
@@ -52,7 +53,6 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       solutionPrefix: '${namePrefix}${serviceShort}'
-      azureOpenAILocation: 'australiaeast'
       enableMonitoring: true
       enablePrivateNetworking: true
       enableRedundancy: true
