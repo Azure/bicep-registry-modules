@@ -39,6 +39,7 @@ body:
       options:
         - ""
         - "avm/ptn/aca-lza/hosting-environment"
+        - "avm/ptn/ai-ml/ai-foundry"
         - "avm/ptn/ai-platform/baseline"
         - "avm/ptn/alz/empty"
         - "avm/ptn/app-service-lza/hosting-environment"

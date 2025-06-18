@@ -99,7 +99,6 @@ The following section provides usage examples for the module, which were used to
 
 - [ai-foundry](#example-1-ai-foundry)
 - [ai-foundry](#example-2-ai-foundry)
-- [ai-foundry](#example-3-ai-foundry)
 
 ### Example 1: _ai-foundry_
 
@@ -181,85 +180,6 @@ param location = '<location>'
 <p>
 
 ### Example 2: _ai-foundry_
-
-Creates an AI Foundry account and project with Basic services.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
-  name: 'aiFoundryDeployment'
-  params: {
-    // Required parameters
-    aiFoundryType: 'Basic'
-    contentSafetyEnabled: false
-    name: 'aifoundrymin001'
-    vmAdminPasswordOrKey: 'P@ssw0rd123!'
-    // Non-required parameters
-    location: '<location>'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "aiFoundryType": {
-      "value": "Basic"
-    },
-    "contentSafetyEnabled": {
-      "value": false
-    },
-    "name": {
-      "value": "aifoundrymin001"
-    },
-    "vmAdminPasswordOrKey": {
-      "value": "P@ssw0rd123!"
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
-
-// Required parameters
-param aiFoundryType = 'Basic'
-param contentSafetyEnabled = false
-param name = 'aifoundrymin001'
-param vmAdminPasswordOrKey = 'P@ssw0rd123!'
-// Non-required parameters
-param location = '<location>'
-```
-
-</details>
-<p>
-
-### Example 3: _ai-foundry_
 
 Creates an AI Foundry account and project with Standard Agent Services in a network.
 
