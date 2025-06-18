@@ -262,24 +262,24 @@ param location = '<location>'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast |
+| [`contentUnderstandingLocation`](#parameter-contentunderstandinglocation) | string | Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast. |
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard |
-| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment |
-| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module |
-| [`environmentName`](#parameter-environmentname) | string | Name of the environment to deploy the solution into: |
-| [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment: (minimum 10) |
-| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4 |
-| [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy: |
+| [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment. |
+| [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`environmentName`](#parameter-environmentname) | string | Name of the environment to deploy the solution into:. |
+| [`gptDeploymentCapacity`](#parameter-gptdeploymentcapacity) | int | Capacity of the GPT deployment: (minimum 10). |
+| [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4. |
+| [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy:. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
-| [`publicContainerImageEndpoint`](#parameter-publiccontainerimageendpoint) | string | The public container image endpoint |
+| [`publicContainerImageEndpoint`](#parameter-publiccontainerimageendpoint) | string | The public container image endpoint. |
 | [`resourceGroupLocation`](#parameter-resourcegrouplocation) | string | The resource group location |
-| [`resourceNameFormatString`](#parameter-resourcenameformatstring) | string | The resource name format string |
-| [`tags`](#parameter-tags) | object | Tags to be applied to the resources |
-| [`useLocalBuild`](#parameter-uselocalbuild) | bool | Set to true to use local build for container app images, otherwise use container registry images |
+| [`resourceNameFormatString`](#parameter-resourcenameformatstring) | string | The resource name format string. |
+| [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
+| [`useLocalBuild`](#parameter-uselocalbuild) | bool | Set to true to use local build for container app images, otherwise use container registry images. |
 
 ### Parameter: `contentUnderstandingLocation`
 
-Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast
+Location for the content understanding service: WestUS | SwedenCentral | AustraliaEast.
 
 - Required: Yes
 - Type: string
@@ -294,7 +294,7 @@ Type of GPT deployment to use: Standard | GlobalStandard
 
 ### Parameter: `enablePrivateNetworking`
 
-Enable WAF for the deployment
+Enable WAF for the deployment.
 
 - Required: No
 - Type: bool
@@ -302,7 +302,7 @@ Enable WAF for the deployment
 
 ### Parameter: `enableTelemetry`
 
-Enable/Disable usage telemetry for module
+Enable/Disable usage telemetry for module.
 
 - Required: No
 - Type: bool
@@ -310,14 +310,14 @@ Enable/Disable usage telemetry for module
 
 ### Parameter: `environmentName`
 
-Name of the environment to deploy the solution into:
+Name of the environment to deploy the solution into:.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `gptDeploymentCapacity`
 
-Capacity of the GPT deployment: (minimum 10)
+Capacity of the GPT deployment: (minimum 10).
 
 - Required: Yes
 - Type: int
@@ -325,7 +325,7 @@ Capacity of the GPT deployment: (minimum 10)
 
 ### Parameter: `gptModelName`
 
-Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4
+Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4.
 
 - Required: No
 - Type: string
@@ -333,7 +333,7 @@ Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4
 
 ### Parameter: `gptModelVersion`
 
-Version of the GPT model to deploy:
+Version of the GPT model to deploy:.
 
 - Required: No
 - Type: string
@@ -355,7 +355,7 @@ Location for all Resources.
 
 ### Parameter: `publicContainerImageEndpoint`
 
-The public container image endpoint
+The public container image endpoint.
 
 - Required: No
 - Type: string
@@ -371,7 +371,7 @@ The resource group location
 
 ### Parameter: `resourceNameFormatString`
 
-The resource name format string
+The resource name format string.
 
 - Required: No
 - Type: string
@@ -379,7 +379,7 @@ The resource name format string
 
 ### Parameter: `tags`
 
-Tags to be applied to the resources
+Tags to be applied to the resources.
 
 - Required: No
 - Type: object
@@ -393,7 +393,7 @@ Tags to be applied to the resources
 
 ### Parameter: `useLocalBuild`
 
-Set to true to use local build for container app images, otherwise use container registry images
+Set to true to use local build for container app images, otherwise use container registry images.
 
 - Required: No
 - Type: bool
