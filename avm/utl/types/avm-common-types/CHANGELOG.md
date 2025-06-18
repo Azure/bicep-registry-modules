@@ -71,8 +71,6 @@ The latest version of the changelog can be found [here](/Azure/bicep-registry-mo
 ### Changes
 
 - Initial version
-- Fixed workflow configuration
-- Implemented publish-triggering module change
 
 ### Breaking Changes
 
