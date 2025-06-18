@@ -84,7 +84,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
     hciResourceProviderObjectId: hciResourceProviderObjectId
     deploymentSettings: {
-      customLocationName: '${namePrefix}${serviceShort}-cl'
+      customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
       clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
       defaultGateway: '192.168.1.1'
@@ -170,7 +170,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
 }
 
 resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-preview' existing = {
-  name: '${namePrefix}${serviceShort}-cl'
+  name: '${namePrefix}${serviceShort}-location'
   scope: resourceGroup
   dependsOn: [
     azlocal
