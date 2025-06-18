@@ -783,7 +783,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.13.0` | Remote reference |
-| `br/public:avm/res/machine-learning-services/workspace:0.10.1` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
 | `br/public:avm/res/search/search-service:0.10.0` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.20.0` | Remote reference |

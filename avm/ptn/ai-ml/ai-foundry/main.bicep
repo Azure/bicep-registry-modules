@@ -322,7 +322,6 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic'
 }
 
 import { sqlDatabaseType, deploymentsType } from 'modules/customTypes.bicep'
-import { connectionType } from 'br/public:avm/res/machine-learning-services/workspace:0.10.1'
 
 @description('Name of the deployed Azure Resource Group.')
 output resourceGroupName string = resourceGroup().name
