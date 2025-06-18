@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "42081981394574443"
+      "templateHash": "5385884628088831320"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -31,7 +31,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional. Failover Location for applicable resources. This location will apply if `enableScalability` is set to `true`. Check [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) for more information on supported regions."
+        "description": "Optional. Failover Location for applicable resources. This location will apply if `enableScalability` is set to `true`. Check [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) for more information on supported regions, and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported regions for CosmosDB."
       }
     },
     "azureOpenAILocation": {
@@ -3286,8 +3286,8 @@
           "name": {
             "value": "[variables('applicationInsightsResourceName')]"
           },
-          "workspaceResourceId": {
-            "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId]"
+          "tags": {
+            "value": "[parameters('tags')]"
           },
           "location": {
             "value": "[parameters('solutionLocation')]"
@@ -3295,13 +3295,9 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "tags": {
-            "value": "[parameters('tags')]"
-          },
           "retentionInDays": {
             "value": 365
           },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
           "kind": {
             "value": "web"
           },
@@ -3310,7 +3306,9 @@
           },
           "flowType": {
             "value": "Bluefield"
-          }
+          },
+          "workspaceResourceId": "[if(parameters('enableMonitoring'), createObject('value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId), createObject('value', ''))]",
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -11546,9 +11544,6 @@
           "name": {
             "value": "[variables('virtualMachineResourceName')]"
           },
-          "computerName": {
-            "value": "[take(variables('virtualMachineResourceName'), 15)]"
-          },
           "location": {
             "value": "[parameters('solutionLocation')]"
           },
@@ -11558,8 +11553,11 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "enableAutomaticUpdates": {
-            "value": true
+          "computerName": {
+            "value": "[take(variables('virtualMachineResourceName'), 15)]"
+          },
+          "osType": {
+            "value": "Windows"
           },
           "vmSize": {
             "value": "Standard_D2s_v3"
@@ -11570,22 +11568,26 @@
           "adminPassword": {
             "value": "[parameters('virtualMachineAdminPassword')]"
           },
-          "nicConfigurations": {
-            "value": [
-              {
-                "name": "[format('nic-{0}', variables('virtualMachineResourceName'))]",
-                "tags": "[parameters('tags')]",
-                "deleteOption": "Delete",
-                "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId)), null())]",
-                "ipConfigurations": [
-                  {
-                    "name": "[format('{0}-nic01-ipconfig01', variables('virtualMachineResourceName'))]",
-                    "subnetResourceId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[1]]",
-                    "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId)), null())]"
-                  }
-                ]
-              }
-            ]
+          "patchMode": {
+            "value": "AutomaticByPlatform"
+          },
+          "bypassPlatformSafetyChecksOnUserSchedule": {
+            "value": true
+          },
+          "maintenanceConfigurationResourceId": {
+            "value": "[reference('maintenanceConfiguration').outputs.resourceId.value]"
+          },
+          "enableAutomaticUpdates": {
+            "value": true
+          },
+          "encryptionAtHost": {
+            "value": false
+          },
+          "zone": {
+            "value": 2
+          },
+          "proximityPlacementGroupResourceId": {
+            "value": "[reference('proximityPlacementGroup').outputs.resourceId.value]"
           },
           "imageReference": {
             "value": {
@@ -11607,26 +11609,22 @@
               }
             }
           },
-          "patchMode": {
-            "value": "AutomaticByPlatform"
-          },
-          "bypassPlatformSafetyChecksOnUserSchedule": {
-            "value": true
-          },
-          "maintenanceConfigurationResourceId": {
-            "value": "[reference('maintenanceConfiguration').outputs.resourceId.value]"
-          },
-          "osType": {
-            "value": "Windows"
-          },
-          "encryptionAtHost": {
-            "value": false
-          },
-          "zone": {
-            "value": 2
-          },
-          "proximityPlacementGroupResourceId": {
-            "value": "[reference('proximityPlacementGroup').outputs.resourceId.value]"
+          "nicConfigurations": {
+            "value": [
+              {
+                "name": "[format('nic-{0}', variables('virtualMachineResourceName'))]",
+                "tags": "[parameters('tags')]",
+                "deleteOption": "Delete",
+                "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId)), null())]",
+                "ipConfigurations": [
+                  {
+                    "name": "[format('{0}-nic01-ipconfig01', variables('virtualMachineResourceName'))]",
+                    "subnetResourceId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[1]]",
+                    "diagnosticSettings": "[if(parameters('enableMonitoring'), createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId)), null())]"
+                  }
+                ]
+              }
+            ]
           },
           "extensionAadJoinConfig": {
             "value": {
@@ -23104,22 +23102,21 @@
           "name": {
             "value": "[variables('aiFoundryAiServicesResourceName')]"
           },
+          "location": {
+            "value": "[parameters('azureOpenAILocation')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "projectName": {
             "value": "[variables('aiFoundryAiServicesAiProjectResourceName')]"
           },
           "projectDescription": {
             "value": "AI Foundry Project"
           },
-          "tags": {
-            "value": "[parameters('tags')]"
-          },
-          "location": {
-            "value": "[parameters('azureOpenAILocation')]"
-          },
-          "enableTelemetry": {
-            "value": "[parameters('enableTelemetry')]"
-          },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
           "sku": {
             "value": "S0"
           },
@@ -23147,6 +23144,7 @@
               "systemAssigned": true
             }
           },
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
           "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-{0}', variables('aiFoundryAiServicesResourceName')), 'customNetworkInterfaceName', format('nic-{0}', variables('aiFoundryAiServicesResourceName')), 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[0], 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', map(objectKeys(variables('openAiPrivateDnsZones')), lambda('zone', createObject('name', replace(lambdaVariables('zone'), '.', '-'), 'privateDnsZoneResourceId', resourceId('Microsoft.Network/privateDnsZones', lambdaVariables('zone'))))))))), createObject('value', createArray()))]",
           "deployments": {
@@ -23175,7 +23173,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "18191352968682685886"
+              "templateHash": "14076391354018674466"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -24228,10 +24226,16 @@
               }
             },
             "projectName": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the AI Foundry project to create."
+              }
             },
             "projectDescription": {
-              "type": "string"
+              "type": "string",
+              "metadata": {
+                "description": "Required. The description of the AI Foundry project to create."
+              }
             }
           },
           "variables": {
@@ -24382,6 +24386,7 @@
               "type": "Microsoft.CognitiveServices/accounts/projects",
               "apiVersion": "2025-04-01-preview",
               "name": "[format('{0}/{1}', parameters('name'), parameters('projectName'))]",
+              "tags": "[parameters('tags')]",
               "location": "[parameters('location')]",
               "identity": {
                 "type": "SystemAssigned"
@@ -30183,18 +30188,6 @@
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           },
-          "databaseAccountOfferType": {
-            "value": "Standard"
-          },
-          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
-          "zoneRedundant": "[if(parameters('enableRedundancy'), createObject('value', true()), createObject('value', false()))]",
-          "networkRestrictions": {
-            "value": {
-              "networkAclBypass": "None",
-              "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), 'Disabled', 'Enabled')]"
-            }
-          },
-          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-{0}', variables('cosmosDbResourceName')), 'customNetworkInterfaceName', format('nic-{0}', variables('cosmosDbResourceName')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('privateDnsZonesCosmosDb').outputs.resourceId.value))), 'service', 'Sql', 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]",
           "sqlDatabases": {
             "value": [
               {
@@ -30210,13 +30203,6 @@
                   }
                 ]
               }
-            ]
-          },
-          "automaticFailover": "[if(parameters('enableScalability'), createObject('value', true()), createObject('value', false()))]",
-          "failoverLocations": "[if(parameters('enableScalability'), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', true(), 'locationName', parameters('solutionLocation')), createObject('failoverPriority', 1, 'isZoneRedundant', true(), 'locationName', parameters('failoverLocation')))), createObject('value', createArray(createObject('locationName', parameters('solutionLocation'), 'failoverPriority', 0))))]",
-          "capabilitiesToAdd": {
-            "value": [
-              "EnableServerless"
             ]
           },
           "dataPlaneRoleDefinitions": {
@@ -30235,7 +30221,19 @@
                 ]
               }
             ]
-          }
+          },
+          "diagnosticSettings": "[if(parameters('enableMonitoring'), createObject('value', createArray(createObject('workspaceResourceId', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('avm.res.operational-insights.workspace.{0}', variables('logAnalyticsWorkspaceResourceName')), 64)), '2022-09-01').resourceId))), createObject('value', null()))]",
+          "networkRestrictions": {
+            "value": {
+              "networkAclBypass": "None",
+              "publicNetworkAccess": "[if(parameters('enablePrivateNetworking'), 'Disabled', 'Enabled')]"
+            }
+          },
+          "privateEndpoints": "[if(parameters('enablePrivateNetworking'), createObject('value', createArray(createObject('name', format('pep-{0}', variables('cosmosDbResourceName')), 'customNetworkInterfaceName', format('nic-{0}', variables('cosmosDbResourceName')), 'privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('privateDnsZonesCosmosDb').outputs.resourceId.value))), 'service', 'Sql', 'subnetResourceId', reference('virtualNetwork').outputs.subnetResourceIds.value[0]))), createObject('value', createArray()))]",
+          "zoneRedundant": "[if(parameters('enableRedundancy'), createObject('value', true()), createObject('value', false()))]",
+          "capabilitiesToAdd": "[if(parameters('enableRedundancy'), createObject('value', null()), createObject('value', createArray('EnableServerless')))]",
+          "automaticFailover": "[if(parameters('enableRedundancy'), createObject('value', true()), createObject('value', false()))]",
+          "failoverLocations": "[if(parameters('enableRedundancy'), createObject('value', createArray(createObject('failoverPriority', 0, 'isZoneRedundant', true(), 'locationName', parameters('solutionLocation')), createObject('failoverPriority', 1, 'isZoneRedundant', true(), 'locationName', parameters('failoverLocation')))), createObject('value', createArray(createObject('locationName', parameters('solutionLocation'), 'failoverPriority', 0))))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -36613,7 +36611,7 @@
           "location": {
             "value": "[parameters('solutionLocation')]"
           },
-          "skuName": "[if(parameters('enableScalability'), createObject('value', 'P1v3'), createObject('value', 'B1'))]",
+          "skuName": "[if(parameters('enableScalability'), createObject('value', 'P1v3'), createObject('value', 'B3'))]",
           "skuCapacity": "[if(parameters('enableScalability'), createObject('value', 3), createObject('value', 1))]",
           "reserved": {
             "value": true

@@ -389,12 +389,16 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
     }
   }
 ]
+
+@description('Required. The name of the AI Foundry project to create.')
 param projectName string
+@description('Required. The description of the AI Foundry project to create.')
 param projectDescription string
 
 resource aiFoundryProject 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
   parent: cognitiveService
   name: projectName
+  tags: tags
   location: location
   identity: {
     type: 'SystemAssigned'

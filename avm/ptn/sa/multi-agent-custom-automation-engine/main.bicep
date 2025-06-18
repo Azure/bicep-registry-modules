@@ -14,7 +14,7 @@ param solutionPrefix string = 'macae${uniqueString(deployer().objectId, deployer
 @description('Optional. Location for all Resources except AI Foundry.')
 param solutionLocation string = resourceGroup().location
 
-@description('Optional. Failover Location for applicable resources. This location will apply if `enableScalability` is set to `true`. Check [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) for more information on supported regions.')
+@description('Optional. Failover Location for applicable resources. This location will apply if `enableScalability` is set to `true`. Check [Azure regions list](https://learn.microsoft.com/azure/reliability/regions-list) for more information on supported regions, and [Azure Database for MySQL Flexible Server - Azure Regions](https://learn.microsoft.com/azure/mysql/flexible-server/overview#azure-regions) for supported regions for CosmosDB.')
 param failoverLocation string = ''
 
 // Restricting deployment to only supported Azure OpenAI regions validated with GPT-4o model
@@ -151,21 +151,22 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
 
 // ========== Application Insights ========== //
 // WAF best practices for Application Insights: https://learn.microsoft.com/en-us/azure/well-architected/service-guides/application-insights
-// Application Insights configuration defaults
+// WAF PSRules for  Application Insights: https://azure.github.io/PSRule.Rules.Azure/en/rules/resource/#application-insights
 var applicationInsightsResourceName = 'appi-${solutionPrefix}'
 module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (enableMonitoring) {
   name: take('avm.res.insights.component.${applicationInsightsResourceName}', 64)
   params: {
     name: applicationInsightsResourceName
-    workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    tags: tags
     location: solutionLocation
     enableTelemetry: enableTelemetry
-    tags: tags
     retentionInDays: 365
-    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
     kind: 'web'
     disableIpMasking: false
     flowType: 'Bluefield'
+    // WAF aligned configuration for Monitoring
+    workspaceResourceId: enableMonitoring ? logAnalyticsWorkspace.outputs.resourceId : ''
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
   }
 }
 
@@ -645,35 +646,21 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (e
   name: take('avm.res.compute.virtual-machine.${virtualMachineResourceName}', 64)
   params: {
     name: virtualMachineResourceName
-    computerName: take(virtualMachineResourceName, 15)
     location: solutionLocation
     tags: tags
     enableTelemetry: enableTelemetry
-    enableAutomaticUpdates: true
+    computerName: take(virtualMachineResourceName, 15)
+    osType: 'Windows'
     vmSize: 'Standard_D2s_v3'
     adminUsername: virtualMachineAdminUsername
     adminPassword: virtualMachineAdminPassword
-    nicConfigurations: [
-      {
-        name: 'nic-${virtualMachineResourceName}'
-        //networkSecurityGroupResourceId: virtualMachineConfiguration.?nicConfigurationConfiguration.networkSecurityGroupResourceId
-        //nicSuffix: 'nic-${virtualMachineResourceName}'
-        tags: tags
-        deleteOption: 'Delete'
-        diagnosticSettings: enableMonitoring
-          ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-          : null
-        ipConfigurations: [
-          {
-            name: '${virtualMachineResourceName}-nic01-ipconfig01'
-            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
-            diagnosticSettings: enableMonitoring
-              ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
-              : null
-          }
-        ]
-      }
-    ]
+    patchMode: 'AutomaticByPlatform'
+    bypassPlatformSafetyChecksOnUserSchedule: true
+    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
+    enableAutomaticUpdates: true
+    encryptionAtHost: false
+    zone: 2
+    proximityPlacementGroupResourceId: proximityPlacementGroup.outputs.resourceId
     imageReference: {
       publisher: 'microsoft-dsvm'
       offer: 'dsvm-win-2022'
@@ -688,13 +675,27 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (e
       diskSizeGB: 128
       managedDisk: { storageAccountType: 'Premium_LRS' }
     }
-    patchMode: 'AutomaticByPlatform'
-    bypassPlatformSafetyChecksOnUserSchedule: true
-    maintenanceConfigurationResourceId: maintenanceConfiguration.outputs.resourceId
-    osType: 'Windows'
-    encryptionAtHost: false //The property 'securityProfile.encryptionAtHost' is not valid because the 'Microsoft.Compute/EncryptionAtHost' feature is not enabled for this subscription.
-    zone: 2
-    proximityPlacementGroupResourceId: proximityPlacementGroup.outputs.resourceId
+    nicConfigurations: [
+      {
+        name: 'nic-${virtualMachineResourceName}'
+        //networkSecurityGroupResourceId: virtualMachineConfiguration.?nicConfigurationConfiguration.networkSecurityGroupResourceId
+        //nicSuffix: 'nic-${virtualMachineResourceName}'
+        tags: tags
+        deleteOption: 'Delete'
+        diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
+          ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+          : null
+        ipConfigurations: [
+          {
+            name: '${virtualMachineResourceName}-nic01-ipconfig01'
+            subnetResourceId: virtualNetwork.outputs.subnetResourceIds[1]
+            diagnosticSettings: enableMonitoring //WAF aligned configuration for Monitoring
+              ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+              : null
+          }
+        ]
+      }
+    ]
     extensionAadJoinConfig: {
       enabled: true
       tags: tags
@@ -715,6 +716,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = if (e
       }
       tags: tags
     }
+    //WAF aligned configuration for Monitoring
     extensionMonitoringAgentConfig: enableMonitoring
       ? {
           dataCollectionRuleAssociations: [
@@ -783,15 +785,14 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
   name: take('avm.res.cognitive-services.account.${aiFoundryAiServicesResourceName}', 64)
   params: {
     name: aiFoundryAiServicesResourceName
+    location: azureOpenAILocation
+    tags: tags
+    enableTelemetry: enableTelemetry
     projectName: aiFoundryAiServicesAiProjectResourceName
     projectDescription: 'AI Foundry Project'
-    tags: tags
-    location: azureOpenAILocation
-    enableTelemetry: enableTelemetry
-    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
     sku: 'S0'
     kind: 'AIServices'
-    disableLocalAuth: true //Should be set to true for WAF aligned configuration
+    disableLocalAuth: true
     customSubDomainName: aiFoundryAiServicesResourceName
     apiProperties: {
       //staticsEnabled: false
@@ -802,9 +803,9 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
       ipRules: []
     }
     managedIdentities: { systemAssigned: true }
-    //networkInjectionSubnetResourceId: enablePrivateNetworking ? virtualNetwork.?outputs.?subnetResourceIds[3] : null //This is the subnet for the AI Foundry Agents
+    // WAF aligned configuration for Monitoring
+    diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
     publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
-    //publicNetworkAccess: 'Enabled' //TODO: connection via private endpoint is not working from containers network. Change this when fixed
     privateEndpoints: enablePrivateNetworking
       ? ([
           {
@@ -943,9 +944,36 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
     location: solutionLocation
     tags: tags
     enableTelemetry: enableTelemetry
-    databaseAccountOfferType: 'Standard'
+    sqlDatabases: [
+      {
+        name: cosmosDbDatabaseName
+        containers: [
+          {
+            name: cosmosDbDatabaseMemoryContainerName
+            paths: [
+              '/session_id'
+            ]
+            kind: 'Hash'
+            version: 2
+          }
+        ]
+      }
+    ]
+    dataPlaneRoleDefinitions: [
+      {
+        // Cosmos DB Built-in Data Contributor: https://docs.azure.cn/en-us/cosmos-db/nosql/security/reference-data-plane-roles#cosmos-db-built-in-data-contributor
+        roleName: 'Cosmos DB SQL Data Contributor'
+        dataActions: [
+          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
+          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
+        ]
+        assignments: [{ principalId: containerApp.outputs.systemAssignedMIPrincipalId! }]
+      }
+    ]
+    // WAF aligned configuration for Monitoring
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
-    zoneRedundant: enableRedundancy ? true : false
+    // WAF aligned configuration for Private Networking
     networkRestrictions: {
       networkAclBypass: 'None'
       publicNetworkAccess: enablePrivateNetworking ? 'Disabled' : 'Enabled'
@@ -963,23 +991,11 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
           }
         ]
       : []
-    sqlDatabases: [
-      {
-        name: cosmosDbDatabaseName
-        containers: [
-          {
-            name: cosmosDbDatabaseMemoryContainerName
-            paths: [
-              '/session_id'
-            ]
-            kind: 'Hash'
-            version: 2
-          }
-        ]
-      }
-    ]
-    automaticFailover: enableScalability ? true : false
-    failoverLocations: enableScalability
+    // WAF aligned configuration for Redundancy
+    zoneRedundant: enableRedundancy ? true : false
+    capabilitiesToAdd: enableRedundancy ? null : ['EnableServerless']
+    automaticFailover: enableRedundancy ? true : false
+    failoverLocations: enableRedundancy
       ? [
           {
             failoverPriority: 0
@@ -998,26 +1014,6 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
             failoverPriority: 0
           }
         ]
-    capabilitiesToAdd: [
-      'EnableServerless'
-    ]
-    dataPlaneRoleDefinitions: [
-      {
-        // Replace this with built-in role definition Cosmos DB Built-in Data Contributor: https://docs.azure.cn/en-us/cosmos-db/nosql/security/reference-data-plane-roles#cosmos-db-built-in-data-contributor
-        roleName: 'Cosmos DB SQL Data Contributor'
-        //name: 'cosmos-db-sql-data-contributor'
-        dataActions: [
-          'Microsoft.DocumentDB/databaseAccounts/readMetadata'
-          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*'
-          'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*'
-        ]
-        assignments: [
-          {
-            principalId: containerApp.outputs.systemAssignedMIPrincipalId!
-          }
-        ]
-      }
-    ]
   }
 }
 
@@ -1186,7 +1182,7 @@ module webServerFarm 'br/public:avm/res/web/serverfarm:0.4.1' = {
     name: webServerFarmResourceName
     tags: tags
     location: solutionLocation
-    skuName: enableScalability ? 'P1v3' : 'B1'
+    skuName: enableScalability ? 'P1v3' : 'B3'
     skuCapacity: enableScalability ? 3 : 1
     reserved: true
     diagnosticSettings: enableMonitoring ? [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }] : null
