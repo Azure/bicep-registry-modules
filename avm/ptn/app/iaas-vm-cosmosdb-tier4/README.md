@@ -208,6 +208,7 @@ param tags = {
 | :-- | :-- | :-- |
 | [`adminUsername`](#parameter-adminusername) | string | Admin username for the virtual machine. |
 | [`applicationNsgRules`](#parameter-applicationnsgrules) | array | Network security group rules for the application subnet. |
+| [`encryptionAtHost`](#parameter-encryptionathost) | bool | Enables encryption at host for the virtual machine. |
 | [`sshPublicKey`](#parameter-sshpublickey) | securestring | SSH public key for the virtual machine. If empty, a new SSH key will be generated. |
 | [`vmNsgRules`](#parameter-vmnsgrules) | array | Network security group rules for the VM. |
 
@@ -300,6 +301,14 @@ Network security group rules for the application subnet.
     }
   ]
   ```
+
+### Parameter: `encryptionAtHost`
+
+Enables encryption at host for the virtual machine.
+
+- Required: No
+- Type: bool
+- Default: `True`
 
 ### Parameter: `sshPublicKey`
 
