@@ -564,15 +564,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
           {
             name: 'ipconfig1'
             subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
-            loadBalancerBackendAddressPools: [
-              {
-                id: resourceId(
-                  'Microsoft.Network/loadBalancers/backendAddressPools',
-                  'lb-${name}',
-                  '${name}-lb-backendpool01'
-                )
-              }
-            ]
           }
         ]
         networkSecurityGroupResourceId: vmNetworkSecurityGroup.outputs.resourceId
@@ -583,9 +574,6 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     bootDiagnosticStorageAccountName: storageAccount.outputs.name
     enableTelemetry: enableTelemetry
   }
-  dependsOn: [
-    loadBalancer
-  ]
 }
 
 // Recovery Services Vault
@@ -711,9 +699,6 @@ output cosmosDbResourceId string = cosmosdbAccount.outputs.resourceId
 
 @description('Resource. The resource ID of the virtual network.')
 output virtualNetworkResourceId string = virtualNetwork.outputs.resourceId
-
-@description('Resource. The resource ID of the load balancer.')
-output loadBalancerResourceId string = loadBalancer.outputs.resourceId
 
 @description('Resource. The resource ID.')
 output resourceId string = virtualMachine.outputs.resourceId
