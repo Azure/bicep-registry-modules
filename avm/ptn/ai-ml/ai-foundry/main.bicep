@@ -233,13 +233,13 @@ module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType
 
 // Add the new FDP cognitive services module
 module project 'modules/aifoundryproject.bicep' = {
-  name: '${name}prj'
+  name: take('${name}-project-deployment', 64)
   params: {
     aiFoundryType: aiFoundryType
     cosmosDBName: toLower(aiFoundryType) != 'basic' ? cosmosDb.outputs.cosmosDBname : ''
     name: projectName
     location: location
-    storageName: storageAccount.outputs.storageName
+    storageName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.storageName : ''
     aiServicesName: cognitiveServices.outputs.aiServicesName
     nameFormatted: toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
   }
@@ -353,7 +353,7 @@ output azureVmUsername string = servicesUsername
 output azureContainerRegistryName string = toLower(aiFoundryType) != 'basic' ? containerRegistry.outputs.name : ''
 
 @description('Name of the deployed Azure Storage Account.')
-output azureStorageAccountName string = storageAccount.outputs.storageName
+output azureStorageAccountName string = toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.storageName : ''
 
 @description('Name of the deployed Azure Virtual Network.')
 output azureVirtualNetworkName string = networkIsolation ? network.outputs.virtualNetworkName : ''

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "18325622109191362559"
+      "templateHash": "6603965676484362578"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -38519,7 +38519,7 @@
     "project": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}prj', parameters('name'))]",
+      "name": "[take(format('{0}-project-deployment', parameters('name')), 64)]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -38536,9 +38536,7 @@
           "location": {
             "value": "[parameters('location')]"
           },
-          "storageName": {
-            "value": "[reference('storageAccount').outputs.storageName.value]"
-          },
+          "storageName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.storageName.value), createObject('value', ''))]",
           "aiServicesName": {
             "value": "[reference('cognitiveServices').outputs.aiServicesName.value]"
           },
@@ -38551,7 +38549,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "11007488021210390481"
+              "templateHash": "2238040042216208650"
             }
           },
           "parameters": {
@@ -38635,7 +38633,7 @@
               }
             },
             {
-              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
@@ -38656,7 +38654,7 @@
               ]
             },
             {
-              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('nameFormatted'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
@@ -38676,7 +38674,7 @@
               ]
             },
             {
-              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('cosmosDBName'))))]",
               "type": "Microsoft.CognitiveServices/accounts/projects/connections",
               "apiVersion": "2025-04-01-preview",
               "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]",
@@ -52286,7 +52284,7 @@
       "metadata": {
         "description": "Name of the deployed Azure Storage Account."
       },
-      "value": "[reference('storageAccount').outputs.storageName.value]"
+      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('storageAccount').outputs.storageName.value, '')]"
     },
     "azureVirtualNetworkName": {
       "type": "string",
