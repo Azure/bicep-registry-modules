@@ -408,7 +408,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
         networkSecurityGroupResourceId: bootDiagnosticsNsg.outputs.resourceId
       }
       {
-        name: subnets[3].name
+        name: 'AzureBastionSubnet'
         addressPrefix: subnets[3].addressPrefix
         networkSecurityGroupResourceId: bastionNsg.outputs.resourceId
       }
@@ -583,7 +583,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
             subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
             loadBalancerBackendAddressPools: [
               {
-                id: loadBalancer.outputs.backendpools[0].id
+                id: resourceId(
+                  'Microsoft.Network/loadBalancers/backendAddressPools',
+                  'lb-${name}',
+                  '${name}-lb-backendpool01'
+                )
               }
             ]
           }
@@ -596,6 +600,9 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     bootDiagnosticStorageAccountName: storageAccount.outputs.name
     enableTelemetry: enableTelemetry
   }
+  dependsOn: [
+    loadBalancer
+  ]
 }
 
 // Recovery Services Vault

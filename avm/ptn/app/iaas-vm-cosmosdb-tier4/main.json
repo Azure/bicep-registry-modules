@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "10431124799840104111"
+      "version": "0.36.1.42791",
+      "templateHash": "11252458248723114049"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -3752,7 +3752,7 @@
                 "networkSecurityGroupResourceId": "[reference('bootDiagnosticsNsg').outputs.resourceId.value]"
               },
               {
-                "name": "[parameters('subnets')[3].name]",
+                "name": "AzureBastionSubnet",
                 "addressPrefix": "[parameters('subnets')[3].addressPrefix]",
                 "networkSecurityGroupResourceId": "[reference('bastionNsg').outputs.resourceId.value]"
               }
@@ -12223,7 +12223,7 @@
                     "subnetResourceId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]",
                     "loadBalancerBackendAddressPools": [
                       {
-                        "id": "[reference('loadBalancer').outputs.backendpools.value[0].id]"
+                        "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', format('lb-{0}', parameters('name')), format('{0}-lb-backendpool01', parameters('name')))]"
                       }
                     ]
                   }

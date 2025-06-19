@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "4132471676583162272"
+      "version": "0.36.1.42791",
+      "templateHash": "17555726308823415392"
     },
     "name": "Using only defaults",
     "description": "This instance deploys the module with the minimum set of required parameters."
@@ -94,8 +94,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "14789654106818106496"
+              "version": "0.36.1.42791",
+              "templateHash": "11252458248723114049"
             },
             "name": "IaaS VM with CosmosDB Tier 4",
             "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -249,24 +249,6 @@
               "defaultValue": "",
               "metadata": {
                 "description": "Security. SSH public key for the virtual machine. If empty, a new SSH key will be generated."
-              }
-            },
-            "adminPassword": {
-              "type": "securestring",
-              "nullable": true,
-              "metadata": {
-                "description": "Security. Admin password for the virtual machine. Required when authentication type is password."
-              }
-            },
-            "authenticationType": {
-              "type": "string",
-              "defaultValue": "sshPublicKey",
-              "allowedValues": [
-                "sshPublicKey",
-                "password"
-              ],
-              "metadata": {
-                "description": "Type of authentication to use on the Virtual Machine. SSH key is recommended."
               }
             },
             "storageAccountSku": {
@@ -3859,7 +3841,7 @@
                         "networkSecurityGroupResourceId": "[reference('bootDiagnosticsNsg').outputs.resourceId.value]"
                       },
                       {
-                        "name": "[parameters('subnets')[3].name]",
+                        "name": "AzureBastionSubnet",
                         "addressPrefix": "[parameters('subnets')[3].addressPrefix]",
                         "networkSecurityGroupResourceId": "[reference('bastionNsg').outputs.resourceId.value]"
                       }
@@ -12290,9 +12272,17 @@
                   "adminUsername": {
                     "value": "[parameters('adminUsername')]"
                   },
-                  "adminPassword": "[if(equals(parameters('authenticationType'), 'password'), createObject('value', parameters('adminPassword')), createObject('value', null()))]",
-                  "disablePasswordAuthentication": "[if(equals(parameters('authenticationType'), 'password'), createObject('value', false()), createObject('value', true()))]",
-                  "publicKeys": "[if(equals(parameters('authenticationType'), 'sshPublicKey'), createObject('value', createArray(createObject('keyData', if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshKeyResource').publicKey), 'path', format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))))), createObject('value', createArray()))]",
+                  "disablePasswordAuthentication": {
+                    "value": true
+                  },
+                  "publicKeys": {
+                    "value": [
+                      {
+                        "keyData": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshKeyResource').publicKey)]",
+                        "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]"
+                      }
+                    ]
+                  },
                   "imageReference": {
                     "value": {
                       "publisher": "canonical",
@@ -12322,7 +12312,7 @@
                             "subnetResourceId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]",
                             "loadBalancerBackendAddressPools": [
                               {
-                                "id": "[reference('loadBalancer').outputs.backendpools.value[0].id]"
+                                "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', format('lb-{0}', parameters('name')), format('{0}-lb-backendpool01', parameters('name')))]"
                               }
                             ]
                           }
