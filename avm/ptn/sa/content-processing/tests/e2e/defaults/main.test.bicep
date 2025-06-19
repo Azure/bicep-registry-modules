@@ -44,11 +44,11 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, resourceGroupLocation)}-test-${serviceShort}-${iteration}'
     params: {
       // You parameters go here
       //name: '${namePrefix}${serviceShort}001'
-      location: resourceGroupLocation
+      // location: resourceGroupLocation
       contentUnderstandingLocation: resourceGroupLocation
       environmentName: 'test-env'
       gptDeploymentCapacity: 80

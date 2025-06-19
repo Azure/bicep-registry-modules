@@ -48,7 +48,7 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // You parameters go here
       //name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
+      //location: resourceLocation
       contentUnderstandingLocation: resourceLocation
       environmentName: 'test-env'
       gptDeploymentCapacity: 80
