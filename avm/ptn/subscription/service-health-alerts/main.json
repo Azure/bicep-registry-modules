@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3332219865372545498"
+      "templateHash": "16070059164094822035"
     },
     "name": "Azure Service Health Alerts",
     "description": "This module deploys Azure Service Health Alerts to notify you of service issues, planned maintenance, and health advisories that may affect your Azure services."
@@ -2264,9 +2264,7 @@
       },
       "copy": {
         "count": "[length(parameters('serviceHealthAlerts'))]",
-        "input": {
-          "actionGroupResourceId": "[reference(format('createActionGroups[{0}]', copyIndex())).outputs.resourceId.value]"
-        }
+        "input": "[if(not(empty(tryGet(parameters('serviceHealthAlerts')[copyIndex()], 'actionGroup'))), createObject('actionGroupResourceId', reference(format('createActionGroups[{0}]', copyIndex())).outputs.resourceId.value), null())]"
       }
     }
   }
