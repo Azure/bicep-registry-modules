@@ -72,10 +72,11 @@ module avmApplicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
     workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId
     kind: kind
     applicationType: applicationType
-    disableIpMasking: disableIpMasking
-    disableLocalAuth: disableLocalAuth
+    //disableIpMasking: disableIpMasking
+    //disableLocalAuth: disableLocalAuth
     flowType: flowType
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
+    diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
     requestSource: requestSource
     tags: tags
     enableTelemetry: enableTelemetry

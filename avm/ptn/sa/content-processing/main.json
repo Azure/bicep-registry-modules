@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12905994169470183774"
+      "templateHash": "7411746591611812119"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -27046,7 +27046,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "15235003033085559724"
+              "templateHash": "3859720051952976461"
             },
             "name": "AVM Application Insights and Log Analytics Workspace Module"
           },
@@ -30219,17 +30219,18 @@
                   "applicationType": {
                     "value": "[parameters('applicationType')]"
                   },
-                  "disableIpMasking": {
-                    "value": "[parameters('disableIpMasking')]"
-                  },
-                  "disableLocalAuth": {
-                    "value": "[parameters('disableLocalAuth')]"
-                  },
                   "flowType": {
                     "value": "[parameters('flowType')]"
                   },
                   "publicNetworkAccessForQuery": {
                     "value": "[parameters('publicNetworkAccessForQuery')]"
+                  },
+                  "diagnosticSettings": {
+                    "value": [
+                      {
+                        "workspaceResourceId": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', 'deploy_log_analytics_workspace'), '2022-09-01').resourceId]"
+                      }
+                    ]
                   },
                   "requestSource": {
                     "value": "[parameters('requestSource')]"
