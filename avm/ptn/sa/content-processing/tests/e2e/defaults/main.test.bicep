@@ -51,7 +51,8 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceGroupLocation)}-test-${serviceShort}-${iteration}'
     params: {
       // You parameters go here
-      environmentName: 'test-${environmentTimestamp}-${iteration}'
+      //environmentName: 'test-${environmentTimestamp}-${iteration}'
+      environmentName: '${namePrefix}${serviceShort}'
       // location: resourceGroupLocation
       contentUnderstandingLocation: resourceGroupLocation
       gptDeploymentCapacity: 80
