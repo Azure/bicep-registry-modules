@@ -241,13 +241,6 @@ param subscriptionId = '<subscriptionId>'
 
 ## Parameters
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`serviceHealthAlerts`](#parameter-servicehealthalerts) | array | The list of service health alerts to create. If empty or not provided, all service health alerts will be created. |
-| [`subscriptionId`](#parameter-subscriptionid) | string | The subscription Id to deploy service health alerts for. |
-
 **Optional parameters**
 
 | Parameter | Type | Description |
@@ -255,8 +248,62 @@ param subscriptionId = '<subscriptionId>'
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
+| [`serviceHealthAlerts`](#parameter-servicehealthalerts) | array | The list of service health alerts to create. If empty or not provided, all service health alerts will be created. |
 | [`serviceHealthAlertsResourceGroupName`](#parameter-servicehealthalertsresourcegroupname) | string | The name of the resource group to deploy service health alerts into. |
+| [`subscriptionId`](#parameter-subscriptionid) | string | The subscription Id to deploy service health alerts for. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `location`
+
+Location for all Resources.
+
+- Required: No
+- Type: string
+- Default: `[deployment().location]`
+
+### Parameter: `lock`
+
+The lock settings of the service.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
 
 ### Parameter: `serviceHealthAlerts`
 
@@ -411,6 +458,8 @@ The list of automation runbook receivers for the action group.
 | [`automationAccountId`](#parameter-servicehealthalertsactiongroupautomationrunbookreceiversautomationaccountid) | string | The resource Id of the automation runbook account. |
 | [`isGlobalRunbook`](#parameter-servicehealthalertsactiongroupautomationrunbookreceiversisglobalrunbook) | bool | Flag to indicate if the runbook is global. |
 | [`runbookName`](#parameter-servicehealthalertsactiongroupautomationrunbookreceiversrunbookname) | string | The name of the runbook. |
+| [`serviceUri`](#parameter-servicehealthalertsactiongroupautomationrunbookreceiversserviceuri) | string | The URI where webhooks should be sent. |
+| [`webhookResourceId`](#parameter-servicehealthalertsactiongroupautomationrunbookreceiverswebhookresourceid) | string | The resource Id of the webhook. |
 
 **Optional parameters**
 
@@ -418,9 +467,7 @@ The list of automation runbook receivers for the action group.
 | :-- | :-- | :-- |
 | [`managedIdentity`](#parameter-servicehealthalertsactiongroupautomationrunbookreceiversmanagedidentity) | string | The principal id of the managed identity. |
 | [`name`](#parameter-servicehealthalertsactiongroupautomationrunbookreceiversname) | string | The name of the webhook. |
-| [`serviceUri`](#parameter-servicehealthalertsactiongroupautomationrunbookreceiversserviceuri) | string | The URI where webhooks should be sent. |
 | [`useCommonAlertSchema`](#parameter-servicehealthalertsactiongroupautomationrunbookreceiversusecommonalertschema) | bool | Flag to use common alert schema. |
-| [`webhookResourceId`](#parameter-servicehealthalertsactiongroupautomationrunbookreceiverswebhookresourceid) | string | The resource Id of the webhook. |
 
 ### Parameter: `serviceHealthAlerts.actionGroup.automationRunbookReceivers.automationAccountId`
 
@@ -439,6 +486,20 @@ Flag to indicate if the runbook is global.
 ### Parameter: `serviceHealthAlerts.actionGroup.automationRunbookReceivers.runbookName`
 
 The name of the runbook.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `serviceHealthAlerts.actionGroup.automationRunbookReceivers.serviceUri`
+
+The URI where webhooks should be sent.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `serviceHealthAlerts.actionGroup.automationRunbookReceivers.webhookResourceId`
+
+The resource Id of the webhook.
 
 - Required: Yes
 - Type: string
@@ -464,26 +525,12 @@ The name of the webhook.
 - Required: No
 - Type: string
 
-### Parameter: `serviceHealthAlerts.actionGroup.automationRunbookReceivers.serviceUri`
-
-The URI where webhooks should be sent.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `serviceHealthAlerts.actionGroup.automationRunbookReceivers.useCommonAlertSchema`
 
 Flag to use common alert schema.
 
 - Required: No
 - Type: bool
-
-### Parameter: `serviceHealthAlerts.actionGroup.automationRunbookReceivers.webhookResourceId`
-
-The resource Id of the webhook.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `serviceHealthAlerts.actionGroup.azureAppPushReceivers`
 
@@ -532,13 +579,13 @@ The list of Azure function receivers for the action group.
 | [`functionAppResourceId`](#parameter-servicehealthalertsactiongroupazurefunctionreceiversfunctionappresourceid) | string | TThe resource Id of the function App. |
 | [`functionName`](#parameter-servicehealthalertsactiongroupazurefunctionreceiversfunctionname) | string | The name of the Azure function in the function App. |
 | [`httpTriggerUrl`](#parameter-servicehealthalertsactiongroupazurefunctionreceivershttptriggerurl) | string | The http trigger url where http request sent to. |
+| [`name`](#parameter-servicehealthalertsactiongroupazurefunctionreceiversname) | string | The name of the Azure function receiver. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`managedIdentity`](#parameter-servicehealthalertsactiongroupazurefunctionreceiversmanagedidentity) | string | The principal id of the managed identity. |
-| [`name`](#parameter-servicehealthalertsactiongroupazurefunctionreceiversname) | string | The name of the Azure function receiver. |
 | [`useCommonAlertSchema`](#parameter-servicehealthalertsactiongroupazurefunctionreceiversusecommonalertschema) | bool | Flag to use common alert schema. |
 
 ### Parameter: `serviceHealthAlerts.actionGroup.azureFunctionReceivers.functionAppResourceId`
@@ -562,6 +609,13 @@ The http trigger url where http request sent to.
 - Required: Yes
 - Type: string
 
+### Parameter: `serviceHealthAlerts.actionGroup.azureFunctionReceivers.name`
+
+The name of the Azure function receiver.
+
+- Required: Yes
+- Type: string
+
 ### Parameter: `serviceHealthAlerts.actionGroup.azureFunctionReceivers.managedIdentity`
 
 The principal id of the managed identity.
@@ -575,13 +629,6 @@ The principal id of the managed identity.
     'SystemAssigned'
   ]
   ```
-
-### Parameter: `serviceHealthAlerts.actionGroup.azureFunctionReceivers.name`
-
-The name of the Azure function receiver.
-
-- Required: Yes
-- Type: string
 
 ### Parameter: `serviceHealthAlerts.actionGroup.azureFunctionReceivers.useCommonAlertSchema`
 
@@ -708,7 +755,7 @@ The principal id of the managed identity
 
 Flag to use common alert schema.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `serviceHealthAlerts.actionGroup.groupShortName`
@@ -907,7 +954,7 @@ The principal id of the managed identity.
 
 Flag to use common alert schema.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `serviceHealthAlerts.actionGroup.smsReceivers`
@@ -963,13 +1010,8 @@ The list of voice receivers for the action group.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`countryCode`](#parameter-servicehealthalertsactiongroupvoicereceiverscountrycode) | string | The country code of the voice receiver. |
-| [`phoneNumber`](#parameter-servicehealthalertsactiongroupvoicereceiversphonenumber) | string | The phone number of the voice receiver. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`name`](#parameter-servicehealthalertsactiongroupvoicereceiversname) | string | The name of the voice receiver. |
+| [`phoneNumber`](#parameter-servicehealthalertsactiongroupvoicereceiversphonenumber) | string | The phone number of the voice receiver. |
 
 ### Parameter: `serviceHealthAlerts.actionGroup.voiceReceivers.countryCode`
 
@@ -978,16 +1020,16 @@ The country code of the voice receiver.
 - Required: Yes
 - Type: string
 
-### Parameter: `serviceHealthAlerts.actionGroup.voiceReceivers.phoneNumber`
+### Parameter: `serviceHealthAlerts.actionGroup.voiceReceivers.name`
 
-The phone number of the voice receiver.
+The name of the voice receiver.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `serviceHealthAlerts.actionGroup.voiceReceivers.name`
+### Parameter: `serviceHealthAlerts.actionGroup.voiceReceivers.phoneNumber`
 
-The name of the voice receiver.
+The phone number of the voice receiver.
 
 - Required: Yes
 - Type: string
@@ -1004,7 +1046,6 @@ The list of webhook receivers for the action group.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`name`](#parameter-servicehealthalertsactiongroupwebhookreceiversname) | string | The name of the webhook receiver. |
-| [`objectId`](#parameter-servicehealthalertsactiongroupwebhookreceiversobjectid) | string | The webhook app object Id for aad auth. |
 | [`serviceUri`](#parameter-servicehealthalertsactiongroupwebhookreceiversserviceuri) | string | The URI where webhooks should be sent. |
 
 **Optional parameters**
@@ -1013,6 +1054,7 @@ The list of webhook receivers for the action group.
 | :-- | :-- | :-- |
 | [`identifierUri`](#parameter-servicehealthalertsactiongroupwebhookreceiversidentifieruri) | string | The identifier uri for aad auth. |
 | [`managedIdentity`](#parameter-servicehealthalertsactiongroupwebhookreceiversmanagedidentity) | string | The principal id of the managed identity. |
+| [`objectId`](#parameter-servicehealthalertsactiongroupwebhookreceiversobjectid) | string | The webhook app object Id for aad auth. |
 | [`tenantId`](#parameter-servicehealthalertsactiongroupwebhookreceiverstenantid) | string | The tenant Id. |
 | [`useAadAuth`](#parameter-servicehealthalertsactiongroupwebhookreceiversuseaadauth) | bool | Flag to use Entra ID autentication. |
 | [`useCommonAlertSchema`](#parameter-servicehealthalertsactiongroupwebhookreceiversusecommonalertschema) | bool | Flag to use common alert schema. |
@@ -1022,13 +1064,6 @@ The list of webhook receivers for the action group.
 The name of the webhook receiver.
 
 - Required: Yes
-- Type: string
-
-### Parameter: `serviceHealthAlerts.actionGroup.webhookReceivers.objectId`
-
-The webhook app object Id for aad auth.
-
-- Required: No
 - Type: string
 
 ### Parameter: `serviceHealthAlerts.actionGroup.webhookReceivers.serviceUri`
@@ -1059,6 +1094,13 @@ The principal id of the managed identity.
   ]
   ```
 
+### Parameter: `serviceHealthAlerts.actionGroup.webhookReceivers.objectId`
+
+The webhook app object Id for aad auth.
+
+- Required: No
+- Type: string
+
 ### Parameter: `serviceHealthAlerts.actionGroup.webhookReceivers.tenantId`
 
 The tenant Id.
@@ -1077,7 +1119,7 @@ Flag to use Entra ID autentication.
 
 Flag to use common alert schema.
 
-- Required: Yes
+- Required: No
 - Type: bool
 
 ### Parameter: `serviceHealthAlerts.alertDescription`
@@ -1118,66 +1160,6 @@ The service health alerts to enable.
   ]
   ```
 
-### Parameter: `subscriptionId`
-
-The subscription Id to deploy service health alerts for.
-
-- Required: No
-- Type: string
-- Default: `[subscription().subscriptionId]`
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `location`
-
-Location for all Resources.
-
-- Required: No
-- Type: string
-- Default: `[deployment().location]`
-
-### Parameter: `lock`
-
-The lock settings of the service.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-lockname) | string | Specify the name of lock. |
-
-### Parameter: `lock.kind`
-
-Specify the type of lock.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CanNotDelete'
-    'None'
-    'ReadOnly'
-  ]
-  ```
-
-### Parameter: `lock.name`
-
-Specify the name of lock.
-
-- Required: No
-- Type: string
-
 ### Parameter: `serviceHealthAlertsResourceGroupName`
 
 The name of the resource group to deploy service health alerts into.
@@ -1185,6 +1167,14 @@ The name of the resource group to deploy service health alerts into.
 - Required: No
 - Type: string
 - Default: `[format('rg-asha-{0}', parameters('subscriptionId'))]`
+
+### Parameter: `subscriptionId`
+
+The subscription Id to deploy service health alerts for.
+
+- Required: No
+- Type: string
+- Default: `[subscription().subscriptionId]`
 
 ### Parameter: `tags`
 

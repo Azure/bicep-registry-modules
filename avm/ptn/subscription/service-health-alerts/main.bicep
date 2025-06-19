@@ -16,7 +16,7 @@ param lock lockType?
 @description('Optional. The name of the resource group to deploy service health alerts into.')
 param serviceHealthAlertsResourceGroupName string = 'rg-asha-${subscriptionId}'
 
-@description('Required. The list of service health alerts to create. If empty or not provided, all service health alerts will be created.')
+@description('Optional. The list of service health alerts to create. If empty or not provided, all service health alerts will be created.')
 param serviceHealthAlerts serviceHealthAlertType[] = [
   {
     serviceHealthAlert: 'Resource Health Unhealthy'
@@ -50,7 +50,7 @@ param serviceHealthAlerts serviceHealthAlertType[] = [
   }
 ]
 
-@description('Required. The subscription Id to deploy service health alerts for.')
+@description('Optional. The subscription Id to deploy service health alerts for.')
 param subscriptionId string = subscription().subscriptionId
 
 @description('Optional. Enable/Disable usage telemetry for module.')
@@ -327,7 +327,7 @@ type actionGroupType = {
   automationRunbookReceivers: automationRunbookReceiversType[]?
 
   @description('Optional. The list of voice receivers for the action group.')
-  voiceReceivers: VoiceReceiverType[]?
+  voiceReceivers: voiceReceiverType[]?
 
   @description('Optional. The list of logic app receivers for the action group.')
   logicAppReceivers: logicAppReceiversType[]?
@@ -391,13 +391,13 @@ type automationRunbookReceiversType = {
   @description('Required. The name of the runbook.')
   runbookName: string
 
-  @description('Optional. The URI where webhooks should be sent.')
+  @description('Required. The URI where webhooks should be sent.')
   serviceUri: string
 
   @description('Optional. Flag to use common alert schema.')
   useCommonAlertSchema: bool?
 
-  @description('Optional. The resource Id of the webhook.')
+  @description('Required. The resource Id of the webhook.')
   webhookResourceId: string
 }
 
@@ -422,7 +422,7 @@ type eventHubReceiversType = {
   @description('Required. The tenant Id for the subscription containing this event hub')
   tenantId: string
   @description('Optional. Flag to use common alert schema.')
-  useCommonAlertSchema: bool
+  useCommonAlertSchema: bool?
 }
 
 type itsmReceiversType = {
@@ -448,7 +448,7 @@ type logicAppReceiversType = {
   @description('Required. The resource Id of the logic app.')
   resourceId: string
   @description('Optional. Flag to use common alert schema.')
-  useCommonAlertSchema: bool
+  useCommonAlertSchema: bool?
 }
 
 type smsReceiversType = {
@@ -460,12 +460,12 @@ type smsReceiversType = {
   name: string
 }
 
-type VoiceReceiverType = {
+type voiceReceiverType = {
   @description('Required. The country code of the voice receiver.')
   countryCode: string
   @description('Required. The phone number of the voice receiver.')
   phoneNumber: string
-  @description('Optional. The name of the voice receiver.')
+  @description('Required. The name of the voice receiver.')
   name: string
 }
 
@@ -477,8 +477,8 @@ type webhookReceiversType = {
   @description('Required. The name of the webhook receiver.')
   name: string
   @description('Optional. Flag to use common alert schema.')
-  useCommonAlertSchema: bool
-  @description('Required. The webhook app object Id for aad auth.')
+  useCommonAlertSchema: bool?
+  @description('Optional. The webhook app object Id for aad auth.')
   objectId: string?
   @description('Required. The URI where webhooks should be sent.')
   serviceUri: string
@@ -508,6 +508,6 @@ type azureFunctionReceiversType = {
   useCommonAlertSchema: bool?
   @description('Required. The http trigger url where http request sent to.')
   httpTriggerUrl: string
-  @description('Optional. The name of the Azure function receiver.')
+  @description('Required. The name of the Azure function receiver.')
   name: string
 }

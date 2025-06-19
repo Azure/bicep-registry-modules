@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10095448742088327267"
+      "templateHash": "7939174640975775765"
     },
     "name": "Azure Service Health Alerts",
     "description": "This module deploys Azure Service Health Alerts to notify you of service issues, planned maintenance, and health advisories that may affect your Azure services."
@@ -154,7 +154,7 @@
         "voiceReceivers": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/VoiceReceiverType"
+            "$ref": "#/definitions/voiceReceiverType"
           },
           "nullable": true,
           "metadata": {
@@ -318,7 +318,7 @@
         "serviceUri": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The URI where webhooks should be sent."
+            "description": "Required. The URI where webhooks should be sent."
           }
         },
         "useCommonAlertSchema": {
@@ -331,7 +331,7 @@
         "webhookResourceId": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The resource Id of the webhook."
+            "description": "Required. The resource Id of the webhook."
           }
         }
       }
@@ -399,6 +399,7 @@
         },
         "useCommonAlertSchema": {
           "type": "bool",
+          "nullable": true,
           "metadata": {
             "description": "Optional. Flag to use common alert schema."
           }
@@ -474,6 +475,7 @@
         },
         "useCommonAlertSchema": {
           "type": "bool",
+          "nullable": true,
           "metadata": {
             "description": "Optional. Flag to use common alert schema."
           }
@@ -503,7 +505,7 @@
         }
       }
     },
-    "VoiceReceiverType": {
+    "voiceReceiverType": {
       "type": "object",
       "properties": {
         "countryCode": {
@@ -521,7 +523,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The name of the voice receiver."
+            "description": "Required. The name of the voice receiver."
           }
         }
       }
@@ -555,6 +557,7 @@
         },
         "useCommonAlertSchema": {
           "type": "bool",
+          "nullable": true,
           "metadata": {
             "description": "Optional. Flag to use common alert schema."
           }
@@ -563,7 +566,7 @@
           "type": "string",
           "nullable": true,
           "metadata": {
-            "description": "Required. The webhook app object Id for aad auth."
+            "description": "Optional. The webhook app object Id for aad auth."
           }
         },
         "serviceUri": {
@@ -654,7 +657,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The name of the Azure function receiver."
+            "description": "Required. The name of the Azure function receiver."
           }
         }
       }
@@ -757,14 +760,14 @@
         }
       ],
       "metadata": {
-        "description": "Required. The list of service health alerts to create. If empty or not provided, all service health alerts will be created."
+        "description": "Optional. The list of service health alerts to create. If empty or not provided, all service health alerts will be created."
       }
     },
     "subscriptionId": {
       "type": "string",
       "defaultValue": "[subscription().subscriptionId]",
       "metadata": {
-        "description": "Required. The subscription Id to deploy service health alerts for."
+        "description": "Optional. The subscription Id to deploy service health alerts for."
       }
     },
     "enableTelemetry": {
