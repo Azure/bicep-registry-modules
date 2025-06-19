@@ -1,0 +1,75 @@
+targetScope = 'subscription'
+
+metadata name = 'Deploying multiple service health alerts.'
+metadata description = 'This instance deploys the module with the maximum set of required parameters.'
+
+// ========== //
+// Parameters //
+// ========== //
+
+@description('Optional. The name of the resource group to deploy for testing purposes.')
+@maxLength(90)
+// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
+param resourceGroupName string = 'dep-ash-${namePrefix}-${serviceShort}-rg'
+
+@description('Required. The subscription ID to deploy service health alerts to. If not provided, the current subscription will be used.')
+param subscriptionId string = subscription().subscriptionId
+
+@description('Optional. The location to deploy resources to.')
+param resourceLocation string = deployment().location
+
+@description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
+param serviceShort string = 'ashalrs'
+
+@description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
+param namePrefix string = '#_namePrefix_#'
+
+// ============ //
+// Dependencies //
+// ============ //
+
+module dependencies './dependencies.bicep' = {
+  name: 'dependencies'
+  scope: subscription(subscriptionId)
+  params: {
+    resourceGroupName: resourceGroupName
+    location: resourceLocation
+  }
+}
+
+// ============== //
+// Test Execution //
+// ============== //
+
+module testDeployment '../../../main.bicep' = {
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${namePrefix}'
+  params: {
+    subscriptionId: subscriptionId
+    location: resourceLocation
+    serviceHealthAlertsResourceGroupName: 'rsg-tests-${namePrefix}-${serviceShort}'
+    serviceHealthAlerts: [
+      {
+        serviceHealthAlert: 'Resource Health Unhealthy'
+        alertDescription: 'Resource Health Unhealthy'
+        isEnabled: true
+        actionGroup: {
+          name: 'actionGroup-${namePrefix}-${serviceShort}'
+          enabled: true
+          emailReceivers: [
+            {
+              name: 'emailReceiver-${namePrefix}-${serviceShort}'
+              emailAddress: 'admin@contoso.com'
+            }
+          ]
+          armRoleReceivers: [
+            {
+              name: 'armRoleReceiver-${namePrefix}-${serviceShort}'
+              roleId: '/providers/Microsoft.Authorization/roleDefinitions/7f951dda-8b9c-4d1a-8e2b-0c3f5b6d1c3a' // Owner role
+            }
+          ]
+        }
+      }
+    ]
+    enableTelemetry: true
+  }
+}
