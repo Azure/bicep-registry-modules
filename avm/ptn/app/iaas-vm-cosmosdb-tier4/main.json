@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2204754122076092560"
+      "templateHash": "12178946251329685813"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -27,7 +27,7 @@
     },
     "tags": {
       "type": "object",
-      "defaultValue": {},
+      "nullable": true,
       "metadata": {
         "example": {
           "Environment": "Production",
@@ -188,7 +188,10 @@
     }
   },
   "variables": {
-    "$fxv#0": "<#\n.SYNOPSIS\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.DESCRIPTION\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.PARAMETER SSHKeyName\nMandatory. The name of the Public SSH Key Resource as it would be deployed in Azure\n\n.PARAMETER ResourceGroupName\nMandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure\n\n.EXAMPLE\n./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'\n\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $SSHKeyName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ResourceGroupName\n)\n\nif (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {\n    Write-Verbose \"No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new.\" -Verbose\n    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)\n    $publicKey = Get-Content 'generated.pub' -Raw\n    # $privateKey = cat generated | Out-String\n} else {\n    Write-Verbose \"SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning.\" -Verbose\n    $publicKey = $sshKey.publicKey\n}\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    # Requires conversion as the script otherwise returns an object instead of the plain public key string\n    publicKey = $publicKey | Out-String\n}\n"
+    "$fxv#0": "<#\n.SYNOPSIS\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.DESCRIPTION\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource.\n\n.PARAMETER SSHKeyName\nMandatory. The name of the Public SSH Key Resource as it would be deployed in Azure\n\n.PARAMETER ResourceGroupName\nMandatory. The resource group name of the Public SSH Key Resource as it would be deployed in Azure\n\n.EXAMPLE\n./New-SSHKey.ps1 -SSHKeyName 'myKeyResource' -ResourceGroupName 'ssh-rg'\n\nGenerate a new Public SSH Key or fetch it from an existing Public SSH Key resource 'myKeyResource' in Resource Group 'ssh-rg'\n#>\nparam(\n    [Parameter(Mandatory = $true)]\n    [string] $SSHKeyName,\n\n    [Parameter(Mandatory = $true)]\n    [string] $ResourceGroupName\n)\n\nif (-not ($sshKey = Get-AzSshKey -ResourceGroupName $ResourceGroupName | Where-Object { $_.Name -eq $SSHKeyName })) {\n    Write-Verbose \"No SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Generating new.\" -Verbose\n    $null = ssh-keygen -f generated -N (Get-Random -Maximum 99999)\n    $publicKey = Get-Content 'generated.pub' -Raw\n    # $privateKey = cat generated | Out-String\n} else {\n    Write-Verbose \"SSH key [$SSHKeyName] found in Resource Group [$ResourceGroupName]. Returning.\" -Verbose\n    $publicKey = $sshKey.publicKey\n}\n# Write into Deployment Script output stream\n$DeploymentScriptOutputs = @{\n    # Requires conversion as the script otherwise returns an object instead of the plain public key string\n    publicKey = $publicKey | Out-String\n}\n",
+    "managedIdentityName": "sshKeyGenIdentity",
+    "sshKeyName": "sshKey",
+    "sshDeploymentScriptName": "[format('{0}-sshDeploymentScript', take(uniqueString(resourceGroup().name, parameters('location')), 4))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -215,60 +218,59 @@
       "condition": "[empty(parameters('sshPublicKey'))]",
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
       "apiVersion": "2024-11-30",
-      "name": "[format('id-{0}-sshkey', parameters('name'))]",
-      "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]"
+      "name": "[format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName'))]",
+      "tags": "[coalesce(parameters('tags'), createObject())]",
+      "location": "[parameters('location')]"
     },
-    "contributorRoleAssignment": {
-      "condition": "[empty(parameters('sshPublicKey'))]",
+    "msiRGContrRoleAssignment": {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
-      "name": "[guid(resourceGroup().id, 'ManagedIdentityContributor', parameters('name'))]",
+      "name": "[guid(resourceGroup().id, 'ssh-Contributor', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName'))))]",
       "properties": {
-        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
         "principalId": "[reference('managedIdentity').principalId]",
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
         "principalType": "ServicePrincipal"
       },
       "dependsOn": [
         "managedIdentity"
       ]
     },
-    "sshKeyGenerationScript": {
+    "sshDeploymentScript": {
       "condition": "[empty(parameters('sshPublicKey'))]",
       "type": "Microsoft.Resources/deploymentScripts",
       "apiVersion": "2023-08-01",
-      "name": "[format('ds-{0}-sshkey', parameters('name'))]",
+      "name": "[variables('sshDeploymentScriptName')]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]",
+      "tags": "[coalesce(parameters('tags'), createObject())]",
       "kind": "AzurePowerShell",
       "identity": {
         "type": "UserAssigned",
         "userAssignedIdentities": {
-          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('id-{0}-sshkey', parameters('name'))))]": {}
+          "[format('{0}', resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', format('{0}-{1}', uniqueString(resourceGroup().id, parameters('location')), variables('managedIdentityName'))))]": {}
         }
       },
       "properties": {
         "azPowerShellVersion": "9.0",
         "retentionInterval": "P1D",
-        "arguments": "[format('-SSHKeyName \"{0}-vm-key\" -ResourceGroupName \"{1}\"', parameters('name'), resourceGroup().name)]",
+        "arguments": "[format('-SSHKeyName \"{0}\" -ResourceGroupName \"{1}\"', variables('sshKeyName'), resourceGroup().name)]",
         "scriptContent": "[variables('$fxv#0')]"
       },
       "dependsOn": [
-        "contributorRoleAssignment",
-        "managedIdentity"
+        "managedIdentity",
+        "msiRGContrRoleAssignment"
       ]
     },
-    "sshKeyResource": {
+    "sshKey": {
       "type": "Microsoft.Compute/sshPublicKeys",
       "apiVersion": "2024-07-01",
-      "name": "[format('{0}-vm-key', parameters('name'))]",
+      "name": "[format('{0}-{1}', take(uniqueString(resourceGroup().name, parameters('location')), 4), variables('sshKeyName'))]",
       "location": "[parameters('location')]",
-      "tags": "[parameters('tags')]",
+      "tags": "[coalesce(parameters('tags'), createObject())]",
       "properties": {
-        "publicKey": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshKeyGenerationScript').outputs.publicKey)]"
+        "publicKey": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshDeploymentScript').outputs.publicKey)]"
       },
       "dependsOn": [
-        "sshKeyGenerationScript"
+        "sshDeploymentScript"
       ]
     },
     "vmNetworkSecurityGroup": {
@@ -288,7 +290,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "securityRules": {
             "value": "[parameters('vmNsgRules')]"
@@ -940,7 +942,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "securityRules": {
             "value": "[parameters('applicationNsgRules')]"
@@ -1592,7 +1594,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "securityRules": {
             "value": [
@@ -2263,7 +2265,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "securityRules": {
             "value": [
@@ -2934,7 +2936,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "securityRules": {
             "value": [
@@ -3726,7 +3728,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "addressPrefixes": {
             "value": [
@@ -5404,7 +5406,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "skuName": {
             "value": "[parameters('storageAccountSku').name]"
@@ -11131,7 +11133,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "frontendIPConfigurations": {
             "value": [
@@ -12163,7 +12165,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "zone": {
             "value": 1
@@ -12188,7 +12190,7 @@
           "publicKeys": {
             "value": [
               {
-                "keyData": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshKeyResource').publicKey)]",
+                "keyData": "[if(not(empty(parameters('sshPublicKey'))), parameters('sshPublicKey'), reference('sshKey').publicKey)]",
                 "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('adminUsername'))]"
               }
             ]
@@ -12215,7 +12217,7 @@
             "value": [
               {
                 "name": "primary-nic",
-                "tags": "[parameters('tags')]",
+                "tags": "[coalesce(parameters('tags'), createObject())]",
                 "ipConfigurations": [
                   {
                     "name": "ipconfig1",
@@ -20494,7 +20496,7 @@
       },
       "dependsOn": [
         "loadBalancer",
-        "sshKeyResource",
+        "sshKey",
         "storageAccount",
         "virtualNetwork",
         "vmNetworkSecurityGroup"
@@ -20517,7 +20519,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "publicNetworkAccess": {
             "value": "Disabled"
@@ -24307,7 +24309,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "defaultConsistencyLevel": {
             "value": "Session"
@@ -28138,7 +28140,7 @@
             "value": "global"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "virtualNetworkLinks": {
             "value": [
@@ -31309,7 +31311,7 @@
             "value": "[parameters('location')]"
           },
           "tags": {
-            "value": "[parameters('tags')]"
+            "value": "[coalesce(parameters('tags'), createObject())]"
           },
           "subnetResourceId": {
             "value": "[reference('virtualNetwork').outputs.subnetResourceIds.value[1]]"
