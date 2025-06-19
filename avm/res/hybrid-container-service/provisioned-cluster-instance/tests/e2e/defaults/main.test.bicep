@@ -84,7 +84,7 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
     servicePrincipalSecret: arbDeploymentServicePrincipalSecret
     hciResourceProviderObjectId: hciResourceProviderObjectId
     deploymentSettings: {
-      customLocationName: '${namePrefix}${serviceShort}-cl'
+      customLocationName: '${namePrefix}${serviceShort}-location'
       clusterNodeNames: nestedDependencies.outputs.clusterNodeNames
       clusterWitnessStorageAccountName: nestedDependencies.outputs.clusterWitnessStorageAccountName
       defaultGateway: '192.168.1.1'
@@ -170,11 +170,19 @@ module azlocal 'br/public:avm/res/azure-stack-hci/cluster:0.1.6' = {
 }
 
 resource customLocation 'Microsoft.ExtendedLocation/customLocations@2021-08-31-preview' existing = {
+  name: '${namePrefix}${serviceShort}-location'
   scope: resourceGroup
-  name: '${namePrefix}${serviceShort}-cl'
   dependsOn: [
     azlocal
   ]
+}
+
+module azLocalInit '../init.bicep' = {
+  name: '${deployment().name}-azLocalInit'
+  scope: resourceGroup
+  params: {
+    customLocationResourceId: customLocation.id
+  }
 }
 
 module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' = {
@@ -196,8 +204,11 @@ module logicalNetwork 'br/public:avm/res/azure-stack-hci/logical-network:0.1.1' 
 }
 
 module testDeployment '../../../main.bicep' = {
-  scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-aks-${serviceShort}'
+  scope: resourceGroup
+  dependsOn: [
+    azLocalInit
+  ]
   params: {
     name: '${namePrefix}${serviceShort}001'
     customLocationResourceId: customLocation.id

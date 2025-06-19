@@ -140,8 +140,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     deploymentUserPassword: '<deploymentUserPassword>'
     localAdminPassword: '<localAdminPassword>'
     localAdminUser: 'Administrator'
-    servicePrincipalId: '<servicePrincipalId>'
-    servicePrincipalSecret: '<servicePrincipalSecret>'
   }
 }
 ```
@@ -266,12 +264,6 @@ module cluster 'br/public:avm/res/azure-stack-hci/cluster:<version>' = {
     },
     "localAdminUser": {
       "value": "Administrator"
-    },
-    "servicePrincipalId": {
-      "value": "<servicePrincipalId>"
-    },
-    "servicePrincipalSecret": {
-      "value": "<servicePrincipalSecret>"
     }
   }
 }
@@ -382,8 +374,6 @@ param deploymentUser = 'deployUser'
 param deploymentUserPassword = '<deploymentUserPassword>'
 param localAdminPassword = '<localAdminPassword>'
 param localAdminUser = 'Administrator'
-param servicePrincipalId = '<servicePrincipalId>'
-param servicePrincipalSecret = '<servicePrincipalSecret>'
 ```
 
 </details>
@@ -799,8 +789,8 @@ param tags = {
 | [`deploymentUserPassword`](#parameter-deploymentuserpassword) | securestring | The password of the deployment user. Required if useSharedKeyVault is true. |
 | [`localAdminPassword`](#parameter-localadminpassword) | securestring | The password of the local admin user. Required if useSharedKeyVault is true. |
 | [`localAdminUser`](#parameter-localadminuser) | string | The name of the local admin user. Required if useSharedKeyVault is true. |
-| [`servicePrincipalId`](#parameter-serviceprincipalid) | string | The service principal ID for ARB. Required if useSharedKeyVault is true. |
-| [`servicePrincipalSecret`](#parameter-serviceprincipalsecret) | securestring | The service principal secret for ARB. Required if useSharedKeyVault is true. |
+| [`servicePrincipalId`](#parameter-serviceprincipalid) | string | The service principal ID for ARB. Required if useSharedKeyVault is true and need ARB service principal id. |
+| [`servicePrincipalSecret`](#parameter-serviceprincipalsecret) | securestring | The service principal secret for ARB. Required if useSharedKeyVault is true and need ARB service principal id. |
 
 **Optional parameters**
 
@@ -1398,14 +1388,14 @@ The name of the local admin user. Required if useSharedKeyVault is true.
 
 ### Parameter: `servicePrincipalId`
 
-The service principal ID for ARB. Required if useSharedKeyVault is true.
+The service principal ID for ARB. Required if useSharedKeyVault is true and need ARB service principal id.
 
 - Required: No
 - Type: string
 
 ### Parameter: `servicePrincipalSecret`
 
-The service principal secret for ARB. Required if useSharedKeyVault is true.
+The service principal secret for ARB. Required if useSharedKeyVault is true and need ARB service principal id.
 
 - Required: No
 - Type: securestring
