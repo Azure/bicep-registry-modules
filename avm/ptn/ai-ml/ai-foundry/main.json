@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "8906121013251993704"
+      "templateHash": "4072592506837178363"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -289,6 +289,8 @@
   "parameters": {
     "name": {
       "type": "string",
+      "minLength": 3,
+      "maxLength": 12,
       "metadata": {
         "description": "Required. Name of the resource to create."
       }
@@ -26218,7 +26220,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "8276131365320873239"
+              "templateHash": "17289966052720549693"
             }
           },
           "definitions": {
@@ -32752,11 +32754,6 @@
                                 "principalId": "[parameters('userObjectId')]",
                                 "principalType": "ServicePrincipal",
                                 "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-                              },
-                              {
-                                "principalId": "[parameters('userObjectId')]",
-                                "principalType": "ServicePrincipal",
-                                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
                               }
                             ]
                           }
@@ -32775,11 +32772,6 @@
                                 "principalId": "[parameters('userObjectId')]",
                                 "principalType": "ServicePrincipal",
                                 "roleDefinitionIdOrName": "b24988ac-6180-42a0-ab88-20f7382dd24c"
-                              },
-                              {
-                                "principalId": "[parameters('userObjectId')]",
-                                "principalType": "ServicePrincipal",
-                                "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
                               }
                             ]
                           }
