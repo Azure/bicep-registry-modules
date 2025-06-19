@@ -1491,7 +1491,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
     // Required parameters
     defaultDataLakeStorageAccountResourceId: '<defaultDataLakeStorageAccountResourceId>'
     defaultDataLakeStorageFilesystem: '<defaultDataLakeStorageFilesystem>'
-    name: 'swwaf001'
+    name: 'swwaf002'
     sqlAdministratorLogin: 'synwsadmin'
     // Non-required parameters
     diagnosticSettings: [
@@ -1565,7 +1565,7 @@ module workspace 'br/public:avm/res/synapse/workspace:<version>' = {
       "value": "<defaultDataLakeStorageFilesystem>"
     },
     "name": {
-      "value": "swwaf001"
+      "value": "swwaf002"
     },
     "sqlAdministratorLogin": {
       "value": "synwsadmin"
@@ -1645,7 +1645,7 @@ using 'br/public:avm/res/synapse/workspace:<version>'
 // Required parameters
 param defaultDataLakeStorageAccountResourceId = '<defaultDataLakeStorageAccountResourceId>'
 param defaultDataLakeStorageFilesystem = '<defaultDataLakeStorageFilesystem>'
-param name = 'swwaf001'
+param name = 'swwaf002'
 param sqlAdministratorLogin = 'synwsadmin'
 // Non-required parameters
 param diagnosticSettings = [
