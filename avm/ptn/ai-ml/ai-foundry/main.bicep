@@ -281,14 +281,17 @@ module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic'
   }
 }
 
-module virtualMachine './modules/virtualMachine.bicep' = if (toLower(aiFoundryType) != 'standardprivate') {
+// Only deploy the VM if we're doing a StandardPrivate deployment and need a jumpbox in the VNET
+var shouldDeployVM = (toLower(aiFoundryType) == 'standardprivate')
+
+module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
   name: take('${name}-virtual-machine-deployment', 64)
   params: {
     vmName: toLower('vm-${name}-jump')
     vmNicName: toLower('nic-vm-${name}-jump')
     vmSize: vmSize
-    vmSubnetId: network.outputs.vmSubnetId
-    storageAccountName: storageAccount.outputs.storageName
+    vmSubnetId: shouldDeployVM ? network.outputs.vmSubnetId : ''
+    storageAccountName: (shouldDeployVM && toLower(aiFoundryType) != 'basic') ? storageAccount.outputs.storageName : ''
     storageAccountResourceGroup: resourceGroup().name
     imagePublisher: 'MicrosoftWindowsDesktop'
     imageOffer: 'Windows-11'
@@ -307,7 +310,6 @@ module virtualMachine './modules/virtualMachine.bicep' = if (toLower(aiFoundryTy
     location: location
     tags: allTags
   }
-  dependsOn: networkIsolation ? [storageAccount] : []
 }
 
 module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic') {
@@ -344,7 +346,7 @@ output azureAiProjectName string = project.outputs.projectName
 output azureBastionName string = networkIsolation ? network.outputs.bastionName : ''
 
 @description('Resource ID of the deployed Azure VM.')
-output azureVmResourceId string = networkIsolation ? virtualMachine.outputs.id : ''
+output azureVmResourceId string = shouldDeployVM ? virtualMachine.outputs.id : ''
 
 @description('Username for the deployed Azure VM.')
 output azureVmUsername string = servicesUsername
