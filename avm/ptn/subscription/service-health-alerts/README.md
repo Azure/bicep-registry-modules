@@ -52,8 +52,8 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
         actionGroup: {
           armRoleReceivers: [
             {
-              name: 'armRoleReceiver-ashalrs'
-              roleId: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+              name: 'armRoleReceiverOwner-ashalrs'
+              roleId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
             }
           ]
           emailReceivers: [
@@ -100,8 +100,8 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
           "actionGroup": {
             "armRoleReceivers": [
               {
-                "name": "armRoleReceiver-ashalrs",
-                "roleId": "/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
+                "name": "armRoleReceiverOwner-ashalrs",
+                "roleId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
               }
             ],
             "emailReceivers": [
@@ -146,8 +146,8 @@ param serviceHealthAlerts = [
     actionGroup: {
       armRoleReceivers: [
         {
-          name: 'armRoleReceiver-ashalrs'
-          roleId: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+          name: 'armRoleReceiverOwner-ashalrs'
+          roleId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
         }
       ]
       emailReceivers: [
