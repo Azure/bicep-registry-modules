@@ -49,6 +49,8 @@ param requestSource string = 'rest'
 @description('Tags to be applied to the resources')
 param tags object = {}
 
+param enableTelemetry bool = true
+
 module avmLogAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
   name: 'deploy_log_analytics_workspace'
   params: {
@@ -58,6 +60,7 @@ module avmLogAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspac
     dataRetention: retentionInDays
     diagnosticSettings: [{ useThisWorkspace: true }]
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -75,6 +78,7 @@ module avmApplicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
     requestSource: requestSource
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 

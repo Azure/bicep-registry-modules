@@ -412,6 +412,7 @@ module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
     publicNetworkAccessForQuery: 'Enabled'
     requestSource: 'rest'
     retentionInDays: 30
+    enableTelemetry: enableTelemetry
   }
 }
 

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "16659420915351892283"
+      "templateHash": "12905994169470183774"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -27033,6 +27033,9 @@
           },
           "retentionInDays": {
             "value": 30
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -27043,7 +27046,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3038111638908962298"
+              "templateHash": "15235003033085559724"
             },
             "name": "AVM Application Insights and Log Analytics Workspace Module"
           },
@@ -27135,6 +27138,10 @@
               "metadata": {
                 "description": "Tags to be applied to the resources"
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true
             }
           },
           "resources": {
@@ -27169,6 +27176,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -30226,6 +30236,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
