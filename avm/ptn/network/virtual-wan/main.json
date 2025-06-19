@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "5933673996792758108"
+      "version": "0.36.1.42791",
+      "templateHash": "15303955038497483510"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
