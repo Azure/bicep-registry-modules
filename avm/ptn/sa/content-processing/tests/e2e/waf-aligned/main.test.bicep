@@ -31,7 +31,7 @@ var resourceGroupLocation = enforcedLocation
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceGroupLocation
 }
@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
       //name: '${namePrefix}${serviceShort}001'
       //location: resourceLocation
       contentUnderstandingLocation: resourceLocation
-      environmentName: 'test-${iteration}'
+      environmentName: '${namePrefix}${serviceShort}'
       gptDeploymentCapacity: 80
     }
   }
