@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "15303955038497483510"
+      "templateHash": "13888054846437698209"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -76,63 +76,63 @@
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Azure AD audience for VPN authentication."
+                "description": "Conditional. Entra ID audience for VPN authentication. Required if using Entra ID audience for VPN authentication."
               }
             },
             "aadIssuer": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Azure AD issuer for VPN authentication."
+                "description": "Conditional. Entra ID issuer for VPN authentication. Required if using Entra ID authentication."
               }
             },
             "aadTenant": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Azure AD tenant for VPN authentication."
+                "description": "Conditional. Entra ID tenant for VPN authentication. Required if using Entra ID authentication."
               }
             },
             "p2sConfigurationPolicyGroups": {
               "type": "array",
               "nullable": true,
               "metadata": {
-                "description": "Optional. Policy groups for P2S VPN configuration."
+                "description": "Conditional. Configure user groups and IP Address Pools. Required if using Entra ID authentication."
               }
             },
             "radiusClientRootCertificates": {
               "type": "array",
               "nullable": true,
               "metadata": {
-                "description": "Optional. List of RADIUS client root certificates."
+                "description": "Conditional. List of RADIUS client root certificates. Required if using RADIUS authentication."
               }
             },
             "radiusServerAddress": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. RADIUS server address."
+                "description": "Conditional. RADIUS server address. Required if using RADIUS authentication."
               }
             },
             "radiusServerRootCertificates": {
               "type": "array",
               "nullable": true,
               "metadata": {
-                "description": "Optional. List of RADIUS server root certificates."
+                "description": "Conditional. List of RADIUS server root certificates. Required if using RADIUS authentication."
               }
             },
             "radiusServerSecret": {
               "type": "string",
               "nullable": true,
               "metadata": {
-                "description": "Optional. RADIUS server secret."
+                "description": "Conditional. RADIUS server secret. Required if using RADIUS authentication."
               }
             },
             "radiusServers": {
               "type": "array",
               "nullable": true,
               "metadata": {
-                "description": "Optional. List of RADIUS servers."
+                "description": "Conditional. List of RADIUS servers. Required if using RADIUS authentication."
               }
             },
             "vpnAuthenticationTypes": {
@@ -628,6 +628,7 @@
                     "routingConfiguration": {
                       "type": "object",
                       "properties": {},
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Routing configuration for the connection."
                       }
@@ -670,6 +671,7 @@
                       "type": "array",
                       "prefixItems": [],
                       "items": false,
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. IPsec policies for the connection."
                       }
@@ -678,6 +680,7 @@
                       "type": "array",
                       "prefixItems": [],
                       "items": false,
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. Traffic selector policies for the connection."
                       }
@@ -686,6 +689,7 @@
                       "type": "array",
                       "prefixItems": [],
                       "items": false,
+                      "nullable": true,
                       "metadata": {
                         "description": "Optional. VPN link connections for the connection."
                       }

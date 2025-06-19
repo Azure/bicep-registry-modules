@@ -453,20 +453,25 @@ Point-to-site VPN server configuration parameters for the Virtual WAN.
 | :-- | :-- | :-- |
 | [`createP2sVpnServerConfiguration`](#parameter-virtualwanparametersp2svpnparameterscreatep2svpnserverconfiguration) | bool | Whether to create a new P2S VPN server configuration. |
 
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadAudience`](#parameter-virtualwanparametersp2svpnparametersaadaudience) | string | Entra ID audience for VPN authentication. Required if using Entra ID audience for VPN authentication. |
+| [`aadIssuer`](#parameter-virtualwanparametersp2svpnparametersaadissuer) | string | Entra ID issuer for VPN authentication. Required if using Entra ID authentication. |
+| [`aadTenant`](#parameter-virtualwanparametersp2svpnparametersaadtenant) | string | Entra ID tenant for VPN authentication. Required if using Entra ID authentication. |
+| [`p2sConfigurationPolicyGroups`](#parameter-virtualwanparametersp2svpnparametersp2sconfigurationpolicygroups) | array | Configure user groups and IP Address Pools. Required if using Entra ID authentication. |
+| [`radiusClientRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusclientrootcertificates) | array | List of RADIUS client root certificates. Required if using RADIUS authentication. |
+| [`radiusServerAddress`](#parameter-virtualwanparametersp2svpnparametersradiusserveraddress) | string | RADIUS server address. Required if using RADIUS authentication. |
+| [`radiusServerRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusserverrootcertificates) | array | List of RADIUS server root certificates. Required if using RADIUS authentication. |
+| [`radiusServers`](#parameter-virtualwanparametersp2svpnparametersradiusservers) | array | List of RADIUS servers. Required if using RADIUS authentication. |
+| [`radiusServerSecret`](#parameter-virtualwanparametersp2svpnparametersradiusserversecret) | string | RADIUS server secret. Required if using RADIUS authentication. |
+
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`aadAudience`](#parameter-virtualwanparametersp2svpnparametersaadaudience) | string | Azure AD audience for VPN authentication. |
-| [`aadIssuer`](#parameter-virtualwanparametersp2svpnparametersaadissuer) | string | Azure AD issuer for VPN authentication. |
-| [`aadTenant`](#parameter-virtualwanparametersp2svpnparametersaadtenant) | string | Azure AD tenant for VPN authentication. |
-| [`p2sConfigurationPolicyGroups`](#parameter-virtualwanparametersp2svpnparametersp2sconfigurationpolicygroups) | array | Policy groups for P2S VPN configuration. |
 | [`p2sVpnServerConfigurationName`](#parameter-virtualwanparametersp2svpnparametersp2svpnserverconfigurationname) | string | Name of the P2S VPN server configuration. |
-| [`radiusClientRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusclientrootcertificates) | array | List of RADIUS client root certificates. |
-| [`radiusServerAddress`](#parameter-virtualwanparametersp2svpnparametersradiusserveraddress) | string | RADIUS server address. |
-| [`radiusServerRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusserverrootcertificates) | array | List of RADIUS server root certificates. |
-| [`radiusServers`](#parameter-virtualwanparametersp2svpnparametersradiusservers) | array | List of RADIUS servers. |
-| [`radiusServerSecret`](#parameter-virtualwanparametersp2svpnparametersradiusserversecret) | string | RADIUS server secret. |
 | [`vpnAuthenticationTypes`](#parameter-virtualwanparametersp2svpnparametersvpnauthenticationtypes) | array | VPN authentication types supported. |
 | [`vpnClientIpsecPolicies`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpolicies) | array | List of VPN client IPsec policies. |
 | [`vpnClientRevokedCertificates`](#parameter-virtualwanparametersp2svpnparametersvpnclientrevokedcertificates) | array | List of revoked VPN client certificates. |
@@ -482,70 +487,70 @@ Whether to create a new P2S VPN server configuration.
 
 ### Parameter: `virtualWanParameters.p2sVpnParameters.aadAudience`
 
-Azure AD audience for VPN authentication.
+Entra ID audience for VPN authentication. Required if using Entra ID audience for VPN authentication.
 
 - Required: No
 - Type: string
 
 ### Parameter: `virtualWanParameters.p2sVpnParameters.aadIssuer`
 
-Azure AD issuer for VPN authentication.
+Entra ID issuer for VPN authentication. Required if using Entra ID authentication.
 
 - Required: No
 - Type: string
 
 ### Parameter: `virtualWanParameters.p2sVpnParameters.aadTenant`
 
-Azure AD tenant for VPN authentication.
+Entra ID tenant for VPN authentication. Required if using Entra ID authentication.
 
 - Required: No
 - Type: string
 
 ### Parameter: `virtualWanParameters.p2sVpnParameters.p2sConfigurationPolicyGroups`
 
-Policy groups for P2S VPN configuration.
+Configure user groups and IP Address Pools. Required if using Entra ID authentication.
 
 - Required: No
 - Type: array
 
-### Parameter: `virtualWanParameters.p2sVpnParameters.p2sVpnServerConfigurationName`
-
-Name of the P2S VPN server configuration.
-
-- Required: No
-- Type: string
-
 ### Parameter: `virtualWanParameters.p2sVpnParameters.radiusClientRootCertificates`
 
-List of RADIUS client root certificates.
+List of RADIUS client root certificates. Required if using RADIUS authentication.
 
 - Required: No
 - Type: array
 
 ### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerAddress`
 
-RADIUS server address.
+RADIUS server address. Required if using RADIUS authentication.
 
 - Required: No
 - Type: string
 
 ### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerRootCertificates`
 
-List of RADIUS server root certificates.
+List of RADIUS server root certificates. Required if using RADIUS authentication.
 
 - Required: No
 - Type: array
 
 ### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServers`
 
-List of RADIUS servers.
+List of RADIUS servers. Required if using RADIUS authentication.
 
 - Required: No
 - Type: array
 
 ### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerSecret`
 
-RADIUS server secret.
+RADIUS server secret. Required if using RADIUS authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.p2sVpnServerConfigurationName`
+
+Name of the P2S VPN server configuration.
 
 - Required: No
 - Type: string
@@ -1698,28 +1703,28 @@ Enable rate limiting.
 
 IPsec policies for the connection.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.routingConfiguration`
 
 Routing configuration for the connection.
 
-- Required: Yes
+- Required: No
 - Type: object
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.trafficSelectorPolicies`
 
 Traffic selector policies for the connection.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnConnections.vpnLinkConnections`
 
 VPN link connections for the connection.
 
-- Required: Yes
+- Required: No
 - Type: array
 
 ### Parameter: `virtualHubParameters.s2sVpnParameters.vpnGatewayName`

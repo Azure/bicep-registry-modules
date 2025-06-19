@@ -479,7 +479,7 @@ type virtualHubParameterType = {
       enableRateLimiting: bool?
 
       @description('Optional. Routing configuration for the connection.')
-      routingConfiguration: {}
+      routingConfiguration: {}?
 
       @description('Required. Routing weight for the connection.')
       routingWeight: int
