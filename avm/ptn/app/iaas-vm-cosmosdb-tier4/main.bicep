@@ -114,6 +114,9 @@ param adminUsername string = 'azureuser'
 @secure()
 param sshPublicKey string = ''
 
+@description('Security. Enables encryption at host for the virtual machine.')
+param encryptionAtHost bool = true
+
 // Storage account parameters
 @description('Storage. Storage account SKU.')
 param storageAccountSku object = {
@@ -532,6 +535,7 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
     vmSize: vmSize
     adminUsername: adminUsername
     disablePasswordAuthentication: true
+    encryptionAtHost: encryptionAtHost
     publicKeys: [
       {
         keyData: (!empty(sshPublicKey)) ? sshPublicKey : sshKey.properties.publicKey

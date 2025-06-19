@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10544276918095346352"
+      "templateHash": "9670319977202606820"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -160,6 +160,13 @@
       "defaultValue": "",
       "metadata": {
         "description": "Security. SSH public key for the virtual machine. If empty, a new SSH key will be generated."
+      }
+    },
+    "encryptionAtHost": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Security. Enables encryption at host for the virtual machine."
       }
     },
     "storageAccountSku": {
@@ -12160,6 +12167,9 @@
           },
           "disablePasswordAuthentication": {
             "value": true
+          },
+          "encryptionAtHost": {
+            "value": "[parameters('encryptionAtHost')]"
           },
           "publicKeys": {
             "value": [

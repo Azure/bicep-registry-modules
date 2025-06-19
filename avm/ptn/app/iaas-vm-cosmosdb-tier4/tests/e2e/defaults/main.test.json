@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "16216235495507634570"
+      "version": "0.35.1.17967",
+      "templateHash": "6848377115501824161"
     },
     "name": "Using only defaults",
     "description": "This instance deploys the module with the minimum set of required parameters."
@@ -78,6 +78,9 @@
           "location": {
             "value": "[parameters('resourceLocation')]"
           },
+          "encryptionAtHost": {
+            "value": false
+          },
           "tags": {
             "value": {
               "Environment": "Test",
@@ -94,8 +97,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "12178946251329685813"
+              "version": "0.35.1.17967",
+              "templateHash": "13019574613419477894"
             },
             "name": "IaaS VM with CosmosDB Tier 4",
             "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -249,6 +252,13 @@
               "defaultValue": "",
               "metadata": {
                 "description": "Security. SSH public key for the virtual machine. If empty, a new SSH key will be generated."
+              }
+            },
+            "encryptionAtHost": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Security. Enables encryption at host for the virtual machine."
               }
             },
             "storageAccountSku": {
@@ -3034,7 +3044,7 @@
                         "properties": {
                           "access": "Allow",
                           "direction": "Inbound",
-                          "priority": 120,
+                          "priority": 100,
                           "sourceAddressPrefix": "Internet",
                           "destinationAddressPrefix": "*",
                           "protocol": "Tcp",
@@ -3047,7 +3057,7 @@
                         "properties": {
                           "access": "Allow",
                           "direction": "Inbound",
-                          "priority": 130,
+                          "priority": 110,
                           "sourceAddressPrefix": "GatewayManager",
                           "destinationAddressPrefix": "*",
                           "protocol": "Tcp",
@@ -3060,7 +3070,7 @@
                         "properties": {
                           "access": "Allow",
                           "direction": "Inbound",
-                          "priority": 140,
+                          "priority": 120,
                           "sourceAddressPrefix": "AzureLoadBalancer",
                           "destinationAddressPrefix": "*",
                           "protocol": "Tcp",
@@ -3069,11 +3079,11 @@
                         }
                       },
                       {
-                        "name": "AllowBastionHostCommunication",
+                        "name": "AllowBastionHostCommunicationInbound",
                         "properties": {
                           "access": "Allow",
                           "direction": "Inbound",
-                          "priority": 150,
+                          "priority": 130,
                           "sourceAddressPrefix": "VirtualNetwork",
                           "destinationAddressPrefix": "VirtualNetwork",
                           "protocol": "Tcp",
@@ -3085,27 +3095,14 @@
                         }
                       },
                       {
-                        "name": "DenyAllInbound",
-                        "properties": {
-                          "access": "Deny",
-                          "direction": "Inbound",
-                          "priority": 4096,
-                          "sourceAddressPrefix": "*",
-                          "destinationAddressPrefix": "*",
-                          "protocol": "*",
-                          "sourcePortRange": "*",
-                          "destinationPortRange": "*"
-                        }
-                      },
-                      {
                         "name": "AllowSshRdpOutbound",
                         "properties": {
                           "access": "Allow",
                           "direction": "Outbound",
                           "priority": 100,
-                          "sourceAddressPrefix": "VirtualNetwork",
+                          "sourceAddressPrefix": "*",
                           "destinationAddressPrefix": "VirtualNetwork",
-                          "protocol": "Tcp",
+                          "protocol": "*",
                           "sourcePortRange": "*",
                           "destinationPortRanges": [
                             "22",
@@ -3127,7 +3124,7 @@
                         }
                       },
                       {
-                        "name": "AllowBastionCommunication",
+                        "name": "AllowBastionCommunicationOutbound",
                         "properties": {
                           "access": "Allow",
                           "direction": "Outbound",
@@ -3153,19 +3150,6 @@
                           "protocol": "*",
                           "sourcePortRange": "*",
                           "destinationPortRange": "80"
-                        }
-                      },
-                      {
-                        "name": "DenyAllOutbound",
-                        "properties": {
-                          "access": "Deny",
-                          "direction": "Outbound",
-                          "priority": 4096,
-                          "sourceAddressPrefix": "*",
-                          "destinationAddressPrefix": "*",
-                          "protocol": "*",
-                          "sourcePortRange": "*",
-                          "destinationPortRange": "*"
                         }
                       }
                     ]
@@ -3842,7 +3826,7 @@
                         "networkSecurityGroupResourceId": "[reference('bootDiagnosticsNsg').outputs.resourceId.value]"
                       },
                       {
-                        "name": "AzureBastionSubnet",
+                        "name": "[parameters('subnets')[3].name]",
                         "addressPrefix": "[parameters('subnets')[3].addressPrefix]",
                         "networkSecurityGroupResourceId": "[reference('bastionNsg').outputs.resourceId.value]"
                       }
@@ -12275,6 +12259,9 @@
                   },
                   "disablePasswordAuthentication": {
                     "value": true
+                  },
+                  "encryptionAtHost": {
+                    "value": "[parameters('encryptionAtHost')]"
                   },
                   "publicKeys": {
                     "value": [
@@ -28223,7 +28210,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "privatelink.mongocluster.cosmos.azure.com"
+                    "value": "privatelink.documents.azure.com"
                   },
                   "location": {
                     "value": "global"
@@ -31411,7 +31398,7 @@
                         "name": "[format('pep-{0}-cosmos-conn', parameters('name'))]",
                         "properties": {
                           "groupIds": [
-                            "MongoCluster"
+                            "Sql"
                           ],
                           "privateLinkServiceId": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('cosmosdbAccount-{0}', uniqueString(deployment().name, parameters('location')))), '2022-09-01').resourceId]"
                         }
