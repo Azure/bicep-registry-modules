@@ -41,12 +41,38 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      // You parameters go here
-      name: '${namePrefix}${serviceShort}001'
+      name: take(padLeft(replace('${namePrefix}${serviceShort}', '-', ''), 5, '0'), 12)
       location: resourceLocation
       aiFoundryType: 'StandardPrivate' // Replace with the required value@allowed(['Basic''StandardPublic''StandardPrivate'])
       contentSafetyEnabled: true // Set to true or false as required
       vmAdminPasswordOrKey: '$tart12345' // Replace with a secure password or key
+      vmSize: 'Standard_DS4_v2'
+      aiModelDeployments: [
+        {
+          name: 'textembed'
+          model: {
+            name: 'text-embedding-ada-002'
+            format: 'OpenAI'
+            version: '2'
+          }
+          sku: {
+            name: 'Standard'
+            capacity: 10
+          }
+        }
+        {
+          name: 'gpt'
+          model: {
+            name: 'gpt-4o'
+            version: '2024-05-13'
+            format: 'OpenAI'
+          }
+          sku: {
+            name: 'GlobalStandard'
+            capacity: 10
+          }
+        }
+      ]
     }
   }
 ]

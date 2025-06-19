@@ -42,7 +42,7 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
       // You parameters go here
-      name: '${namePrefix}${serviceShort}001'
+      name: take(padLeft(replace('${namePrefix}${serviceShort}', '-', ''), 5, '0'), 12)
       location: resourceLocation
       aiFoundryType: 'Basic' // Replace with the appropriate value
       contentSafetyEnabled: false // Set to true or false as required

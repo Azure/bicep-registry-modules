@@ -83,11 +83,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
                 principalType: 'ServicePrincipal'
                 roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
               }
-              {
-                principalId: userObjectId
-                principalType: 'ServicePrincipal'
-                roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-              }
+              // {
+              //   principalId: userObjectId
+              //   principalType: 'ServicePrincipal'
+              //   roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+              // }
             ]
           }
         }
@@ -106,11 +106,11 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
                 principalType: 'ServicePrincipal'
                 roleDefinitionIdOrName: 'b24988ac-6180-42a0-ab88-20f7382dd24c'
               }
-              {
-                principalId: userObjectId
-                principalType: 'ServicePrincipal'
-                roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
-              }
+              // {
+              //   principalId: userObjectId
+              //   principalType: 'ServicePrincipal'
+              //   roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
+              // }
             ]
           }
         }

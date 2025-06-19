@@ -3,6 +3,8 @@ metadata description = 'Creates an AI Foundry account and project with Standard 
 
 targetScope = 'resourceGroup'
 
+@minLength(3)
+@maxLength(12)
 @description('Required. Name of the resource to create.')
 param name string
 
