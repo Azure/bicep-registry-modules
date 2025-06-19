@@ -10,7 +10,7 @@ metadata description = 'Creates an AI Foundry account and project with Standard 
 param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = deployment().location
+param resourceLocation string = 'eastus' // Explicitly using eastus which supports AIServices
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'fndrywaf'
@@ -42,6 +42,7 @@ module testDeployment '../../../main.bicep' = [
       name: 'fn${substring(uniqueString(deployment().name), 0, 6)}' // Using uniqueString to generate a short, unique name (8 chars total)
       location: resourceLocation
       aiFoundryType: 'StandardPrivate' // Replace with the required value@allowed(['Basic''StandardPublic''StandardPrivate'])
+      userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test
       contentSafetyEnabled: true // Set to true or false as required
       vmAdminPasswordOrKey: '$tart12345' // Replace with a secure password or key
       vmSize: 'Standard_DS4_v2'

@@ -88,17 +88,18 @@ module aiServices 'service.bicep' = {
       : [
           {
             principalId: userObjectId
-            principalType: 'User'
+            // Allow for either User or ServicePrincipal
+            principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Cognitive Services OpenAI Contributor'
           }
           {
             principalId: userObjectId
-            principalType: 'User'
+            principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Cognitive Services Contributor'
           }
           {
             principalId: userObjectId
-            principalType: 'User'
+            principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Cognitive Services User'
           }
         ]

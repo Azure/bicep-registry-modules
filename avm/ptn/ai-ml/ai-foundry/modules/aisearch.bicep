@@ -57,12 +57,12 @@ module aiSearch 'br/public:avm/res/search/search-service:0.10.0' = {
       : [
           {
             principalId: userObjectId
-            principalType: 'User'
+            principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Search Index Data Contributor'
           }
           {
             principalId: userObjectId
-            principalType: 'User'
+            principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Search Index Data Reader'
           }
         ]

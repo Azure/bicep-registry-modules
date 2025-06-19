@@ -208,7 +208,7 @@ module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType
         : [
             {
               principalId: userObjectId
-              principalType: 'User'
+              principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: 'Storage Blob Data Contributor'
             }
           ],
@@ -260,7 +260,7 @@ module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic'
         : [
             {
               principalId: userObjectId
-              principalType: 'User'
+              principalType: 'ServicePrincipal'
               roleDefinitionIdOrName: 'Search Index Data Contributor'
             }
           ],

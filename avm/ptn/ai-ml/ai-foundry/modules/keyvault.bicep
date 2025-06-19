@@ -77,7 +77,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.0' = {
       : [
           {
             principalId: userObjectId
-            principalType: 'User'
+            principalType: 'ServicePrincipal'
             roleDefinitionIdOrName: 'Key Vault Secrets User'
           }
         ]

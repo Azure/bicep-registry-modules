@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7852678692798699548"
+      "templateHash": "7933792337246125442"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -1197,7 +1197,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "7199615749092453776"
+              "templateHash": "10315617006283120175"
             }
           },
           "parameters": {
@@ -4469,7 +4469,7 @@
                     ]
                   },
                   "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', 'private-dns-keyvault-deployment'), '2022-09-01').outputs.resourceId.value))), 'service', 'vault', 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
-                  "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'User', 'roleDefinitionIdOrName', 'Key Vault Secrets User'))))]"
+                  "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Key Vault Secrets User'))))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -14190,7 +14190,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13723670141712981319"
+              "templateHash": "5347104182700128078"
             }
           },
           "definitions": {
@@ -20729,7 +20729,7 @@
                   "aiModelDeployments": {
                     "value": "[parameters('aiModelDeployments')]"
                   },
-                  "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'User', 'roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'User', 'roleDefinitionIdOrName', 'Cognitive Services Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'User', 'roleDefinitionIdOrName', 'Cognitive Services User'))))]",
+                  "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services OpenAI Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Cognitive Services User'))))]",
                   "tags": {
                     "value": "[parameters('tags')]"
                   }
@@ -26208,7 +26208,7 @@
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
           "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
           "roleAssignments": {
-            "value": "[concat(if(empty(parameters('userObjectId')), createArray(), createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'User', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor'))), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray(createObject('principalId', reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')))]"
+            "value": "[concat(if(empty(parameters('userObjectId')), createArray(), createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor'))), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray(createObject('principalId', reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')))]"
           },
           "tags": {
             "value": "[variables('allTags')]"
@@ -38788,7 +38788,7 @@
             "value": "[parameters('userObjectId')]"
           },
           "roleAssignments": {
-            "value": "[union(if(empty(parameters('userObjectId')), createArray(), createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'User', 'roleDefinitionIdOrName', 'Search Index Data Contributor'))), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'), createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Service Contributor')))]"
+            "value": "[union(if(empty(parameters('userObjectId')), createArray(), createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'))), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'), createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Service Contributor')))]"
           },
           "tags": {
             "value": "[variables('allTags')]"
@@ -38802,7 +38802,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "5239700179516056436"
+              "templateHash": "10102002830762591083"
             }
           },
           "definitions": {
@@ -42140,7 +42140,7 @@
                   "replicaCount": {
                     "value": 3
                   },
-                  "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'User', 'roleDefinitionIdOrName', 'Search Index Data Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'User', 'roleDefinitionIdOrName', 'Search Index Data Reader'))))]",
+                  "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Reader'))))]",
                   "diagnosticSettings": {
                     "value": [
                       {}
@@ -44324,7 +44324,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14347956437912122684"
+              "templateHash": "9745791438980746196"
             }
           },
           "parameters": {
@@ -44810,7 +44810,7 @@
               "name": "[guid(resourceId('Microsoft.Compute/virtualMachines', parameters('vmName')), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4'), parameters('userObjectId'))]",
               "properties": {
                 "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
-                "principalType": "User",
+                "principalType": "ServicePrincipal",
                 "principalId": "[parameters('userObjectId')]"
               },
               "dependsOn": [

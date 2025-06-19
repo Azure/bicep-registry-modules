@@ -385,7 +385,7 @@ resource virtualMachineAdministratorLoginUserRoleAssignment 'Microsoft.Authoriza
   scope: virtualMachine
   properties: {
     roleDefinitionId: virtualMachineAdministratorLoginRoleDefinition.id
-    principalType: 'User'
+    principalType: 'ServicePrincipal'
     principalId: userObjectId
   }
 }

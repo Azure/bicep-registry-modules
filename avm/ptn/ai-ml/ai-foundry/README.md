@@ -120,6 +120,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     vmAdminPasswordOrKey: 'P@ssw0rd123!'
     // Non-required parameters
     location: '<location>'
+    userObjectId: '00000000-0000-0000-0000-000000000000'
   }
 }
 ```
@@ -152,6 +153,9 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     // Non-required parameters
     "location": {
       "value": "<location>"
+    },
+    "userObjectId": {
+      "value": "00000000-0000-0000-0000-000000000000"
     }
   }
 }
@@ -174,6 +178,7 @@ param name = '<name>'
 param vmAdminPasswordOrKey = 'P@ssw0rd123!'
 // Non-required parameters
 param location = '<location>'
+param userObjectId = '00000000-0000-0000-0000-000000000000'
 ```
 
 </details>
@@ -225,6 +230,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       }
     ]
     location: '<location>'
+    userObjectId: '00000000-0000-0000-0000-000000000000'
     vmSize: 'Standard_DS4_v2'
   }
 }
@@ -287,6 +293,9 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "location": {
       "value": "<location>"
     },
+    "userObjectId": {
+      "value": "00000000-0000-0000-0000-000000000000"
+    },
     "vmSize": {
       "value": "Standard_DS4_v2"
     }
@@ -337,6 +346,7 @@ param aiModelDeployments = [
   }
 ]
 param location = '<location>'
+param userObjectId = '00000000-0000-0000-0000-000000000000'
 param vmSize = 'Standard_DS4_v2'
 ```
 
