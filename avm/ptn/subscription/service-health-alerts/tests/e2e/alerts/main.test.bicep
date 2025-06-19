@@ -28,7 +28,6 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 
 module dependencies './dependencies.bicep' = {
-  name: 'dependencies'
   scope: subscription(subscriptionId)
   params: {
     resourceGroupName: resourceGroupName
