@@ -15,13 +15,16 @@ param serviceShort string = 'scpmin'
 @maxLength(90)
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 //param resourceGroupName string = 'dep-${namePrefix}-sa.cps-${serviceShort}-rg'
-param resourceGroupName string = 'dep-main-default-sa.cps-${serviceShort}-rg'
+param resourceGroupName string = 'dep-sa.cps-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
+
+@description('Timestamp for environment name uniqueness.')
+param environmentTimestamp string = take(uniqueString(utcNow()), 5)
 
 // ============ //
 // Dependencies //
@@ -32,7 +35,7 @@ var resourceGroupLocation = enforcedLocation
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: resourceGroupLocation
 }
@@ -48,10 +51,9 @@ module testDeployment '../../../main.bicep' = [
     name: '${uniqueString(deployment().name, resourceGroupLocation)}-test-${serviceShort}-${iteration}'
     params: {
       // You parameters go here
-      //name: '${namePrefix}${serviceShort}001'
+      environmentName: 'test-${environmentTimestamp}-${iteration}'
       // location: resourceGroupLocation
       contentUnderstandingLocation: resourceGroupLocation
-      environmentName: 'test-${iteration}'
       gptDeploymentCapacity: 80
     }
   }
