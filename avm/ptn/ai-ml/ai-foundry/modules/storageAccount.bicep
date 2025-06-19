@@ -123,9 +123,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
       // Optionally add ipRules or virtualNetworkRules here
     }
     supportsHttpsTrafficOnly: true
-    diagnosticSettings: [
-      {}
-    ]
+    // Removed empty diagnosticSettings to avoid "At least one data sink needs to be specified" error
     privateEndpoints: networkIsolation
       ? [
           {

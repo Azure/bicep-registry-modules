@@ -54,9 +54,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.0' = {
     enableRbacAuthorization: true
     enableSoftDelete: true
     softDeleteRetentionInDays: 7
-    diagnosticSettings: [
-      {}
-    ]
+    // Removed empty diagnosticSettings to avoid "At least one data sink needs to be specified" error
     privateEndpoints: networkIsolation
       ? [
           {

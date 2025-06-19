@@ -55,9 +55,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
     managedIdentities: {
       systemAssigned: true
     }
-    diagnosticSettings: [
-      {}
-    ]
+    // Removed empty diagnosticSettings to avoid "At least one data sink needs to be specified" error
     privateEndpoints: networkIsolation
       ? [
           {

@@ -66,9 +66,7 @@ module aiSearch 'br/public:avm/res/search/search-service:0.10.0' = {
             roleDefinitionIdOrName: 'Search Index Data Reader'
           }
         ]
-    diagnosticSettings: [
-      {}
-    ]
+    // Removed empty diagnosticSettings that was causing "At least one data sink needs to be specified" error
     privateEndpoints: networkIsolation
       ? [
           {

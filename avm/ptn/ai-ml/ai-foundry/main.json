@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7933792337246125442"
+      "templateHash": "10343061428287887846"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -1197,7 +1197,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10315617006283120175"
+              "templateHash": "9259791610124476983"
             }
           },
           "parameters": {
@@ -4462,11 +4462,6 @@
                   },
                   "softDeleteRetentionInDays": {
                     "value": 7
-                  },
-                  "diagnosticSettings": {
-                    "value": [
-                      {}
-                    ]
                   },
                   "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', 'private-dns-keyvault-deployment'), '2022-09-01').outputs.resourceId.value))), 'service', 'vault', 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
                   "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Key Vault Secrets User'))))]"
@@ -7820,7 +7815,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "9879478258257388780"
+              "templateHash": "12635604093907198468"
             }
           },
           "parameters": {
@@ -11091,11 +11086,6 @@
                     "value": {
                       "systemAssigned": true
                     }
-                  },
-                  "diagnosticSettings": {
-                    "value": [
-                      {}
-                    ]
                   },
                   "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', 'private-dns-acr-deployment'), '2022-09-01').outputs.resourceId.value))), 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]"
                 },
@@ -26222,7 +26212,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "17289966052720549693"
+              "templateHash": "14082410303532788620"
             }
           },
           "definitions": {
@@ -32793,11 +32783,6 @@
                   "supportsHttpsTrafficOnly": {
                     "value": true
                   },
-                  "diagnosticSettings": {
-                    "value": [
-                      {}
-                    ]
-                  },
                   "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('blobPrivateDnsZone').outputs.resourceId.value))), 'service', 'blob', 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')), createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('filePrivateDnsZone').outputs.resourceId.value))), 'service', 'file', 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
                   "roleAssignments": {
                     "value": "[parameters('roleAssignments')]"
@@ -38802,7 +38787,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10102002830762591083"
+              "templateHash": "12236865855038337310"
             }
           },
           "definitions": {
@@ -42141,11 +42126,6 @@
                     "value": 3
                   },
                   "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'), createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Reader'))))]",
-                  "diagnosticSettings": {
-                    "value": [
-                      {}
-                    ]
-                  },
                   "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference('privateDnsZone').outputs.resourceId.value))), 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -44896,7 +44876,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "889093371001226425"
+              "templateHash": "3786284728086855011"
             }
           },
           "definitions": {
@@ -48389,11 +48369,6 @@
                   },
                   "automaticFailover": {
                     "value": true
-                  },
-                  "diagnosticSettings": {
-                    "value": [
-                      {}
-                    ]
                   },
                   "disableKeyBasedMetadataWriteAccess": {
                     "value": true

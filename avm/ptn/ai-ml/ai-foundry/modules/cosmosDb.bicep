@@ -42,9 +42,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
   params: {
     name: nameFormatted
     automaticFailover: true
-    diagnosticSettings: [
-      {}
-    ]
+    // Removed empty diagnosticSettings to avoid "At least one data sink needs to be specified" error
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: true
     location: location
