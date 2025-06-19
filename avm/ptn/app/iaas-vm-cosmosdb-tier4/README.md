@@ -113,6 +113,7 @@ module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<versio
     // Required parameters
     name: '<name>'
     // Non-required parameters
+    encryptionAtHost: false
     location: '<location>'
     tags: {
       Application: 'IaaSVMCosmosDB'
@@ -141,6 +142,9 @@ module iaasVmCosmosdbTier4 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<versio
       "value": "<name>"
     },
     // Non-required parameters
+    "encryptionAtHost": {
+      "value": false
+    },
     "location": {
       "value": "<location>"
     },
@@ -169,6 +173,7 @@ using 'br/public:avm/ptn/app/iaas-vm-cosmosdb-tier4:<version>'
 // Required parameters
 param name = '<name>'
 // Non-required parameters
+param encryptionAtHost = false
 param location = '<location>'
 param tags = {
   Application: 'IaaSVMCosmosDB'
