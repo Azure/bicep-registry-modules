@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'WAF-aligned configuration with default parameter values'
+metadata name = 'waf-aligned configuration with default parameter values'
 metadata description = 'This instance deploys the [Content Processing Solution Accelerator]'
 
 // ========== //
@@ -25,12 +25,15 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 // Dependencies //
 // ============ //
+#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
+var enforcedLocation = 'australiaeast'
+var resourceGroupLocation = enforcedLocation
 
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: resourceGroupLocation
 }
 
 // ============== //

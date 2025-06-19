@@ -1,6 +1,6 @@
 targetScope = 'subscription'
 
-metadata name = 'Sandbox configuration with default parameter values'
+metadata name = 'main configuration with default parameter values'
 metadata description = 'This instance deploys the [Content Processing Solution Accelerator] using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.'
 
 // ========== //
@@ -25,12 +25,15 @@ param namePrefix string = '#_namePrefix_#'
 // ============ //
 // Dependencies //
 // ============ //
+#disable-next-line no-hardcoded-location // A value to avoid ongoing capacity challenges with Server Farm for frontend webapp in AVM Azure testing subscription
+var enforcedLocation = 'australiaeast'
+var resourceGroupLocation = enforcedLocation
 
 // General resources
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: resourceGroupLocation
 }
 
 // ============== //
@@ -45,8 +48,8 @@ module testDeployment '../../../main.bicep' = [
     params: {
       // You parameters go here
       //name: '${namePrefix}${serviceShort}001'
-      location: resourceLocation
-      contentUnderstandingLocation: resourceLocation
+      location: resourceGroupLocation
+      contentUnderstandingLocation: resourceGroupLocation
       environmentName: 'test-env'
       gptDeploymentCapacity: 80
     }
