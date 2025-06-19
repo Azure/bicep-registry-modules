@@ -63,8 +63,8 @@ module testDeployment '../../../main.bicep' = {
           ]
           armRoleReceivers: [
             {
-              name: 'armRoleReceiver-${namePrefix}-${serviceShort}'
-              roleId: '/providers/Microsoft.Authorization/roleDefinitions/8e3af657-a8ff-443c-a75c-2fe8c4bcb635' // Owner role
+              name: 'armRoleReceiverOwner-${namePrefix}-${serviceShort}'
+              roleId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' // Owner role
             }
           ]
         }
