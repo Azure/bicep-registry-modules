@@ -1,8 +1,8 @@
 @description('Required. Name of the Cognitive Services resource. Must be unique in the resource group.')
 param name string
 
-@description('Required. Unique string to use when naming global resources.')
-param resourceToken string
+@description('Optional. Unique string to use when naming global resources.')
+param resourceToken string = ''
 
 @description('Required. Specifies the location for all the Azure resources. Defaults to the location of the resource group.')
 param location string
@@ -61,9 +61,9 @@ module openAiPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' =
 }
 
 module aiServices 'service.bicep' = {
-  name: take('${name}-aisrvc', 12)
+  name: take('${name}-ais', 12)
   params: {
-    name: 'cog${name}${resourceToken}'
+    name: take('ai${name}', 12)
     location: location
     kind: 'AIServices'
     category: 'AIServices'
@@ -107,9 +107,9 @@ module aiServices 'service.bicep' = {
 }
 
 module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
-  name: take('${name}-cntsfty', 12)
+  name: take('${name}-cnt', 12)
   params: {
-    name: 'safety${name}${resourceToken}'
+    name: take('sf${name}', 12)
     location: location
     kind: 'ContentSafety'
     networkIsolation: networkIsolation

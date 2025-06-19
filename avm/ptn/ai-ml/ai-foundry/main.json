@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "13674063260757681869"
+      "templateHash": "7852678692798699548"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -14190,7 +14190,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13624832426233412300"
+              "templateHash": "13723670141712981319"
             }
           },
           "definitions": {
@@ -14304,8 +14304,9 @@
             },
             "resourceToken": {
               "type": "string",
+              "defaultValue": "",
               "metadata": {
-                "description": "Required. Unique string to use when naming global resources."
+                "description": "Optional. Unique string to use when naming global resources."
               }
             },
             "location": {
@@ -20700,7 +20701,7 @@
             "aiServices": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-aisrvc', parameters('name')), 12)]",
+              "name": "[take(format('{0}-ais', parameters('name')), 12)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -20708,7 +20709,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[format('cog{0}{1}', parameters('name'), parameters('resourceToken'))]"
+                    "value": "[take(format('ai{0}', parameters('name')), 12)]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -23431,7 +23432,7 @@
               "condition": "[parameters('contentSafetyEnabled')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-cntsfty', parameters('name')), 12)]",
+              "name": "[take(format('{0}-cnt', parameters('name')), 12)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -23439,7 +23440,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[format('safety{0}{1}', parameters('name'), parameters('resourceToken'))]"
+                    "value": "[take(format('sf{0}', parameters('name')), 12)]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -52225,7 +52226,7 @@
       "metadata": {
         "description": "Name of the deployed Azure Key Vault."
       },
-      "value": "[reference('keyvault').outputs.name.value]"
+      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('keyvault').outputs.name.value, '')]"
     },
     "azureAiServicesName": {
       "type": "string",
@@ -52267,7 +52268,7 @@
       "metadata": {
         "description": "Username for the deployed Azure VM."
       },
-      "value": "[variables('servicesUsername')]"
+      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), variables('servicesUsername'), '')]"
     },
     "azureContainerRegistryName": {
       "type": "string",

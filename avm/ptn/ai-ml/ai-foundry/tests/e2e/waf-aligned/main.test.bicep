@@ -39,7 +39,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'fndry${substring(uniqueString(deployment().name), 0, 4)}' // Using uniqueString to generate a short, unique name
+      name: 'fn${substring(uniqueString(deployment().name), 0, 6)}' // Using uniqueString to generate a short, unique name (8 chars total)
       location: resourceLocation
       aiFoundryType: 'StandardPrivate' // Replace with the required value@allowed(['Basic''StandardPublic''StandardPrivate'])
       contentSafetyEnabled: true // Set to true or false as required

@@ -331,7 +331,7 @@ import { sqlDatabaseType, deploymentsType } from 'modules/customTypes.bicep'
 output resourceGroupName string = resourceGroup().name
 
 @description('Name of the deployed Azure Key Vault.')
-output azureKeyVaultName string = keyvault.outputs.name
+output azureKeyVaultName string = toLower(aiFoundryType) != 'basic' ? keyvault.outputs.name : ''
 
 @description('Name of the deployed Azure AI Services account.')
 output azureAiServicesName string = cognitiveServices.outputs.aiServicesName
@@ -349,7 +349,7 @@ output azureBastionName string = networkIsolation ? network.outputs.bastionName 
 output azureVmResourceId string = shouldDeployVM ? virtualMachine.outputs.id : ''
 
 @description('Username for the deployed Azure VM.')
-output azureVmUsername string = servicesUsername
+output azureVmUsername string = toLower(aiFoundryType) != 'basic' ? servicesUsername : ''
 
 @description('Name of the deployed Azure Container Registry.')
 output azureContainerRegistryName string = toLower(aiFoundryType) != 'basic' ? containerRegistry.outputs.name : ''
