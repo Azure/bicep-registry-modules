@@ -316,7 +316,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
           priority: 100
           sourceAddressPrefix: 'VirtualNetwork'
           destinationAddressPrefix: 'VirtualNetwork'
-          protocol: 'Tcp'
+          protocol: '*'
           sourcePortRange: '*'
           destinationPortRanges: ['22', '3389']
         }
@@ -676,7 +676,7 @@ module cosmosdbAccount 'br/public:avm/res/document-db/database-account:0.15.0' =
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = {
   name: '${uniqueString(deployment().name, location)}-dns'
   params: {
-    name: 'privatelink.mongocluster.cosmos.azure.com'
+    name: 'privatelink.documents.azure.com'
     location: 'global'
     tags: tags ?? {}
     virtualNetworkLinks: [
@@ -703,7 +703,7 @@ module privateEndpoint 'br/public:avm/res/network/private-endpoint:0.11.0' = {
         name: 'pep-${name}-cosmos-conn'
         properties: {
           groupIds: [
-            'MongoCluster'
+            'Sql'
           ]
           privateLinkServiceId: cosmosdbAccount.outputs.resourceId
         }

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12178946251329685813"
+      "templateHash": "542920940495891258"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -3016,7 +3016,7 @@
                   "priority": 100,
                   "sourceAddressPrefix": "VirtualNetwork",
                   "destinationAddressPrefix": "VirtualNetwork",
-                  "protocol": "Tcp",
+                  "protocol": "*",
                   "sourcePortRange": "*",
                   "destinationPortRanges": [
                     "22",
@@ -28134,7 +28134,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "privatelink.mongocluster.cosmos.azure.com"
+            "value": "privatelink.documents.azure.com"
           },
           "location": {
             "value": "global"
@@ -31322,7 +31322,7 @@
                 "name": "[format('pep-{0}-cosmos-conn', parameters('name'))]",
                 "properties": {
                   "groupIds": [
-                    "MongoCluster"
+                    "Sql"
                   ],
                   "privateLinkServiceId": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format('cosmosdbAccount-{0}', uniqueString(deployment().name, parameters('location')))), '2022-09-01').resourceId]"
                 }
