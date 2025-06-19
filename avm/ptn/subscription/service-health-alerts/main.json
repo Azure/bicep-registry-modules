@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "16070059164094822035"
+      "templateHash": "8472192964992017275"
     },
     "name": "Azure Service Health Alerts",
     "description": "This module deploys Azure Service Health Alerts to notify you of service issues, planned maintenance, and health advisories that may affect your Azure services."
@@ -1407,6 +1407,7 @@
         "name": "createServiceHealthAlerts",
         "count": "[length(parameters('serviceHealthAlerts'))]"
       },
+      "condition": "[not(empty(parameters('serviceHealthAlerts')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('createServiceHealthAlerts-{0}-{1}', copyIndex(), uniqueString('createServiceHealthAlerts', deployment().name))]",

@@ -70,7 +70,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
         serviceHealthAlert: 'Resource Health Unhealthy'
       }
     ]
-    serviceHealthAlertsResourceGroupName: 'rsg-tests-ashalt'
+    serviceHealthAlertsResourceGroupName: '<serviceHealthAlertsResourceGroupName>'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -120,7 +120,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
       ]
     },
     "serviceHealthAlertsResourceGroupName": {
-      "value": "rsg-tests-ashalt"
+      "value": "<serviceHealthAlertsResourceGroupName>"
     },
     "subscriptionId": {
       "value": "<subscriptionId>"
@@ -164,7 +164,7 @@ param serviceHealthAlerts = [
     serviceHealthAlert: 'Resource Health Unhealthy'
   }
 ]
-param serviceHealthAlertsResourceGroupName = 'rsg-tests-ashalt'
+param serviceHealthAlertsResourceGroupName = '<serviceHealthAlertsResourceGroupName>'
 param subscriptionId = '<subscriptionId>'
 ```
 
@@ -186,7 +186,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
   params: {
     enableTelemetry: true
     location: '<location>'
-    serviceHealthAlertsResourceGroupName: 'rsg-tests-ashmin'
+    serviceHealthAlertsResourceGroupName: '<serviceHealthAlertsResourceGroupName>'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -211,7 +211,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
       "value": "<location>"
     },
     "serviceHealthAlertsResourceGroupName": {
-      "value": "rsg-tests-ashmin"
+      "value": "<serviceHealthAlertsResourceGroupName>"
     },
     "subscriptionId": {
       "value": "<subscriptionId>"
@@ -232,7 +232,7 @@ using 'br/public:avm/ptn/subscription/service-health-alerts:<version>'
 
 param enableTelemetry = true
 param location = '<location>'
-param serviceHealthAlertsResourceGroupName = 'rsg-tests-ashmin'
+param serviceHealthAlertsResourceGroupName = '<serviceHealthAlertsResourceGroupName>'
 param subscriptionId = '<subscriptionId>'
 ```
 
