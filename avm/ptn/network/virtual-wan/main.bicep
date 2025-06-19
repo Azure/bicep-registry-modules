@@ -268,31 +268,31 @@ type virtualWanParameterType = {
     @description('Optional. Name of the P2S VPN server configuration.')
     p2sVpnServerConfigurationName: string?
 
-    @description('Optional. Azure AD audience for VPN authentication.')
+    @description('Conditional. Entra ID audience for VPN authentication. Required if using Entra ID audience for VPN authentication.')
     aadAudience: string?
 
-    @description('Optional. Azure AD issuer for VPN authentication.')
+    @description('Conditional. Entra ID issuer for VPN authentication. Required if using Entra ID authentication.')
     aadIssuer: string?
 
-    @description('Optional. Azure AD tenant for VPN authentication.')
+    @description('Conditional. Entra ID tenant for VPN authentication. Required if using Entra ID authentication.')
     aadTenant: string?
 
-    @description('Optional. Policy groups for P2S VPN configuration.')
+    @description('Conditional. Configure user groups and IP Address Pools. Required if using Entra ID authentication.')
     p2sConfigurationPolicyGroups: array?
 
-    @description('Optional. List of RADIUS client root certificates.')
+    @description('Conditional. List of RADIUS client root certificates. Required if using RADIUS authentication.')
     radiusClientRootCertificates: array?
 
-    @description('Optional. RADIUS server address.')
+    @description('Conditional. RADIUS server address. Required if using RADIUS authentication.')
     radiusServerAddress: string?
 
-    @description('Optional. List of RADIUS server root certificates.')
+    @description('Conditional. List of RADIUS server root certificates. Required if using RADIUS authentication.')
     radiusServerRootCertificates: array?
 
-    @description('Optional. RADIUS server secret.')
+    @description('Conditional. RADIUS server secret. Required if using RADIUS authentication.')
     radiusServerSecret: string?
 
-    @description('Optional. List of RADIUS servers.')
+    @description('Conditional. List of RADIUS servers. Required if using RADIUS authentication.')
     radiusServers: array?
 
     @description('Optional. VPN authentication types supported.')
@@ -300,13 +300,13 @@ type virtualWanParameterType = {
 
     @description('Optional. List of VPN client IPsec policies.')
     vpnClientIpsecPolicies: vpnClientIpsecPoliciesType[]?
-    
+
     @description('Optional. List of revoked VPN client certificates.')
     vpnClientRevokedCertificates: array?
 
     @description('Optional. List of VPN client root certificates.')
     vpnClientRootCertificates: array?
-    
+
     @description('Optional. Supported VPN protocols.')
     vpnProtocols: ('IkeV2' | 'OpenVPN')?
   }?
@@ -497,13 +497,13 @@ type virtualHubParameterType = {
       vpnConnectionProtocolType: ('IKEv1' | 'IKEv2')
 
       @description('Optional. IPsec policies for the connection.')
-      ipsecPolicies: []
+      ipsecPolicies: []?
 
       @description('Optional. Traffic selector policies for the connection.')
-      trafficSelectorPolicies: []
+      trafficSelectorPolicies: []?
 
       @description('Optional. VPN link connections for the connection.')
-      vpnLinkConnections: []
+      vpnLinkConnections: []?
     }[]?
   }?
   @description('Optional. ExpressRoute parameters for the Virtual Hub.')
