@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "4072592506837178363"
+      "templateHash": "18325622109191362559"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -14189,7 +14189,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "2059035764820716190"
+              "templateHash": "13624832426233412300"
             }
           },
           "definitions": {
@@ -20699,7 +20699,7 @@
             "aiServices": {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-ai-services-deployment', parameters('name')), 64)]",
+              "name": "[take(format('{0}-aisrvc', parameters('name')), 12)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -23430,7 +23430,7 @@
               "condition": "[parameters('contentSafetyEnabled')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[take(format('{0}-content-safety-deployment', parameters('name')), 64)]",
+              "name": "[take(format('{0}-cntsfty', parameters('name')), 12)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
