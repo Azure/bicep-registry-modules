@@ -261,7 +261,6 @@ Tags for all resources. Should include standard tags like Environment, Owner, Co
 
 - Required: No
 - Type: object
-- Default: `{}`
 - Example: `System.Management.Automation.OrderedHashtable`
 
 ### Parameter: `adminUsername`
