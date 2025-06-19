@@ -199,7 +199,7 @@ module alertsResourceGroup 'br/public:avm/res/resources/resource-group:0.4.1' = 
 }
 
 module createServiceHealthAlerts 'br/public:avm/res/insights/activity-log-alert:0.4.0' = [
-  for (alert, i) in serviceHealthAlerts: {
+  for (alert, i) in serviceHealthAlerts: if (!empty(serviceHealthAlerts)) {
     scope: resourceGroup(subscriptionId, serviceHealthAlertsResourceGroupName)
     dependsOn: [
       alertsResourceGroup

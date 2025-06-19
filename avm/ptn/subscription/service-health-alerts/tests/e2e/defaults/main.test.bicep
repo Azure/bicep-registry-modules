@@ -45,7 +45,7 @@ module testDeployment '../../../main.bicep' = {
   params: {
     subscriptionId: subscriptionId
     location: resourceLocation
-    serviceHealthAlertsResourceGroupName: 'rsg-tests-${namePrefix}-${serviceShort}'
+    serviceHealthAlertsResourceGroupName: dependencies.outputs.resourceGroupName
     enableTelemetry: true
   }
 }
