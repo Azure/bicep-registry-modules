@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "542920940495891258"
+      "templateHash": "10544276918095346352"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -2945,7 +2945,7 @@
                 "properties": {
                   "access": "Allow",
                   "direction": "Inbound",
-                  "priority": 120,
+                  "priority": 100,
                   "sourceAddressPrefix": "Internet",
                   "destinationAddressPrefix": "*",
                   "protocol": "Tcp",
@@ -2958,7 +2958,7 @@
                 "properties": {
                   "access": "Allow",
                   "direction": "Inbound",
-                  "priority": 130,
+                  "priority": 110,
                   "sourceAddressPrefix": "GatewayManager",
                   "destinationAddressPrefix": "*",
                   "protocol": "Tcp",
@@ -2971,7 +2971,7 @@
                 "properties": {
                   "access": "Allow",
                   "direction": "Inbound",
-                  "priority": 140,
+                  "priority": 120,
                   "sourceAddressPrefix": "AzureLoadBalancer",
                   "destinationAddressPrefix": "*",
                   "protocol": "Tcp",
@@ -2980,11 +2980,11 @@
                 }
               },
               {
-                "name": "AllowBastionHostCommunication",
+                "name": "AllowBastionHostCommunicationInbound",
                 "properties": {
                   "access": "Allow",
                   "direction": "Inbound",
-                  "priority": 150,
+                  "priority": 130,
                   "sourceAddressPrefix": "VirtualNetwork",
                   "destinationAddressPrefix": "VirtualNetwork",
                   "protocol": "Tcp",
@@ -2996,25 +2996,12 @@
                 }
               },
               {
-                "name": "DenyAllInbound",
-                "properties": {
-                  "access": "Deny",
-                  "direction": "Inbound",
-                  "priority": 4096,
-                  "sourceAddressPrefix": "*",
-                  "destinationAddressPrefix": "*",
-                  "protocol": "*",
-                  "sourcePortRange": "*",
-                  "destinationPortRange": "*"
-                }
-              },
-              {
                 "name": "AllowSshRdpOutbound",
                 "properties": {
                   "access": "Allow",
                   "direction": "Outbound",
                   "priority": 100,
-                  "sourceAddressPrefix": "VirtualNetwork",
+                  "sourceAddressPrefix": "*",
                   "destinationAddressPrefix": "VirtualNetwork",
                   "protocol": "*",
                   "sourcePortRange": "*",
@@ -3038,7 +3025,7 @@
                 }
               },
               {
-                "name": "AllowBastionCommunication",
+                "name": "AllowBastionCommunicationOutbound",
                 "properties": {
                   "access": "Allow",
                   "direction": "Outbound",
@@ -3064,19 +3051,6 @@
                   "protocol": "*",
                   "sourcePortRange": "*",
                   "destinationPortRange": "80"
-                }
-              },
-              {
-                "name": "DenyAllOutbound",
-                "properties": {
-                  "access": "Deny",
-                  "direction": "Outbound",
-                  "priority": 4096,
-                  "sourceAddressPrefix": "*",
-                  "destinationAddressPrefix": "*",
-                  "protocol": "*",
-                  "sourcePortRange": "*",
-                  "destinationPortRange": "*"
                 }
               }
             ]
@@ -3753,7 +3727,7 @@
                 "networkSecurityGroupResourceId": "[reference('bootDiagnosticsNsg').outputs.resourceId.value]"
               },
               {
-                "name": "AzureBastionSubnet",
+                "name": "[parameters('subnets')[3].name]",
                 "addressPrefix": "[parameters('subnets')[3].addressPrefix]",
                 "networkSecurityGroupResourceId": "[reference('bastionNsg').outputs.resourceId.value]"
               }
