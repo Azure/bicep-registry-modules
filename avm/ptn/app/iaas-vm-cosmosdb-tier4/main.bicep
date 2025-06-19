@@ -238,13 +238,13 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
     location: location
     tags: tags ?? {}
     securityRules: [
-      // Inbound Rules
+      // Required Inbound Rules for Azure Bastion
       {
         name: 'AllowHttpsInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
-          priority: 120
+          priority: 100
           sourceAddressPrefix: 'Internet'
           destinationAddressPrefix: '*'
           protocol: 'Tcp'
@@ -257,7 +257,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
         properties: {
           access: 'Allow'
           direction: 'Inbound'
-          priority: 130
+          priority: 110
           sourceAddressPrefix: 'GatewayManager'
           destinationAddressPrefix: '*'
           protocol: 'Tcp'
@@ -270,7 +270,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
         properties: {
           access: 'Allow'
           direction: 'Inbound'
-          priority: 140
+          priority: 120
           sourceAddressPrefix: 'AzureLoadBalancer'
           destinationAddressPrefix: '*'
           protocol: 'Tcp'
@@ -279,11 +279,11 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
         }
       }
       {
-        name: 'AllowBastionHostCommunication'
+        name: 'AllowBastionHostCommunicationInbound'
         properties: {
           access: 'Allow'
           direction: 'Inbound'
-          priority: 150
+          priority: 130
           sourceAddressPrefix: 'VirtualNetwork'
           destinationAddressPrefix: 'VirtualNetwork'
           protocol: 'Tcp'
@@ -294,31 +294,21 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
           ]
         }
       }
-      {
-        name: 'DenyAllInbound'
-        properties: {
-          access: 'Deny'
-          direction: 'Inbound'
-          priority: 4096
-          sourceAddressPrefix: '*'
-          destinationAddressPrefix: '*'
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRange: '*'
-        }
-      }
-      // Outbound Rules
+      // Required Outbound Rules for Azure Bastion
       {
         name: 'AllowSshRdpOutbound'
         properties: {
           access: 'Allow'
           direction: 'Outbound'
           priority: 100
-          sourceAddressPrefix: 'VirtualNetwork'
+          sourceAddressPrefix: '*'
           destinationAddressPrefix: 'VirtualNetwork'
           protocol: '*'
           sourcePortRange: '*'
-          destinationPortRanges: ['22', '3389']
+          destinationPortRanges: [
+            '22'
+            '3389'
+          ]
         }
       }
       {
@@ -335,7 +325,7 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
         }
       }
       {
-        name: 'AllowBastionCommunication'
+        name: 'AllowBastionCommunicationOutbound'
         properties: {
           access: 'Allow'
           direction: 'Outbound'
@@ -361,19 +351,6 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
           protocol: '*'
           sourcePortRange: '*'
           destinationPortRange: '80'
-        }
-      }
-      {
-        name: 'DenyAllOutbound'
-        properties: {
-          access: 'Deny'
-          direction: 'Outbound'
-          priority: 4096
-          sourceAddressPrefix: '*'
-          destinationAddressPrefix: '*'
-          protocol: '*'
-          sourcePortRange: '*'
-          destinationPortRange: '*'
         }
       }
     ]
@@ -408,7 +385,7 @@ module virtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = {
         networkSecurityGroupResourceId: bootDiagnosticsNsg.outputs.resourceId
       }
       {
-        name: 'AzureBastionSubnet'
+        name: subnets[3].name
         addressPrefix: subnets[3].addressPrefix
         networkSecurityGroupResourceId: bastionNsg.outputs.resourceId
       }
