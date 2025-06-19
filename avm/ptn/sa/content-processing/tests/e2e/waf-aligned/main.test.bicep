@@ -50,7 +50,7 @@ module testDeployment '../../../main.bicep' = [
       //name: '${namePrefix}${serviceShort}001'
       //location: resourceLocation
       contentUnderstandingLocation: resourceLocation
-      environmentName: 'test-env'
+      environmentName: 'test-${iteration}'
       gptDeploymentCapacity: 80
     }
   }
