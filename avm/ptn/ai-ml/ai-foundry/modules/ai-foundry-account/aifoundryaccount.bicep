@@ -61,7 +61,7 @@ module openAiPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' =
 }
 
 module aiServices 'service.bicep' = {
-  name: take('${name}-ai-services-deployment', 64)
+  name: take('${name}-aisrvc', 12)
   params: {
     name: 'cog${name}${resourceToken}'
     location: location
@@ -107,7 +107,7 @@ module aiServices 'service.bicep' = {
 }
 
 module contentSafety 'service.bicep' = if (contentSafetyEnabled) {
-  name: take('${name}-content-safety-deployment', 64)
+  name: take('${name}-cntsfty', 12)
   params: {
     name: 'safety${name}${resourceToken}'
     location: location
