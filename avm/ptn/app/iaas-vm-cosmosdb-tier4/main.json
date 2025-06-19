@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11252458248723114049"
+      "templateHash": "2204754122076092560"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -251,8 +251,7 @@
         "azPowerShellVersion": "9.0",
         "retentionInterval": "P1D",
         "arguments": "[format('-SSHKeyName \"{0}-vm-key\" -ResourceGroupName \"{1}\"', parameters('name'), resourceGroup().name)]",
-        "scriptContent": "[variables('$fxv#0')]",
-        "cleanupPreference": "OnExpiration"
+        "scriptContent": "[variables('$fxv#0')]"
       },
       "dependsOn": [
         "contributorRoleAssignment",
@@ -3013,9 +3012,9 @@
                   "access": "Allow",
                   "direction": "Outbound",
                   "priority": 100,
-                  "sourceAddressPrefix": "*",
+                  "sourceAddressPrefix": "VirtualNetwork",
                   "destinationAddressPrefix": "VirtualNetwork",
-                  "protocol": "*",
+                  "protocol": "Tcp",
                   "sourcePortRange": "*",
                   "destinationPortRanges": [
                     "22",
