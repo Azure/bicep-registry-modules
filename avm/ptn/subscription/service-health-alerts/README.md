@@ -644,12 +644,12 @@ The list of email receivers for the action group.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`emailAddress`](#parameter-servicehealthalertsactiongroupemailreceiversemailaddress) | string | The email address of the email receiver. |
+| [`name`](#parameter-servicehealthalertsactiongroupemailreceiversname) | string | The name of the email receiver. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-servicehealthalertsactiongroupemailreceiversname) | string | The name of the email receiver. |
 | [`useCommonAlertSchema`](#parameter-servicehealthalertsactiongroupemailreceiversusecommonalertschema) | bool | Flag to use common alert schema. |
 
 ### Parameter: `serviceHealthAlerts.actionGroup.emailReceivers.emailAddress`
@@ -959,13 +959,8 @@ The list of SMS receivers for the action group.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`countryCode`](#parameter-servicehealthalertsactiongroupsmsreceiverscountrycode) | string | The country code of the SMS receiver. |
-| [`phoneNumber`](#parameter-servicehealthalertsactiongroupsmsreceiversphonenumber) | string | The phone number of the SMS receiver. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`name`](#parameter-servicehealthalertsactiongroupsmsreceiversname) | string | The name of the SMS receiver. |
+| [`phoneNumber`](#parameter-servicehealthalertsactiongroupsmsreceiversphonenumber) | string | The phone number of the SMS receiver. |
 
 ### Parameter: `serviceHealthAlerts.actionGroup.smsReceivers.countryCode`
 
@@ -974,16 +969,16 @@ The country code of the SMS receiver.
 - Required: Yes
 - Type: string
 
-### Parameter: `serviceHealthAlerts.actionGroup.smsReceivers.phoneNumber`
+### Parameter: `serviceHealthAlerts.actionGroup.smsReceivers.name`
 
-The phone number of the SMS receiver.
+The name of the SMS receiver.
 
 - Required: Yes
 - Type: string
 
-### Parameter: `serviceHealthAlerts.actionGroup.smsReceivers.name`
+### Parameter: `serviceHealthAlerts.actionGroup.smsReceivers.phoneNumber`
 
-The name of the SMS receiver.
+The phone number of the SMS receiver.
 
 - Required: Yes
 - Type: string

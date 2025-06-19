@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12972618925031284517"
+      "templateHash": "3332219865372545498"
     },
     "name": "Azure Service Health Alerts",
     "description": "This module deploys Azure Service Health Alerts to notify you of service issues, planned maintenance, and health advisories that may affect your Azure services."
@@ -500,7 +500,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The name of the SMS receiver."
+            "description": "Required. The name of the SMS receiver."
           }
         }
       }
@@ -603,7 +603,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The name of the email receiver."
+            "description": "Required. The name of the email receiver."
           }
         },
         "useCommonAlertSchema": {

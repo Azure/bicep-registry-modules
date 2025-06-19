@@ -404,6 +404,7 @@ type automationRunbookReceiversType = {
 type azureAppPushReceiversType = {
   @description('Required. The email address registered for the Azure mobile app.')
   emailAddress: string
+
   @description('Required. The name of the Azure mobile app push receiver.')
   name: string
 }
@@ -411,16 +412,22 @@ type azureAppPushReceiversType = {
 type eventHubReceiversType = {
   @description('Required. The name of the specific Event Hub queue.')
   eventHubName: string
+
   @description('Required. The Event Hub namespace.')
   eventHubNameSpace: string
+
   @description('Optional. The principal id of the managed identity.')
   managedIdentity: 'SystemAssigned' | 'None'?
+
   @description('Required. The name of the Event Hub receiver.')
   name: string
+
   @description('Required. The Id for the subscription containing this event hub.')
   subscriptionId: string
+
   @description('Required. The tenant Id for the subscription containing this event hub.')
   tenantId: string
+
   @description('Optional. Flag to use common alert schema.')
   useCommonAlertSchema: bool?
 }
@@ -428,12 +435,16 @@ type eventHubReceiversType = {
 type itsmReceiversType = {
   @description('Required. Unique identification of ITSM connection.')
   connectionId: string
+
   @description('Required. The name of the ITSM connection.')
   name: string
+
   @description('Required. Region in which workspace resides. Supported values:\'centralindia\',\'japaneast\',\'southeastasia\',\'australiasoutheast\',\'uksouth\',\'westcentralus\',\'canadacentral\',\'eastus\',\'westeurope\'.')
   region: string
+
   @description('Required. JSON blob for the configurations of the ITSM action. CreateMultipleWorkItems option will be part of this blob as well.')
   ticketConfiguration: string
+
   @description('Required. Log analytics workspace Id.')
   workspaceId: string
 }
@@ -441,12 +452,16 @@ type itsmReceiversType = {
 type logicAppReceiversType = {
   @description('Required. The callback url where http request sent to.')
   callbackUrl: string
+
   @description('Optional. The principal id of the managed identity.')
   managedIdentity: 'SystemAssigned' | 'None'?
+
   @description('Required. The name of the logic app receiver.')
   name: string
+
   @description('Required. The resource Id of the logic app.')
   resourceId: string
+
   @description('Optional. Flag to use common alert schema.')
   useCommonAlertSchema: bool?
 }
@@ -454,17 +469,21 @@ type logicAppReceiversType = {
 type smsReceiversType = {
   @description('Required. The country code of the SMS receiver.')
   countryCode: string
+
   @description('Required. The phone number of the SMS receiver.')
   phoneNumber: string
-  @description('Optional. The name of the SMS receiver.')
+
+  @description('Required. The name of the SMS receiver.')
   name: string
 }
 
 type voiceReceiverType = {
   @description('Required. The country code of the voice receiver.')
   countryCode: string
+
   @description('Required. The phone number of the voice receiver.')
   phoneNumber: string
+
   @description('Required. The name of the voice receiver.')
   name: string
 }
@@ -472,18 +491,25 @@ type voiceReceiverType = {
 type webhookReceiversType = {
   @description('Optional. The identifier uri for aad auth.')
   identifierUri: string?
+
   @description('Optional. The principal id of the managed identity.')
   managedIdentity: 'SystemAssigned' | 'None'?
+
   @description('Required. The name of the webhook receiver.')
   name: string
+
   @description('Optional. Flag to use common alert schema.')
   useCommonAlertSchema: bool?
+
   @description('Optional. The webhook app object Id for aad auth.')
   objectId: string?
+
   @description('Required. The URI where webhooks should be sent.')
   serviceUri: string
+
   @description('Optional. The tenant Id.')
   tenantId: string?
+
   @description('Optional. Flag to use Entra ID autentication.')
   useAadAuth: bool?
 }
@@ -491,8 +517,10 @@ type webhookReceiversType = {
 type emailReceiversType = {
   @description('Required. The email address of the email receiver.')
   emailAddress: string
-  @description('Optional. The name of the email receiver.')
+
+  @description('Required. The name of the email receiver.')
   name: string
+
   @description('Optional. Flag to use common alert schema.')
   useCommonAlertSchema: bool?
 }
@@ -500,14 +528,19 @@ type emailReceiversType = {
 type azureFunctionReceiversType = {
   @description('Required. The name of the Azure function in the function App.')
   functionName: string
+
   @description('Required. TThe resource Id of the function App.')
   functionAppResourceId: string
+
   @description('Optional. The principal id of the managed identity.')
   managedIdentity: 'SystemAssigned' | 'None'?
+
   @description('Optional. Flag to use common alert schema.')
   useCommonAlertSchema: bool?
+
   @description('Required. The http trigger url where http request sent to.')
   httpTriggerUrl: string
+
   @description('Required. The name of the Azure function receiver.')
   name: string
 }
