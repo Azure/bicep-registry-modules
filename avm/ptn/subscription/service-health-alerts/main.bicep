@@ -352,7 +352,7 @@ type incidentReceiverType = {
   @description('Required. The connection details for the incident management service.')
   connection: incidentReceiverConnectionType
 
-  @description('Optional. The list of Field mappings for the incident service.')
+  @description('Required. The list of Field mappings for the incident service.')
   mappings: object
 }
 
@@ -404,7 +404,7 @@ type automationRunbookReceiversType = {
 type azureAppPushReceiversType = {
   @description('Required. The email address registered for the Azure mobile app.')
   emailAddress: string
-  @description('Optional. The name of the Azure mobile app push receiver.')
+  @description('Required. The name of the Azure mobile app push receiver.')
   name: string
 }
 
@@ -413,13 +413,13 @@ type eventHubReceiversType = {
   eventHubName: string
   @description('Required. The Event Hub namespace.')
   eventHubNameSpace: string
-  @description('Optional. The principal id of the managed identity')
+  @description('Optional. The principal id of the managed identity.')
   managedIdentity: 'SystemAssigned' | 'None'?
   @description('Required. The name of the Event Hub receiver.')
   name: string
   @description('Required. The Id for the subscription containing this event hub.')
   subscriptionId: string
-  @description('Required. The tenant Id for the subscription containing this event hub')
+  @description('Required. The tenant Id for the subscription containing this event hub.')
   tenantId: string
   @description('Optional. Flag to use common alert schema.')
   useCommonAlertSchema: bool?

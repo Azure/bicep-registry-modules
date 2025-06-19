@@ -186,7 +186,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
   params: {
     enableTelemetry: true
     location: '<location>'
-    serviceHealthAlertsResourceGroupName: 'rsg-tests-ashdef'
+    serviceHealthAlertsResourceGroupName: 'rsg-tests-ashmin'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -211,7 +211,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
       "value": "<location>"
     },
     "serviceHealthAlertsResourceGroupName": {
-      "value": "rsg-tests-ashdef"
+      "value": "rsg-tests-ashmin"
     },
     "subscriptionId": {
       "value": "<subscriptionId>"
@@ -232,7 +232,7 @@ using 'br/public:avm/ptn/subscription/service-health-alerts:<version>'
 
 param enableTelemetry = true
 param location = '<location>'
-param serviceHealthAlertsResourceGroupName = 'rsg-tests-ashdef'
+param serviceHealthAlertsResourceGroupName = 'rsg-tests-ashmin'
 param subscriptionId = '<subscriptionId>'
 ```
 
@@ -544,11 +544,6 @@ The list of Azure App Push receivers for the action group.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`emailAddress`](#parameter-servicehealthalertsactiongroupazureapppushreceiversemailaddress) | string | The email address registered for the Azure mobile app. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`name`](#parameter-servicehealthalertsactiongroupazureapppushreceiversname) | string | The name of the Azure mobile app push receiver. |
 
 ### Parameter: `serviceHealthAlerts.actionGroup.azureAppPushReceivers.emailAddress`
@@ -693,13 +688,13 @@ The list of event hub receivers for the action group.
 | [`eventHubNameSpace`](#parameter-servicehealthalertsactiongroupeventhubreceiverseventhubnamespace) | string | The Event Hub namespace. |
 | [`name`](#parameter-servicehealthalertsactiongroupeventhubreceiversname) | string | The name of the Event Hub receiver. |
 | [`subscriptionId`](#parameter-servicehealthalertsactiongroupeventhubreceiverssubscriptionid) | string | The Id for the subscription containing this event hub. |
-| [`tenantId`](#parameter-servicehealthalertsactiongroupeventhubreceiverstenantid) | string | The tenant Id for the subscription containing this event hub |
+| [`tenantId`](#parameter-servicehealthalertsactiongroupeventhubreceiverstenantid) | string | The tenant Id for the subscription containing this event hub. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`managedIdentity`](#parameter-servicehealthalertsactiongroupeventhubreceiversmanagedidentity) | string | The principal id of the managed identity |
+| [`managedIdentity`](#parameter-servicehealthalertsactiongroupeventhubreceiversmanagedidentity) | string | The principal id of the managed identity. |
 | [`useCommonAlertSchema`](#parameter-servicehealthalertsactiongroupeventhubreceiversusecommonalertschema) | bool | Flag to use common alert schema. |
 
 ### Parameter: `serviceHealthAlerts.actionGroup.eventHubReceivers.eventHubName`
@@ -732,14 +727,14 @@ The Id for the subscription containing this event hub.
 
 ### Parameter: `serviceHealthAlerts.actionGroup.eventHubReceivers.tenantId`
 
-The tenant Id for the subscription containing this event hub
+The tenant Id for the subscription containing this event hub.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `serviceHealthAlerts.actionGroup.eventHubReceivers.managedIdentity`
 
-The principal id of the managed identity
+The principal id of the managed identity.
 
 - Required: No
 - Type: string
@@ -778,13 +773,8 @@ The list of incident receivers for the action group.
 | :-- | :-- | :-- |
 | [`connection`](#parameter-servicehealthalertsactiongroupincidentreceiversconnection) | object | The connection details for the incident management service. |
 | [`incidentManagementService`](#parameter-servicehealthalertsactiongroupincidentreceiversincidentmanagementservice) | string | The incident management service type. |
-| [`name`](#parameter-servicehealthalertsactiongroupincidentreceiversname) | string | The name of the incident receiver. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
 | [`mappings`](#parameter-servicehealthalertsactiongroupincidentreceiversmappings) | object | The list of Field mappings for the incident service. |
+| [`name`](#parameter-servicehealthalertsactiongroupincidentreceiversname) | string | The name of the incident receiver. |
 
 ### Parameter: `serviceHealthAlerts.actionGroup.incidentReceivers.connection`
 
@@ -827,19 +817,19 @@ The incident management service type.
   ]
   ```
 
-### Parameter: `serviceHealthAlerts.actionGroup.incidentReceivers.name`
-
-The name of the incident receiver.
-
-- Required: Yes
-- Type: string
-
 ### Parameter: `serviceHealthAlerts.actionGroup.incidentReceivers.mappings`
 
 The list of Field mappings for the incident service.
 
 - Required: Yes
 - Type: object
+
+### Parameter: `serviceHealthAlerts.actionGroup.incidentReceivers.name`
+
+The name of the incident receiver.
+
+- Required: Yes
+- Type: string
 
 ### Parameter: `serviceHealthAlerts.actionGroup.itsmReceivers`
 

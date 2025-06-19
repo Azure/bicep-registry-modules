@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7939174640975775765"
+      "templateHash": "12972618925031284517"
     },
     "name": "Azure Service Health Alerts",
     "description": "This module deploys Azure Service Health Alerts to notify you of service issues, planned maintenance, and health advisories that may affect your Azure services."
@@ -230,7 +230,7 @@
         "mappings": {
           "type": "object",
           "metadata": {
-            "description": "Optional. The list of Field mappings for the incident service."
+            "description": "Required. The list of Field mappings for the incident service."
           }
         }
       }
@@ -348,7 +348,7 @@
         "name": {
           "type": "string",
           "metadata": {
-            "description": "Optional. The name of the Azure mobile app push receiver."
+            "description": "Required. The name of the Azure mobile app push receiver."
           }
         }
       }
@@ -376,7 +376,7 @@
           ],
           "nullable": true,
           "metadata": {
-            "description": "Optional. The principal id of the managed identity"
+            "description": "Optional. The principal id of the managed identity."
           }
         },
         "name": {
@@ -394,7 +394,7 @@
         "tenantId": {
           "type": "string",
           "metadata": {
-            "description": "Required. The tenant Id for the subscription containing this event hub"
+            "description": "Required. The tenant Id for the subscription containing this event hub."
           }
         },
         "useCommonAlertSchema": {
