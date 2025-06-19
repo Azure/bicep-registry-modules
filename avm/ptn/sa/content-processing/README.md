@@ -307,7 +307,9 @@ Set to true to use local build for container app images, otherwise use container
 
 ## Outputs
 
-_None_
+| Output | Type | Description |
+| :-- | :-- | :-- |
+| `resourceGroupName` | string | The resource group the resources were deployed into. |
 
 ## Data Collection
 

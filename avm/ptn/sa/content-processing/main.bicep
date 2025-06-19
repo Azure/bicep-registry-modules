@@ -1913,8 +1913,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
 // @description('The resource ID of the Container App API.')
 // output containerApiAppFqdn string = avmContainerApp_API.outputs.fqdn
 
-// @description('The resource group the resources were deployed into.')
-// output resourceGroupName string = resourceGroup().name
+@description('The resource group the resources were deployed into.')
+output resourceGroupName string = resourceGroup().name
 
 // ================ //
 // Definitions      //
