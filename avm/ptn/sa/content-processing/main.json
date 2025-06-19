@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7411746591611812119"
+      "templateHash": "17360403016510981047"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -27014,7 +27014,7 @@
             "value": false
           },
           "disableLocalAuth": {
-            "value": false
+            "value": true
           },
           "flowType": {
             "value": "Bluefield"
@@ -27036,6 +27036,9 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
           }
         },
         "template": {

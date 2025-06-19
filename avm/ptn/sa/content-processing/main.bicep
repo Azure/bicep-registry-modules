@@ -405,7 +405,7 @@ module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
     skuName: 'PerGB2018'
     applicationType: 'web'
     disableIpMasking: false
-    disableLocalAuth: false
+    disableLocalAuth: true
     flowType: 'Bluefield'
     kind: 'web'
     logAnalyticsWorkspaceName: '${namingAbbrs.managementGovernance.logAnalyticsWorkspace}${solutionPrefix}'
@@ -413,6 +413,7 @@ module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
     requestSource: 'rest'
     retentionInDays: 30
     enableTelemetry: enableTelemetry
+    tags: tags
   }
 }
 
