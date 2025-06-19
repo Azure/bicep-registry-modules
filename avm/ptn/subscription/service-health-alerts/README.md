@@ -52,25 +52,25 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
         actionGroup: {
           armRoleReceivers: [
             {
-              name: 'armRoleReceiverOwner-ashalrs'
+              name: 'armRoleReceiverOwner-ashalt'
               roleId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
             }
           ]
           emailReceivers: [
             {
               emailAddress: 'admin@contoso.com'
-              name: 'emailReceiver-ashalrs'
+              name: 'emailReceiver-ashalt'
             }
           ]
           enabled: true
-          name: 'actionGroup-ashalrs'
+          name: 'actionGroup-ashalt'
         }
         alertDescription: 'Resource Health Unhealthy'
         isEnabled: true
         serviceHealthAlert: 'Resource Health Unhealthy'
       }
     ]
-    serviceHealthAlertsResourceGroupName: 'rsg-tests-ashalrs'
+    serviceHealthAlertsResourceGroupName: 'rsg-tests-ashalt'
     subscriptionId: '<subscriptionId>'
   }
 }
@@ -100,18 +100,18 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
           "actionGroup": {
             "armRoleReceivers": [
               {
-                "name": "armRoleReceiverOwner-ashalrs",
+                "name": "armRoleReceiverOwner-ashalt",
                 "roleId": "8e3af657-a8ff-443c-a75c-2fe8c4bcb635"
               }
             ],
             "emailReceivers": [
               {
                 "emailAddress": "admin@contoso.com",
-                "name": "emailReceiver-ashalrs"
+                "name": "emailReceiver-ashalt"
               }
             ],
             "enabled": true,
-            "name": "actionGroup-ashalrs"
+            "name": "actionGroup-ashalt"
           },
           "alertDescription": "Resource Health Unhealthy",
           "isEnabled": true,
@@ -120,7 +120,7 @@ module serviceHealthAlerts 'br/public:avm/ptn/subscription/service-health-alerts
       ]
     },
     "serviceHealthAlertsResourceGroupName": {
-      "value": "rsg-tests-ashalrs"
+      "value": "rsg-tests-ashalt"
     },
     "subscriptionId": {
       "value": "<subscriptionId>"
@@ -146,25 +146,25 @@ param serviceHealthAlerts = [
     actionGroup: {
       armRoleReceivers: [
         {
-          name: 'armRoleReceiverOwner-ashalrs'
+          name: 'armRoleReceiverOwner-ashalt'
           roleId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
         }
       ]
       emailReceivers: [
         {
           emailAddress: 'admin@contoso.com'
-          name: 'emailReceiver-ashalrs'
+          name: 'emailReceiver-ashalt'
         }
       ]
       enabled: true
-      name: 'actionGroup-ashalrs'
+      name: 'actionGroup-ashalt'
     }
     alertDescription: 'Resource Health Unhealthy'
     isEnabled: true
     serviceHealthAlert: 'Resource Health Unhealthy'
   }
 ]
-param serviceHealthAlertsResourceGroupName = 'rsg-tests-ashalrs'
+param serviceHealthAlertsResourceGroupName = 'rsg-tests-ashalt'
 param subscriptionId = '<subscriptionId>'
 ```
 

@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 @description('Required. The name of the Resource Group.')
-param resourceGroupName string = 'dep-ash-defaults-rg'
+param resourceGroupName string
 
 @description('Required. The location where all resources will be deployed.')
 param location string = deployment().location
