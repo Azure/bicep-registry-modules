@@ -103,7 +103,21 @@ module avmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group
     diagnosticSettings: [
       { workspaceResourceId: avmAppInsightsLogAnalyticsWorkspace.outputs.logAnalyticsWorkspaceResourceId }
     ]
-    securityRules: []
+    securityRules: [
+      {
+        name: 'Deny-hop-outbound'
+        properties: {
+          access: 'Deny'
+          direction: 'Outbound'
+          priority: 200
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: ['3389', '22']
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: '*'
+        }
+      }
+    ]
   }
 }
 
@@ -174,6 +188,19 @@ module avmNetworkSecurityGroup_Containers 'br/public:avm/res/network/network-sec
           destinationAddressPrefix: '*'
         }
       }
+      {
+        name: 'Deny-hop-outbound'
+        properties: {
+          access: 'Deny'
+          direction: 'Outbound'
+          priority: 200
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: ['3389', '22']
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: '*'
+        }
+      }
     ]
   }
 }
@@ -188,7 +215,21 @@ module avmNetworkSecurityGroup_Bastion 'br/public:avm/res/network/network-securi
     diagnosticSettings: [
       { workspaceResourceId: avmAppInsightsLogAnalyticsWorkspace.outputs.logAnalyticsWorkspaceResourceId }
     ]
-    securityRules: []
+    securityRules: [
+      {
+        name: 'Deny-hop-outbound'
+        properties: {
+          access: 'Deny'
+          direction: 'Outbound'
+          priority: 200
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: ['3389', '22']
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: '*'
+        }
+      }
+    ]
   }
 }
 
@@ -202,7 +243,21 @@ module avmNetworkSecurityGroup_Admin 'br/public:avm/res/network/network-security
     diagnosticSettings: [
       { workspaceResourceId: avmAppInsightsLogAnalyticsWorkspace.outputs.logAnalyticsWorkspaceResourceId }
     ]
-    securityRules: []
+    securityRules: [
+      {
+        name: 'Deny-hop-outbound'
+        properties: {
+          access: 'Deny'
+          direction: 'Outbound'
+          priority: 200
+          protocol: '*'
+          sourcePortRange: '*'
+          destinationPortRanges: ['3389', '22']
+          sourceAddressPrefix: 'VirtualNetwork'
+          destinationAddressPrefix: '*'
+        }
+      }
+    ]
   }
 }
 
