@@ -314,9 +314,9 @@ module bastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = {
           access: 'Allow'
           direction: 'Outbound'
           priority: 100
-          sourceAddressPrefix: '*'
+          sourceAddressPrefix: 'VirtualNetwork'
           destinationAddressPrefix: 'VirtualNetwork'
-          protocol: '*'
+          protocol: 'Tcp'
           sourcePortRange: '*'
           destinationPortRanges: ['22', '3389']
         }
@@ -433,7 +433,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
 }
 
 // SSH Key Resource - generates or uses provided SSH key
-// PSRule: Azure.Deployment.OutputSecretValue - SSH public keys are not sensitive and are safe to output
 resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' = if (empty(sshPublicKey)) {
   name: 'id-${name}-sshkey'
   location: location
@@ -452,7 +451,6 @@ resource contributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022
   }
 }
 
-// @suppression Azure.Deployment.OutputSecretValue SSH public keys are not sensitive and are meant to be shared publicly
 resource sshKeyGenerationScript 'Microsoft.Resources/deploymentScripts@2023-08-01' = if (empty(sshPublicKey)) {
   name: 'ds-${name}-sshkey'
   location: location
@@ -469,7 +467,6 @@ resource sshKeyGenerationScript 'Microsoft.Resources/deploymentScripts@2023-08-0
     retentionInterval: 'P1D'
     arguments: '-SSHKeyName "${name}-vm-key" -ResourceGroupName "${resourceGroup().name}"'
     scriptContent: loadTextContent('../../../../utilities/e2e-template-assets/scripts/New-SSHKey.ps1')
-    cleanupPreference: 'OnExpiration'
   }
   dependsOn: [
     contributorRoleAssignment
