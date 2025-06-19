@@ -15,8 +15,8 @@ Bicep template to deploy the Content Processing Solution Accelerator with AVM co
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.App/containerApps` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps) |
-| `Microsoft.App/containerApps/authConfigs` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/containerApps/authConfigs) |
+| `Microsoft.App/containerApps` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps) |
+| `Microsoft.App/containerApps/authConfigs` | [2025-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2025-01-01/containerApps/authConfigs) |
 | `Microsoft.App/managedEnvironments` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments) |
 | `Microsoft.App/managedEnvironments/certificates` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/certificates) |
 | `Microsoft.App/managedEnvironments/storages` | [2024-10-02-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.App/2024-10-02-preview/managedEnvironments/storages) |
@@ -25,8 +25,8 @@ Bicep template to deploy the Content Processing Solution Accelerator with AVM co
 | `Microsoft.AppConfiguration/configurationStores/replicas` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.AppConfiguration/2024-05-01/configurationStores/replicas) |
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
-| `Microsoft.CognitiveServices/accounts` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts) |
-| `Microsoft.CognitiveServices/accounts/deployments` | [2023-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2023-05-01/accounts/deployments) |
+| `Microsoft.CognitiveServices/accounts` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts) |
+| `Microsoft.CognitiveServices/accounts/deployments` | [2025-04-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.CognitiveServices/2025-04-01-preview/accounts/deployments) |
 | `Microsoft.ContainerRegistry/registries` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries) |
 | `Microsoft.ContainerRegistry/registries/cacheRules` | [2023-06-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-06-01-preview/registries/cacheRules) |
 | `Microsoft.ContainerRegistry/registries/credentialSets` | [2023-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ContainerRegistry/2023-11-01-preview/registries/credentialSets) |
@@ -46,11 +46,11 @@ Bicep template to deploy the Content Processing Solution Accelerator with AVM co
 | `Microsoft.Insights/components` | [2020-02-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components) |
 | `microsoft.insights/components/linkedStorageAccounts` | [2020-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
-| `Microsoft.KeyVault/vaults` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults) |
+| `Microsoft.KeyVault/vaults` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults) |
 | `Microsoft.KeyVault/vaults/accessPolicies` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/accessPolicies) |
-| `Microsoft.KeyVault/vaults/keys` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/keys) |
+| `Microsoft.KeyVault/vaults/keys` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/keys) |
 | `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
-| `Microsoft.KeyVault/vaults/secrets` | [2022-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2022-07-01/vaults/secrets) |
+| `Microsoft.KeyVault/vaults/secrets` | [2024-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2024-11-01/vaults/secrets) |
 | `Microsoft.MachineLearningServices/workspaces` | [2024-10-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01-preview/workspaces) |
 | `Microsoft.MachineLearningServices/workspaces/computes` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/computes) |
 | `Microsoft.MachineLearningServices/workspaces/connections` | [2024-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.MachineLearningServices/2024-10-01/workspaces/connections) |
@@ -71,8 +71,8 @@ Bicep template to deploy the Content Processing Solution Accelerator with AVM co
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Network/virtualNetworks` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks) |
-| `Microsoft.Network/virtualNetworks/subnets` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/subnets) |
+| `Microsoft.Network/virtualNetworks` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks) |
+| `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
 | `Microsoft.Network/virtualNetworks/virtualNetworkPeerings` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-01-01/virtualNetworks/virtualNetworkPeerings) |
 | `Microsoft.OperationalInsights/workspaces` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces) |
 | `Microsoft.OperationalInsights/workspaces/dataExports` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/dataExports) |
@@ -105,10 +105,10 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/content-processing:<version>`.
 
-- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
-- [WAF-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
+- [main configuration with default parameter values](#example-1-main-configuration-with-default-parameter-values)
+- [waf-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
 
-### Example 1: _Sandbox configuration with default parameter values_
+### Example 1: _main configuration with default parameter values_
 
 This instance deploys the [Content Processing Solution Accelerator] using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
 
@@ -123,10 +123,8 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
     // Required parameters
     contentUnderstandingLocation: '<contentUnderstandingLocation>'
-    environmentName: 'test-env'
+    environmentName: '<environmentName>'
     gptDeploymentCapacity: 80
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -148,14 +146,10 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": "<contentUnderstandingLocation>"
     },
     "environmentName": {
-      "value": "test-env"
+      "value": "<environmentName>"
     },
     "gptDeploymentCapacity": {
       "value": 80
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -173,16 +167,14 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 
 // Required parameters
 param contentUnderstandingLocation = '<contentUnderstandingLocation>'
-param environmentName = 'test-env'
+param environmentName = '<environmentName>'
 param gptDeploymentCapacity = 80
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
 <p>
 
-### Example 2: _WAF-aligned configuration with default parameter values_
+### Example 2: _waf-aligned configuration with default parameter values_
 
 This instance deploys the [Content Processing Solution Accelerator]
 
@@ -197,10 +189,8 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
   params: {
     // Required parameters
     contentUnderstandingLocation: '<contentUnderstandingLocation>'
-    environmentName: 'test-env'
+    environmentName: '<environmentName>'
     gptDeploymentCapacity: 80
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -222,14 +212,10 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": "<contentUnderstandingLocation>"
     },
     "environmentName": {
-      "value": "test-env"
+      "value": "<environmentName>"
     },
     "gptDeploymentCapacity": {
       "value": 80
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -247,10 +233,8 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 
 // Required parameters
 param contentUnderstandingLocation = '<contentUnderstandingLocation>'
-param environmentName = 'test-env'
+param environmentName = '<environmentName>'
 param gptDeploymentCapacity = 80
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>
@@ -422,18 +406,18 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | :-- | :-- |
 | `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/app-configuration/configuration-store:0.6.3` | Remote reference |
-| `br/public:avm/res/app/container-app:0.16.0` | Remote reference |
-| `br/public:avm/res/app/managed-environment:0.11.1` | Remote reference |
-| `br/public:avm/res/cognitive-services/account:0.10.2` | Remote reference |
+| `br/public:avm/res/app/container-app:0.17.0` | Remote reference |
+| `br/public:avm/res/app/managed-environment:0.11.2` | Remote reference |
+| `br/public:avm/res/cognitive-services/account:0.11.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
 | `br/public:avm/res/insights/component:0.6.0` | Remote reference |
-| `br/public:avm/res/key-vault/vault:0.12.1` | Remote reference |
+| `br/public:avm/res/key-vault/vault:0.13.0` | Remote reference |
 | `br/public:avm/res/machine-learning-services/workspace:0.12.1` | Remote reference |
 | `br/public:avm/res/managed-identity/user-assigned-identity:0.4.1` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
-| `br/public:avm/res/network/virtual-network:0.6.1` | Remote reference |
+| `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.11.2` | Remote reference |
 | `br/public:avm/res/storage/storage-account:0.20.0` | Remote reference |
 

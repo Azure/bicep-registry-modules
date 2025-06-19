@@ -209,7 +209,7 @@ module avmNetworkSecurityGroup_Admin 'br/public:avm/res/network/network-security
 // Bastion Hosts : 10.0.1.32/27 - 10.0.1.63
 // VM(s) :
 
-module avmVirtualNetwork 'br/public:avm/res/network/virtual-network:0.6.1' = if (enablePrivateNetworking) {
+module avmVirtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (enablePrivateNetworking) {
   name: format(resourceNameFormatString, namingAbbrs.networking.virtualNetwork)
   params: {
     name: '${namingAbbrs.networking.virtualNetwork}${solutionPrefix}'
@@ -830,7 +830,7 @@ module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm
 // }
 
 // // ========== AI Foundry and related resources ========== //
-module avmAiServices 'br/public:avm/res/cognitive-services/account:0.10.2' = {
+module avmAiServices 'br/public:avm/res/cognitive-services/account:0.11.0' = {
   name: format(resourceNameFormatString, namingAbbrs.ai.aiServices)
   params: {
     name: '${namingAbbrs.ai.aiServices}${solutionPrefix}'
@@ -914,7 +914,7 @@ module avmAiServices_roleAssignment 'br/public:avm/ptn/authorization/resource-ro
   }
 }
 
-module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.10.2' = {
+module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = {
   name: format(resourceNameFormatString, 'aicu-')
 
   params: {
@@ -1130,7 +1130,7 @@ module avmAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.
 }
 
 // ========== Container App Environment ========== //
-module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.1' = {
+module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.2' = {
   name: format(resourceNameFormatString, namingAbbrs.containers.containerAppsEnvironment)
   params: {
     name: '${namingAbbrs.containers.containerAppsEnvironment}${solutionPrefix}'
@@ -1191,7 +1191,7 @@ module bicepAcrPullRoleAssignment 'br/public:avm/ptn/authorization/resource-role
 }
 
 // ========== Container App  ========== //
-module avmContainerApp 'br/public:avm/res/app/container-app:0.16.0' = {
+module avmContainerApp 'br/public:avm/res/app/container-app:0.17.0' = {
   name: format(resourceNameFormatString, 'caapp-')
   params: {
     name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-app'
@@ -1243,7 +1243,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.16.0' = {
 }
 
 // ========== Container App API ========== //
-module avmContainerApp_API 'br/public:avm/res/app/container-app:0.16.0' = {
+module avmContainerApp_API 'br/public:avm/res/app/container-app:0.17.0' = {
   name: format(resourceNameFormatString, 'caapi-')
   params: {
     name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
@@ -1254,12 +1254,20 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.16.0' = {
     registries: useLocalBuild == 'localbuild'
       ? [
           {
-            server: publicContainerImageEndpoint
-            image: 'contentprocessorapi'
-            imageTag: 'latest'
+            server: avmContainerRegistry.outputs.loginServer
+            identity: avmContainerRegistryReader.outputs.principalId
           }
         ]
       : null
+    // registries: useLocalBuild == 'localbuild'
+    //   ? [
+    //       {
+    //         server: publicContainerImageEndpoint
+    //         image: 'contentprocessorapi'
+    //         imageTag: 'latest'
+    //       }
+    //     ]
+    //   : null
 
     managedIdentities: {
       systemAssigned: true
@@ -1271,7 +1279,9 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.16.0' = {
     containers: [
       {
         name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
-        image: '${publicContainerImageEndpoint}/contentprocessorapi:latest'
+        image: (useLocalBuild != 'localbuild')
+          ? '${publicContainerImageEndpoint}/contentprocessorapi:latest'
+          : avmContainerRegistry.outputs.loginServer
         resources: {
           cpu: '4'
           memory: '8.0Gi'
@@ -1360,7 +1370,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.16.0' = {
 }
 
 //========== Container App Web ========== //
-module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.16.0' = {
+module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.17.0' = {
   name: format(resourceNameFormatString, 'caweb-')
   params: {
     name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-web'
@@ -1371,12 +1381,20 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.16.0' = {
     registries: useLocalBuild == 'localbuild'
       ? [
           {
-            server: publicContainerImageEndpoint
-            image: 'contentprocessorweb'
-            imageTag: 'latest'
+            server: avmContainerRegistry.outputs.loginServer
+            identity: avmContainerRegistryReader.outputs.principalId
           }
         ]
       : null
+    // registries: useLocalBuild == 'localbuild'
+    //   ? [
+    //       {
+    //         server: publicContainerImageEndpoint
+    //         image: 'contentprocessorweb'
+    //         imageTag: 'latest'
+    //       }
+    //     ]
+    //   : null
 
     managedIdentities: {
       systemAssigned: true
@@ -1405,7 +1423,9 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.16.0' = {
     containers: [
       {
         name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-web'
-        image: '${publicContainerImageEndpoint}/contentprocessorweb:latest'
+        image: (useLocalBuild != 'localbuild')
+          ? '${publicContainerImageEndpoint}/contentprocessorweb:latest'
+          : avmContainerRegistry.outputs.loginServer
         resources: {
           cpu: '4'
           memory: '8.0Gi'
@@ -1682,7 +1702,7 @@ module avmRoleAssignment_container_app_web 'br/public:avm/ptn/authorization/reso
 }
 
 // ========== Container App Update Modules ========== //
-module avmContainerApp_update 'br/public:avm/res/app/container-app:0.16.0' = {
+module avmContainerApp_update 'br/public:avm/res/app/container-app:0.17.0' = {
   name: format(resourceNameFormatString, 'caapp-update-')
   params: {
     name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-app'
@@ -1738,7 +1758,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.16.0' = {
   ]
 }
 
-module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.16.0' = {
+module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.17.0' = {
   name: format(resourceNameFormatString, 'caapi-update-')
   params: {
     name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
@@ -1749,12 +1769,20 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.16.0' =
     registries: useLocalBuild == 'localbuild'
       ? [
           {
-            server: publicContainerImageEndpoint
-            image: 'contentprocessorapi'
-            imageTag: 'latest'
+            server: avmContainerRegistry.outputs.loginServer
+            identity: avmContainerRegistryReader.outputs.principalId
           }
         ]
       : null
+    // registries: useLocalBuild == 'localbuild'
+    //   ? [
+    //       {
+    //         server: publicContainerImageEndpoint
+    //         image: 'contentprocessorapi'
+    //         imageTag: 'latest'
+    //       }
+    //     ]
+    //   : null
 
     managedIdentities: {
       systemAssigned: true
@@ -1766,7 +1794,9 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.16.0' =
     containers: [
       {
         name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
-        image: '${publicContainerImageEndpoint}/contentprocessorapi:latest'
+        image: (useLocalBuild != 'localbuild')
+          ? '${publicContainerImageEndpoint}/contentprocessorapi:latest'
+          : avmContainerRegistry.outputs.loginServer
         resources: {
           cpu: '4'
           memory: '8.0Gi'

@@ -32,3 +32,4 @@ module avmContainerRegistry 'br/public:avm/res/container-registry/registry:0.9.1
 }
 
 output resourceId string = avmContainerRegistry.outputs.resourceId
+output loginServer string = avmContainerRegistry.outputs.loginServer

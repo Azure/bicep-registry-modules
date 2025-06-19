@@ -57,7 +57,7 @@ param createMode string = 'default'
 @description('Enable telemetry for the Key Vault')
 param enableTelemetry bool = true
 
-module avmKeyVault 'br/public:avm/res/key-vault/vault:0.12.1' = {
+module avmKeyVault 'br/public:avm/res/key-vault/vault:0.13.0' = {
   name: 'deploy_keyvault'
   params: {
     name: keyvaultName
