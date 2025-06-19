@@ -264,9 +264,11 @@ output alertsResourceIds array = [
 
 @description('The resource IDs of the created action groups.')
 output actionGroupResourceIds array = [
-  for (actionGroup, i) in serviceHealthAlerts: {
-    actionGroupResourceId: createActionGroups[i].outputs.resourceId
-  }
+  for (actionGroup, i) in serviceHealthAlerts: (!empty(actionGroup.?actionGroup))
+    ? {
+        actionGroupResourceId: createActionGroups[i].outputs.resourceId
+      }
+    : null
 ]
 
 // ================ //
