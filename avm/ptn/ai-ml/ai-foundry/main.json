@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "6603965676484362578"
+      "templateHash": "13674063260757681869"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -416,7 +416,8 @@
     },
     "allTags": "[union(variables('defaultTags'), parameters('tags'))]",
     "resourceToken": "[substring(uniqueString(subscription().id, parameters('location'), parameters('name')), 0, 5)]",
-    "servicesUsername": "[take(replace(parameters('vmAdminUsername'), '.', ''), 20)]"
+    "servicesUsername": "[take(replace(parameters('vmAdminUsername'), '.', ''), 20)]",
+    "shouldDeployVM": "[equals(toLower(parameters('aiFoundryType')), 'standardprivate')]"
   },
   "resources": {
     "avmTelemetry": {
@@ -44242,7 +44243,7 @@
       ]
     },
     "virtualMachine": {
-      "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'standardprivate'))]",
+      "condition": "[variables('shouldDeployVM')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[take(format('{0}-virtual-machine-deployment', parameters('name')), 64)]",
@@ -44261,12 +44262,8 @@
           "vmSize": {
             "value": "[parameters('vmSize')]"
           },
-          "vmSubnetId": {
-            "value": "[reference('network').outputs.vmSubnetId.value]"
-          },
-          "storageAccountName": {
-            "value": "[reference('storageAccount').outputs.storageName.value]"
-          },
+          "vmSubnetId": "[if(variables('shouldDeployVM'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
+          "storageAccountName": "[if(and(variables('shouldDeployVM'), not(equals(toLower(parameters('aiFoundryType')), 'basic'))), createObject('value', reference('storageAccount').outputs.storageName.value), createObject('value', ''))]",
           "storageAccountResourceGroup": {
             "value": "[resourceGroup().name]"
           },
@@ -52263,7 +52260,7 @@
       "metadata": {
         "description": "Resource ID of the deployed Azure VM."
       },
-      "value": "[if(variables('networkIsolation'), reference('virtualMachine').outputs.id.value, '')]"
+      "value": "[if(variables('shouldDeployVM'), reference('virtualMachine').outputs.id.value, '')]"
     },
     "azureVmUsername": {
       "type": "string",
