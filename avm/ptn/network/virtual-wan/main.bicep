@@ -36,7 +36,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:0.3.1' = {
 }
 
 module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.3.0' = [
-  for (virtualHub, i) in virtualHubParameters!: {
+  for (virtualHub, i) in virtualHubParameters: {
     name: '${uniqueString(deployment().name, location)}-${virtualHub.hubName}'
     params: {
       // Required parameters
@@ -216,7 +216,7 @@ output virtualWan object = {
 
 @description('The array containing the Virtual Hub information.')
 output virtualHubs object[] = [
-  for (virtualHub, index) in virtualHubParameters!: {
+  for (virtualHub, index) in virtualHubParameters: {
     name: virtualHubModule[index].outputs.name
     resourceId: virtualHubModule[index].outputs.resourceId
     resourceGroupName: virtualHubModule[index].outputs.resourceGroupName
@@ -642,7 +642,7 @@ type virtualHubParameterType = {
 
   @description('Optional. IP addresses for the Virtual Router.')
   virtualRouterIps: array?
-}[]
+}
 
 type roleAssignmentType = {
   @description('Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated.')
@@ -668,4 +668,4 @@ type roleAssignmentType = {
 
   @description('Optional. The Resource Id of the delegated managed identity resource.')
   delegatedManagedIdentityResourceId: string?
-}[]
+}
