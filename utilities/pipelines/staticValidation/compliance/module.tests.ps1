@@ -298,8 +298,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
 
             param(
                 [string] $moduleFolderPath,
-                [string] $moduleType,
-                [bool] $isMultiScopeModule
+                [string] $moduleType
             )
 
             $templateFilePath = Join-Path -Path $moduleFolderPath 'main.bicep'
@@ -323,7 +322,7 @@ Describe 'File/folder tests' -Tag 'Modules' {
             }
             $csvData = $rawData.Content | ConvertFrom-Csv -Delimiter ','
 
-            $moduleName = Get-BRMRepositoryName -TemplateFilePath ($isMultiScopeModule ? (Split-Path $TemplateFilePath -Parent) : $TemplateFilePath)
+            $moduleName = Get-BRMRepositoryName -TemplateFilePath $templateFilePath
             $relevantCSVRow = $csvData | Where-Object {
                 $_.ModuleName -eq $moduleName
             }
