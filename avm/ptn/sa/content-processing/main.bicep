@@ -545,10 +545,11 @@ module avmKeyVault './modules/key-vault.bicep' = {
     enableVaultForTemplateDeployment: true
     softDeleteRetentionInDays: 7
     publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled'
-    //logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-    // diagnosticSettings: {
-    //   enabled: true
-    // }
+    logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
     // privateEndpoints omitted for now, as not in strongly-typed params
   }
   scope: resourceGroup(resourceGroup().name)
@@ -1694,7 +1695,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_STORAGE_BLOB_URL'
-        value: avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
+        value: 'test' //avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
       }
       {
         name: 'APP_STORAGE_QUEUE_URL'
@@ -1702,12 +1703,12 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_AI_PROJECT_CONN_STR'
-        value: 'test' //'${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
+        value: '${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
         //TODO: replace with actual AI project connection string
       }
       {
         name: 'APP_COSMOS_CONNSTR'
-        value: 'test' //avmCosmosDB.outputs.primaryReadWriteConnectionString
+        value: avmCosmosDB.outputs.primaryReadWriteConnectionString
       }
     ]
 

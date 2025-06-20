@@ -57,6 +57,20 @@ param createMode string = 'default'
 @description('Enable telemetry for the Key Vault')
 param enableTelemetry bool = true
 
+@description('Network ACLs for the Key Vault')
+param networkAcls object = {
+  bypass: 'AzureServices'
+  defaultAction: 'Deny'
+}
+
+// @description('Diagnostic settings for the Key Vault')
+// param diagnosticSettings object = {
+//   enabled: true
+// }
+
+@description('Log Analytics Workspace Resource ID for diagnostic settings')
+param logAnalyticsWorkspaceResourceId string = ''
+
 module avmKeyVault 'br/public:avm/res/key-vault/vault:0.13.0' = {
   name: 'deploy_keyvault'
   params: {
@@ -74,6 +88,8 @@ module avmKeyVault 'br/public:avm/res/key-vault/vault:0.13.0' = {
     enableRbacAuthorization: enableRbacAuthorization
     createMode: createMode
     enableTelemetry: enableTelemetry
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]
+    networkAcls: networkAcls
   }
 }
 
