@@ -315,6 +315,7 @@ param virtualWanParameters = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`location`](#parameter-location) | string | Azure region where the Virtual WAN will be created. |
+| [`virtualHubParameters`](#parameter-virtualhubparameters) | array | The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs. |
 | [`virtualWanParameters`](#parameter-virtualwanparameters) | object | The parameters for the Virtual WAN. |
 
 **Optional parameters**
@@ -323,7 +324,6 @@ param virtualWanParameters = {
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`lock`](#parameter-lock) | object | The lock settings for the Virtual WAN and associated components. |
-| [`virtualHubParameters`](#parameter-virtualhubparameters) | array | The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs. |
 
 ### Parameter: `location`
 
@@ -332,492 +332,6 @@ Azure region where the Virtual WAN will be created.
 - Required: No
 - Type: string
 - Default: `[resourceGroup().location]`
-
-### Parameter: `virtualWanParameters`
-
-The parameters for the Virtual WAN.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`virtualWanName`](#parameter-virtualwanparametersvirtualwanname) | string | The name of the Virtual WAN. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`allowBranchToBranchTraffic`](#parameter-virtualwanparametersallowbranchtobranchtraffic) | bool | Whether to allow branch-to-branch traffic within the Virtual WAN. |
-| [`allowVnetToVnetTraffic`](#parameter-virtualwanparametersallowvnettovnettraffic) | bool | Whether to allow VNet-to-VNet traffic within the Virtual WAN. |
-| [`disableVpnEncryption`](#parameter-virtualwanparametersdisablevpnencryption) | bool | Whether to disable VPN encryption for the Virtual WAN. |
-| [`location`](#parameter-virtualwanparameterslocation) | string | The Azure region where the Virtual WAN will be created. Defaults to the resource group location if not specified. |
-| [`lock`](#parameter-virtualwanparameterslock) | object | Lock settings for the Virtual WAN and associated resources. |
-| [`p2sVpnParameters`](#parameter-virtualwanparametersp2svpnparameters) | object | Point-to-site VPN server configuration parameters for the Virtual WAN. |
-| [`roleAssignments`](#parameter-virtualwanparametersroleassignments) | array | Role assignments to be applied to the Virtual WAN. |
-| [`tags`](#parameter-virtualwanparameterstags) | object | Tags to be applied to the Virtual WAN. |
-| [`type`](#parameter-virtualwanparameterstype) | string | The type of Virtual WAN. Allowed values are Standard or Basic. |
-
-### Parameter: `virtualWanParameters.virtualWanName`
-
-The name of the Virtual WAN.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualWanParameters.allowBranchToBranchTraffic`
-
-Whether to allow branch-to-branch traffic within the Virtual WAN.
-
-- Required: No
-- Type: bool
-
-### Parameter: `virtualWanParameters.allowVnetToVnetTraffic`
-
-Whether to allow VNet-to-VNet traffic within the Virtual WAN.
-
-- Required: No
-- Type: bool
-
-### Parameter: `virtualWanParameters.disableVpnEncryption`
-
-Whether to disable VPN encryption for the Virtual WAN.
-
-- Required: No
-- Type: bool
-
-### Parameter: `virtualWanParameters.location`
-
-The Azure region where the Virtual WAN will be created. Defaults to the resource group location if not specified.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.lock`
-
-Lock settings for the Virtual WAN and associated resources.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-virtualwanparameterslockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-virtualwanparameterslockname) | string | Specify the name of lock. |
-
-### Parameter: `virtualWanParameters.lock.kind`
-
-Specify the type of lock.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CanNotDelete'
-    'None'
-    'ReadOnly'
-  ]
-  ```
-
-### Parameter: `virtualWanParameters.lock.name`
-
-Specify the name of lock.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters`
-
-Point-to-site VPN server configuration parameters for the Virtual WAN.
-
-- Required: No
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`createP2sVpnServerConfiguration`](#parameter-virtualwanparametersp2svpnparameterscreatep2svpnserverconfiguration) | bool | Whether to create a new P2S VPN server configuration. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`aadAudience`](#parameter-virtualwanparametersp2svpnparametersaadaudience) | string | Entra ID audience for VPN authentication. Required if using Entra ID audience for VPN authentication. |
-| [`aadIssuer`](#parameter-virtualwanparametersp2svpnparametersaadissuer) | string | Entra ID issuer for VPN authentication. Required if using Entra ID authentication. |
-| [`aadTenant`](#parameter-virtualwanparametersp2svpnparametersaadtenant) | string | Entra ID tenant for VPN authentication. Required if using Entra ID authentication. |
-| [`p2sConfigurationPolicyGroups`](#parameter-virtualwanparametersp2svpnparametersp2sconfigurationpolicygroups) | array | Configure user groups and IP Address Pools. Required if using Entra ID authentication. |
-| [`radiusClientRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusclientrootcertificates) | array | List of RADIUS client root certificates. Required if using RADIUS authentication. |
-| [`radiusServerAddress`](#parameter-virtualwanparametersp2svpnparametersradiusserveraddress) | string | RADIUS server address. Required if using RADIUS authentication. |
-| [`radiusServerRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusserverrootcertificates) | array | List of RADIUS server root certificates. Required if using RADIUS authentication. |
-| [`radiusServers`](#parameter-virtualwanparametersp2svpnparametersradiusservers) | array | List of RADIUS servers. Required if using RADIUS authentication. |
-| [`radiusServerSecret`](#parameter-virtualwanparametersp2svpnparametersradiusserversecret) | string | RADIUS server secret. Required if using RADIUS authentication. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`p2sVpnServerConfigurationName`](#parameter-virtualwanparametersp2svpnparametersp2svpnserverconfigurationname) | string | Name of the P2S VPN server configuration. |
-| [`vpnAuthenticationTypes`](#parameter-virtualwanparametersp2svpnparametersvpnauthenticationtypes) | array | VPN authentication types supported. |
-| [`vpnClientIpsecPolicies`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpolicies) | array | List of VPN client IPsec policies. |
-| [`vpnClientRevokedCertificates`](#parameter-virtualwanparametersp2svpnparametersvpnclientrevokedcertificates) | array | List of revoked VPN client certificates. |
-| [`vpnClientRootCertificates`](#parameter-virtualwanparametersp2svpnparametersvpnclientrootcertificates) | array | List of VPN client root certificates. |
-| [`vpnProtocols`](#parameter-virtualwanparametersp2svpnparametersvpnprotocols) | string | Supported VPN protocols. |
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.createP2sVpnServerConfiguration`
-
-Whether to create a new P2S VPN server configuration.
-
-- Required: Yes
-- Type: bool
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.aadAudience`
-
-Entra ID audience for VPN authentication. Required if using Entra ID audience for VPN authentication.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.aadIssuer`
-
-Entra ID issuer for VPN authentication. Required if using Entra ID authentication.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.aadTenant`
-
-Entra ID tenant for VPN authentication. Required if using Entra ID authentication.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.p2sConfigurationPolicyGroups`
-
-Configure user groups and IP Address Pools. Required if using Entra ID authentication.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.radiusClientRootCertificates`
-
-List of RADIUS client root certificates. Required if using RADIUS authentication.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerAddress`
-
-RADIUS server address. Required if using RADIUS authentication.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerRootCertificates`
-
-List of RADIUS server root certificates. Required if using RADIUS authentication.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServers`
-
-List of RADIUS servers. Required if using RADIUS authentication.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerSecret`
-
-RADIUS server secret. Required if using RADIUS authentication.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.p2sVpnServerConfigurationName`
-
-Name of the P2S VPN server configuration.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnAuthenticationTypes`
-
-VPN authentication types supported.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies`
-
-List of VPN client IPsec policies.
-
-- Required: No
-- Type: array
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`dhGroup`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesdhgroup) | string | The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2. |
-| [`ikeEncryption`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesikeencryption) | string | The encryption algorithm used in IKE phase 1. Required if using IKEv2. |
-| [`ikeIntegrity`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesikeintegrity) | string | The integrity algorithm used in IKE phase 1. Required if using IKEv2. |
-| [`ipsecEncryption`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesipsecencryption) | string | The encryption algorithm used in IKE phase 2. Required if using IKEv2. |
-| [`ipsecIntegrity`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesipsecintegrity) | string | The integrity algorithm used in IKE phase 2. Required if using IKEv2. |
-| [`pfsGroup`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciespfsgroup) | string | The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2. |
-| [`saDataSizeKilobytes`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciessadatasizekilobytes) | int | The size of the SA data in kilobytes. Required if using IKEv2. |
-| [`salfetimeSeconds`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciessalfetimeseconds) | int | The lifetime of the SA in seconds. Required if using IKEv2. |
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.dhGroup`
-
-The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ikeEncryption`
-
-The encryption algorithm used in IKE phase 1. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ikeIntegrity`
-
-The integrity algorithm used in IKE phase 1. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ipsecEncryption`
-
-The encryption algorithm used in IKE phase 2. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ipsecIntegrity`
-
-The integrity algorithm used in IKE phase 2. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.pfsGroup`
-
-The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.saDataSizeKilobytes`
-
-The size of the SA data in kilobytes. Required if using IKEv2.
-
-- Required: No
-- Type: int
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.salfetimeSeconds`
-
-The lifetime of the SA in seconds. Required if using IKEv2.
-
-- Required: No
-- Type: int
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientRevokedCertificates`
-
-List of revoked VPN client certificates.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientRootCertificates`
-
-List of VPN client root certificates.
-
-- Required: No
-- Type: array
-
-### Parameter: `virtualWanParameters.p2sVpnParameters.vpnProtocols`
-
-Supported VPN protocols.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'IkeV2'
-    'OpenVPN'
-  ]
-  ```
-
-### Parameter: `virtualWanParameters.roleAssignments`
-
-Role assignments to be applied to the Virtual WAN.
-
-- Required: No
-- Type: array
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`principalId`](#parameter-virtualwanparametersroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
-| [`roleDefinitionIdOrName`](#parameter-virtualwanparametersroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`condition`](#parameter-virtualwanparametersroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
-| [`conditionVersion`](#parameter-virtualwanparametersroleassignmentsconditionversion) | string | Version of the condition. |
-| [`delegatedManagedIdentityResourceId`](#parameter-virtualwanparametersroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
-| [`description`](#parameter-virtualwanparametersroleassignmentsdescription) | string | The description of the role assignment. |
-| [`name`](#parameter-virtualwanparametersroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
-| [`principalType`](#parameter-virtualwanparametersroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
-
-### Parameter: `virtualWanParameters.roleAssignments.principalId`
-
-The principal ID of the principal (user/group/identity) to assign the role to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.roleDefinitionIdOrName`
-
-The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.condition`
-
-The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.conditionVersion`
-
-Version of the condition.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    '2.0'
-  ]
-  ```
-
-### Parameter: `virtualWanParameters.roleAssignments.delegatedManagedIdentityResourceId`
-
-The Resource Id of the delegated managed identity resource.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.description`
-
-The description of the role assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.name`
-
-The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
-
-- Required: No
-- Type: string
-
-### Parameter: `virtualWanParameters.roleAssignments.principalType`
-
-The principal type of the assigned principal ID.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Device'
-    'ForeignGroup'
-    'Group'
-    'ServicePrincipal'
-    'User'
-  ]
-  ```
-
-### Parameter: `virtualWanParameters.tags`
-
-Tags to be applied to the Virtual WAN.
-
-- Required: No
-- Type: object
-
-### Parameter: `virtualWanParameters.type`
-
-The type of Virtual WAN. Allowed values are Standard or Basic.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Basic'
-    'Standard'
-  ]
-  ```
-
-### Parameter: `enableTelemetry`
-
-Enable/Disable usage telemetry for module.
-
-- Required: No
-- Type: bool
-- Default: `True`
-
-### Parameter: `lock`
-
-The lock settings for the Virtual WAN and associated components.
-
-- Required: No
-- Type: object
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
-| [`name`](#parameter-lockname) | string | Specify the name of lock. |
-
-### Parameter: `lock.kind`
-
-Specify the type of lock.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'CanNotDelete'
-    'None'
-    'ReadOnly'
-  ]
-  ```
-
-### Parameter: `lock.name`
-
-Specify the name of lock.
-
-- Required: No
-- Type: string
 
 ### Parameter: `virtualHubParameters`
 
@@ -2066,10 +1580,497 @@ IP addresses for the Virtual Router.
 - Required: No
 - Type: array
 
+### Parameter: `virtualWanParameters`
+
+The parameters for the Virtual WAN.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`virtualWanName`](#parameter-virtualwanparametersvirtualwanname) | string | The name of the Virtual WAN. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`allowBranchToBranchTraffic`](#parameter-virtualwanparametersallowbranchtobranchtraffic) | bool | Whether to allow branch-to-branch traffic within the Virtual WAN. |
+| [`allowVnetToVnetTraffic`](#parameter-virtualwanparametersallowvnettovnettraffic) | bool | Whether to allow VNet-to-VNet traffic within the Virtual WAN. |
+| [`disableVpnEncryption`](#parameter-virtualwanparametersdisablevpnencryption) | bool | Whether to disable VPN encryption for the Virtual WAN. |
+| [`location`](#parameter-virtualwanparameterslocation) | string | The Azure region where the Virtual WAN will be created. Defaults to the resource group location if not specified. |
+| [`lock`](#parameter-virtualwanparameterslock) | object | Lock settings for the Virtual WAN and associated resources. |
+| [`p2sVpnParameters`](#parameter-virtualwanparametersp2svpnparameters) | object | Point-to-site VPN server configuration parameters for the Virtual WAN. |
+| [`roleAssignments`](#parameter-virtualwanparametersroleassignments) | array | Role assignments to be applied to the Virtual WAN. |
+| [`tags`](#parameter-virtualwanparameterstags) | object | Tags to be applied to the Virtual WAN. |
+| [`type`](#parameter-virtualwanparameterstype) | string | The type of Virtual WAN. Allowed values are Standard or Basic. |
+
+### Parameter: `virtualWanParameters.virtualWanName`
+
+The name of the Virtual WAN.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualWanParameters.allowBranchToBranchTraffic`
+
+Whether to allow branch-to-branch traffic within the Virtual WAN.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualWanParameters.allowVnetToVnetTraffic`
+
+Whether to allow VNet-to-VNet traffic within the Virtual WAN.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualWanParameters.disableVpnEncryption`
+
+Whether to disable VPN encryption for the Virtual WAN.
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualWanParameters.location`
+
+The Azure region where the Virtual WAN will be created. Defaults to the resource group location if not specified.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.lock`
+
+Lock settings for the Virtual WAN and associated resources.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-virtualwanparameterslockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-virtualwanparameterslockname) | string | Specify the name of lock. |
+
+### Parameter: `virtualWanParameters.lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `virtualWanParameters.lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters`
+
+Point-to-site VPN server configuration parameters for the Virtual WAN.
+
+- Required: No
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`createP2sVpnServerConfiguration`](#parameter-virtualwanparametersp2svpnparameterscreatep2svpnserverconfiguration) | bool | Whether to create a new P2S VPN server configuration. |
+
+**Conditional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`aadAudience`](#parameter-virtualwanparametersp2svpnparametersaadaudience) | string | Entra ID audience for VPN authentication. Required if using Entra ID audience for VPN authentication. |
+| [`aadIssuer`](#parameter-virtualwanparametersp2svpnparametersaadissuer) | string | Entra ID issuer for VPN authentication. Required if using Entra ID authentication. |
+| [`aadTenant`](#parameter-virtualwanparametersp2svpnparametersaadtenant) | string | Entra ID tenant for VPN authentication. Required if using Entra ID authentication. |
+| [`p2sConfigurationPolicyGroups`](#parameter-virtualwanparametersp2svpnparametersp2sconfigurationpolicygroups) | array | Configure user groups and IP Address Pools. Required if using Entra ID authentication. |
+| [`radiusClientRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusclientrootcertificates) | array | List of RADIUS client root certificates. Required if using RADIUS authentication. |
+| [`radiusServerAddress`](#parameter-virtualwanparametersp2svpnparametersradiusserveraddress) | string | RADIUS server address. Required if using RADIUS authentication. |
+| [`radiusServerRootCertificates`](#parameter-virtualwanparametersp2svpnparametersradiusserverrootcertificates) | array | List of RADIUS server root certificates. Required if using RADIUS authentication. |
+| [`radiusServers`](#parameter-virtualwanparametersp2svpnparametersradiusservers) | array | List of RADIUS servers. Required if using RADIUS authentication. |
+| [`radiusServerSecret`](#parameter-virtualwanparametersp2svpnparametersradiusserversecret) | string | RADIUS server secret. Required if using RADIUS authentication. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`p2sVpnServerConfigurationName`](#parameter-virtualwanparametersp2svpnparametersp2svpnserverconfigurationname) | string | Name of the P2S VPN server configuration. |
+| [`vpnAuthenticationTypes`](#parameter-virtualwanparametersp2svpnparametersvpnauthenticationtypes) | array | VPN authentication types supported. |
+| [`vpnClientIpsecPolicies`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpolicies) | array | List of VPN client IPsec policies. |
+| [`vpnClientRevokedCertificates`](#parameter-virtualwanparametersp2svpnparametersvpnclientrevokedcertificates) | array | List of revoked VPN client certificates. |
+| [`vpnClientRootCertificates`](#parameter-virtualwanparametersp2svpnparametersvpnclientrootcertificates) | array | List of VPN client root certificates. |
+| [`vpnProtocols`](#parameter-virtualwanparametersp2svpnparametersvpnprotocols) | string | Supported VPN protocols. |
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.createP2sVpnServerConfiguration`
+
+Whether to create a new P2S VPN server configuration.
+
+- Required: Yes
+- Type: bool
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.aadAudience`
+
+Entra ID audience for VPN authentication. Required if using Entra ID audience for VPN authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.aadIssuer`
+
+Entra ID issuer for VPN authentication. Required if using Entra ID authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.aadTenant`
+
+Entra ID tenant for VPN authentication. Required if using Entra ID authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.p2sConfigurationPolicyGroups`
+
+Configure user groups and IP Address Pools. Required if using Entra ID authentication.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.radiusClientRootCertificates`
+
+List of RADIUS client root certificates. Required if using RADIUS authentication.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerAddress`
+
+RADIUS server address. Required if using RADIUS authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerRootCertificates`
+
+List of RADIUS server root certificates. Required if using RADIUS authentication.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServers`
+
+List of RADIUS servers. Required if using RADIUS authentication.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.radiusServerSecret`
+
+RADIUS server secret. Required if using RADIUS authentication.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.p2sVpnServerConfigurationName`
+
+Name of the P2S VPN server configuration.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnAuthenticationTypes`
+
+VPN authentication types supported.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies`
+
+List of VPN client IPsec policies.
+
+- Required: No
+- Type: array
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`dhGroup`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesdhgroup) | string | The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2. |
+| [`ikeEncryption`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesikeencryption) | string | The encryption algorithm used in IKE phase 1. Required if using IKEv2. |
+| [`ikeIntegrity`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesikeintegrity) | string | The integrity algorithm used in IKE phase 1. Required if using IKEv2. |
+| [`ipsecEncryption`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesipsecencryption) | string | The encryption algorithm used in IKE phase 2. Required if using IKEv2. |
+| [`ipsecIntegrity`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciesipsecintegrity) | string | The integrity algorithm used in IKE phase 2. Required if using IKEv2. |
+| [`pfsGroup`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciespfsgroup) | string | The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2. |
+| [`saDataSizeKilobytes`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciessadatasizekilobytes) | int | The size of the SA data in kilobytes. Required if using IKEv2. |
+| [`salfetimeSeconds`](#parameter-virtualwanparametersp2svpnparametersvpnclientipsecpoliciessalfetimeseconds) | int | The lifetime of the SA in seconds. Required if using IKEv2. |
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.dhGroup`
+
+The Diffie-Hellman group used in IKE phase 1. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ikeEncryption`
+
+The encryption algorithm used in IKE phase 1. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ikeIntegrity`
+
+The integrity algorithm used in IKE phase 1. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ipsecEncryption`
+
+The encryption algorithm used in IKE phase 2. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.ipsecIntegrity`
+
+The integrity algorithm used in IKE phase 2. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.pfsGroup`
+
+The Perfect Forward Secrecy (PFS) group used in IKE phase 2. Required if using IKEv2.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.saDataSizeKilobytes`
+
+The size of the SA data in kilobytes. Required if using IKEv2.
+
+- Required: No
+- Type: int
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientIpsecPolicies.salfetimeSeconds`
+
+The lifetime of the SA in seconds. Required if using IKEv2.
+
+- Required: No
+- Type: int
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientRevokedCertificates`
+
+List of revoked VPN client certificates.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnClientRootCertificates`
+
+List of VPN client root certificates.
+
+- Required: No
+- Type: array
+
+### Parameter: `virtualWanParameters.p2sVpnParameters.vpnProtocols`
+
+Supported VPN protocols.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'IkeV2'
+    'OpenVPN'
+  ]
+  ```
+
+### Parameter: `virtualWanParameters.roleAssignments`
+
+Role assignments to be applied to the Virtual WAN.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`principalId`](#parameter-virtualwanparametersroleassignmentsprincipalid) | string | The principal ID of the principal (user/group/identity) to assign the role to. |
+| [`roleDefinitionIdOrName`](#parameter-virtualwanparametersroleassignmentsroledefinitionidorname) | string | The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`condition`](#parameter-virtualwanparametersroleassignmentscondition) | string | The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container". |
+| [`conditionVersion`](#parameter-virtualwanparametersroleassignmentsconditionversion) | string | Version of the condition. |
+| [`delegatedManagedIdentityResourceId`](#parameter-virtualwanparametersroleassignmentsdelegatedmanagedidentityresourceid) | string | The Resource Id of the delegated managed identity resource. |
+| [`description`](#parameter-virtualwanparametersroleassignmentsdescription) | string | The description of the role assignment. |
+| [`name`](#parameter-virtualwanparametersroleassignmentsname) | string | The name (as GUID) of the role assignment. If not provided, a GUID will be generated. |
+| [`principalType`](#parameter-virtualwanparametersroleassignmentsprincipaltype) | string | The principal type of the assigned principal ID. |
+
+### Parameter: `virtualWanParameters.roleAssignments.principalId`
+
+The principal ID of the principal (user/group/identity) to assign the role to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.roleDefinitionIdOrName`
+
+The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.condition`
+
+The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase "foo_storage_container".
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.conditionVersion`
+
+Version of the condition.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    '2.0'
+  ]
+  ```
+
+### Parameter: `virtualWanParameters.roleAssignments.delegatedManagedIdentityResourceId`
+
+The Resource Id of the delegated managed identity resource.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.description`
+
+The description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.name`
+
+The name (as GUID) of the role assignment. If not provided, a GUID will be generated.
+
+- Required: No
+- Type: string
+
+### Parameter: `virtualWanParameters.roleAssignments.principalType`
+
+The principal type of the assigned principal ID.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Device'
+    'ForeignGroup'
+    'Group'
+    'ServicePrincipal'
+    'User'
+  ]
+  ```
+
+### Parameter: `virtualWanParameters.tags`
+
+Tags to be applied to the Virtual WAN.
+
+- Required: No
+- Type: object
+
+### Parameter: `virtualWanParameters.type`
+
+The type of Virtual WAN. Allowed values are Standard or Basic.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Basic'
+    'Standard'
+  ]
+  ```
+
+### Parameter: `enableTelemetry`
+
+Enable/Disable usage telemetry for module.
+
+- Required: No
+- Type: bool
+- Default: `True`
+
+### Parameter: `lock`
+
+The lock settings for the Virtual WAN and associated components.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`kind`](#parameter-lockkind) | string | Specify the type of lock. |
+| [`name`](#parameter-lockname) | string | Specify the name of lock. |
+
+### Parameter: `lock.kind`
+
+Specify the type of lock.
+
+- Required: No
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'CanNotDelete'
+    'None'
+    'ReadOnly'
+  ]
+  ```
+
+### Parameter: `lock.name`
+
+Specify the name of lock.
+
+- Required: No
+- Type: string
+
 ## Outputs
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `resourceGroupName` | string | The resource group where the resource is deployed. |
 | `virtualHubs` | array | The array containing the Virtual Hub information. |
 | `virtualWan` | object | Object containing the Virtual WAN information. |
 

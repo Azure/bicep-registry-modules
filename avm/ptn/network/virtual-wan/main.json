@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "1060014321135180191"
+      "templateHash": "193250991719156824"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -1512,7 +1512,7 @@
         "$ref": "#/definitions/virtualHubParameterType"
       },
       "metadata": {
-        "description": "Optional. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs."
+        "description": "Required. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs."
       }
     },
     "lock": {
@@ -7302,6 +7302,13 @@
     }
   },
   "outputs": {
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group where the resource is deployed."
+      },
+      "value": "[resourceGroup().name]"
+    },
     "virtualWan": {
       "type": "object",
       "metadata": {
