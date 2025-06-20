@@ -35,7 +35,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:0.3.1' = {
   }
 }
 
-module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.3.0' = [
+module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.4.0' = [
   for (virtualHub, i) in virtualHubParameters!: {
     name: '${uniqueString(deployment().name, location)}-${virtualHub.hubName}'
     params: {
@@ -59,7 +59,7 @@ module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.3.0' = [
   }
 ]
 
-module firewallModule 'br/public:avm/res/network/azure-firewall:0.6.0' = [
+module firewallModule 'br/public:avm/res/network/azure-firewall:0.7.0' = [
   for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?secureHubParameters.?deploySecureHub!) {
     name: virtualHub.?secureHubParameters.?azureFirewallName!
     params: {
@@ -116,7 +116,7 @@ module vpnServerConfiguration 'br/public:avm/res/network/vpn-server-configuratio
   }
 }
 
-module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.1' = [
+module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.2' = [
   for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?p2sVpnParameters.?deployP2SVpnGateway == true) {
     name: virtualHub.?p2sVpnParameters.?vpnGatewayName!
     params: {
@@ -143,7 +143,7 @@ module p2sVpnGatewayModule 'br/public:avm/res/network/p2s-vpn-gateway:0.1.1' = [
   }
 ]
 
-module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.1.5' = [
+module s2sVpnGatewayModule 'br/public:avm/res/network/vpn-gateway:0.2.0' = [
   for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?s2sVpnParameters.?deployS2SVpnGateway == true) {
     name: virtualHub.?s2sVpnParameters.?vpnGatewayName!
     params: {
