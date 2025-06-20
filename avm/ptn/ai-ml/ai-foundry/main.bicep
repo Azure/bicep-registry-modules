@@ -193,6 +193,42 @@ module cognitiveServices 'modules/ai-foundry-account/aifoundryaccount.bicep' = {
   }
 }
 
+module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic') {
+  name: take('${name}-ai-search-deployment', 64)
+  params: {
+    name: 'srch${name}${resourceToken}'
+    location: location
+    networkIsolation: networkIsolation
+    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    userObjectId: userObjectId
+    roleAssignments: union(
+      empty(userObjectId)
+        ? []
+        : [
+            {
+              principalId: userObjectId
+              principalType: 'ServicePrincipal'
+              roleDefinitionIdOrName: 'Search Index Data Contributor'
+            }
+          ],
+      [
+        {
+          principalId: cognitiveServices.outputs.aiServicesSystemAssignedMIPrincipalId
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Search Index Data Contributor'
+        }
+        {
+          principalId: cognitiveServices.outputs.aiServicesSystemAssignedMIPrincipalId
+          principalType: 'ServicePrincipal'
+          roleDefinitionIdOrName: 'Search Service Contributor'
+        }
+      ]
+    )
+    tags: allTags
+  }
+}
+
 module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-storage-account-deployment', 64)
   params: {
@@ -231,42 +267,6 @@ module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType
   }
 }
 
-module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic') {
-  name: take('${name}-ai-search-deployment', 64)
-  params: {
-    name: 'srch${name}${resourceToken}'
-    location: location
-    networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
-    userObjectId: userObjectId
-    roleAssignments: union(
-      empty(userObjectId)
-        ? []
-        : [
-            {
-              principalId: userObjectId
-              principalType: 'ServicePrincipal'
-              roleDefinitionIdOrName: 'Search Index Data Contributor'
-            }
-          ],
-      [
-        {
-          principalId: cognitiveServices.outputs.aiServicesSystemAssignedMIPrincipalId
-          principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Search Index Data Contributor'
-        }
-        {
-          principalId: cognitiveServices.outputs.aiServicesSystemAssignedMIPrincipalId
-          principalType: 'ServicePrincipal'
-          roleDefinitionIdOrName: 'Search Service Contributor'
-        }
-      ]
-    )
-    tags: allTags
-  }
-}
-
 module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-cosmosdb-deployment', 64)
   params: {
@@ -291,6 +291,8 @@ module project 'modules/aifoundryproject.bicep' = {
     storageName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.storageName : ''
     aiServicesName: cognitiveServices.outputs.aiServicesName
     nameFormatted: toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
+    projUploadsContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.projUploadsContainerName : ''
+    sysDataContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.sysDataContainerName : ''
   }
 }
 
