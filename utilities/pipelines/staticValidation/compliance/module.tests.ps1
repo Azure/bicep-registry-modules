@@ -167,9 +167,9 @@ Describe 'File/folder tests' -Tag 'Modules' {
                         moduleFolderName         = $moduleFolderPath.Replace('\', '/').Split('/avm/')[1]
                         moduleFolderPath         = $moduleFolderPath
                         moduleType               = $moduleType
-                        isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '\/(rg|sub|mg)\-scope$' }).Count -gt 0
+                        isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
                         versionFileExists        = Test-Path (Join-Path $moduleFolderPath 'version.json')
-                        isMultiScopeChildModule  = (Split-Path $moduleFolderPath -Leaf) -match '\/(rg|sub|mg)\-scope$'
+                        isMultiScopeChildModule  = (Split-Path $moduleFolderPath -Leaf) -match '[\/|\\](rg|sub|mg)\-scope$'
 
                     }
                 }
@@ -565,8 +565,8 @@ Describe 'Module tests' -Tag 'Module' {
                     isTopLevelModule         = ($resourceTypeIdentifier -split '[\/|\\]').Count -eq 2
                     moduleType               = $moduleType
                     versionFileExists        = Test-Path (Join-Path -Path $moduleFolderPath 'version.json')
-                    isMultiScopeChildModule  = (Split-Path $moduleFolderPath -Leaf) -match '\/(rg|sub|mg)\-scope$'
-                    isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '\/(rg|sub|mg)\-scope$' }).Count -gt 0
+                    isMultiScopeChildModule  = (Split-Path $moduleFolderPath -Leaf) -match '[\/|\\](rg|sub|mg)\-scope$'
+                    isMultiScopeParentModule = ((Get-ChildItem -Directory -Path $moduleFolderPath) | Where-Object { $_.FullName -match '[\/|\\](rg|sub|mg)\-scope$' }).Count -gt 0
 
                 }
             }
