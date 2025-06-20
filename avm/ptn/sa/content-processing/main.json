@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "1693148141083372171"
+      "templateHash": "7327157534289930456"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -1162,7 +1162,7 @@
                 "properties": {
                   "access": "Allow",
                   "direction": "Outbound",
-                  "priority": 100,
+                  "priority": 200,
                   "protocol": "*",
                   "sourceAddressPrefixes": [
                     "10.0.2.0/24"
@@ -1173,11 +1173,11 @@
                 }
               },
               {
-                "name": "Deny-hop-outbound",
+                "name": "deny-hop-outbound",
                 "properties": {
                   "access": "Deny",
                   "direction": "Outbound",
-                  "priority": 200,
+                  "priority": 100,
                   "protocol": "*",
                   "sourcePortRange": "*",
                   "destinationPortRanges": [
@@ -30135,6 +30135,9 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "disableLocalAuth": {
+            "value": true
           }
         },
         "template": {

@@ -180,7 +180,7 @@ module avmNetworkSecurityGroup_Containers 'br/public:avm/res/network/network-sec
         properties: {
           access: 'Allow'
           direction: 'Outbound'
-          priority: 100
+          priority: 200
           protocol: '*'
           sourceAddressPrefixes: ['10.0.2.0/24']
           sourcePortRange: '*'
@@ -189,11 +189,11 @@ module avmNetworkSecurityGroup_Containers 'br/public:avm/res/network/network-sec
         }
       }
       {
-        name: 'Deny-hop-outbound'
+        name: 'deny-hop-outbound'
         properties: {
           access: 'Deny'
           direction: 'Outbound'
-          priority: 200
+          priority: 100
           protocol: '*'
           sourcePortRange: '*'
           destinationPortRanges: ['3389', '22']
@@ -494,6 +494,7 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     tags: tags
     enableTelemetry: enableTelemetry
+    disableLocalAuth: true
   }
 }
 
