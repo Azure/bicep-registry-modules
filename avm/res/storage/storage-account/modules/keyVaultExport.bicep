@@ -13,7 +13,7 @@ param secretsToSet secretToSetType[]
 //   Resources   //
 // ============= //
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
   name: keyVaultName
 }
 

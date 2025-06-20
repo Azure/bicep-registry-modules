@@ -3435,7 +3435,6 @@ If true, enables Hierarchical Namespace for the storage account. Required if ena
 
 - Required: No
 - Type: bool
-- Default: `False`
 
 ### Parameter: `allowBlobPublicAccess`
 
