@@ -1620,7 +1620,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
     keyValues: [
       {
         name: 'APP_AZURE_OPENAI_ENDPOINT'
-        value: 'test ai endpoint' //avmAiServices.outputs.endpoint //TODO: replace with actual endpoint
+        value: avmAiServices.outputs.endpoint //TODO: replace with actual endpoint
       }
       {
         name: 'APP_AZURE_OPENAI_MODEL'
@@ -1628,7 +1628,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_CONTENT_UNDERSTANDING_ENDPOINT'
-        value: 'test cu endpoint' //avmAiServices_cu.outputs.endpoint //TODO: replace with actual endpoint
+        value: avmAiServices_cu.outputs.endpoint //TODO: replace with actual endpoint
       }
       {
         name: 'APP_COSMOS_CONTAINER_PROCESS'
@@ -1684,20 +1684,20 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_STORAGE_BLOB_URL'
-        value: 'testurl' //avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
+        value: avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
       }
       {
         name: 'APP_STORAGE_QUEUE_URL'
-        value: 'testurl' //avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
+        value: avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
       }
       {
         name: 'APP_AI_PROJECT_CONN_STR'
-        value: 'test connection string' //'${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
+        value: '${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
         //TODO: replace with actual AI project connection string
       }
       {
         name: 'APP_COSMOS_CONNSTR'
-        value: 'test cosmos db connection string' //avmCosmosDB.outputs.primaryReadWriteConnectionString
+        value: avmCosmosDB.outputs.primaryReadWriteConnectionString
       }
     ]
 
@@ -1728,6 +1728,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
     avmAiServices_cu
     avmStorageAccount
     avmCosmosDB
+    avmAiProject
   ]
 }
 
