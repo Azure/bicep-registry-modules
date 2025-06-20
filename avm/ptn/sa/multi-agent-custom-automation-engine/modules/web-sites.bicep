@@ -69,7 +69,7 @@ param siteConfig resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.site
 }
 
 @description('Optional. The web site config.')
-param configs configType[]?
+param configs appSettingsConfigType[]?
 
 @description('Optional. The Function App configuration object.')
 param functionAppConfig resourceInput<'Microsoft.Web/sites@2024-04-01'>.properties.functionAppConfig?
@@ -287,10 +287,6 @@ output outboundIpAddresses string = app.properties.outboundIpAddresses
 // ================ //
 // Definitions      //
 // ================ //
-@export()
-@description('The type of a site configuration.')
-type configType = appSettingsConfigType
-
 @export()
 @description('The type of an app settings configuration.')
 type appSettingsConfigType = {
