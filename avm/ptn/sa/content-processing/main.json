@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11170188152744620811"
+      "templateHash": "6093170428460069887"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -3192,7 +3192,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('{0}{1}', variables('namingAbbrs').networking.virtualNetwork, variables('solutionPrefix'))]"
+            "value": "vnet-cps"
           },
           "location": {
             "value": "[parameters('resourceGroupLocation')]"

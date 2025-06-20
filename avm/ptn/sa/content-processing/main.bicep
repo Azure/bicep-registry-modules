@@ -271,7 +271,8 @@ module avmNetworkSecurityGroup_Admin 'br/public:avm/res/network/network-security
 module avmVirtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if (enablePrivateNetworking) {
   name: format(resourceNameFormatString, namingAbbrs.networking.virtualNetwork)
   params: {
-    name: '${namingAbbrs.networking.virtualNetwork}${solutionPrefix}'
+    // name: '${namingAbbrs.networking.virtualNetwork}${solutionPrefix}'
+    name: 'vnet-cps'
     location: resourceGroupLocation
     tags: tags
     enableTelemetry: enableTelemetry
