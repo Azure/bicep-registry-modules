@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "15825153899458576874"
+      "version": "0.36.1.42791",
+      "templateHash": "13916745959726876819"
     },
     "name": "SQL Server Database",
     "description": "This module deploys an Azure SQL Server Database."
@@ -81,24 +81,6 @@
     "longTermBackupRetentionPolicyType": {
       "type": "object",
       "properties": {
-        "backupStorageAccessTier": {
-          "type": "string",
-          "allowedValues": [
-            "Archive",
-            "Hot"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The BackupStorageAccessTier for the LTR backups."
-          }
-        },
-        "makeBackupsImmutable": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The setting whether to make LTR backups immutable."
-          }
-        },
         "monthlyRetention": {
           "type": "string",
           "nullable": true,
@@ -131,6 +113,50 @@
       "metadata": {
         "__bicep_export!": true,
         "description": "The long-term backup retention policy for the database."
+      }
+    },
+    "customerManagedKeyWithAutoRotateType": {
+      "type": "object",
+      "properties": {
+        "keyVaultResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of a key vault to reference a customer managed key for encryption from."
+          }
+        },
+        "keyName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the customer managed key to use for encryption."
+          }
+        },
+        "keyVersion": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The version of the customer managed key to reference for encryption. If not provided, using version as per 'autoRotationEnabled' setting."
+          }
+        },
+        "autoRotationEnabled": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Enable or disable auto-rotating to the latest key version. Default is `true`. If set to `false`, the latest key version at the time of the deployment is used."
+          }
+        },
+        "userAssignedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. User assigned identity to use when fetching the customer managed key. Required if no system assigned identity is available for use."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a customer-managed key. To be used if the resource type supports auto-rotation of the customer-managed key.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
       }
     },
     "diagnosticSettingFullType": {
@@ -255,6 +281,36 @@
         }
       }
     },
+    "lockType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the name of lock."
+          }
+        },
+        "kind": {
+          "type": "string",
+          "allowedValues": [
+            "CanNotDelete",
+            "None",
+            "ReadOnly"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Specify the type of lock."
+          }
+        }
+      },
+      "metadata": {
+        "description": "An AVM-aligned type for a lock.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+        }
+      }
+    },
     "managedIdentityOnlyUserAssignedType": {
       "type": "object",
       "properties": {
@@ -357,20 +413,6 @@
       "nullable": true,
       "metadata": {
         "description": "Optional. The resource ID of the elastic pool containing this database."
-      }
-    },
-    "encryptionProtector": {
-      "type": "string",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The azure key vault URI of the database if it's configured with per Database Customer Managed Keys."
-      }
-    },
-    "encryptionProtectorAutoRotation": {
-      "type": "bool",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The flag to enable or disable auto rotation of database encryption protector AKV key."
       }
     },
     "federatedClientId": {
@@ -591,6 +633,13 @@
         "description": "Optional. Location for all resources."
       }
     },
+    "lock": {
+      "$ref": "#/definitions/lockType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The lock settings of the databse."
+      }
+    },
     "diagnosticSettings": {
       "type": "array",
       "items": {
@@ -621,6 +670,13 @@
       "metadata": {
         "description": "Optional. The managed identity definition for this resource."
       }
+    },
+    "customerManagedKey": {
+      "$ref": "#/definitions/customerManagedKeyWithAutoRotateType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The customer managed key definition for database TDE."
+      }
     }
   },
   "variables": {
@@ -628,15 +684,33 @@
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null()), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]"
   },
   "resources": {
+    "cMKKeyVault::cMKKey": {
+      "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults/keys",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
+    },
     "server": {
       "existing": true,
       "type": "Microsoft.Sql/servers",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[parameters('serverName')]"
+    },
+    "cMKKeyVault": {
+      "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
+      "existing": true,
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2023-07-01",
+      "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
+      "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
+      "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
     },
     "database": {
       "type": "Microsoft.Sql/servers/databases",
-      "apiVersion": "2023-08-01-preview",
+      "apiVersion": "2023-08-01",
       "name": "[format('{0}/{1}', parameters('serverName'), parameters('name'))]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -649,8 +723,8 @@
         "collation": "[parameters('collation')]",
         "createMode": "[parameters('createMode')]",
         "elasticPoolId": "[parameters('elasticPoolResourceId')]",
-        "encryptionProtector": "[parameters('encryptionProtector')]",
-        "encryptionProtectorAutoRotation": "[parameters('encryptionProtectorAutoRotation')]",
+        "encryptionProtector": "[if(not(equals(parameters('customerManagedKey'), null())), if(not(empty(tryGet(parameters('customerManagedKey'), 'keyVersion'))), format('{0}/{1}', reference('cMKKeyVault::cMKKey').keyUri, tryGet(parameters('customerManagedKey'), 'keyVersion')), reference('cMKKeyVault::cMKKey').keyUriWithVersion), null())]",
+        "encryptionProtectorAutoRotation": "[tryGet(parameters('customerManagedKey'), 'autoRotationEnabled')]",
         "federatedClientId": "[parameters('federatedClientId')]",
         "freeLimitExhaustionBehavior": "[parameters('freeLimitExhaustionBehavior')]",
         "highAvailabilityReplicaCount": "[parameters('highAvailabilityReplicaCount')]",
@@ -676,7 +750,10 @@
         "sourceResourceId": "[parameters('sourceResourceId')]",
         "useFreeLimit": "[parameters('useFreeLimit')]",
         "zoneRedundant": "[parameters('zoneRedundant')]"
-      }
+      },
+      "dependsOn": [
+        "cMKKeyVault::cMKKey"
+      ]
     },
     "database_diagnosticSettings": {
       "copy": {
@@ -719,6 +796,20 @@
         "database"
       ]
     },
+    "database_lock": {
+      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+      "type": "Microsoft.Authorization/locks",
+      "apiVersion": "2020-05-01",
+      "scope": "[format('Microsoft.Sql/servers/{0}/databases/{1}', parameters('serverName'), parameters('name'))]",
+      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+      "properties": {
+        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+      },
+      "dependsOn": [
+        "database"
+      ]
+    },
     "database_backupShortTermRetentionPolicy": {
       "condition": "[not(empty(parameters('backupShortTermRetentionPolicy')))]",
       "type": "Microsoft.Resources/deployments",
@@ -749,8 +840,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "586417749840962852"
+              "version": "0.36.1.42791",
+              "templateHash": "9948442514033354219"
             },
             "name": "Azure SQL Server Database Short Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Short-Term Backup Retention Policy."
@@ -786,10 +877,10 @@
           "resources": [
             {
               "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
               "properties": {
-                "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2023-08-01-preview', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
+                "diffBackupIntervalInHours": "[if(equals(reference(resourceId('Microsoft.Sql/servers/databases', parameters('serverName'), parameters('databaseName')), '2023-08-01', 'full').sku.tier, 'Hyperscale'), null(), parameters('diffBackupIntervalInHours'))]",
                 "retentionDays": "[parameters('retentionDays')]"
               }
             }
@@ -840,12 +931,6 @@
           "databaseName": {
             "value": "[parameters('name')]"
           },
-          "backupStorageAccessTier": {
-            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'backupStorageAccessTier')]"
-          },
-          "makeBackupsImmutable": {
-            "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'makeBackupsImmutable')]"
-          },
           "weeklyRetention": {
             "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention')]"
           },
@@ -866,8 +951,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.34.44.8038",
-              "templateHash": "15078686386861189890"
+              "version": "0.36.1.42791",
+              "templateHash": "10140872033464442933"
             },
             "name": "SQL Server Database Long Term Backup Retention Policies",
             "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -883,24 +968,6 @@
               "type": "string",
               "metadata": {
                 "description": "Required. The name of the parent database."
-              }
-            },
-            "backupStorageAccessTier": {
-              "type": "string",
-              "allowedValues": [
-                "Archive",
-                "Hot"
-              ],
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The BackupStorageAccessTier for the LTR backups."
-              }
-            },
-            "makeBackupsImmutable": {
-              "type": "bool",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. The setting whether to make LTR backups immutable."
               }
             },
             "monthlyRetention": {
@@ -936,22 +1003,20 @@
             "server::database": {
               "existing": true,
               "type": "Microsoft.Sql/servers/databases",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}', parameters('serverName'), parameters('databaseName'))]"
             },
             "server": {
               "existing": true,
               "type": "Microsoft.Sql/servers",
-              "apiVersion": "2023-08-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[parameters('serverName')]"
             },
             "backupLongTermRetentionPolicy": {
               "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-              "apiVersion": "2023-05-01-preview",
+              "apiVersion": "2023-08-01",
               "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
               "properties": {
-                "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
-                "makeBackupsImmutable": "[parameters('makeBackupsImmutable')]",
                 "monthlyRetention": "[parameters('monthlyRetention')]",
                 "weeklyRetention": "[parameters('weeklyRetention')]",
                 "weekOfYear": "[parameters('weekOfYear')]",
@@ -1016,7 +1081,7 @@
       "metadata": {
         "description": "The location the resource was deployed into."
       },
-      "value": "[reference('database', '2023-08-01-preview', 'full').location]"
+      "value": "[reference('database', '2023-08-01', 'full').location]"
     }
   }
 }
