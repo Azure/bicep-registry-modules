@@ -75,6 +75,7 @@ body:
         - "avm/ptn/policy-insights/remediation"
         - "avm/ptn/sa/conversation-knowledge-mining"
         - "avm/ptn/security/security-center"
+        - "avm/ptn/subscription/service-health-alerts"
         - "avm/ptn/virtual-machine-images/azure-image-builder"
         - "avm/res/aad/domain-service"
         - "avm/res/alerts-management/action-rule"
