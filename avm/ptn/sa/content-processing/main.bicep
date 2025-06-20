@@ -384,23 +384,23 @@ module avmPrivateDnsZoneCosmosMongoDB 'br/public:avm/res/network/private-dns-zon
   }
 }
 
-// // Private DNS Zone for Application Storage Account
-// var appStoragePrivateDnsZones = {
-//   'privatelink.blob.${environment().suffixes.storage}': 'blob'
-//   'privatelink.queue.${environment().suffixes.storage}': 'queue'
-// }
+// Private DNS Zone for Application Storage Account
+var appStoragePrivateDnsZones = {
+  'privatelink.blob.${environment().suffixes.storage}': 'blob'
+  'privatelink.queue.${environment().suffixes.storage}': 'queue'
+}
 
-// module avmPrivateDnsZonesAppStorage 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
-//   for (zone, i) in items(appStoragePrivateDnsZones): if (enablePrivateNetworking ) {
-//     name: 'private-dns-zone-app-storage-${zone.value}-${i}'
-//     params: {
-//       name: zone.key
-//       tags: tags
-//       enableTelemetry: enableTelemetry
-//       virtualNetworkLinks: [{ virtualNetworkResourceId: avmVirtualNetwork.outputs.resourceId }]
-//     }
-//   }
-// ]
+module avmPrivateDnsZonesAppStorage 'br/public:avm/res/network/private-dns-zone:0.7.1' = [
+  for (zone, i) in items(appStoragePrivateDnsZones): if (enablePrivateNetworking) {
+    name: 'private-dns-zone-app-storage-${zone.value}-${i}'
+    params: {
+      name: zone.key
+      tags: tags
+      enableTelemetry: enableTelemetry
+      virtualNetworkLinks: [{ virtualNetworkResourceId: avmVirtualNetwork.outputs.resourceId }]
+    }
+  }
+]
 
 // Private DNS Zone for App Configuration
 var appConfigPrivateDnsZones = {
