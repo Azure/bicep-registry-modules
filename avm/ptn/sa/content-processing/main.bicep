@@ -572,7 +572,7 @@ module avmContainerRegistry 'modules/container-registry.bicep' = {
   params: {
     acrName: '${namingAbbrs.containers.containerRegistry}${replace(solutionPrefix, '-', '')}'
     location: resourceGroupLocation
-    acrSku: 'Basic'
+    acrSku: 'Standard'
     publicNetworkAccess: 'Enabled'
     zoneRedundancy: 'Disabled'
     tags: tags
@@ -942,6 +942,10 @@ module avmAiServices 'br/public:avm/res/cognitive-services/account:0.11.0' = {
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
+    networkAcls: {
+      bypass: 'AzureServices'
+      defaultAction: 'Deny'
+    }
     disableLocalAuth: true
     enableTelemetry: enableTelemetry
     deployments: [
@@ -1703,12 +1707,12 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_AI_PROJECT_CONN_STR'
-        value: '${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
+        value: 'test' //'${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
         //TODO: replace with actual AI project connection string
       }
       {
         name: 'APP_COSMOS_CONNSTR'
-        value: avmCosmosDB.outputs.primaryReadWriteConnectionString
+        value: 'test' //avmCosmosDB.outputs.primaryReadWriteConnectionString
       }
     ]
 
