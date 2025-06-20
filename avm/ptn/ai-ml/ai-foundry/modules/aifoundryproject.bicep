@@ -26,6 +26,12 @@ param aiServicesName string
 @description('Azure Search Service Name')
 param nameFormatted string
 
+@description('Name of the container for project uploads')
+param projUploadsContainerName string = ''
+
+@description('Name of the container for system data')
+param sysDataContainerName string = ''
+
 @description('Name of the AI Foundry project')
 param defaultProjectName string = name
 param defaultProjectDisplayName string = name
@@ -72,7 +78,24 @@ resource project_connection_azure_storage 'Microsoft.CognitiveServices/accounts/
       ResourceId: storageAccount.id
       location: storageAccount.location
       accountName: storageAccount.name
-      containerName: '${name}projUploads'
+      containerName: projUploadsContainerName
+    }
+  }
+}
+
+resource project_connection_azure_storage_sysdata 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic' && !empty(storageName) && !empty(sysDataContainerName)) {
+  name: '${storageName}-sysdata'
+  parent: project
+  properties: {
+    category: 'AzureBlob'
+    target: storageAccount.properties.primaryEndpoints.blob
+    authType: 'AAD'
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: storageAccount.id
+      location: storageAccount.location
+      accountName: storageAccount.name
+      containerName: sysDataContainerName
     }
   }
 }
@@ -126,6 +149,7 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
     ]
     storageConnections: [
       project_connection_azure_storage.name
+      project_connection_azure_storage_sysdata.name
     ]
     threadStorageConnections: [
       project_connection_cosmosdb.name

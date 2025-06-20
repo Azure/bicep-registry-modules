@@ -33,7 +33,10 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (n
   }
 }
 
-var nameFormatted = take(toLower(name), 50)
+var cleanedName = replace(replace(toLower(name), '-', ''), '_', '')
+var nameFormatted = length(cleanedName) >= 5
+  ? take(cleanedName, 50)
+  : take('${cleanedName}${uniqueString(cleanedName)}', 50)
 
 module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' = {
   name: take('${nameFormatted}-container-registry-deployment', 64)
@@ -72,20 +75,9 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
       : []
   }
 }
-// Reference the registry created by the AVM module
-resource containerRegistryPol 'Microsoft.ContainerRegistry/registries@2025-04-01' existing = {
-  name: nameFormatted
-}
 
-// Enable content trust policy (Notary)
-resource acrTrustPolicy 'Microsoft.ContainerRegistry/registries/policies@2023-01-01-preview' = {
-  name: 'contentTrustPolicy'
-  parent: containerRegistryPol
-  properties: {
-    status: 'enabled'
-    type: 'Notary'
-  }
-}
+// Enable content trust policy using the AVM module's built-in parameter
+// The trustPolicyStatus: 'enabled' parameter above handles this automatically
 
 output resourceId string = containerRegistry.outputs.resourceId
 output loginServer string = containerRegistry.outputs.loginServer

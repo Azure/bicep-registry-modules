@@ -52,6 +52,8 @@ module filePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = i
 }
 
 var nameFormatted = take(toLower(storageName), 12)
+var projUploadsContainerName = '${nameFormatted}projUploads'
+var sysDataContainerName = '${nameFormatted}sysdata'
 
 module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   name: take('${nameFormatted}-storage-account-deployment', 64)
@@ -69,7 +71,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
       deleteRetentionPolicyDays: 7 // Retain deleted containers for 7 days (customize as needed)
       containers: [
         {
-          name: '${nameFormatted}projUploads'
+          name: projUploadsContainerName
           properties: {
             publicAccess: 'None'
             roleAssignments: [
@@ -92,7 +94,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
           }
         }
         {
-          name: '${nameFormatted}sysdata'
+          name: sysDataContainerName
           properties: {
             publicAccess: 'None'
             roleAssignments: [
@@ -154,7 +156,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   }
 }
 
-resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2022-09-01' = {
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01' = {
   name: '${nameFormatted}/default'
   properties: {
     containerDeleteRetentionPolicy: {
@@ -171,3 +173,5 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 
 output storageName string = storageAccount.outputs.name
 output storageResourceId string = storageAccount.outputs.resourceId
+output projUploadsContainerName string = projUploadsContainerName
+output sysDataContainerName string = sysDataContainerName
