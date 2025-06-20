@@ -101,7 +101,7 @@ module avmNetworkSecurityGroup 'br/public:avm/res/network/network-security-group
     tags: tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [
-      { workspaceResourceId: avmAppInsightsLogAnalyticsWorkspace.outputs.logAnalyticsWorkspaceResourceId }
+      { workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }
     ]
     securityRules: [
       {
@@ -131,7 +131,7 @@ module avmNetworkSecurityGroup_Containers 'br/public:avm/res/network/network-sec
     tags: tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [
-      { workspaceResourceId: avmAppInsightsLogAnalyticsWorkspace.outputs.logAnalyticsWorkspaceResourceId }
+      { workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }
     ]
     securityRules: [
       //Inbound Rules
@@ -213,7 +213,7 @@ module avmNetworkSecurityGroup_Bastion 'br/public:avm/res/network/network-securi
     tags: tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [
-      { workspaceResourceId: avmAppInsightsLogAnalyticsWorkspace.outputs.logAnalyticsWorkspaceResourceId }
+      { workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }
     ]
     securityRules: [
       {
@@ -241,7 +241,7 @@ module avmNetworkSecurityGroup_Admin 'br/public:avm/res/network/network-security
     tags: tags
     enableTelemetry: enableTelemetry
     diagnosticSettings: [
-      { workspaceResourceId: avmAppInsightsLogAnalyticsWorkspace.outputs.logAnalyticsWorkspaceResourceId }
+      { workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }
     ]
     securityRules: [
       {
@@ -277,7 +277,7 @@ module avmVirtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if 
     enableTelemetry: enableTelemetry
     addressPrefixes: ['10.0.0.0/8']
     diagnosticSettings: [
-      { workspaceResourceId: avmAppInsightsLogAnalyticsWorkspace.outputs.logAnalyticsWorkspaceResourceId }
+      { workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }
     ]
     subnets: [
       {
@@ -451,24 +451,49 @@ module avmPrivateDnsZoneContainerRegistry 'br/public:avm/res/network/private-dns
 // ============== //
 
 // ========== Application insights ========== //
-module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
-  //name: format(deployment_param.resource_name_format_string, abbrs.managementGovernance.logAnalyticsWorkspace)
+// module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
+//   //name: format(deployment_param.resource_name_format_string, abbrs.managementGovernance.logAnalyticsWorkspace)
+//   params: {
+//     appInsightsName: '${namingAbbrs.managementGovernance.applicationInsights}${solutionPrefix}'
+//     location: resourceGroupLocation
+//     //diagnosticSettings: [{ useThisWorkspace: true }]
+//     skuName: 'PerGB2018'
+//     applicationType: 'web'
+//     disableIpMasking: false
+//     disableLocalAuth: true
+//     flowType: 'Bluefield'
+//     kind: 'web'
+//     logAnalyticsWorkspaceName: '${namingAbbrs.managementGovernance.logAnalyticsWorkspace}${solutionPrefix}'
+//     publicNetworkAccessForQuery: 'Enabled'
+//     requestSource: 'rest'
+//     retentionInDays: 30
+//     enableTelemetry: enableTelemetry
+//     tags: tags
+//   }
+// }
+
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = {
+  name: 'deploy_log_analytics_workspace'
   params: {
-    appInsightsName: '${namingAbbrs.managementGovernance.applicationInsights}${solutionPrefix}'
-    location: resourceGroupLocation
-    //diagnosticSettings: [{ useThisWorkspace: true }]
+    name: '${namingAbbrs.managementGovernance.logAnalyticsWorkspace}${solutionPrefix}'
+    location: location
     skuName: 'PerGB2018'
-    applicationType: 'web'
-    disableIpMasking: false
-    disableLocalAuth: true
-    flowType: 'Bluefield'
-    kind: 'web'
-    logAnalyticsWorkspaceName: '${namingAbbrs.managementGovernance.logAnalyticsWorkspace}${solutionPrefix}'
-    publicNetworkAccessForQuery: 'Enabled'
-    requestSource: 'rest'
-    retentionInDays: 30
-    enableTelemetry: enableTelemetry
+    dataRetention: 30
+    diagnosticSettings: [{ useThisWorkspace: true }]
     tags: tags
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
+  name: 'deploy_application_insights'
+  params: {
+    name: '${namingAbbrs.managementGovernance.applicationInsights}${solutionPrefix}'
+    location: location
+    workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 

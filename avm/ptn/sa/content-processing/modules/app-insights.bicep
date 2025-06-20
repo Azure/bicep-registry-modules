@@ -74,6 +74,7 @@ module avmApplicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
     applicationType: applicationType
     //disableIpMasking: disableIpMasking
     //disableLocalAuth: disableLocalAuth
+
     flowType: flowType
     publicNetworkAccessForQuery: publicNetworkAccessForQuery
     diagnosticSettings: [{ workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId }]
