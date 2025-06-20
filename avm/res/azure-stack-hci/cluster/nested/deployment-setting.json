@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "deploymentOperations": {
+      "value": "{{deploymentOperations}}"
+    },
+    "deploymentSettings": {
+      "value": "{{deploymentSettings}}"
+    },
+    "useSharedKeyVault": {
+      "value": "{{useSharedKeyVault}}"
+    },
+    "hciResourceProviderObjectId": {
+      "value": "{{hciResourceProviderObjectId}}"
+    },
+    "clusterName": {
+      "value": "{{clusterName}}"
+    },
+    "cloudId": {
+      "value": "{{cloudId}}"
+    }
+  }
+}
