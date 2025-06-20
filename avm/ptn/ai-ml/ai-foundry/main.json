@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "1917556658957750032"
+      "templateHash": "12034681198455775682"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -7815,7 +7815,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "12635604093907198468"
+              "templateHash": "14227196726419739701"
             }
           },
           "parameters": {
@@ -7866,18 +7866,10 @@
             }
           },
           "variables": {
-            "nameFormatted": "[take(toLower(parameters('name')), 50)]"
+            "cleanedName": "[replace(replace(toLower(parameters('name')), '-', ''), '_', '')]",
+            "nameFormatted": "[if(greaterOrEquals(length(variables('cleanedName')), 5), take(variables('cleanedName'), 50), take(format('{0}{1}', variables('cleanedName'), uniqueString(variables('cleanedName'))), 50))]"
           },
           "resources": [
-            {
-              "type": "Microsoft.ContainerRegistry/registries/policies",
-              "apiVersion": "2023-01-01-preview",
-              "name": "[format('{0}/{1}', variables('nameFormatted'), 'contentTrustPolicy')]",
-              "properties": {
-                "status": "enabled",
-                "type": "Notary"
-              }
-            },
             {
               "condition": "[parameters('networkIsolation')]",
               "type": "Microsoft.Resources/deployments",
@@ -26212,7 +26204,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14082410303532788620"
+              "templateHash": "5242818767554779102"
             }
           },
           "definitions": {
@@ -26356,12 +26348,14 @@
             }
           },
           "variables": {
-            "nameFormatted": "[take(toLower(parameters('storageName')), 12)]"
+            "nameFormatted": "[take(toLower(parameters('storageName')), 12)]",
+            "projUploadsContainerName": "[format('{0}projUploads', variables('nameFormatted'))]",
+            "sysDataContainerName": "[format('{0}sysdata', variables('nameFormatted'))]"
           },
           "resources": {
             "blobService": {
               "type": "Microsoft.Storage/storageAccounts/blobServices",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2024-01-01",
               "name": "[format('{0}/default', variables('nameFormatted'))]",
               "properties": {
                 "containerDeleteRetentionPolicy": {
@@ -32733,7 +32727,7 @@
                       "deleteRetentionPolicyDays": 7,
                       "containers": [
                         {
-                          "name": "[format('{0}projUploads', variables('nameFormatted'))]",
+                          "name": "[variables('projUploadsContainerName')]",
                           "properties": {
                             "publicAccess": "None",
                             "roleAssignments": [
@@ -32751,7 +32745,7 @@
                           }
                         },
                         {
-                          "name": "[format('{0}sysdata', variables('nameFormatted'))]",
+                          "name": "[variables('sysDataContainerName')]",
                           "properties": {
                             "publicAccess": "None",
                             "roleAssignments": [
@@ -38493,6 +38487,14 @@
             "storageResourceId": {
               "type": "string",
               "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-storage-account-deployment', variables('nameFormatted')), 64)), '2022-09-01').resourceId]"
+            },
+            "projUploadsContainerName": {
+              "type": "string",
+              "value": "[variables('projUploadsContainerName')]"
+            },
+            "sysDataContainerName": {
+              "type": "string",
+              "value": "[variables('sysDataContainerName')]"
             }
           }
         }
@@ -38536,7 +38538,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "15124677015417651373"
+              "templateHash": "5920796108370055762"
             }
           },
           "parameters": {
@@ -38589,6 +38591,20 @@
                 "description": "Azure Search Service Name"
               }
             },
+            "projUploadsContainerName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the container for project uploads"
+              }
+            },
+            "sysDataContainerName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the container for system data"
+              }
+            },
             "defaultProjectName": {
               "type": "string",
               "defaultValue": "[parameters('name')]",
@@ -38633,7 +38649,28 @@
                   "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]",
                   "location": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01', 'full').location]",
                   "accountName": "[parameters('storageName')]",
-                  "containerName": "[format('{0}projUploads', parameters('name'))]"
+                  "containerName": "[parameters('projUploadsContainerName')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
+              ]
+            },
+            {
+              "condition": "[and(and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName')))), not(empty(parameters('sysDataContainerName'))))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
+              "properties": {
+                "category": "AzureBlob",
+                "target": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01').primaryEndpoints.blob]",
+                "authType": "AAD",
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]",
+                  "location": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01', 'full').location]",
+                  "accountName": "[parameters('storageName')]",
+                  "containerName": "[parameters('sysDataContainerName')]"
                 }
               },
               "dependsOn": [
@@ -38699,7 +38736,8 @@
                   "[parameters('nameFormatted')]"
                 ],
                 "storageConnections": [
-                  "[parameters('storageName')]"
+                  "[parameters('storageName')]",
+                  "[format('{0}-sysdata', parameters('storageName'))]"
                 ],
                 "threadStorageConnections": [
                   "[parameters('cosmosDBName')]"
@@ -38709,6 +38747,7 @@
                 "[resourceId('Microsoft.CognitiveServices/accounts/capabilityHosts', parameters('aiServicesName'), 'accountCapHost')]",
                 "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]",
                 "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
                 "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
                 "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]"
               ]
