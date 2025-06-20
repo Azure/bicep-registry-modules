@@ -30,7 +30,7 @@ type deliveryWithResourceIdentityType = {
   identity: identityType
   
   @description('Required. The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema.')
-  destination: destinationType
+  destination: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.deliveryWithResourceIdentity.destination
 }
 
 @description('Dead letter configuration with resource identity.')
