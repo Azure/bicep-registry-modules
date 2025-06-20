@@ -8,7 +8,7 @@ param location string = resourceGroup().location
 param virtualWanParameters virtualWanParameterType
 
 @description('Optional. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs.')
-param virtualHubParameters virtualHubParameterType?
+param virtualHubParameters virtualHubParameterType[]?
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 
 @description('Optional. The lock settings for the Virtual WAN and associated components.')
@@ -36,7 +36,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:0.3.1' = {
 }
 
 module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.3.0' = [
-  for (virtualHub, i) in virtualHubParameters: {
+  for (virtualHub, i) in virtualHubParameters!: {
     name: '${uniqueString(deployment().name, location)}-${virtualHub.hubName}'
     params: {
       // Required parameters
@@ -216,7 +216,7 @@ output virtualWan object = {
 
 @description('The array containing the Virtual Hub information.')
 output virtualHubs object[] = [
-  for (virtualHub, index) in virtualHubParameters: {
+  for (virtualHub, index) in virtualHubParameters!: {
     name: virtualHubModule[index].outputs.name
     resourceId: virtualHubModule[index].outputs.resourceId
     resourceGroupName: virtualHubModule[index].outputs.resourceGroupName
@@ -312,7 +312,7 @@ type virtualWanParameterType = {
   }?
 
   @description('Optional. Role assignments to be applied to the Virtual WAN.')
-  roleAssignments: roleAssignmentType?
+  roleAssignments: roleAssignmentType[]?
 
   @description('Optional. Tags to be applied to the Virtual WAN.')
   tags: object?
