@@ -580,8 +580,8 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   params: {
     name: '${namingAbbrs.storage.storageAccount}${replace(solutionPrefix, '-', '')}'
     location: resourceGroupLocation
-    skuName: 'Standard_LRS'
-    kind: 'StorageV2'
+    //skuName: 'Standard_GRS'
+    //kind: 'StorageV2'
     managedIdentities: { systemAssigned: true }
     minimumTlsVersion: 'TLS1_2'
     enableTelemetry: enableTelemetry
@@ -1690,11 +1690,11 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_STORAGE_BLOB_URL'
-        value: 'test' //avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
+        value: avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
       }
       {
         name: 'APP_STORAGE_QUEUE_URL'
-        value: 'test' //avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
+        value: avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
       }
       {
         name: 'APP_AI_PROJECT_CONN_STR'
