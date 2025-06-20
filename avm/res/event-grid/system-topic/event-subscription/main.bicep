@@ -24,6 +24,7 @@ type identityType = {
 }
 
 @description('Delivery configuration with resource identity.')
+export()
 type deliveryWithResourceIdentityType = {
   @description('Required. The identity configuration for delivery.')
   identity: identityType
