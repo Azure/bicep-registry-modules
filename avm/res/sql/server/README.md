@@ -24,8 +24,9 @@ This module deploys an Azure SQL Server.
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Sql/servers` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers) |
 | `Microsoft.Sql/servers/auditingSettings` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/auditingSettings) |
+| `Microsoft.Sql/servers/connectionPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/connectionPolicies) |
 | `Microsoft.Sql/servers/databases` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases) |
-| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/servers/databases/backupLongTermRetentionPolicies) |
+| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupLongTermRetentionPolicies) |
 | `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupShortTermRetentionPolicies) |
 | `Microsoft.Sql/servers/elasticPools` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/elasticPools) |
 | `Microsoft.Sql/servers/encryptionProtector` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/encryptionProtector) |
@@ -1007,7 +1008,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
     secretsExportConfiguration: {
       keyVaultResourceId: '<keyVaultResourceId>'
       sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
-      sqlAzureConnectionStringSercretName: 'sqlConnectionStringKey'
+      sqlAzureConnectionStringSecretName: 'sqlConnectionStringKey'
     }
   }
 }
@@ -1052,7 +1053,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       "value": {
         "keyVaultResourceId": "<keyVaultResourceId>",
         "sqlAdminPasswordSecretName": "adminLoginPasswordKey",
-        "sqlAzureConnectionStringSercretName": "sqlConnectionStringKey"
+        "sqlAzureConnectionStringSecretName": "sqlConnectionStringKey"
       }
     }
   }
@@ -1085,7 +1086,7 @@ param location = '<location>'
 param secretsExportConfiguration = {
   keyVaultResourceId: '<keyVaultResourceId>'
   sqlAdminPasswordSecretName: 'adminLoginPasswordKey'
-  sqlAzureConnectionStringSercretName: 'sqlConnectionStringKey'
+  sqlAzureConnectionStringSecretName: 'sqlConnectionStringKey'
 }
 ```
 
@@ -2021,6 +2022,7 @@ module server 'br/public:avm/res/sql/server:<version>' = {
       sid: '<sid>'
       tenantId: '<tenantId>'
     }
+    connectionPolicy: 'Redirect'
     customerManagedKey: {
       autoRotationEnabled: true
       keyName: '<keyName>'
@@ -2156,6 +2158,9 @@ module server 'br/public:avm/res/sql/server:<version>' = {
         "sid": "<sid>",
         "tenantId": "<tenantId>"
       }
+    },
+    "connectionPolicy": {
+      "value": "Redirect"
     },
     "customerManagedKey": {
       "value": {
@@ -2311,6 +2316,7 @@ param administrators = {
   sid: '<sid>'
   tenantId: '<tenantId>'
 }
+param connectionPolicy = 'Redirect'
 param customerManagedKey = {
   autoRotationEnabled: true
   keyName: '<keyName>'
@@ -2444,6 +2450,7 @@ param vulnerabilityAssessmentsObj = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`auditSettings`](#parameter-auditsettings) | object | The audit settings configuration. If you want to disable auditing, set the parmaeter to an empty object. |
+| [`connectionPolicy`](#parameter-connectionpolicy) | string | SQL logical server connection policy. |
 | [`customerManagedKey`](#parameter-customermanagedkey) | object | The customer managed key definition for server TDE. |
 | [`databases`](#parameter-databases) | array | The databases to create in the server. |
 | [`elasticPools`](#parameter-elasticpools) | array | The Elastic Pools to create in the server. |
@@ -2679,6 +2686,22 @@ Specifies the identifier key of the auditing storage account.
 - Required: No
 - Type: string
 
+### Parameter: `connectionPolicy`
+
+SQL logical server connection policy.
+
+- Required: No
+- Type: string
+- Default: `'Default'`
+- Allowed:
+  ```Bicep
+  [
+    'Default'
+    'Proxy'
+    'Redirect'
+  ]
+  ```
+
 ### Parameter: `customerManagedKey`
 
 The customer managed key definition for server TDE.
@@ -2834,33 +2857,10 @@ The long term backup retention policy for the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`backupStorageAccessTier`](#parameter-databasesbackuplongtermretentionpolicybackupstorageaccesstier) | string | The BackupStorageAccessTier for the LTR backups. |
-| [`makeBackupsImmutable`](#parameter-databasesbackuplongtermretentionpolicymakebackupsimmutable) | bool | The setting whether to make LTR backups immutable. |
 | [`monthlyRetention`](#parameter-databasesbackuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
 | [`weeklyRetention`](#parameter-databasesbackuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-databasesbackuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-databasesbackuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
-
-### Parameter: `databases.backupLongTermRetentionPolicy.backupStorageAccessTier`
-
-The BackupStorageAccessTier for the LTR backups.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Archive'
-    'Hot'
-  ]
-  ```
-
-### Parameter: `databases.backupLongTermRetentionPolicy.makeBackupsImmutable`
-
-The setting whether to make LTR backups immutable.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `databases.backupLongTermRetentionPolicy.monthlyRetention`
 
@@ -4700,7 +4700,7 @@ Key vault reference and secret settings for the module's secrets export.
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`sqlAdminPasswordSecretName`](#parameter-secretsexportconfigurationsqladminpasswordsecretname) | string | The sqlAdminPassword secret name to create. |
-| [`sqlAzureConnectionStringSercretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsercretname) | string | The sqlAzureConnectionString secret name to create. |
+| [`sqlAzureConnectionStringSecretName`](#parameter-secretsexportconfigurationsqlazureconnectionstringsecretname) | string | The sqlAzureConnectionString secret name to create. |
 
 ### Parameter: `secretsExportConfiguration.keyVaultResourceId`
 
@@ -4716,7 +4716,7 @@ The sqlAdminPassword secret name to create.
 - Required: No
 - Type: string
 
-### Parameter: `secretsExportConfiguration.sqlAzureConnectionStringSercretName`
+### Parameter: `secretsExportConfiguration.sqlAzureConnectionStringSecretName`
 
 The sqlAzureConnectionString secret name to create.
 

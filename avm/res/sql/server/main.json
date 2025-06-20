@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12810467141935447786"
+      "templateHash": "7337014448560608719"
     },
     "name": "Azure SQL Servers",
     "description": "This module deploys an Azure SQL Server."
@@ -178,7 +178,7 @@
             "description": "Optional. The sqlAdminPassword secret name to create."
           }
         },
-        "sqlAzureConnectionStringSercretName": {
+        "sqlAzureConnectionStringSecretName": {
           "type": "string",
           "nullable": true,
           "metadata": {
@@ -1359,24 +1359,6 @@
     "longTermBackupRetentionPolicyType": {
       "type": "object",
       "properties": {
-        "backupStorageAccessTier": {
-          "type": "string",
-          "allowedValues": [
-            "Archive",
-            "Hot"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The BackupStorageAccessTier for the LTR backups."
-          }
-        },
-        "makeBackupsImmutable": {
-          "type": "bool",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The setting whether to make LTR backups immutable."
-          }
-        },
         "monthlyRetention": {
           "type": "string",
           "nullable": true,
@@ -2113,6 +2095,18 @@
         "description": "Optional. Whether or not to restrict outbound network access for this server."
       }
     },
+    "connectionPolicy": {
+      "type": "string",
+      "defaultValue": "Default",
+      "allowedValues": [
+        "Default",
+        "Redirect",
+        "Proxy"
+      ],
+      "metadata": {
+        "description": "Optional. SQL logical server connection policy."
+      }
+    },
     "vulnerabilityAssessmentsObj": {
       "$ref": "#/definitions/vulnerabilityAssessmentType",
       "nullable": true,
@@ -2272,6 +2266,17 @@
         "server"
       ]
     },
+    "server_connection_policy": {
+      "type": "Microsoft.Sql/servers/connectionPolicies",
+      "apiVersion": "2023-08-01",
+      "name": "[format('{0}/{1}', parameters('name'), 'default')]",
+      "properties": {
+        "connectionType": "[parameters('connectionPolicy')]"
+      },
+      "dependsOn": [
+        "server"
+      ]
+    },
     "server_databases": {
       "copy": {
         "name": "server_databases",
@@ -2421,7 +2426,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "15961431104919711857"
+              "templateHash": "13916745959726876819"
             },
             "name": "SQL Server Database",
             "description": "This module deploys an Azure SQL Server Database."
@@ -2496,24 +2501,6 @@
             "longTermBackupRetentionPolicyType": {
               "type": "object",
               "properties": {
-                "backupStorageAccessTier": {
-                  "type": "string",
-                  "allowedValues": [
-                    "Archive",
-                    "Hot"
-                  ],
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The BackupStorageAccessTier for the LTR backups."
-                  }
-                },
-                "makeBackupsImmutable": {
-                  "type": "bool",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The setting whether to make LTR backups immutable."
-                  }
-                },
                 "monthlyRetention": {
                   "type": "string",
                   "nullable": true,
@@ -3364,12 +3351,6 @@
                   "databaseName": {
                     "value": "[parameters('name')]"
                   },
-                  "backupStorageAccessTier": {
-                    "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'backupStorageAccessTier')]"
-                  },
-                  "makeBackupsImmutable": {
-                    "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'makeBackupsImmutable')]"
-                  },
                   "weeklyRetention": {
                     "value": "[tryGet(parameters('backupLongTermRetentionPolicy'), 'weeklyRetention')]"
                   },
@@ -3391,7 +3372,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "101116542806833061"
+                      "templateHash": "10140872033464442933"
                     },
                     "name": "SQL Server Database Long Term Backup Retention Policies",
                     "description": "This module deploys an Azure SQL Server Database Long-Term Backup Retention Policy."
@@ -3407,24 +3388,6 @@
                       "type": "string",
                       "metadata": {
                         "description": "Required. The name of the parent database."
-                      }
-                    },
-                    "backupStorageAccessTier": {
-                      "type": "string",
-                      "allowedValues": [
-                        "Archive",
-                        "Hot"
-                      ],
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The BackupStorageAccessTier for the LTR backups."
-                      }
-                    },
-                    "makeBackupsImmutable": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. The setting whether to make LTR backups immutable."
                       }
                     },
                     "monthlyRetention": {
@@ -3471,11 +3434,9 @@
                     },
                     "backupLongTermRetentionPolicy": {
                       "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-                      "apiVersion": "2023-05-01-preview",
+                      "apiVersion": "2023-08-01",
                       "name": "[format('{0}/{1}/{2}', parameters('serverName'), parameters('databaseName'), 'default')]",
                       "properties": {
-                        "backupStorageAccessTier": "[parameters('backupStorageAccessTier')]",
-                        "makeBackupsImmutable": "[parameters('makeBackupsImmutable')]",
                         "monthlyRetention": "[parameters('monthlyRetention')]",
                         "weeklyRetention": "[parameters('weeklyRetention')]",
                         "weekOfYear": "[parameters('weekOfYear')]",
@@ -6016,7 +5977,7 @@
             "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
           },
           "secretsToSet": {
-            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSercretName'), 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), tryGet(parameters('databases'), 0, 'name'), ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
+            "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAdminPasswordSecretName'), 'value', parameters('administratorLoginPassword'))), createArray()), if(contains(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSecretName'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'sqlAzureConnectionStringSecretName'), 'value', format('Server={0}; Database={1}; User={2}; Password={3}', reference('server').fullyQualifiedDomainName, if(not(empty(parameters('databases'))), tryGet(parameters('databases'), 0, 'name'), ''), parameters('administratorLogin'), parameters('administratorLoginPassword')))), createArray()))]"
           }
         },
         "template": {

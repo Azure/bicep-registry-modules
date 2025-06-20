@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "15018461677267759264"
+      "templateHash": "2449414576443390469"
     },
     "name": "Azure Stack HCI Cluster Deployment Settings",
     "description": "This module deploys an Azure Stack HCI Cluster Deployment Settings resource."
@@ -169,6 +169,12 @@
         "description": "Optional. The storage volume configuration mode. See documentation for details."
       }
     },
+    "needArbSecret": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. If true, the service principal secret for ARB is required. If false, the secrets wiil not be required."
+      }
+    },
     "subnetMask": {
       "type": "string",
       "metadata": {
@@ -269,7 +275,13 @@
     ],
     "azureConnectedMachineResourceManagerRoleID": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f5819b54-e033-4d82-ac66-4fec3cbf3f4c')]",
     "readerRoleID": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
-    "azureStackHCIDeviceManagementRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '865ae368-6a45-4bd1-8fbf-0d5151f56fc1')]"
+    "azureStackHCIDeviceManagementRole": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '865ae368-6a45-4bd1-8fbf-0d5151f56fc1')]",
+    "baseSecretNames": [
+      "LocalAdminCredential",
+      "AzureStackLCMUserCredential",
+      "WitnessStorageKey"
+    ],
+    "allSecretNames": "[if(parameters('needArbSecret'), concat(variables('baseSecretNames'), createArray('DefaultARBApplication')), variables('baseSecretNames'))]"
   },
   "resources": {
     "SPConnectedMachineResourceManagerRolePermissions": {
@@ -357,11 +369,11 @@
                   },
                   {
                     "name": "secrets",
-                    "count": "[length(createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey'))]",
+                    "count": "[length(variables('allSecretNames'))]",
                     "input": {
-                      "secretName": "[if(empty(parameters('cloudId')), createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey')[copyIndex('secrets')], format('{0}-{1}-{2}', parameters('clusterName'), createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey')[copyIndex('secrets')], parameters('cloudId')))]",
-                      "eceSecretName": "[createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey')[copyIndex('secrets')]]",
-                      "secretLocation": "[if(empty(parameters('cloudId')), format('https://{0}{1}/secrets/{2}', parameters('keyVaultName'), environment().suffixes.keyvaultDns, createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey')[copyIndex('secrets')]), format('https://{0}{1}/secrets/{2}-{3}-{4}', parameters('keyVaultName'), environment().suffixes.keyvaultDns, parameters('clusterName'), createArray('LocalAdminCredential', 'AzureStackLCMUserCredential', 'DefaultARBApplication', 'WitnessStorageKey')[copyIndex('secrets')], parameters('cloudId')))]"
+                      "secretName": "[if(empty(parameters('cloudId')), variables('allSecretNames')[copyIndex('secrets')], format('{0}-{1}-{2}', parameters('clusterName'), variables('allSecretNames')[copyIndex('secrets')], parameters('cloudId')))]",
+                      "eceSecretName": "[variables('allSecretNames')[copyIndex('secrets')]]",
+                      "secretLocation": "[if(empty(parameters('cloudId')), format('https://{0}{1}/secrets/{2}', parameters('keyVaultName'), environment().suffixes.keyvaultDns, variables('allSecretNames')[copyIndex('secrets')]), format('https://{0}{1}/secrets/{2}-{3}-{4}', parameters('keyVaultName'), environment().suffixes.keyvaultDns, parameters('clusterName'), variables('allSecretNames')[copyIndex('secrets')], parameters('cloudId')))]"
                     }
                   }
                 ],

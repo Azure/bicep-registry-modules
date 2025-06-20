@@ -101,6 +101,14 @@ param publicNetworkAccess string = ''
 ])
 param restrictOutboundNetworkAccess string?
 
+@description('Optional. SQL logical server connection policy.')
+@allowed([
+  'Default'
+  'Redirect'
+  'Proxy'
+])
+param connectionPolicy string = 'Default'
+
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
   {},
@@ -537,10 +545,10 @@ module secretsExport 'modules/keyVaultExport.bicep' = if (secretsExportConfigura
             }
           ]
         : [],
-      contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSercretName')
+      contains(secretsExportConfiguration!, 'sqlAzureConnectionStringSecretName')
         ? [
             {
-              name: secretsExportConfiguration!.?sqlAzureConnectionStringSercretName
+              name: secretsExportConfiguration!.?sqlAzureConnectionStringSecretName
               value: 'Server=${server.properties.fullyQualifiedDomainName}; Database=${!empty(databases) ? databases[?0].name : ''}; User=${administratorLogin}; Password=${administratorLoginPassword}'
             }
           ]
@@ -567,6 +575,14 @@ module failover_groups 'failover-group/main.bicep' = [
     ]
   }
 ]
+
+resource server_connection_policy 'Microsoft.Sql/servers/connectionPolicies@2023-08-01' = {
+  name: 'default'
+  parent: server
+  properties: {
+    connectionType: connectionPolicy
+  }
+}
 
 @description('The name of the deployed SQL server.')
 output name string = server.name
@@ -682,7 +698,7 @@ type secretsExportConfigurationType = {
   sqlAdminPasswordSecretName: string?
 
   @description('Optional. The sqlAzureConnectionString secret name to create.')
-  sqlAzureConnectionStringSercretName: string?
+  sqlAzureConnectionStringSecretName: string?
 }
 
 @export()
