@@ -7,7 +7,7 @@ param location string = resourceGroup().location
 @description('Required. The parameters for the Virtual WAN.')
 param virtualWanParameters virtualWanParameterType
 
-@description('Optional. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs.')
+@description('Required. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs.')
 param virtualHubParameters virtualHubParameterType[]
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 
@@ -206,6 +206,9 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
 // ============ //
 // Outputs      //
 // ============ //
+
+@description('The resource group where the resource is deployed.')
+output resourceGroupName string = resourceGroup().name
 
 @description('Object containing the Virtual WAN information.')
 output virtualWan object = {
