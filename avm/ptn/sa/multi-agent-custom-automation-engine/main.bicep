@@ -23,7 +23,7 @@ param failoverLocation string = 'uksouth'
 param azureOpenAILocation string = 'westus'
 
 @description('Optional. The tags to apply to all deployed Azure resources.')
-param tags object = {
+param tags resourceInput<'Microsoft.Resources/resourceGroups@2025-04-01'>.tags = {
   app: solutionPrefix
   location: solutionLocation
 }
