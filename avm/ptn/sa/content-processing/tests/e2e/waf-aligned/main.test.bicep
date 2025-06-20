@@ -46,7 +46,7 @@ module testDeployment '../../../main.bicep' = [
       //environmentName: 'test-${environmentTimestamp}-${iteration}'
       environmentName: '${namePrefix}${serviceShort}'
       // location: resourceGroupLocation
-      enablePrivateNetworking: false
+      enablePrivateNetworking: true
       contentUnderstandingLocation: enforcedLocation
       gptDeploymentCapacity: 80
     }
