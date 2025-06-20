@@ -1,7 +1,7 @@
 metadata name = 'Azure Virtual WAN'
 metadata description = 'This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways.'
 
-@description('Required. Azure region where the Virtual WAN will be created.')
+@description('Optional. Azure region where the Virtual WAN will be created.')
 param location string = resourceGroup().location
 
 @description('Required. The parameters for the Virtual WAN.')

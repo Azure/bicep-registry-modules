@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "193250991719156824"
+      "templateHash": "3352502559478148343"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -1497,7 +1497,7 @@
       "type": "string",
       "defaultValue": "[resourceGroup().location]",
       "metadata": {
-        "description": "Required. Azure region where the Virtual WAN will be created."
+        "description": "Optional. Azure region where the Virtual WAN will be created."
       }
     },
     "virtualWanParameters": {

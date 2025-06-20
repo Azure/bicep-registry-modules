@@ -314,7 +314,6 @@ param virtualWanParameters = {
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`location`](#parameter-location) | string | Azure region where the Virtual WAN will be created. |
 | [`virtualHubParameters`](#parameter-virtualhubparameters) | array | The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs. |
 | [`virtualWanParameters`](#parameter-virtualwanparameters) | object | The parameters for the Virtual WAN. |
 
@@ -323,15 +322,8 @@ param virtualWanParameters = {
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`location`](#parameter-location) | string | Azure region where the Virtual WAN will be created. |
 | [`lock`](#parameter-lock) | object | The lock settings for the Virtual WAN and associated components. |
-
-### Parameter: `location`
-
-Azure region where the Virtual WAN will be created.
-
-- Required: No
-- Type: string
-- Default: `[resourceGroup().location]`
 
 ### Parameter: `virtualHubParameters`
 
@@ -2029,6 +2021,14 @@ Enable/Disable usage telemetry for module.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `location`
+
+Azure region where the Virtual WAN will be created.
+
+- Required: No
+- Type: string
+- Default: `[resourceGroup().location]`
 
 ### Parameter: `lock`
 
