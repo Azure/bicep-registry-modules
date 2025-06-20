@@ -6,24 +6,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12151202702446715514"
+      "templateHash": "13077585072840054812"
     },
     "name": "Event Grid System Topic Event Subscriptions",
     "description": "This module deploys an Event Grid System Topic Event Subscription."
   },
   "definitions": {
-    "destinationType": {
-      "type": "object",
-      "metadata": {
-        "description": "Event subscription destination configuration. Should contain endpointType and properties matching the Azure Event Grid destination schema."
-      }
-    },
-    "deadLetterDestinationType": {
-      "type": "object",
-      "metadata": {
-        "description": "Dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema."
-      }
-    },
     "identityType": {
       "type": "object",
       "properties": {
@@ -47,52 +35,6 @@
       },
       "metadata": {
         "description": "Identity configuration for delivery or dead letter."
-      }
-    },
-    "deliveryWithResourceIdentityType": {
-      "type": "object",
-      "properties": {
-        "identity": {
-          "$ref": "#/definitions/identityType",
-          "metadata": {
-            "description": "Required. The identity configuration for delivery."
-          }
-        },
-        "destination": {
-          "$ref": "#/definitions/destinationType",
-          "metadata": {
-            "description": "Required. The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema."
-          }
-        }
-      },
-      "metadata": {
-        "description": "Delivery configuration with resource identity."
-      }
-    },
-    "deadLetterWithResourceIdentityType": {
-      "type": "object",
-      "properties": {
-        "identity": {
-          "$ref": "#/definitions/identityType",
-          "metadata": {
-            "description": "Required. The identity configuration for dead letter."
-          }
-        },
-        "deadLetterDestination": {
-          "$ref": "#/definitions/deadLetterDestinationType",
-          "metadata": {
-            "description": "Required. The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema."
-          }
-        }
-      },
-      "metadata": {
-        "description": "Dead letter configuration with resource identity."
-      }
-    },
-    "advancedFilterType": {
-      "type": "object",
-      "metadata": {
-        "description": "Advanced filter configuration for event subscriptions."
       }
     },
     "filterType": {
@@ -139,11 +81,11 @@
         "advancedFilters": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/advancedFilterType"
+            "type": "object"
           },
           "nullable": true,
           "metadata": {
-            "description": "Optional. A list of advanced filters. Each filter should contain operatorType, key, and value/values properties."
+            "description": "Optional. A list of advanced filters that are used for filtering event subscriptions. Each filter must be an object with required properties: key (string) and operatorType (BoolEquals|IsNotNull|IsNullOrUndefined|NumberGreaterThan|NumberGreaterThanOrEquals|NumberIn|NumberInRange|NumberLessThan|NumberLessThanOrEquals|NumberNotIn|NumberNotInRange|StringBeginsWith|StringContains|StringEndsWith|StringIn|StringNotBeginsWith|StringNotContains|StringNotEndsWith|StringNotIn). Additionally include either value (for single value operators) or values (array for multi-value operators). Example: {key: \"data.eventType\", operatorType: \"StringContains\", values: [\"Microsoft.Storage\"]}."
           }
         }
       },
@@ -188,32 +130,44 @@
       }
     },
     "deadLetterDestination": {
-      "$ref": "#/definitions/deadLetterDestinationType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deadLetterDestination"
+        },
         "description": "Optional. Dead Letter Destination."
-      }
+      },
+      "nullable": true
     },
     "deadLetterWithResourceIdentity": {
-      "$ref": "#/definitions/deadLetterWithResourceIdentityType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deadLetterWithResourceIdentity"
+        },
         "description": "Optional. Dead Letter with Resource Identity Configuration."
-      }
+      },
+      "nullable": true
     },
     "deliveryWithResourceIdentity": {
-      "$ref": "#/definitions/deliveryWithResourceIdentityType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/deliveryWithResourceIdentity"
+        },
         "description": "Optional. Delivery with Resource Identity Configuration."
-      }
+      },
+      "nullable": true
     },
     "destination": {
-      "$ref": "#/definitions/destinationType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/destination"
+        },
         "description": "Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription."
-      }
+      },
+      "nullable": true
     },
     "eventDeliverySchema": {
       "type": "string",

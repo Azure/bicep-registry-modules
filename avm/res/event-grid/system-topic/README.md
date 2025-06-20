@@ -30,9 +30,10 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/system-topic:<version>`.
 
 - [Using only defaults with managed identity](#example-1-using-only-defaults-with-managed-identity)
-- [Using managed identity authentication](#example-2-using-managed-identity-authentication)
-- [Using large parameter set](#example-3-using-large-parameter-set)
-- [WAF-aligned with managed identity](#example-4-waf-aligned-with-managed-identity)
+- [Identity-Auth](#example-2-identity-auth)
+- [Using managed identity authentication](#example-3-using-managed-identity-authentication)
+- [Using large parameter set](#example-4-using-large-parameter-set)
+- [WAF-aligned with managed identity](#example-5-waf-aligned-with-managed-identity)
 
 ### Example 1: _Using only defaults with managed identity_
 
@@ -195,7 +196,19 @@ param resourceRoleAssignments = [
 </details>
 <p>
 
-### Example 2: _Using managed identity authentication_
+### Example 2: _Identity-Auth_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+```
+
+</details>
+<p>
+
+### Example 3: _Using managed identity authentication_
 
 This instance deploys the module testing delivery with resource identity (managed identity authentication).
 
@@ -389,7 +402,7 @@ param tags = {
 </details>
 <p>
 
-### Example 3: _Using large parameter set_
+### Example 4: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -717,7 +730,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned with managed identity_
+### Example 5: _WAF-aligned with managed identity_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework and uses managed identities to deliver Event Grid Topic events.
 
@@ -1245,120 +1258,12 @@ Dead Letter with Resource Identity Configuration.
 - Required: No
 - Type: object
 
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`deadLetterDestination`](#parameter-eventsubscriptionsdeadletterwithresourceidentitydeadletterdestination) | object | The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema. |
-| [`identity`](#parameter-eventsubscriptionsdeadletterwithresourceidentityidentity) | object | The identity configuration for dead letter. |
-
-### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity.deadLetterDestination`
-
-The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema.
-
-- Required: Yes
-- Type: object
-
-### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity.identity`
-
-The identity configuration for dead letter.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`type`](#parameter-eventsubscriptionsdeadletterwithresourceidentityidentitytype) | string | The type of identity to use. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`userAssignedIdentity`](#parameter-eventsubscriptionsdeadletterwithresourceidentityidentityuserassignedidentity) | string | Required if type is UserAssigned. The user assigned identity resource ID. |
-
-### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity.identity.type`
-
-The type of identity to use.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'SystemAssigned'
-    'UserAssigned'
-  ]
-  ```
-
-### Parameter: `eventSubscriptions.deadLetterWithResourceIdentity.identity.userAssignedIdentity`
-
-Required if type is UserAssigned. The user assigned identity resource ID.
-
-- Required: No
-- Type: string
-
 ### Parameter: `eventSubscriptions.deliveryWithResourceIdentity`
 
 Delivery with Resource Identity Configuration.
 
 - Required: No
 - Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`destination`](#parameter-eventsubscriptionsdeliverywithresourceidentitydestination) | object | The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema. |
-| [`identity`](#parameter-eventsubscriptionsdeliverywithresourceidentityidentity) | object | The identity configuration for delivery. |
-
-### Parameter: `eventSubscriptions.deliveryWithResourceIdentity.destination`
-
-The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema.
-
-- Required: Yes
-- Type: object
-
-### Parameter: `eventSubscriptions.deliveryWithResourceIdentity.identity`
-
-The identity configuration for delivery.
-
-- Required: Yes
-- Type: object
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`type`](#parameter-eventsubscriptionsdeliverywithresourceidentityidentitytype) | string | The type of identity to use. |
-
-**Conditional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`userAssignedIdentity`](#parameter-eventsubscriptionsdeliverywithresourceidentityidentityuserassignedidentity) | string | Required if type is UserAssigned. The user assigned identity resource ID. |
-
-### Parameter: `eventSubscriptions.deliveryWithResourceIdentity.identity.type`
-
-The type of identity to use.
-
-- Required: Yes
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'SystemAssigned'
-    'UserAssigned'
-  ]
-  ```
-
-### Parameter: `eventSubscriptions.deliveryWithResourceIdentity.identity.userAssignedIdentity`
-
-Required if type is UserAssigned. The user assigned identity resource ID.
-
-- Required: No
-- Type: string
 
 ### Parameter: `eventSubscriptions.eventDeliverySchema`
 
@@ -1394,7 +1299,7 @@ The filter for the event subscription.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`advancedFilters`](#parameter-eventsubscriptionsfilteradvancedfilters) | array | A list of advanced filters. Each filter should contain operatorType, key, and value/values properties. |
+| [`advancedFilters`](#parameter-eventsubscriptionsfilteradvancedfilters) | array | A list of advanced filters that are used for filtering event subscriptions. Each filter must be an object with required properties: key (string) and operatorType (BoolEquals|IsNotNull|IsNullOrUndefined|NumberGreaterThan|NumberGreaterThanOrEquals|NumberIn|NumberInRange|NumberLessThan|NumberLessThanOrEquals|NumberNotIn|NumberNotInRange|StringBeginsWith|StringContains|StringEndsWith|StringIn|StringNotBeginsWith|StringNotContains|StringNotEndsWith|StringNotIn). Additionally include either value (for single value operators) or values (array for multi-value operators). Example: {key: "data.eventType", operatorType: "StringContains", values: ["Microsoft.Storage"]}. |
 | [`enableAdvancedFilteringOnArrays`](#parameter-eventsubscriptionsfilterenableadvancedfilteringonarrays) | bool | Allows advanced filters to be evaluated against an array of values instead of expecting a singular value. |
 | [`includedEventTypes`](#parameter-eventsubscriptionsfilterincludedeventtypes) | array | A list of applicable event types that can be filtered. |
 | [`isSubjectCaseSensitive`](#parameter-eventsubscriptionsfilterissubjectcasesensitive) | bool | Defines if the subject field should be compared in a case sensitive manner. |
@@ -1403,7 +1308,7 @@ The filter for the event subscription.
 
 ### Parameter: `eventSubscriptions.filter.advancedFilters`
 
-A list of advanced filters. Each filter should contain operatorType, key, and value/values properties.
+A list of advanced filters that are used for filtering event subscriptions. Each filter must be an object with required properties: key (string) and operatorType (BoolEquals|IsNotNull|IsNullOrUndefined|NumberGreaterThan|NumberGreaterThanOrEquals|NumberIn|NumberInRange|NumberLessThan|NumberLessThanOrEquals|NumberNotIn|NumberNotInRange|StringBeginsWith|StringContains|StringEndsWith|StringIn|StringNotBeginsWith|StringNotContains|StringNotEndsWith|StringNotIn). Additionally include either value (for single value operators) or values (array for multi-value operators). Example: {key: "data.eventType", operatorType: "StringContains", values: ["Microsoft.Storage"]}.
 
 - Required: No
 - Type: array

@@ -7,84 +7,17 @@ param name string
 @description('Required. Name of the Event Grid System Topic.')
 param systemTopicName string
 
-// User-defined types for Event Grid components  
-@description('Event subscription destination configuration. Should contain endpointType and properties matching the Azure Event Grid destination schema.')
-type destinationType = object
-
-@description('Dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema.')
-type deadLetterDestinationType = object
-
-@description('Identity configuration for delivery or dead letter.')
-type identityType = {
-  @description('Required. The type of identity to use.')
-  type: 'SystemAssigned' | 'UserAssigned'
-  
-  @description('Conditional. Required if type is UserAssigned. The user assigned identity resource ID.')
-  userAssignedIdentity: string?
-}
-
-@description('Delivery configuration with resource identity.')
-type deliveryWithResourceIdentityType = {
-  @description('Required. The identity configuration for delivery.')
-  identity: identityType
-  
-  @description('Required. The destination configuration for delivery. Should contain endpointType and properties matching the Azure Event Grid destination schema.')
-  destination: destinationType
-}
-
-@description('Dead letter configuration with resource identity.')
-type deadLetterWithResourceIdentityType = {
-  @description('Required. The identity configuration for dead letter.')
-  identity: identityType
-  
-  @description('Required. The dead letter destination configuration. Should contain endpointType and properties matching the Azure Event Grid dead letter destination schema.')
-  deadLetterDestination: deadLetterDestinationType
-}
-
-@description('Advanced filter configuration for event subscriptions.')
-type advancedFilterType = object
-
-@description('Event subscription filter configuration.')
-type filterType = {
-  @description('Optional. Allows advanced filters to be evaluated against an array of values instead of expecting a singular value.')
-  enableAdvancedFilteringOnArrays: bool?
-  
-  @description('Optional. A list of applicable event types that can be filtered.')
-  includedEventTypes: string[]?
-  
-  @description('Optional. Defines if the subject field should be compared in a case sensitive manner.')
-  isSubjectCaseSensitive: bool?
-  
-  @description('Optional. An optional string to filter events for an event subscription based on a resource path prefix.')
-  subjectBeginsWith: string?
-  
-  @description('Optional. An optional string to filter events for an event subscription based on a resource path suffix.')
-  subjectEndsWith: string?
-  
-  @description('Optional. A list of advanced filters. Each filter should contain operatorType, key, and value/values properties.')
-  advancedFilters: advancedFilterType[]?
-}
-
-@description('Retry policy configuration for event delivery.')
-type retryPolicyType = {
-  @description('Optional. The maximum number of delivery attempts for events.')
-  maxDeliveryAttempts: int?
-  
-  @description('Optional. Time in minutes that determines how long to continue attempting delivery.')
-  eventTimeToLiveInMinutes: int?
-}
-
 @description('Optional. Dead Letter Destination.')
-param deadLetterDestination deadLetterDestinationType?
+param deadLetterDestination resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.deadLetterDestination?
 
 @description('Optional. Dead Letter with Resource Identity Configuration.')
-param deadLetterWithResourceIdentity deadLetterWithResourceIdentityType?
+param deadLetterWithResourceIdentity resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.deadLetterWithResourceIdentity?
 
 @description('Optional. Delivery with Resource Identity Configuration.')
-param deliveryWithResourceIdentity deliveryWithResourceIdentityType?
+param deliveryWithResourceIdentity resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.deliveryWithResourceIdentity?
 
 @description('Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription.')
-param destination destinationType?
+param destination resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.destination?
 
 @description('Optional. The event delivery schema for the event subscription.')
 @allowed([
@@ -138,3 +71,47 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The location the resource was deployed into.')
 output location string = systemTopic.location
+
+
+// ================ //
+// Definitions      //
+// ================ //
+
+@description('Identity configuration for delivery or dead letter.')
+type identityType = {
+  @description('Required. The type of identity to use.')
+  type: 'SystemAssigned' | 'UserAssigned'
+  
+  @description('Conditional. Required if type is UserAssigned. The user assigned identity resource ID.')
+  userAssignedIdentity: string?
+}
+
+@description('Event subscription filter configuration.')
+type filterType = {
+  @description('Optional. Allows advanced filters to be evaluated against an array of values instead of expecting a singular value.')
+  enableAdvancedFilteringOnArrays: bool?
+  
+  @description('Optional. A list of applicable event types that can be filtered.')
+  includedEventTypes: string[]?
+  
+  @description('Optional. Defines if the subject field should be compared in a case sensitive manner.')
+  isSubjectCaseSensitive: bool?
+  
+  @description('Optional. An optional string to filter events for an event subscription based on a resource path prefix.')
+  subjectBeginsWith: string?
+  
+  @description('Optional. An optional string to filter events for an event subscription based on a resource path suffix.')
+  subjectEndsWith: string?
+  
+  @description('Optional. A list of advanced filters that are used for filtering event subscriptions. Each filter must be an object with required properties: key (string) and operatorType (BoolEquals|IsNotNull|IsNullOrUndefined|NumberGreaterThan|NumberGreaterThanOrEquals|NumberIn|NumberInRange|NumberLessThan|NumberLessThanOrEquals|NumberNotIn|NumberNotInRange|StringBeginsWith|StringContains|StringEndsWith|StringIn|StringNotBeginsWith|StringNotContains|StringNotEndsWith|StringNotIn). Additionally include either value (for single value operators) or values (array for multi-value operators). Example: {key: "data.eventType", operatorType: "StringContains", values: ["Microsoft.Storage"]}.')
+  advancedFilters: object[]?
+}
+
+@description('Retry policy configuration for event delivery.')
+type retryPolicyType = {
+  @description('Optional. The maximum number of delivery attempts for events.')
+  maxDeliveryAttempts: int?
+  
+  @description('Optional. Time in minutes that determines how long to continue attempting delivery.')
+  eventTimeToLiveInMinutes: int?
+}
