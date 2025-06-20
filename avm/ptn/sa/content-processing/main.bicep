@@ -545,6 +545,10 @@ module avmKeyVault './modules/key-vault.bicep' = {
     enableVaultForTemplateDeployment: true
     softDeleteRetentionInDays: 7
     publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled'
+    //logAnalyticsWorkspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    // diagnosticSettings: {
+    //   enabled: true
+    // }
     // privateEndpoints omitted for now, as not in strongly-typed params
   }
   scope: resourceGroup(resourceGroup().name)
@@ -593,7 +597,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     ]
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Allow'
+      defaultAction: 'Deny'
       ipRules: []
     }
     supportsHttpsTrafficOnly: true
@@ -601,7 +605,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     tags: tags
 
     //<======================= WAF related parameters
-    allowBlobPublicAccess: (!enablePrivateNetworking) // Disable public access when WAF is enabled
+    allowBlobPublicAccess: (false) // Disable public access when WAF is enabled
     publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled'
     privateEndpoints: (enablePrivateNetworking)
       ? [
@@ -1694,7 +1698,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_STORAGE_QUEUE_URL'
-        value: avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
+        value: 'test' //avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
       }
       {
         name: 'APP_AI_PROJECT_CONN_STR'
