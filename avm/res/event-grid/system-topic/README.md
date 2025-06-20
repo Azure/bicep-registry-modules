@@ -30,10 +30,9 @@ The following section provides usage examples for the module, which were used to
 >**Note**: To reference the module, please use the following syntax `br/public:avm/res/event-grid/system-topic:<version>`.
 
 - [Using only defaults with managed identity](#example-1-using-only-defaults-with-managed-identity)
-- [Identity-Auth](#example-2-identity-auth)
-- [Using managed identity authentication](#example-3-using-managed-identity-authentication)
-- [Using large parameter set](#example-4-using-large-parameter-set)
-- [WAF-aligned with managed identity](#example-5-waf-aligned-with-managed-identity)
+- [Using managed identity authentication](#example-2-using-managed-identity-authentication)
+- [Using large parameter set](#example-3-using-large-parameter-set)
+- [WAF-aligned with managed identity](#example-4-waf-aligned-with-managed-identity)
 
 ### Example 1: _Using only defaults with managed identity_
 
@@ -196,19 +195,7 @@ param resourceRoleAssignments = [
 </details>
 <p>
 
-### Example 2: _Identity-Auth_
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-```
-
-</details>
-<p>
-
-### Example 3: _Using managed identity authentication_
+### Example 2: _Using managed identity authentication_
 
 This instance deploys the module testing delivery with resource identity (managed identity authentication).
 
@@ -402,7 +389,7 @@ param tags = {
 </details>
 <p>
 
-### Example 4: _Using large parameter set_
+### Example 3: _Using large parameter set_
 
 This instance deploys the module with most of its features enabled.
 
@@ -730,7 +717,7 @@ param tags = {
 </details>
 <p>
 
-### Example 5: _WAF-aligned with managed identity_
+### Example 4: _WAF-aligned with managed identity_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework and uses managed identities to deliver Event Grid Topic events.
 
