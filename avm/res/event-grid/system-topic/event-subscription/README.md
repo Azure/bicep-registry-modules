@@ -129,27 +129,6 @@ The retry policy for events.
 - Required: No
 - Type: object
 
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`eventTimeToLiveInMinutes`](#parameter-retrypolicyeventtimetoliveinminutes) | int | Time in minutes that determines how long to continue attempting delivery. |
-| [`maxDeliveryAttempts`](#parameter-retrypolicymaxdeliveryattempts) | int | The maximum number of delivery attempts for events. |
-
-### Parameter: `retryPolicy.eventTimeToLiveInMinutes`
-
-Time in minutes that determines how long to continue attempting delivery.
-
-- Required: No
-- Type: int
-
-### Parameter: `retryPolicy.maxDeliveryAttempts`
-
-The maximum number of delivery attempts for events.
-
-- Required: No
-- Type: int
-
 ## Outputs
 
 | Output | Type | Description |

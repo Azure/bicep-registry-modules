@@ -230,23 +230,6 @@ output location string = systemTopic.location
 // Definitions      //
 // ================ //
 
-@description('Identity configuration for delivery or dead letter.')
-type identityType = {
-  @description('Required. The type of identity to use.')
-  type: 'SystemAssigned' | 'UserAssigned'
-  
-  @description('Conditional. Required if type is UserAssigned. The user assigned identity resource ID.')
-  userAssignedIdentity: string?
-}
-
-@description('Retry policy configuration for event delivery.')
-type retryPolicyType = {
-  @description('Optional. The maximum number of delivery attempts for events.')
-  maxDeliveryAttempts: int?
-  
-  @description('Optional. Time in minutes that determines how long to continue attempting delivery.')
-  eventTimeToLiveInMinutes: int?
-}
 
 @description('Event subscription configuration.')
 type eventSubscriptionType = {
@@ -278,5 +261,5 @@ type eventSubscriptionType = {
   labels: string[]?
   
   @description('Optional. The retry policy for events.')
-  retryPolicy: retryPolicyType?
+  retryPolicy: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.retryPolicy?
 }

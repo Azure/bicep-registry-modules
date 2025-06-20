@@ -6,34 +6,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7806707409797246867"
+      "templateHash": "5286684288587619638"
     },
     "name": "Event Grid System Topic Event Subscriptions",
     "description": "This module deploys an Event Grid System Topic Event Subscription."
-  },
-  "definitions": {
-    "retryPolicyType": {
-      "type": "object",
-      "properties": {
-        "maxDeliveryAttempts": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The maximum number of delivery attempts for events."
-          }
-        },
-        "eventTimeToLiveInMinutes": {
-          "type": "int",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Time in minutes that determines how long to continue attempting delivery."
-          }
-        }
-      },
-      "metadata": {
-        "description": "Retry policy configuration for event delivery."
-      }
-    }
   },
   "parameters": {
     "name": {
@@ -129,11 +105,14 @@
       }
     },
     "retryPolicy": {
-      "$ref": "#/definitions/retryPolicyType",
-      "nullable": true,
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15#properties/properties/properties/retryPolicy"
+        },
         "description": "Optional. The retry policy for events."
-      }
+      },
+      "nullable": true
     }
   },
   "resources": {

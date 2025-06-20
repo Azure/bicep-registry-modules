@@ -38,7 +38,7 @@ param filter resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@
 param labels string[]?
 
 @description('Optional. The retry policy for events.')
-param retryPolicy retryPolicyType?
+param retryPolicy resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.retryPolicy?
 
 resource systemTopic 'Microsoft.EventGrid/systemTopics@2025-02-15' existing = {
   name: systemTopicName
@@ -72,16 +72,3 @@ output resourceGroupName string = resourceGroup().name
 @description('The location the resource was deployed into.')
 output location string = systemTopic.location
 
-
-// ================ //
-// Definitions      //
-// ================ //
-
-@description('Retry policy configuration for event delivery.')
-type retryPolicyType = {
-  @description('Optional. The maximum number of delivery attempts for events.')
-  maxDeliveryAttempts: int?
-  
-  @description('Optional. Time in minutes that determines how long to continue attempting delivery.')
-  eventTimeToLiveInMinutes: int?
-}
