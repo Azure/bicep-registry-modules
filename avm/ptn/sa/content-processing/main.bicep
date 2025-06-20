@@ -655,15 +655,233 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   }
 }
 
+module avmStorageAccount_RoleAssignment_avmContainerApp_blob 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-app')
+  params: {
+    resourceId: avmStorageAccount.outputs.resourceId
+    principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+    roleName: 'Storage Blob Data Contributor'
+    roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+    principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module avmStorageAccount_RoleAssignment_avmContainerApp_API_blob 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-api')
+  params: {
+    resourceId: avmStorageAccount.outputs.resourceId
+    principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
+    roleName: 'Storage Blob Data Contributor'
+    roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+    principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module avmStorageAccount_RoleAssignment_avmContainerApp_queue 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: format(resourceNameFormatString, 'rbac-storage-contributor-container-app-queue')
+  params: {
+    resourceId: avmStorageAccount.outputs.resourceId
+    principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+    roleName: 'Storage Queue Data Contributor'
+    roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+    principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-api-queue')
+  params: {
+    resourceId: avmStorageAccount.outputs.resourceId
+    principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
+    roleName: 'Storage Queue Data Contributor'
+    roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+    principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
+  }
+}
+
+// module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
+//   //name: format(deployment_param.resource_name_format_string, abbrs.managementGovernance.logAnalyticsWorkspace)
+//   params: {
+//       appInsightsName: '${namingAbbrs.managementGovernance.applicationInsights}${solutionPrefix}'
+//       location: resourceGroupLocation
+//       //diagnosticSettings: [{ useThisWorkspace: true }]
+//       skuName: 'PerGB2018'
+//       applicationType: 'web'
+//       disableIpMasking: false
+//       disableLocalAuth: false
+//       flowType: 'Bluefield'
+//       kind: 'web'
+//       logAnalyticsWorkspaceName: '${namingAbbrs.managementGovernance.logAnalyticsWorkspace}${solutionPrefix}'
+//       publicNetworkAccessForQuery: 'Enabled'
+//       requestSource: 'rest'
+//       retentionInDays: 30
+//   }
+// }
+
+// // ========== Managed Identity ========== //
+// module avmManagedIdentity './modules/managed-identity.bicep' = {
+//   name: format(resourceNameFormatString, namingAbbrs.security.managedIdentity)
+//   params: {
+//     name: '${namingAbbrs.security.managedIdentity}${solutionPrefix}'
+//     location: resourceGroupLocation
+//     tags: tags
+//   }
+// }
+
+// // Assign Owner role to the managed identity in the resource group
+// module avmRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-owner')
+//   params: {
+//     resourceId: avmManagedIdentity.outputs.resourceId
+//     principalId: avmManagedIdentity.outputs.principalId
+//     roleDefinitionId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+//     principalType: 'ServicePrincipal'
+//   }
+//   scope: resourceGroup(resourceGroup().name)
+// }
+
+// // ========== Key Vault Module ========== //
+// module avmKeyVault './modules/key-vault.bicep' = {
+//   name: format(resourceNameFormatString, namingAbbrs.security.keyVault)
+//   params: {
+//     keyvaultName: '${namingAbbrs.security.keyVault}${solutionPrefix}'
+//     location: resourceGroupLocation
+//     tags: tags
+//     roleAssignments: [
+//       {
+//         principalId: avmManagedIdentity.outputs.principalId
+//         roleDefinitionIdOrName: 'Key Vault Administrator'
+//       }
+//     ]
+//     enablePurgeProtection: false
+//     enableSoftDelete: true
+//     keyvaultsku: 'standard'
+//     enableRbacAuthorization: true
+//     createMode: 'default'
+//     enableTelemetry: false
+//     enableVaultForDiskEncryption: true
+//     enableVaultForTemplateDeployment: true
+//     softDeleteRetentionInDays: 7
+//     publicNetworkAccess: (enablePrivateNetworking ) ? 'Disabled' : 'Enabled'
+//     // privateEndpoints omitted for now, as not in strongly-typed params
+//   }
+//   scope: resourceGroup(resourceGroup().name)
+// }
+
+// module avmKeyVault_RoleAssignment_appConfig 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-keyvault-app-config')
+//   params: {
+//     resourceId: avmKeyVault.outputs.resourceId
+//     principalId: avmAppConfig.outputs.systemAssignedMIPrincipalId!
+//     roleDefinitionId: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7' // 'Key Vault Secrets User'
+//     roleName: 'Key Vault Secret User'
+//     principalType: 'ServicePrincipal'
+//   }
+// }
+
+// module avmContainerRegistry 'modules/container-registry.bicep' = {
+//   name: '${namingAbbrs.containers.containerRegistry}${replace(solutionPrefix, '-', '')}'
+//   params: {
+//     acrName: '${namingAbbrs.containers.containerRegistry}${replace(solutionPrefix, '-', '')}'
+//     location: resourceGroupLocation
+//     acrSku: 'Basic'
+//     publicNetworkAccess: 'Enabled'
+//     zoneRedundancy: 'Disabled'
+//     tags: tags
+//   }
+// }
+
+// // // ========== Storage Account ========== //
+// module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
+//   name: format(resourceNameFormatString, namingAbbrs.storage.storageAccount)
+//   params: {
+//     name: '${namingAbbrs.storage.storageAccount}${replace(solutionPrefix, '-', '')}'
+//     location: resourceGroupLocation
+//     skuName: 'Standard_LRS'
+//     kind: 'StorageV2'
+//     managedIdentities: { systemAssigned: true }
+//     minimumTlsVersion: 'TLS1_2'
+//     roleAssignments: [
+//       {
+//         principalId: avmManagedIdentity.outputs.principalId
+//         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+//       }
+//     ]
+//     networkAcls: {
+//       bypass: 'AzureServices'
+//       defaultAction: 'Allow'
+//       ipRules: []
+//     }
+//     supportsHttpsTrafficOnly: true
+//     accessTier: 'Hot'
+
+//     //<======================= WAF related parameters
+//     allowBlobPublicAccess: (!enablePrivateNetworking ) // Disable public access when WAF is enabled
+//     publicNetworkAccess: (enablePrivateNetworking ) ? 'Disabled' : 'Enabled'
+//     privateEndpoints: (enablePrivateNetworking )
+//       ? [
+//           {
+//             name: 'storage-private-endpoint-blob'
+//             privateDnsZoneGroup: {
+//               privateDnsZoneGroupConfigs: [
+//                 {
+//                   name: 'storage-dns-zone-group-blob'
+//                   privateDnsZoneResourceId: avmPrivateDnsZoneStorages[0].outputs.resourceId
+//                   // bicep doesn't recognize collection - avmPrivateDnsZoneStorages
+//                   // privateDnsZoneResourceId : filter(avmPrivateDnsZoneStorages, zone => contains(zone.outputs.name, 'blob'))[0].outputs.resourceId
+//                 }
+//               ]
+//             }
+//             subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
+//             service: 'blob'
+//           }
+//           {
+//             name: 'storage-private-endpoint-queue'
+//             privateDnsZoneGroup: {
+//               privateDnsZoneGroupConfigs: [
+//                 {
+//                   name: 'storage-dns-zone-group-queue'
+//                   privateDnsZoneResourceId: avmPrivateDnsZoneStorages[2].outputs.resourceId
+//                 }
+//               ]
+//             }
+//             subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
+//             service: 'queue'
+//           }
+//         ]
+//       : []
+
+//     // privateEndpoints: (deployment_param.enable_waf)
+//     //   ? map(items(appStoragePrivateDnsZones), zone => {
+//     //       name: 'storage-${zone.value}'
+//     //       privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
+//     //       service: zone.key
+//     //       privateDnsZoneGroup: {
+//     //         privateDnsZoneGroupConfigs: [
+//     //           {
+//     //             name: 'storage-dns-zone-group-${zone.value}'
+//     //             privateDnsZoneResourceId: zone.value
+//     //           }
+//     //         ]
+//     //       }
+//     //       subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
+//     //     })
+//     //   : []
+//   }
+// }
+
 // module avmStorageAccount_RoleAssignment_avmContainerApp_blob 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
 //   name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-app')
 //   params: {
 //     resourceId: avmStorageAccount.outputs.resourceId
-//     principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+//     principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId
 //     roleName: 'Storage Blob Data Contributor'
-//     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+//     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //'Storage Blob Data Contributor'
 //     principalType: 'ServicePrincipal'
-//     enableTelemetry: enableTelemetry
 //   }
 // }
 
@@ -671,11 +889,10 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
 //   name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-api')
 //   params: {
 //     resourceId: avmStorageAccount.outputs.resourceId
-//     principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
+//     principalId: avmContainerApp_API.outputs.?systemAssignedMIPrincipalId
 //     roleName: 'Storage Blob Data Contributor'
-//     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+//     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //'Storage Blob Data Contributor'
 //     principalType: 'ServicePrincipal'
-//     enableTelemetry: enableTelemetry
 //   }
 // }
 
@@ -683,11 +900,10 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
 //   name: format(resourceNameFormatString, 'rbac-storage-contributor-container-app-queue')
 //   params: {
 //     resourceId: avmStorageAccount.outputs.resourceId
-//     principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+//     principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId
 //     roleName: 'Storage Queue Data Contributor'
-//     roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+//     roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88' //'Storage Queue Data Contributor'
 //     principalType: 'ServicePrincipal'
-//     enableTelemetry: enableTelemetry
 //   }
 // }
 
@@ -695,228 +911,12 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
 //   name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-api-queue')
 //   params: {
 //     resourceId: avmStorageAccount.outputs.resourceId
-//     principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
+//     principalId: avmContainerApp_API.outputs.?systemAssignedMIPrincipalId
 //     roleName: 'Storage Queue Data Contributor'
-//     roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+//     roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88' //'Storage Queue Data Contributor'
 //     principalType: 'ServicePrincipal'
-//     enableTelemetry: enableTelemetry
 //   }
 // }
-
-// // module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
-// //   //name: format(deployment_param.resource_name_format_string, abbrs.managementGovernance.logAnalyticsWorkspace)
-// //   params: {
-// //       appInsightsName: '${namingAbbrs.managementGovernance.applicationInsights}${solutionPrefix}'
-// //       location: resourceGroupLocation
-// //       //diagnosticSettings: [{ useThisWorkspace: true }]
-// //       skuName: 'PerGB2018'
-// //       applicationType: 'web'
-// //       disableIpMasking: false
-// //       disableLocalAuth: false
-// //       flowType: 'Bluefield'
-// //       kind: 'web'
-// //       logAnalyticsWorkspaceName: '${namingAbbrs.managementGovernance.logAnalyticsWorkspace}${solutionPrefix}'
-// //       publicNetworkAccessForQuery: 'Enabled'
-// //       requestSource: 'rest'
-// //       retentionInDays: 30
-// //   }
-// // }
-
-// // // ========== Managed Identity ========== //
-// // module avmManagedIdentity './modules/managed-identity.bicep' = {
-// //   name: format(resourceNameFormatString, namingAbbrs.security.managedIdentity)
-// //   params: {
-// //     name: '${namingAbbrs.security.managedIdentity}${solutionPrefix}'
-// //     location: resourceGroupLocation
-// //     tags: tags
-// //   }
-// // }
-
-// // // Assign Owner role to the managed identity in the resource group
-// // module avmRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-// //   name: format(resourceNameFormatString, 'rbac-owner')
-// //   params: {
-// //     resourceId: avmManagedIdentity.outputs.resourceId
-// //     principalId: avmManagedIdentity.outputs.principalId
-// //     roleDefinitionId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-// //     principalType: 'ServicePrincipal'
-// //   }
-// //   scope: resourceGroup(resourceGroup().name)
-// // }
-
-// // // ========== Key Vault Module ========== //
-// // module avmKeyVault './modules/key-vault.bicep' = {
-// //   name: format(resourceNameFormatString, namingAbbrs.security.keyVault)
-// //   params: {
-// //     keyvaultName: '${namingAbbrs.security.keyVault}${solutionPrefix}'
-// //     location: resourceGroupLocation
-// //     tags: tags
-// //     roleAssignments: [
-// //       {
-// //         principalId: avmManagedIdentity.outputs.principalId
-// //         roleDefinitionIdOrName: 'Key Vault Administrator'
-// //       }
-// //     ]
-// //     enablePurgeProtection: false
-// //     enableSoftDelete: true
-// //     keyvaultsku: 'standard'
-// //     enableRbacAuthorization: true
-// //     createMode: 'default'
-// //     enableTelemetry: false
-// //     enableVaultForDiskEncryption: true
-// //     enableVaultForTemplateDeployment: true
-// //     softDeleteRetentionInDays: 7
-// //     publicNetworkAccess: (enablePrivateNetworking ) ? 'Disabled' : 'Enabled'
-// //     // privateEndpoints omitted for now, as not in strongly-typed params
-// //   }
-// //   scope: resourceGroup(resourceGroup().name)
-// // }
-
-// // module avmKeyVault_RoleAssignment_appConfig 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-// //   name: format(resourceNameFormatString, 'rbac-keyvault-app-config')
-// //   params: {
-// //     resourceId: avmKeyVault.outputs.resourceId
-// //     principalId: avmAppConfig.outputs.systemAssignedMIPrincipalId!
-// //     roleDefinitionId: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7' // 'Key Vault Secrets User'
-// //     roleName: 'Key Vault Secret User'
-// //     principalType: 'ServicePrincipal'
-// //   }
-// // }
-
-// // module avmContainerRegistry 'modules/container-registry.bicep' = {
-// //   name: '${namingAbbrs.containers.containerRegistry}${replace(solutionPrefix, '-', '')}'
-// //   params: {
-// //     acrName: '${namingAbbrs.containers.containerRegistry}${replace(solutionPrefix, '-', '')}'
-// //     location: resourceGroupLocation
-// //     acrSku: 'Basic'
-// //     publicNetworkAccess: 'Enabled'
-// //     zoneRedundancy: 'Disabled'
-// //     tags: tags
-// //   }
-// // }
-
-// // // // ========== Storage Account ========== //
-// // module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
-// //   name: format(resourceNameFormatString, namingAbbrs.storage.storageAccount)
-// //   params: {
-// //     name: '${namingAbbrs.storage.storageAccount}${replace(solutionPrefix, '-', '')}'
-// //     location: resourceGroupLocation
-// //     skuName: 'Standard_LRS'
-// //     kind: 'StorageV2'
-// //     managedIdentities: { systemAssigned: true }
-// //     minimumTlsVersion: 'TLS1_2'
-// //     roleAssignments: [
-// //       {
-// //         principalId: avmManagedIdentity.outputs.principalId
-// //         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
-// //       }
-// //     ]
-// //     networkAcls: {
-// //       bypass: 'AzureServices'
-// //       defaultAction: 'Allow'
-// //       ipRules: []
-// //     }
-// //     supportsHttpsTrafficOnly: true
-// //     accessTier: 'Hot'
-
-// //     //<======================= WAF related parameters
-// //     allowBlobPublicAccess: (!enablePrivateNetworking ) // Disable public access when WAF is enabled
-// //     publicNetworkAccess: (enablePrivateNetworking ) ? 'Disabled' : 'Enabled'
-// //     privateEndpoints: (enablePrivateNetworking )
-// //       ? [
-// //           {
-// //             name: 'storage-private-endpoint-blob'
-// //             privateDnsZoneGroup: {
-// //               privateDnsZoneGroupConfigs: [
-// //                 {
-// //                   name: 'storage-dns-zone-group-blob'
-// //                   privateDnsZoneResourceId: avmPrivateDnsZoneStorages[0].outputs.resourceId
-// //                   // bicep doesn't recognize collection - avmPrivateDnsZoneStorages
-// //                   // privateDnsZoneResourceId : filter(avmPrivateDnsZoneStorages, zone => contains(zone.outputs.name, 'blob'))[0].outputs.resourceId
-// //                 }
-// //               ]
-// //             }
-// //             subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
-// //             service: 'blob'
-// //           }
-// //           {
-// //             name: 'storage-private-endpoint-queue'
-// //             privateDnsZoneGroup: {
-// //               privateDnsZoneGroupConfigs: [
-// //                 {
-// //                   name: 'storage-dns-zone-group-queue'
-// //                   privateDnsZoneResourceId: avmPrivateDnsZoneStorages[2].outputs.resourceId
-// //                 }
-// //               ]
-// //             }
-// //             subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
-// //             service: 'queue'
-// //           }
-// //         ]
-// //       : []
-
-// //     // privateEndpoints: (deployment_param.enable_waf)
-// //     //   ? map(items(appStoragePrivateDnsZones), zone => {
-// //     //       name: 'storage-${zone.value}'
-// //     //       privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
-// //     //       service: zone.key
-// //     //       privateDnsZoneGroup: {
-// //     //         privateDnsZoneGroupConfigs: [
-// //     //           {
-// //     //             name: 'storage-dns-zone-group-${zone.value}'
-// //     //             privateDnsZoneResourceId: zone.value
-// //     //           }
-// //     //         ]
-// //     //       }
-// //     //       subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
-// //     //     })
-// //     //   : []
-// //   }
-// // }
-
-// // module avmStorageAccount_RoleAssignment_avmContainerApp_blob 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-// //   name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-app')
-// //   params: {
-// //     resourceId: avmStorageAccount.outputs.resourceId
-// //     principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId
-// //     roleName: 'Storage Blob Data Contributor'
-// //     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //'Storage Blob Data Contributor'
-// //     principalType: 'ServicePrincipal'
-// //   }
-// // }
-
-// // module avmStorageAccount_RoleAssignment_avmContainerApp_API_blob 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-// //   name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-api')
-// //   params: {
-// //     resourceId: avmStorageAccount.outputs.resourceId
-// //     principalId: avmContainerApp_API.outputs.?systemAssignedMIPrincipalId
-// //     roleName: 'Storage Blob Data Contributor'
-// //     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe' //'Storage Blob Data Contributor'
-// //     principalType: 'ServicePrincipal'
-// //   }
-// // }
-
-// // module avmStorageAccount_RoleAssignment_avmContainerApp_queue 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-// //   name: format(resourceNameFormatString, 'rbac-storage-contributor-container-app-queue')
-// //   params: {
-// //     resourceId: avmStorageAccount.outputs.resourceId
-// //     principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId
-// //     roleName: 'Storage Queue Data Contributor'
-// //     roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88' //'Storage Queue Data Contributor'
-// //     principalType: 'ServicePrincipal'
-// //   }
-// // }
-
-// // module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-// //   name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-api-queue')
-// //   params: {
-// //     resourceId: avmStorageAccount.outputs.resourceId
-// //     principalId: avmContainerApp_API.outputs.?systemAssignedMIPrincipalId
-// //     roleName: 'Storage Queue Data Contributor'
-// //     roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88' //'Storage Queue Data Contributor'
-// //     principalType: 'ServicePrincipal'
-// //   }
-// // }
 
 // // ========== AI Foundry and related resources ========== //
 module avmAiServices 'br/public:avm/res/cognitive-services/account:0.11.0' = {
@@ -1335,224 +1335,225 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.17.0' = {
   }
 }
 
-// // ========== Container App API ========== //
-// module avmContainerApp_API 'br/public:avm/res/app/container-app:0.17.0' = {
-//   name: format(resourceNameFormatString, 'caapi-')
-//   params: {
-//     name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
-//     location: resourceGroupLocation
-//     environmentResourceId: avmContainerAppEnv.outputs.resourceId
-//     workloadProfileName: 'Consumption'
-//     enableTelemetry: enableTelemetry
-//     registries: useLocalBuild == 'localbuild'
-//       ? [
-//           {
-//             server: avmContainerRegistry.outputs.loginServer
-//             identity: avmContainerRegistryReader.outputs.principalId
-//           }
-//         ]
-//       : null
-//     // registries: useLocalBuild == 'localbuild'
-//     //   ? [
-//     //       {
-//     //         server: publicContainerImageEndpoint
-//     //         image: 'contentprocessorapi'
-//     //         imageTag: 'latest'
-//     //       }
-//     //     ]
-//     //   : null
+// ========== Container App API ========== //
+module avmContainerApp_API 'br/public:avm/res/app/container-app:0.17.0' = {
+  name: format(resourceNameFormatString, 'caapi-')
+  params: {
+    name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
+    location: resourceGroupLocation
+    environmentResourceId: avmContainerAppEnv.outputs.resourceId
+    workloadProfileName: 'Consumption'
+    enableTelemetry: enableTelemetry
+    registries: useLocalBuild == 'localbuild'
+      ? [
+          {
+            server: avmContainerRegistry.outputs.loginServer
+            identity: avmContainerRegistryReader.outputs.principalId
+          }
+        ]
+      : null
+    // registries: useLocalBuild == 'localbuild'
+    //   ? [
+    //       {
+    //         server: publicContainerImageEndpoint
+    //         image: 'contentprocessorapi'
+    //         imageTag: 'latest'
+    //       }
+    //     ]
+    //   : null
+    tags: tags
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        avmContainerRegistryReader.outputs.resourceId
+      ]
+    }
 
-//     managedIdentities: {
-//       systemAssigned: true
-//       userAssignedResourceIds: [
-//         avmContainerRegistryReader.outputs.resourceId
-//       ]
-//     }
+    containers: [
+      {
+        name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
+        image: (useLocalBuild != 'localbuild')
+          ? '${publicContainerImageEndpoint}/contentprocessorapi:latest'
+          : avmContainerRegistry.outputs.loginServer
+        resources: {
+          cpu: '4'
+          memory: '8.0Gi'
+        }
+        env: [
+          {
+            name: 'APP_CONFIG_ENDPOINT'
+            value: ''
+          }
+        ]
+        probes: [
+          // Liveness Probe - Checks if the app is still running
+          {
+            type: 'Liveness'
+            httpGet: {
+              path: '/startup' // Your app must expose this endpoint
+              port: 80
+              scheme: 'HTTP'
+            }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          }
+          // Readiness Probe - Checks if the app is ready to receive traffic
+          {
+            type: 'Readiness'
+            httpGet: {
+              path: '/startup'
+              port: 80
+              scheme: 'HTTP'
+            }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          }
+          {
+            type: 'Startup'
+            httpGet: {
+              path: '/startup'
+              port: 80
+              scheme: 'HTTP'
+            }
+            initialDelaySeconds: 20 // Wait 10s before checking
+            periodSeconds: 5 // Check every 15s
+            failureThreshold: 10 // Restart if it fails 5 times
+          }
+        ]
+      }
+    ]
+    scaleSettings: {
+      minReplicas: 1
+      maxReplicas: 1
+      rules: [
+        {
+          name: 'http-scaler'
+          http: {
+            metadata: {
+              concurrentRequests: '100'
+            }
+          }
+        }
+      ]
+    }
+    ingressExternal: true
+    activeRevisionsMode: 'Single'
+    ingressTransport: 'auto'
+    ingressAllowInsecure: true
+    corsPolicy: {
+      allowedOrigins: [
+        '*'
+      ]
+      allowedMethods: [
+        'GET'
+        'POST'
+        'PUT'
+        'DELETE'
+        'OPTIONS'
+      ]
+      allowedHeaders: [
+        'Authorization'
+        'Content-Type'
+        '*'
+      ]
+    }
+  }
+}
 
-//     containers: [
-//       {
-//         name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
-//         image: (useLocalBuild != 'localbuild')
-//           ? '${publicContainerImageEndpoint}/contentprocessorapi:latest'
-//           : avmContainerRegistry.outputs.loginServer
-//         resources: {
-//           cpu: '4'
-//           memory: '8.0Gi'
-//         }
-//         env: [
-//           {
-//             name: 'APP_CONFIG_ENDPOINT'
-//             value: ''
-//           }
-//         ]
-//         probes: [
-//           // Liveness Probe - Checks if the app is still running
-//           {
-//             type: 'Liveness'
-//             httpGet: {
-//               path: '/startup' // Your app must expose this endpoint
-//               port: 80
-//               scheme: 'HTTP'
-//             }
-//             initialDelaySeconds: 5
-//             periodSeconds: 10
-//             failureThreshold: 3
-//           }
-//           // Readiness Probe - Checks if the app is ready to receive traffic
-//           {
-//             type: 'Readiness'
-//             httpGet: {
-//               path: '/startup'
-//               port: 80
-//               scheme: 'HTTP'
-//             }
-//             initialDelaySeconds: 5
-//             periodSeconds: 10
-//             failureThreshold: 3
-//           }
-//           {
-//             type: 'Startup'
-//             httpGet: {
-//               path: '/startup'
-//               port: 80
-//               scheme: 'HTTP'
-//             }
-//             initialDelaySeconds: 20 // Wait 10s before checking
-//             periodSeconds: 5 // Check every 15s
-//             failureThreshold: 10 // Restart if it fails 5 times
-//           }
-//         ]
-//       }
-//     ]
-//     scaleSettings: {
-//       minReplicas: 1
-//       maxReplicas: 1
-//       rules: [
-//         {
-//           name: 'http-scaler'
-//           http: {
-//             metadata: {
-//               concurrentRequests: '100'
-//             }
-//           }
-//         }
-//       ]
-//     }
-//     ingressExternal: true
-//     activeRevisionsMode: 'Single'
-//     ingressTransport: 'auto'
-//     ingressAllowInsecure: true
-//     corsPolicy: {
-//       allowedOrigins: [
-//         '*'
-//       ]
-//       allowedMethods: [
-//         'GET'
-//         'POST'
-//         'PUT'
-//         'DELETE'
-//         'OPTIONS'
-//       ]
-//       allowedHeaders: [
-//         'Authorization'
-//         'Content-Type'
-//         '*'
-//       ]
-//     }
-//   }
-// }
+//========== Container App Web ========== //
+module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.17.0' = {
+  name: format(resourceNameFormatString, 'caweb-')
+  params: {
+    name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-web'
+    location: resourceGroupLocation
+    environmentResourceId: avmContainerAppEnv.outputs.resourceId
+    workloadProfileName: 'Consumption'
+    enableTelemetry: enableTelemetry
+    registries: useLocalBuild == 'localbuild'
+      ? [
+          {
+            server: avmContainerRegistry.outputs.loginServer
+            identity: avmContainerRegistryReader.outputs.principalId
+          }
+        ]
+      : null
+    // registries: useLocalBuild == 'localbuild'
+    //   ? [
+    //       {
+    //         server: publicContainerImageEndpoint
+    //         image: 'contentprocessorweb'
+    //         imageTag: 'latest'
+    //       }
+    //     ]
+    //   : null
+    tags: tags
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        avmContainerRegistryReader.outputs.resourceId
+      ]
+    }
+    ingressExternal: true
+    activeRevisionsMode: 'Single'
+    ingressTransport: 'auto'
+    ingressAllowInsecure: true
+    scaleSettings: {
+      minReplicas: 1
+      maxReplicas: 1
+      rules: [
+        {
+          name: 'http-scaler'
+          http: {
+            metadata: {
+              concurrentRequests: '100'
+            }
+          }
+        }
+      ]
+    }
+    containers: [
+      {
+        name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-web'
+        image: (useLocalBuild != 'localbuild')
+          ? '${publicContainerImageEndpoint}/contentprocessorweb:latest'
+          : avmContainerRegistry.outputs.loginServer
+        resources: {
+          cpu: '4'
+          memory: '8.0Gi'
+        }
+        env: [
+          {
+            name: 'APP_API_BASE_URL'
+            value: 'https://${avmContainerApp_API.outputs.fqdn}'
+          }
+          {
+            name: 'APP_WEB_CLIENT_ID'
+            value: '<APP_REGISTRATION_CLIENTID>'
+          }
+          {
+            name: 'APP_WEB_AUTHORITY'
+            value: '${environment().authentication.loginEndpoint}/${tenant().tenantId}'
+          }
+          {
+            name: 'APP_WEB_SCOPE'
+            value: '<FRONTEND_API_SCOPE>'
+          }
+          {
+            name: 'APP_API_SCOPE'
+            value: '<BACKEND_API_SCOPE>'
+          }
+          {
+            name: 'APP_CONSOLE_LOG_ENABLED'
+            value: 'false'
+          }
+        ]
+      }
+    ]
+  }
+}
 
-// //========== Container App Web ========== //
-// module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.17.0' = {
-//   name: format(resourceNameFormatString, 'caweb-')
-//   params: {
-//     name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-web'
-//     location: resourceGroupLocation
-//     environmentResourceId: avmContainerAppEnv.outputs.resourceId
-//     workloadProfileName: 'Consumption'
-//     enableTelemetry: enableTelemetry
-//     registries: useLocalBuild == 'localbuild'
-//       ? [
-//           {
-//             server: avmContainerRegistry.outputs.loginServer
-//             identity: avmContainerRegistryReader.outputs.principalId
-//           }
-//         ]
-//       : null
-//     // registries: useLocalBuild == 'localbuild'
-//     //   ? [
-//     //       {
-//     //         server: publicContainerImageEndpoint
-//     //         image: 'contentprocessorweb'
-//     //         imageTag: 'latest'
-//     //       }
-//     //     ]
-//     //   : null
-
-//     managedIdentities: {
-//       systemAssigned: true
-//       userAssignedResourceIds: [
-//         avmContainerRegistryReader.outputs.resourceId
-//       ]
-//     }
-//     ingressExternal: true
-//     activeRevisionsMode: 'Single'
-//     ingressTransport: 'auto'
-//     ingressAllowInsecure: true
-//     scaleSettings: {
-//       minReplicas: 1
-//       maxReplicas: 1
-//       rules: [
-//         {
-//           name: 'http-scaler'
-//           http: {
-//             metadata: {
-//               concurrentRequests: '100'
-//             }
-//           }
-//         }
-//       ]
-//     }
-//     containers: [
-//       {
-//         name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-web'
-//         image: (useLocalBuild != 'localbuild')
-//           ? '${publicContainerImageEndpoint}/contentprocessorweb:latest'
-//           : avmContainerRegistry.outputs.loginServer
-//         resources: {
-//           cpu: '4'
-//           memory: '8.0Gi'
-//         }
-//         env: [
-//           {
-//             name: 'APP_API_BASE_URL'
-//             value: 'https://${avmContainerApp_API.outputs.fqdn}'
-//           }
-//           {
-//             name: 'APP_WEB_CLIENT_ID'
-//             value: '<APP_REGISTRATION_CLIENTID>'
-//           }
-//           {
-//             name: 'APP_WEB_AUTHORITY'
-//             value: '${environment().authentication.loginEndpoint}/${tenant().tenantId}'
-//           }
-//           {
-//             name: 'APP_WEB_SCOPE'
-//             value: '<FRONTEND_API_SCOPE>'
-//           }
-//           {
-//             name: 'APP_API_SCOPE'
-//             value: '<BACKEND_API_SCOPE>'
-//           }
-//           {
-//             name: 'APP_CONSOLE_LOG_ENABLED'
-//             value: 'false'
-//           }
-//         ]
-//       }
-//     ]
-//   }
-// }
 // ========== Cosmos Database for Mongo DB ========== //
 module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
   name: format(resourceNameFormatString, namingAbbrs.databases.cosmosDBDatabase)
@@ -1633,7 +1634,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_CONTENT_UNDERSTANDING_ENDPOINT'
-        value: 'test' //avmAiServices_cu.outputs.endpoint //TODO: replace with actual endpoint
+        value: avmAiServices_cu.outputs.endpoint //TODO: replace with actual endpoint
       }
       {
         name: 'APP_COSMOS_CONTAINER_PROCESS'
@@ -1737,282 +1738,282 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
   ]
 }
 
-// module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = if (enablePrivateNetworking) {
-//   name: format(resourceNameFormatString, '${namingAbbrs.developerTools.appConfigurationStore}-update')
-//   params: {
-//     name: '${namingAbbrs.developerTools.appConfigurationStore}${solutionPrefix}'
-//     location: resourceGroupLocation
-//     enableTelemetry: enableTelemetry
+module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = if (enablePrivateNetworking) {
+  name: format(resourceNameFormatString, '${namingAbbrs.developerTools.appConfigurationStore}-update')
+  params: {
+    name: '${namingAbbrs.developerTools.appConfigurationStore}${solutionPrefix}'
+    location: resourceGroupLocation
+    enableTelemetry: enableTelemetry
+    tags: tags
+    publicNetworkAccess: 'Disabled'
+    privateEndpoints: [
+      {
+        name: 'appconfig-private-endpoint'
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              name: 'appconfig-dns-zone-group'
+              privateDnsZoneResourceId: avmPrivateDnsZoneAppConfig.outputs.resourceId
+            }
+          ]
+        }
+        subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
+      }
+    ]
+  }
 
-//     publicNetworkAccess: 'Disabled'
-//     privateEndpoints: [
-//       {
-//         name: 'appconfig-private-endpoint'
-//         privateDnsZoneGroup: {
-//           privateDnsZoneGroupConfigs: [
-//             {
-//               name: 'appconfig-dns-zone-group'
-//               privateDnsZoneResourceId: avmPrivateDnsZoneAppConfig.outputs.resourceId
-//             }
-//           ]
-//         }
-//         subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
-//       }
-//     ]
-//   }
+  dependsOn: [
+    avmAppConfig
+  ]
+}
 
-//   dependsOn: [
-//     avmAppConfig
-//   ]
-// }
+module avmRoleAssignment_container_app 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: format(resourceNameFormatString, 'rbac-app-config-data-reader')
+  params: {
+    resourceId: avmAppConfig.outputs.resourceId
+    principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId
+    roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
+    roleName: 'App Configuration Data Reader'
+    principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
+  }
+}
 
-// module avmRoleAssignment_container_app 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-//   name: format(resourceNameFormatString, 'rbac-app-config-data-reader')
-//   params: {
-//     resourceId: avmAppConfig.outputs.resourceId
-//     principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId
-//     roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
-//     roleName: 'App Configuration Data Reader'
-//     principalType: 'ServicePrincipal'
-//     enableTelemetry: enableTelemetry
-//   }
-// }
+module avmRoleAssignment_container_app_api 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: format(resourceNameFormatString, 'rbac-app-config-data-reader-api')
+  params: {
+    resourceId: avmAppConfig.outputs.resourceId
+    principalId: avmContainerApp_API.outputs.?systemAssignedMIPrincipalId
+    roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
+    roleName: 'App Configuration Data Reader'
+    principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
+  }
+}
 
-// module avmRoleAssignment_container_app_api 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-//   name: format(resourceNameFormatString, 'rbac-app-config-data-reader-api')
-//   params: {
-//     resourceId: avmAppConfig.outputs.resourceId
-//     principalId: avmContainerApp_API.outputs.?systemAssignedMIPrincipalId
-//     roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
-//     roleName: 'App Configuration Data Reader'
-//     principalType: 'ServicePrincipal'
-//     enableTelemetry: enableTelemetry
-//   }
-// }
+module avmRoleAssignment_container_app_web 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: format(resourceNameFormatString, 'rbac-app-config-data-reader-web')
+  params: {
+    resourceId: avmAppConfig.outputs.resourceId
+    principalId: avmContainerApp_Web.outputs.?systemAssignedMIPrincipalId
+    roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
+    roleName: 'App Configuration Data Reader'
+    principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
+  }
+}
 
-// module avmRoleAssignment_container_app_web 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-//   name: format(resourceNameFormatString, 'rbac-app-config-data-reader-web')
-//   params: {
-//     resourceId: avmAppConfig.outputs.resourceId
-//     principalId: avmContainerApp_Web.outputs.?systemAssignedMIPrincipalId
-//     roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
-//     roleName: 'App Configuration Data Reader'
-//     principalType: 'ServicePrincipal'
-//     enableTelemetry: enableTelemetry
-//   }
-// }
+// ========== Container App Update Modules ========== //
+module avmContainerApp_update 'br/public:avm/res/app/container-app:0.17.0' = {
+  name: format(resourceNameFormatString, 'caapp-update-')
+  params: {
+    name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-app'
+    location: resourceGroupLocation
+    enableTelemetry: enableTelemetry
+    environmentResourceId: avmContainerAppEnv.outputs.resourceId
+    workloadProfileName: 'Consumption'
+    registries: useLocalBuild == 'localbuild'
+      ? [
+          {
+            server: publicContainerImageEndpoint
+            identity: avmContainerRegistryReader.outputs.principalId
+          }
+        ]
+      : null
+    tags: tags
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        avmContainerRegistryReader.outputs.resourceId
+      ]
+    }
 
-// // ========== Container App Update Modules ========== //
-// module avmContainerApp_update 'br/public:avm/res/app/container-app:0.17.0' = {
-//   name: format(resourceNameFormatString, 'caapp-update-')
-//   params: {
-//     name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-app'
-//     location: resourceGroupLocation
-//     enableTelemetry: enableTelemetry
-//     environmentResourceId: avmContainerAppEnv.outputs.resourceId
-//     workloadProfileName: 'Consumption'
-//     registries: useLocalBuild == 'localbuild'
-//       ? [
-//           {
-//             server: publicContainerImageEndpoint
-//             identity: avmContainerRegistryReader.outputs.principalId
-//           }
-//         ]
-//       : null
+    containers: [
+      {
+        name: '${namingAbbrs.containers.containerApp}${solutionPrefix}'
+        image: '${publicContainerImageEndpoint}/contentprocessor:latest'
 
-//     managedIdentities: {
-//       systemAssigned: true
-//       userAssignedResourceIds: [
-//         avmContainerRegistryReader.outputs.resourceId
-//       ]
-//     }
+        resources: {
+          cpu: '4'
+          memory: '8.0Gi'
+        }
+        env: [
+          {
+            name: 'APP_CONFIG_ENDPOINT'
+            value: avmAppConfig.outputs.endpoint
+          }
+        ]
+      }
+    ]
+    activeRevisionsMode: 'Single'
+    ingressExternal: false
+    disableIngress: true
+    scaleSettings: {
+      minReplicas: 1
+      maxReplicas: 1
+    }
+  }
+  dependsOn: [
+    avmStorageAccount_RoleAssignment_avmContainerApp_blob
+    avmStorageAccount_RoleAssignment_avmContainerApp_queue
+    avmRoleAssignment_container_app
+  ]
+}
 
-//     containers: [
-//       {
-//         name: '${namingAbbrs.containers.containerApp}${solutionPrefix}'
-//         image: '${publicContainerImageEndpoint}/contentprocessor:latest'
+module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.17.0' = {
+  name: format(resourceNameFormatString, 'caapi-update-')
+  params: {
+    name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
+    location: resourceGroupLocation
+    enableTelemetry: enableTelemetry
+    environmentResourceId: avmContainerAppEnv.outputs.resourceId
+    workloadProfileName: 'Consumption'
+    registries: useLocalBuild == 'localbuild'
+      ? [
+          {
+            server: avmContainerRegistry.outputs.loginServer
+            identity: avmContainerRegistryReader.outputs.principalId
+          }
+        ]
+      : null
+    // registries: useLocalBuild == 'localbuild'
+    //   ? [
+    //       {
+    //         server: publicContainerImageEndpoint
+    //         image: 'contentprocessorapi'
+    //         imageTag: 'latest'
+    //       }
+    //     ]
+    //   : null
+    tags: tags
+    managedIdentities: {
+      systemAssigned: true
+      userAssignedResourceIds: [
+        avmContainerRegistryReader.outputs.resourceId
+      ]
+    }
 
-//         resources: {
-//           cpu: '4'
-//           memory: '8.0Gi'
-//         }
-//         env: [
-//           {
-//             name: 'APP_CONFIG_ENDPOINT'
-//             value: avmAppConfig.outputs.endpoint
-//           }
-//         ]
-//       }
-//     ]
-//     activeRevisionsMode: 'Single'
-//     ingressExternal: false
-//     disableIngress: true
-//     scaleSettings: {
-//       minReplicas: 1
-//       maxReplicas: 1
-//     }
-//   }
-//   dependsOn: [
-//     avmStorageAccount_RoleAssignment_avmContainerApp_blob
-//     avmStorageAccount_RoleAssignment_avmContainerApp_queue
-//     avmRoleAssignment_container_app
-//   ]
-// }
+    containers: [
+      {
+        name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
+        image: (useLocalBuild != 'localbuild')
+          ? '${publicContainerImageEndpoint}/contentprocessorapi:latest'
+          : avmContainerRegistry.outputs.loginServer
+        resources: {
+          cpu: '4'
+          memory: '8.0Gi'
+        }
+        env: [
+          {
+            name: 'APP_CONFIG_ENDPOINT'
+            value: avmAppConfig.outputs.endpoint
+          }
+        ]
+        probes: [
+          // Liveness Probe - Checks if the app is still running
+          {
+            type: 'Liveness'
+            httpGet: {
+              path: '/startup' // Your app must expose this endpoint
+              port: 80
+              scheme: 'HTTP'
+            }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          }
+          // Readiness Probe - Checks if the app is ready to receive traffic
+          {
+            type: 'Readiness'
+            httpGet: {
+              path: '/startup'
+              port: 80
+              scheme: 'HTTP'
+            }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 3
+          }
+          {
+            type: 'Startup'
+            httpGet: {
+              path: '/startup'
+              port: 80
+              scheme: 'HTTP'
+            }
+            initialDelaySeconds: 20 // Wait 10s before checking
+            periodSeconds: 5 // Check every 15s
+            failureThreshold: 10 // Restart if it fails 5 times
+          }
+        ]
+      }
+    ]
+    scaleSettings: {
+      minReplicas: 1
+      maxReplicas: 1
+      rules: [
+        {
+          name: 'http-scaler'
+          http: {
+            metadata: {
+              concurrentRequests: '100'
+            }
+          }
+        }
+      ]
+    }
+    ingressExternal: true
+    activeRevisionsMode: 'Single'
+    ingressTransport: 'auto'
+    ingressAllowInsecure: true
+    corsPolicy: {
+      allowedOrigins: [
+        '*'
+      ]
+      allowedMethods: [
+        'GET'
+        'POST'
+        'PUT'
+        'DELETE'
+        'OPTIONS'
+      ]
+      allowedHeaders: [
+        'Authorization'
+        'Content-Type'
+        '*'
+      ]
+    }
+  }
+  dependsOn: [
+    avmStorageAccount_RoleAssignment_avmContainerApp_API_blob
+    avmStorageAccount_RoleAssignment_avmContainerApp_API_queue
+    avmRoleAssignment_container_app_api
+  ]
+}
 
-// module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.17.0' = {
-//   name: format(resourceNameFormatString, 'caapi-update-')
-//   params: {
-//     name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
-//     location: resourceGroupLocation
-//     enableTelemetry: enableTelemetry
-//     environmentResourceId: avmContainerAppEnv.outputs.resourceId
-//     workloadProfileName: 'Consumption'
-//     registries: useLocalBuild == 'localbuild'
-//       ? [
-//           {
-//             server: avmContainerRegistry.outputs.loginServer
-//             identity: avmContainerRegistryReader.outputs.principalId
-//           }
-//         ]
-//       : null
-//     // registries: useLocalBuild == 'localbuild'
-//     //   ? [
-//     //       {
-//     //         server: publicContainerImageEndpoint
-//     //         image: 'contentprocessorapi'
-//     //         imageTag: 'latest'
-//     //       }
-//     //     ]
-//     //   : null
+// ============ //
+// Outputs      //
+// ============ //
 
-//     managedIdentities: {
-//       systemAssigned: true
-//       userAssignedResourceIds: [
-//         avmContainerRegistryReader.outputs.resourceId
-//       ]
-//     }
+// Add your outputs here
 
-//     containers: [
-//       {
-//         name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-api'
-//         image: (useLocalBuild != 'localbuild')
-//           ? '${publicContainerImageEndpoint}/contentprocessorapi:latest'
-//           : avmContainerRegistry.outputs.loginServer
-//         resources: {
-//           cpu: '4'
-//           memory: '8.0Gi'
-//         }
-//         env: [
-//           {
-//             name: 'APP_CONFIG_ENDPOINT'
-//             value: avmAppConfig.outputs.endpoint
-//           }
-//         ]
-//         probes: [
-//           // Liveness Probe - Checks if the app is still running
-//           {
-//             type: 'Liveness'
-//             httpGet: {
-//               path: '/startup' // Your app must expose this endpoint
-//               port: 80
-//               scheme: 'HTTP'
-//             }
-//             initialDelaySeconds: 5
-//             periodSeconds: 10
-//             failureThreshold: 3
-//           }
-//           // Readiness Probe - Checks if the app is ready to receive traffic
-//           {
-//             type: 'Readiness'
-//             httpGet: {
-//               path: '/startup'
-//               port: 80
-//               scheme: 'HTTP'
-//             }
-//             initialDelaySeconds: 5
-//             periodSeconds: 10
-//             failureThreshold: 3
-//           }
-//           {
-//             type: 'Startup'
-//             httpGet: {
-//               path: '/startup'
-//               port: 80
-//               scheme: 'HTTP'
-//             }
-//             initialDelaySeconds: 20 // Wait 10s before checking
-//             periodSeconds: 5 // Check every 15s
-//             failureThreshold: 10 // Restart if it fails 5 times
-//           }
-//         ]
-//       }
-//     ]
-//     scaleSettings: {
-//       minReplicas: 1
-//       maxReplicas: 1
-//       rules: [
-//         {
-//           name: 'http-scaler'
-//           http: {
-//             metadata: {
-//               concurrentRequests: '100'
-//             }
-//           }
-//         }
-//       ]
-//     }
-//     ingressExternal: true
-//     activeRevisionsMode: 'Single'
-//     ingressTransport: 'auto'
-//     ingressAllowInsecure: true
-//     corsPolicy: {
-//       allowedOrigins: [
-//         '*'
-//       ]
-//       allowedMethods: [
-//         'GET'
-//         'POST'
-//         'PUT'
-//         'DELETE'
-//         'OPTIONS'
-//       ]
-//       allowedHeaders: [
-//         'Authorization'
-//         'Content-Type'
-//         '*'
-//       ]
-//     }
-//   }
-//   dependsOn: [
-//     avmStorageAccount_RoleAssignment_avmContainerApp_API_blob
-//     avmStorageAccount_RoleAssignment_avmContainerApp_API_queue
-//     avmRoleAssignment_container_app_api
-//   ]
-// }
+// @description('The resource ID of the resource.')
+// output resourceId string = <Resource>.id
 
-// // ============ //
-// // Outputs      //
-// // ============ //
+// @description('The name of the resource.')
+// output name string = <Resource>.name
 
-// // Add your outputs here
+// @description('The location the resource was deployed into.')
+// output location string = <Resource>.location
 
-// // @description('The resource ID of the resource.')
-// // output resourceId string = <Resource>.id
-
-// // @description('The name of the resource.')
-// // output name string = <Resource>.name
-
-// // @description('The location the resource was deployed into.')
-// // output location string = <Resource>.location
-
-// @description('The resource ID of the Container App Environment.')
-// output containerWebAppName string = avmContainerApp_Web.outputs.name
-// @description('The resource ID of the Container App API.')
-// output containerApiAppName string = avmContainerApp_API.outputs.name
-// @description('The resource ID of the Container App Environment.')
-// output containerWebAppFqdn string = avmContainerApp_Web.outputs.fqdn
-// @description('The resource ID of the Container App API.')
-// output containerApiAppFqdn string = avmContainerApp_API.outputs.fqdn
+@description('The resource ID of the Container App Environment.')
+output containerWebAppName string = avmContainerApp_Web.outputs.name
+@description('The resource ID of the Container App API.')
+output containerApiAppName string = avmContainerApp_API.outputs.name
+@description('The resource ID of the Container App Environment.')
+output containerWebAppFqdn string = avmContainerApp_Web.outputs.fqdn
+@description('The resource ID of the Container App API.')
+output containerApiAppFqdn string = avmContainerApp_API.outputs.fqdn
 
 @description('The resource group the resources were deployed into.')
 output resourceGroupName string = resourceGroup().name

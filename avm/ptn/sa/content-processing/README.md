@@ -542,6 +542,10 @@ Set to true to use local build for container app images, otherwise use container
 
 | Output | Type | Description |
 | :-- | :-- | :-- |
+| `containerApiAppFqdn` | string | The resource ID of the Container App API. |
+| `containerApiAppName` | string | The resource ID of the Container App API. |
+| `containerWebAppFqdn` | string | The resource ID of the Container App Environment. |
+| `containerWebAppName` | string | The resource ID of the Container App Environment. |
 | `resourceGroupName` | string | The resource group the resources were deployed into. |
 
 ## Cross-referenced modules
