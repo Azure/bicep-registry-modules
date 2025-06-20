@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/azure-stack-hci/virtual-hard-disk/CHANGELOG.md).
 
-## 0
+## 0.1.0
 
 ### Changes
 
