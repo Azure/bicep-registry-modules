@@ -1129,6 +1129,7 @@ The definitions for one or more actions to execute at workflow runtime.
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `workflowEndpointsConfiguration`
 
@@ -1150,6 +1151,7 @@ The definitions for the outputs to return from a workflow run.
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 ### Parameter: `workflowParameters`
 
@@ -1171,6 +1173,7 @@ The definitions for one or more triggers that instantiate your workflow. You can
 
 - Required: No
 - Type: object
+- Default: `{}`
 
 ## Outputs
 

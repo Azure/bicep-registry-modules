@@ -62,7 +62,7 @@ param tags object?
 param triggersAccessControlConfiguration object?
 
 @description('Optional. The definitions for one or more actions to execute at workflow runtime.')
-param workflowActions object?
+param workflowActions object = {}
 
 @description('Optional. The endpoints configuration:  Access endpoint and outgoing IP addresses for the workflow.')
 param workflowEndpointsConfiguration object?
@@ -71,7 +71,7 @@ param workflowEndpointsConfiguration object?
 param workflowManagementAccessControlConfiguration object?
 
 @description('Optional. The definitions for the outputs to return from a workflow run.')
-param workflowOutputs object?
+param workflowOutputs object = {}
 
 @description('Optional. The definitions for one or more parameters that pass the values to use at your logic app\'s runtime.')
 param workflowParameters object?
@@ -80,7 +80,7 @@ param workflowParameters object?
 param workflowStaticResults object?
 
 @description('Optional. The definitions for one or more triggers that instantiate your workflow. You can define more than one trigger, but only with the Workflow Definition Language, not visually through the Logic Apps Designer.')
-param workflowTriggers object?
+param workflowTriggers object = {}
 
 var formattedUserAssignedIdentities = reduce(
   map((managedIdentities.?userAssignedResourceIds ?? []), (id) => { '${id}': {} }),
