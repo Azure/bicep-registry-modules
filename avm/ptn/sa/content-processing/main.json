@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10015154754024767377"
+      "templateHash": "11170188152744620811"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -3218,23 +3218,23 @@
           "subnets": {
             "value": [
               {
-                "name": "backend",
+                "name": "snet-backend",
                 "addressPrefix": "10.0.0.0/24",
                 "networkSecurityGroupResourceId": "[reference('avmNetworkSecurityGroup').outputs.resourceId.value]"
               },
               {
-                "name": "containers",
+                "name": "snet-containers",
                 "addressPrefix": "10.0.2.0/24",
                 "networkSecurityGroupResourceId": "[reference('avmNetworkSecurityGroup_Containers').outputs.resourceId.value]",
                 "delegation": "Microsoft.App/environments"
               },
               {
-                "name": "admin",
+                "name": "snet-admin",
                 "addressPrefix": "10.0.1.0/27",
                 "networkSecurityGroupResourceId": "[reference('avmNetworkSecurityGroup_Admin').outputs.resourceId.value]"
               },
               {
-                "name": "bastion",
+                "name": "snet-bastion",
                 "addressPrefix": "10.0.1.32/27",
                 "networkSecurityGroupResourceId": "[reference('avmNetworkSecurityGroup_Bastion').outputs.resourceId.value]"
               }

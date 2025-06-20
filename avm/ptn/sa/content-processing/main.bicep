@@ -281,12 +281,12 @@ module avmVirtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if 
     ]
     subnets: [
       {
-        name: 'backend'
+        name: 'snet-backend'
         addressPrefix: '10.0.0.0/24'
         networkSecurityGroupResourceId: avmNetworkSecurityGroup.outputs.resourceId
       }
       {
-        name: 'containers'
+        name: 'snet-containers'
         addressPrefix: '10.0.2.0/24'
         networkSecurityGroupResourceId: avmNetworkSecurityGroup_Containers.outputs.resourceId
         delegation: 'Microsoft.App/environments'
@@ -294,12 +294,12 @@ module avmVirtualNetwork 'br/public:avm/res/network/virtual-network:0.7.0' = if 
         // privateLinkServiceNetworkPolicies: 'Enabled'
       }
       {
-        name: 'admin'
+        name: 'snet-admin'
         addressPrefix: '10.0.1.0/27'
         networkSecurityGroupResourceId: avmNetworkSecurityGroup_Admin.outputs.resourceId
       }
       {
-        name: 'bastion'
+        name: 'snet-bastion'
         addressPrefix: '10.0.1.32/27'
         networkSecurityGroupResourceId: avmNetworkSecurityGroup_Bastion.outputs.resourceId
       }
