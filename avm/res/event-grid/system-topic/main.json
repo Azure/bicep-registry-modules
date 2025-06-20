@@ -6,46 +6,12 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14303190019109581055"
+      "templateHash": "6095703872527508938"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic."
   },
   "definitions": {
-    "resourceRoleAssignmentType": {
-      "type": "object",
-      "properties": {
-        "resourceId": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The resource ID of the target resource to assign permissions to."
-          }
-        },
-        "roleDefinitionIdOrName": {
-          "type": "string",
-          "metadata": {
-            "description": "Required. The role definition ID (GUID) or full role definition resource ID. Role names are not supported. Example: \"ba92f5b4-2d11-453d-a403-e96b0029c9fe\" or \"/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe\"."
-          }
-        },
-        "description": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Description of the role assignment."
-          }
-        },
-        "roleName": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. Name of the role for logging purposes."
-          }
-        }
-      },
-      "metadata": {
-        "description": "External resource role assignment configuration."
-      }
-    },
     "eventSubscriptionType": {
       "type": "object",
       "properties": {
@@ -148,6 +114,40 @@
       },
       "metadata": {
         "description": "Event subscription configuration."
+      }
+    },
+    "resourceRoleAssignmentType": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the target resource to assign permissions to."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role definition ID (GUID) or full role definition resource ID. Example: \"ba92f5b4-2d11-453d-a403-e96b0029c9fe\" or \"/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe\"."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description of the role assignment."
+          }
+        },
+        "roleName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Name of the role for logging purposes."
+          }
+        }
+      },
+      "metadata": {
+        "description": "External resource role assignment configuration."
       }
     },
     "diagnosticSettingFullType": {

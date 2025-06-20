@@ -24,21 +24,6 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
-@description('External resource role assignment configuration.')
-type resourceRoleAssignmentType = {
-  @description('Required. The resource ID of the target resource to assign permissions to.')
-  resourceId: string
-  
-  @description('Required. The role definition ID (GUID) or full role definition resource ID. Role names are not supported. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".')
-  roleDefinitionIdOrName: string
-  
-  @description('Optional. Description of the role assignment.')
-  description: string?
-  
-  @description('Optional. Name of the role for logging purposes.')
-  roleName: string?
-}
-
 @description('Optional. Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs.')
 param resourceRoleAssignments resourceRoleAssignmentType[] = []
 
@@ -262,4 +247,19 @@ type eventSubscriptionType = {
   
   @description('Optional. The retry policy for events.')
   retryPolicy: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.retryPolicy?
+}
+
+@description('External resource role assignment configuration.')
+type resourceRoleAssignmentType = {
+  @description('Required. The resource ID of the target resource to assign permissions to.')
+  resourceId: string
+  
+  @description('Required. The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".')
+  roleDefinitionIdOrName: string
+  
+  @description('Optional. Description of the role assignment.')
+  description: string?
+  
+  @description('Optional. Name of the role for logging purposes.')
+  roleName: string?
 }

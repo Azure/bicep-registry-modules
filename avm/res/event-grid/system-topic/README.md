@@ -1381,7 +1381,7 @@ Array of role assignments to create on external resources. This is useful for sc
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`resourceId`](#parameter-resourceroleassignmentsresourceid) | string | The resource ID of the target resource to assign permissions to. |
-| [`roleDefinitionIdOrName`](#parameter-resourceroleassignmentsroledefinitionidorname) | string | The role definition ID (GUID) or full role definition resource ID. Role names are not supported. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe". |
+| [`roleDefinitionIdOrName`](#parameter-resourceroleassignmentsroledefinitionidorname) | string | The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe". |
 
 **Optional parameters**
 
@@ -1399,7 +1399,7 @@ The resource ID of the target resource to assign permissions to.
 
 ### Parameter: `resourceRoleAssignments.roleDefinitionIdOrName`
 
-The role definition ID (GUID) or full role definition resource ID. Role names are not supported. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".
+The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".
 
 - Required: Yes
 - Type: string
