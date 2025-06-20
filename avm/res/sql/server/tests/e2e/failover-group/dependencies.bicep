@@ -8,7 +8,7 @@ param location string = resourceGroup().location
 @secure()
 param password string = newGuid()
 
-resource server 'Microsoft.Sql/servers@2021-11-01' = {
+resource server 'Microsoft.Sql/servers@2023-08-01' = {
   name: serverName
   location: location
   properties: {
