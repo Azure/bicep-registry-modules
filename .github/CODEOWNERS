@@ -40,6 +40,7 @@
 /avm/ptn/policy-insights/remediation/ @Azure/avm-ptn-policyinsights-remediation-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/sa/conversation-knowledge-mining/ @Azure/avm-ptn-sa-conversationknowledgemining-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/security/security-center/ @Azure/avm-ptn-security-securitycenter-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/ptn/subscription/service-health-alerts/ @Azure/avm-ptn-subscription-servicehealthalerts-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/ptn/virtual-machine-images/azure-image-builder/ @Azure/avm-ptn-virtualmachineimages-azureimagebuilder-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/aad/domain-service/ @Azure/avm-res-aad-domainservice-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/alerts-management/action-rule/ @Azure/avm-res-alertsmanagement-actionrule-module-owners-bicep @Azure/avm-module-reviewers-bicep
@@ -87,6 +88,7 @@
 /avm/res/desktop-virtualization/scaling-plan/ @Azure/avm-res-desktopvirtualization-scalingplan-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/desktop-virtualization/workspace/ @Azure/avm-res-desktopvirtualization-workspace-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-center/network-connection/ @Azure/avm-res-devcenter-networkconnection-module-owners-bicep @Azure/avm-module-reviewers-bicep
+/avm/res/dev-center/project/ @Azure/avm-res-devcenter-project-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-ops-infrastructure/pool/ @Azure/avm-res-devopsinfrastructure-pool-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/dev-test-lab/lab/ @Azure/avm-res-devtestlab-lab-module-owners-bicep @Azure/avm-module-reviewers-bicep
 /avm/res/digital-twins/digital-twins-instance/ @Azure/avm-res-digitaltwins-digitaltwinsinstance-module-owners-bicep @Azure/avm-module-reviewers-bicep
