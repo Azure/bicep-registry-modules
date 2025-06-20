@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "13888054846437698209"
+      "templateHash": "14067211941006023487"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -195,7 +195,10 @@
           }
         },
         "roleAssignments": {
-          "$ref": "#/definitions/roleAssignmentType",
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/roleAssignmentType"
+          },
           "nullable": true,
           "metadata": {
             "description": "Optional. Role assignments to be applied to the Virtual WAN."
@@ -222,856 +225,850 @@
       }
     },
     "virtualHubParameterType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "hubName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The name of the Virtual Hub."
-            }
+      "type": "object",
+      "properties": {
+        "hubName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the Virtual Hub."
+          }
+        },
+        "hubLocation": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The Azure region where the Virtual Hub will be created."
+          }
+        },
+        "hubAddressPrefix": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The address prefix for the Virtual Hub."
+          }
+        },
+        "allowBranchToBranchTraffic": {
+          "type": "bool",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Whether to allow branch-to-branch traffic within the Virtual Hub."
+          }
+        },
+        "hubRoutingPreference": {
+          "type": "string",
+          "allowedValues": [
+            "ASPath",
+            "ExpressRoute",
+            "VpnGateway"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The routing preference for the Virtual Hub."
+          }
+        },
+        "hubRouteTables": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hubRouteTableType"
           },
-          "hubLocation": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The Azure region where the Virtual Hub will be created."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The route tables for the Virtual Hub."
+          }
+        },
+        "hubVirtualNetworkConnections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/hubVirtualNetworkConnectionType"
           },
-          "hubAddressPrefix": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The address prefix for the Virtual Hub."
-            }
-          },
-          "allowBranchToBranchTraffic": {
-            "type": "bool",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Whether to allow branch-to-branch traffic within the Virtual Hub."
-            }
-          },
-          "hubRoutingPreference": {
-            "type": "string",
-            "allowedValues": [
-              "ASPath",
-              "ExpressRoute",
-              "VpnGateway"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The routing preference for the Virtual Hub."
-            }
-          },
-          "hubRouteTables": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/hubRouteTableType"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The route tables for the Virtual Hub."
-            }
-          },
-          "hubVirtualNetworkConnections": {
-            "type": "array",
-            "items": {
-              "$ref": "#/definitions/hubVirtualNetworkConnectionType"
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The virtual network connections for the Virtual Hub."
-            }
-          },
-          "p2sVpnParameters": {
-            "type": "object",
-            "properties": {
-              "customDnsServers": {
-                "type": "array",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Custom DNS servers for the P2S VPN Gateway."
-                }
-              },
-              "deployP2SVpnGateway": {
-                "type": "bool",
-                "metadata": {
-                  "description": "Required. Whether to deploy a P2S VPN Gateway."
-                }
-              },
-              "enableInternetSecurity": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Enable internet security for the P2S VPN Gateway."
-                }
-              },
-              "inboundRouteMapResourceId": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Resource ID of the inbound route map."
-                }
-              },
-              "isRoutingPreferenceInternet": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Whether routing preference is internet."
-                }
-              },
-              "outboundRouteMapResourceId": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Resource ID of the outbound route map."
-                }
-              },
-              "propagatedLabelNames": {
-                "type": "array",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Names of propagated labels."
-                }
-              },
-              "propagatedRouteTableNames": {
-                "type": "array",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Names of propagated route tables."
-                }
-              },
-              "vnetRoutesStaticRoutes": {
-                "$ref": "#/definitions/vnetRoutesStaticRoutesType",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Static routes for VNet routes."
-                }
-              },
-              "vpnGatewayName": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. Name of the VPN Gateway."
-                }
-              },
-              "vpnClientAddressPoolAddressPrefixes": {
-                "type": "array",
-                "metadata": {
-                  "description": "Required. Address prefixes for the VPN client address pool."
-                }
-              },
-              "connectionConfigurationsName": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. Name of the connection configurations."
-                }
-              },
-              "vpnGatewayScaleUnit": {
-                "type": "int",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Scale unit for the VPN Gateway."
-                }
-              },
-              "vpnGatewayAssociatedRouteTable": {
-                "type": "string",
-                "allowedValues": [
-                  "defaultRouteTable",
-                  "noneRouteTable"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Associated route table for the VPN Gateway."
-                }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The virtual network connections for the Virtual Hub."
+          }
+        },
+        "p2sVpnParameters": {
+          "type": "object",
+          "properties": {
+            "customDnsServers": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Custom DNS servers for the P2S VPN Gateway."
               }
             },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Point-to-site VPN parameters for the Virtual Hub."
+            "deployP2SVpnGateway": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to deploy a P2S VPN Gateway."
+              }
+            },
+            "enableInternetSecurity": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable internet security for the P2S VPN Gateway."
+              }
+            },
+            "inboundRouteMapResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource ID of the inbound route map."
+              }
+            },
+            "isRoutingPreferenceInternet": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Whether routing preference is internet."
+              }
+            },
+            "outboundRouteMapResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource ID of the outbound route map."
+              }
+            },
+            "propagatedLabelNames": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Names of propagated labels."
+              }
+            },
+            "propagatedRouteTableNames": {
+              "type": "array",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Names of propagated route tables."
+              }
+            },
+            "vnetRoutesStaticRoutes": {
+              "$ref": "#/definitions/vnetRoutesStaticRoutesType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Static routes for VNet routes."
+              }
+            },
+            "vpnGatewayName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the VPN Gateway."
+              }
+            },
+            "vpnClientAddressPoolAddressPrefixes": {
+              "type": "array",
+              "metadata": {
+                "description": "Required. Address prefixes for the VPN client address pool."
+              }
+            },
+            "connectionConfigurationsName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Name of the connection configurations."
+              }
+            },
+            "vpnGatewayScaleUnit": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Scale unit for the VPN Gateway."
+              }
+            },
+            "vpnGatewayAssociatedRouteTable": {
+              "type": "string",
+              "allowedValues": [
+                "defaultRouteTable",
+                "noneRouteTable"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Associated route table for the VPN Gateway."
+              }
             }
           },
-          "s2sVpnParameters": {
-            "type": "object",
-            "properties": {
-              "deployS2SVpnGateway": {
-                "type": "bool",
-                "metadata": {
-                  "description": "Required. Whether to deploy a S2S VPN Gateway."
-                }
-              },
-              "vpnGatewayName": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Name of the VPN Gateway."
-                }
-              },
-              "vpnGatewayScaleUnit": {
-                "type": "int",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Scale unit for the VPN Gateway."
-                }
-              },
-              "bgpSettings": {
-                "type": "object",
-                "properties": {
-                  "asn": {
-                    "type": "int",
-                    "metadata": {
-                      "description": "Required. ASN for BGP."
-                    }
-                  },
-                  "bgpPeeringAddress": {
-                    "type": "string",
-                    "metadata": {
-                      "description": "Required. BGP peering address."
-                    }
-                  },
-                  "bgpPeeringAddresses": {
-                    "type": "array",
-                    "prefixItems": [
-                      {
-                        "type": "object",
-                        "properties": {
-                          "customBgpIpAddresses": {
-                            "type": "array",
-                            "prefixItems": [
-                              {
-                                "type": "string"
-                              }
-                            ],
-                            "items": false,
-                            "metadata": {
-                              "description": "Required. Custom BGP IP addresses."
-                            }
-                          },
-                          "ipconfigurationId": {
-                            "type": "string",
-                            "metadata": {
-                              "description": "Required. IP configuration ID."
-                            }
-                          }
-                        }
-                      }
-                    ],
-                    "items": false,
-                    "metadata": {
-                      "description": "Required. BGP peering addresses."
-                    }
-                  },
-                  "peerWeight": {
-                    "type": "int",
-                    "metadata": {
-                      "description": "Required. Peer weight for BGP."
-                    }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Point-to-site VPN parameters for the Virtual Hub."
+          }
+        },
+        "s2sVpnParameters": {
+          "type": "object",
+          "properties": {
+            "deployS2SVpnGateway": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to deploy a S2S VPN Gateway."
+              }
+            },
+            "vpnGatewayName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the VPN Gateway."
+              }
+            },
+            "vpnGatewayScaleUnit": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Scale unit for the VPN Gateway."
+              }
+            },
+            "bgpSettings": {
+              "type": "object",
+              "properties": {
+                "asn": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. ASN for BGP."
                   }
                 },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. BGP settings for the VPN Gateway."
-                }
-              },
-              "enableBgpRouteTranslationForNat": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Enable BGP route translation for NAT."
-                }
-              },
-              "isRoutingPreferenceInternet": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Whether routing preference is internet."
-                }
-              },
-              "lock": {
-                "$ref": "#/definitions/lockType",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Lock settings for the VPN Gateway."
-                }
-              },
-              "natRules": {
-                "type": "array",
-                "prefixItems": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "externalMappings": {
-                        "type": "array",
-                        "prefixItems": [
-                          {
-                            "type": "object",
-                            "properties": {
-                              "addressSpace": {
-                                "type": "string",
-                                "metadata": {
-                                  "description": "Required. Address space for external mapping."
-                                }
-                              }
+                "bgpPeeringAddress": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. BGP peering address."
+                  }
+                },
+                "bgpPeeringAddresses": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "customBgpIpAddresses": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "string"
                             }
+                          ],
+                          "items": false,
+                          "metadata": {
+                            "description": "Required. Custom BGP IP addresses."
                           }
-                        ],
-                        "items": false,
-                        "metadata": {
-                          "description": "Required. External mappings for NAT rule."
-                        }
-                      },
-                      "internalMappings": {
-                        "type": "array",
-                        "prefixItems": [
-                          {
-                            "type": "object",
-                            "properties": {
-                              "addressSpace": {
-                                "type": "string",
-                                "metadata": {
-                                  "description": "Required. Address space for internal mapping."
-                                }
-                              }
-                            }
+                        },
+                        "ipconfigurationId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. IP configuration ID."
                           }
-                        ],
-                        "items": false,
-                        "metadata": {
-                          "description": "Required. Internal mappings for NAT rule."
-                        }
-                      },
-                      "mode": {
-                        "type": "string",
-                        "allowedValues": [
-                          "EgressSnat",
-                          "IngressSnat"
-                        ],
-                        "metadata": {
-                          "description": "Required. Mode for NAT rule."
-                        }
-                      },
-                      "name": {
-                        "type": "string",
-                        "metadata": {
-                          "description": "Required. Name of the NAT rule."
-                        }
-                      },
-                      "type": {
-                        "type": "string",
-                        "allowedValues": [
-                          "Dynamic",
-                          "Static"
-                        ],
-                        "metadata": {
-                          "description": "Required. Type of NAT rule."
                         }
                       }
                     }
+                  ],
+                  "items": false,
+                  "metadata": {
+                    "description": "Required. BGP peering addresses."
                   }
-                ],
-                "items": false,
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. NAT rules for the VPN Gateway."
+                },
+                "peerWeight": {
+                  "type": "int",
+                  "metadata": {
+                    "description": "Required. Peer weight for BGP."
+                  }
                 }
               },
-              "vpnConnections": {
-                "type": "array",
-                "items": {
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. BGP settings for the VPN Gateway."
+              }
+            },
+            "enableBgpRouteTranslationForNat": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Enable BGP route translation for NAT."
+              }
+            },
+            "isRoutingPreferenceInternet": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Whether routing preference is internet."
+              }
+            },
+            "lock": {
+              "$ref": "#/definitions/lockType",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Lock settings for the VPN Gateway."
+              }
+            },
+            "natRules": {
+              "type": "array",
+              "prefixItems": [
+                {
                   "type": "object",
                   "properties": {
-                    "name": {
-                      "type": "string",
+                    "externalMappings": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "addressSpace": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Address space for external mapping."
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "items": false,
                       "metadata": {
-                        "description": "Required. Name of the VPN connection."
+                        "description": "Required. External mappings for NAT rule."
                       }
                     },
-                    "vpnGatewayName": {
-                      "type": "string",
+                    "internalMappings": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "addressSpace": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Address space for internal mapping."
+                              }
+                            }
+                          }
+                        }
+                      ],
+                      "items": false,
                       "metadata": {
-                        "description": "Required. Name of the VPN Gateway."
+                        "description": "Required. Internal mappings for NAT rule."
                       }
                     },
-                    "connectionBandwidth": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Connection bandwidth."
-                      }
-                    },
-                    "enableBgp": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Enable BGP for the connection."
-                      }
-                    },
-                    "enableInternetSecurity": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Enable internet security for the connection."
-                      }
-                    },
-                    "remoteVpnSiteResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Resource ID of the remote VPN site."
-                      }
-                    },
-                    "enableRateLimiting": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Enable rate limiting."
-                      }
-                    },
-                    "routingConfiguration": {
-                      "type": "object",
-                      "properties": {},
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Routing configuration for the connection."
-                      }
-                    },
-                    "routingWeight": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Routing weight for the connection."
-                      }
-                    },
-                    "sharedKey": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Shared key for the connection."
-                      }
-                    },
-                    "useLocalAzureIpAddress": {
-                      "type": "bool",
-                      "metadata": {
-                        "description": "Required. Use local Azure IP address."
-                      }
-                    },
-                    "usePolicyBasedTrafficSelectors": {
-                      "type": "bool",
-                      "metadata": {
-                        "description": "Required. Use policy-based traffic selectors."
-                      }
-                    },
-                    "vpnConnectionProtocolType": {
+                    "mode": {
                       "type": "string",
                       "allowedValues": [
-                        "IKEv1",
-                        "IKEv2"
+                        "EgressSnat",
+                        "IngressSnat"
                       ],
                       "metadata": {
-                        "description": "Required. VPN connection protocol type."
+                        "description": "Required. Mode for NAT rule."
                       }
                     },
-                    "ipsecPolicies": {
-                      "type": "array",
-                      "prefixItems": [],
-                      "items": false,
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. IPsec policies for the connection."
-                      }
-                    },
-                    "trafficSelectorPolicies": {
-                      "type": "array",
-                      "prefixItems": [],
-                      "items": false,
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Traffic selector policies for the connection."
-                      }
-                    },
-                    "vpnLinkConnections": {
-                      "type": "array",
-                      "prefixItems": [],
-                      "items": false,
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. VPN link connections for the connection."
-                      }
-                    }
-                  }
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. VPN connections for the VPN Gateway."
-                }
-              }
-            },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Site-to-site VPN parameters for the Virtual Hub."
-            }
-          },
-          "expressRouteParameters": {
-            "type": "object",
-            "properties": {
-              "deployExpressRouteGateway": {
-                "type": "bool",
-                "metadata": {
-                  "description": "Required. Whether to deploy an ExpressRoute Gateway."
-                }
-              },
-              "expressRouteGatewayName": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Name of the ExpressRoute Gateway."
-                }
-              },
-              "allowNonVirtualWanTraffic": {
-                "type": "bool",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Allow non-Virtual WAN traffic."
-                }
-              },
-              "autoScaleConfigurationBoundsMin": {
-                "type": "int",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Minimum bound for autoscale configuration."
-                }
-              },
-              "autoScaleConfigurationBoundsMax": {
-                "type": "int",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Maximum bound for autoscale configuration."
-                }
-              },
-              "expressRouteConnections": {
-                "type": "array",
-                "items": {
-                  "type": "object",
-                  "properties": {
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Name of the ExpressRoute connection."
+                        "description": "Required. Name of the NAT rule."
                       }
                     },
-                    "connectionBandwidth": {
-                      "type": "int",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Connection bandwidth."
-                      }
-                    },
-                    "enableBgp": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Enable BGP for the connection."
-                      }
-                    },
-                    "enableInternetSecurity": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Enable internet security for the connection."
-                      }
-                    },
-                    "expressRouteCircuitId": {
+                    "type": {
                       "type": "string",
-                      "nullable": true,
+                      "allowedValues": [
+                        "Dynamic",
+                        "Static"
+                      ],
                       "metadata": {
-                        "description": "Optional. Resource ID of the ExpressRoute circuit."
-                      }
-                    },
-                    "routingIntent": {
-                      "$ref": "#/definitions/routingIntentType",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Routing intent for the connection."
-                      }
-                    },
-                    "enableRateLimiting": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Enable rate limiting."
-                      }
-                    },
-                    "routingWeight": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "Required. Routing weight for the connection."
-                      }
-                    },
-                    "sharedKey": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. Shared key for the connection."
-                      }
-                    },
-                    "usePolicyBasedTrafficSelectors": {
-                      "type": "bool",
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Use policy-based traffic selectors."
-                      }
-                    },
-                    "ipsecPolicies": {
-                      "type": "array",
-                      "prefixItems": [],
-                      "items": false,
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. IPsec policies for the connection."
-                      }
-                    },
-                    "trafficSelectorPolicies": {
-                      "type": "array",
-                      "prefixItems": [],
-                      "items": false,
-                      "nullable": true,
-                      "metadata": {
-                        "description": "Optional. Traffic selector policies for the connection."
+                        "description": "Required. Type of NAT rule."
                       }
                     }
                   }
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. ExpressRoute connections."
                 }
+              ],
+              "items": false,
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. NAT rules for the VPN Gateway."
               }
             },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. ExpressRoute parameters for the Virtual Hub."
-            }
-          },
-          "secureHubParameters": {
-            "type": "object",
-            "properties": {
-              "deploySecureHub": {
-                "type": "bool",
-                "metadata": {
-                  "description": "Required. Whether to deploy a Secure Hub."
-                }
-              },
-              "firewallPolicyResourceId": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Resource ID of the firewall policy."
-                }
-              },
-              "azureFirewallName": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Name of the Azure Firewall."
-                }
-              },
-              "azureFirewallSku": {
-                "type": "string",
-                "allowedValues": [
-                  "Basic",
-                  "Premium",
-                  "Standard"
-                ],
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. SKU for the Azure Firewall."
-                }
-              },
-              "azureFirewallPublicIPCount": {
-                "type": "int",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Number of public IPs for the Azure Firewall."
-                }
-              },
-              "publicIPAddressObject": {
+            "vpnConnections": {
+              "type": "array",
+              "items": {
                 "type": "object",
                 "properties": {
                   "name": {
                     "type": "string",
                     "metadata": {
-                      "description": "Required. Name of the public IP address."
+                      "description": "Required. Name of the VPN connection."
                     }
                   },
-                  "publicIPAllocationMethod": {
+                  "vpnGatewayName": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Name of the VPN Gateway."
+                    }
+                  },
+                  "connectionBandwidth": {
+                    "type": "int",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Connection bandwidth."
+                    }
+                  },
+                  "enableBgp": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Enable BGP for the connection."
+                    }
+                  },
+                  "enableInternetSecurity": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Enable internet security for the connection."
+                    }
+                  },
+                  "remoteVpnSiteResourceId": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Resource ID of the remote VPN site."
+                    }
+                  },
+                  "enableRateLimiting": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Enable rate limiting."
+                    }
+                  },
+                  "routingConfiguration": {
+                    "type": "object",
+                    "properties": {},
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Routing configuration for the connection."
+                    }
+                  },
+                  "routingWeight": {
+                    "type": "int",
+                    "metadata": {
+                      "description": "Required. Routing weight for the connection."
+                    }
+                  },
+                  "sharedKey": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Shared key for the connection."
+                    }
+                  },
+                  "useLocalAzureIpAddress": {
+                    "type": "bool",
+                    "metadata": {
+                      "description": "Required. Use local Azure IP address."
+                    }
+                  },
+                  "usePolicyBasedTrafficSelectors": {
+                    "type": "bool",
+                    "metadata": {
+                      "description": "Required. Use policy-based traffic selectors."
+                    }
+                  },
+                  "vpnConnectionProtocolType": {
                     "type": "string",
                     "allowedValues": [
-                      "Static"
+                      "IKEv1",
+                      "IKEv2"
                     ],
                     "metadata": {
-                      "description": "Required. Allocation method for the public IP address."
+                      "description": "Required. VPN connection protocol type."
                     }
                   },
-                  "publicIPPrefixResourceId": {
-                    "type": "string",
+                  "ipsecPolicies": {
+                    "type": "array",
+                    "prefixItems": [],
+                    "items": false,
+                    "nullable": true,
                     "metadata": {
-                      "description": "Required. Resource ID of the public IP prefix."
+                      "description": "Optional. IPsec policies for the connection."
                     }
                   },
-                  "skuName": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Standard"
-                    ],
+                  "trafficSelectorPolicies": {
+                    "type": "array",
+                    "prefixItems": [],
+                    "items": false,
+                    "nullable": true,
                     "metadata": {
-                      "description": "Required. SKU name for the public IP address."
+                      "description": "Optional. Traffic selector policies for the connection."
                     }
                   },
-                  "skuTier": {
-                    "type": "string",
-                    "allowedValues": [
-                      "Regional"
-                    ],
+                  "vpnLinkConnections": {
+                    "type": "array",
+                    "prefixItems": [],
+                    "items": false,
+                    "nullable": true,
                     "metadata": {
-                      "description": "Required. SKU tier for the public IP address."
+                      "description": "Optional. VPN link connections for the connection."
                     }
                   }
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Public IP address object for the Azure Firewall."
                 }
               },
-              "publicIPResourceID": {
-                "type": "string",
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Resource ID of the public IP address."
-                }
-              },
-              "additionalPublicIpConfigurationResourceIds": {
-                "type": "array",
-                "prefixItems": [],
-                "items": false,
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Additional public IP configuration resource IDs."
-                }
-              },
-              "diagnosticSettings": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/definitions/diagnosticSettingFullType"
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. Diagnostic settings for the Azure Firewall in the Secure Hub."
-                }
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. VPN connections for the VPN Gateway."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Site-to-site VPN parameters for the Virtual Hub."
+          }
+        },
+        "expressRouteParameters": {
+          "type": "object",
+          "properties": {
+            "deployExpressRouteGateway": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to deploy an ExpressRoute Gateway."
               }
             },
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Secure Hub parameters for the Virtual Hub."
+            "expressRouteGatewayName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the ExpressRoute Gateway."
+              }
+            },
+            "allowNonVirtualWanTraffic": {
+              "type": "bool",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Allow non-Virtual WAN traffic."
+              }
+            },
+            "autoScaleConfigurationBoundsMin": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Minimum bound for autoscale configuration."
+              }
+            },
+            "autoScaleConfigurationBoundsMax": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Maximum bound for autoscale configuration."
+              }
+            },
+            "expressRouteConnections": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Name of the ExpressRoute connection."
+                    }
+                  },
+                  "connectionBandwidth": {
+                    "type": "int",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Connection bandwidth."
+                    }
+                  },
+                  "enableBgp": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Enable BGP for the connection."
+                    }
+                  },
+                  "enableInternetSecurity": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Enable internet security for the connection."
+                    }
+                  },
+                  "expressRouteCircuitId": {
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Resource ID of the ExpressRoute circuit."
+                    }
+                  },
+                  "routingIntent": {
+                    "$ref": "#/definitions/routingIntentType",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Routing intent for the connection."
+                    }
+                  },
+                  "enableRateLimiting": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Enable rate limiting."
+                    }
+                  },
+                  "routingWeight": {
+                    "type": "int",
+                    "metadata": {
+                      "description": "Required. Routing weight for the connection."
+                    }
+                  },
+                  "sharedKey": {
+                    "type": "string",
+                    "metadata": {
+                      "description": "Required. Shared key for the connection."
+                    }
+                  },
+                  "usePolicyBasedTrafficSelectors": {
+                    "type": "bool",
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Use policy-based traffic selectors."
+                    }
+                  },
+                  "ipsecPolicies": {
+                    "type": "array",
+                    "prefixItems": [],
+                    "items": false,
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. IPsec policies for the connection."
+                    }
+                  },
+                  "trafficSelectorPolicies": {
+                    "type": "array",
+                    "prefixItems": [],
+                    "items": false,
+                    "nullable": true,
+                    "metadata": {
+                      "description": "Optional. Traffic selector policies for the connection."
+                    }
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. ExpressRoute connections."
+              }
             }
           },
-          "sku": {
-            "type": "string",
-            "allowedValues": [
-              "Basic",
-              "Standard"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. SKU for the Virtual Hub."
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. ExpressRoute parameters for the Virtual Hub."
+          }
+        },
+        "secureHubParameters": {
+          "type": "object",
+          "properties": {
+            "deploySecureHub": {
+              "type": "bool",
+              "metadata": {
+                "description": "Required. Whether to deploy a Secure Hub."
+              }
+            },
+            "firewallPolicyResourceId": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource ID of the firewall policy."
+              }
+            },
+            "azureFirewallName": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the Azure Firewall."
+              }
+            },
+            "azureFirewallSku": {
+              "type": "string",
+              "allowedValues": [
+                "Basic",
+                "Premium",
+                "Standard"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. SKU for the Azure Firewall."
+              }
+            },
+            "azureFirewallPublicIPCount": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Number of public IPs for the Azure Firewall."
+              }
+            },
+            "publicIPAddressObject": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the public IP address."
+                  }
+                },
+                "publicIPAllocationMethod": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Static"
+                  ],
+                  "metadata": {
+                    "description": "Required. Allocation method for the public IP address."
+                  }
+                },
+                "publicIPPrefixResourceId": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Resource ID of the public IP prefix."
+                  }
+                },
+                "skuName": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Standard"
+                  ],
+                  "metadata": {
+                    "description": "Required. SKU name for the public IP address."
+                  }
+                },
+                "skuTier": {
+                  "type": "string",
+                  "allowedValues": [
+                    "Regional"
+                  ],
+                  "metadata": {
+                    "description": "Required. SKU tier for the public IP address."
+                  }
+                }
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Public IP address object for the Azure Firewall."
+              }
+            },
+            "publicIPResourceID": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource ID of the public IP address."
+              }
+            },
+            "additionalPublicIpConfigurationResourceIds": {
+              "type": "array",
+              "prefixItems": [],
+              "items": false,
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Additional public IP configuration resource IDs."
+              }
+            },
+            "diagnosticSettings": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/diagnosticSettingFullType"
+              },
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Diagnostic settings for the Azure Firewall in the Secure Hub."
+              }
             }
           },
-          "tags": {
-            "type": "object",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Tags to be applied to the Virtual Hub."
-            }
-          },
-          "virtualRouterAsn": {
-            "type": "int",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. ASN for the Virtual Router."
-            }
-          },
-          "virtualRouterIps": {
-            "type": "array",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. IP addresses for the Virtual Router."
-            }
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Secure Hub parameters for the Virtual Hub."
+          }
+        },
+        "sku": {
+          "type": "string",
+          "allowedValues": [
+            "Basic",
+            "Standard"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. SKU for the Virtual Hub."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Tags to be applied to the Virtual Hub."
+          }
+        },
+        "virtualRouterAsn": {
+          "type": "int",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. ASN for the Virtual Router."
+          }
+        },
+        "virtualRouterIps": {
+          "type": "array",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. IP addresses for the Virtual Router."
           }
         }
       }
     },
     "roleAssignmentType": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
-            }
-          },
-          "roleDefinitionIdOrName": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
-            }
-          },
-          "principalId": {
-            "type": "string",
-            "metadata": {
-              "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
-            }
-          },
-          "principalType": {
-            "type": "string",
-            "allowedValues": [
-              "Device",
-              "ForeignGroup",
-              "Group",
-              "ServicePrincipal",
-              "User"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The principal type of the assigned principal ID."
-            }
-          },
-          "description": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The description of the role assignment."
-            }
-          },
-          "condition": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
-            }
-          },
-          "conditionVersion": {
-            "type": "string",
-            "allowedValues": [
-              "2.0"
-            ],
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. Version of the condition."
-            }
-          },
-          "delegatedManagedIdentityResourceId": {
-            "type": "string",
-            "nullable": true,
-            "metadata": {
-              "description": "Optional. The Resource Id of the delegated managed identity resource."
-            }
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+          }
+        },
+        "roleDefinitionIdOrName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+          }
+        },
+        "principalId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+          }
+        },
+        "principalType": {
+          "type": "string",
+          "allowedValues": [
+            "Device",
+            "ForeignGroup",
+            "Group",
+            "ServicePrincipal",
+            "User"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The principal type of the assigned principal ID."
+          }
+        },
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The description of the role assignment."
+          }
+        },
+        "condition": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+          }
+        },
+        "conditionVersion": {
+          "type": "string",
+          "allowedValues": [
+            "2.0"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Version of the condition."
+          }
+        },
+        "delegatedManagedIdentityResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource Id of the delegated managed identity resource."
           }
         }
       }
@@ -1510,7 +1507,10 @@
       }
     },
     "virtualHubParameters": {
-      "$ref": "#/definitions/virtualHubParameterType",
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/virtualHubParameterType"
+      },
       "nullable": true,
       "metadata": {
         "description": "Optional. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs."
