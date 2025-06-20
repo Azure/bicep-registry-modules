@@ -288,30 +288,6 @@ output outboundIpAddresses string = app.properties.outboundIpAddresses
 // Definitions      //
 // ================ //
 @export()
-type privateEndpointOutputType = {
-  @description('The name of the private endpoint.')
-  name: string
-
-  @description('The resource ID of the private endpoint.')
-  resourceId: string
-
-  @description('The group Id for the private endpoint Group.')
-  groupId: string?
-
-  @description('The custom DNS configurations of the private endpoint.')
-  customDnsConfigs: {
-    @description('FQDN that resolves to private endpoint IP address.')
-    fqdn: string?
-
-    @description('A list of private IP addresses of the private endpoint.')
-    ipAddresses: string[]
-  }[]
-
-  @description('The IDs of the network interfaces associated with the private endpoint.')
-  networkInterfaceResourceIds: string[]
-}
-
-@export()
 @description('The type of a site configuration.')
 type configType = appSettingsConfigType
 

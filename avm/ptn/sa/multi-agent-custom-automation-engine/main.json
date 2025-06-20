@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "13347155624684322967"
+      "templateHash": "15858196561185531654"
     },
     "name": "Multi-Agent Custom Automation Engine",
     "description": "This module contains the resources required to deploy the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) for both Sandbox environments and WAF aligned environments.\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -23107,9 +23107,6 @@
           "tags": {
             "value": "[parameters('tags')]"
           },
-          "enableTelemetry": {
-            "value": "[parameters('enableTelemetry')]"
-          },
           "projectName": {
             "value": "[variables('aiFoundryAiServicesAiProjectResourceName')]"
           },
@@ -23172,7 +23169,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14076391354018674466"
+              "templateHash": "7548142629324965299"
             },
             "name": "Cognitive Services",
             "description": "This module deploys a Cognitive Service."
@@ -23497,35 +23494,6 @@
                 }
               },
               "metadata": {
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                }
-              }
-            },
-            "_1.secretSetOutputType": {
-              "type": "object",
-              "properties": {
-                "secretResourceId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The resourceId of the exported secret."
-                  }
-                },
-                "secretUri": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The secret URI of the exported secret."
-                  }
-                },
-                "secretUriWithVersion": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The secret URI with version of the exported secret."
-                  }
-                }
-              },
-              "metadata": {
-                "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
                 "__bicep_imported_from!": {
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
@@ -23964,22 +23932,6 @@
                   "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
                 }
               }
-            },
-            "secretsOutputType": {
-              "type": "object",
-              "properties": {},
-              "additionalProperties": {
-                "$ref": "#/definitions/_1.secretSetOutputType",
-                "metadata": {
-                  "description": "An exported secret's references."
-                }
-              },
-              "metadata": {
-                "description": "A map of the exported secrets",
-                "__bicep_imported_from!": {
-                  "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                }
-              }
             }
           },
           "parameters": {
@@ -24019,6 +23971,18 @@
               ],
               "metadata": {
                 "description": "Required. Kind of the Cognitive Services account. Use 'Get-AzCognitiveServicesAccountSku' to determine a valid combinations of 'kind' and 'SKU' for your Azure region."
+              }
+            },
+            "projectName": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the AI Foundry project to create."
+              }
+            },
+            "projectDescription": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The description of the AI Foundry project to create."
               }
             },
             "sku": {
@@ -24200,13 +24164,6 @@
                 "description": "Optional. The managed identity definition for this resource."
               }
             },
-            "enableTelemetry": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Optional. Enable/Disable usage telemetry for module."
-              }
-            },
             "deployments": {
               "type": "array",
               "items": {
@@ -24215,25 +24172,6 @@
               "nullable": true,
               "metadata": {
                 "description": "Optional. Array of deployments about cognitive service accounts to create."
-              }
-            },
-            "secretsExportConfiguration": {
-              "$ref": "#/definitions/secretsExportConfigurationType",
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Key vault reference and secret settings for the module's secrets export."
-              }
-            },
-            "projectName": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The name of the AI Foundry project to create."
-              }
-            },
-            "projectDescription": {
-              "type": "string",
-              "metadata": {
-                "description": "Required. The description of the AI Foundry project to create."
               }
             }
           },
@@ -24289,26 +24227,6 @@
               "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
               "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
               "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
-            },
-            "avmTelemetry": {
-              "condition": "[parameters('enableTelemetry')]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2024-03-01",
-              "name": "[format('46d3xbcp.res.cognitiveservices-account.{0}.{1}', replace('0.10.2', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
-              "properties": {
-                "mode": "Incremental",
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "contentVersion": "1.0.0.0",
-                  "resources": [],
-                  "outputs": {
-                    "telemetry": {
-                      "type": "String",
-                      "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
-                    }
-                  }
-                }
-              }
             },
             "cMKKeyVault": {
               "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
@@ -25231,153 +25149,6 @@
               "dependsOn": [
                 "cognitiveService"
               ]
-            },
-            "secretsExport": {
-              "condition": "[not(equals(parameters('secretsExportConfiguration'), null()))]",
-              "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
-              "name": "[format('{0}-secrets-kv', uniqueString(deployment().name, parameters('location')))]",
-              "subscriptionId": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[2]]",
-              "resourceGroup": "[split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/')[4]]",
-              "properties": {
-                "expressionEvaluationOptions": {
-                  "scope": "inner"
-                },
-                "mode": "Incremental",
-                "parameters": {
-                  "keyVaultName": {
-                    "value": "[last(split(tryGet(parameters('secretsExportConfiguration'), 'keyVaultResourceId'), '/'))]"
-                  },
-                  "secretsToSet": {
-                    "value": "[union(createArray(), if(contains(parameters('secretsExportConfiguration'), 'accessKey1Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey1Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key1)), createArray()), if(contains(parameters('secretsExportConfiguration'), 'accessKey2Name'), createArray(createObject('name', tryGet(parameters('secretsExportConfiguration'), 'accessKey2Name'), 'value', listKeys('cognitiveService', '2025-04-01-preview').key2)), createArray()))]"
-                  }
-                },
-                "template": {
-                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                  "languageVersion": "2.0",
-                  "contentVersion": "1.0.0.0",
-                  "metadata": {
-                    "_generator": {
-                      "name": "bicep",
-                      "version": "0.36.1.42791",
-                      "templateHash": "8120095020684817611"
-                    }
-                  },
-                  "definitions": {
-                    "secretSetOutputType": {
-                      "type": "object",
-                      "properties": {
-                        "secretResourceId": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "The resourceId of the exported secret."
-                          }
-                        },
-                        "secretUri": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "The secret URI of the exported secret."
-                          }
-                        },
-                        "secretUriWithVersion": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "The secret URI with version of the exported secret."
-                          }
-                        }
-                      },
-                      "metadata": {
-                        "description": "An AVM-aligned type for the output of the secret set via the secrets export feature.",
-                        "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                        }
-                      }
-                    },
-                    "secretToSetType": {
-                      "type": "object",
-                      "properties": {
-                        "name": {
-                          "type": "string",
-                          "metadata": {
-                            "description": "Required. The name of the secret to set."
-                          }
-                        },
-                        "value": {
-                          "type": "securestring",
-                          "metadata": {
-                            "description": "Required. The value of the secret to set."
-                          }
-                        }
-                      },
-                      "metadata": {
-                        "description": "An AVM-aligned type for the secret to set via the secrets export feature.",
-                        "__bicep_imported_from!": {
-                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
-                        }
-                      }
-                    }
-                  },
-                  "parameters": {
-                    "keyVaultName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "Required. The name of the Key Vault to set the ecrets in."
-                      }
-                    },
-                    "secretsToSet": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/secretToSetType"
-                      },
-                      "metadata": {
-                        "description": "Required. The secrets to set in the Key Vault."
-                      }
-                    }
-                  },
-                  "resources": {
-                    "keyVault": {
-                      "existing": true,
-                      "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2024-11-01",
-                      "name": "[parameters('keyVaultName')]"
-                    },
-                    "secrets": {
-                      "copy": {
-                        "name": "secrets",
-                        "count": "[length(parameters('secretsToSet'))]"
-                      },
-                      "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2023-07-01",
-                      "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('secretsToSet')[copyIndex()].name)]",
-                      "properties": {
-                        "value": "[parameters('secretsToSet')[copyIndex()].value]"
-                      }
-                    }
-                  },
-                  "outputs": {
-                    "secretsSet": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/definitions/secretSetOutputType"
-                      },
-                      "metadata": {
-                        "description": "The references to the secrets exported to the provided Key Vault."
-                      },
-                      "copy": {
-                        "count": "[length(range(0, length(coalesce(parameters('secretsToSet'), createArray()))))]",
-                        "input": {
-                          "secretResourceId": "[resourceId('Microsoft.KeyVault/vaults/secrets', parameters('keyVaultName'), parameters('secretsToSet')[range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()]].name)]",
-                          "secretUri": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUri]",
-                          "secretUriWithVersion": "[reference(format('secrets[{0}]', range(0, length(coalesce(parameters('secretsToSet'), createArray())))[copyIndex()])).secretUriWithVersion]"
-                        }
-                      }
-                    }
-                  }
-                }
-              },
-              "dependsOn": [
-                "cognitiveService"
-              ]
             }
           },
           "outputs": {
@@ -25444,13 +25215,6 @@
                 "description": "The location the resource was deployed into."
               },
               "value": "[reference('cognitiveService', '2025-04-01-preview', 'full').location]"
-            },
-            "exportedSecrets": {
-              "$ref": "#/definitions/secretsOutputType",
-              "metadata": {
-                "description": "A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret's name."
-              },
-              "value": "[if(not(equals(parameters('secretsExportConfiguration'), null())), toObject(reference('secretsExport').outputs.secretsSet.value, lambda('secret', last(split(lambdaVariables('secret').secretResourceId, '/'))), lambda('secret', lambdaVariables('secret'))), createObject())]"
             },
             "privateEndpoints": {
               "type": "array",
@@ -37253,73 +37017,10 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3920509187944762954"
+              "templateHash": "12855598869805343419"
             }
           },
           "definitions": {
-            "privateEndpointOutputType": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The name of the private endpoint."
-                  }
-                },
-                "resourceId": {
-                  "type": "string",
-                  "metadata": {
-                    "description": "The resource ID of the private endpoint."
-                  }
-                },
-                "groupId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "The group Id for the private endpoint Group."
-                  }
-                },
-                "customDnsConfigs": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "fqdn": {
-                        "type": "string",
-                        "nullable": true,
-                        "metadata": {
-                          "description": "FQDN that resolves to private endpoint IP address."
-                        }
-                      },
-                      "ipAddresses": {
-                        "type": "array",
-                        "items": {
-                          "type": "string"
-                        },
-                        "metadata": {
-                          "description": "A list of private IP addresses of the private endpoint."
-                        }
-                      }
-                    }
-                  },
-                  "metadata": {
-                    "description": "The custom DNS configurations of the private endpoint."
-                  }
-                },
-                "networkInterfaceResourceIds": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  },
-                  "metadata": {
-                    "description": "The IDs of the network interfaces associated with the private endpoint."
-                  }
-                }
-              },
-              "metadata": {
-                "__bicep_export!": true
-              }
-            },
             "configType": {
               "$ref": "#/definitions/appSettingsConfigType",
               "metadata": {

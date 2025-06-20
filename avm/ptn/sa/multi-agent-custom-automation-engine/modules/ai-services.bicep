@@ -33,6 +33,12 @@ param name string
 ])
 param kind string
 
+@description('Required. The name of the AI Foundry project to create.')
+param projectName string
+
+@description('Required. The description of the AI Foundry project to create.')
+param projectDescription string
+
 @description('Optional. SKU of the Cognitive Services account. Use \'Get-AzCognitiveServicesAccountSku\' to determine a valid combinations of \'kind\' and \'SKU\' for your Azure region.')
 @allowed([
   'C2'
@@ -126,14 +132,8 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
-@description('Optional. Enable/Disable usage telemetry for module.')
-param enableTelemetry bool = true
-
 @description('Optional. Array of deployments about cognitive service accounts to create.')
 param deployments deploymentType[]?
-
-@description('Optional. Key vault reference and secret settings for the module\'s secrets export.')
-param secretsExportConfiguration secretsExportConfigurationType?
 
 var enableReferencedModulesTelemetry = false
 
@@ -272,25 +272,6 @@ var formattedRoleAssignments = [
   })
 ]
 
-#disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
-  name: '46d3xbcp.res.cognitiveservices-account.${replace('0.10.2', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
-  properties: {
-    mode: 'Incremental'
-    template: {
-      '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      contentVersion: '1.0.0.0'
-      resources: []
-      outputs: {
-        telemetry: {
-          type: 'String'
-          value: 'For more information, see https://aka.ms/avm/TelemetryInfo'
-        }
-      }
-    }
-  }
-}
-
 resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split(customerManagedKey.?keyVaultResourceId!, '/'))
   scope: resourceGroup(
@@ -389,11 +370,6 @@ resource cognitiveService_deployments 'Microsoft.CognitiveServices/accounts/depl
     }
   }
 ]
-
-@description('Required. The name of the AI Foundry project to create.')
-param projectName string
-@description('Required. The description of the AI Foundry project to create.')
-param projectDescription string
 
 resource aiFoundryProject 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-preview' = {
   parent: cognitiveService
@@ -521,36 +497,6 @@ resource cognitiveService_roleAssignments 'Microsoft.Authorization/roleAssignmen
   }
 ]
 
-module secretsExport 'ai-services.key-vault-export.bicep' = if (secretsExportConfiguration != null) {
-  name: '${uniqueString(deployment().name, location)}-secrets-kv'
-  scope: resourceGroup(
-    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[2],
-    split(secretsExportConfiguration.?keyVaultResourceId!, '/')[4]
-  )
-  params: {
-    keyVaultName: last(split(secretsExportConfiguration.?keyVaultResourceId!, '/'))
-    secretsToSet: union(
-      [],
-      contains(secretsExportConfiguration!, 'accessKey1Name')
-        ? [
-            {
-              name: secretsExportConfiguration!.?accessKey1Name
-              value: cognitiveService.listKeys().key1
-            }
-          ]
-        : [],
-      contains(secretsExportConfiguration!, 'accessKey2Name')
-        ? [
-            {
-              name: secretsExportConfiguration!.?accessKey2Name
-              value: cognitiveService.listKeys().key2
-            }
-          ]
-        : []
-    )
-  }
-}
-
 @description('The name of the cognitive services account.')
 output name string = cognitiveService.name
 
@@ -577,12 +523,6 @@ output systemAssignedMIPrincipalId string? = cognitiveService.?identity.?princip
 
 @description('The location the resource was deployed into.')
 output location string = cognitiveService.location
-
-import { secretsOutputType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
-@description('A hashtable of references to the secrets exported to the provided Key Vault. The key of each reference is each secret\'s name.')
-output exportedSecrets secretsOutputType = (secretsExportConfiguration != null)
-  ? toObject(secretsExport.outputs.secretsSet, secret => last(split(secret.secretResourceId, '/')), secret => secret)
-  : {}
 
 @description('The private endpoints of the congitive services account.')
 output privateEndpoints privateEndpointOutputType[] = [

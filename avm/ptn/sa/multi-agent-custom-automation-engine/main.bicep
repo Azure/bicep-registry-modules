@@ -787,7 +787,6 @@ module aiFoundryAiServices 'modules/ai-services.bicep' = if (aiFoundryAIservices
     name: aiFoundryAiServicesResourceName
     location: azureOpenAILocation
     tags: tags
-    enableTelemetry: enableTelemetry
     projectName: aiFoundryAiServicesAiProjectResourceName
     projectDescription: 'AI Foundry Project'
     sku: 'S0'
@@ -1235,7 +1234,3 @@ output resourceGroupName string = resourceGroup().name
 
 @description('The default url of the website to connect to the Multi-Agent Custom Automation Engine solution.')
 output webSiteDefaultHostname string = webSite.outputs.defaultHostname
-
-// ================ //
-// Definitions      //
-// ================ //
