@@ -64,6 +64,8 @@ import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-ty
 @description('Optional. The diagnostic settings of the service.')
 param diagnosticSettings diagnosticSettingFullType[]?
 
+var enableReferencedModulesTelemetry = false
+
 // The name of the blob services
 var name = 'default'
 
@@ -162,6 +164,7 @@ module blobServices_container 'container/main.bicep' = [
       publicAccess: container.?publicAccess
       roleAssignments: container.?roleAssignments
       immutabilityPolicyProperties: container.?immutabilityPolicyProperties
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
