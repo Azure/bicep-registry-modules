@@ -1,6 +1,6 @@
 # Azure NetApp Files `[Microsoft.NetApp/netAppAccounts]`
 
-This module deploys an Azure NetApp File.
+This module deploys an Azure NetApp Files Account and the associated resource types such as backups, capacity pools and volumes.
 
 ## Navigation
 
@@ -1226,16 +1226,16 @@ The backup policies to create.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`dailyBackupsToKeep`](#parameter-backuppoliciesdailybackupstokeep) | int | The daily backups to keep. |
+| [`dailyBackupsToKeep`](#parameter-backuppoliciesdailybackupstokeep) | int | The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 | [`enabled`](#parameter-backuppoliciesenabled) | bool | Indicates whether the backup policy is enabled. |
 | [`location`](#parameter-backuppolicieslocation) | string | The location of the backup policy. |
-| [`monthlyBackupsToKeep`](#parameter-backuppoliciesmonthlybackupstokeep) | int | The monthly backups to keep. |
+| [`monthlyBackupsToKeep`](#parameter-backuppoliciesmonthlybackupstokeep) | int | The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 | [`name`](#parameter-backuppoliciesname) | string | The name of the backup policy. |
-| [`weeklyBackupsToKeep`](#parameter-backuppoliciesweeklybackupstokeep) | int | The weekly backups to keep. |
+| [`weeklyBackupsToKeep`](#parameter-backuppoliciesweeklybackupstokeep) | int | The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max). |
 
 ### Parameter: `backupPolicies.dailyBackupsToKeep`
 
-The daily backups to keep.
+The daily backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
@@ -1258,10 +1258,12 @@ The location of the backup policy.
 
 ### Parameter: `backupPolicies.monthlyBackupsToKeep`
 
-The monthly backups to keep.
+The monthly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 1019
 
 ### Parameter: `backupPolicies.name`
 
@@ -1272,10 +1274,12 @@ The name of the backup policy.
 
 ### Parameter: `backupPolicies.weeklyBackupsToKeep`
 
-The weekly backups to keep.
+The weekly backups to keep. Note, the maximum hourly, daily, weekly, and monthly backup retention counts _combined_ is 1019 (this parameter's max).
 
 - Required: No
 - Type: int
+- MinValue: 0
+- MaxValue: 1019
 
 ### Parameter: `backupVault`
 
@@ -1611,6 +1615,7 @@ List of volumes to create in the capacity pool.
 | [`smbContinuouslyAvailable`](#parameter-capacitypoolsvolumessmbcontinuouslyavailable) | bool | Enables continuously available share property for SMB volume. Only applicable for SMB volume. |
 | [`smbEncryption`](#parameter-capacitypoolsvolumessmbencryption) | bool | Enables SMB encryption. Only applicable for SMB/DualProtocol volume. |
 | [`smbNonBrowsable`](#parameter-capacitypoolsvolumessmbnonbrowsable) | string | Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProtocol volume. |
+| [`throughputMibps`](#parameter-capacitypoolsvolumesthroughputmibps) | int | The throughput in MiBps for the NetApp account. |
 | [`volumeType`](#parameter-capacitypoolsvolumesvolumetype) | string | The type of the volume. DataProtection volumes are used for replication. |
 
 ### Parameter: `capacityPools.volumes.name`
@@ -2203,6 +2208,13 @@ Enables non-browsable property for SMB Shares. Only applicable for SMB/DualProto
     'Enabled'
   ]
   ```
+
+### Parameter: `capacityPools.volumes.throughputMibps`
+
+The throughput in MiBps for the NetApp account.
+
+- Required: No
+- Type: int
 
 ### Parameter: `capacityPools.volumes.volumeType`
 
