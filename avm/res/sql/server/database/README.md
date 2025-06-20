@@ -16,7 +16,7 @@ This module deploys an Azure SQL Server Database.
 | `Microsoft.Authorization/locks` | [2020-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2020-05-01/locks) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
 | `Microsoft.Sql/servers/databases` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases) |
-| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-05-01-preview/servers/databases/backupLongTermRetentionPolicies) |
+| `Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupLongTermRetentionPolicies) |
 | `Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Sql/2023-08-01/servers/databases/backupShortTermRetentionPolicies) |
 
 ## Parameters
@@ -127,33 +127,10 @@ The long term backup retention policy to create for the database.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`backupStorageAccessTier`](#parameter-backuplongtermretentionpolicybackupstorageaccesstier) | string | The BackupStorageAccessTier for the LTR backups. |
-| [`makeBackupsImmutable`](#parameter-backuplongtermretentionpolicymakebackupsimmutable) | bool | The setting whether to make LTR backups immutable. |
 | [`monthlyRetention`](#parameter-backuplongtermretentionpolicymonthlyretention) | string | Monthly retention in ISO 8601 duration format. |
 | [`weeklyRetention`](#parameter-backuplongtermretentionpolicyweeklyretention) | string | Weekly retention in ISO 8601 duration format. |
 | [`weekOfYear`](#parameter-backuplongtermretentionpolicyweekofyear) | int | Week of year backup to keep for yearly retention. |
 | [`yearlyRetention`](#parameter-backuplongtermretentionpolicyyearlyretention) | string | Yearly retention in ISO 8601 duration format. |
-
-### Parameter: `backupLongTermRetentionPolicy.backupStorageAccessTier`
-
-The BackupStorageAccessTier for the LTR backups.
-
-- Required: No
-- Type: string
-- Allowed:
-  ```Bicep
-  [
-    'Archive'
-    'Hot'
-  ]
-  ```
-
-### Parameter: `backupLongTermRetentionPolicy.makeBackupsImmutable`
-
-The setting whether to make LTR backups immutable.
-
-- Required: No
-- Type: bool
 
 ### Parameter: `backupLongTermRetentionPolicy.monthlyRetention`
 
