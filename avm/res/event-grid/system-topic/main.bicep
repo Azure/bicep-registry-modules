@@ -239,27 +239,6 @@ type identityType = {
   userAssignedIdentity: string?
 }
 
-@description('Event subscription filter configuration.')
-type filterType = {
-  @description('Optional. Allows advanced filters to be evaluated against an array of values instead of expecting a singular value.')
-  enableAdvancedFilteringOnArrays: bool?
-  
-  @description('Optional. A list of applicable event types that can be filtered.')
-  includedEventTypes: string[]?
-  
-  @description('Optional. Defines if the subject field should be compared in a case sensitive manner.')
-  isSubjectCaseSensitive: bool?
-  
-  @description('Optional. An optional string to filter events for an event subscription based on a resource path prefix.')
-  subjectBeginsWith: string?
-  
-  @description('Optional. An optional string to filter events for an event subscription based on a resource path suffix.')
-  subjectEndsWith: string?
-  
-  @description('Optional. A list of advanced filters that are used for filtering event subscriptions. Each filter must be an object with required properties: key (string) and operatorType (BoolEquals|IsNotNull|IsNullOrUndefined|NumberGreaterThan|NumberGreaterThanOrEquals|NumberIn|NumberInRange|NumberLessThan|NumberLessThanOrEquals|NumberNotIn|NumberNotInRange|StringBeginsWith|StringContains|StringEndsWith|StringIn|StringNotBeginsWith|StringNotContains|StringNotEndsWith|StringNotIn). Additionally include either value (for single value operators) or values (array for multi-value operators). Example: {key: "data.eventType", operatorType: "StringContains", values: ["Microsoft.Storage"]}.')
-  advancedFilters: object[]?
-}
-
 @description('Retry policy configuration for event delivery.')
 type retryPolicyType = {
   @description('Optional. The maximum number of delivery attempts for events.')
@@ -293,7 +272,7 @@ type eventSubscriptionType = {
   expirationTimeUtc: string?
   
   @description('Optional. The filter for the event subscription.')
-  filter: filterType?
+  filter: resourceInput<'Microsoft.EventGrid/systemTopics/eventSubscriptions@2025-02-15'>.properties.filter?
   
   @description('Optional. The list of user defined labels.')
   labels: string[]?
