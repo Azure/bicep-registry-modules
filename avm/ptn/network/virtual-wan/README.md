@@ -58,11 +58,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   name: 'virtualWanDeployment'
   params: {
     // Required parameters
-    virtualWanParameters: {
-      location: '<location>'
-      virtualWanName: 'dep-vw-nvwanmin'
-    }
-    // Non-required parameters
     virtualHubParameters: [
       {
         hubAddressPrefix: '10.0.0.0/24'
@@ -70,6 +65,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         hubName: '<hubName>'
       }
     ]
+    virtualWanParameters: {
+      location: '<location>'
+      virtualWanName: 'dep-vw-nvwanmin'
+    }
   }
 }
 ```
@@ -87,13 +86,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "virtualWanParameters": {
-      "value": {
-        "location": "<location>",
-        "virtualWanName": "dep-vw-nvwanmin"
-      }
-    },
-    // Non-required parameters
     "virtualHubParameters": {
       "value": [
         {
@@ -102,6 +94,12 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "hubName": "<hubName>"
         }
       ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "location": "<location>",
+        "virtualWanName": "dep-vw-nvwanmin"
+      }
     }
   }
 }
@@ -118,11 +116,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
 using 'br/public:avm/ptn/network/virtual-wan:<version>'
 
 // Required parameters
-param virtualWanParameters = {
-  location: '<location>'
-  virtualWanName: 'dep-vw-nvwanmin'
-}
-// Non-required parameters
 param virtualHubParameters = [
   {
     hubAddressPrefix: '10.0.0.0/24'
@@ -130,6 +123,10 @@ param virtualHubParameters = [
     hubName: '<hubName>'
   }
 ]
+param virtualWanParameters = {
+  location: '<location>'
+  virtualWanName: 'dep-vw-nvwanmin'
+}
 ```
 
 </details>
@@ -149,11 +146,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   name: 'virtualWanDeployment'
   params: {
     // Required parameters
-    virtualWanParameters: {
-      location: '<location>'
-      virtualWanName: 'dep-vw-nvwamax'
-    }
-    // Non-required parameters
     virtualHubParameters: [
       {
         hubAddressPrefix: '10.0.0.0/24'
@@ -161,6 +153,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         hubName: '<hubName>'
       }
     ]
+    virtualWanParameters: {
+      location: '<location>'
+      virtualWanName: 'dep-vw-nvwamax'
+    }
   }
 }
 ```
@@ -178,13 +174,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "virtualWanParameters": {
-      "value": {
-        "location": "<location>",
-        "virtualWanName": "dep-vw-nvwamax"
-      }
-    },
-    // Non-required parameters
     "virtualHubParameters": {
       "value": [
         {
@@ -193,6 +182,12 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "hubName": "<hubName>"
         }
       ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "location": "<location>",
+        "virtualWanName": "dep-vw-nvwamax"
+      }
     }
   }
 }
@@ -209,11 +204,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
 using 'br/public:avm/ptn/network/virtual-wan:<version>'
 
 // Required parameters
-param virtualWanParameters = {
-  location: '<location>'
-  virtualWanName: 'dep-vw-nvwamax'
-}
-// Non-required parameters
 param virtualHubParameters = [
   {
     hubAddressPrefix: '10.0.0.0/24'
@@ -221,6 +211,10 @@ param virtualHubParameters = [
     hubName: '<hubName>'
   }
 ]
+param virtualWanParameters = {
+  location: '<location>'
+  virtualWanName: 'dep-vw-nvwamax'
+}
 ```
 
 </details>
@@ -240,11 +234,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   name: 'virtualWanDeployment'
   params: {
     // Required parameters
-    virtualWanParameters: {
-      location: '<location>'
-      virtualWanName: 'dep-vw-nvwanwaf'
-    }
-    // Non-required parameters
     virtualHubParameters: [
       {
         hubAddressPrefix: '10.0.0.0/24'
@@ -252,6 +241,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         hubName: '<hubName>'
       }
     ]
+    virtualWanParameters: {
+      location: '<location>'
+      virtualWanName: 'dep-vw-nvwanwaf'
+    }
   }
 }
 ```
@@ -269,13 +262,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
   "contentVersion": "1.0.0.0",
   "parameters": {
     // Required parameters
-    "virtualWanParameters": {
-      "value": {
-        "location": "<location>",
-        "virtualWanName": "dep-vw-nvwanwaf"
-      }
-    },
-    // Non-required parameters
     "virtualHubParameters": {
       "value": [
         {
@@ -284,6 +270,12 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "hubName": "<hubName>"
         }
       ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "location": "<location>",
+        "virtualWanName": "dep-vw-nvwanwaf"
+      }
     }
   }
 }
@@ -300,11 +292,6 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
 using 'br/public:avm/ptn/network/virtual-wan:<version>'
 
 // Required parameters
-param virtualWanParameters = {
-  location: '<location>'
-  virtualWanName: 'dep-vw-nvwanwaf'
-}
-// Non-required parameters
 param virtualHubParameters = [
   {
     hubAddressPrefix: '10.0.0.0/24'
@@ -312,6 +299,10 @@ param virtualHubParameters = [
     hubName: '<hubName>'
   }
 ]
+param virtualWanParameters = {
+  location: '<location>'
+  virtualWanName: 'dep-vw-nvwanwaf'
+}
 ```
 
 </details>
@@ -832,7 +823,7 @@ Specify the name of lock.
 
 The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs.
 
-- Required: No
+- Required: Yes
 - Type: array
 
 **Required parameters**

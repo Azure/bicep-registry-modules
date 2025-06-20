@@ -8,7 +8,7 @@ param location string = resourceGroup().location
 param virtualWanParameters virtualWanParameterType
 
 @description('Optional. The parameters for the Virtual Hubs and associated networking components, required if configuring Virtual Hubs.')
-param virtualHubParameters virtualHubParameterType[]?
+param virtualHubParameters virtualHubParameterType[]
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.2.1'
 
 @description('Optional. The lock settings for the Virtual WAN and associated components.')
