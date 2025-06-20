@@ -445,6 +445,7 @@ Storage account SKU.
 | Output | Type | Description |
 | :-- | :-- | :-- |
 | `cosmosDbResourceId` | string | Resource. The resource ID of the CosmosDB MongoDB vCore cluster. |
+| `loadBalancerResourceId` | string | Resource. The resource ID of the load balancer. |
 | `name` | string | Resource. The name of the virtual machine. |
 | `resourceGroupName` | string | Resource. Resource Group Name. |
 | `resourceId` | string | Resource. The resource ID. |

@@ -564,6 +564,11 @@ module virtualMachine 'br/public:avm/res/compute/virtual-machine:0.15.0' = {
           {
             name: 'ipconfig1'
             subnetResourceId: virtualNetwork.outputs.subnetResourceIds[0]
+            loadBalancerBackendAddressPools: [
+              {
+                id: '${loadBalancer.outputs.resourceId}/backendAddressPools/${name}-lb-backendpool01'
+              }
+            ]
           }
         ]
         networkSecurityGroupResourceId: vmNetworkSecurityGroup.outputs.resourceId
@@ -699,6 +704,9 @@ output cosmosDbResourceId string = cosmosdbAccount.outputs.resourceId
 
 @description('Resource. The resource ID of the virtual network.')
 output virtualNetworkResourceId string = virtualNetwork.outputs.resourceId
+
+@description('Resource. The resource ID of the load balancer.')
+output loadBalancerResourceId string = loadBalancer.outputs.resourceId
 
 @description('Resource. The resource ID.')
 output resourceId string = virtualMachine.outputs.resourceId
