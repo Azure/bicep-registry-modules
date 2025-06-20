@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "12034681198455775682"
+      "templateHash": "14688358124884546548"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -38505,289 +38505,6 @@
         "network"
       ]
     },
-    "project": {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-project-deployment', parameters('name')), 64)]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "aiFoundryType": {
-            "value": "[parameters('aiFoundryType')]"
-          },
-          "cosmosDBName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('cosmosDb').outputs.cosmosDBname.value), createObject('value', ''))]",
-          "name": {
-            "value": "[parameters('projectName')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "storageName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.storageName.value), createObject('value', ''))]",
-          "aiServicesName": {
-            "value": "[reference('cognitiveServices').outputs.aiServicesName.value]"
-          },
-          "nameFormatted": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('aiSearch').outputs.searchName.value), createObject('value', ''))]"
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "5920796108370055762"
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "minLength": 3,
-              "maxLength": 12,
-              "metadata": {
-                "description": "The name of the environment. Use alphanumeric characters only."
-              }
-            },
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the location for all the Azure resources. Defaults to the location of the resource group."
-              }
-            },
-            "aiFoundryType": {
-              "type": "string",
-              "allowedValues": [
-                "Basic",
-                "StandardPublic",
-                "StandardPrivate"
-              ],
-              "metadata": {
-                "description": "Required. Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
-              }
-            },
-            "cosmosDBName": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the CosmosDB Resource"
-              }
-            },
-            "storageName": {
-              "type": "string",
-              "metadata": {
-                "description": "Name of the Azure Storage Account"
-              }
-            },
-            "aiServicesName": {
-              "type": "string",
-              "metadata": {
-                "description": "Foundry Account Name"
-              }
-            },
-            "nameFormatted": {
-              "type": "string",
-              "metadata": {
-                "description": "Azure Search Service Name"
-              }
-            },
-            "projUploadsContainerName": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Name of the container for project uploads"
-              }
-            },
-            "sysDataContainerName": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Name of the container for system data"
-              }
-            },
-            "defaultProjectName": {
-              "type": "string",
-              "defaultValue": "[parameters('name')]",
-              "metadata": {
-                "description": "Name of the AI Foundry project"
-              }
-            },
-            "defaultProjectDisplayName": {
-              "type": "string",
-              "defaultValue": "[parameters('name')]"
-            },
-            "defaultProjectDescription": {
-              "type": "string",
-              "defaultValue": "This is the default project for AI Foundry."
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.CognitiveServices/accounts/projects",
-              "apiVersion": "2025-04-01-preview",
-              "name": "[format('{0}/{1}', parameters('aiServicesName'), parameters('defaultProjectName'))]",
-              "location": "[parameters('location')]",
-              "identity": {
-                "type": "SystemAssigned"
-              },
-              "properties": {
-                "displayName": "[parameters('defaultProjectDisplayName')]",
-                "description": "[parameters('defaultProjectDescription')]"
-              }
-            },
-            {
-              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName'))))]",
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
-              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
-              "properties": {
-                "category": "AzureBlob",
-                "target": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01').primaryEndpoints.blob]",
-                "authType": "AAD",
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]",
-                  "location": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01', 'full').location]",
-                  "accountName": "[parameters('storageName')]",
-                  "containerName": "[parameters('projUploadsContainerName')]"
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
-              ]
-            },
-            {
-              "condition": "[and(and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName')))), not(empty(parameters('sysDataContainerName'))))]",
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
-              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
-              "properties": {
-                "category": "AzureBlob",
-                "target": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01').primaryEndpoints.blob]",
-                "authType": "AAD",
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]",
-                  "location": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01', 'full').location]",
-                  "accountName": "[parameters('storageName')]",
-                  "containerName": "[parameters('sysDataContainerName')]"
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
-              ]
-            },
-            {
-              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('nameFormatted'))))]",
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
-              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
-              "properties": {
-                "category": "CognitiveSearch",
-                "target": "[format('https://{0}.search.windows.net/', parameters('nameFormatted'))]",
-                "authType": "AAD",
-                "isSharedToAll": true,
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[resourceId('Microsoft.Search/searchServices', parameters('nameFormatted'))]",
-                  "location": "[reference(resourceId('Microsoft.Search/searchServices', parameters('nameFormatted')), '2025-05-01', 'full').location]"
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
-              ]
-            },
-            {
-              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('cosmosDBName'))))]",
-              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
-              "apiVersion": "2025-04-01-preview",
-              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]",
-              "properties": {
-                "category": "CosmosDB",
-                "target": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName')), '2025-05-01-preview').documentEndpoint]",
-                "authType": "AAD",
-                "metadata": {
-                  "ApiType": "Azure",
-                  "ResourceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName'))]",
-                  "location": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName')), '2025-05-01-preview', 'full').location]"
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
-              ]
-            },
-            {
-              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
-              "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
-              "apiVersion": "2025-04-01-preview",
-              "name": "[format('{0}/{1}', parameters('aiServicesName'), 'accountCapHost')]",
-              "properties": {
-                "capabilityHostKind": "Agents"
-              }
-            },
-            {
-              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
-              "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
-              "apiVersion": "2025-04-01-preview",
-              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), 'projectCapHost')]",
-              "properties": {
-                "capabilityHostKind": "Agents",
-                "vectorStoreConnections": [
-                  "[parameters('nameFormatted')]"
-                ],
-                "storageConnections": [
-                  "[parameters('storageName')]",
-                  "[format('{0}-sysdata', parameters('storageName'))]"
-                ],
-                "threadStorageConnections": [
-                  "[parameters('cosmosDBName')]"
-                ]
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.CognitiveServices/accounts/capabilityHosts', parameters('aiServicesName'), 'accountCapHost')]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]"
-              ]
-            }
-          ],
-          "outputs": {
-            "projectCapHost": {
-              "type": "string",
-              "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), 'projectCapHost', '')]"
-            },
-            "projectId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
-            },
-            "projectName": {
-              "type": "string",
-              "value": "[parameters('defaultProjectName')]"
-            },
-            "cosmosDBConnection": {
-              "type": "string",
-              "value": "[parameters('cosmosDBName')]"
-            },
-            "azureStorageConnection": {
-              "type": "string",
-              "value": "[parameters('storageName')]"
-            },
-            "aiSearchConnection": {
-              "type": "string",
-              "value": "[parameters('nameFormatted')]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "aiSearch",
-        "cognitiveServices",
-        "cosmosDb",
-        "storageAccount"
-      ]
-    },
     "aiSearch": {
       "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
       "type": "Microsoft.Resources/deployments",
@@ -44262,622 +43979,6 @@
       "dependsOn": [
         "cognitiveServices",
         "network"
-      ]
-    },
-    "virtualMachine": {
-      "condition": "[variables('shouldDeployVM')]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[take(format('{0}-virtual-machine-deployment', parameters('name')), 64)]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "vmName": {
-            "value": "[toLower(format('vm-{0}-jump', parameters('name')))]"
-          },
-          "vmNicName": {
-            "value": "[toLower(format('nic-vm-{0}-jump', parameters('name')))]"
-          },
-          "vmSize": {
-            "value": "[parameters('vmSize')]"
-          },
-          "vmSubnetId": "[if(variables('shouldDeployVM'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
-          "storageAccountName": "[if(and(variables('shouldDeployVM'), not(equals(toLower(parameters('aiFoundryType')), 'basic'))), createObject('value', reference('storageAccount').outputs.storageName.value), createObject('value', ''))]",
-          "storageAccountResourceGroup": {
-            "value": "[resourceGroup().name]"
-          },
-          "imagePublisher": {
-            "value": "MicrosoftWindowsDesktop"
-          },
-          "imageOffer": {
-            "value": "Windows-11"
-          },
-          "imageSku": {
-            "value": "win11-23h2-ent"
-          },
-          "authenticationType": {
-            "value": "password"
-          },
-          "vmAdminUsername": {
-            "value": "[variables('servicesUsername')]"
-          },
-          "vmAdminPasswordOrKey": {
-            "value": "[parameters('vmAdminPasswordOrKey')]"
-          },
-          "diskStorageAccountType": {
-            "value": "Premium_LRS"
-          },
-          "numDataDisks": {
-            "value": 1
-          },
-          "osDiskSize": {
-            "value": 128
-          },
-          "dataDiskSize": {
-            "value": 50
-          },
-          "dataDiskCaching": {
-            "value": "ReadWrite"
-          },
-          "enableAcceleratedNetworking": {
-            "value": true
-          },
-          "enableMicrosoftEntraIdAuth": {
-            "value": true
-          },
-          "userObjectId": {
-            "value": "[parameters('userObjectId')]"
-          },
-          "location": {
-            "value": "[parameters('location')]"
-          },
-          "tags": {
-            "value": "[variables('allTags')]"
-          }
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.36.1.42791",
-              "templateHash": "9745791438980746196"
-            }
-          },
-          "parameters": {
-            "vmName": {
-              "type": "string",
-              "defaultValue": "TestVm",
-              "metadata": {
-                "description": "Specifies the name of the virtual machine."
-              }
-            },
-            "vmSize": {
-              "type": "string",
-              "defaultValue": "Standard_DS4_v2",
-              "metadata": {
-                "description": "Specifies the size of the virtual machine."
-              }
-            },
-            "vmSubnetId": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the resource id of the subnet hosting the virtual machine."
-              }
-            },
-            "storageAccountName": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the name of the storage account where the bootstrap diagnostic logs of the virtual machine are stored."
-              }
-            },
-            "storageAccountResourceGroup": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the resource group of the storage account where the bootstrap diagnostic logs of the virtual machine are stored."
-              }
-            },
-            "imagePublisher": {
-              "type": "string",
-              "defaultValue": "MicrosoftWindowsServer",
-              "metadata": {
-                "description": "Specifies the image publisher of the disk image used to create the virtual machine."
-              }
-            },
-            "imageOffer": {
-              "type": "string",
-              "defaultValue": "WindowsServer",
-              "metadata": {
-                "description": "Specifies the offer of the platform image or marketplace image used to create the virtual machine."
-              }
-            },
-            "imageSku": {
-              "type": "string",
-              "defaultValue": "2022-datacenter-azure-edition",
-              "metadata": {
-                "description": "Specifies the image version for the virtual machine."
-              }
-            },
-            "authenticationType": {
-              "type": "string",
-              "defaultValue": "password",
-              "allowedValues": [
-                "sshPublicKey",
-                "password"
-              ],
-              "metadata": {
-                "description": "Specifies the type of authentication when accessing the Virtual Machine. SSH key is recommended."
-              }
-            },
-            "vmAdminUsername": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the name of the administrator account of the virtual machine."
-              }
-            },
-            "vmAdminPasswordOrKey": {
-              "type": "securestring",
-              "metadata": {
-                "description": "Specifies the SSH Key or password for the virtual machine. SSH key is recommended."
-              }
-            },
-            "diskStorageAccountType": {
-              "type": "string",
-              "defaultValue": "Premium_LRS",
-              "allowedValues": [
-                "Premium_LRS",
-                "StandardSSD_LRS",
-                "Standard_LRS",
-                "UltraSSD_LRS"
-              ],
-              "metadata": {
-                "description": "Specifies the storage account type for OS and data disk."
-              }
-            },
-            "numDataDisks": {
-              "type": "int",
-              "defaultValue": 1,
-              "minValue": 0,
-              "maxValue": 64,
-              "metadata": {
-                "description": "Specifies the number of data disks of the virtual machine."
-              }
-            },
-            "osDiskSize": {
-              "type": "int",
-              "defaultValue": 128,
-              "metadata": {
-                "description": "Specifies the size in GB of the OS disk of the VM."
-              }
-            },
-            "dataDiskSize": {
-              "type": "int",
-              "defaultValue": 50,
-              "metadata": {
-                "description": "Specifies the size in GB of the OS disk of the virtual machine."
-              }
-            },
-            "dataDiskCaching": {
-              "type": "string",
-              "defaultValue": "ReadWrite",
-              "metadata": {
-                "description": "Specifies the caching requirements for the data disks."
-              }
-            },
-            "enableMicrosoftEntraIdAuth": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Specifies whether enabling Microsoft Entra ID authentication on the virtual machine."
-              }
-            },
-            "enableAcceleratedNetworking": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Specifies whether enabling accelerated networking on the virtual machine."
-              }
-            },
-            "vmNicName": {
-              "type": "string",
-              "metadata": {
-                "description": "Specifies the name of the network interface of the virtual machine."
-              }
-            },
-            "userObjectId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources."
-              }
-            },
-            "location": {
-              "type": "string",
-              "defaultValue": "[resourceGroup().location]",
-              "metadata": {
-                "description": "Specifies the location."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "metadata": {
-                "description": "Specifies the resource tags."
-              }
-            }
-          },
-          "variables": {
-            "randomString": "[uniqueString(resourceGroup().id, parameters('vmName'), parameters('vmAdminPasswordOrKey'))]",
-            "adminPassword": "[if(less(length(parameters('vmAdminPasswordOrKey')), 8), format('{0}{1}', parameters('vmAdminPasswordOrKey'), take(variables('randomString'), 12)), parameters('vmAdminPasswordOrKey'))]",
-            "linuxConfiguration": {
-              "disablePasswordAuthentication": true,
-              "ssh": {
-                "publicKeys": [
-                  {
-                    "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('vmAdminUsername'))]",
-                    "keyData": "[variables('adminPassword')]"
-                  }
-                ]
-              },
-              "provisionVMAgent": true
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Network/networkInterfaces",
-              "apiVersion": "2024-07-01",
-              "name": "[parameters('vmNicName')]",
-              "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
-              "properties": {
-                "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
-                "ipConfigurations": [
-                  {
-                    "name": "ipconfig1",
-                    "properties": {
-                      "privateIPAllocationMethod": "Dynamic",
-                      "subnet": {
-                        "id": "[parameters('vmSubnetId')]"
-                      }
-                    }
-                  }
-                ]
-              }
-            },
-            {
-              "type": "Microsoft.Compute/virtualMachines",
-              "apiVersion": "2024-07-01",
-              "name": "[parameters('vmName')]",
-              "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
-              "properties": {
-                "hardwareProfile": {
-                  "vmSize": "[parameters('vmSize')]"
-                },
-                "osProfile": {
-                  "computerName": "[take(parameters('vmName'), 15)]",
-                  "adminUsername": "[parameters('vmAdminUsername')]",
-                  "adminPassword": "[variables('adminPassword')]",
-                  "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), null(), variables('linuxConfiguration'))]"
-                },
-                "storageProfile": {
-                  "copy": [
-                    {
-                      "name": "dataDisks",
-                      "count": "[length(range(0, parameters('numDataDisks')))]",
-                      "input": {
-                        "caching": "[parameters('dataDiskCaching')]",
-                        "diskSizeGB": "[parameters('dataDiskSize')]",
-                        "lun": "[range(0, parameters('numDataDisks'))[copyIndex('dataDisks')]]",
-                        "name": "[format('{0}-DataDisk{1}', parameters('vmName'), range(0, parameters('numDataDisks'))[copyIndex('dataDisks')])]",
-                        "createOption": "Empty",
-                        "managedDisk": {
-                          "storageAccountType": "[parameters('diskStorageAccountType')]"
-                        }
-                      }
-                    }
-                  ],
-                  "imageReference": {
-                    "publisher": "[parameters('imagePublisher')]",
-                    "offer": "[parameters('imageOffer')]",
-                    "sku": "[parameters('imageSku')]",
-                    "version": "latest"
-                  },
-                  "osDisk": {
-                    "name": "[format('{0}_OSDisk', parameters('vmName'))]",
-                    "caching": "ReadWrite",
-                    "createOption": "FromImage",
-                    "diskSizeGB": "[parameters('osDiskSize')]",
-                    "managedDisk": {
-                      "storageAccountType": "[parameters('diskStorageAccountType')]"
-                    }
-                  }
-                },
-                "networkProfile": {
-                  "networkInterfaces": [
-                    {
-                      "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('vmNicName'))]"
-                    }
-                  ]
-                },
-                "diagnosticsProfile": {
-                  "bootDiagnostics": {
-                    "enabled": true,
-                    "storageUri": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storageAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2024-01-01').primaryEndpoints.blob]"
-                  }
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Network/networkInterfaces', parameters('vmNicName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2023-09-01",
-              "name": "[format('{0}/{1}', parameters('vmName'), 'DependencyAgentWindows')]",
-              "location": "[parameters('location')]",
-              "properties": {
-                "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
-                "type": "DependencyAgentWindows",
-                "typeHandlerVersion": "9.4",
-                "autoUpgradeMinorVersion": true,
-                "enableAutomaticUpgrade": true
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2023-09-01",
-              "name": "[format('{0}/{1}', parameters('vmName'), 'AzureMonitorWindowsAgent')]",
-              "location": "[parameters('location')]",
-              "properties": {
-                "publisher": "Microsoft.Azure.Monitor",
-                "type": "AzureMonitorWindowsAgent",
-                "typeHandlerVersion": "1.0",
-                "autoUpgradeMinorVersion": true,
-                "enableAutomaticUpgrade": true
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'DependencyAgentWindows')]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-              ]
-            },
-            {
-              "condition": "[parameters('enableMicrosoftEntraIdAuth')]",
-              "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2023-09-01",
-              "name": "[format('{0}/{1}', parameters('vmName'), 'AADLoginForWindows')]",
-              "location": "[parameters('location')]",
-              "properties": {
-                "publisher": "Microsoft.Azure.ActiveDirectory",
-                "type": "AADLoginForWindows",
-                "typeHandlerVersion": "1.0",
-                "autoUpgradeMinorVersion": false,
-                "enableAutomaticUpgrade": false
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AzureMonitorWindowsAgent')]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Insights/dataCollectionRules",
-              "apiVersion": "2023-03-11",
-              "name": "DCR-Win-Event-Logs-to-LAW",
-              "location": "[parameters('location')]",
-              "kind": "Windows",
-              "properties": {
-                "dataFlows": [
-                  {
-                    "destinations": [
-                      "logAnalytics"
-                    ],
-                    "streams": [
-                      "Microsoft-Event"
-                    ]
-                  }
-                ],
-                "dataSources": {
-                  "windowsEventLogs": [
-                    {
-                      "streams": [
-                        "Microsoft-Event"
-                      ],
-                      "xPathQueries": [
-                        "Application!*[System[(Level=1 or Level=2 or Level=3 or or Level=0) ]]",
-                        "Security!*[System[(band(Keywords,13510798882111488))]]",
-                        "System!*[System[(Level=1 or Level=2 or Level=3 or or Level=0)]]"
-                      ],
-                      "name": "eventLogsDataSource"
-                    }
-                  ]
-                },
-                "description": "Collect Windows Event Logs and send to Azure Monitor Logs",
-                "destinations": {
-                  "logAnalytics": [
-                    {}
-                  ]
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AADLoginForWindows')]"
-              ]
-            },
-            {
-              "type": "Microsoft.Insights/dataCollectionRules",
-              "apiVersion": "2023-03-11",
-              "name": "DCR-Win-Perf-to-LAW",
-              "location": "[parameters('location')]",
-              "kind": "Windows",
-              "properties": {
-                "dataFlows": [
-                  {
-                    "destinations": [
-                      "logAnalytics"
-                    ],
-                    "streams": [
-                      "Microsoft-Perf"
-                    ]
-                  }
-                ],
-                "dataSources": {
-                  "performanceCounters": [
-                    {
-                      "counterSpecifiers": [
-                        "\\Processor Information(_Total)\\% Processor Time",
-                        "\\Processor Information(_Total)\\% Privileged Time",
-                        "\\Processor Information(_Total)\\% User Time",
-                        "\\Processor Information(_Total)\\Processor Frequency",
-                        "\\System\\Processes",
-                        "\\Process(_Total)\\Thread Count",
-                        "\\Process(_Total)\\Handle Count",
-                        "\\System\\System Up Time",
-                        "\\System\\Context Switches/sec",
-                        "\\System\\Processor Queue Length",
-                        "\\Memory\\% Committed Bytes In Use",
-                        "\\Memory\\Available Bytes",
-                        "\\Memory\\Committed Bytes",
-                        "\\Memory\\Cache Bytes",
-                        "\\Memory\\Pool Paged Bytes",
-                        "\\Memory\\Pool Nonpaged Bytes",
-                        "\\Memory\\Pages/sec",
-                        "\\Memory\\Page Faults/sec",
-                        "\\Process(_Total)\\Working Set",
-                        "\\Process(_Total)\\Working Set - Private",
-                        "\\LogicalDisk(_Total)\\% Disk Time",
-                        "\\LogicalDisk(_Total)\\% Disk Read Time",
-                        "\\LogicalDisk(_Total)\\% Disk Write Time",
-                        "\\LogicalDisk(_Total)\\% Idle Time",
-                        "\\LogicalDisk(_Total)\\Disk Bytes/sec",
-                        "\\LogicalDisk(_Total)\\Disk Read Bytes/sec",
-                        "\\LogicalDisk(_Total)\\Disk Write Bytes/sec",
-                        "\\LogicalDisk(_Total)\\Disk Transfers/sec",
-                        "\\LogicalDisk(_Total)\\Disk Reads/sec",
-                        "\\LogicalDisk(_Total)\\Disk Writes/sec",
-                        "\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer",
-                        "\\LogicalDisk(_Total)\\Avg. Disk sec/Read",
-                        "\\LogicalDisk(_Total)\\Avg. Disk sec/Write",
-                        "\\LogicalDisk(_Total)\\Avg. Disk Queue Length",
-                        "\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length",
-                        "\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length",
-                        "\\LogicalDisk(_Total)\\% Free Space",
-                        "\\LogicalDisk(_Total)\\Free Megabytes",
-                        "\\Network Interface(*)\\Bytes Total/sec",
-                        "\\Network Interface(*)\\Bytes Sent/sec",
-                        "\\Network Interface(*)\\Bytes Received/sec",
-                        "\\Network Interface(*)\\Packets/sec",
-                        "\\Network Interface(*)\\Packets Sent/sec",
-                        "\\Network Interface(*)\\Packets Received/sec",
-                        "\\Network Interface(*)\\Packets Outbound Errors",
-                        "\\Network Interface(*)\\Packets Received Errors"
-                      ],
-                      "name": "perfCounterDataSource60",
-                      "samplingFrequencyInSeconds": 60,
-                      "streams": [
-                        "Microsoft-Perf"
-                      ]
-                    }
-                  ]
-                },
-                "description": "Collect Performance Counters and send to Azure Monitor Logs.",
-                "destinations": {
-                  "logAnalytics": [
-                    {}
-                  ]
-                }
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AADLoginForWindows')]"
-              ]
-            },
-            {
-              "type": "Microsoft.Insights/dataCollectionRuleAssociations",
-              "apiVersion": "2023-03-11",
-              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
-              "name": "DCRA-VMSS-WEL-LAW",
-              "properties": {
-                "description": "Association of data collection rule. Deleting this association will break the data collection for this virtual machine.",
-                "dataCollectionRuleId": "[resourceId('Microsoft.Insights/dataCollectionRules', 'DCR-Win-Event-Logs-to-LAW')]"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Insights/dataCollectionRules', 'DCR-Win-Event-Logs-to-LAW')]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Insights/dataCollectionRuleAssociations",
-              "apiVersion": "2023-03-11",
-              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
-              "name": "DCRA-VM-PC-LAW",
-              "properties": {
-                "description": "Association of data collection rule. Deleting this association will break the data collection for this virtual machine.",
-                "dataCollectionRuleId": "[resourceId('Microsoft.Insights/dataCollectionRules', 'DCR-Win-Perf-to-LAW')]"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Insights/dataCollectionRules', 'DCR-Win-Perf-to-LAW')]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-              ]
-            },
-            {
-              "condition": "[and(parameters('enableMicrosoftEntraIdAuth'), not(empty(parameters('userObjectId'))))]",
-              "type": "Microsoft.Authorization/roleAssignments",
-              "apiVersion": "2022-04-01",
-              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
-              "name": "[guid(resourceId('Microsoft.Compute/virtualMachines', parameters('vmName')), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4'), parameters('userObjectId'))]",
-              "properties": {
-                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
-                "principalType": "ServicePrincipal",
-                "principalId": "[parameters('userObjectId')]"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Maintenance/maintenanceConfigurations",
-              "apiVersion": "2023-10-01-preview",
-              "name": "myMaintenanceConfig",
-              "location": "[parameters('location')]",
-              "properties": {
-                "namespace": "Microsoft.Compute",
-                "extensionProperties": {}
-              }
-            },
-            {
-              "type": "Microsoft.Maintenance/configurationAssignments",
-              "apiVersion": "2023-04-01",
-              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
-              "name": "maintenanceConfigurationAssignment",
-              "location": "[parameters('location')]",
-              "properties": {
-                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', 'myMaintenanceConfig')]"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', 'myMaintenanceConfig')]",
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-              ]
-            }
-          ],
-          "outputs": {
-            "name": {
-              "type": "string",
-              "value": "[parameters('vmName')]"
-            },
-            "id": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "network",
-        "storageAccount"
       ]
     },
     "cosmosDb": {
@@ -52226,6 +51327,905 @@
       },
       "dependsOn": [
         "network"
+      ]
+    },
+    "project": {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('{0}-project-deployment', parameters('name')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "aiFoundryType": {
+            "value": "[parameters('aiFoundryType')]"
+          },
+          "cosmosDBName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('cosmosDb').outputs.cosmosDBname.value), createObject('value', ''))]",
+          "name": {
+            "value": "[parameters('projectName')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "storageName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.storageName.value), createObject('value', ''))]",
+          "aiServicesName": {
+            "value": "[reference('cognitiveServices').outputs.aiServicesName.value]"
+          },
+          "nameFormatted": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('aiSearch').outputs.searchName.value), createObject('value', ''))]"
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.36.1.42791",
+              "templateHash": "5920796108370055762"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 12,
+              "metadata": {
+                "description": "The name of the environment. Use alphanumeric characters only."
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the location for all the Azure resources. Defaults to the location of the resource group."
+              }
+            },
+            "aiFoundryType": {
+              "type": "string",
+              "allowedValues": [
+                "Basic",
+                "StandardPublic",
+                "StandardPrivate"
+              ],
+              "metadata": {
+                "description": "Required. Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
+              }
+            },
+            "cosmosDBName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the CosmosDB Resource"
+              }
+            },
+            "storageName": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the Azure Storage Account"
+              }
+            },
+            "aiServicesName": {
+              "type": "string",
+              "metadata": {
+                "description": "Foundry Account Name"
+              }
+            },
+            "nameFormatted": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure Search Service Name"
+              }
+            },
+            "projUploadsContainerName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the container for project uploads"
+              }
+            },
+            "sysDataContainerName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Name of the container for system data"
+              }
+            },
+            "defaultProjectName": {
+              "type": "string",
+              "defaultValue": "[parameters('name')]",
+              "metadata": {
+                "description": "Name of the AI Foundry project"
+              }
+            },
+            "defaultProjectDisplayName": {
+              "type": "string",
+              "defaultValue": "[parameters('name')]"
+            },
+            "defaultProjectDescription": {
+              "type": "string",
+              "defaultValue": "This is the default project for AI Foundry."
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.CognitiveServices/accounts/projects",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}', parameters('aiServicesName'), parameters('defaultProjectName'))]",
+              "location": "[parameters('location')]",
+              "identity": {
+                "type": "SystemAssigned"
+              },
+              "properties": {
+                "displayName": "[parameters('defaultProjectDisplayName')]",
+                "description": "[parameters('defaultProjectDescription')]"
+              }
+            },
+            {
+              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName'))))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
+              "properties": {
+                "category": "AzureBlob",
+                "target": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01').primaryEndpoints.blob]",
+                "authType": "AAD",
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]",
+                  "location": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01', 'full').location]",
+                  "accountName": "[parameters('storageName')]",
+                  "containerName": "[parameters('projUploadsContainerName')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
+              ]
+            },
+            {
+              "condition": "[and(and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('storageName')))), not(empty(parameters('sysDataContainerName'))))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
+              "properties": {
+                "category": "AzureBlob",
+                "target": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01').primaryEndpoints.blob]",
+                "authType": "AAD",
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageName'))]",
+                  "location": "[reference(resourceId('Microsoft.Storage/storageAccounts', parameters('storageName')), '2024-01-01', 'full').location]",
+                  "accountName": "[parameters('storageName')]",
+                  "containerName": "[parameters('sysDataContainerName')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
+              ]
+            },
+            {
+              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('nameFormatted'))))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
+              "properties": {
+                "category": "CognitiveSearch",
+                "target": "[format('https://{0}.search.windows.net/', parameters('nameFormatted'))]",
+                "authType": "AAD",
+                "isSharedToAll": true,
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[resourceId('Microsoft.Search/searchServices', parameters('nameFormatted'))]",
+                  "location": "[reference(resourceId('Microsoft.Search/searchServices', parameters('nameFormatted')), '2025-05-01', 'full').location]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
+              ]
+            },
+            {
+              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('cosmosDBName'))))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]",
+              "properties": {
+                "category": "CosmosDB",
+                "target": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName')), '2025-05-01-preview').documentEndpoint]",
+                "authType": "AAD",
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName'))]",
+                  "location": "[reference(resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('cosmosDBName')), '2025-05-01-preview', 'full').location]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
+              ]
+            },
+            {
+              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+              "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}', parameters('aiServicesName'), 'accountCapHost')]",
+              "properties": {
+                "capabilityHostKind": "Agents"
+              }
+            },
+            {
+              "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/capabilityHosts",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), 'projectCapHost')]",
+              "properties": {
+                "capabilityHostKind": "Agents",
+                "vectorStoreConnections": [
+                  "[parameters('nameFormatted')]"
+                ],
+                "storageConnections": [
+                  "[parameters('storageName')]",
+                  "[format('{0}-sysdata', parameters('storageName'))]"
+                ],
+                "threadStorageConnections": [
+                  "[parameters('cosmosDBName')]"
+                ]
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts/capabilityHosts', parameters('aiServicesName'), 'accountCapHost')]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), format('{0}-sysdata', parameters('storageName')))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "projectCapHost": {
+              "type": "string",
+              "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), 'projectCapHost', '')]"
+            },
+            "projectId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
+            },
+            "projectName": {
+              "type": "string",
+              "value": "[parameters('defaultProjectName')]"
+            },
+            "cosmosDBConnection": {
+              "type": "string",
+              "value": "[parameters('cosmosDBName')]"
+            },
+            "azureStorageConnection": {
+              "type": "string",
+              "value": "[parameters('storageName')]"
+            },
+            "aiSearchConnection": {
+              "type": "string",
+              "value": "[parameters('nameFormatted')]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "aiSearch",
+        "cognitiveServices",
+        "cosmosDb",
+        "storageAccount"
+      ]
+    },
+    "virtualMachine": {
+      "condition": "[variables('shouldDeployVM')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('{0}-virtual-machine-deployment', parameters('name')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "vmName": {
+            "value": "[toLower(format('vm-{0}-jump', parameters('name')))]"
+          },
+          "vmNicName": {
+            "value": "[toLower(format('nic-vm-{0}-jump', parameters('name')))]"
+          },
+          "vmSize": {
+            "value": "[parameters('vmSize')]"
+          },
+          "vmSubnetId": "[if(variables('shouldDeployVM'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
+          "storageAccountName": "[if(and(variables('shouldDeployVM'), not(equals(toLower(parameters('aiFoundryType')), 'basic'))), createObject('value', reference('storageAccount').outputs.storageName.value), createObject('value', ''))]",
+          "storageAccountResourceGroup": {
+            "value": "[resourceGroup().name]"
+          },
+          "imagePublisher": {
+            "value": "MicrosoftWindowsDesktop"
+          },
+          "imageOffer": {
+            "value": "Windows-11"
+          },
+          "imageSku": {
+            "value": "win11-23h2-ent"
+          },
+          "authenticationType": {
+            "value": "password"
+          },
+          "vmAdminUsername": {
+            "value": "[variables('servicesUsername')]"
+          },
+          "vmAdminPasswordOrKey": {
+            "value": "[parameters('vmAdminPasswordOrKey')]"
+          },
+          "diskStorageAccountType": {
+            "value": "Premium_LRS"
+          },
+          "numDataDisks": {
+            "value": 1
+          },
+          "osDiskSize": {
+            "value": 128
+          },
+          "dataDiskSize": {
+            "value": 50
+          },
+          "dataDiskCaching": {
+            "value": "ReadWrite"
+          },
+          "enableAcceleratedNetworking": {
+            "value": true
+          },
+          "enableMicrosoftEntraIdAuth": {
+            "value": true
+          },
+          "userObjectId": {
+            "value": "[parameters('userObjectId')]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "tags": {
+            "value": "[variables('allTags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.36.1.42791",
+              "templateHash": "9745791438980746196"
+            }
+          },
+          "parameters": {
+            "vmName": {
+              "type": "string",
+              "defaultValue": "TestVm",
+              "metadata": {
+                "description": "Specifies the name of the virtual machine."
+              }
+            },
+            "vmSize": {
+              "type": "string",
+              "defaultValue": "Standard_DS4_v2",
+              "metadata": {
+                "description": "Specifies the size of the virtual machine."
+              }
+            },
+            "vmSubnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the resource id of the subnet hosting the virtual machine."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the name of the storage account where the bootstrap diagnostic logs of the virtual machine are stored."
+              }
+            },
+            "storageAccountResourceGroup": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the resource group of the storage account where the bootstrap diagnostic logs of the virtual machine are stored."
+              }
+            },
+            "imagePublisher": {
+              "type": "string",
+              "defaultValue": "MicrosoftWindowsServer",
+              "metadata": {
+                "description": "Specifies the image publisher of the disk image used to create the virtual machine."
+              }
+            },
+            "imageOffer": {
+              "type": "string",
+              "defaultValue": "WindowsServer",
+              "metadata": {
+                "description": "Specifies the offer of the platform image or marketplace image used to create the virtual machine."
+              }
+            },
+            "imageSku": {
+              "type": "string",
+              "defaultValue": "2022-datacenter-azure-edition",
+              "metadata": {
+                "description": "Specifies the image version for the virtual machine."
+              }
+            },
+            "authenticationType": {
+              "type": "string",
+              "defaultValue": "password",
+              "allowedValues": [
+                "sshPublicKey",
+                "password"
+              ],
+              "metadata": {
+                "description": "Specifies the type of authentication when accessing the Virtual Machine. SSH key is recommended."
+              }
+            },
+            "vmAdminUsername": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the name of the administrator account of the virtual machine."
+              }
+            },
+            "vmAdminPasswordOrKey": {
+              "type": "securestring",
+              "metadata": {
+                "description": "Specifies the SSH Key or password for the virtual machine. SSH key is recommended."
+              }
+            },
+            "diskStorageAccountType": {
+              "type": "string",
+              "defaultValue": "Premium_LRS",
+              "allowedValues": [
+                "Premium_LRS",
+                "StandardSSD_LRS",
+                "Standard_LRS",
+                "UltraSSD_LRS"
+              ],
+              "metadata": {
+                "description": "Specifies the storage account type for OS and data disk."
+              }
+            },
+            "numDataDisks": {
+              "type": "int",
+              "defaultValue": 1,
+              "minValue": 0,
+              "maxValue": 64,
+              "metadata": {
+                "description": "Specifies the number of data disks of the virtual machine."
+              }
+            },
+            "osDiskSize": {
+              "type": "int",
+              "defaultValue": 128,
+              "metadata": {
+                "description": "Specifies the size in GB of the OS disk of the VM."
+              }
+            },
+            "dataDiskSize": {
+              "type": "int",
+              "defaultValue": 50,
+              "metadata": {
+                "description": "Specifies the size in GB of the OS disk of the virtual machine."
+              }
+            },
+            "dataDiskCaching": {
+              "type": "string",
+              "defaultValue": "ReadWrite",
+              "metadata": {
+                "description": "Specifies the caching requirements for the data disks."
+              }
+            },
+            "enableMicrosoftEntraIdAuth": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Specifies whether enabling Microsoft Entra ID authentication on the virtual machine."
+              }
+            },
+            "enableAcceleratedNetworking": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Specifies whether enabling accelerated networking on the virtual machine."
+              }
+            },
+            "vmNicName": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the name of the network interface of the virtual machine."
+              }
+            },
+            "userObjectId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Specifies the location."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "description": "Specifies the resource tags."
+              }
+            }
+          },
+          "variables": {
+            "randomString": "[uniqueString(resourceGroup().id, parameters('vmName'), parameters('vmAdminPasswordOrKey'))]",
+            "adminPassword": "[if(less(length(parameters('vmAdminPasswordOrKey')), 8), format('{0}{1}', parameters('vmAdminPasswordOrKey'), take(variables('randomString'), 12)), parameters('vmAdminPasswordOrKey'))]",
+            "linuxConfiguration": {
+              "disablePasswordAuthentication": true,
+              "ssh": {
+                "publicKeys": [
+                  {
+                    "path": "[format('/home/{0}/.ssh/authorized_keys', parameters('vmAdminUsername'))]",
+                    "keyData": "[variables('adminPassword')]"
+                  }
+                ]
+              },
+              "provisionVMAgent": true
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Network/networkInterfaces",
+              "apiVersion": "2024-07-01",
+              "name": "[parameters('vmNicName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
+                "ipConfigurations": [
+                  {
+                    "name": "ipconfig1",
+                    "properties": {
+                      "privateIPAllocationMethod": "Dynamic",
+                      "subnet": {
+                        "id": "[parameters('vmSubnetId')]"
+                      }
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines",
+              "apiVersion": "2024-07-01",
+              "name": "[parameters('vmName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "hardwareProfile": {
+                  "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": {
+                  "computerName": "[take(parameters('vmName'), 15)]",
+                  "adminUsername": "[parameters('vmAdminUsername')]",
+                  "adminPassword": "[variables('adminPassword')]",
+                  "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), null(), variables('linuxConfiguration'))]"
+                },
+                "storageProfile": {
+                  "copy": [
+                    {
+                      "name": "dataDisks",
+                      "count": "[length(range(0, parameters('numDataDisks')))]",
+                      "input": {
+                        "caching": "[parameters('dataDiskCaching')]",
+                        "diskSizeGB": "[parameters('dataDiskSize')]",
+                        "lun": "[range(0, parameters('numDataDisks'))[copyIndex('dataDisks')]]",
+                        "name": "[format('{0}-DataDisk{1}', parameters('vmName'), range(0, parameters('numDataDisks'))[copyIndex('dataDisks')])]",
+                        "createOption": "Empty",
+                        "managedDisk": {
+                          "storageAccountType": "[parameters('diskStorageAccountType')]"
+                        }
+                      }
+                    }
+                  ],
+                  "imageReference": {
+                    "publisher": "[parameters('imagePublisher')]",
+                    "offer": "[parameters('imageOffer')]",
+                    "sku": "[parameters('imageSku')]",
+                    "version": "latest"
+                  },
+                  "osDisk": {
+                    "name": "[format('{0}_OSDisk', parameters('vmName'))]",
+                    "caching": "ReadWrite",
+                    "createOption": "FromImage",
+                    "diskSizeGB": "[parameters('osDiskSize')]",
+                    "managedDisk": {
+                      "storageAccountType": "[parameters('diskStorageAccountType')]"
+                    }
+                  }
+                },
+                "networkProfile": {
+                  "networkInterfaces": [
+                    {
+                      "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('vmNicName'))]"
+                    }
+                  ]
+                },
+                "diagnosticsProfile": {
+                  "bootDiagnostics": {
+                    "enabled": true,
+                    "storageUri": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('storageAccountResourceGroup')), 'Microsoft.Storage/storageAccounts', parameters('storageAccountName')), '2024-01-01').primaryEndpoints.blob]"
+                  }
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', parameters('vmNicName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('vmName'), 'DependencyAgentWindows')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "publisher": "Microsoft.Azure.Monitoring.DependencyAgent",
+                "type": "DependencyAgentWindows",
+                "typeHandlerVersion": "9.4",
+                "autoUpgradeMinorVersion": true,
+                "enableAutomaticUpgrade": true
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('vmName'), 'AzureMonitorWindowsAgent')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "publisher": "Microsoft.Azure.Monitor",
+                "type": "AzureMonitorWindowsAgent",
+                "typeHandlerVersion": "1.0",
+                "autoUpgradeMinorVersion": true,
+                "enableAutomaticUpgrade": true
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'DependencyAgentWindows')]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "condition": "[parameters('enableMicrosoftEntraIdAuth')]",
+              "type": "Microsoft.Compute/virtualMachines/extensions",
+              "apiVersion": "2023-09-01",
+              "name": "[format('{0}/{1}', parameters('vmName'), 'AADLoginForWindows')]",
+              "location": "[parameters('location')]",
+              "properties": {
+                "publisher": "Microsoft.Azure.ActiveDirectory",
+                "type": "AADLoginForWindows",
+                "typeHandlerVersion": "1.0",
+                "autoUpgradeMinorVersion": false,
+                "enableAutomaticUpgrade": false
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AzureMonitorWindowsAgent')]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Insights/dataCollectionRules",
+              "apiVersion": "2023-03-11",
+              "name": "DCR-Win-Event-Logs-to-LAW",
+              "location": "[parameters('location')]",
+              "kind": "Windows",
+              "properties": {
+                "dataFlows": [
+                  {
+                    "destinations": [
+                      "logAnalytics"
+                    ],
+                    "streams": [
+                      "Microsoft-Event"
+                    ]
+                  }
+                ],
+                "dataSources": {
+                  "windowsEventLogs": [
+                    {
+                      "streams": [
+                        "Microsoft-Event"
+                      ],
+                      "xPathQueries": [
+                        "Application!*[System[(Level=1 or Level=2 or Level=3 or or Level=0) ]]",
+                        "Security!*[System[(band(Keywords,13510798882111488))]]",
+                        "System!*[System[(Level=1 or Level=2 or Level=3 or or Level=0)]]"
+                      ],
+                      "name": "eventLogsDataSource"
+                    }
+                  ]
+                },
+                "description": "Collect Windows Event Logs and send to Azure Monitor Logs",
+                "destinations": {
+                  "logAnalytics": [
+                    {}
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AADLoginForWindows')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Insights/dataCollectionRules",
+              "apiVersion": "2023-03-11",
+              "name": "DCR-Win-Perf-to-LAW",
+              "location": "[parameters('location')]",
+              "kind": "Windows",
+              "properties": {
+                "dataFlows": [
+                  {
+                    "destinations": [
+                      "logAnalytics"
+                    ],
+                    "streams": [
+                      "Microsoft-Perf"
+                    ]
+                  }
+                ],
+                "dataSources": {
+                  "performanceCounters": [
+                    {
+                      "counterSpecifiers": [
+                        "\\Processor Information(_Total)\\% Processor Time",
+                        "\\Processor Information(_Total)\\% Privileged Time",
+                        "\\Processor Information(_Total)\\% User Time",
+                        "\\Processor Information(_Total)\\Processor Frequency",
+                        "\\System\\Processes",
+                        "\\Process(_Total)\\Thread Count",
+                        "\\Process(_Total)\\Handle Count",
+                        "\\System\\System Up Time",
+                        "\\System\\Context Switches/sec",
+                        "\\System\\Processor Queue Length",
+                        "\\Memory\\% Committed Bytes In Use",
+                        "\\Memory\\Available Bytes",
+                        "\\Memory\\Committed Bytes",
+                        "\\Memory\\Cache Bytes",
+                        "\\Memory\\Pool Paged Bytes",
+                        "\\Memory\\Pool Nonpaged Bytes",
+                        "\\Memory\\Pages/sec",
+                        "\\Memory\\Page Faults/sec",
+                        "\\Process(_Total)\\Working Set",
+                        "\\Process(_Total)\\Working Set - Private",
+                        "\\LogicalDisk(_Total)\\% Disk Time",
+                        "\\LogicalDisk(_Total)\\% Disk Read Time",
+                        "\\LogicalDisk(_Total)\\% Disk Write Time",
+                        "\\LogicalDisk(_Total)\\% Idle Time",
+                        "\\LogicalDisk(_Total)\\Disk Bytes/sec",
+                        "\\LogicalDisk(_Total)\\Disk Read Bytes/sec",
+                        "\\LogicalDisk(_Total)\\Disk Write Bytes/sec",
+                        "\\LogicalDisk(_Total)\\Disk Transfers/sec",
+                        "\\LogicalDisk(_Total)\\Disk Reads/sec",
+                        "\\LogicalDisk(_Total)\\Disk Writes/sec",
+                        "\\LogicalDisk(_Total)\\Avg. Disk sec/Transfer",
+                        "\\LogicalDisk(_Total)\\Avg. Disk sec/Read",
+                        "\\LogicalDisk(_Total)\\Avg. Disk sec/Write",
+                        "\\LogicalDisk(_Total)\\Avg. Disk Queue Length",
+                        "\\LogicalDisk(_Total)\\Avg. Disk Read Queue Length",
+                        "\\LogicalDisk(_Total)\\Avg. Disk Write Queue Length",
+                        "\\LogicalDisk(_Total)\\% Free Space",
+                        "\\LogicalDisk(_Total)\\Free Megabytes",
+                        "\\Network Interface(*)\\Bytes Total/sec",
+                        "\\Network Interface(*)\\Bytes Sent/sec",
+                        "\\Network Interface(*)\\Bytes Received/sec",
+                        "\\Network Interface(*)\\Packets/sec",
+                        "\\Network Interface(*)\\Packets Sent/sec",
+                        "\\Network Interface(*)\\Packets Received/sec",
+                        "\\Network Interface(*)\\Packets Outbound Errors",
+                        "\\Network Interface(*)\\Packets Received Errors"
+                      ],
+                      "name": "perfCounterDataSource60",
+                      "samplingFrequencyInSeconds": 60,
+                      "streams": [
+                        "Microsoft-Perf"
+                      ]
+                    }
+                  ]
+                },
+                "description": "Collect Performance Counters and send to Azure Monitor Logs.",
+                "destinations": {
+                  "logAnalytics": [
+                    {}
+                  ]
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('vmName'), 'AADLoginForWindows')]"
+              ]
+            },
+            {
+              "type": "Microsoft.Insights/dataCollectionRuleAssociations",
+              "apiVersion": "2023-03-11",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
+              "name": "DCRA-VMSS-WEL-LAW",
+              "properties": {
+                "description": "Association of data collection rule. Deleting this association will break the data collection for this virtual machine.",
+                "dataCollectionRuleId": "[resourceId('Microsoft.Insights/dataCollectionRules', 'DCR-Win-Event-Logs-to-LAW')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Insights/dataCollectionRules', 'DCR-Win-Event-Logs-to-LAW')]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Insights/dataCollectionRuleAssociations",
+              "apiVersion": "2023-03-11",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
+              "name": "DCRA-VM-PC-LAW",
+              "properties": {
+                "description": "Association of data collection rule. Deleting this association will break the data collection for this virtual machine.",
+                "dataCollectionRuleId": "[resourceId('Microsoft.Insights/dataCollectionRules', 'DCR-Win-Perf-to-LAW')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Insights/dataCollectionRules', 'DCR-Win-Perf-to-LAW')]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "condition": "[and(parameters('enableMicrosoftEntraIdAuth'), not(empty(parameters('userObjectId'))))]",
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
+              "name": "[guid(resourceId('Microsoft.Compute/virtualMachines', parameters('vmName')), subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4'), parameters('userObjectId'))]",
+              "properties": {
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c0163c0-47e6-4577-8991-ea5c82e286e4')]",
+                "principalType": "ServicePrincipal",
+                "principalId": "[parameters('userObjectId')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Maintenance/maintenanceConfigurations",
+              "apiVersion": "2023-10-01-preview",
+              "name": "myMaintenanceConfig",
+              "location": "[parameters('location')]",
+              "properties": {
+                "namespace": "Microsoft.Compute",
+                "extensionProperties": {}
+              }
+            },
+            {
+              "type": "Microsoft.Maintenance/configurationAssignments",
+              "apiVersion": "2023-04-01",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
+              "name": "maintenanceConfigurationAssignment",
+              "location": "[parameters('location')]",
+              "properties": {
+                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', 'myMaintenanceConfig')]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', 'myMaintenanceConfig')]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              ]
+            }
+          ],
+          "outputs": {
+            "name": {
+              "type": "string",
+              "value": "[parameters('vmName')]"
+            },
+            "id": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "network",
+        "storageAccount"
       ]
     }
   },

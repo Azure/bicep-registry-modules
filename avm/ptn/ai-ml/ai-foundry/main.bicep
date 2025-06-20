@@ -231,20 +231,6 @@ module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType
   }
 }
 
-// Add the new FDP cognitive services module
-module project 'modules/aifoundryproject.bicep' = {
-  name: take('${name}-project-deployment', 64)
-  params: {
-    aiFoundryType: aiFoundryType
-    cosmosDBName: toLower(aiFoundryType) != 'basic' ? cosmosDb.outputs.cosmosDBname : ''
-    name: projectName
-    location: location
-    storageName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.storageName : ''
-    aiServicesName: cognitiveServices.outputs.aiServicesName
-    nameFormatted: toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
-  }
-}
-
 module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-ai-search-deployment', 64)
   params: {
@@ -281,6 +267,33 @@ module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic'
   }
 }
 
+module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic') {
+  name: take('${name}-cosmosdb-deployment', 64)
+  params: {
+    name: 'cos${name}${resourceToken}'
+    location: location
+    networkIsolation: networkIsolation
+    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
+    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    databases: cosmosDatabases
+    tags: allTags
+  }
+}
+
+// Add the new FDP cognitive services module
+module project 'modules/aifoundryproject.bicep' = {
+  name: take('${name}-project-deployment', 64)
+  params: {
+    aiFoundryType: aiFoundryType
+    cosmosDBName: toLower(aiFoundryType) != 'basic' ? cosmosDb.outputs.cosmosDBname : ''
+    name: projectName
+    location: location
+    storageName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.storageName : ''
+    aiServicesName: cognitiveServices.outputs.aiServicesName
+    nameFormatted: toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
+  }
+}
+
 // Only deploy the VM if we're doing a StandardPrivate deployment and need a jumpbox in the VNET
 var shouldDeployVM = (toLower(aiFoundryType) == 'standardprivate')
 
@@ -308,19 +321,6 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
     enableMicrosoftEntraIdAuth: true
     userObjectId: userObjectId
     location: location
-    tags: allTags
-  }
-}
-
-module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic') {
-  name: take('${name}-cosmosdb-deployment', 64)
-  params: {
-    name: 'cos${name}${resourceToken}'
-    location: location
-    networkIsolation: networkIsolation
-    virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
-    virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
-    databases: cosmosDatabases
     tags: allTags
   }
 }
