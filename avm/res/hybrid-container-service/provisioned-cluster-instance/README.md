@@ -16,10 +16,9 @@ Deploy a provisioned cluster instance.
 | :-- | :-- |
 | `Microsoft.Authorization/roleAssignments` | [2022-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Authorization/2022-04-01/roleAssignments) |
 | `Microsoft.HybridContainerService/provisionedClusterInstances` | [2024-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.HybridContainerService/2024-01-01/provisionedClusterInstances) |
-| `Microsoft.KeyVault/vaults/secrets` | [2023-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.KeyVault/2023-07-01/vaults/secrets) |
 | `Microsoft.Kubernetes/connectedClusters` | [2024-07-15-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Kubernetes/2024-07-15-preview/connectedClusters) |
-| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2023-01-31](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2023-01-31/userAssignedIdentities) |
-| `Microsoft.Resources/deploymentScripts` | [2020-10-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2020-10-01/deploymentScripts) |
+| `Microsoft.ManagedIdentity/userAssignedIdentities` | [2024-11-30](https://learn.microsoft.com/en-us/azure/templates/Microsoft.ManagedIdentity/2024-11-30/userAssignedIdentities) |
+| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 
 ## Usage examples
 
@@ -185,7 +184,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     licenseProfile: {
       azureHybridBenefit: 'False'
     }
-    linuxProfile: '<linuxProfile>'
     location: '<location>'
     oidcIssuerProfile: {
       enabled: false
@@ -202,11 +200,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       smbCsiDriver: {
         enabled: true
       }
-    }
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
     }
   }
 }
@@ -293,9 +286,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "azureHybridBenefit": "False"
       }
     },
-    "linuxProfile": {
-      "value": "<linuxProfile>"
-    },
     "location": {
       "value": "<location>"
     },
@@ -319,13 +309,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
         "smbCsiDriver": {
           "enabled": true
         }
-      }
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
       }
     }
   }
@@ -389,7 +372,6 @@ param kubernetesVersion = '1.29.4'
 param licenseProfile = {
   azureHybridBenefit: 'False'
 }
-param linuxProfile = '<linuxProfile>'
 param location = '<location>'
 param oidcIssuerProfile = {
   enabled: false
@@ -406,11 +388,6 @@ param storageProfile = {
   smbCsiDriver: {
     enabled: true
   }
-}
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
 }
 ```
 
@@ -469,11 +446,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
       vmSize: 'Standard_A4_v2'
     }
     keyVaultName: '<keyVaultName>'
-    tags: {
-      Environment: 'Non-Prod'
-      'hidden-title': 'This is visible in the resource name'
-      Role: 'DeploymentValidation'
-    }
   }
 }
 ```
@@ -542,13 +514,6 @@ module provisionedClusterInstance 'br/public:avm/res/hybrid-container-service/pr
     },
     "keyVaultName": {
       "value": "<keyVaultName>"
-    },
-    "tags": {
-      "value": {
-        "Environment": "Non-Prod",
-        "hidden-title": "This is visible in the resource name",
-        "Role": "DeploymentValidation"
-      }
     }
   }
 }
@@ -603,11 +568,6 @@ param controlPlane = {
   vmSize: 'Standard_A4_v2'
 }
 param keyVaultName = '<keyVaultName>'
-param tags = {
-  Environment: 'Non-Prod'
-  'hidden-title': 'This is visible in the resource name'
-  Role: 'DeploymentValidation'
-}
 ```
 
 </details>
