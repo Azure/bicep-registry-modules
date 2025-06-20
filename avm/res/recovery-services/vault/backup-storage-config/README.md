@@ -12,7 +12,7 @@ This module deploys a Recovery Service Vault Backup Storage Configuration.
 
 | Resource Type | API Version |
 | :-- | :-- |
-| `Microsoft.RecoveryServices/vaults/backupstorageconfig` | [2023-01-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2023-01-01/vaults/backupstorageconfig) |
+| `Microsoft.RecoveryServices/vaults/backupstorageconfig` | [2024-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.RecoveryServices/2024-04-01/vaults/backupstorageconfig) |
 
 ## Parameters
 
