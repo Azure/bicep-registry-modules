@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "13787889442475501981"
+      "version": "0.36.1.42791",
+      "templateHash": "17315149331889549892"
     },
     "name": "Hybrid Container Service Provisioned Cluster Instance",
     "description": "Deploy a provisioned cluster instance."
@@ -187,7 +187,7 @@
                   "type": "object",
                   "properties": {
                     "keyData": {
-                      "type": "string",
+                      "type": "securestring",
                       "metadata": {
                         "description": "Required. The SSH public key data."
                       }
@@ -508,6 +508,13 @@
         "description": "Required. The id of the Custom location that used to create hybrid aks."
       }
     },
+    "linuxProfile": {
+      "$ref": "#/definitions/linuxProfileType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The profile for Linux VMs in the provisioned cluster."
+      }
+    },
     "kubernetesVersion": {
       "type": "string",
       "nullable": true,
@@ -562,13 +569,6 @@
       },
       "metadata": {
         "description": "Optional. The network configuration profile for the provisioned cluster."
-      }
-    },
-    "linuxProfile": {
-      "$ref": "#/definitions/linuxProfileType",
-      "nullable": true,
-      "metadata": {
-        "description": "Optional. The profile for Linux VMs in the provisioned cluster."
       }
     },
     "licenseProfile": {
@@ -737,8 +737,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "10780007379279172631"
+              "version": "0.36.1.42791",
+              "templateHash": "8017338432730421584"
             }
           },
           "parameters": {
@@ -784,10 +784,17 @@
             }
           },
           "variables": {
-            "$fxv#0": "# Create temp directory in a known location\n$tempDir = '/tmp/sshkeys'\nNew-Item -ItemType Directory -Path $tempDir -Force\nSet-Location $tempDir\n# Generate SSH key pair using ssh-keygen\nssh-keygen -t rsa -b 4096 -f ./key -N '\"\"' -q\n# Read the generated keys\n$publicKey = Get-Content -Path './key.pub' -Raw\n$privateKey = Get-Content -Path './key' -Raw\n# Clean up temp files\nRemove-Item -Path './key*' -Force\nRemove-Item -Path $tempDir -Force -Recurse\n# Set output\n$DeploymentScriptOutputs = @{}\n$DeploymentScriptOutputs['publicKey'] = $publicKey\n$DeploymentScriptOutputs['privateKey'] = $privateKey\n"
+            "$fxv#0": "#!/bin/bash\nset -e\n\nREFLECT_BICEP_B64=\"$1\"\nREAD_BICEP_B64=\"$2\"\nREAD_JSON_B64=\"$3\"\nWRITE_BICEP_B64=\"$4\"\nWRITE_JSON_B64=\"$5\"\nSUBSCRIPTION_ID=\"$6\"\nRESOURCE_GROUP_NAME=\"$7\"\nCLUSTER_NAME=\"$8\"\n\n# Decode base64-encoded content to temp files\nTEMP_DIR=$(mktemp -d)\ncd \"$TEMP_DIR\"\necho \"$REFLECT_BICEP_B64\" | base64 -d > \"reflect.bicep\"\necho \"$READ_BICEP_B64\" | base64 -d > \"read.bicep\"\necho \"$READ_JSON_B64\" | base64 -d > \"read.json\"\necho \"$WRITE_BICEP_B64\" | base64 -d > \"write.bicep\"\necho \"$WRITE_JSON_B64\" | base64 -d > \"write.json\"\n\n# Login with managed identity and set subscription\naz login --identity --allow-no-subscriptions > /dev/null\naz account set --subscription \"$SUBSCRIPTION_ID\"\n\n# Ensure Bicep CLI is available\naz bicep upgrade\n\nDEPLOYMENT_NAME_1=\"$CLUSTER_NAME-sshkey-read\"\n\n# Read\naz deployment group create \\\n  --name \"$DEPLOYMENT_NAME_1\" \\\n  --resource-group \"$RESOURCE_GROUP_NAME\" \\\n  --template-file \"read.bicep\" \\\n  --parameters \"read.json\" || true\n\nPUBLIC_KEY=$(az deployment group show \\\n  --name \"$DEPLOYMENT_NAME_1\" \\\n  --resource-group \"$RESOURCE_GROUP_NAME\" \\\n  --query properties.outputs.publicKeySecretValue.value \\\n  --only-show-errors --output tsv || true)\n\nif [[ -z \"$PUBLIC_KEY\" ]]; then\n  # ssh-keygen does not exists, openssl is not compatible\n  az sshkey create --name \"$CLUSTER_NAME\" --resource-group \"$RESOURCE_GROUP_NAME\" 2>ssh.log\n  az sshkey delete --name \"$CLUSTER_NAME\" --resource-group \"$RESOURCE_GROUP_NAME\" --yes\n  PRIVATE_KEY_FILE=$(grep 'Private key is saved to' ssh.log | sed -E 's/.*\"([^\"]+)\".*/\\1/')\n  PUBLIC_KEY_FILE=$(grep 'Public key is saved to' ssh.log | sed -E 's/.*\"([^\"]+)\".*/\\1/')\n\n  PRIVATE_KEY_B64=$(cat $PRIVATE_KEY_FILE | base64 -w 0)\n  PUBLIC_KEY_B64=$(cat $PUBLIC_KEY_FILE | base64 -w 0)\n  sed --in-place \"s/{{privateKeySecretValueBase64}}/$PRIVATE_KEY_B64/\" 'write.json'\n  sed --in-place \"s/{{publicKeySecretValueBase64}}/$PUBLIC_KEY_B64/\" 'write.json'\n\n  DEPLOYMENT_NAME_2=\"$CLUSTER_NAME-sshkey-write\"\n\n  # write\n  az deployment group create \\\n    --name \"$DEPLOYMENT_NAME_2\" \\\n    --resource-group \"$RESOURCE_GROUP_NAME\" \\\n    --template-file \"write.bicep\" \\\n    --parameters \"write.json\" || true\n\n  PUBLIC_KEY=$(az deployment group show \\\n    --name \"$DEPLOYMENT_NAME_2\" \\\n    --resource-group \"$RESOURCE_GROUP_NAME\" \\\n    --query properties.outputs.publicKeySecretValue.value \\\n    --only-show-errors --output tsv || true)\nfi\n\nif [[ -z \"$PUBLIC_KEY\" ]]; then\n  exit 2\nfi\n\necho \"{\\\"output\\\": \\\"$PUBLIC_KEY\\\"}\"> $AZ_SCRIPTS_OUTPUT_PATH\n",
+            "$fxv#1": "@secure()\nparam input string\n\n#disable-next-line outputs-should-not-contain-secrets\noutput output string = input\n",
+            "$fxv#2": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {\n  name: keyVaultName\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: keyVault.getSecret(publicKeySecretName)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
+            "$fxv#3": "@description('Required. The name of the key vault.')\nparam keyVaultName string\n\n@description('Required. The name of the secret for the public key in the key vault.')\nparam publicKeySecretName string\n\n@description('Required. The value of the public key in Base 64.')\n@secure()\nparam publicKeySecretValueBase64 string\n\n@description('Required. The name of the secret for the private key in the key vault.')\nparam privateKeySecretName string\n\n@description('Required. The value of the private key in Base 64.')\n@secure()\nparam privateKeySecretValueBase64 string\n\nresource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {\n  name: keyVaultName\n}\n\nresource publicKeySecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {\n  parent: keyVault\n  name: publicKeySecretName\n  properties: {\n    value: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\nresource privateKeySecret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {\n  parent: keyVault\n  name: privateKeySecretName\n  properties: {\n    value: base64ToString(privateKeySecretValueBase64)\n  }\n}\n\nmodule reflect './reflect.bicep' = {\n  name: 'reflect'\n  params: {\n    input: base64ToString(publicKeySecretValueBase64)\n  }\n}\n\noutput publicKeySecretName string = publicKeySecretName\noutput privateKeySecretName string = privateKeySecretName\noutput publicKeySecretValue string = reflect.outputs.output\n",
+            "readJsonRaw": "{\n    \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\n    \"contentVersion\": \"1.0.0.0\",\n    \"parameters\": {\n        \"keyVaultName\": {\n            \"value\": \"{{keyVaultName}}\"\n        },\n        \"publicKeySecretName\": {\n            \"value\": \"{{publicKeySecretName}}\"\n        },\n        \"privateKeySecretName\": {\n            \"value\": \"{{privateKeySecretName}}\"\n        }\n    }\n}",
+            "readJson": "[replace(replace(replace(variables('readJsonRaw'), '{{keyVaultName}}', parameters('keyVaultName')), '{{publicKeySecretName}}', parameters('sshPublicKeySecretName')), '{{privateKeySecretName}}', parameters('sshPrivateKeyPemSecretName'))]",
+            "writeJsonRaw": "{\n    \"$schema\": \"https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#\",\n    \"contentVersion\": \"1.0.0.0\",\n    \"parameters\": {\n        \"keyVaultName\": {\n            \"value\": \"{{keyVaultName}}\"\n        },\n        \"publicKeySecretName\": {\n            \"value\": \"{{publicKeySecretName}}\"\n        },\n        \"publicKeySecretValueBase64\": {\n            \"value\": \"{{publicKeySecretValueBase64}}\"\n        },\n        \"privateKeySecretName\": {\n            \"value\": \"{{privateKeySecretName}}\"\n        },\n        \"privateKeySecretValueBase64\": {\n            \"value\": \"{{privateKeySecretValueBase64}}\"\n        }\n    }\n}",
+            "writeJson": "[replace(replace(replace(variables('writeJsonRaw'), '{{keyVaultName}}', parameters('keyVaultName')), '{{publicKeySecretName}}', parameters('sshPublicKeySecretName')), '{{privateKeySecretName}}', parameters('sshPrivateKeyPemSecretName'))]"
           },
           "resources": {
-            "kv": {
+            "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
               "apiVersion": "2023-07-01",
@@ -795,18 +802,45 @@
             },
             "managedIdentity": {
               "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-              "apiVersion": "2023-01-31",
+              "apiVersion": "2024-11-30",
               "name": "[format('temp-{0}', parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]"
             },
-            "generateSSHKey": {
+            "CRole": {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "name": "[guid(format('msi-{0}-C-RoleAssignment', format('temp-{0}', parameters('name'))))]",
+              "properties": {
+                "principalId": "[reference('managedIdentity').principalId]",
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "managedIdentity"
+              ]
+            },
+            "KVARole": {
+              "type": "Microsoft.Authorization/roleAssignments",
+              "apiVersion": "2022-04-01",
+              "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyVaultName'))]",
+              "name": "[guid(format('msi-{0}-KVA-RoleAssignment', format('temp-{0}', parameters('name'))))]",
+              "properties": {
+                "principalId": "[reference('managedIdentity').principalId]",
+                "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '00482a5a-887f-4fb3-b363-3b7fe8e74483')]",
+                "principalType": "ServicePrincipal"
+              },
+              "dependsOn": [
+                "managedIdentity"
+              ]
+            },
+            "newSshKey": {
               "type": "Microsoft.Resources/deploymentScripts",
-              "apiVersion": "2020-10-01",
-              "name": "[format('generateSSHKey-{0}', parameters('name'))]",
+              "apiVersion": "2023-08-01",
+              "name": "[format('newSshKey-{0}', parameters('name'))]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
-              "kind": "AzurePowerShell",
+              "kind": "AzureCLI",
               "identity": {
                 "type": "UserAssigned",
                 "userAssignedIdentities": {
@@ -814,43 +848,24 @@
                 }
               },
               "properties": {
-                "azPowerShellVersion": "8.0",
-                "retentionInterval": "P1D",
-                "scriptContent": "[variables('$fxv#0')]"
+                "azCliVersion": "2.71.0",
+                "scriptContent": "[variables('$fxv#0')]",
+                "arguments": "[format('\"{0}\" \"{1}\" \"{2}\" \"{3}\" \"{4}\" \"{5}\" \"{6}\" \"{7}\"', base64(variables('$fxv#1')), base64(variables('$fxv#2')), base64(variables('readJson')), base64(variables('$fxv#3')), base64(variables('writeJson')), subscription().subscriptionId, resourceGroup().name, parameters('name'))]",
+                "timeout": "PT30M",
+                "retentionInterval": "PT60M",
+                "cleanupPreference": "OnExpiration"
               },
               "dependsOn": [
+                "CRole",
+                "KVARole",
                 "managedIdentity"
-              ]
-            },
-            "sshPublicKeyPem": {
-              "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2023-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPublicKeySecretName'))]",
-              "properties": {
-                "contentType": "Secret",
-                "value": "[reference('generateSSHKey').outputs.publicKey]"
-              },
-              "dependsOn": [
-                "generateSSHKey"
-              ]
-            },
-            "sshPrivateKeyPem": {
-              "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2023-07-01",
-              "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('sshPrivateKeyPemSecretName'))]",
-              "properties": {
-                "contentType": "Secret",
-                "value": "[reference('generateSSHKey').outputs.privateKey]"
-              },
-              "dependsOn": [
-                "generateSSHKey"
               ]
             }
           },
           "outputs": {
             "sshPublicKeyPemValue": {
               "type": "string",
-              "value": "[reference('generateSSHKey').outputs.publicKey]"
+              "value": "[reference('newSshKey').outputs.output]"
             }
           }
         }

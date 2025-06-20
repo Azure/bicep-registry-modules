@@ -1,0 +1,483 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.36.1.42791",
+      "templateHash": "12919519496313854576"
+    },
+    "name": "Dev Center Project Pool",
+    "description": "This module deploys a Dev Center Project Pool."
+  },
+  "definitions": {
+    "stopOnDisconnectType": {
+      "type": "object",
+      "properties": {
+        "gracePeriodMinutes": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The specified time in minutes to wait before stopping a Dev Box once disconnect is detected."
+          }
+        },
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "Required. Whether the feature to stop the Dev Box on disconnect once the grace period has lapsed is enabled."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for stopOnDisconnect configuration."
+      }
+    },
+    "stopOnNoConnectType": {
+      "type": "object",
+      "properties": {
+        "gracePeriodMinutes": {
+          "type": "int",
+          "metadata": {
+            "description": "Required. The specified time in minutes to wait before stopping a Dev Box if no connection is made."
+          }
+        },
+        "status": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "Required. Enables the feature to stop a started Dev Box when it has not been connected to, once the grace period has lapsed."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for stopOnNoConnect configuration."
+      }
+    },
+    "devBoxDefinitionTypeType": {
+      "type": "object",
+      "properties": {
+        "imageReferenceResourceId": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The resource ID of the image reference for the dev box definition. This would be the resource ID of the project image where the image has the same name as the dev box definition name. If the dev box definition is created from a catalog, then this would be the resource ID of the image in the project that was created from the catalog. The format is \"/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DevCenter/projects/{projectName}/images/~Catalog~{catalogName}~{imagedefinition YAML name}\"."
+          }
+        },
+        "sku": {
+          "type": "object",
+          "properties": {
+            "capacity": {
+              "type": "int",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. If the SKU supports scale out/in then the capacity integer should be included. If scale out/in is not possible for the resource this may be omitted."
+              }
+            },
+            "family": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. If the service has different generations of hardware, for the same SKU, then that can be captured here. For example, \"general_i_v2\"."
+              }
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The name of the SKU. E.g. P3. It is typically a letter+number code. E.g. \"general_i_8c32gb256ssd_v2\" or \"general_i_8c32gb512ssd_v2\". See \"https://learn.microsoft.com/en-us/python/api/azure-developer-devcenter/azure.developer.devcenter.models.hardwareprofile\" for more information about acceptable SKU names."
+              }
+            },
+            "size": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The SKU size. When the name field is the combination of tier and some other value, this would be the standalone code."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. The SKU configuration for the dev box definition. See \"https://learn.microsoft.com/en-us/rest/api/devcenter/administrator/skus/list-by-subscription?view=rest-devcenter-administrator-2024-02-01\" for more information about SKUs."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for dev box definition."
+      }
+    },
+    "poolScheduleType": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "type": "string",
+          "allowedValues": [
+            "Disabled",
+            "Enabled"
+          ],
+          "metadata": {
+            "description": "Required. Indicates whether or not this scheduled task is enabled. Allowed values: Disabled, Enabled."
+          }
+        },
+        "time": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The target time to trigger the action. The format is HH:MM. For example, \"14:30\" for 2:30 PM."
+          }
+        },
+        "timeZone": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The IANA timezone id at which the schedule should execute. For example, \"Australia/Sydney\", \"Canada/Central\"."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true,
+        "description": "The type for the pool schedule."
+      }
+    }
+  },
+  "parameters": {
+    "name": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 63,
+      "metadata": {
+        "description": "Required. The name of the project pool. This name must be unique within a project and is visible to developers when creating dev boxes."
+      }
+    },
+    "projectName": {
+      "type": "string",
+      "metadata": {
+        "description": "Conditional. The name of the parent dev center project. Required if the template is used in a standalone deployment."
+      }
+    },
+    "displayName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The display name of the pool."
+      }
+    },
+    "devBoxDefinitionType": {
+      "type": "string",
+      "defaultValue": "Reference",
+      "allowedValues": [
+        "Reference",
+        "Value"
+      ],
+      "metadata": {
+        "description": "Optional. Indicates if the pool is created from an existing Dev Box Definition or if one is provided directly."
+      }
+    },
+    "devBoxDefinitionName": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. Name of a Dev Box definition in parent Project of this Pool. If creating a pool from a definition defined in the Dev Center, then this will be the name of the definition. If creating a pool from a custom definition (e.g. Team Customizations), first the catalog must be added to this project, and second must use the format \"\\~Catalog\\~{catalogName}\\~{imagedefinition YAML name}\" (e.g. \"\\~Catalog\\~eshopRepo\\~frontend-dev\")."
+      }
+    },
+    "devBoxDefinition": {
+      "$ref": "#/definitions/devBoxDefinitionTypeType",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. A definition of the machines that are created from this Pool. Required if devBoxDefinitionType is \"Value\"."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Optional. Location for all resources."
+      }
+    },
+    "tags": {
+      "type": "object",
+      "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DevCenter/projects/pools@2025-02-01#properties/tags"
+        },
+        "description": "Optional. Resource tags to apply to the pool."
+      },
+      "nullable": true
+    },
+    "localAdministrator": {
+      "type": "string",
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Required. Each dev box creator will be granted the selected permissions on the dev boxes they create. Indicates whether owners of Dev Boxes in this pool are added as a \"local administrator\" or \"standard user\" on the Dev Box."
+      }
+    },
+    "virtualNetworkType": {
+      "type": "string",
+      "allowedValues": [
+        "Managed",
+        "Unmanaged"
+      ],
+      "metadata": {
+        "description": "Required. Indicates whether the pool uses a Virtual Network managed by Microsoft or a customer provided network. For the easiest configuration experience, the Microsoft hosted network can be used for dev box deployment. For organizations that require customized networking, use a network connection resource."
+      }
+    },
+    "managedVirtualNetworkRegion": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. The region of the managed virtual network. Required if virtualNetworkType is \"Managed\"."
+      }
+    },
+    "networkConnectionName": {
+      "type": "string",
+      "nullable": true,
+      "metadata": {
+        "description": "Conditional. Name of a Network Connection in parent Project of this Pool. Required if virtualNetworkType is \"Unmanaged\". The region hosting a pool is determined by the region of the network connection. For best performance, create a dev box pool for every region where your developers are located. The network connection cannot be configured with \"None\" domain join type and must be first attached to the Dev Center before used by the pool. Will be set to \"managedNetwork\" if virtualNetworkType is \"Managed\"."
+      }
+    },
+    "singleSignOnStatus": {
+      "type": "string",
+      "nullable": true,
+      "allowedValues": [
+        "Enabled",
+        "Disabled"
+      ],
+      "metadata": {
+        "description": "Optional. Indicates whether Dev Boxes in this pool are created with single sign on enabled. The also requires that single sign on be enabled on the tenant. Changing this setting will not affect existing dev boxes."
+      }
+    },
+    "stopOnDisconnect": {
+      "$ref": "#/definitions/stopOnDisconnectType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Stop on \"disconnect\" configuration settings for Dev Boxes created in this pool. Dev boxes in this pool will hibernate after the grace period after the user disconnects."
+      }
+    },
+    "stopOnNoConnect": {
+      "$ref": "#/definitions/stopOnNoConnectType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. Stop on \"no connect\" configuration settings for Dev Boxes created in this pool. Dev boxes in this pool will hibernate after the grace period if the user never connects."
+      }
+    },
+    "schedule": {
+      "$ref": "#/definitions/poolScheduleType",
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The schedule for the pool. Dev boxes in this pool will auto-stop every day as per the schedule configuration."
+      }
+    }
+  },
+  "resources": {
+    "project": {
+      "existing": true,
+      "type": "Microsoft.DevCenter/projects",
+      "apiVersion": "2025-02-01",
+      "name": "[parameters('projectName')]"
+    },
+    "pool": {
+      "type": "Microsoft.DevCenter/projects/pools",
+      "apiVersion": "2025-02-01",
+      "name": "[format('{0}/{1}', parameters('projectName'), parameters('name'))]",
+      "location": "[parameters('location')]",
+      "tags": "[parameters('tags')]",
+      "properties": {
+        "devBoxDefinition": "[if(equals(parameters('devBoxDefinitionType'), 'Value'), createObject('imageReference', createObject('id', tryGet(parameters('devBoxDefinition'), 'imageReferenceResourceId')), 'sku', tryGet(parameters('devBoxDefinition'), 'sku')), null())]",
+        "devBoxDefinitionName": "[parameters('devBoxDefinitionName')]",
+        "devBoxDefinitionType": "[parameters('devBoxDefinitionType')]",
+        "displayName": "[parameters('displayName')]",
+        "licenseType": "Windows_Client",
+        "localAdministrator": "[parameters('localAdministrator')]",
+        "managedVirtualNetworkRegions": "[if(equals(parameters('virtualNetworkType'), 'Managed'), createArray(parameters('managedVirtualNetworkRegion')), null())]",
+        "networkConnectionName": "[if(equals(parameters('virtualNetworkType'), 'Unmanaged'), parameters('networkConnectionName'), 'managedNetwork')]",
+        "singleSignOnStatus": "[parameters('singleSignOnStatus')]",
+        "stopOnDisconnect": "[parameters('stopOnDisconnect')]",
+        "stopOnNoConnect": "[parameters('stopOnNoConnect')]",
+        "virtualNetworkType": "[parameters('virtualNetworkType')]"
+      }
+    },
+    "pool_schedule": {
+      "condition": "[not(equals(parameters('schedule'), null()))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('{0}-Pool-Schedule', uniqueString(deployment().name, parameters('location')))]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "state": {
+            "value": "[parameters('schedule').state]"
+          },
+          "time": {
+            "value": "[parameters('schedule').time]"
+          },
+          "timeZone": {
+            "value": "[parameters('schedule').timeZone]"
+          },
+          "poolName": {
+            "value": "[parameters('name')]"
+          },
+          "projectName": {
+            "value": "[parameters('projectName')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.36.1.42791",
+              "templateHash": "13472426796772435774"
+            },
+            "name": "Dev Center Project Pool Schedule",
+            "description": "This module deploys a Dev Center Project Pool Schedule."
+          },
+          "parameters": {
+            "poolName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent dev center project pool. Required if the template is used in a standalone deployment."
+              }
+            },
+            "projectName": {
+              "type": "string",
+              "metadata": {
+                "description": "Conditional. The name of the parent dev center project. Required if the template is used in a standalone deployment."
+              }
+            },
+            "location": {
+              "type": "string",
+              "defaultValue": "[resourceGroup().location]",
+              "metadata": {
+                "description": "Optional. Location for all resources."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Resource tags to apply to the pool."
+              }
+            },
+            "state": {
+              "type": "string",
+              "allowedValues": [
+                "Disabled",
+                "Enabled"
+              ],
+              "metadata": {
+                "description": "Required. Indicates whether or not this scheduled task is enabled. Allowed values: Disabled, Enabled."
+              }
+            },
+            "time": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The target time to trigger the action. The format is HH:MM. For example, \"14:30\" for 2:30 PM."
+              }
+            },
+            "timeZone": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The IANA timezone id at which the schedule should execute. For example, \"Australia/Sydney\", \"Canada/Central\"."
+              }
+            }
+          },
+          "resources": {
+            "project::pool": {
+              "existing": true,
+              "type": "Microsoft.DevCenter/projects/pools",
+              "apiVersion": "2025-02-01",
+              "name": "[format('{0}/{1}', parameters('projectName'), parameters('poolName'))]"
+            },
+            "project": {
+              "existing": true,
+              "type": "Microsoft.DevCenter/projects",
+              "apiVersion": "2025-02-01",
+              "name": "[parameters('projectName')]"
+            },
+            "schedule": {
+              "type": "Microsoft.DevCenter/projects/pools/schedules",
+              "apiVersion": "2025-02-01",
+              "name": "[format('{0}/{1}/{2}', parameters('projectName'), parameters('poolName'), 'default')]",
+              "properties": {
+                "frequency": "Daily",
+                "location": "[parameters('location')]",
+                "state": "[parameters('state')]",
+                "tags": "[parameters('tags')]",
+                "time": "[parameters('time')]",
+                "timeZone": "[parameters('timeZone')]",
+                "type": "StopDevBox"
+              }
+            }
+          },
+          "outputs": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the deployed schedule."
+              },
+              "value": "default"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the deployed schedule."
+              },
+              "value": "[resourceId('Microsoft.DevCenter/projects/pools/schedules', parameters('projectName'), parameters('poolName'), 'default')]"
+            },
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the schedule was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            }
+          }
+        }
+      },
+      "dependsOn": [
+        "pool"
+      ]
+    }
+  },
+  "outputs": {
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the pool."
+      },
+      "value": "[resourceId('Microsoft.DevCenter/projects/pools', parameters('projectName'), parameters('name'))]"
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the pool."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the resource group the pool was created in."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The location the resource was deployed into."
+      },
+      "value": "[reference('pool', '2025-02-01', 'full').location]"
+    }
+  }
+}
