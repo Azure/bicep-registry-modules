@@ -498,28 +498,28 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = {
   }
 }
 
-// // ========== Managed Identity ========== //
-// module avmManagedIdentity './modules/managed-identity.bicep' = {
-//   //name: format(resourceNameFormatString, namingAbbrs.security.managedIdentity)
-//   params: {
-//     name: '${namingAbbrs.security.managedIdentity}${solutionPrefix}'
-//     location: resourceGroupLocation
-//     tags: tags
-//   }
-// }
+// ========== Managed Identity ========== //
+module avmManagedIdentity './modules/managed-identity.bicep' = {
+  //name: format(resourceNameFormatString, namingAbbrs.security.managedIdentity)
+  params: {
+    name: '${namingAbbrs.security.managedIdentity}${solutionPrefix}'
+    location: resourceGroupLocation
+    tags: tags
+  }
+}
 
-// // Assign Owner role to the managed identity in the resource group
-// module avmRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-//   name: format(resourceNameFormatString, 'rbac-owner')
-//   params: {
-//     resourceId: avmManagedIdentity.outputs.resourceId
-//     principalId: avmManagedIdentity.outputs.principalId
-//     roleDefinitionId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-//     principalType: 'ServicePrincipal'
-//     enableTelemetry: enableTelemetry
-//   }
-//   scope: resourceGroup(resourceGroup().name)
-// }
+// Assign Owner role to the managed identity in the resource group
+module avmRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: format(resourceNameFormatString, 'rbac-owner')
+  params: {
+    resourceId: avmManagedIdentity.outputs.resourceId
+    principalId: avmManagedIdentity.outputs.principalId
+    roleDefinitionId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+    principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
+  }
+  scope: resourceGroup(resourceGroup().name)
+}
 
 // // ========== Key Vault Module ========== //
 // module avmKeyVault './modules/key-vault.bicep' = {
