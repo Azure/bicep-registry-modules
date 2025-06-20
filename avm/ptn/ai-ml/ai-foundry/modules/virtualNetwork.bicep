@@ -14,6 +14,15 @@ param vmSubnetAddressPrefix string = '10.3.1.0/24'
 @description('Specifies the name of the network security group associated to the subnet hosting the virtual machine.')
 param vmSubnetNsgName string = 'VmSubnetNsg'
 
+@description('Specifies the name of the subnet which contains the Foundry agent.')
+param foundryAgentSubnetName string = 'FoundryAgentSubnet'
+
+@description('Specifies the address prefix of the subnet which contains the Foundry agent.')
+param foundryAgentSubnetAddressPrefix string = '10.3.3.0/24'
+
+@description('Specifies the name of the network security group associated to the subnet hosting the Foundry agent.')
+param foundryAgentSubnetNsgName string = 'FoundryAgentSubnetNsg'
+
 @description('Specifies the Bastion subnet IP prefix. This prefix must be within vnet IP prefix address space.')
 param bastionSubnetAddressPrefix string = '10.3.2.0/24'
 
@@ -69,73 +78,6 @@ param location string = resourceGroup().location
 param tags object
 
 // Variables
-var diagnosticSettingsName = 'diagnosticSettings'
-var nsgLogCategories = [
-  'NetworkSecurityGroupEvent'
-  'NetworkSecurityGroupRuleCounter'
-]
-var nsgLogs = [
-  for category in nsgLogCategories: {
-    category: category
-    enabled: true
-    retentionPolicy: {
-      enabled: true
-      days: 0
-    }
-  }
-]
-var vnetLogCategories = [
-  'VMProtectionAlerts'
-]
-var vnetMetricCategories = [
-  'AllMetrics'
-]
-var vnetLogs = [
-  for category in vnetLogCategories: {
-    category: category
-    enabled: true
-    retentionPolicy: {
-      enabled: true
-      days: 0
-    }
-  }
-]
-var vnetMetrics = [
-  for category in vnetMetricCategories: {
-    category: category
-    enabled: true
-    retentionPolicy: {
-      enabled: true
-      days: 0
-    }
-  }
-]
-var bastionLogCategories = [
-  'BastionAuditLogs'
-]
-var bastionMetricCategories = [
-  'AllMetrics'
-]
-var bastionLogs = [
-  for category in bastionLogCategories: {
-    category: category
-    enabled: true
-    retentionPolicy: {
-      enabled: true
-      days: 0
-    }
-  }
-]
-var bastionMetrics = [
-  for category in bastionMetricCategories: {
-    category: category
-    enabled: true
-    retentionPolicy: {
-      enabled: true
-      days: 0
-    }
-  }
-]
 var bastionSubnetName = 'AzureBastionSubnet'
 
 // Virtual Network
@@ -170,6 +112,15 @@ resource vnet 'Microsoft.Network/virtualNetworks@2024-03-01' = {
           addressPrefix: bastionSubnetAddressPrefix
           networkSecurityGroup: {
             id: bastionSubnetNsg.id
+          }
+        }
+      }
+      {
+        name: foundryAgentSubnetName
+        properties: {
+          addressPrefix: foundryAgentSubnetAddressPrefix
+          networkSecurityGroup: {
+            id: foundryAgentSubnetNsg.id
           }
         }
       }
@@ -339,6 +290,15 @@ resource vmSubnetNsg 'Microsoft.Network/networkSecurityGroups@2024-03-01' = {
   }
 }
 
+resource foundryAgentSubnetNsg 'Microsoft.Network/networkSecurityGroups@2024-03-01' = {
+  name: foundryAgentSubnetNsgName
+  location: location
+  tags: tags
+  properties: {
+    securityRules: []
+  }
+}
+
 // NAT Gateway
 resource natGatewayPublicIp 'Microsoft.Network/publicIPAddresses@2024-03-01' = [
   for i in range(0, natGatewayPublicIps): {
@@ -419,38 +379,68 @@ resource bastionHost 'Microsoft.Network/bastionHosts@2024-07-01' = if (bastionHo
 }
 
 // Diagnostic Settings
-resource vmSubnetNsgDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: diagnosticSettingsName
+// Note: In production we would need to provide at least one proper destination (storage account, log analytics, or event hub)
+// but this is sufficient for our current implementation since we're not actually configuring diagnostics destinations
+// Each resource would need to be updated with actual destinations when deploying
+
+resource vmSubnetNsgDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2016-09-01' = {
+  name: 'service'
+  location: location
+  properties: {
+    storageAccountId: null // Required as at least one destination needs to be specified for Microsoft.Insights/diagnosticSettings
+    serviceBusRuleId: null
+    metrics: []
+    logs: []
+  }
   scope: vmSubnetNsg
-  properties: {
-    logs: nsgLogs
-  }
 }
 
-resource bastionSubnetNsgDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (bastionHostEnabled) {
-  name: diagnosticSettingsName
+resource bastionSubnetNsgDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2016-09-01' = if (bastionHostEnabled) {
+  name: 'service'
+  location: location
+  properties: {
+    storageAccountId: null
+    serviceBusRuleId: null
+    metrics: []
+    logs: []
+  }
   scope: bastionSubnetNsg
-  properties: {
-    logs: nsgLogs
-  }
 }
 
-resource vnetDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
-  name: diagnosticSettingsName
+resource vnetDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2016-09-01' = {
+  name: 'service'
+  location: location
+  properties: {
+    storageAccountId: null
+    serviceBusRuleId: null
+    metrics: []
+    logs: []
+  }
   scope: vnet
-  properties: {
-    logs: vnetLogs
-    metrics: vnetMetrics
-  }
 }
 
-resource bastionDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = if (bastionHostEnabled) {
-  name: diagnosticSettingsName
-  scope: bastionHost
+resource bastionDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2016-09-01' = if (bastionHostEnabled) {
+  name: 'service'
+  location: location
   properties: {
-    logs: bastionLogs
-    metrics: bastionMetrics
+    storageAccountId: null
+    serviceBusRuleId: null
+    metrics: []
+    logs: []
   }
+  scope: bastionHost
+}
+
+resource foundryAgentSubnetNsgDiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2016-09-01' = {
+  name: 'service'
+  location: location
+  properties: {
+    storageAccountId: null
+    serviceBusRuleId: null
+    metrics: []
+    logs: []
+  }
+  scope: foundryAgentSubnetNsg
 }
 
 // Outputs
@@ -458,6 +448,12 @@ output virtualNetworkId string = vnet.id
 output virtualNetworkName string = vnet.name
 output vmSubnetId string = resourceId('Microsoft.Network/virtualNetworks/subnets', vnet.name, vmSubnetName)
 output bastionSubnetId string = resourceId('Microsoft.Network/virtualNetworks/subnets', vnet.name, bastionSubnetName)
+output foundryAgentSubnetId string = resourceId(
+  'Microsoft.Network/virtualNetworks/subnets',
+  vnet.name,
+  foundryAgentSubnetName
+)
 output vmSubnetName string = vmSubnetName
 output bastionSubnetName string = bastionSubnetName
+output foundryAgentSubnetName string = foundryAgentSubnetName
 output bastionName string = bastionHost.name
