@@ -34,13 +34,13 @@ param logAnalytics logAnalyticsType?
 param dnsConfig dnsConfigType?
 
 @description('Optional. A list of container definitions which will be executed before the application container starts.')
-param initContainers array?
+param initContainers resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.initContainers?
 
 @description('Optional. The subnets to use by the container group.')
 param subnets containerGroupSubnetIdType[]?
 
 @description('Optional. Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup.')
-param volumes array?
+param volumes resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.volumes?
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.4.0'
 @description('Optional. The lock settings of the service.')
@@ -51,7 +51,7 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 param managedIdentities managedIdentityAllType?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.tags?
 
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
@@ -95,11 +95,11 @@ var identity = !empty(managedIdentities)
   : null
 
 #disable-next-line BCP081
-resource law 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (!empty(logAnalytics.?workspaceResourceId)) {
-  name: last(split(logAnalytics.?workspaceResourceId!, '/'))
+resource law 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = if (!empty(logAnalytics)) {
+  name: last(split(logAnalytics!.workspaceResourceId, '/'))
   scope: resourceGroup(
-    split(logAnalytics.?workspaceResourceId!, '/')[2],
-    split(logAnalytics.?workspaceResourceId!, '/')[4]
+    split(logAnalytics!.workspaceResourceId, '/')[2],
+    split(logAnalytics!.workspaceResourceId, '/')[4]
   )
 }
 
@@ -122,19 +122,19 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource cMKKeyVault 'Microsoft.KeyVault/vaults@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
+resource cMKKeyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId)) {
   name: last(split((customerManagedKey.?keyVaultResourceId!), '/'))
   scope: resourceGroup(
     split(customerManagedKey.?keyVaultResourceId!, '/')[2],
     split(customerManagedKey.?keyVaultResourceId!, '/')[4]
   )
 
-  resource cMKKey 'keys@2023-02-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
+  resource cMKKey 'keys@2024-11-01' existing = if (!empty(customerManagedKey.?keyVaultResourceId) && !empty(customerManagedKey.?keyName)) {
     name: customerManagedKey.?keyName!
   }
 }
 
-resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
+resource cMKUserAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2024-11-30' existing = if (!empty(customerManagedKey.?userAssignedIdentityResourceId)) {
   name: last(split(customerManagedKey.?userAssignedIdentityResourceId!, '/'))
   scope: resourceGroup(
     split(customerManagedKey.?userAssignedIdentityResourceId!, '/')[2],
@@ -188,13 +188,8 @@ resource containergroup 'Microsoft.ContainerInstance/containerGroups@2023-05-01'
       ? {
           logAnalytics: {
             logType: logAnalytics!.logType
-            workspaceId: logAnalytics!.?workspaceId ?? (!empty(logAnalytics.?workspaceResourceId)
-              ? law.properties.customerId
-              : fail('Either the workspaceId or the workspaceResourceId must be provided.'))
-            #disable-next-line use-secure-value-for-secure-inputs // False-positive - Is declared as secure()
-            workspaceKey: logAnalytics!.?workspaceKey ?? (!empty(logAnalytics.?workspaceResourceId)
-              ? law.listKeys().primarySharedKey
-              : fail('Either the workspaceKey or the workspaceResourceId must be provided.'))
+            workspaceId: law.properties.customerId
+            workspaceKey: law.listKeys().primarySharedKey
             #disable-next-line use-secure-value-for-secure-inputs use-resource-id-functions // Not a secret
             workspaceResourceId: logAnalytics!.?workspaceResourceId
             metadata: logAnalytics!.?metadata
@@ -278,7 +273,8 @@ output location string = containergroup.location
 // =============== //
 
 @export()
-type containerProbe = {
+@description('The type for a container probe.')
+type containerProbeType = {
   @description('Optional. The execution command to probe.')
   exec: {
     @description('Required. The commands to execute within the container.')
@@ -323,6 +319,7 @@ type containerProbe = {
 }
 
 @export()
+@description('The type for a container.')
 type containerType = {
   @description('Required. The name of the container instance.')
   name: string
@@ -333,10 +330,10 @@ type containerType = {
     image: string
 
     @description('Optional. The liveness probe.')
-    livenessProbe: containerProbe?
+    livenessProbe: containerProbeType?
 
     @description('Optional. The readiness probe.')
-    readinessProbe: containerProbe?
+    readinessProbe: containerProbeType?
 
     @description('Optional. The exposed ports on the container instance.')
     ports: {
@@ -432,26 +429,20 @@ type containerType = {
 }
 
 @export()
-@description('The type for the log analytics diagnostics.')
+@description('The type for log analytics diagnostics.')
 type logAnalyticsType = {
   @description('Required. The log type to be used.')
   logType: ('ContainerInsights' | 'ContainerInstanceLogs')
 
-  @description('Conditional. The workspace ID for log analytics. Required if `workspaceResourceId` is not provided.')
-  workspaceId: string?
-
-  @description('Conditional. The workspace key for log analytics. Required if `workspaceResourceId` is not provided.')
-  @secure()
-  workspaceKey: string?
-
-  @description('Conditional. The workspace resource ID for log analytics. Required if `workspaceId` or `workspaceId` is not provided.')
-  workspaceResourceId: string?
+  @description('Required. The workspace resource ID for log analytics.')
+  workspaceResourceId: string
 
   @description('Optional. Metadata for log analytics.')
-  metadata: object?
+  metadata: resourceInput<'Microsoft.ContainerInstance/containerGroups@2023-05-01'>.properties.diagnostics.logAnalytics.metadata?
 }
 
 @export()
+@description('The type for an image registry credential.')
 type imageRegistryCredentialType = {
   @description('Required. The Docker image registry server without a protocol such as "http" and "https".')
   server: string
@@ -471,6 +462,7 @@ type imageRegistryCredentialType = {
 }
 
 @export()
+@description('The type for an IP address port.')
 type ipAddressPortsType = {
   @description('Required. The port number exposed on the container instance.')
   port: int
@@ -480,6 +472,7 @@ type ipAddressPortsType = {
 }
 
 @export()
+@description('The type for an IP address.')
 type ipAddressType = {
   @description('Optional. The value representing the security enum.')
   autoGeneratedDomainNameLabelScope:
@@ -503,6 +496,7 @@ type ipAddressType = {
 }
 
 @export()
+@description('The type for a container group subnet.')
 type containerGroupSubnetIdType = {
   @description('Required. Resource ID of virtual network and subnet.')
   subnetResourceId: string
@@ -512,6 +506,7 @@ type containerGroupSubnetIdType = {
 }
 
 @export()
+@description('The type for a DNS configuration.')
 type dnsConfigType = {
   @description('Required. 	The DNS servers for the container group.')
   nameServers: string[]
@@ -526,6 +521,7 @@ type dnsConfigType = {
 // will be removed in future. For more information see https://learn.microsoft.com/en-us/azure/container-instances/container-instances-gpu
 
 @export()
+@description('The type of a container GPU.')
 type containerGpuType = {
   @description('Required. The count of the GPU resource.')
   count: int
