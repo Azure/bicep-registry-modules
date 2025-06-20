@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10343061428287887846"
+      "templateHash": "1917556658957750032"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -525,7 +525,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14316640921557133275"
+              "templateHash": "18170579295858176658"
             }
           },
           "parameters": {
@@ -561,6 +561,27 @@
               "defaultValue": "VmSubnetNsg",
               "metadata": {
                 "description": "Specifies the name of the network security group associated to the subnet hosting the virtual machine."
+              }
+            },
+            "foundryAgentSubnetName": {
+              "type": "string",
+              "defaultValue": "FoundryAgentSubnet",
+              "metadata": {
+                "description": "Specifies the name of the subnet which contains the Foundry agent."
+              }
+            },
+            "foundryAgentSubnetAddressPrefix": {
+              "type": "string",
+              "defaultValue": "10.3.3.0/24",
+              "metadata": {
+                "description": "Specifies the address prefix of the subnet which contains the Foundry agent."
+              }
+            },
+            "foundryAgentSubnetNsgName": {
+              "type": "string",
+              "defaultValue": "FoundryAgentSubnetNsg",
+              "metadata": {
+                "description": "Specifies the name of the network security group associated to the subnet hosting the Foundry agent."
               }
             },
             "bastionSubnetAddressPrefix": {
@@ -687,85 +708,6 @@
             }
           },
           "variables": {
-            "copy": [
-              {
-                "name": "nsgLogs",
-                "count": "[length(variables('nsgLogCategories'))]",
-                "input": {
-                  "category": "[variables('nsgLogCategories')[copyIndex('nsgLogs')]]",
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true,
-                    "days": 0
-                  }
-                }
-              },
-              {
-                "name": "vnetLogs",
-                "count": "[length(variables('vnetLogCategories'))]",
-                "input": {
-                  "category": "[variables('vnetLogCategories')[copyIndex('vnetLogs')]]",
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true,
-                    "days": 0
-                  }
-                }
-              },
-              {
-                "name": "vnetMetrics",
-                "count": "[length(variables('vnetMetricCategories'))]",
-                "input": {
-                  "category": "[variables('vnetMetricCategories')[copyIndex('vnetMetrics')]]",
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true,
-                    "days": 0
-                  }
-                }
-              },
-              {
-                "name": "bastionLogs",
-                "count": "[length(variables('bastionLogCategories'))]",
-                "input": {
-                  "category": "[variables('bastionLogCategories')[copyIndex('bastionLogs')]]",
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true,
-                    "days": 0
-                  }
-                }
-              },
-              {
-                "name": "bastionMetrics",
-                "count": "[length(variables('bastionMetricCategories'))]",
-                "input": {
-                  "category": "[variables('bastionMetricCategories')[copyIndex('bastionMetrics')]]",
-                  "enabled": true,
-                  "retentionPolicy": {
-                    "enabled": true,
-                    "days": 0
-                  }
-                }
-              }
-            ],
-            "diagnosticSettingsName": "diagnosticSettings",
-            "nsgLogCategories": [
-              "NetworkSecurityGroupEvent",
-              "NetworkSecurityGroupRuleCounter"
-            ],
-            "vnetLogCategories": [
-              "VMProtectionAlerts"
-            ],
-            "vnetMetricCategories": [
-              "AllMetrics"
-            ],
-            "bastionLogCategories": [
-              "BastionAuditLogs"
-            ],
-            "bastionMetricCategories": [
-              "AllMetrics"
-            ],
             "bastionSubnetName": "AzureBastionSubnet"
           },
           "resources": [
@@ -804,11 +746,21 @@
                         "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('bastionSubnetNsgName'))]"
                       }
                     }
+                  },
+                  {
+                    "name": "[parameters('foundryAgentSubnetName')]",
+                    "properties": {
+                      "addressPrefix": "[parameters('foundryAgentSubnetAddressPrefix')]",
+                      "networkSecurityGroup": {
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('foundryAgentSubnetNsgName'))]"
+                      }
+                    }
                   }
                 ]
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('bastionSubnetNsgName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('foundryAgentSubnetNsgName'))]",
                 "[resourceId('Microsoft.Network/natGateways', parameters('natGatewayName'))]",
                 "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('vmSubnetNsgName'))]"
               ]
@@ -978,6 +930,16 @@
               }
             },
             {
+              "type": "Microsoft.Network/networkSecurityGroups",
+              "apiVersion": "2024-03-01",
+              "name": "[parameters('foundryAgentSubnetNsgName')]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "securityRules": []
+              }
+            },
+            {
               "copy": {
                 "name": "natGatewayPublicIp",
                 "count": "[length(range(0, parameters('natGatewayPublicIps')))]"
@@ -1073,12 +1035,16 @@
               ]
             },
             {
-              "type": "Microsoft.Insights/diagnosticSettings",
-              "apiVersion": "2021-05-01-preview",
+              "type": "microsoft.insights/diagnosticSettings",
+              "apiVersion": "2016-09-01",
               "scope": "[format('Microsoft.Network/networkSecurityGroups/{0}', parameters('vmSubnetNsgName'))]",
-              "name": "[variables('diagnosticSettingsName')]",
+              "name": "service",
+              "location": "[parameters('location')]",
               "properties": {
-                "logs": "[variables('nsgLogs')]"
+                "storageAccountId": null,
+                "serviceBusRuleId": null,
+                "metrics": [],
+                "logs": []
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('vmSubnetNsgName'))]"
@@ -1086,25 +1052,32 @@
             },
             {
               "condition": "[parameters('bastionHostEnabled')]",
-              "type": "Microsoft.Insights/diagnosticSettings",
-              "apiVersion": "2021-05-01-preview",
+              "type": "microsoft.insights/diagnosticSettings",
+              "apiVersion": "2016-09-01",
               "scope": "[format('Microsoft.Network/networkSecurityGroups/{0}', parameters('bastionSubnetNsgName'))]",
-              "name": "[variables('diagnosticSettingsName')]",
+              "name": "service",
+              "location": "[parameters('location')]",
               "properties": {
-                "logs": "[variables('nsgLogs')]"
+                "storageAccountId": null,
+                "serviceBusRuleId": null,
+                "metrics": [],
+                "logs": []
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('bastionSubnetNsgName'))]"
               ]
             },
             {
-              "type": "Microsoft.Insights/diagnosticSettings",
-              "apiVersion": "2021-05-01-preview",
+              "type": "microsoft.insights/diagnosticSettings",
+              "apiVersion": "2016-09-01",
               "scope": "[format('Microsoft.Network/virtualNetworks/{0}', parameters('virtualNetworkName'))]",
-              "name": "[variables('diagnosticSettingsName')]",
+              "name": "service",
+              "location": "[parameters('location')]",
               "properties": {
-                "logs": "[variables('vnetLogs')]",
-                "metrics": "[variables('vnetMetrics')]"
+                "storageAccountId": null,
+                "serviceBusRuleId": null,
+                "metrics": [],
+                "logs": []
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
@@ -1112,16 +1085,35 @@
             },
             {
               "condition": "[parameters('bastionHostEnabled')]",
-              "type": "Microsoft.Insights/diagnosticSettings",
-              "apiVersion": "2021-05-01-preview",
+              "type": "microsoft.insights/diagnosticSettings",
+              "apiVersion": "2016-09-01",
               "scope": "[format('Microsoft.Network/bastionHosts/{0}', parameters('bastionHostName'))]",
-              "name": "[variables('diagnosticSettingsName')]",
+              "name": "service",
+              "location": "[parameters('location')]",
               "properties": {
-                "logs": "[variables('bastionLogs')]",
-                "metrics": "[variables('bastionMetrics')]"
+                "storageAccountId": null,
+                "serviceBusRuleId": null,
+                "metrics": [],
+                "logs": []
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Network/bastionHosts', parameters('bastionHostName'))]"
+              ]
+            },
+            {
+              "type": "microsoft.insights/diagnosticSettings",
+              "apiVersion": "2016-09-01",
+              "scope": "[format('Microsoft.Network/networkSecurityGroups/{0}', parameters('foundryAgentSubnetNsgName'))]",
+              "name": "service",
+              "location": "[parameters('location')]",
+              "properties": {
+                "storageAccountId": null,
+                "serviceBusRuleId": null,
+                "metrics": [],
+                "logs": []
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('foundryAgentSubnetNsgName'))]"
               ]
             }
           ],
@@ -1142,6 +1134,10 @@
               "type": "string",
               "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), variables('bastionSubnetName'))]"
             },
+            "foundryAgentSubnetId": {
+              "type": "string",
+              "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('foundryAgentSubnetName'))]"
+            },
             "vmSubnetName": {
               "type": "string",
               "value": "[parameters('vmSubnetName')]"
@@ -1149,6 +1145,10 @@
             "bastionSubnetName": {
               "type": "string",
               "value": "[variables('bastionSubnetName')]"
+            },
+            "foundryAgentSubnetName": {
+              "type": "string",
+              "value": "[parameters('foundryAgentSubnetName')]"
             },
             "bastionName": {
               "type": "string",
@@ -38536,7 +38536,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "2238040042216208650"
+              "templateHash": "15124677015417651373"
             }
           },
           "parameters": {
@@ -38708,14 +38708,16 @@
               "dependsOn": [
                 "[resourceId('Microsoft.CognitiveServices/accounts/capabilityHosts', parameters('aiServicesName'), 'accountCapHost')]",
                 "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]",
-                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]"
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('storageName'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('nameFormatted'))]",
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects/connections', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('cosmosDBName'))]"
               ]
             }
           ],
           "outputs": {
             "projectCapHost": {
               "type": "string",
-              "value": "projectCapHost"
+              "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), 'projectCapHost', '')]"
             },
             "projectId": {
               "type": "string",

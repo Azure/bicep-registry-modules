@@ -31,10 +31,6 @@ param defaultProjectName string = name
 param defaultProjectDisplayName string = name
 param defaultProjectDescription string = 'This is the default project for AI Foundry.'
 
-// var threadConnections = ['${cosmosDBConnection}']
-// var storageConnections = ['${azureStorageConnection}']
-// var vectorStoreConnections = ['${aiSearchConnection}']
-
 resource foundryAccount 'Microsoft.CognitiveServices/accounts@2025-04-01-preview' existing = {
   name: aiServicesName
 }
@@ -129,10 +125,10 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
       project_connection_azureai_search.name
     ]
     storageConnections: [
-      storageName
+      project_connection_azure_storage.name
     ]
     threadStorageConnections: [
-      cosmosDBName
+      project_connection_cosmosdb.name
     ]
   }
   dependsOn: [
@@ -140,7 +136,7 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
   ]
 }
 
-output projectCapHost string = projectCapabilityHost.name
+output projectCapHost string = toLower(aiFoundryType) != 'basic' ? projectCapabilityHost.name : ''
 
 output projectId string = project.id
 output projectName string = project.name
