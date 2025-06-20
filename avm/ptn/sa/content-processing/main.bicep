@@ -598,6 +598,7 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     }
     supportsHttpsTrafficOnly: true
     accessTier: 'Hot'
+    tags: tags
 
     //<======================= WAF related parameters
     allowBlobPublicAccess: (!enablePrivateNetworking) // Disable public access when WAF is enabled
@@ -1070,6 +1071,7 @@ module avmAiServices_storage_hub 'br/public:avm/res/storage/storage-account:0.20
       bypass: 'AzureServices'
       defaultAction: 'Allow'
     }
+    tags: tags
     supportsHttpsTrafficOnly: true
     accessTier: 'Hot'
     allowBlobPublicAccess: false
@@ -1214,6 +1216,7 @@ module avmAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.
     friendlyName: '${namingAbbrs.ai.aiHubProject}${solutionPrefix}'
     hubResourceId: avmAiHub.outputs.resourceId
     enableTelemetry: enableTelemetry
+    tags: tags
   }
 }
 
@@ -1261,6 +1264,7 @@ module avmContainerRegistryReader 'br/public:avm/res/managed-identity/user-assig
   params: {
     name: 'acr-reader-mid${solutionPrefix}'
     location: resourceGroupLocation
+    tags: tags
     enableTelemetry: enableTelemetry
   }
   scope: resourceGroup(resourceGroup().name)
@@ -1327,6 +1331,7 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.17.0' = {
       minReplicas: 1
       maxReplicas: 1
     }
+    tags: tags
   }
 }
 
@@ -1628,7 +1633,7 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_CONTENT_UNDERSTANDING_ENDPOINT'
-        value: avmAiServices_cu.outputs.endpoint //TODO: replace with actual endpoint
+        value: 'test' //avmAiServices_cu.outputs.endpoint //TODO: replace with actual endpoint
       }
       {
         name: 'APP_COSMOS_CONTAINER_PROCESS'
@@ -1684,20 +1689,20 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_STORAGE_BLOB_URL'
-        value: avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
+        value: 'test' //avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
       }
       {
         name: 'APP_STORAGE_QUEUE_URL'
-        value: avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
+        value: 'test' //avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
       }
       {
         name: 'APP_AI_PROJECT_CONN_STR'
-        value: '${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
+        value: 'test' //'${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
         //TODO: replace with actual AI project connection string
       }
       {
         name: 'APP_COSMOS_CONNSTR'
-        value: avmCosmosDB.outputs.primaryReadWriteConnectionString
+        value: 'test' //avmCosmosDB.outputs.primaryReadWriteConnectionString
       }
     ]
 

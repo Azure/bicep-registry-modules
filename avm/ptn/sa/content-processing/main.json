@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5526131072026687357"
+      "templateHash": "14155237282783635475"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -41780,6 +41780,9 @@
           "accessTier": {
             "value": "Hot"
           },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
           "allowBlobPublicAccess": {
             "value": "[not(parameters('enablePrivateNetworking'))]"
           },
@@ -47479,8 +47482,8 @@
       },
       "dependsOn": [
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZoneStorages[{0}]', 2)]",
         "[format('avmPrivateDnsZoneStorages[{0}]', 0)]",
+        "[format('avmPrivateDnsZoneStorages[{0}]', 2)]",
         "avmVirtualNetwork"
       ]
     },
@@ -52427,6 +52430,9 @@
               "bypass": "AzureServices",
               "defaultAction": "Allow"
             }
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
           },
           "supportsHttpsTrafficOnly": {
             "value": true
@@ -62423,6 +62429,9 @@
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
           }
         },
         "template": {
@@ -67513,6 +67522,9 @@
           "location": {
             "value": "[parameters('resourceGroupLocation')]"
           },
+          "tags": {
+            "value": "[parameters('tags')]"
+          },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           }
@@ -68042,6 +68054,9 @@
               "minReplicas": 1,
               "maxReplicas": 1
             }
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
           }
         },
         "template": {
@@ -73365,7 +73380,7 @@
               },
               {
                 "name": "APP_CONTENT_UNDERSTANDING_ENDPOINT",
-                "value": "[reference('avmAiServices_cu').outputs.endpoint.value]"
+                "value": "test"
               },
               {
                 "name": "APP_COSMOS_CONTAINER_PROCESS",
@@ -73421,19 +73436,19 @@
               },
               {
                 "name": "APP_STORAGE_BLOB_URL",
-                "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format(parameters('resourceNameFormatString'), variables('namingAbbrs').storage.storageAccount)), '2022-09-01').serviceEndpoints.blob]"
+                "value": "test"
               },
               {
                 "name": "APP_STORAGE_QUEUE_URL",
-                "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format(parameters('resourceNameFormatString'), variables('namingAbbrs').storage.storageAccount)), '2022-09-01').serviceEndpoints.queue]"
+                "value": "test"
               },
               {
                 "name": "APP_AI_PROJECT_CONN_STR",
-                "value": "[format('{0}.api.azureml.ms;{1};{2};{3}', parameters('resourceGroupLocation'), subscription().subscriptionId, resourceGroup().name, format(parameters('resourceNameFormatString'), variables('namingAbbrs').ai.aiHubProject))]"
+                "value": "test"
               },
               {
                 "name": "APP_COSMOS_CONNSTR",
-                "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format(parameters('resourceNameFormatString'), variables('namingAbbrs').databases.cosmosDBDatabase)), '2022-09-01').primaryReadWriteConnectionString]"
+                "value": "test"
               }
             ]
           },
