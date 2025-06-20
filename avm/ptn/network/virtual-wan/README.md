@@ -63,6 +63,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: '<hubLocation>'
         hubName: '<hubName>'
+        secureHubParameters: {
+          deploySecureHub: false
+        }
       }
     ]
     virtualWanParameters: {
@@ -91,7 +94,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         {
           "hubAddressPrefix": "10.0.0.0/24",
           "hubLocation": "<hubLocation>",
-          "hubName": "<hubName>"
+          "hubName": "<hubName>",
+          "secureHubParameters": {
+            "deploySecureHub": false
+          }
         }
       ]
     },
@@ -121,6 +127,9 @@ param virtualHubParameters = [
     hubAddressPrefix: '10.0.0.0/24'
     hubLocation: '<hubLocation>'
     hubName: '<hubName>'
+    secureHubParameters: {
+      deploySecureHub: false
+    }
   }
 ]
 param virtualWanParameters = {
@@ -151,6 +160,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: '<hubLocation>'
         hubName: '<hubName>'
+        secureHubParameters: {
+          deploySecureHub: false
+        }
       }
     ]
     virtualWanParameters: {
@@ -179,7 +191,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         {
           "hubAddressPrefix": "10.0.0.0/24",
           "hubLocation": "<hubLocation>",
-          "hubName": "<hubName>"
+          "hubName": "<hubName>",
+          "secureHubParameters": {
+            "deploySecureHub": false
+          }
         }
       ]
     },
@@ -209,6 +224,9 @@ param virtualHubParameters = [
     hubAddressPrefix: '10.0.0.0/24'
     hubLocation: '<hubLocation>'
     hubName: '<hubName>'
+    secureHubParameters: {
+      deploySecureHub: false
+    }
   }
 ]
 param virtualWanParameters = {
@@ -239,6 +257,9 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: '<hubLocation>'
         hubName: '<hubName>'
+        secureHubParameters: {
+          deploySecureHub: false
+        }
       }
     ]
     virtualWanParameters: {
@@ -267,7 +288,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         {
           "hubAddressPrefix": "10.0.0.0/24",
           "hubLocation": "<hubLocation>",
-          "hubName": "<hubName>"
+          "hubName": "<hubName>",
+          "secureHubParameters": {
+            "deploySecureHub": false
+          }
         }
       ]
     },
@@ -297,6 +321,9 @@ param virtualHubParameters = [
     hubAddressPrefix: '10.0.0.0/24'
     hubLocation: '<hubLocation>'
     hubName: '<hubName>'
+    secureHubParameters: {
+      deploySecureHub: false
+    }
   }
 ]
 param virtualWanParameters = {
