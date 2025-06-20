@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "315471159129922834"
+      "templateHash": "12510713552860812940"
     },
     "name": "IaaS VM with CosmosDB Tier 4",
     "description": "Creates an IaaS VM with CosmosDB Tier 4 configuration."
@@ -12205,7 +12205,12 @@
                 "ipConfigurations": [
                   {
                     "name": "ipconfig1",
-                    "subnetResourceId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]"
+                    "subnetResourceId": "[reference('virtualNetwork').outputs.subnetResourceIds.value[0]]",
+                    "loadBalancerBackendAddressPools": [
+                      {
+                        "id": "[format('{0}/backendAddressPools/{1}-lb-backendpool01', reference('loadBalancer').outputs.resourceId.value, parameters('name'))]"
+                      }
+                    ]
                   }
                 ],
                 "networkSecurityGroupResourceId": "[reference('vmNetworkSecurityGroup').outputs.resourceId.value]",
@@ -20474,6 +20479,7 @@
         }
       },
       "dependsOn": [
+        "loadBalancer",
         "sshKey",
         "storageAccount",
         "virtualNetwork",
@@ -32047,6 +32053,13 @@
         "description": "Resource. The resource ID of the virtual network."
       },
       "value": "[reference('virtualNetwork').outputs.resourceId.value]"
+    },
+    "loadBalancerResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource. The resource ID of the load balancer."
+      },
+      "value": "[reference('loadBalancer').outputs.resourceId.value]"
     },
     "resourceId": {
       "type": "string",
