@@ -1618,87 +1618,87 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
 
     disableLocalAuth: false
     keyValues: [
-      // {
-      //   name: 'APP_AZURE_OPENAI_ENDPOINT'
-      //   value: avmAiServices.outputs.endpoint //TODO: replace with actual endpoint
-      // }
-      // {
-      //   name: 'APP_AZURE_OPENAI_MODEL'
-      //   value: gptModelName
-      // }
-      // {
-      //   name: 'APP_CONTENT_UNDERSTANDING_ENDPOINT'
-      //   value: avmAiServices_cu.outputs.endpoint //TODO: replace with actual endpoint
-      // }
-      // {
-      //   name: 'APP_COSMOS_CONTAINER_PROCESS'
-      //   value: 'Processes'
-      // }
-      // {
-      //   name: 'APP_COSMOS_CONTAINER_SCHEMA'
-      //   value: 'Schemas'
-      // }
-      // {
-      //   name: 'APP_COSMOS_DATABASE'
-      //   value: 'ContentProcess'
-      // }
-      // {
-      //   name: 'APP_CPS_CONFIGURATION'
-      //   value: 'cps-configuration'
-      // }
-      // {
-      //   name: 'APP_CPS_MAX_FILESIZE_MB'
-      //   value: '20'
-      // }
-      // {
-      //   name: 'APP_CPS_PROCESSES'
-      //   value: 'cps-processes'
-      // }
-      // {
-      //   name: 'APP_LOGGING_ENABLE'
-      //   value: 'False'
-      // }
-      // {
-      //   name: 'APP_LOGGING_LEVEL'
-      //   value: 'INFO'
-      // }
-      // {
-      //   name: 'APP_MESSAGE_QUEUE_EXTRACT'
-      //   value: 'content-pipeline-extract-queue'
-      // }
-      // {
-      //   name: 'APP_MESSAGE_QUEUE_INTERVAL'
-      //   value: '5'
-      // }
-      // {
-      //   name: 'APP_MESSAGE_QUEUE_PROCESS_TIMEOUT'
-      //   value: '180'
-      // }
-      // {
-      //   name: 'APP_MESSAGE_QUEUE_VISIBILITY_TIMEOUT'
-      //   value: '10'
-      // }
-      // {
-      //   name: 'APP_PROCESS_STEPS'
-      //   value: 'extract,map,evaluate,save'
-      // }
-      // {
-      //   name: 'APP_STORAGE_BLOB_URL'
-      //   value: avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
-      // }
-      // {
-      //   name: 'APP_STORAGE_QUEUE_URL'
-      //   value: avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
-      // }
-      // {
-      //   name: 'APP_AI_PROJECT_CONN_STR'
-      //   value: '${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
-      //   //TODO: replace with actual AI project connection string
-      // }
-      // {
-      //   name: 'APP_COSMOS_CONNSTR'
-      //   value: avmCosmosDB.outputs.primaryReadWriteConnectionString
-      // }
+      {
+        name: 'APP_AZURE_OPENAI_ENDPOINT'
+        value: avmAiServices.outputs.endpoint //TODO: replace with actual endpoint
+      }
+      {
+        name: 'APP_AZURE_OPENAI_MODEL'
+        value: gptModelName
+      }
+      {
+        name: 'APP_CONTENT_UNDERSTANDING_ENDPOINT'
+        value: avmAiServices_cu.outputs.endpoint //TODO: replace with actual endpoint
+      }
+      {
+        name: 'APP_COSMOS_CONTAINER_PROCESS'
+        value: 'Processes'
+      }
+      {
+        name: 'APP_COSMOS_CONTAINER_SCHEMA'
+        value: 'Schemas'
+      }
+      {
+        name: 'APP_COSMOS_DATABASE'
+        value: 'ContentProcess'
+      }
+      {
+        name: 'APP_CPS_CONFIGURATION'
+        value: 'cps-configuration'
+      }
+      {
+        name: 'APP_CPS_MAX_FILESIZE_MB'
+        value: '20'
+      }
+      {
+        name: 'APP_CPS_PROCESSES'
+        value: 'cps-processes'
+      }
+      {
+        name: 'APP_LOGGING_ENABLE'
+        value: 'False'
+      }
+      {
+        name: 'APP_LOGGING_LEVEL'
+        value: 'INFO'
+      }
+      {
+        name: 'APP_MESSAGE_QUEUE_EXTRACT'
+        value: 'content-pipeline-extract-queue'
+      }
+      {
+        name: 'APP_MESSAGE_QUEUE_INTERVAL'
+        value: '5'
+      }
+      {
+        name: 'APP_MESSAGE_QUEUE_PROCESS_TIMEOUT'
+        value: '180'
+      }
+      {
+        name: 'APP_MESSAGE_QUEUE_VISIBILITY_TIMEOUT'
+        value: '10'
+      }
+      {
+        name: 'APP_PROCESS_STEPS'
+        value: 'extract,map,evaluate,save'
+      }
+      {
+        name: 'APP_STORAGE_BLOB_URL'
+        value: avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
+      }
+      {
+        name: 'APP_STORAGE_QUEUE_URL'
+        value: avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
+      }
+      {
+        name: 'APP_AI_PROJECT_CONN_STR'
+        value: '${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
+        //TODO: replace with actual AI project connection string
+      }
+      {
+        name: 'APP_COSMOS_CONNSTR'
+        value: avmCosmosDB.outputs.primaryReadWriteConnectionString
+      }
     ]
 
     publicNetworkAccess: 'Enabled' // Always enabled for App Configuration
@@ -1722,6 +1722,13 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
     //       ]
     //     : []
   }
+
+  dependsOn: [
+    avmAiServices
+    avmAiServices_cu
+    avmStorageAccount
+    avmCosmosDB
+  ]
 }
 
 // module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = if (enablePrivateNetworking) {

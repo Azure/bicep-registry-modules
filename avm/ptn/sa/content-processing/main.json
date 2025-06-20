@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5192445733061663557"
+      "templateHash": "5526131072026687357"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -73354,7 +73354,88 @@
             "value": false
           },
           "keyValues": {
-            "value": []
+            "value": [
+              {
+                "name": "APP_AZURE_OPENAI_ENDPOINT",
+                "value": "[reference('avmAiServices').outputs.endpoint.value]"
+              },
+              {
+                "name": "APP_AZURE_OPENAI_MODEL",
+                "value": "[parameters('gptModelName')]"
+              },
+              {
+                "name": "APP_CONTENT_UNDERSTANDING_ENDPOINT",
+                "value": "[reference('avmAiServices_cu').outputs.endpoint.value]"
+              },
+              {
+                "name": "APP_COSMOS_CONTAINER_PROCESS",
+                "value": "Processes"
+              },
+              {
+                "name": "APP_COSMOS_CONTAINER_SCHEMA",
+                "value": "Schemas"
+              },
+              {
+                "name": "APP_COSMOS_DATABASE",
+                "value": "ContentProcess"
+              },
+              {
+                "name": "APP_CPS_CONFIGURATION",
+                "value": "cps-configuration"
+              },
+              {
+                "name": "APP_CPS_MAX_FILESIZE_MB",
+                "value": "20"
+              },
+              {
+                "name": "APP_CPS_PROCESSES",
+                "value": "cps-processes"
+              },
+              {
+                "name": "APP_LOGGING_ENABLE",
+                "value": "False"
+              },
+              {
+                "name": "APP_LOGGING_LEVEL",
+                "value": "INFO"
+              },
+              {
+                "name": "APP_MESSAGE_QUEUE_EXTRACT",
+                "value": "content-pipeline-extract-queue"
+              },
+              {
+                "name": "APP_MESSAGE_QUEUE_INTERVAL",
+                "value": "5"
+              },
+              {
+                "name": "APP_MESSAGE_QUEUE_PROCESS_TIMEOUT",
+                "value": "180"
+              },
+              {
+                "name": "APP_MESSAGE_QUEUE_VISIBILITY_TIMEOUT",
+                "value": "10"
+              },
+              {
+                "name": "APP_PROCESS_STEPS",
+                "value": "extract,map,evaluate,save"
+              },
+              {
+                "name": "APP_STORAGE_BLOB_URL",
+                "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format(parameters('resourceNameFormatString'), variables('namingAbbrs').storage.storageAccount)), '2022-09-01').serviceEndpoints.blob]"
+              },
+              {
+                "name": "APP_STORAGE_QUEUE_URL",
+                "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format(parameters('resourceNameFormatString'), variables('namingAbbrs').storage.storageAccount)), '2022-09-01').serviceEndpoints.queue]"
+              },
+              {
+                "name": "APP_AI_PROJECT_CONN_STR",
+                "value": "[format('{0}.api.azureml.ms;{1};{2};{3}', parameters('resourceGroupLocation'), subscription().subscriptionId, resourceGroup().name, format(parameters('resourceNameFormatString'), variables('namingAbbrs').ai.aiHubProject))]"
+              },
+              {
+                "name": "APP_COSMOS_CONNSTR",
+                "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format(parameters('resourceNameFormatString'), variables('namingAbbrs').databases.cosmosDBDatabase)), '2022-09-01').primaryReadWriteConnectionString]"
+              }
+            ]
           },
           "publicNetworkAccess": {
             "value": "Enabled"
@@ -75332,7 +75413,14 @@
             }
           }
         }
-      }
+      },
+      "dependsOn": [
+        "avmAiProject",
+        "avmAiServices",
+        "avmAiServices_cu",
+        "avmCosmosDB",
+        "avmStorageAccount"
+      ]
     }
   },
   "outputs": {
