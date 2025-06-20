@@ -55,10 +55,70 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/content-processing:<version>`.
 
-- [main configuration with default parameter values](#example-1-main-configuration-with-default-parameter-values)
-- [waf-aligned configuration with default parameter values](#example-2-waf-aligned-configuration-with-default-parameter-values)
+- [Defaults](#example-1-defaults)
+- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
+- [Waf-Aligned](#example-3-waf-aligned)
+- [waf-aligned configuration with default parameter values](#example-4-waf-aligned-configuration-with-default-parameter-values)
 
-### Example 1: _main configuration with default parameter values_
+### Example 1: _Defaults_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
+  name: 'contentProcessingDeployment'
+  params: {
+    // Required parameters
+    location: '<location>'
+    name: 'scpdef001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "name": {
+      "value": "scpdef001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/content-processing:<version>'
+
+// Required parameters
+param location = '<location>'
+param name = 'scpdef001'
+```
+
+</details>
+<p>
+
+### Example 2: _Sandbox configuration with default parameter values_
 
 This instance deploys the [Content Processing Solution Accelerator] using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
 
@@ -75,6 +135,8 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     contentUnderstandingLocation: '<contentUnderstandingLocation>'
     environmentName: 'scpmin'
     gptDeploymentCapacity: 80
+    // Non-required parameters
+    enablePrivateNetworking: false
   }
 }
 ```
@@ -100,6 +162,10 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     },
     "gptDeploymentCapacity": {
       "value": 80
+    },
+    // Non-required parameters
+    "enablePrivateNetworking": {
+      "value": false
     }
   }
 }
@@ -119,12 +185,72 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 param contentUnderstandingLocation = '<contentUnderstandingLocation>'
 param environmentName = 'scpmin'
 param gptDeploymentCapacity = 80
+// Non-required parameters
+param enablePrivateNetworking = false
 ```
 
 </details>
 <p>
 
-### Example 2: _waf-aligned configuration with default parameter values_
+### Example 3: _Waf-Aligned_
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
+  name: 'contentProcessingDeployment'
+  params: {
+    // Required parameters
+    location: '<location>'
+    name: 'scpwaf001'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "location": {
+      "value": "<location>"
+    },
+    "name": {
+      "value": "scpwaf001"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/content-processing:<version>'
+
+// Required parameters
+param location = '<location>'
+param name = 'scpwaf001'
+```
+
+</details>
+<p>
+
+### Example 4: _waf-aligned configuration with default parameter values_
 
 This instance deploys the [Content Processing Solution Accelerator]
 
