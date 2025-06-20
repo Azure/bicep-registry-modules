@@ -522,45 +522,45 @@ module avmRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignme
   scope: resourceGroup(resourceGroup().name)
 }
 
-// // ========== Key Vault Module ========== //
-// module avmKeyVault './modules/key-vault.bicep' = {
-//   //name: format(resourceNameFormatString, namingAbbrs.security.keyVault)
-//   params: {
-//     keyvaultName: '${namingAbbrs.security.keyVault}${solutionPrefix}'
-//     location: resourceGroupLocation
-//     tags: tags
-//     roleAssignments: [
-//       {
-//         principalId: avmManagedIdentity.outputs.principalId
-//         roleDefinitionIdOrName: 'Key Vault Administrator'
-//       }
-//     ]
-//     enablePurgeProtection: false
-//     enableSoftDelete: true
-//     keyvaultsku: 'standard'
-//     enableRbacAuthorization: true
-//     createMode: 'default'
-//     enableTelemetry: enableTelemetry
-//     enableVaultForDiskEncryption: true
-//     enableVaultForTemplateDeployment: true
-//     softDeleteRetentionInDays: 7
-//     publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled'
-//     // privateEndpoints omitted for now, as not in strongly-typed params
-//   }
-//   scope: resourceGroup(resourceGroup().name)
-// }
+// ========== Key Vault Module ========== //
+module avmKeyVault './modules/key-vault.bicep' = {
+  //name: format(resourceNameFormatString, namingAbbrs.security.keyVault)
+  params: {
+    keyvaultName: '${namingAbbrs.security.keyVault}${solutionPrefix}'
+    location: resourceGroupLocation
+    tags: tags
+    roleAssignments: [
+      {
+        principalId: avmManagedIdentity.outputs.principalId
+        roleDefinitionIdOrName: 'Key Vault Administrator'
+      }
+    ]
+    enablePurgeProtection: false
+    enableSoftDelete: true
+    keyvaultsku: 'standard'
+    enableRbacAuthorization: true
+    createMode: 'default'
+    enableTelemetry: enableTelemetry
+    enableVaultForDiskEncryption: true
+    enableVaultForTemplateDeployment: true
+    softDeleteRetentionInDays: 7
+    publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled'
+    // privateEndpoints omitted for now, as not in strongly-typed params
+  }
+  scope: resourceGroup(resourceGroup().name)
+}
 
-// module avmKeyVault_RoleAssignment_appConfig 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-//   name: format(resourceNameFormatString, 'rbac-keyvault-app-config')
-//   params: {
-//     resourceId: avmKeyVault.outputs.resourceId
-//     principalId: avmAppConfig.outputs.systemAssignedMIPrincipalId!
-//     roleDefinitionId: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7' // 'Key Vault Secrets User'
-//     roleName: 'Key Vault Secret User'
-//     principalType: 'ServicePrincipal'
-//     enableTelemetry: enableTelemetry
-//   }
-// }
+module avmKeyVault_RoleAssignment_appConfig 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+  name: format(resourceNameFormatString, 'rbac-keyvault-app-config')
+  params: {
+    resourceId: avmKeyVault.outputs.resourceId
+    principalId: avmAppConfig.outputs.systemAssignedMIPrincipalId!
+    roleDefinitionId: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7' // 'Key Vault Secrets User'
+    roleName: 'Key Vault Secret User'
+    principalType: 'ServicePrincipal'
+    enableTelemetry: enableTelemetry
+  }
+}
 
 // module avmContainerRegistry 'modules/container-registry.bicep' = {
 //   //name: format(deployment_param.resource_name_format_string, abbrs.containers.containerRegistry)
@@ -1002,49 +1002,49 @@ module avmRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignme
 //   }
 // }
 
-// module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = {
-//   name: format(resourceNameFormatString, 'aicu-')
+module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = {
+  name: format(resourceNameFormatString, 'aicu-')
 
-//   params: {
-//     name: 'aicu-${solutionPrefix}'
-//     location: contentUnderstandingLocation
-//     sku: 'S0'
-//     managedIdentities: { systemAssigned: true }
-//     kind: 'AIServices'
-//     tags: {
-//       app: solutionPrefix
-//       location: resourceGroupLocation
-//     }
-//     customSubDomainName: 'aicu-${solutionPrefix}'
-//     disableLocalAuth: true
-//     enableTelemetry: enableTelemetry
+  params: {
+    name: 'aicu-${solutionPrefix}'
+    location: contentUnderstandingLocation
+    sku: 'S0'
+    managedIdentities: { systemAssigned: true }
+    kind: 'AIServices'
+    tags: {
+      app: solutionPrefix
+      location: resourceGroupLocation
+    }
+    customSubDomainName: 'aicu-${solutionPrefix}'
+    disableLocalAuth: true
+    enableTelemetry: enableTelemetry
 
-//     publicNetworkAccess: 'Enabled' // Always enabled for AI Services
-//     // WAF related parameters
-//     //   publicNetworkAccess: (deployment_param.enable_waf) ? 'Disabled' : 'Enabled'
-//     //   privateEndpoints: (deployment_param.enable_waf)
-//     //     ? [
-//     //         {
-//     //           name: 'aicu-private-endpoint'
-//     //           privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
-//     //           privateDnsZoneGroup: {
-//     //             privateDnsZoneGroupConfigs: [
-//     //               {
-//     //                 name: 'aicu-dns-zone-cognitiveservices'
-//     //                 privateDnsZoneResourceId: avmPrivateDnsZoneAiServices[0].outputs.resourceId
-//     //               }
-//     //               {
-//     //                 name: 'aicu-dns-zone-contentunderstanding'
-//     //                 privateDnsZoneResourceId: avmPrivateDnsZoneAiServices[3].outputs.resourceId
-//     //               }
-//     //             ]
-//     //           }
-//     //           subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
-//     //         }
-//     //       ]
-//     //     : []
-//   }
-// }
+    publicNetworkAccess: 'Enabled' // Always enabled for AI Services
+    // WAF related parameters
+    //   publicNetworkAccess: (deployment_param.enable_waf) ? 'Disabled' : 'Enabled'
+    //   privateEndpoints: (deployment_param.enable_waf)
+    //     ? [
+    //         {
+    //           name: 'aicu-private-endpoint'
+    //           privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
+    //           privateDnsZoneGroup: {
+    //             privateDnsZoneGroupConfigs: [
+    //               {
+    //                 name: 'aicu-dns-zone-cognitiveservices'
+    //                 privateDnsZoneResourceId: avmPrivateDnsZoneAiServices[0].outputs.resourceId
+    //               }
+    //               {
+    //                 name: 'aicu-dns-zone-contentunderstanding'
+    //                 privateDnsZoneResourceId: avmPrivateDnsZoneAiServices[3].outputs.resourceId
+    //               }
+    //             ]
+    //           }
+    //           subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
+    //         }
+    //       ]
+    //     : []
+  }
+}
 
 // module avmAiServices_cu_roleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
 //   name: format(resourceNameFormatString, 'rbac-ai-services-cu')
@@ -1602,127 +1602,127 @@ module avmRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignme
 //   }
 // }
 
-// // ========== App Configuration ========== //
-// module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = {
-//   name: format(resourceNameFormatString, namingAbbrs.developerTools.appConfigurationStore)
-//   params: {
-//     name: '${namingAbbrs.developerTools.appConfigurationStore}${solutionPrefix}'
-//     location: resourceGroupLocation
-//     tags: {
-//       app: solutionPrefix
-//       location: resourceGroupLocation
-//     }
-//     enableTelemetry: enableTelemetry
-//     managedIdentities: { systemAssigned: true }
-//     sku: 'Standard'
+// ========== App Configuration ========== //
+module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = {
+  name: format(resourceNameFormatString, namingAbbrs.developerTools.appConfigurationStore)
+  params: {
+    name: '${namingAbbrs.developerTools.appConfigurationStore}${solutionPrefix}'
+    location: resourceGroupLocation
+    tags: {
+      app: solutionPrefix
+      location: resourceGroupLocation
+    }
+    enableTelemetry: enableTelemetry
+    managedIdentities: { systemAssigned: true }
+    sku: 'Standard'
 
-//     disableLocalAuth: false
-//     keyValues: [
-//       {
-//         name: 'APP_AZURE_OPENAI_ENDPOINT'
-//         value: avmAiServices.outputs.endpoint //TODO: replace with actual endpoint
-//       }
-//       {
-//         name: 'APP_AZURE_OPENAI_MODEL'
-//         value: gptModelName
-//       }
-//       {
-//         name: 'APP_CONTENT_UNDERSTANDING_ENDPOINT'
-//         value: avmAiServices_cu.outputs.endpoint //TODO: replace with actual endpoint
-//       }
-//       {
-//         name: 'APP_COSMOS_CONTAINER_PROCESS'
-//         value: 'Processes'
-//       }
-//       {
-//         name: 'APP_COSMOS_CONTAINER_SCHEMA'
-//         value: 'Schemas'
-//       }
-//       {
-//         name: 'APP_COSMOS_DATABASE'
-//         value: 'ContentProcess'
-//       }
-//       {
-//         name: 'APP_CPS_CONFIGURATION'
-//         value: 'cps-configuration'
-//       }
-//       {
-//         name: 'APP_CPS_MAX_FILESIZE_MB'
-//         value: '20'
-//       }
-//       {
-//         name: 'APP_CPS_PROCESSES'
-//         value: 'cps-processes'
-//       }
-//       {
-//         name: 'APP_LOGGING_ENABLE'
-//         value: 'False'
-//       }
-//       {
-//         name: 'APP_LOGGING_LEVEL'
-//         value: 'INFO'
-//       }
-//       {
-//         name: 'APP_MESSAGE_QUEUE_EXTRACT'
-//         value: 'content-pipeline-extract-queue'
-//       }
-//       {
-//         name: 'APP_MESSAGE_QUEUE_INTERVAL'
-//         value: '5'
-//       }
-//       {
-//         name: 'APP_MESSAGE_QUEUE_PROCESS_TIMEOUT'
-//         value: '180'
-//       }
-//       {
-//         name: 'APP_MESSAGE_QUEUE_VISIBILITY_TIMEOUT'
-//         value: '10'
-//       }
-//       {
-//         name: 'APP_PROCESS_STEPS'
-//         value: 'extract,map,evaluate,save'
-//       }
-//       {
-//         name: 'APP_STORAGE_BLOB_URL'
-//         value: avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
-//       }
-//       {
-//         name: 'APP_STORAGE_QUEUE_URL'
-//         value: avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
-//       }
-//       {
-//         name: 'APP_AI_PROJECT_CONN_STR'
-//         value: '${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
-//         //TODO: replace with actual AI project connection string
-//       }
-//       {
-//         name: 'APP_COSMOS_CONNSTR'
-//         value: avmCosmosDB.outputs.primaryReadWriteConnectionString
-//       }
-//     ]
+    disableLocalAuth: false
+    keyValues: [
+      {
+        name: 'APP_AZURE_OPENAI_ENDPOINT'
+        value: avmAiServices.outputs.endpoint //TODO: replace with actual endpoint
+      }
+      {
+        name: 'APP_AZURE_OPENAI_MODEL'
+        value: gptModelName
+      }
+      {
+        name: 'APP_CONTENT_UNDERSTANDING_ENDPOINT'
+        value: avmAiServices_cu.outputs.endpoint //TODO: replace with actual endpoint
+      }
+      {
+        name: 'APP_COSMOS_CONTAINER_PROCESS'
+        value: 'Processes'
+      }
+      {
+        name: 'APP_COSMOS_CONTAINER_SCHEMA'
+        value: 'Schemas'
+      }
+      {
+        name: 'APP_COSMOS_DATABASE'
+        value: 'ContentProcess'
+      }
+      {
+        name: 'APP_CPS_CONFIGURATION'
+        value: 'cps-configuration'
+      }
+      {
+        name: 'APP_CPS_MAX_FILESIZE_MB'
+        value: '20'
+      }
+      {
+        name: 'APP_CPS_PROCESSES'
+        value: 'cps-processes'
+      }
+      {
+        name: 'APP_LOGGING_ENABLE'
+        value: 'False'
+      }
+      {
+        name: 'APP_LOGGING_LEVEL'
+        value: 'INFO'
+      }
+      {
+        name: 'APP_MESSAGE_QUEUE_EXTRACT'
+        value: 'content-pipeline-extract-queue'
+      }
+      {
+        name: 'APP_MESSAGE_QUEUE_INTERVAL'
+        value: '5'
+      }
+      {
+        name: 'APP_MESSAGE_QUEUE_PROCESS_TIMEOUT'
+        value: '180'
+      }
+      {
+        name: 'APP_MESSAGE_QUEUE_VISIBILITY_TIMEOUT'
+        value: '10'
+      }
+      {
+        name: 'APP_PROCESS_STEPS'
+        value: 'extract,map,evaluate,save'
+      }
+      {
+        name: 'APP_STORAGE_BLOB_URL'
+        value: avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
+      }
+      {
+        name: 'APP_STORAGE_QUEUE_URL'
+        value: avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
+      }
+      {
+        name: 'APP_AI_PROJECT_CONN_STR'
+        value: '${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
+        //TODO: replace with actual AI project connection string
+      }
+      {
+        name: 'APP_COSMOS_CONNSTR'
+        value: avmCosmosDB.outputs.primaryReadWriteConnectionString
+      }
+    ]
 
-//     publicNetworkAccess: 'Enabled' // Always enabled for App Configuration
-//     // WAF related parameters
-//     //   publicNetworkAccess: (deployment_param.enable_waf) ? 'Disabled' : 'Enabled'
-//     //   privateEndpoints: (deployment_param.enable_waf)
-//     //     ? [
-//     //         {
-//     //           name: 'appconfig-private-endpoint'
-//     //           privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
-//     //           privateDnsZoneGroup: {
-//     //             privateDnsZoneGroupConfigs: [
-//     //               {
-//     //                 name: 'appconfig-dns-zone-group'
-//     //                 privateDnsZoneResourceId: avmPrivateDnsZoneAppConfig.outputs.resourceId
-//     //               }
-//     //             ]
-//     //           }
-//     //           subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
-//     //         }
-//     //       ]
-//     //     : []
-//   }
-// }
+    publicNetworkAccess: 'Enabled' // Always enabled for App Configuration
+    // WAF related parameters
+    //   publicNetworkAccess: (deployment_param.enable_waf) ? 'Disabled' : 'Enabled'
+    //   privateEndpoints: (deployment_param.enable_waf)
+    //     ? [
+    //         {
+    //           name: 'appconfig-private-endpoint'
+    //           privateEndpointResourceId: avmVirtualNetwork.outputs.resourceId
+    //           privateDnsZoneGroup: {
+    //             privateDnsZoneGroupConfigs: [
+    //               {
+    //                 name: 'appconfig-dns-zone-group'
+    //                 privateDnsZoneResourceId: avmPrivateDnsZoneAppConfig.outputs.resourceId
+    //               }
+    //             ]
+    //           }
+    //           subnetResourceId: avmVirtualNetwork.outputs.subnetResourceIds[0] // Use the backend subnet
+    //         }
+    //       ]
+    //     : []
+  }
+}
 
 // module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-store:0.6.3' = if (enablePrivateNetworking) {
 //   name: format(resourceNameFormatString, '${namingAbbrs.developerTools.appConfigurationStore}-update')
