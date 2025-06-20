@@ -65,7 +65,7 @@ module firewallModule 'br/public:avm/res/network/azure-firewall:0.7.0' = [
     params: {
       name: virtualHub.?secureHubParameters.?azureFirewallName!
       azureSkuTier: virtualHub.?secureHubParameters.?azureFirewallSku
-      virtualHubId: virtualHubModule[i].outputs.resourceId
+      virtualHubResoureId: virtualHubModule[i].outputs.resourceId // Misspelling has been called out in https://github.com/Azure/bicep-registry-modules/issues/5441
       firewallPolicyId: virtualHub.?secureHubParameters.?firewallPolicyResourceId
       location: virtualHubModule[i].outputs.location
       hubIPAddresses: {
