@@ -269,6 +269,7 @@ module keyVault_accessPolicies 'access-policy/main.bicep' = if (!empty(accessPol
   params: {
     keyVaultName: keyVault.name
     accessPolicies: accessPolicies
+    enableTelemetry: enableReferencedModulesTelemetry
   }
 }
 
@@ -285,6 +286,7 @@ module keyVault_secrets 'secret/main.bicep' = [
       contentType: secret.?contentType
       tags: secret.?tags ?? tags
       roleAssignments: secret.?roleAssignments
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
@@ -306,6 +308,7 @@ module keyVault_keys 'key/main.bicep' = [
       tags: key.?tags ?? tags
       roleAssignments: key.?roleAssignments
       rotationPolicy: key.?rotationPolicy
+      enableTelemetry: enableReferencedModulesTelemetry
     }
   }
 ]
