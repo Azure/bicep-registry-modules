@@ -74,6 +74,7 @@ body:
         - "avm/ptn/network/private-link-private-dns-zones"
         - "avm/ptn/policy-insights/remediation"
         - "avm/ptn/sa/conversation-knowledge-mining"
+        - "avm/ptn/sa/multi-agent-custom-automation-engine"
         - "avm/ptn/security/security-center"
         - "avm/ptn/subscription/service-health-alerts"
         - "avm/ptn/virtual-machine-images/azure-image-builder"
