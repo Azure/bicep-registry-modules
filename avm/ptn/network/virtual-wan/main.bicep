@@ -28,7 +28,7 @@ module virtualWan 'br/public:avm/res/network/virtual-wan:0.3.1' = {
     allowVnetToVnetTraffic: virtualWanParameters.?allowVnetToVnetTraffic
     disableVpnEncryption: virtualWanParameters.?disableVpnEncryption
     enableTelemetry: enableTelemetry
-    lock: virtualWanParameters.?lock ?? {}
+    lock: virtualWanParameters.?lock ?? lock
     roleAssignments: virtualWanParameters.?roleAssignments
     tags: virtualWanParameters.?tags
     type: virtualWanParameters.?type
@@ -227,22 +227,22 @@ output virtualHubs object[] = [
 ]
 
 @description('Imports the VPN client IPsec policies type from the VPN server configuration module.')
-import { vpnClientIpsecPoliciesType } from '../../../res/network/vpn-server-configuration/main.bicep'
+import { vpnClientIpsecPoliciesType } from 'br/public:avm/res/network/vpn-server-configuration:0.1.1'
 
 @description('Imports the VNet routes static routes type from the P2S VPN gateway module.')
-import { vnetRoutesStaticRoutesType } from '../../../res/network/p2s-vpn-gateway/main.bicep'
+import { vnetRoutesStaticRoutesType } from 'br/public:avm/res/network/p2s-vpn-gateway:0.1.2'
 
 @description('Imports the Hub Virtual Network Connection type from the Virtual Hub module.')
-import { hubVirtualNetworkConnectionType } from '../../../res/network/virtual-hub/main.bicep'
+import { hubVirtualNetworkConnectionType } from 'br/public:avm/res/network/virtual-hub:0.4.0'
 
 @description('Imports the Routing Intent type from the Virtual Hub module.')
-import { routingIntentType } from '../../../res/network/virtual-hub/main.bicep'
+import { routingIntentType } from 'br/public:avm/res/network/virtual-hub:0.4.0'
 
 @description('Imports the Hub Route Table type from the Virtual Hub module.')
-import { hubRouteTableType } from '../../../res/network/virtual-hub/main.bicep'
+import { hubRouteTableType } from 'br/public:avm/res/network/virtual-hub:0.4.0'
 
 @description('Imports the full diagnostic setting type from the AVM common types module.')
-import { diagnosticSettingFullType } from '../../../utl/types/avm-common-types/main.bicep'
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 
 type virtualWanParameterType = {
   @description('Required. The name of the Virtual WAN.')

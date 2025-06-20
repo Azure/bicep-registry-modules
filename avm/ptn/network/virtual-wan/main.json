@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3352502559478148343"
+      "templateHash": "12069630007214327927"
     },
     "name": "Azure Virtual WAN",
     "description": "This pattern will create a Virtual WAN and optionally create Virtual Hubs, Azure Firewalls, and VPN/ExpressRoute Gateways."
@@ -1191,7 +1191,7 @@
       "metadata": {
         "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../utl/types/avm-common-types/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
         }
       }
     },
@@ -1266,7 +1266,7 @@
       "metadata": {
         "description": "The type of a virtual hub route table.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../res/network/virtual-hub/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/virtual-hub:0.4.0"
         }
       }
     },
@@ -1303,7 +1303,7 @@
       "metadata": {
         "description": "The type of a hub virtual network connection.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../res/network/virtual-hub/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/virtual-hub:0.4.0"
         }
       }
     },
@@ -1358,7 +1358,7 @@
       "metadata": {
         "description": "The type of a routing intent.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../res/network/virtual-hub/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/virtual-hub:0.4.0"
         }
       }
     },
@@ -1421,7 +1421,7 @@
       "metadata": {
         "description": "Optional. A Type representing the VNET static routes for the P2S VPN Gateway.",
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../res/network/p2s-vpn-gateway/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/p2s-vpn-gateway:0.1.2"
         }
       }
     },
@@ -1487,7 +1487,7 @@
       },
       "metadata": {
         "__bicep_imported_from!": {
-          "sourceTemplate": "../../../res/network/vpn-server-configuration/main.bicep"
+          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/res/network/vpn-server-configuration:0.1.1"
         }
       }
     }
@@ -1580,7 +1580,7 @@
             "value": "[parameters('enableTelemetry')]"
           },
           "lock": {
-            "value": "[coalesce(tryGet(parameters('virtualWanParameters'), 'lock'), createObject())]"
+            "value": "[coalesce(tryGet(parameters('virtualWanParameters'), 'lock'), parameters('lock'))]"
           },
           "roleAssignments": {
             "value": "[tryGet(parameters('virtualWanParameters'), 'roleAssignments')]"
