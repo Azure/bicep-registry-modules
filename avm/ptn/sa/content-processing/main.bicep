@@ -24,8 +24,8 @@ param gptModelVersion string = '2024-08-06'
 @minValue(10)
 @description('Required. Capacity of the GPT deployment: (minimum 10).')
 param gptDeploymentCapacity int
-// @description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment')
-// param secondaryLocation string = 'EastUs2'
+@description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment')
+param secondaryLocation string = 'EastUs2'
 @description('Optional. The public container image endpoint.')
 param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
 @description('Optional. The resource group location.')
@@ -1072,13 +1072,13 @@ module avmAiServices_storage_hub 'br/public:avm/res/storage/storage-account:0.20
   params: {
     name: 'aisthub${replace(solutionPrefix, '-', '')}'
     location: resourceGroupLocation
-    skuName: 'Standard_LRS'
-    kind: 'StorageV2'
+    //skuName: 'Standard_LRS'
+    //kind: 'StorageV2'
     managedIdentities: { systemAssigned: true }
     minimumTlsVersion: 'TLS1_2'
     networkAcls: {
       bypass: 'AzureServices'
-      defaultAction: 'Allow'
+      defaultAction: 'Deny'
     }
     tags: tags
     supportsHttpsTrafficOnly: true
@@ -1630,8 +1630,14 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
     enableTelemetry: enableTelemetry
     managedIdentities: { systemAssigned: true }
     sku: 'Standard'
-
-    disableLocalAuth: false
+    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    disableLocalAuth: true
+    replicaLocations: [
+      {
+        replicaLocation: secondaryLocation
+        name: 'Secondary Location'
+      }
+    ]
     keyValues: [
       {
         name: 'APP_AZURE_OPENAI_ENDPOINT'
