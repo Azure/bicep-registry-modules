@@ -353,7 +353,7 @@ function Invoke-ResourceRemoval {
             }
             break
         }
-        { $PSItem -eq 'Microsoft.Subscription/aliases' -and $ResourceId -like '*dep-sub-blzv-tests*ssa*' } {
+        { $PSItem -eq 'Microsoft.Subscription/aliases' -and $ResourceId -like '*dep-sub-blzv-tests*' } {
             $subscriptionName = $ResourceId.Split('/')[4]
             $subscription = Get-AzSubscription | Where-Object { $_.Name -eq $subscriptionName }
             $subscriptionId = $subscription.Id
@@ -370,6 +370,7 @@ function Invoke-ResourceRemoval {
 
             # Moving Subscription to Management Group: bicep-lz-vending-automation-decom
             if (-not (Get-AzManagementGroupSubscription -GroupName 'bicep-lz-vending-automation-decom' -SubscriptionId $subscriptionId -ErrorAction 'SilentlyContinue')) {
+                Write-Verbose ('[*] Moving resource [{0}] of type [{1}] to management group: bicep-lz-vending-automation-decom' -f $subscriptionName, $Type) -Verbose
                 if ($PSCmdlet.ShouldProcess("Subscription [$subscriptionName] to Management Group: bicep-lz-vending-automation-decom", 'Move')) {
                     $null = New-AzManagementGroupSubscription -GroupName 'bicep-lz-vending-automation-decom' -SubscriptionId $subscriptionId
                 }
