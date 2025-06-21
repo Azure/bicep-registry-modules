@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "15588663698673068786"
+      "templateHash": "14994126950373587105"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -51634,8 +51634,12 @@
           "vmSize": {
             "value": "[parameters('vmSize')]"
           },
-          "vmSubnetId": "[if(variables('shouldDeployVM'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
-          "storageAccountName": "[if(and(variables('shouldDeployVM'), not(equals(toLower(parameters('aiFoundryType')), 'basic'))), createObject('value', reference('storageAccount').outputs.storageName.value), createObject('value', ''))]",
+          "vmSubnetId": {
+            "value": "[reference('network').outputs.vmSubnetId.value]"
+          },
+          "storageAccountName": {
+            "value": "[reference('storageAccount').outputs.storageName.value]"
+          },
           "storageAccountResourceGroup": {
             "value": "[resourceGroup().name]"
           },
