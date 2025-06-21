@@ -83,7 +83,7 @@ jobs:
     with:
       workflowInput: "${{ needs.job_initialize_pipeline.outputs.workflowInput }}"
       # moduleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.moduleTestFilePaths }}"
-      moduleTestFilePaths: "[{\"path\":\"tests/e2e/allWeek/main.test.bicep\",\"e2eIgnore\":false,\"name\":\"allWeek\"}]" # TODO: Undo. Just for testing
+      moduleTestFilePaths: "[{\"path\":\"tests/e2e/max/main.test.bicep\",\"e2eIgnore\":false,\"name\":\"max\"}]" # TODO: Undo. Just for testing
       psRuleModuleTestFilePaths: "${{ needs.job_initialize_pipeline.outputs.psRuleModuleTestFilePaths }}"
       modulePath: "${{ needs.job_initialize_pipeline.outputs.modulePath}}"
     secrets: inherit
