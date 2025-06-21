@@ -37,7 +37,7 @@ param supportsHttpsTrafficOnly bool = true
 @description('Access tier for the Storage Account')
 param accessTier string = 'Hot'
 
-module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
+module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.18.2' = {
   name: storageAccountName
   params: {
     name: storageAccountName
@@ -52,10 +52,10 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     accessTier: accessTier
     tags: tags
     blobServices: {
-      containerDeleteRetentionPolicyEnabled: true
-      containerDeleteRetentionPolicyDays: 7
-      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyEnabled: false
       deleteRetentionPolicyDays: 6
+      containerDeleteRetentionPolicyDays: 7
+      containerDeleteRetentionPolicyEnabled: false
     }
   }
 }
