@@ -145,7 +145,7 @@ param lockDefault lockType = {
   kind: 'CanNotDelete'
   name: 'myLock'
 }
-output lockDefaultOutput lockType = lockDefault
+output lockDefaultNoteOutput lockType = lockDefaultNote
 
 param lockCustomNote lockType = {
   kind: 'CanNotDelete'
