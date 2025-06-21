@@ -27,6 +27,12 @@ var enforcedLocation = 'uksouth'
 // ============ //
 // Dependencies //
 // ============ //
+
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
@@ -34,14 +40,6 @@ module nestedDependencies 'dependencies.bicep' = {
     devCenterName: 'dep-${namePrefix}-dc-${serviceShort}'
     devCenterProjectName: 'dep-${namePrefix}-dcp-${serviceShort}'
   }
-}
-
-// ================= //
-// General resources //
-// ================= //
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: resourceGroupName
-  location: enforcedLocation
 }
 
 // ============== //

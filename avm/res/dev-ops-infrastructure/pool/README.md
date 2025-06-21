@@ -64,7 +64,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     }
     concurrency: 1
     devCenterProjectResourceId: '<devCenterProjectResourceId>'
-    fabricProfileSkuName: 'Standard_D2_v2'
+    fabricProfileSkuName: 'Standard_DS2_v2'
     images: [
       {
         wellKnownImageName: 'windows-2022/latest'
@@ -75,19 +75,10 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'AzureDevOps'
       organizations: [
         {
-          parallelism: 1
-          projects: [
-            '<azureDevOpsProjectName>'
-          ]
           url: '<url>'
         }
       ]
-      permissionProfile: {
-        kind: 'CreatorOnly'
-      }
     }
-    // Non-required parameters
-    subnetResourceId: '<subnetResourceId>'
   }
 }
 ```
@@ -128,7 +119,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": "<devCenterProjectResourceId>"
     },
     "fabricProfileSkuName": {
-      "value": "Standard_D2_v2"
+      "value": "Standard_DS2_v2"
     },
     "images": {
       "value": [
@@ -145,21 +136,10 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "AzureDevOps",
         "organizations": [
           {
-            "parallelism": 1,
-            "projects": [
-              "<azureDevOpsProjectName>"
-            ],
             "url": "<url>"
           }
-        ],
-        "permissionProfile": {
-          "kind": "CreatorOnly"
-        }
+        ]
       }
-    },
-    // Non-required parameters
-    "subnetResourceId": {
-      "value": "<subnetResourceId>"
     }
   }
 }
@@ -192,7 +172,7 @@ param agentProfile = {
 }
 param concurrency = 1
 param devCenterProjectResourceId = '<devCenterProjectResourceId>'
-param fabricProfileSkuName = 'Standard_D2_v2'
+param fabricProfileSkuName = 'Standard_DS2_v2'
 param images = [
   {
     wellKnownImageName: 'windows-2022/latest'
@@ -203,19 +183,10 @@ param organizationProfile = {
   kind: 'AzureDevOps'
   organizations: [
     {
-      parallelism: 1
-      projects: [
-        '<azureDevOpsProjectName>'
-      ]
       url: '<url>'
     }
   ]
-  permissionProfile: {
-    kind: 'CreatorOnly'
-  }
 }
-// Non-required parameters
-param subnetResourceId = '<subnetResourceId>'
 ```
 
 </details>

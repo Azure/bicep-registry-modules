@@ -36,6 +36,12 @@ var enforcedLocation = 'uksouth'
 // ============ //
 // Dependencies //
 // ============ //
+
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
@@ -46,13 +52,6 @@ module nestedDependencies 'dependencies.bicep' = {
     virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
     devOpsInfrastructureObjectID: devOpsInfrastructureObjectID
   }
-}
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: resourceGroupName
-  location: enforcedLocation
 }
 
 // ============== //

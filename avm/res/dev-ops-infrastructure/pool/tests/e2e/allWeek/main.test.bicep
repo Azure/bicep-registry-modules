@@ -21,14 +21,6 @@ param namePrefix string = '#_namePrefix_#'
 @secure()
 param azureDevOpsOrganizationName string = ''
 
-@description('Required. Name of the Azure DevOps WAF Project. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-AzureDevOpsProjectName\'.')
-@secure()
-param azureDevOpsProjectName string = ''
-
-@description('Required. The object ID of the Entra ID-provided DevOpsInfrastructure principal. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-DevOpsInfrastructureObjectID\'.')
-@secure()
-param devOpsInfrastructureObjectID string = ''
-
 // The Managed DevOps Pools resource is not available in all regions
 #disable-next-line no-hardcoded-location
 var enforcedLocation = 'uksouth'
@@ -36,23 +28,19 @@ var enforcedLocation = 'uksouth'
 // ============ //
 // Dependencies //
 // ============ //
+
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+  name: resourceGroupName
+  location: enforcedLocation
+}
+
 module nestedDependencies 'dependencies.bicep' = {
   scope: resourceGroup
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies'
   params: {
     devCenterName: 'dep-${namePrefix}-dc-${serviceShort}'
     devCenterProjectName: 'dep-${namePrefix}-dcp-${serviceShort}'
-    managedIdentityName: 'dep-${namePrefix}-msi-${serviceShort}'
-    virtualNetworkName: 'dep-${namePrefix}-vnet-${serviceShort}'
-    devOpsInfrastructureObjectID: devOpsInfrastructureObjectID
   }
-}
-
-// General resources
-// =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
-  name: resourceGroupName
-  location: enforcedLocation
 }
 
 // ============== //
@@ -87,22 +75,14 @@ module testDeployment '../../../main.bicep' = [
           wellKnownImageName: 'windows-2022/latest'
         }
       ]
-      fabricProfileSkuName: 'Standard_D2_v2'
-      subnetResourceId: nestedDependencies.outputs.subnetResourceId
+      fabricProfileSkuName: 'Standard_DS2_v2'
       organizationProfile: {
         kind: 'AzureDevOps'
         organizations: [
           {
             url: 'https://dev.azure.com/${azureDevOpsOrganizationName}'
-            projects: [
-              azureDevOpsProjectName
-            ]
-            parallelism: 1
           }
         ]
-        permissionProfile: {
-          kind: 'CreatorOnly'
-        }
       }
     }
   }
