@@ -128,7 +128,7 @@ var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
             '00:00:00': agentProfile.resourcePredictions.daysData.allWeekScheme.provisioningCount
           }
         ]
-      : (map(
+      : map(
           ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
           day =>
             contains(agentProfile.resourcePredictions.daysData, day)
@@ -137,7 +137,7 @@ var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
                   '${agentProfile.resourcePredictions.daysData[day].endTime}': agentProfile.resourcePredictions.daysData[day].endAgentCount
                 }
               : {}
-        ))
+        )
   : null
 
 // ============== //
