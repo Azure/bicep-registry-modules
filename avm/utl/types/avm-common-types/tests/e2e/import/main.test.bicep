@@ -152,7 +152,7 @@ param lockCustomNote lockType = {
   name: 'myLock'
   notes: 'This is a lock to prevent deletion of the resource.'
 }
-output lockNoteOutput lockType = lockNote
+output lockCustomNoteOutput lockType = lockCustomNote
 
 // ====================== //
 //   Managed Idenitites   //
