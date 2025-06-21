@@ -13,7 +13,7 @@ param devcenterName string
 @maxLength(63)
 param name string
 
-@description('Required. The Image ID, or Image version ID. When Image ID is provided, its latest version will be used.')
+@description('Required. The Image ID, or Image version ID. When Image ID is provided, its latest version will be used. When using custom images from a compute gallery, Microsoft Dev Box supports only images that are compatible with Dev Box and use the security type Trusted Launch enabled. See "https://learn.microsoft.com/en-us/azure/dev-box/how-to-configure-azure-compute-gallery#compute-gallery-image-requirements" for more information about image requirements.')
 param imageResourceId string
 
 @description('Optional. The storage type used for the operating system disk of the DevBox.')

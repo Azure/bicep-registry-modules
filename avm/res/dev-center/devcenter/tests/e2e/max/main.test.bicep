@@ -71,13 +71,13 @@ module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builde
     deploymentsToPerform: 'All'
     waitForImageBuild: true
     resourceGroupName: resourceGroup2.name
-    waitForImageBuildTimeout: 'PT90M'
+    waitForImageBuildTimeout: 'PT1H'
     virtualNetworkName: nestedDependencies2.outputs.virtualNetworkName
     virtualNetworkAddressPrefix: nestedDependencies2.outputs.virtualNetworkAddressSpace
-    imageSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[1].name
-    virtualNetworkSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[1].properties.addressPrefix
-    deploymentScriptSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[2].name
-    virtualNetworkDeploymentScriptSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[2].properties.addressPrefix
+    imageSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[0].name
+    virtualNetworkSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[0].properties.addressPrefix
+    deploymentScriptSubnetName: nestedDependencies2.outputs.virtualNetworkSubnets[1].name
+    virtualNetworkDeploymentScriptSubnetAddressPrefix: nestedDependencies2.outputs.virtualNetworkSubnets[1].properties.addressPrefix
     imageTemplateResourceGroupName: ''
     location: enforcedLocation
     assetsStorageAccountName: 'depst${namePrefix}${serviceShort}'
@@ -107,9 +107,9 @@ module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builde
       }
     ]
     imageTemplateImageSource: {
-      offer: 'visualstudioplustools'
-      publisher: 'microsoftvisualstudio'
-      sku: 'vs-2022-comm-general-win11-m365-gen2'
+      offer: 'Windows-11' //'windowsplustools'
+      publisher: 'MicrosoftWindowsDesktop' //'microsoftvisualstudio' //'microsoftwindowsdesktop'
+      sku: 'win11-24h2-ent' //'base-win11-gen2'
       type: 'PlatformImage'
       version: 'latest'
     }
@@ -184,6 +184,13 @@ module testDeployment '../../../main.bicep' = [
           hibernateSupport: 'Enabled'
           tags: {
             costCenter: '1234'
+          }
+        }
+        {
+          name: 'test-devbox-definition-custom-gallery-image'
+          imageResourceId: '${devcenterExpectedResourceID}/galleries/computegallery/images/dep-#_namePrefix_#-galid-dcdcmax'
+          sku: {
+            name: 'general_i_8c32gb256ssd_v2'
           }
         }
       ]
@@ -303,5 +310,8 @@ module testDeployment '../../../main.bicep' = [
         }
       ]
     }
+    dependsOn: [
+      imageBuilder
+    ]
   }
 ]
