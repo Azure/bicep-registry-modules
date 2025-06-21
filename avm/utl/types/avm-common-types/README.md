@@ -182,11 +182,18 @@ output roleAssignmentsOutput roleAssignmentType[] = roleAssignments
 // ========= //
 //   Locks   //
 // ========= //
-param lock lockType = {
+param lockDefaultNote lockType = {
   kind: 'CanNotDelete'
   name: 'myLock'
 }
-output lockOutput lockType = lock
+output lockDefaultNoteOutput lockType = lockDefaultNote
+
+param lockCustomNote lockType = {
+  kind: 'CanNotDelete'
+  name: 'myLock'
+  notes: 'This is a lock to prevent deletion of the resource.'
+}
+output lockCustomNoteOutput lockType = lockCustomNote
 
 // ====================== //
 //   Managed Idenitites   //
