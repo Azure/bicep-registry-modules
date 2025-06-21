@@ -15,7 +15,7 @@ param name string
 param displayName string?
 
 @description('Optional. Tags of the resource.')
-param tags object?
+param tags resourceInput<'Microsoft.DevCenter/devcenters/environmentTypes@2025-02-01'>.tags?
 
 // ============== //
 // Resources      //

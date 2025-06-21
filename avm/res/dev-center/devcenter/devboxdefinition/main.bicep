@@ -23,7 +23,7 @@ param sku skuType
 param hibernateSupport 'Enabled' | 'Disabled' = 'Disabled'
 
 @description('Optional. Tags for the DevBox definition.')
-param tags object?
+param tags resourceInput<'Microsoft.DevCenter/devcenters/devboxdefinitions@2025-02-01'>.tags?
 
 @description('Optional. Location for the DevBox definition. Defaults to resource group location.')
 param location string = resourceGroup().location
