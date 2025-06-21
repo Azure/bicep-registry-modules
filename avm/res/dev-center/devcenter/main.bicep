@@ -24,6 +24,10 @@ import { managedIdentityAllType } from 'br/public:avm/utl/types/avm-common-types
 @description('Optional. The managed identity definition for this resource.')
 param managedIdentities managedIdentityAllType?
 
+import { diagnosticSettingFullType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
+@sys.description('Optional. The diagnostic settings of the service.')
+param diagnosticSettings diagnosticSettingFullType[]?
+
 // mport { customerManagedKeyWithAutoRotateType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 // description('Optional. The customer managed key definition.')
 // aram customerManagedKey customerManagedKeyWithAutoRotateType?
@@ -261,7 +265,6 @@ module devcenter_devboxDefinition 'devboxdefinition/main.bicep' = [
       devcenterName: devcenter.name
       name: devboxDefinition.name
       imageResourceId: devboxDefinition.imageResourceId
-      osStorageType: devboxDefinition.?osStorageType
       sku: devboxDefinition.sku
       hibernateSupport: devboxDefinition.?hibernateSupport ?? 'Disabled'
       tags: devboxDefinition.?tags
@@ -300,7 +303,36 @@ resource devCenter_roleAssignments 'Microsoft.Authorization/roleAssignments@2022
   }
 ]
 
-module devCenter_project '../project/main.bicep' = [
+resource devCenter_diagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = [
+  for (diagnosticSetting, index) in (diagnosticSettings ?? []): {
+    name: diagnosticSetting.?name ?? '${name}-diagnosticSettings'
+    properties: {
+      storageAccountId: diagnosticSetting.?storageAccountResourceId
+      workspaceId: diagnosticSetting.?workspaceResourceId
+      eventHubAuthorizationRuleId: diagnosticSetting.?eventHubAuthorizationRuleResourceId
+      eventHubName: diagnosticSetting.?eventHubName
+      metrics: [
+        for group in (diagnosticSetting.?metricCategories ?? [{ category: 'AllMetrics' }]): {
+          category: group.category
+          enabled: group.?enabled ?? true
+          timeGrain: null
+        }
+      ]
+      logs: [
+        for group in (diagnosticSetting.?logCategoriesAndGroups ?? [{ categoryGroup: 'allLogs' }]): {
+          categoryGroup: group.?categoryGroup
+          category: group.?category
+          enabled: group.?enabled ?? true
+        }
+      ]
+      marketplacePartnerId: diagnosticSetting.?marketplacePartnerResourceId
+      logAnalyticsDestinationType: diagnosticSetting.?logAnalyticsDestinationType
+    }
+    scope: devcenter
+  }
+]
+
+module devCenter_project 'br/public:avm/res/dev-center/project:0.1.0' = [
   for (project, index) in (projects ?? []): {
     name: '${uniqueString(deployment().name, location)}-Devcenter-Project-${index}'
     scope: resourceGroup(
@@ -454,9 +486,6 @@ type devboxDefinitionType = {
 
   @description('Required. The Image ID, or Image version ID. When Image ID is provided, its latest version will be used. When using custom images from a compute gallery, Microsoft Dev Box supports only images that are compatible with Dev Box and use the security type Trusted Launch enabled. See "https://learn.microsoft.com/en-us/azure/dev-box/how-to-configure-azure-compute-gallery#compute-gallery-image-requirements" for more information about image requirements.')
   imageResourceId: string
-
-  @description('Optional. The storage type used for the operating system disk of the DevBox.')
-  osStorageType: string?
 
   @description('Required. The SKU configuration for the dev box definition. See "https://learn.microsoft.com/en-us/rest/api/devcenter/administrator/skus/list-by-subscription?view=rest-devcenter-administrator-2024-02-01" for more information about SKUs.')
   sku: skuType

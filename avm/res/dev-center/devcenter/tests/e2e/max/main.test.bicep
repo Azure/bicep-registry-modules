@@ -40,6 +40,18 @@ resource resourceGroup2 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   location: enforcedLocation
 }
 
+module diagnosticDependencies '../../../../../../../utilities/e2e-template-assets/templates/diagnostic.dependencies.bicep' = {
+  scope: resourceGroup1
+  name: '${uniqueString(deployment().name, enforcedLocation)}-diagnosticDependencies'
+  params: {
+    storageAccountName: 'dep${namePrefix}diasa${serviceShort}03'
+    logAnalyticsWorkspaceName: 'dep-${namePrefix}-law-${serviceShort}'
+    eventHubNamespaceEventHubName: 'dep-${namePrefix}-evh-${serviceShort}01'
+    eventHubNamespaceName: 'dep-${namePrefix}-evhns-${serviceShort}01'
+    location: enforcedLocation
+  }
+}
+
 module nestedDependencies1 'dependencies1.bicep' = {
   scope: resourceGroup1
   name: '${uniqueString(deployment().name, enforcedLocation)}-nestedDependencies1'
@@ -107,9 +119,9 @@ module imageBuilder 'br/public:avm/ptn/virtual-machine-images/azure-image-builde
       }
     ]
     imageTemplateImageSource: {
-      offer: 'Windows-11' //'windowsplustools'
-      publisher: 'MicrosoftWindowsDesktop' //'microsoftvisualstudio' //'microsoftwindowsdesktop'
-      sku: 'win11-24h2-ent' //'base-win11-gen2'
+      offer: 'Windows-11'
+      publisher: 'MicrosoftWindowsDesktop'
+      sku: 'win11-24h2-ent'
       type: 'PlatformImage'
       version: 'latest'
     }
@@ -164,6 +176,20 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
+      diagnosticSettings: [
+        {
+          name: 'customSetting'
+          metricCategories: [
+            {
+              category: 'AllMetrics'
+            }
+          ]
+          eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+          eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+          storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+          workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        }
+      ]
       galleries: [
         {
           name: 'computegallery'
@@ -175,7 +201,6 @@ module testDeployment '../../../main.bicep' = [
         {
           name: 'test-devbox-definition-builtin-gallery-image'
           imageResourceId: '${devcenterExpectedResourceID}/galleries/Default/images/microsoftvisualstudio_visualstudioplustools_vs-2022-ent-general-win11-m365-gen2'
-          //osStorageType: 'Premium_LRS'
           sku: {
             name: 'general_i_8c32gb512ssd_v2'
             family: 'general_i'

@@ -16,9 +16,6 @@ param name string
 @description('Required. The Image ID, or Image version ID. When Image ID is provided, its latest version will be used. When using custom images from a compute gallery, Microsoft Dev Box supports only images that are compatible with Dev Box and use the security type Trusted Launch enabled. See "https://learn.microsoft.com/en-us/azure/dev-box/how-to-configure-azure-compute-gallery#compute-gallery-image-requirements" for more information about image requirements.')
 param imageResourceId string
 
-@description('Optional. The storage type used for the operating system disk of the DevBox.')
-param osStorageType string?
-
 @description('Required. The SKU configuration for the dev box definition. See "https://learn.microsoft.com/en-us/rest/api/devcenter/administrator/skus/list-by-subscription?view=rest-devcenter-administrator-2024-02-01" for more information about SKUs.')
 param sku skuType
 
@@ -48,7 +45,6 @@ resource devboxDefinition 'Microsoft.DevCenter/devcenters/devboxdefinitions@2025
     imageReference: {
       id: imageResourceId
     }
-    osStorageType: osStorageType
     sku: sku
     hibernateSupport: hibernateSupport
   }
