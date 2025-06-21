@@ -82,8 +82,6 @@ module testDeployment '../../../main.bicep' = [
       deploymentUserPassword: arbLocalAdminAndDeploymentUserPass
       localAdminUser: 'Administrator'
       localAdminPassword: arbLocalAdminAndDeploymentUserPass
-      servicePrincipalId: arbDeploymentAppId
-      servicePrincipalSecret: arbDeploymentServicePrincipalSecret
       hciResourceProviderObjectId: hciResourceProviderObjectId
       deploymentSettings: {
         customLocationName: '${namePrefix}${serviceShort}-location'
