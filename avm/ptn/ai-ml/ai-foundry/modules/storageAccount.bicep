@@ -67,8 +67,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     allowSharedKeyAccess: false
     allowCrossTenantReplication: false
     blobServices: {
-      deleteRetentionPolicyEnabled: true // Enable soft delete for containers
-      deleteRetentionPolicyDays: 7 // Retain deleted containers for 7 days (customize as needed)
+      deleteRetentionPolicyEnabled: true // Enable soft delete for blobs
+      deleteRetentionPolicyDays: 7 // Retain deleted blobs for 7 days
+      containerDeleteRetentionPolicyEnabled: true // Enable soft delete for containers
+      containerDeleteRetentionPolicyDays: 7 // Retain deleted containers for 7 days
       containers: [
         {
           name: projUploadsContainerName
