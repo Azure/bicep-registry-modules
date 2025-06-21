@@ -67,6 +67,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     allowSharedKeyAccess: false
     allowCrossTenantReplication: false
     blobServices: {
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 7
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
       containers: [
         {
           name: projUploadsContainerName
@@ -152,19 +156,6 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
       : []
     roleAssignments: roleAssignments
   }
-}
-
-resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2024-01-01' = {
-  name: '${nameFormatted}/default'
-  properties: {
-    containerDeleteRetentionPolicy: {
-      enabled: true
-      days: 7
-    }
-  }
-  dependsOn: [
-    storageAccount
-  ]
 }
 
 import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'

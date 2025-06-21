@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "6674221081828360344"
+      "templateHash": "15595584526553755208"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -31680,7 +31680,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "1569763422523306997"
+              "templateHash": "16514761289494551173"
             }
           },
           "definitions": {
@@ -31829,20 +31829,6 @@
             "sysDataContainerName": "[format('{0}sysdata', variables('nameFormatted'))]"
           },
           "resources": {
-            "blobService": {
-              "type": "Microsoft.Storage/storageAccounts/blobServices",
-              "apiVersion": "2024-01-01",
-              "name": "[format('{0}/default', variables('nameFormatted'))]",
-              "properties": {
-                "containerDeleteRetentionPolicy": {
-                  "enabled": true,
-                  "days": 7
-                }
-              },
-              "dependsOn": [
-                "storageAccount"
-              ]
-            },
             "blobPrivateDnsZone": {
               "condition": "[parameters('networkIsolation')]",
               "type": "Microsoft.Resources/deployments",
@@ -38199,6 +38185,10 @@
                   },
                   "blobServices": {
                     "value": {
+                      "deleteRetentionPolicyEnabled": true,
+                      "deleteRetentionPolicyDays": 7,
+                      "containerDeleteRetentionPolicyEnabled": true,
+                      "containerDeleteRetentionPolicyDays": 7,
                       "containers": [
                         {
                           "name": "[variables('projUploadsContainerName')]",
