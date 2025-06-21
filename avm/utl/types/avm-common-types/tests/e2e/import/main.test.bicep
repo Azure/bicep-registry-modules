@@ -141,7 +141,7 @@ output roleAssignmentsOutput roleAssignmentType[] = roleAssignments
 // ========= //
 //   Locks   //
 // ========= //
-param lockDefault lockType = {
+param lockDefaultNote lockType = {
   kind: 'CanNotDelete'
   name: 'myLock'
 }
