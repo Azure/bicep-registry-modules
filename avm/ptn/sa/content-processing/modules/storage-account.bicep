@@ -51,5 +51,11 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     supportsHttpsTrafficOnly: supportsHttpsTrafficOnly
     accessTier: accessTier
     tags: tags
+    blobServices: {
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 6
+    }
   }
 }
