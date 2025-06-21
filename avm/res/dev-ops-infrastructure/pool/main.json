@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14151537588385040021"
+      "templateHash": "15499300401811601696"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource."
@@ -914,7 +914,7 @@
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "formattedDaysData": "[if(not(empty(tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData'))), if(contains(parameters('agentProfile').resourcePredictions.daysData, 'allWeekScheme'), createObject('00:00:00', parameters('agentProfile').resourcePredictions.daysData.allWeekScheme.provisioningCount), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', if(contains(parameters('agentProfile').resourcePredictions.daysData, lambdaVariables('day')), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endAgentCount), createObject())))), null())]"
+    "formattedDaysData": "[if(not(empty(tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData'))), if(contains(parameters('agentProfile').resourcePredictions.daysData, 'allWeekScheme'), createArray(createObject('00:00:00', parameters('agentProfile').resourcePredictions.daysData.allWeekScheme.provisioningCount)), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', if(contains(parameters('agentProfile').resourcePredictions.daysData, lambdaVariables('day')), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endAgentCount), createObject())))), null())]"
   },
   "resources": {
     "avmTelemetry": {

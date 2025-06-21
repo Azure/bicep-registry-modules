@@ -255,8 +255,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         }
       ]
     }
-    // Non-required parameters
-    location: '<location>'
   }
 }
 ```
@@ -307,10 +305,6 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
           }
         ]
       }
-    },
-    // Non-required parameters
-    "location": {
-      "value": "<location>"
     }
   }
 }
@@ -347,8 +341,6 @@ param organizationProfile = {
     }
   ]
 }
-// Non-required parameters
-param location = '<location>'
 ```
 
 </details>

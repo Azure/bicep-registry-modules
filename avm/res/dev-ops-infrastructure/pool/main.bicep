@@ -123,9 +123,11 @@ var identity = !empty(managedIdentities)
 
 var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
   ? contains(agentProfile.resourcePredictions.daysData, 'allWeekScheme')
-      ? {
-          '00:00:00': agentProfile.resourcePredictions.daysData.allWeekScheme.provisioningCount
-        }
+      ? [
+          {
+            '00:00:00': agentProfile.resourcePredictions.daysData.allWeekScheme.provisioningCount
+          }
+        ]
       : (map(
           ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
           day =>
