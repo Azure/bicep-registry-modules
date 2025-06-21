@@ -44,7 +44,7 @@ param osProfile osProfileType = {
 param storageProfile storageProfileType?
 
 @description('Required. Defines the organization in which the pool will be used.')
-param organizationProfile organizationProfileType
+param organizationProfile resourceInput<'Microsoft.DevOpsInfrastructure/pools@2025-01-21'>.properties.organizationProfile
 
 @description('Optional. Tags of the resource.')
 param tags object?
@@ -157,13 +157,12 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2024-10-19' = {
+resource managedDevOpsPool 'Microsoft.DevOpsInfrastructure/pools@2025-01-21' = {
   name: name
   location: location
   tags: tags
   identity: identity
   properties: {
-    // agentProfile: agentProfile
     agentProfile: agentProfile.kind == 'Stateful'
       ? {
           kind: 'Stateful'
@@ -305,6 +304,9 @@ type osProfileType = {
 
     @description('Optional. Where to store certificates on the machine.')
     certificateStoreLocation: string?
+
+    @description('Optional. Name of the certificate store to use on the machine.')
+    certificateStoreName: ('My' | 'Root')?
   }?
 }
 
@@ -330,38 +332,9 @@ type imageType = {
 
   @description('Conditional. The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set.')
   resourceId: string?
-}
 
-@export()
-type organizationProfileType = {
-  @description('Required. Azure DevOps organization profile.')
-  kind: 'AzureDevOps'
-
-  @description('Optional. The type of permission which determines which accounts are admins on the Azure DevOps pool.')
-  permissionProfile: {
-    @description('Required. Determines who has admin permissions to the Azure DevOps pool.')
-    kind: 'CreatorOnly' | 'Inherit' | 'SpecificAccounts'
-
-    @description('Optional. Group email addresses.')
-    groups: string[]?
-
-    @description('Optional. User email addresses.')
-    users: string[]?
-  }?
-
-  @description('Required. The list of Azure DevOps organizations the pool should be present in..')
-  organizations: {
-    @description('Required. The Azure DevOps organization URL in which the pool should be created.')
-    url: string
-
-    @description('Optional. List of projects in which the pool should be created.')
-    projects: string[]?
-
-    @description('Optional. How many machines can be created at maximum in this organization out of the maximumConcurrency of the pool.')
-    @minValue(1)
-    @maxValue(10000)
-    parallelism: int?
-  }[]
+  @description('Optional. The ephemeral type of the image.')
+  ephemeralType: ('Automatic' | 'CacheDisk' | 'ResourceDisk')?
 }
 
 @export()
