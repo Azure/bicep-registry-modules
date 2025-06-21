@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "5149844663841891327"
+      "version": "0.36.1.42791",
+      "templateHash": "12935674153111684167"
     },
     "name": "Log Analytics Workspace Saved Searches",
     "description": "This module deploys a Log Analytics Workspace Saved Search."
@@ -82,12 +82,12 @@
     "workspace": {
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]"
     },
     "savedSearch": {
       "type": "Microsoft.OperationalInsights/workspaces/savedSearches",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2025-02-01",
       "name": "[format('{0}/{1}', parameters('logAnalyticsWorkspaceName'), parameters('name'))]",
       "properties": {
         "etag": "[parameters('etag')]",

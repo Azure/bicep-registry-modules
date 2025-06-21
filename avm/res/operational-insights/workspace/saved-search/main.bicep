@@ -31,11 +31,11 @@ param version int?
 @description('Optional. The ETag of the saved search. To override an existing saved search, use "*" or specify the current Etag.')
 param etag string = '*'
 
-resource workspace 'Microsoft.OperationalInsights/workspaces@2023-09-01' existing = {
+resource workspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' existing = {
   name: logAnalyticsWorkspaceName
 }
 
-resource savedSearch 'Microsoft.OperationalInsights/workspaces/savedSearches@2023-09-01' = {
+resource savedSearch 'Microsoft.OperationalInsights/workspaces/savedSearches@2025-02-01' = {
   name: name
   parent: workspace
   //etag: etag // According to API, the variable should be here, but it doesn't work here.
