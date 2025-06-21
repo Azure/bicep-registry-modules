@@ -46,34 +46,7 @@ module testDeployment '../../../main.bicep' = [
       contentSafetyEnabled: true // Set to true or false as required
       vmAdminPasswordOrKey: '$tart12345' // Replace with a secure password or key
       vmSize: 'Standard_DS4_v2'
-      aiModelDeployments: iteration == 'init'
-        ? [
-            {
-              name: 'textembed'
-              model: {
-                name: 'text-embedding-ada-002'
-                format: 'OpenAI'
-                version: '2'
-              }
-              sku: {
-                name: 'Standard'
-                capacity: 10
-              }
-            }
-            {
-              name: 'gpt'
-              model: {
-                name: 'gpt-4o'
-                version: '2024-05-13'
-                format: 'OpenAI'
-              }
-              sku: {
-                name: 'GlobalStandard'
-                capacity: 10
-              }
-            }
-          ]
-        : []
+      aiModelDeployments: [] // Simplified: no AI model deployments for testing to avoid conflicts
     }
   }
 ]

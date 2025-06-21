@@ -202,32 +202,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     name: '<name>'
     vmAdminPasswordOrKey: '$tart12345'
     // Non-required parameters
-    aiModelDeployments: [
-      {
-        model: {
-          format: 'OpenAI'
-          name: 'text-embedding-ada-002'
-          version: '2'
-        }
-        name: 'textembed'
-        sku: {
-          capacity: 10
-          name: 'Standard'
-        }
-      }
-      {
-        model: {
-          format: 'OpenAI'
-          name: 'gpt-4o'
-          version: '2024-05-13'
-        }
-        name: 'gpt'
-        sku: {
-          capacity: 10
-          name: 'GlobalStandard'
-        }
-      }
-    ]
+    aiModelDeployments: []
     location: '<location>'
     userObjectId: '00000000-0000-0000-0000-000000000000'
     vmSize: 'Standard_DS4_v2'
@@ -262,32 +237,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     // Non-required parameters
     "aiModelDeployments": {
-      "value": [
-        {
-          "model": {
-            "format": "OpenAI",
-            "name": "text-embedding-ada-002",
-            "version": "2"
-          },
-          "name": "textembed",
-          "sku": {
-            "capacity": 10,
-            "name": "Standard"
-          }
-        },
-        {
-          "model": {
-            "format": "OpenAI",
-            "name": "gpt-4o",
-            "version": "2024-05-13"
-          },
-          "name": "gpt",
-          "sku": {
-            "capacity": 10,
-            "name": "GlobalStandard"
-          }
-        }
-      ]
+      "value": []
     },
     "location": {
       "value": "<location>"
@@ -318,32 +268,7 @@ param contentSafetyEnabled = true
 param name = '<name>'
 param vmAdminPasswordOrKey = '$tart12345'
 // Non-required parameters
-param aiModelDeployments = [
-  {
-    model: {
-      format: 'OpenAI'
-      name: 'text-embedding-ada-002'
-      version: '2'
-    }
-    name: 'textembed'
-    sku: {
-      capacity: 10
-      name: 'Standard'
-    }
-  }
-  {
-    model: {
-      format: 'OpenAI'
-      name: 'gpt-4o'
-      version: '2024-05-13'
-    }
-    name: 'gpt'
-    sku: {
-      capacity: 10
-      name: 'GlobalStandard'
-    }
-  }
-]
+param aiModelDeployments = []
 param location = '<location>'
 param userObjectId = '00000000-0000-0000-0000-000000000000'
 param vmSize = 'Standard_DS4_v2'
