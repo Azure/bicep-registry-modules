@@ -3,6 +3,8 @@ metadata description = 'Creates an AI Foundry account and project with Standard 
 
 targetScope = 'resourceGroup'
 
+import { sqlDatabaseType, deploymentsType } from 'modules/customTypes.bicep'
+
 @minLength(3)
 @maxLength(12)
 @description('Required. Name of the resource to create.')
@@ -294,6 +296,13 @@ module project 'modules/aifoundryproject.bicep' = {
     projUploadsContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.projUploadsContainerName : ''
     sysDataContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.sysDataContainerName : ''
   }
+  dependsOn: toLower(aiFoundryType) != 'basic'
+    ? [
+        storageAccount
+        aiSearch
+        cosmosDb
+      ]
+    : []
 }
 
 // Only deploy the VM if we're doing a StandardPrivate deployment and need a jumpbox in the VNET
@@ -305,8 +314,8 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
     vmName: toLower('vm-${name}-jump')
     vmNicName: toLower('nic-vm-${name}-jump')
     vmSize: vmSize
-    vmSubnetId: shouldDeployVM ? network.outputs.vmSubnetId : ''
-    storageAccountName: (shouldDeployVM && toLower(aiFoundryType) != 'basic') ? storageAccount.outputs.storageName : ''
+    vmSubnetId: network.outputs.vmSubnetId
+    storageAccountName: storageAccount.outputs.storageName
     storageAccountResourceGroup: resourceGroup().name
     imagePublisher: 'MicrosoftWindowsDesktop'
     imageOffer: 'Windows-11'
@@ -326,8 +335,6 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
     tags: allTags
   }
 }
-
-import { sqlDatabaseType, deploymentsType } from 'modules/customTypes.bicep'
 
 @description('Name of the deployed Azure Resource Group.')
 output resourceGroupName string = resourceGroup().name

@@ -39,39 +39,41 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'fn${substring(uniqueString(deployment().name), 0, 6)}' // Using uniqueString to generate a short, unique name (8 chars total)
+      name: 'fn${substring(uniqueString(deployment().name, iteration), 0, 6)}' // Using uniqueString with iteration to avoid conflicts
       location: resourceLocation
       aiFoundryType: 'StandardPrivate' // Replace with the required value@allowed(['Basic''StandardPublic''StandardPrivate'])
       userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test
       contentSafetyEnabled: true // Set to true or false as required
       vmAdminPasswordOrKey: '$tart12345' // Replace with a secure password or key
       vmSize: 'Standard_DS4_v2'
-      aiModelDeployments: [
-        {
-          name: 'textembed'
-          model: {
-            name: 'text-embedding-ada-002'
-            format: 'OpenAI'
-            version: '2'
-          }
-          sku: {
-            name: 'Standard'
-            capacity: 10
-          }
-        }
-        {
-          name: 'gpt'
-          model: {
-            name: 'gpt-4o'
-            version: '2024-05-13'
-            format: 'OpenAI'
-          }
-          sku: {
-            name: 'GlobalStandard'
-            capacity: 10
-          }
-        }
-      ]
+      aiModelDeployments: iteration == 'init'
+        ? [
+            {
+              name: 'textembed'
+              model: {
+                name: 'text-embedding-ada-002'
+                format: 'OpenAI'
+                version: '2'
+              }
+              sku: {
+                name: 'Standard'
+                capacity: 10
+              }
+            }
+            {
+              name: 'gpt'
+              model: {
+                name: 'gpt-4o'
+                version: '2024-05-13'
+                format: 'OpenAI'
+              }
+              sku: {
+                name: 'GlobalStandard'
+                capacity: 10
+              }
+            }
+          ]
+        : []
     }
   }
 ]
