@@ -43,12 +43,29 @@ module testDeployment '../../../main.bicep' = {
     ]
     virtualNetworkSubnets: [
       {
-        name: 'Subnet1'
+        name: 'app-subnet'
         addressPrefix: '10.110.1.0/24'
+        routeTableName: 'rt-${resourceLocation}-hs-${namePrefix}-${serviceShort}-1'
       }
     ]
     virtualNetworkResourceGroupLockEnabled: false
     peerAllVirtualNetworks: true
+    routeTablesResourceGroupName: 'rsg-${resourceLocation}-net-rt-${namePrefix}-${serviceShort}'
+    routeTables: [
+      {
+        name: 'rt-${resourceLocation}-hs-${namePrefix}-${serviceShort}-1'
+        location: resourceLocation
+        routes: [
+          {
+            name: 'route1'
+            properties: {
+              nextHopType: 'None'
+              addressPrefix: '0.0.0.0/0'
+            }
+          }
+        ]
+      }
+    ]
     additionalVirtualNetworks: [
       {
         name: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}-1'
@@ -57,7 +74,7 @@ module testDeployment '../../../main.bicep' = {
         resourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}-1'
         subnets: [
           {
-            name: 'Subnet1'
+            name: 'subnet1'
             addressPrefix: '10.120.1.0/24'
             networkSecurityGroup: {
               name: 'nsg-${resourceLocation}-hs-${namePrefix}-${serviceShort}-1'
@@ -92,9 +109,10 @@ module testDeployment '../../../main.bicep' = {
         peerToHubNetwork: false
         subnets: [
           {
-            name: 'Subnet1'
+            name: 'data-subnet'
             addressPrefix: '10.90.1.0/24'
             associateWithNatGateway: true
+            routeTableName: 'rt-${resourceLocation}-hs-${namePrefix}-${serviceShort}-1'
           }
         ]
         deployNatGateway: true

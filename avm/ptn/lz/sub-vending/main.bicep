@@ -16,6 +16,7 @@ import { bastionType } from 'modules/subResourceWrapper.bicep'
 import { pimRoleAssignmentTypeType } from 'modules/subResourceWrapper.bicep'
 import { userAssignedIdentityType } from 'modules/subResourceWrapper.bicep'
 import { virtualNetworkType } from 'modules/subResourceWrapper.bicep'
+import { routeTableType } from 'modules/subResourceWrapper.bicep'
 
 // PARAMETERS
 
@@ -389,6 +390,12 @@ param userAssignedIdentitiesResourceGroupLockEnabled bool = true
 @description('Optional. Flag to do mesh peering of all virtual networks deployed into the new subscription.')
 param peerAllVirtualNetworks bool = false
 
+@description('Optional. The list of route tables to create.')
+param routeTables routeTableType[] = []
+
+@description('Optional. The name of the resource group to create the route tables in.')
+param routeTablesResourceGroupName string = ''
+
 // VARIABLES
 
 var existingSubscriptionIDEmptyCheck = empty(existingSubscriptionId)
@@ -491,6 +498,8 @@ module createSubscriptionResources './modules/subResourceWrapper.bicep' = if (su
     userAssignedManagedIdentities: userAssignedManagedIdentities
     userAssignedIdentitiesResourceGroupLockEnabled: userAssignedIdentitiesResourceGroupLockEnabled
     peerAllVirtualNetworks: peerAllVirtualNetworks
+    routeTables: routeTables
+    routeTablesResourceGroupName: routeTablesResourceGroupName
     enableTelemetry: enableTelemetry
   }
 }

@@ -82,7 +82,7 @@ param virtualNetworkBastionConfiguration bastionType?
 @sys.description('The resource ID of the virtual network or virtual wan hub in the hub to which the created virtual network will be peered/connected to via vitrual network peering or a vitrual hub connection.')
 param hubNetworkResourceId string = ''
 
-@sys.description('Enables the use of remote gateways in the spefcified hub virtual network. If no gateways exsit in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections.')
+@sys.description('Enables the use of remote gateways in the specified hub virtual network. If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections.')
 param virtualNetworkUseRemoteGateways bool = true
 
 @sys.description('A list of additional virtual networks to create.')
@@ -223,6 +223,12 @@ param userAssignedManagedIdentities userAssignedIdentityType[] = []
 @sys.description('Enables the deployment of a `CanNotDelete` resource locks to the user-assigned managed identities resource group.')
 param userAssignedIdentitiesResourceGroupLockEnabled bool = true
 
+@sys.description('The list of route tables to create.')
+param routeTables routeTableType[] = []
+
+@sys.description('The name of the resource group to create the route tables in.')
+param routeTablesResourceGroupName string = ''
+
 // VARIABLES
 
 // Deployment name variables
@@ -259,6 +265,10 @@ var deploymentNames = {
   )
   createLzNsg: take(
     'lz-vend-nsg-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
+    64
+  )
+  createLzRouteTable: take(
+    'lz-vend-routetable-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
     64
   )
   createBastionNsg: take(
@@ -308,6 +318,10 @@ var deploymentNames = {
   )
   createResourceGroupForDeploymentScript: take(
     'lz-vend-rsg-ds-create-${uniqueString(subscriptionId, deploymentScriptResourceGroupName, deploymentScriptLocation, deployment().name)}',
+    64
+  )
+  createResourceGroupForRouteTables: take(
+    'lz-vend-rsg-rt-create-${uniqueString(subscriptionId, routeTablesResourceGroupName, virtualNetworkLocation, deployment().name)}',
     64
   )
   registerResourceProviders: take(
@@ -595,6 +609,7 @@ module tagResourceGroup 'tags.bicep' = if (virtualNetworkEnabled && !empty(virtu
 module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   dependsOn: [
     createResourceGroupForLzNetworking
+    createLzRouteTable
   ]
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   name: deploymentNames.createLzVnet
@@ -634,6 +649,15 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virt
                   'Microsoft.Network/networkSecurityGroups',
                   '${createLzNsg[i].outputs.name}'
                 )
+            routeTableResourceId: (!empty(subnet.?routeTableName) && !empty(routeTablesResourceGroupName))
+              ? resourceId(
+                  subscriptionId,
+                  routeTablesResourceGroupName,
+                  'Microsoft.Network/routeTables',
+                  subnet.?routeTableName ?? ''
+                )
+              : null
+            routeTableName: subnet.?routeTableName ?? null
             natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
               ? createNatGateway.outputs.resourceId
               : null
@@ -808,6 +832,22 @@ module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
       name: subnet.?networkSecurityGroup.name ?? 'nsg-${subnet.name}-${substring(guid(virtualNetworkName, virtualNetworkResourceGroupName, subnet.name, subscriptionId), 0, 5)}'
       location: virtualNetworkLocation
       securityRules: subnet.?networkSecurityGroup.?securityRules ?? null
+      enableTelemetry: enableTelemetry
+    }
+  }
+]
+
+module createLzRouteTable 'br/public:avm/res/network/route-table:0.4.1' = [
+  for (routeTable, i) in routeTables: if (!empty(routeTables) && !empty(routeTablesResourceGroupName)) {
+    scope: resourceGroup(subscriptionId, routeTablesResourceGroupName)
+    dependsOn: [
+      createResourceGroupForRouteTables
+    ]
+    name: '${deploymentNames.createLzRouteTable}-${i}'
+    params: {
+      name: routeTable.name
+      location: routeTable.location
+      routes: routeTable.?routes ?? []
       enableTelemetry: enableTelemetry
     }
   }
@@ -1305,6 +1345,16 @@ module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resou
   }
 }
 
+module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(routeTablesResourceGroupName) && !empty(routeTables)) {
+  scope: subscription(subscriptionId)
+  name: deploymentNames.createResourceGroupForRouteTables
+  params: {
+    name: routeTablesResourceGroupName
+    location: virtualNetworkLocation ?? deployment().location
+    enableTelemetry: enableTelemetry
+  }
+}
+
 module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createDeploymentScriptManagedIdentity
@@ -1628,6 +1678,7 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
     dependsOn: [
       createResourceGroupForadditionalLzNetworking
       createAdditionalVnetNsgs
+      createLzRouteTable
     ]
     params: {
       name: vnet.name
@@ -1646,6 +1697,14 @@ module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' =
                     filter(nsgArrayFormatted, nsg => nsg.nsgName == subnet.?networkSecurityGroup.name)[0].nsgName
                   )
                 : null
+          routeTableResourceId: (!empty(subnet.?routeTableName) && !empty(routeTablesResourceGroupName))
+            ? resourceId(
+                subscriptionId,
+                routeTablesResourceGroupName,
+                'Microsoft.Network/routeTables',
+                subnet.?routeTableName ?? ''
+              )
+            : null
           natGatewayResourceId: (vnet.?deployNatGateway ?? false) && (subnet.?associateWithNatGateway ?? false)
             ? createAdditonalNatGateway[i].outputs.resourceId
             : null
@@ -1895,7 +1954,7 @@ type subnetType = {
   @description('Optional. Option to associate the subnet with the NAT gatway deployed by this module.')
   associateWithNatGateway: bool?
 
-  @description('Optional. The network resource group to be associated with this subnet.')
+  @description('Optional. The network security group to be associated with this subnet.')
   networkSecurityGroup: networkSecurityGroupType?
 
   @description('Optional. enable or disable apply network policies on private endpoint in the subnet.')
@@ -1903,9 +1962,6 @@ type subnetType = {
 
   @description('Optional. enable or disable apply network policies on private link service in the subnet.')
   privateLinkServiceNetworkPolicies: ('Disabled' | 'Enabled')?
-
-  @description('Optional. The resource ID of the route table to assign to the subnet.')
-  routeTableResourceId: string?
 
   @description('Optional. An array of service endpoint policies.')
   serviceEndpointPolicies: object[]?
@@ -1918,6 +1974,9 @@ type subnetType = {
 
   @description('Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.')
   sharingScope: ('DelegatedServices' | 'Tenant')?
+
+  @description('Optional. The name of the route table to be associated with this subnet.')
+  routeTableName: string?
 }
 
 @export()
@@ -2202,5 +2261,39 @@ type nsgSecurityRuleType = {
 
     @description('Optional. The source port ranges.')
     sourcePortRanges: string[]?
+  }
+}
+
+@export()
+@description('The route table type.')
+type routeTableType = {
+  @description('Required. The name of the route table resource.')
+  name: string
+
+  @description('Required. The location of the route table resource.')
+  location: string
+
+  @description('Optional. The tags for the route table resource.')
+  tags: object?
+
+  @description('Optional. The routes for the route table resource.')
+  routes: routeType[]?
+}
+
+@description('The type for a route.')
+type routeType = {
+  @description('Required. Name of the route.')
+  name: string
+
+  @description('Required. Properties of the route.')
+  properties: {
+    @description('Required. The type of Azure hop the packet should be sent to.')
+    nextHopType: ('VirtualAppliance' | 'VnetLocal' | 'Internet' | 'VirtualNetworkGateway' | 'None')
+
+    @description('Required. The destination CIDR to which the route applies.')
+    addressPrefix: string
+
+    @description('Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.')
+    nextHopIpAddress: string?
   }
 }

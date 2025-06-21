@@ -81,12 +81,13 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
             $vnetHs.ddosProtectionPlan | Should -BeNullOrEmpty
         }
 
-        It "Should have a Virtual Network with a subnet created named 'Subnet1' with addressPrefix '10.110.1.0/24'" {
-            $vnetHs.Subnets[0].Name | Should -Be 'Subnet1'
+        It "Should have a Virtual Network with a subnet created named 'app-subnet' with addressPrefix '10.110.1.0/24' and a route table associated" {
+            $vnetHs.Subnets[0].Name | Should -Be 'app-subnet'
             $vnetHs.Subnets[0].AddressPrefix | Should -Be '10.110.1.0/24'
+            $vnetHs.Subnets[0].RouteTable | Should -Not -BeNullOrEmpty
         }
 
-        It 'Should have a Virtual Network with a Network Security Group (NSG) with one rule associated to Subnet1' {
+        It 'Should have a Virtual Network with a Network Security Group (NSG) with one rule associated to app-subnet' {
             ($additionalVnet1.Subnets[0].NetworkSecurityGroupText | ConvertFrom-Json).Id | Should -Be $vnetNsg.Id
             ($vnetNsg.DefaultSecurityRulesText).Count | Should -Be 1
         }

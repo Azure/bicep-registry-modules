@@ -42,6 +42,7 @@ This module deploys a subscription to accelerate deployment of landing zones. Fo
 | `Microsoft.Network/publicIPAddresses` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPAddresses) |
 | `Microsoft.Network/publicIPAddresses` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/publicIPAddresses) |
 | `Microsoft.Network/publicIPPrefixes` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-09-01/publicIPPrefixes) |
+| `Microsoft.Network/routeTables` | [2023-04-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-04-01/routeTables) |
 | `Microsoft.Network/virtualHubs/hubVirtualNetworkConnections` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/virtualHubs/hubVirtualNetworkConnections) |
 | `Microsoft.Network/virtualNetworks` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks) |
 | `Microsoft.Network/virtualNetworks/subnets` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/virtualNetworks/subnets) |
@@ -108,7 +109,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
         subnets: [
           {
             addressPrefix: '10.120.1.0/24'
-            name: 'Subnet1'
+            name: 'subnet1'
             networkSecurityGroup: {
               location: '<location>'
               name: '<name>'
@@ -149,13 +150,30 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           {
             addressPrefix: '10.90.1.0/24'
             associateWithNatGateway: true
-            name: 'Subnet1'
+            name: 'data-subnet'
+            routeTableName: '<routeTableName>'
           }
         ]
       }
     ]
     peerAllVirtualNetworks: true
     resourceProviders: {}
+    routeTables: [
+      {
+        location: '<location>'
+        name: '<name>'
+        routes: [
+          {
+            name: 'route1'
+            properties: {
+              addressPrefix: '0.0.0.0/0'
+              nextHopType: 'None'
+            }
+          }
+        ]
+      }
+    ]
+    routeTablesResourceGroupName: '<routeTablesResourceGroupName>'
     subscriptionAliasEnabled: true
     subscriptionAliasName: '<subscriptionAliasName>'
     subscriptionBillingScope: '<subscriptionBillingScope>'
@@ -178,7 +196,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     virtualNetworkSubnets: [
       {
         addressPrefix: '10.110.1.0/24'
-        name: 'Subnet1'
+        name: 'app-subnet'
+        routeTableName: '<routeTableName>'
       }
     ]
   }
@@ -210,7 +229,7 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
           "subnets": [
             {
               "addressPrefix": "10.120.1.0/24",
-              "name": "Subnet1",
+              "name": "subnet1",
               "networkSecurityGroup": {
                 "location": "<location>",
                 "name": "<name>",
@@ -251,7 +270,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
             {
               "addressPrefix": "10.90.1.0/24",
               "associateWithNatGateway": true,
-              "name": "Subnet1"
+              "name": "data-subnet",
+              "routeTableName": "<routeTableName>"
             }
           ]
         }
@@ -262,6 +282,26 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
     },
     "resourceProviders": {
       "value": {}
+    },
+    "routeTables": {
+      "value": [
+        {
+          "location": "<location>",
+          "name": "<name>",
+          "routes": [
+            {
+              "name": "route1",
+              "properties": {
+                "addressPrefix": "0.0.0.0/0",
+                "nextHopType": "None"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "routeTablesResourceGroupName": {
+      "value": "<routeTablesResourceGroupName>"
     },
     "subscriptionAliasEnabled": {
       "value": true
@@ -314,7 +354,8 @@ module subVending 'br/public:avm/ptn/lz/sub-vending:<version>' = {
       "value": [
         {
           "addressPrefix": "10.110.1.0/24",
-          "name": "Subnet1"
+          "name": "app-subnet",
+          "routeTableName": "<routeTableName>"
         }
       ]
     }
@@ -344,7 +385,7 @@ param additionalVirtualNetworks = [
     subnets: [
       {
         addressPrefix: '10.120.1.0/24'
-        name: 'Subnet1'
+        name: 'subnet1'
         networkSecurityGroup: {
           location: '<location>'
           name: '<name>'
@@ -385,13 +426,30 @@ param additionalVirtualNetworks = [
       {
         addressPrefix: '10.90.1.0/24'
         associateWithNatGateway: true
-        name: 'Subnet1'
+        name: 'data-subnet'
+        routeTableName: '<routeTableName>'
       }
     ]
   }
 ]
 param peerAllVirtualNetworks = true
 param resourceProviders = {}
+param routeTables = [
+  {
+    location: '<location>'
+    name: '<name>'
+    routes: [
+      {
+        name: 'route1'
+        properties: {
+          addressPrefix: '0.0.0.0/0'
+          nextHopType: 'None'
+        }
+      }
+    ]
+  }
+]
+param routeTablesResourceGroupName = '<routeTablesResourceGroupName>'
 param subscriptionAliasEnabled = true
 param subscriptionAliasName = '<subscriptionAliasName>'
 param subscriptionBillingScope = '<subscriptionBillingScope>'
@@ -414,7 +472,8 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 param virtualNetworkSubnets = [
   {
     addressPrefix: '10.110.1.0/24'
-    name: 'Subnet1'
+    name: 'app-subnet'
+    routeTableName: '<routeTableName>'
   }
 ]
 ```
@@ -2298,6 +2357,8 @@ param virtualNetworkResourceGroupName = '<virtualNetworkResourceGroupName>'
 | [`resourceProviders`](#parameter-resourceproviders) | object | An object of resource providers and resource providers features to register. If left blank/empty, no resource providers will be registered.<p> |
 | [`roleAssignmentEnabled`](#parameter-roleassignmentenabled) | bool | Whether to create role assignments or not. If true, supply the array of role assignment objects in the parameter called `roleAssignments`.<p> |
 | [`roleAssignments`](#parameter-roleassignments) | array | Supply an array of objects containing the details of the role assignments to create.<p><p>Each object must contain the following `keys`:<li>`principalId` = The Object ID of the User, Group, SPN, Managed Identity to assign the RBAC role too.<li>`definition` = The Name of one of the pre-defined built-In RBAC Roles or a Resource ID of a Built-in or custom RBAC Role Definition as follows:<p>  - You can only provide the RBAC role name of the pre-defined roles (Contributor, Owner, Reader, Role Based Access Control Administrator, and User Access Administrator). We only provide those roles as they are the most common ones to assign to a new subscription, also to reduce the template size and complexity in case we define each and every Built-in RBAC role.<p>  - You can provide the Resource ID of a Built-in or custom RBAC Role Definition<p>    - e.g. `/providers/Microsoft.Authorization/roleDefinitions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx`<li>`relativeScope` = 2 options can be provided for input value:<p>    1. `''` *(empty string)* = Make RBAC Role Assignment to Subscription scope<p>    2. `'/resourceGroups/<RESOURCE GROUP NAME>'` = Make RBAC Role Assignment to specified Resource Group.<p> |
+| [`routeTables`](#parameter-routetables) | array | The list of route tables to create. |
+| [`routeTablesResourceGroupName`](#parameter-routetablesresourcegroupname) | string | The name of the resource group to create the route tables in. |
 | [`subscriptionAliasEnabled`](#parameter-subscriptionaliasenabled) | bool | Whether to create a new Subscription using the Subscription Alias resource. If `false`, supply an existing Subscription''s ID in the parameter named `existingSubscriptionId` instead to deploy resources to an existing Subscription. |
 | [`subscriptionAliasName`](#parameter-subscriptionaliasname) | string | The name of the Subscription Alias, that will be created by this module.<p><p>The string must be comprised of `a-z`, `A-Z`, `0-9`, `-`, `_` and ` ` (space). The maximum length is 63 characters.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p> |
 | [`subscriptionBillingScope`](#parameter-subscriptionbillingscope) | string | The Billing Scope for the new Subscription alias, that will be created by this module.<p><p>A valid Billing Scope looks like `/providers/Microsoft.Billing/billingAccounts/{billingAccountName}/enrollmentAccounts/{enrollmentAccountName}` and is case sensitive.<p><p>> **Not required when providing an existing Subscription ID via the parameter `existingSubscriptionId`**.<p> |
@@ -2568,10 +2629,10 @@ The subnets for the virtual network.
 | [`defaultOutboundAccess`](#parameter-additionalvirtualnetworkssubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-additionalvirtualnetworkssubnetsdelegation) | string | The delegation to enable on the subnet. |
 | [`natGatewayResourceId`](#parameter-additionalvirtualnetworkssubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
-| [`networkSecurityGroup`](#parameter-additionalvirtualnetworkssubnetsnetworksecuritygroup) | object | The network resource group to be associated with this subnet. |
+| [`networkSecurityGroup`](#parameter-additionalvirtualnetworkssubnetsnetworksecuritygroup) | object | The network security group to be associated with this subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-additionalvirtualnetworkssubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
 | [`privateLinkServiceNetworkPolicies`](#parameter-additionalvirtualnetworkssubnetsprivatelinkservicenetworkpolicies) | string | enable or disable apply network policies on private link service in the subnet. |
-| [`routeTableResourceId`](#parameter-additionalvirtualnetworkssubnetsroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
+| [`routeTableName`](#parameter-additionalvirtualnetworkssubnetsroutetablename) | string | The name of the route table to be associated with this subnet. |
 | [`serviceEndpointPolicies`](#parameter-additionalvirtualnetworkssubnetsserviceendpointpolicies) | array | An array of service endpoint policies. |
 | [`serviceEndpoints`](#parameter-additionalvirtualnetworkssubnetsserviceendpoints) | array | The service endpoints to enable on the subnet. |
 | [`sharingScope`](#parameter-additionalvirtualnetworkssubnetssharingscope) | string | Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty. |
@@ -2634,7 +2695,7 @@ The resource ID of the NAT Gateway to use for the subnet.
 
 ### Parameter: `additionalVirtualNetworks.subnets.networkSecurityGroup`
 
-The network resource group to be associated with this subnet.
+The network security group to be associated with this subnet.
 
 - Required: No
 - Type: object
@@ -2884,9 +2945,9 @@ enable or disable apply network policies on private link service in the subnet.
   ]
   ```
 
-### Parameter: `additionalVirtualNetworks.subnets.routeTableResourceId`
+### Parameter: `additionalVirtualNetworks.subnets.routeTableName`
 
-The resource ID of the route table to assign to the subnet.
+The name of the route table to be associated with this subnet.
 
 - Required: No
 - Type: string
@@ -3860,6 +3921,129 @@ Name of the RBAC condition template.
   ]
   ```
 
+### Parameter: `routeTables`
+
+The list of route tables to create.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`location`](#parameter-routetableslocation) | string | The location of the route table resource. |
+| [`name`](#parameter-routetablesname) | string | The name of the route table resource. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`routes`](#parameter-routetablesroutes) | array | The routes for the route table resource. |
+| [`tags`](#parameter-routetablestags) | object | The tags for the route table resource. |
+
+### Parameter: `routeTables.location`
+
+The location of the route table resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routeTables.name`
+
+The name of the route table resource.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routeTables.routes`
+
+The routes for the route table resource.
+
+- Required: No
+- Type: array
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`name`](#parameter-routetablesroutesname) | string | Name of the route. |
+| [`properties`](#parameter-routetablesroutesproperties) | object | Properties of the route. |
+
+### Parameter: `routeTables.routes.name`
+
+Name of the route.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routeTables.routes.properties`
+
+Properties of the route.
+
+- Required: Yes
+- Type: object
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`addressPrefix`](#parameter-routetablesroutespropertiesaddressprefix) | string | The destination CIDR to which the route applies. |
+| [`nextHopType`](#parameter-routetablesroutespropertiesnexthoptype) | string | The type of Azure hop the packet should be sent to. |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`nextHopIpAddress`](#parameter-routetablesroutespropertiesnexthopipaddress) | string | The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance. |
+
+### Parameter: `routeTables.routes.properties.addressPrefix`
+
+The destination CIDR to which the route applies.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `routeTables.routes.properties.nextHopType`
+
+The type of Azure hop the packet should be sent to.
+
+- Required: Yes
+- Type: string
+- Allowed:
+  ```Bicep
+  [
+    'Internet'
+    'None'
+    'VirtualAppliance'
+    'VirtualNetworkGateway'
+    'VnetLocal'
+  ]
+  ```
+
+### Parameter: `routeTables.routes.properties.nextHopIpAddress`
+
+The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.
+
+- Required: No
+- Type: string
+
+### Parameter: `routeTables.tags`
+
+The tags for the route table resource.
+
+- Required: No
+- Type: object
+
+### Parameter: `routeTablesResourceGroupName`
+
+The name of the resource group to create the route tables in.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `subscriptionAliasEnabled`
 
 Whether to create a new Subscription using the Subscription Alias resource. If `false`, supply an existing Subscription''s ID in the parameter named `existingSubscriptionId` instead to deploy resources to an existing Subscription.
@@ -4631,10 +4815,10 @@ The subnets of the Virtual Network that will be created by this module.
 | [`defaultOutboundAccess`](#parameter-virtualnetworksubnetsdefaultoutboundaccess) | bool | Set this property to false to disable default outbound connectivity for all VMs in the subnet. This property can only be set at the time of subnet creation and cannot be updated for an existing subnet. |
 | [`delegation`](#parameter-virtualnetworksubnetsdelegation) | string | The delegation to enable on the subnet. |
 | [`natGatewayResourceId`](#parameter-virtualnetworksubnetsnatgatewayresourceid) | string | The resource ID of the NAT Gateway to use for the subnet. |
-| [`networkSecurityGroup`](#parameter-virtualnetworksubnetsnetworksecuritygroup) | object | The network resource group to be associated with this subnet. |
+| [`networkSecurityGroup`](#parameter-virtualnetworksubnetsnetworksecuritygroup) | object | The network security group to be associated with this subnet. |
 | [`privateEndpointNetworkPolicies`](#parameter-virtualnetworksubnetsprivateendpointnetworkpolicies) | string | enable or disable apply network policies on private endpoint in the subnet. |
 | [`privateLinkServiceNetworkPolicies`](#parameter-virtualnetworksubnetsprivatelinkservicenetworkpolicies) | string | enable or disable apply network policies on private link service in the subnet. |
-| [`routeTableResourceId`](#parameter-virtualnetworksubnetsroutetableresourceid) | string | The resource ID of the route table to assign to the subnet. |
+| [`routeTableName`](#parameter-virtualnetworksubnetsroutetablename) | string | The name of the route table to be associated with this subnet. |
 | [`serviceEndpointPolicies`](#parameter-virtualnetworksubnetsserviceendpointpolicies) | array | An array of service endpoint policies. |
 | [`serviceEndpoints`](#parameter-virtualnetworksubnetsserviceendpoints) | array | The service endpoints to enable on the subnet. |
 | [`sharingScope`](#parameter-virtualnetworksubnetssharingscope) | string | Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty. |
@@ -4697,7 +4881,7 @@ The resource ID of the NAT Gateway to use for the subnet.
 
 ### Parameter: `virtualNetworkSubnets.networkSecurityGroup`
 
-The network resource group to be associated with this subnet.
+The network security group to be associated with this subnet.
 
 - Required: No
 - Type: object
@@ -4947,9 +5131,9 @@ enable or disable apply network policies on private link service in the subnet.
   ]
   ```
 
-### Parameter: `virtualNetworkSubnets.routeTableResourceId`
+### Parameter: `virtualNetworkSubnets.routeTableName`
 
-The resource ID of the route table to assign to the subnet.
+The name of the route table to be associated with this subnet.
 
 - Required: No
 - Type: string
@@ -5054,6 +5238,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/network/nat-gateway:1.2.2` | Remote reference |
 | `br/public:avm/res/network/network-security-group:0.5.1` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
+| `br/public:avm/res/network/route-table:0.4.1` | Remote reference |
 | `br/public:avm/res/network/virtual-network:0.7.0` | Remote reference |
 | `br/public:avm/res/resources/deployment-script:0.2.3` | Remote reference |
 | `br/public:avm/res/resources/resource-group:0.4.1` | Remote reference |

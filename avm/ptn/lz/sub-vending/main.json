@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3922566507607884488"
+      "templateHash": "14259293299986478404"
     },
     "name": "Sub-vending",
     "description": "This module deploys a subscription to accelerate deployment of landing zones. For more information on how to use it, please visit this [Wiki](https://github.com/Azure/bicep-lz-vending/wiki).",
@@ -589,6 +589,57 @@
         }
       }
     },
+    "_1.routeType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. Name of the route."
+          }
+        },
+        "properties": {
+          "type": "object",
+          "properties": {
+            "nextHopType": {
+              "type": "string",
+              "allowedValues": [
+                "Internet",
+                "None",
+                "VirtualAppliance",
+                "VirtualNetworkGateway",
+                "VnetLocal"
+              ],
+              "metadata": {
+                "description": "Required. The type of Azure hop the packet should be sent to."
+              }
+            },
+            "addressPrefix": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The destination CIDR to which the route applies."
+              }
+            },
+            "nextHopIpAddress": {
+              "type": "string",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance."
+              }
+            }
+          },
+          "metadata": {
+            "description": "Required. Properties of the route."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The type for a route.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
     "_1.ticketInfoType": {
       "type": "object",
       "properties": {
@@ -917,6 +968,46 @@
         }
       }
     },
+    "routeTableType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of the route table resource."
+          }
+        },
+        "location": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The location of the route table resource."
+          }
+        },
+        "tags": {
+          "type": "object",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The tags for the route table resource."
+          }
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/_1.routeType"
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The routes for the route table resource."
+          }
+        }
+      },
+      "metadata": {
+        "description": "The route table type.",
+        "__bicep_imported_from!": {
+          "sourceTemplate": "modules/subResourceWrapper.bicep"
+        }
+      }
+    },
     "subnetType": {
       "type": "object",
       "properties": {
@@ -978,7 +1069,7 @@
           "$ref": "#/definitions/_1.networkSecurityGroupType",
           "nullable": true,
           "metadata": {
-            "description": "Optional. The network resource group to be associated with this subnet."
+            "description": "Optional. The network security group to be associated with this subnet."
           }
         },
         "privateEndpointNetworkPolicies": {
@@ -1003,13 +1094,6 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. enable or disable apply network policies on private link service in the subnet."
-          }
-        },
-        "routeTableResourceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The resource ID of the route table to assign to the subnet."
           }
         },
         "serviceEndpointPolicies": {
@@ -1048,6 +1132,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
+          }
+        },
+        "routeTableName": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The name of the route table to be associated with this subnet."
           }
         }
       },
@@ -1694,6 +1785,23 @@
       "metadata": {
         "description": "Optional. Flag to do mesh peering of all virtual networks deployed into the new subscription."
       }
+    },
+    "routeTables": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/routeTableType"
+      },
+      "defaultValue": [],
+      "metadata": {
+        "description": "Optional. The list of route tables to create."
+      }
+    },
+    "routeTablesResourceGroupName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The name of the resource group to create the route tables in."
+      }
     }
   },
   "variables": {
@@ -1995,6 +2103,12 @@
           "peerAllVirtualNetworks": {
             "value": "[parameters('peerAllVirtualNetworks')]"
           },
+          "routeTables": {
+            "value": "[parameters('routeTables')]"
+          },
+          "routeTablesResourceGroupName": {
+            "value": "[parameters('routeTablesResourceGroupName')]"
+          },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           }
@@ -2007,7 +2121,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13693981430278652355"
+              "templateHash": "15872653562775039637"
             },
             "name": "`/subResourcesWrapper/deploy.bicep` Parameters",
             "description": "This module is used by the [`bicep-lz-vending`](https://aka.ms/sub-vending/bicep) module to help orchestrate the deployment",
@@ -2383,7 +2497,7 @@
                   "$ref": "#/definitions/networkSecurityGroupType",
                   "nullable": true,
                   "metadata": {
-                    "description": "Optional. The network resource group to be associated with this subnet."
+                    "description": "Optional. The network security group to be associated with this subnet."
                   }
                 },
                 "privateEndpointNetworkPolicies": {
@@ -2408,13 +2522,6 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. enable or disable apply network policies on private link service in the subnet."
-                  }
-                },
-                "routeTableResourceId": {
-                  "type": "string",
-                  "nullable": true,
-                  "metadata": {
-                    "description": "Optional. The resource ID of the route table to assign to the subnet."
                   }
                 },
                 "serviceEndpointPolicies": {
@@ -2453,6 +2560,13 @@
                   "nullable": true,
                   "metadata": {
                     "description": "Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty."
+                  }
+                },
+                "routeTableName": {
+                  "type": "string",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The name of the route table to be associated with this subnet."
                   }
                 }
               },
@@ -3156,6 +3270,92 @@
                 "__bicep_export!": true,
                 "description": "The type of a security rule."
               }
+            },
+            "routeTableType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The name of the route table resource."
+                  }
+                },
+                "location": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. The location of the route table resource."
+                  }
+                },
+                "tags": {
+                  "type": "object",
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The tags for the route table resource."
+                  }
+                },
+                "routes": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/routeType"
+                  },
+                  "nullable": true,
+                  "metadata": {
+                    "description": "Optional. The routes for the route table resource."
+                  }
+                }
+              },
+              "metadata": {
+                "__bicep_export!": true,
+                "description": "The route table type."
+              }
+            },
+            "routeType": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "metadata": {
+                    "description": "Required. Name of the route."
+                  }
+                },
+                "properties": {
+                  "type": "object",
+                  "properties": {
+                    "nextHopType": {
+                      "type": "string",
+                      "allowedValues": [
+                        "Internet",
+                        "None",
+                        "VirtualAppliance",
+                        "VirtualNetworkGateway",
+                        "VnetLocal"
+                      ],
+                      "metadata": {
+                        "description": "Required. The type of Azure hop the packet should be sent to."
+                      }
+                    },
+                    "addressPrefix": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The destination CIDR to which the route applies."
+                      }
+                    },
+                    "nextHopIpAddress": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance."
+                      }
+                    }
+                  },
+                  "metadata": {
+                    "description": "Required. Properties of the route."
+                  }
+                }
+              },
+              "metadata": {
+                "description": "The type for a route."
+              }
             }
           },
           "functions": [
@@ -3423,7 +3623,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Enables the use of remote gateways in the spefcified hub virtual network. If no gateways exsit in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections."
+                "description": "Enables the use of remote gateways in the specified hub virtual network. If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections."
               }
             },
             "additionalVirtualNetworks": {
@@ -3661,6 +3861,23 @@
               "metadata": {
                 "description": "Enables the deployment of a `CanNotDelete` resource locks to the user-assigned managed identities resource group."
               }
+            },
+            "routeTables": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/routeTableType"
+              },
+              "defaultValue": [],
+              "metadata": {
+                "description": "The list of route tables to create."
+              }
+            },
+            "routeTablesResourceGroupName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "The name of the resource group to create the route tables in."
+              }
             }
           },
           "variables": {
@@ -3697,6 +3914,7 @@
               "createLzVnet": "[take(format('lz-vend-vnet-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('virtualNetworkName'), deployment().name)), 64)]",
               "createLzVirtualWanConnection": "[take(format('lz-vend-vhc-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('virtualNetworkName'), variables('virtualHubResourceIdChecked'), deployment().name)), 64)]",
               "createLzNsg": "[take(format('lz-vend-nsg-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('virtualNetworkName'), deployment().name)), 64)]",
+              "createLzRouteTable": "[take(format('lz-vend-routetable-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('virtualNetworkName'), deployment().name)), 64)]",
               "createBastionNsg": "[take(format('lz-vend-bastion-nsg-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('virtualNetworkName'), deployment().name)), 64)]",
               "createBastionHost": "[take(format('lz-vend-bastion-create-{0}', uniqueString(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), parameters('virtualNetworkLocation'), parameters('virtualNetworkName'), deployment().name)), 64)]",
               "createUserAssignedIdentities": "[take(format('lz-vend-identity-create-{0}', uniqueString(parameters('subscriptionId'), parameters('userAssignedIdentityResourceGroupName'), parameters('virtualNetworkLocation'), deployment().name)), 64)]",
@@ -3710,6 +3928,7 @@
               "createLzUMIRoleAssignmentsRsgsSelf": "[take(format('lz-vend-umi-rbac-rsg-self-create-{0}', uniqueString(parameters('subscriptionId'), deployment().name)), 64)]",
               "createLzUMIRoleAssignmentsRsgsNotSelf": "[take(format('lz-vend-umi-rbac-rsg-nself-create-{0}', uniqueString(parameters('subscriptionId'), deployment().name)), 64)]",
               "createResourceGroupForDeploymentScript": "[take(format('lz-vend-rsg-ds-create-{0}', uniqueString(parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName'), parameters('deploymentScriptLocation'), deployment().name)), 64)]",
+              "createResourceGroupForRouteTables": "[take(format('lz-vend-rsg-rt-create-{0}', uniqueString(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), parameters('virtualNetworkLocation'), deployment().name)), 64)]",
               "registerResourceProviders": "[take(format('lz-vend-ds-create-{0}', uniqueString(parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName'), parameters('deploymentScriptName'), deployment().name)), 64)]",
               "createDeploymentScriptManagedIdentity": "[take(format('lz-vend-ds-msi-create-{0}', uniqueString(parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName'), deployment().name)), 64)]",
               "createRoleAssignmentsDeploymentScript": "[take(format('lz-vend-ds-rbac-create-{0}', uniqueString(parameters('subscriptionId'), parameters('deploymentScriptResourceGroupName'), parameters('deploymentScriptManagedIdentityName'), deployment().name)), 64)]",
@@ -5591,7 +5810,7 @@
                       {
                         "name": "value",
                         "count": "[length(parameters('virtualNetworkSubnets'))]",
-                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), reference('createBastionNsg').outputs.resourceId.value, resourceId(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', reference(format('createLzNsg[{0}]', copyIndex('value'))).outputs.name.value))), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), reference('createNatGateway').outputs.resourceId.value, null())), createObject())]"
+                        "input": "[if(not(empty(parameters('virtualNetworkSubnets'))), createObject('name', parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'addressPrefix', tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(parameters('virtualNetworkDeployBastion'), equals(parameters('virtualNetworkSubnets')[copyIndex('value')].name, 'AzureBastionSubnet')), reference('createBastionNsg').outputs.resourceId.value, resourceId(parameters('subscriptionId'), parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/networkSecurityGroups', format('{0}', reference(format('createLzNsg[{0}]', copyIndex('value'))).outputs.name.value))), 'routeTableResourceId', if(and(not(empty(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'), '')), null()), 'routeTableName', coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'routeTableName'), null()), 'natGatewayResourceId', if(and(parameters('virtualNetworkDeployNatGateway'), coalesce(tryGet(parameters('virtualNetworkSubnets')[copyIndex('value')], 'associateWithNatGateway'), false())), reference('createNatGateway').outputs.resourceId.value, null())), createObject())]"
                       }
                     ]
                   },
@@ -7221,6 +7440,7 @@
               "dependsOn": [
                 "createBastionNsg",
                 "createLzNsg",
+                "createLzRouteTable",
                 "createNatGateway",
                 "createResourceGroupForLzNetworking"
               ]
@@ -8677,6 +8897,391 @@
               },
               "dependsOn": [
                 "createResourceGroupForLzNetworking"
+              ]
+            },
+            "createLzRouteTable": {
+              "copy": {
+                "name": "createLzRouteTable",
+                "count": "[length(parameters('routeTables'))]"
+              },
+              "condition": "[and(not(empty(parameters('routeTables'))), not(empty(parameters('routeTablesResourceGroupName'))))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('{0}-{1}', variables('deploymentNames').createLzRouteTable, copyIndex())]",
+              "subscriptionId": "[parameters('subscriptionId')]",
+              "resourceGroup": "[parameters('routeTablesResourceGroupName')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('routeTables')[copyIndex()].name]"
+                  },
+                  "location": {
+                    "value": "[parameters('routeTables')[copyIndex()].location]"
+                  },
+                  "routes": {
+                    "value": "[coalesce(tryGet(parameters('routeTables')[copyIndex()], 'routes'), createArray())]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.34.44.8038",
+                      "templateHash": "2458661232490352903"
+                    },
+                    "name": "Route Tables",
+                    "description": "This module deploys a User Defined Route Table (UDR)."
+                  },
+                  "definitions": {
+                    "routeType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. Name of the route."
+                          }
+                        },
+                        "properties": {
+                          "type": "object",
+                          "properties": {
+                            "nextHopType": {
+                              "type": "string",
+                              "allowedValues": [
+                                "Internet",
+                                "None",
+                                "VirtualAppliance",
+                                "VirtualNetworkGateway",
+                                "VnetLocal"
+                              ],
+                              "metadata": {
+                                "description": "Required. The type of Azure hop the packet should be sent to."
+                              }
+                            },
+                            "addressPrefix": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The destination CIDR to which the route applies."
+                              }
+                            },
+                            "nextHopIpAddress": {
+                              "type": "string",
+                              "nullable": true,
+                              "metadata": {
+                                "description": "Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance."
+                              }
+                            }
+                          },
+                          "metadata": {
+                            "description": "Required. Properties of the route."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "__bicep_export!": true,
+                        "description": "The type for a route."
+                      }
+                    },
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
+                    },
+                    "roleAssignmentType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name given for the hub route table."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all resources."
+                      }
+                    },
+                    "routes": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/routeType"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. An array of routes to be established within the hub route table."
+                      }
+                    },
+                    "disableBgpRoutePropagation": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Switch to disable BGP route propagation."
+                      }
+                    },
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
+                    "roleAssignments": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Array of role assignments to create."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Tags of the resource."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ],
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Network Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    }
+                  },
+                  "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[take(format('46d3xbcp.res.network-routetable.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "routeTable": {
+                      "type": "Microsoft.Network/routeTables",
+                      "apiVersion": "2023-04-01",
+                      "name": "[parameters('name')]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "routes": "[parameters('routes')]",
+                        "disableBgpRoutePropagation": "[parameters('disableBgpRoutePropagation')]"
+                      }
+                    },
+                    "routeTable_lock": {
+                      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                      "type": "Microsoft.Authorization/locks",
+                      "apiVersion": "2020-05-01",
+                      "scope": "[format('Microsoft.Network/routeTables/{0}', parameters('name'))]",
+                      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                      "properties": {
+                        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                      },
+                      "dependsOn": [
+                        "routeTable"
+                      ]
+                    },
+                    "routeTable_roleAssignments": {
+                      "copy": {
+                        "name": "routeTable_roleAssignments",
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.Network/routeTables/{0}', parameters('name'))]",
+                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Network/routeTables', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                      "properties": {
+                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                      },
+                      "dependsOn": [
+                        "routeTable"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the route table was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the route table."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the route table."
+                      },
+                      "value": "[resourceId('Microsoft.Network/routeTables', parameters('name'))]"
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The location the resource was deployed into."
+                      },
+                      "value": "[reference('routeTable', '2023-04-01', 'full').location]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "createResourceGroupForRouteTables"
               ]
             },
             "createAdditionalVnetNsgs": {
@@ -24729,6 +25334,499 @@
                   },
                   "location": {
                     "value": "[parameters('deploymentScriptLocation')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.32.4.45862",
+                      "templateHash": "15010504026239849745"
+                    },
+                    "name": "Resource Groups",
+                    "description": "This module deploys a Resource Group.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "definitions": {
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                        }
+                      }
+                    },
+                    "roleAssignmentType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.4.1"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The name of the Resource Group."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[deployment().location]",
+                      "metadata": {
+                        "description": "Optional. Location of the Resource Group. It uses the deployment's location when not provided."
+                      }
+                    },
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
+                    "roleAssignments": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Array of role assignments to create."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Tags of the storage account resource."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    }
+                  },
+                  "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.resources-resourcegroup.{0}.{1}', replace('0.4.1', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "location": "[parameters('location')]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "resourceGroup": {
+                      "type": "Microsoft.Resources/resourceGroups",
+                      "apiVersion": "2021-04-01",
+                      "name": "[parameters('name')]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
+                      "properties": {}
+                    },
+                    "resourceGroup_lock": {
+                      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-RG-Lock', uniqueString(deployment().name, parameters('location')))]",
+                      "resourceGroup": "[parameters('name')]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "lock": {
+                            "value": "[parameters('lock')]"
+                          },
+                          "name": {
+                            "value": "[parameters('name')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.32.4.45862",
+                              "templateHash": "1203907446887412297"
+                            }
+                          },
+                          "definitions": {
+                            "lockType": {
+                              "type": "object",
+                              "properties": {
+                                "name": {
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Specify the name of lock."
+                                  }
+                                },
+                                "kind": {
+                                  "type": "string",
+                                  "allowedValues": [
+                                    "CanNotDelete",
+                                    "None",
+                                    "ReadOnly"
+                                  ],
+                                  "nullable": true,
+                                  "metadata": {
+                                    "description": "Optional. Specify the type of lock."
+                                  }
+                                }
+                              },
+                              "nullable": true
+                            }
+                          },
+                          "parameters": {
+                            "lock": {
+                              "$ref": "#/definitions/lockType",
+                              "metadata": {
+                                "description": "Optional. The lock settings of the service."
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. The name of the Resource Group."
+                              }
+                            }
+                          },
+                          "resources": {
+                            "resourceGroup_lock": {
+                              "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                              "type": "Microsoft.Authorization/locks",
+                              "apiVersion": "2020-05-01",
+                              "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                              "properties": {
+                                "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                                "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "resourceGroup"
+                      ]
+                    },
+                    "resourceGroup_roleAssignments": {
+                      "condition": "[not(empty(coalesce(parameters('roleAssignments'), createArray())))]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-RG-RoleAssignments', uniqueString(deployment().name, parameters('location')))]",
+                      "resourceGroup": "[parameters('name')]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "roleAssignments": {
+                            "value": "[parameters('roleAssignments')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "languageVersion": "2.0",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.32.4.45862",
+                              "templateHash": "6029968255804453751"
+                            }
+                          },
+                          "definitions": {
+                            "roleAssignmentType": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "name": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                                    }
+                                  },
+                                  "roleDefinitionIdOrName": {
+                                    "type": "string",
+                                    "metadata": {
+                                      "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                                    }
+                                  },
+                                  "principalId": {
+                                    "type": "string",
+                                    "metadata": {
+                                      "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                                    }
+                                  },
+                                  "principalType": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "Device",
+                                      "ForeignGroup",
+                                      "Group",
+                                      "ServicePrincipal",
+                                      "User"
+                                    ],
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The principal type of the assigned principal ID."
+                                    }
+                                  },
+                                  "description": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The description of the role assignment."
+                                    }
+                                  },
+                                  "condition": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                                    }
+                                  },
+                                  "conditionVersion": {
+                                    "type": "string",
+                                    "allowedValues": [
+                                      "2.0"
+                                    ],
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. Version of the condition."
+                                    }
+                                  },
+                                  "delegatedManagedIdentityResourceId": {
+                                    "type": "string",
+                                    "nullable": true,
+                                    "metadata": {
+                                      "description": "Optional. The Resource Id of the delegated managed identity resource."
+                                    }
+                                  }
+                                }
+                              },
+                              "nullable": true
+                            }
+                          },
+                          "parameters": {
+                            "roleAssignments": {
+                              "$ref": "#/definitions/roleAssignmentType",
+                              "metadata": {
+                                "description": "Optional. Array of role assignments to create."
+                              }
+                            }
+                          },
+                          "variables": {
+                            "copy": [
+                              {
+                                "name": "formattedRoleAssignments",
+                                "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                                "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                              }
+                            ],
+                            "builtInRoleNames": {
+                              "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                              "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                              "Quota Request Operator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '0e5f05e5-9ab9-446b-b98d-1e2157c94125')]",
+                              "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                              "Resource Policy Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '36243c78-bf99-498c-9df9-86d9f8d28608')]",
+                              "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                              "Tag Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4a9ae827-6dc8-4573-8ac7-8239d42aa03f')]",
+                              "Template Spec Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1c9b6475-caf0-4164-b5a1-2142a7116f4b')]",
+                              "Template Spec Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '392ae280-861d-42bd-9ea5-08ee6d83b80e')]",
+                              "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                            }
+                          },
+                          "resources": {
+                            "resourceGroup_roleAssignments": {
+                              "copy": {
+                                "name": "resourceGroup_roleAssignments",
+                                "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                              },
+                              "type": "Microsoft.Authorization/roleAssignments",
+                              "apiVersion": "2022-04-01",
+                              "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceGroup().id, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                              "properties": {
+                                "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                                "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                                "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                                "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                                "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                                "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                                "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "resourceGroup"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the resource group."
+                      },
+                      "value": "[subscriptionResourceId('Microsoft.Resources/resourceGroups', parameters('name'))]"
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The location the resource was deployed into."
+                      },
+                      "value": "[reference('resourceGroup', '2021-04-01', 'full').location]"
+                    }
+                  }
+                }
+              }
+            },
+            "createResourceGroupForRouteTables": {
+              "condition": "[and(not(empty(parameters('routeTablesResourceGroupName'))), not(empty(parameters('routeTables'))))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[variables('deploymentNames').createResourceGroupForRouteTables]",
+              "subscriptionId": "[parameters('subscriptionId')]",
+              "location": "[deployment().location]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[parameters('routeTablesResourceGroupName')]"
+                  },
+                  "location": {
+                    "value": "[coalesce(parameters('virtualNetworkLocation'), deployment().location)]"
                   },
                   "enableTelemetry": {
                     "value": "[parameters('enableTelemetry')]"
@@ -44278,7 +45376,7 @@
                       {
                         "name": "value",
                         "count": "[length(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray()))]",
-                        "input": "[createObject('name', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'addressPrefix', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployBastion'), false()), equals(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'AzureBastionSubnet')), reference('createBastionNsg').outputs.resourceId.value, if(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup'))), resourceId(parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, 'Microsoft.Network/networkSecurityGroups', filter(variables('nsgArrayFormatted'), lambda('nsg', equals(lambdaVariables('nsg').nsgName, tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup', 'name'))))[0].nsgName), null())), 'natGatewayResourceId', if(and(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false()), coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'associateWithNatGateway'), false())), reference(format('createAdditonalNatGateway[{0}]', copyIndex())).outputs.resourceId.value, null()))]"
+                        "input": "[createObject('name', coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'addressPrefix', tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'addressPrefix'), 'networkSecurityGroupResourceId', if(or(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployBastion'), false()), equals(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')].name, 'AzureBastionSubnet')), reference('createBastionNsg').outputs.resourceId.value, if(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup'))), resourceId(parameters('subscriptionId'), parameters('additionalVirtualNetworks')[copyIndex()].resourceGroupName, 'Microsoft.Network/networkSecurityGroups', filter(variables('nsgArrayFormatted'), lambda('nsg', equals(lambdaVariables('nsg').nsgName, tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'networkSecurityGroup', 'name'))))[0].nsgName), null())), 'routeTableResourceId', if(and(not(empty(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'))), not(empty(parameters('routeTablesResourceGroupName')))), resourceId(parameters('subscriptionId'), parameters('routeTablesResourceGroupName'), 'Microsoft.Network/routeTables', coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'routeTableName'), '')), null()), 'natGatewayResourceId', if(and(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'deployNatGateway'), false()), coalesce(tryGet(coalesce(tryGet(parameters('additionalVirtualNetworks')[copyIndex()], 'subnets'), createArray())[copyIndex('value')], 'associateWithNatGateway'), false())), reference(format('createAdditonalNatGateway[{0}]', copyIndex())).outputs.resourceId.value, null()))]"
                       }
                     ]
                   },
@@ -45922,6 +47020,7 @@
                 "createAdditionalVnetNsgs",
                 "[format('createAdditonalNatGateway[{0}]', copyIndex())]",
                 "createBastionNsg",
+                "createLzRouteTable",
                 "createResourceGroupForadditionalLzNetworking"
               ]
             },
