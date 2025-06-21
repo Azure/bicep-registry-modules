@@ -1088,21 +1088,9 @@ module avmAiServices_storage_hub 'br/public:avm/res/storage/storage-account:0.20
     allowSharedKeyAccess: false
     diagnosticSettings: [
       {
-        //workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
-    blobServices: {
-      deleteRetentionPolicyEnabled: false
-      containerDeleteRetentionPolicyDays: 7
-      containerDeleteRetentionPoloicyEnabled: false
-      diagnosticSettings: [
-        {
-          //workspaceResourceId: avmLogAnalyticsWorkspace.outputs.resourceId
-          workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-        }
-      ]
-    }
     enableTelemetry: enableTelemetry
     roleAssignments: [
       {
