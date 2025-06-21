@@ -147,7 +147,7 @@ param lockDefault lockType = {
 }
 output lockDefaultOutput lockType = lockDefault
 
-param lockNote lockType = {
+param lockCustomNote lockType = {
   kind: 'CanNotDelete'
   name: 'myLock'
   notes: 'This is a lock to prevent deletion of the resource.'
