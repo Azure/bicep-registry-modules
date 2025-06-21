@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.34.44.8038",
-      "templateHash": "16162923545569232088"
+      "version": "0.36.1.42791",
+      "templateHash": "14151537588385040021"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource."
@@ -49,6 +49,17 @@
               "metadata": {
                 "description": "Optional. Where to store certificates on the machine."
               }
+            },
+            "certificateStoreName": {
+              "type": "string",
+              "allowedValues": [
+                "My",
+                "Root"
+              ],
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Name of the certificate store to use on the machine."
+              }
             }
           },
           "nullable": true,
@@ -58,7 +69,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of an os profile."
       }
     },
     "storageProfileType": {
@@ -88,7 +100,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a storage profile."
       }
     },
     "imageType": {
@@ -124,103 +137,23 @@
           "metadata": {
             "description": "Conditional. The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set."
           }
-        }
-      },
-      "metadata": {
-        "__bicep_export!": true
-      }
-    },
-    "organizationProfileType": {
-      "type": "object",
-      "properties": {
-        "kind": {
+        },
+        "ephemeralType": {
           "type": "string",
           "allowedValues": [
-            "AzureDevOps"
+            "Automatic",
+            "CacheDisk",
+            "ResourceDisk"
           ],
-          "metadata": {
-            "description": "Required. Azure DevOps organization profile."
-          }
-        },
-        "permissionProfile": {
-          "type": "object",
-          "properties": {
-            "kind": {
-              "type": "string",
-              "allowedValues": [
-                "CreatorOnly",
-                "Inherit",
-                "SpecificAccounts"
-              ],
-              "metadata": {
-                "description": "Required. Determines who has admin permissions to the Azure DevOps pool."
-              }
-            },
-            "groups": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. Group email addresses."
-              }
-            },
-            "users": {
-              "type": "array",
-              "items": {
-                "type": "string"
-              },
-              "nullable": true,
-              "metadata": {
-                "description": "Optional. User email addresses."
-              }
-            }
-          },
           "nullable": true,
           "metadata": {
-            "description": "Optional. The type of permission which determines which accounts are admins on the Azure DevOps pool."
-          }
-        },
-        "organizations": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "url": {
-                "type": "string",
-                "metadata": {
-                  "description": "Required. The Azure DevOps organization URL in which the pool should be created."
-                }
-              },
-              "projects": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "nullable": true,
-                "metadata": {
-                  "description": "Optional. List of projects in which the pool should be created."
-                }
-              },
-              "parallelism": {
-                "type": "int",
-                "nullable": true,
-                "minValue": 1,
-                "maxValue": 10000,
-                "metadata": {
-                  "description": "Optional. How many machines can be created at maximum in this organization out of the maximumConcurrency of the pool."
-                }
-              }
-            }
-          },
-          "metadata": {
-            "description": "Required. The list of Azure DevOps organizations the pool should be present in.."
+            "description": "Optional. The ephemeral type of the image."
           }
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of an image."
       }
     },
     "dataDiskType": {
@@ -268,7 +201,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a data disk."
       }
     },
     "resourcePredictionsProfileAutomaticType": {
@@ -298,7 +232,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of an automatic stand-by prediction profile."
       }
     },
     "resourcePredictionsProfileManualType": {
@@ -315,7 +250,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a manual stand-by prediction profile."
       }
     },
     "agentStatefulType": {
@@ -384,7 +320,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a stateful agent profile."
       }
     },
     "agentStatelessType": {
@@ -441,7 +378,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a stateless agent profile."
       }
     },
     "agentProfileType": {
@@ -458,7 +396,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of an agent profile."
       }
     },
     "standbyAgentsConfigType": {
@@ -490,7 +429,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for each days daysData configuration."
       }
     },
     "daysDataType": {
@@ -544,10 +484,26 @@
           "metadata": {
             "description": "Optional. The number of agents needed at a specific time for Sunday."
           }
+        },
+        "allWeekScheme": {
+          "type": "object",
+          "properties": {
+            "provisioningCount": {
+              "type": "int",
+              "metadata": {
+                "description": "Required. The agent count to provision throughout the week."
+              }
+            }
+          },
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. A schema to apply to the entire week (Machines available 24/7). Overrules the daily configurations."
+          }
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type to configure the daysData for the pool."
       }
     },
     "diagnosticSettingFullType": {
@@ -883,8 +839,11 @@
       }
     },
     "organizationProfile": {
-      "$ref": "#/definitions/organizationProfileType",
+      "type": "object",
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.DevOpsInfrastructure/pools@2025-01-21#properties/properties/properties/organizationProfile"
+        },
         "description": "Required. Defines the organization in which the pool will be used."
       }
     },
@@ -955,7 +914,7 @@
     },
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', 'None')), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
-    "formattedDaysData": "[if(not(empty(tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData'))), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', if(contains(parameters('agentProfile').resourcePredictions.daysData, lambdaVariables('day')), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endAgentCount), createObject()))), null())]"
+    "formattedDaysData": "[if(not(empty(tryGet(tryGet(parameters('agentProfile'), 'resourcePredictions'), 'daysData'))), if(contains(parameters('agentProfile').resourcePredictions.daysData, 'allWeekScheme'), createObject('00:00:00', parameters('agentProfile').resourcePredictions.daysData.allWeekScheme.provisioningCount), map(createArray('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'), lambda('day', if(contains(parameters('agentProfile').resourcePredictions.daysData, lambdaVariables('day')), createObject(format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].startAgentCount, format('{0}', parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endTime), parameters('agentProfile').resourcePredictions.daysData[lambdaVariables('day')].endAgentCount), createObject())))), null())]"
   },
   "resources": {
     "avmTelemetry": {
@@ -980,7 +939,7 @@
     },
     "managedDevOpsPool": {
       "type": "Microsoft.DevOpsInfrastructure/pools",
-      "apiVersion": "2024-10-19",
+      "apiVersion": "2025-01-21",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -1107,7 +1066,7 @@
       "metadata": {
         "description": "The location the Managed DevOps Pool resource was deployed into."
       },
-      "value": "[reference('managedDevOpsPool', '2024-10-19', 'full').location]"
+      "value": "[reference('managedDevOpsPool', '2025-01-21', 'full').location]"
     },
     "systemAssignedMIPrincipalId": {
       "type": "string",
@@ -1115,7 +1074,7 @@
       "metadata": {
         "description": "The principal ID of the system assigned identity."
       },
-      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2024-10-19', 'full'), 'identity'), 'principalId')]"
+      "value": "[tryGet(tryGet(reference('managedDevOpsPool', '2025-01-21', 'full'), 'identity'), 'principalId')]"
     }
   }
 }

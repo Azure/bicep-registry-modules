@@ -122,16 +122,20 @@ var identity = !empty(managedIdentities)
   : null
 
 var formattedDaysData = !empty(agentProfile.?resourcePredictions.?daysData)
-  ? map(
-      ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      day =>
-        contains(agentProfile.resourcePredictions.daysData, day)
-          ? {
-              '${agentProfile.resourcePredictions.daysData[day].startTime}': agentProfile.resourcePredictions.daysData[day].startAgentCount
-              '${agentProfile.resourcePredictions.daysData[day].endTime}': agentProfile.resourcePredictions.daysData[day].endAgentCount
-            }
-          : {}
-    )
+  ? contains(agentProfile.resourcePredictions.daysData, 'allWeekScheme')
+      ? {
+          '00:00:00': agentProfile.resourcePredictions.daysData.allWeekScheme.provisioningCount
+        }
+      : (map(
+          ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+          day =>
+            contains(agentProfile.resourcePredictions.daysData, day)
+              ? {
+                  '${agentProfile.resourcePredictions.daysData[day].startTime}': agentProfile.resourcePredictions.daysData[day].startAgentCount
+                  '${agentProfile.resourcePredictions.daysData[day].endTime}': agentProfile.resourcePredictions.daysData[day].endAgentCount
+                }
+              : {}
+        ))
   : null
 
 // ============== //
@@ -290,6 +294,7 @@ output systemAssignedMIPrincipalId string? = managedDevOpsPool.?identity.?princi
 // =============== //
 
 @export()
+@description('The type of an os profile.')
 type osProfileType = {
   @description('Required. The logon type of the machine.')
   logonType: ('Interactive' | 'Service')
@@ -311,6 +316,7 @@ type osProfileType = {
 }
 
 @export()
+@description('The type of a storage profile.')
 type storageProfileType = {
   @description('Optional. The Azure SKU name of the machines in the pool.')
   osDiskStorageAccountType: ('Premium' | 'StandardSSD' | 'Standard')?
@@ -320,6 +326,7 @@ type storageProfileType = {
 }
 
 @export()
+@description('The type of an image.')
 type imageType = {
   @description('Optional. List of aliases to reference the image by.')
   aliases: string[]?
@@ -338,6 +345,7 @@ type imageType = {
 }
 
 @export()
+@description('The type of a data disk.')
 type dataDiskType = {
   @description('Optional. The type of caching to be enabled for the data disks. The default value for caching is readwrite. For information about the caching options see: https://blogs.msdn.microsoft.com/windowsazurestorage/2012/06/27/exploring-windows-azure-drives-disks-and-images/.')
   caching: ('None' | 'ReadOnly' | 'ReadWrite')?
@@ -353,6 +361,7 @@ type dataDiskType = {
 }
 
 @export()
+@description('The type of an automatic stand-by prediction profile.')
 type resourcePredictionsProfileAutomaticType = {
   @description('Required. The stand-by agent scheme is determined based on historical demand.')
   kind: 'Automatic'
@@ -362,12 +371,14 @@ type resourcePredictionsProfileAutomaticType = {
 }
 
 @export()
+@description('The type of a manual stand-by prediction profile.')
 type resourcePredictionsProfileManualType = {
   @description('Required. Customer provides the stand-by agent scheme.')
   kind: 'Manual'
 }
 
 @export()
+@description('The type of a stateful agent profile.')
 type agentStatefulType = {
   @description('Required. Stateful profile meaning that the machines will be returned to the pool after running a job.')
   kind: 'Stateful'
@@ -393,6 +404,7 @@ type agentStatefulType = {
 }
 
 @export()
+@description('The type of a stateless agent profile.')
 type agentStatelessType = {
   @description('Required. Stateless profile meaning that the machines will be cleaned up after running a job.')
   kind: 'Stateless'
@@ -411,11 +423,13 @@ type agentStatelessType = {
   resourcePredictionsProfile: (resourcePredictionsProfileAutomaticType | resourcePredictionsProfileManualType)?
 }
 
-@discriminator('kind')
 @export()
+@discriminator('kind')
+@description('The type of an agent profile.')
 type agentProfileType = agentStatefulType | agentStatelessType
 
 @export()
+@description('The type for each days daysData configuration.')
 type standbyAgentsConfigType = {
   @description('Required. The time at which the agents are needed.')
   startTime: string
@@ -431,6 +445,7 @@ type standbyAgentsConfigType = {
 }
 
 @export()
+@description('The type to configure the daysData for the pool.')
 type daysDataType = {
   @description('Optional. The number of agents needed at a specific time for Monday.')
   monday: standbyAgentsConfigType?
@@ -452,4 +467,10 @@ type daysDataType = {
 
   @description('Optional. The number of agents needed at a specific time for Sunday.')
   sunday: standbyAgentsConfigType?
+
+  @description('Optional. A schema to apply to the entire week (Machines available 24/7). Overrules the daily configurations.')
+  allWeekScheme: {
+    @description('Required. The agent count to provision throughout the week.')
+    provisioningCount: int
+  }?
 }
