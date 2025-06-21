@@ -413,7 +413,7 @@ param gptDeploymentCapacity = 80
 | [`publicContainerImageEndpoint`](#parameter-publiccontainerimageendpoint) | string | The public container image endpoint. |
 | [`resourceGroupLocation`](#parameter-resourcegrouplocation) | string | The resource group location. |
 | [`resourceNameFormatString`](#parameter-resourcenameformatstring) | string | The resource name format string. |
-| [`secondaryLocation`](#parameter-secondarylocation) | string | Location used for Azure Cosmos DB, Azure Container App deployment |
+| [`secondaryLocation`](#parameter-secondarylocation) | string | Location used for Azure Cosmos DB, Azure Container App deployment. |
 | [`tags`](#parameter-tags) | object | Tags to be applied to the resources. |
 | [`useLocalBuild`](#parameter-uselocalbuild) | bool | Set to true to use local build for container app images, otherwise use container registry images. |
 
@@ -519,7 +519,7 @@ The resource name format string.
 
 ### Parameter: `secondaryLocation`
 
-Location used for Azure Cosmos DB, Azure Container App deployment
+Location used for Azure Cosmos DB, Azure Container App deployment.
 
 - Required: No
 - Type: string

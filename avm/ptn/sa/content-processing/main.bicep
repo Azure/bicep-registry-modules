@@ -24,7 +24,7 @@ param gptModelVersion string = '2024-08-06'
 @minValue(10)
 @description('Required. Capacity of the GPT deployment: (minimum 10).')
 param gptDeploymentCapacity int
-@description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment')
+@description('Optional. Location used for Azure Cosmos DB, Azure Container App deployment.')
 param secondaryLocation string = 'EastUs2'
 @description('Optional. The public container image endpoint.')
 param publicContainerImageEndpoint string = 'cpscontainerreg.azurecr.io'
@@ -1630,7 +1630,17 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
     enableTelemetry: enableTelemetry
     managedIdentities: { systemAssigned: true }
     sku: 'Standard'
-    diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
+    diagnosticSettings: [
+      {
+        workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+            enabled: true
+          }
+        ]
+      }
+    ]
     disableLocalAuth: true
     replicaLocations: [
       {
