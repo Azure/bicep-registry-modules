@@ -20,6 +20,9 @@ param networkIsolation bool = toLower(aiFoundryType) == 'standardprivate'
 @description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
 param aiFoundryType string
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-acr-deployment'
   params: {
@@ -30,6 +33,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (n
       }
     ]
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -44,6 +48,7 @@ module containerRegistry 'br/public:avm/res/container-registry/registry:0.9.1' =
     name: nameFormatted
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     acrSku: 'Premium'
     acrAdminUserEnabled: false
     anonymousPullEnabled: false

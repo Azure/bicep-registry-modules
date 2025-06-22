@@ -25,6 +25,9 @@ param logAnalyticsWorkspaceResourceId string = ''
 @description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
 param aiFoundryType string
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-keyvault-deployment'
   params: {
@@ -35,6 +38,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (n
       }
     ]
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -46,6 +50,7 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.0' = {
     name: nameFormatted
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     publicNetworkAccess: toLower(aiFoundryType) == 'standardprivate' ? 'Disabled' : 'Enabled'
     networkAcls: {
       defaultAction: toLower(aiFoundryType) == 'standardprivate' ? 'Deny' : 'Allow'

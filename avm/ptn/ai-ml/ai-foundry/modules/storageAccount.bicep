@@ -25,6 +25,9 @@ param roleAssignments roleAssignmentType[]?
 @description('Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate.')
 param aiFoundryType string
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 module blobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-blob-deployment'
   params: {
@@ -35,6 +38,7 @@ module blobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = i
       }
     ]
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -48,6 +52,7 @@ module filePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = i
       }
     ]
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -61,6 +66,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     name: nameFormatted
     location: location
     tags: tags
+    enableTelemetry: enableTelemetry
     publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     accessTier: 'Hot'
     allowBlobPublicAccess: toLower(aiFoundryType) != 'standardprivate'

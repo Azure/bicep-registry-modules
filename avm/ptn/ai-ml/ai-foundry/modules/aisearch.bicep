@@ -22,6 +22,9 @@ param userObjectId string
 @description('Optional. Array of role assignments to create.')
 param roleAssignments roleAssignmentType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-search-deployment'
   params: {
@@ -32,6 +35,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (n
       }
     ]
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -43,6 +47,7 @@ module aiSearch 'br/public:avm/res/search/search-service:0.10.0' = {
   params: {
     name: nameFormatted
     location: location
+    enableTelemetry: enableTelemetry
     cmkEnforcement: 'Disabled'
     managedIdentities: {
       systemAssigned: true

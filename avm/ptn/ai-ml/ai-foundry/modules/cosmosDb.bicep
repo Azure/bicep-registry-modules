@@ -22,6 +22,9 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. List of Cosmos DB databases to deploy.')
 param databases sqlDatabaseType[]?
 
+@description('Optional. Enable/Disable usage telemetry for module.')
+param enableTelemetry bool = true
+
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-cosmosdb-deployment'
   params: {
@@ -32,6 +35,7 @@ module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (n
       }
     ]
     tags: tags
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -41,6 +45,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
   name: take('${nameFormatted}-cosmosdb-deployment', 64)
   params: {
     name: nameFormatted
+    enableTelemetry: enableTelemetry
     automaticFailover: true
     // Removed empty diagnosticSettings to avoid "At least one data sink needs to be specified" error
     disableKeyBasedMetadataWriteAccess: true

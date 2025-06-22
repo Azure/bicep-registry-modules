@@ -109,6 +109,7 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     tags: allTags
     skuName: 'PerGB2018' // Updated to current supported SKU
     dataRetention: 90 // Standard retention for compliance
+    enableTelemetry: enableTelemetry
   }
 }
 
@@ -161,6 +162,7 @@ module keyvault 'modules/keyvault.bicep' = if (toLower(aiFoundryType) != 'basic'
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
     userObjectId: userObjectId
     logAnalyticsWorkspaceResourceId: toLower(aiFoundryType) != 'basic' ? logAnalyticsWorkspace.outputs.resourceId : ''
+    enableTelemetry: enableTelemetry
     tags: allTags
   }
 }
@@ -174,6 +176,7 @@ module containerRegistry 'modules/containerRegistry.bicep' = if (toLower(aiFound
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    enableTelemetry: enableTelemetry
     tags: allTags
   }
 }
@@ -205,6 +208,7 @@ module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic'
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
     userObjectId: userObjectId
+    enableTelemetry: enableTelemetry
     roleAssignments: union(
       empty(userObjectId)
         ? []
@@ -241,6 +245,7 @@ module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    enableTelemetry: enableTelemetry
     roleAssignments: concat(
       empty(userObjectId)
         ? []
@@ -278,6 +283,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic'
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    enableTelemetry: enableTelemetry
     databases: cosmosDatabases
     tags: allTags
   }

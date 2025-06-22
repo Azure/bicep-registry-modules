@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "6355080708469508486"
+      "templateHash": "7824407138220003466"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -465,6 +465,9 @@
           },
           "dataRetention": {
             "value": 90
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
           }
         },
         "template": {
@@ -4385,6 +4388,9 @@
             "value": "[parameters('userObjectId')]"
           },
           "logAnalyticsWorkspaceResourceId": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-log-analytics-deployment', parameters('name')), 64)), '2022-09-01').resourceId), createObject('value', ''))]",
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "tags": {
             "value": "[variables('allTags')]"
           }
@@ -4396,7 +4402,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13948725147348604341"
+              "templateHash": "11168660871676928172"
             }
           },
           "parameters": {
@@ -4456,6 +4462,13 @@
               "metadata": {
                 "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -4485,6 +4498,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -7641,6 +7657,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "publicNetworkAccess": "[if(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "networkAcls": {
@@ -11012,6 +11031,9 @@
           },
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
           "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "tags": {
             "value": "[variables('allTags')]"
           }
@@ -11023,7 +11045,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14227196726419739701"
+              "templateHash": "6262426141732340664"
             }
           },
           "parameters": {
@@ -11071,6 +11093,13 @@
               "metadata": {
                 "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -11101,6 +11130,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -14257,6 +14289,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "acrSku": {
                     "value": "Premium"
@@ -29397,6 +29432,9 @@
           "userObjectId": {
             "value": "[parameters('userObjectId')]"
           },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "roleAssignments": {
             "value": "[union(if(empty(parameters('userObjectId')), createArray(), createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'))), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Index Data Contributor'), createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Search Service Contributor')))]"
           },
@@ -29412,7 +29450,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "12236865855038337310"
+              "templateHash": "9700117063289062302"
             }
           },
           "definitions": {
@@ -29546,6 +29584,13 @@
               "metadata": {
                 "description": "Optional. Array of role assignments to create."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -29575,6 +29620,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -32729,6 +32777,9 @@
                   "location": {
                     "value": "[parameters('location')]"
                   },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  },
                   "cmkEnforcement": {
                     "value": "Disabled"
                   },
@@ -34873,6 +34924,9 @@
           },
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
           "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "roleAssignments": {
             "value": "[concat(if(empty(parameters('userObjectId')), createArray(), createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor'))), createArray(createObject('principalId', reference('cognitiveServices').outputs.aiServicesSystemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')), createArray(createObject('principalId', reference('aiSearch').outputs.systemAssignedMIPrincipalId.value, 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Storage Blob Data Contributor')))]"
           },
@@ -34888,7 +34942,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "16514761289494551173"
+              "templateHash": "150128303180702796"
             }
           },
           "definitions": {
@@ -35029,6 +35083,13 @@
               "metadata": {
                 "description": "Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -35060,6 +35121,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -38221,6 +38285,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -41377,6 +41444,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "publicNetworkAccess": "[if(parameters('networkIsolation'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "accessTier": {
@@ -47199,6 +47269,9 @@
           },
           "virtualNetworkResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.virtualNetworkId.value), createObject('value', ''))]",
           "virtualNetworkSubnetResourceId": "[if(variables('networkIsolation'), createObject('value', reference('network').outputs.vmSubnetId.value), createObject('value', ''))]",
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
           "databases": {
             "value": "[parameters('cosmosDatabases')]"
           },
@@ -47214,7 +47287,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3786284728086855011"
+              "templateHash": "1113170130934482388"
             }
           },
           "definitions": {
@@ -47525,6 +47598,13 @@
               "metadata": {
                 "description": "Optional. List of Cosmos DB databases to deploy."
               }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
             }
           },
           "variables": {
@@ -47554,6 +47634,9 @@
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   }
                 },
                 "template": {
@@ -50704,6 +50787,9 @@
                 "parameters": {
                   "name": {
                     "value": "[variables('nameFormatted')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
                   },
                   "automaticFailover": {
                     "value": true
