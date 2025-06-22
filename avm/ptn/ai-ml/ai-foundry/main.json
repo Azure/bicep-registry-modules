@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "664147281552997781"
+      "templateHash": "6355080708469508486"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -3565,7 +3565,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "18170579295858176658"
+              "templateHash": "4786532261185988091"
             }
           },
           "parameters": {
@@ -3966,7 +3966,86 @@
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "securityRules": []
+                "securityRules": [
+                  {
+                    "name": "AllowVNetInBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "VirtualNetwork",
+                      "destinationAddressPrefix": "VirtualNetwork",
+                      "access": "Allow",
+                      "priority": 100,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "AllowAzureLoadBalancerInBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "AzureLoadBalancer",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 110,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "DenyAllInBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "*",
+                      "destinationAddressPrefix": "*",
+                      "access": "Deny",
+                      "priority": 4096,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "AllowVNetOutBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "VirtualNetwork",
+                      "destinationAddressPrefix": "VirtualNetwork",
+                      "access": "Allow",
+                      "priority": 100,
+                      "direction": "Outbound"
+                    }
+                  },
+                  {
+                    "name": "AllowInternetOutBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "*",
+                      "destinationAddressPrefix": "Internet",
+                      "access": "Allow",
+                      "priority": 110,
+                      "direction": "Outbound"
+                    }
+                  },
+                  {
+                    "name": "DenyAllOutBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "*",
+                      "destinationAddressPrefix": "*",
+                      "access": "Deny",
+                      "priority": 4096,
+                      "direction": "Outbound"
+                    }
+                  }
+                ]
               }
             },
             {
@@ -3976,7 +4055,86 @@
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "properties": {
-                "securityRules": []
+                "securityRules": [
+                  {
+                    "name": "AllowVNetInBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "VirtualNetwork",
+                      "destinationAddressPrefix": "VirtualNetwork",
+                      "access": "Allow",
+                      "priority": 100,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "AllowAzureLoadBalancerInBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "AzureLoadBalancer",
+                      "destinationAddressPrefix": "*",
+                      "access": "Allow",
+                      "priority": 110,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "DenyAllInBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "*",
+                      "destinationAddressPrefix": "*",
+                      "access": "Deny",
+                      "priority": 4096,
+                      "direction": "Inbound"
+                    }
+                  },
+                  {
+                    "name": "AllowVNetOutBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "VirtualNetwork",
+                      "destinationAddressPrefix": "VirtualNetwork",
+                      "access": "Allow",
+                      "priority": 100,
+                      "direction": "Outbound"
+                    }
+                  },
+                  {
+                    "name": "AllowInternetOutBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "*",
+                      "destinationAddressPrefix": "Internet",
+                      "access": "Allow",
+                      "priority": 110,
+                      "direction": "Outbound"
+                    }
+                  },
+                  {
+                    "name": "DenyAllOutBound",
+                    "properties": {
+                      "protocol": "*",
+                      "sourcePortRange": "*",
+                      "destinationPortRange": "*",
+                      "sourceAddressPrefix": "*",
+                      "destinationAddressPrefix": "*",
+                      "access": "Deny",
+                      "priority": 4096,
+                      "direction": "Outbound"
+                    }
+                  }
+                ]
               }
             },
             {
@@ -4226,6 +4384,7 @@
           "userObjectId": {
             "value": "[parameters('userObjectId')]"
           },
+          "logAnalyticsWorkspaceResourceId": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', take(format('{0}-log-analytics-deployment', parameters('name')), 64)), '2022-09-01').resourceId), createObject('value', ''))]",
           "tags": {
             "value": "[variables('allTags')]"
           }
@@ -4237,7 +4396,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "9259791610124476983"
+              "templateHash": "13948725147348604341"
             }
           },
           "parameters": {
@@ -4283,6 +4442,13 @@
               "type": "string",
               "metadata": {
                 "description": "Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user."
+              }
+            },
+            "logAnalyticsWorkspaceResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Resource ID of the Log Analytics workspace for diagnostic logs."
               }
             },
             "aiFoundryType": {
@@ -7503,6 +7669,7 @@
                   "softDeleteRetentionInDays": {
                     "value": 7
                   },
+                  "diagnosticSettings": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', createArray(createObject('name', 'sendToLogAnalytics', 'workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId'), 'logCategoriesAndGroups', createArray(createObject('category', 'AuditEvent', 'enabled', true()), createObject('category', 'AzurePolicyEvaluationDetails', 'enabled', true())), 'metricCategories', createArray(createObject('category', 'AllMetrics', 'enabled', true()))))), createObject('value', createArray()))]",
                   "privateEndpoints": "[if(parameters('networkIsolation'), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', reference(resourceId('Microsoft.Resources/deployments', 'private-dns-keyvault-deployment'), '2022-09-01').outputs.resourceId.value))), 'service', 'vault', 'subnetResourceId', parameters('virtualNetworkSubnetResourceId')))), createObject('value', createArray()))]",
                   "roleAssignments": "[if(empty(parameters('userObjectId')), createObject('value', createArray()), createObject('value', createArray(createObject('principalId', parameters('userObjectId'), 'principalType', 'ServicePrincipal', 'roleDefinitionIdOrName', 'Key Vault Secrets User'))))]"
                 },
@@ -10816,6 +10983,7 @@
         }
       },
       "dependsOn": [
+        "logAnalyticsWorkspace",
         "network"
       ]
     },
@@ -54702,7 +54870,7 @@
             "value": 50
           },
           "dataDiskCaching": {
-            "value": "ReadWrite"
+            "value": "ReadOnly"
           },
           "enableAcceleratedNetworking": {
             "value": true

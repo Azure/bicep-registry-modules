@@ -160,6 +160,7 @@ module keyvault 'modules/keyvault.bicep' = if (toLower(aiFoundryType) != 'basic'
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
     userObjectId: userObjectId
+    logAnalyticsWorkspaceResourceId: toLower(aiFoundryType) != 'basic' ? logAnalyticsWorkspace.outputs.resourceId : ''
     tags: allTags
   }
 }
@@ -327,7 +328,7 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
     numDataDisks: 1
     osDiskSize: 128
     dataDiskSize: 50
-    dataDiskCaching: 'ReadWrite'
+    dataDiskCaching: 'ReadOnly'
     enableAcceleratedNetworking: true
     enableMicrosoftEntraIdAuth: true
     userObjectId: userObjectId
