@@ -5,14 +5,14 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.35.1.17967",
-      "templateHash": "7244397890948473442"
+      "version": "0.36.1.42791",
+      "templateHash": "13939702786676880377"
     },
     "name": "Container Instances Container Groups",
     "description": "This module deploys a Container Instance Container Group."
   },
   "definitions": {
-    "containerProbe": {
+    "containerProbeType": {
       "type": "object",
       "properties": {
         "exec": {
@@ -127,7 +127,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a container probe."
       }
     },
     "containerType": {
@@ -149,14 +150,14 @@
               }
             },
             "livenessProbe": {
-              "$ref": "#/definitions/containerProbe",
+              "$ref": "#/definitions/containerProbeType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The liveness probe."
               }
             },
             "readinessProbe": {
-              "$ref": "#/definitions/containerProbe",
+              "$ref": "#/definitions/containerProbeType",
               "nullable": true,
               "metadata": {
                 "description": "Optional. The readiness probe."
@@ -403,7 +404,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a container."
       }
     },
     "logAnalyticsType": {
@@ -419,38 +421,26 @@
             "description": "Required. The log type to be used."
           }
         },
-        "workspaceId": {
-          "type": "string",
-          "nullable": true,
-          "metadata": {
-            "description": "Conditional. The workspace ID for log analytics. Required if `workspaceResourceId` is not provided."
-          }
-        },
-        "workspaceKey": {
-          "type": "securestring",
-          "nullable": true,
-          "metadata": {
-            "description": "Conditional. The workspace key for log analytics. Required if `workspaceResourceId` is not provided."
-          }
-        },
         "workspaceResourceId": {
           "type": "string",
-          "nullable": true,
           "metadata": {
-            "description": "Conditional. The workspace resource ID for log analytics. Required if `workspaceId` or `workspaceId` is not provided."
+            "description": "Required. The workspace resource ID for log analytics."
           }
         },
         "metadata": {
           "type": "object",
-          "nullable": true,
           "metadata": {
+            "__bicep_resource_derived_type!": {
+              "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/diagnostics/properties/logAnalytics/properties/metadata"
+            },
             "description": "Optional. Metadata for log analytics."
-          }
+          },
+          "nullable": true
         }
       },
       "metadata": {
         "__bicep_export!": true,
-        "description": "The type for the log analytics diagnostics."
+        "description": "The type for log analytics diagnostics."
       }
     },
     "imageRegistryCredentialType": {
@@ -492,7 +482,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an image registry credential."
       }
     },
     "ipAddressPortsType": {
@@ -512,7 +503,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an IP address port."
       }
     },
     "ipAddressType": {
@@ -568,7 +560,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for an IP address."
       }
     },
     "containerGroupSubnetIdType": {
@@ -589,7 +582,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a container group subnet."
       }
     },
     "dnsConfigType": {
@@ -620,7 +614,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type for a DNS configuration."
       }
     },
     "containerGpuType": {
@@ -645,7 +640,8 @@
         }
       },
       "metadata": {
-        "__bicep_export!": true
+        "__bicep_export!": true,
+        "description": "The type of a container GPU."
       }
     },
     "customerManagedKeyWithAutoRotateType": {
@@ -826,10 +822,13 @@
     },
     "initContainers": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/initContainers"
+        },
         "description": "Optional. A list of container definitions which will be executed before the application container starts."
-      }
+      },
+      "nullable": true
     },
     "subnets": {
       "type": "array",
@@ -843,10 +842,13 @@
     },
     "volumes": {
       "type": "array",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/properties/properties/volumes"
+        },
         "description": "Optional. Specify if volumes (emptyDir, AzureFileShare or GitRepo) shall be attached to your containergroup."
-      }
+      },
+      "nullable": true
     },
     "lock": {
       "$ref": "#/definitions/lockType",
@@ -864,10 +866,13 @@
     },
     "tags": {
       "type": "object",
-      "nullable": true,
       "metadata": {
+        "__bicep_resource_derived_type!": {
+          "source": "Microsoft.ContainerInstance/containerGroups@2023-05-01#properties/tags"
+        },
         "description": "Optional. Tags of the resource."
-      }
+      },
+      "nullable": true
     },
     "enableTelemetry": {
       "type": "bool",
@@ -927,19 +932,19 @@
       "condition": "[and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), and(not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'))), not(empty(tryGet(parameters('customerManagedKey'), 'keyName')))))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults/keys",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[format('{0}/{1}', last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')), tryGet(parameters('customerManagedKey'), 'keyName'))]"
     },
     "law": {
-      "condition": "[not(empty(tryGet(parameters('logAnalytics'), 'workspaceResourceId')))]",
+      "condition": "[not(empty(parameters('logAnalytics')))]",
       "existing": true,
       "type": "Microsoft.OperationalInsights/workspaces",
       "apiVersion": "2025-02-01",
-      "subscriptionId": "[split(tryGet(parameters('logAnalytics'), 'workspaceResourceId'), '/')[2]]",
-      "resourceGroup": "[split(tryGet(parameters('logAnalytics'), 'workspaceResourceId'), '/')[4]]",
-      "name": "[last(split(tryGet(parameters('logAnalytics'), 'workspaceResourceId'), '/'))]"
+      "subscriptionId": "[split(parameters('logAnalytics').workspaceResourceId, '/')[2]]",
+      "resourceGroup": "[split(parameters('logAnalytics').workspaceResourceId, '/')[4]]",
+      "name": "[last(split(parameters('logAnalytics').workspaceResourceId, '/'))]"
     },
     "avmTelemetry": {
       "condition": "[parameters('enableTelemetry')]",
@@ -965,7 +970,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId')))]",
       "existing": true,
       "type": "Microsoft.KeyVault/vaults",
-      "apiVersion": "2023-02-01",
+      "apiVersion": "2024-11-01",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '/'))]"
@@ -974,7 +979,7 @@
       "condition": "[not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId')))]",
       "existing": true,
       "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
-      "apiVersion": "2023-01-31",
+      "apiVersion": "2024-11-30",
       "subscriptionId": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2]]",
       "resourceGroup": "[split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]]",
       "name": "[last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))]"
@@ -1023,7 +1028,7 @@
             }
           }
         ],
-        "diagnostics": "[if(not(empty(parameters('logAnalytics'))), createObject('logAnalytics', createObject('logType', parameters('logAnalytics').logType, 'workspaceId', coalesce(tryGet(parameters('logAnalytics'), 'workspaceId'), if(not(empty(tryGet(parameters('logAnalytics'), 'workspaceResourceId'))), reference('law').customerId, fail('Either the workspaceId or the workspaceResourceId must be provided.'))), 'workspaceKey', coalesce(tryGet(parameters('logAnalytics'), 'workspaceKey'), if(not(empty(tryGet(parameters('logAnalytics'), 'workspaceResourceId'))), listKeys('law', '2025-02-01').primarySharedKey, fail('Either the workspaceKey or the workspaceResourceId must be provided.'))), 'workspaceResourceId', tryGet(parameters('logAnalytics'), 'workspaceResourceId'), 'metadata', tryGet(parameters('logAnalytics'), 'metadata'))), null())]",
+        "diagnostics": "[if(not(empty(parameters('logAnalytics'))), createObject('logAnalytics', createObject('logType', parameters('logAnalytics').logType, 'workspaceId', reference('law').customerId, 'workspaceKey', listKeys('law', '2025-02-01').primarySharedKey, 'workspaceResourceId', tryGet(parameters('logAnalytics'), 'workspaceResourceId'), 'metadata', tryGet(parameters('logAnalytics'), 'metadata'))), null())]",
         "encryptionProperties": "[if(not(empty(parameters('customerManagedKey'))), createObject('identity', if(not(empty(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'))), extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[2], split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/')[4]), 'Microsoft.ManagedIdentity/userAssignedIdentities', last(split(tryGet(parameters('customerManagedKey'), 'userAssignedIdentityResourceId'), '/'))), null()), 'vaultBaseUrl', reference('cMKKeyVault').vaultUri, 'keyName', parameters('customerManagedKey').keyName, 'keyVersion', if(not(empty(coalesce(tryGet(parameters('customerManagedKey'), 'keyVersion'), ''))), parameters('customerManagedKey').keyVersion, last(split(reference('cMKKeyVault::cMKKey').keyUriWithVersion, '/')))), null())]",
         "imageRegistryCredentials": "[parameters('imageRegistryCredentials')]",
         "initContainers": "[parameters('initContainers')]",
