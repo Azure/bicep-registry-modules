@@ -25,9 +25,6 @@ param databases sqlDatabaseType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Resource ID of the Log Analytics workspace for diagnostic logs.')
-param logAnalyticsWorkspaceResourceId string = ''
-
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-cosmosdb-deployment'
   params: {
@@ -50,30 +47,7 @@ module cosmosDb 'br/public:avm/res/document-db/database-account:0.15.0' = {
     name: nameFormatted
     enableTelemetry: enableTelemetry
     automaticFailover: true
-    diagnosticSettings: !empty(logAnalyticsWorkspaceResourceId)
-      ? [
-          {
-            name: 'default'
-            workspaceResourceId: logAnalyticsWorkspaceResourceId
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-            logCategories: [
-              {
-                category: 'DataPlaneRequests'
-              }
-              {
-                category: 'QueryRuntimeStatistics'
-              }
-              {
-                category: 'PartitionKeyStatistics'
-              }
-            ]
-          }
-        ]
-      : []
+    // Removed empty diagnosticSettings to avoid "At least one data sink needs to be specified" error
     disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: true
     location: location

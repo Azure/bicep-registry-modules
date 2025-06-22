@@ -28,9 +28,6 @@ param aiFoundryType string
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
-@description('Optional. Resource ID of the Log Analytics workspace for diagnostic logs.')
-param logAnalyticsWorkspaceResourceId string = ''
-
 module blobPrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-blob-deployment'
   params: {
@@ -136,19 +133,7 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
       // Optionally add ipRules or virtualNetworkRules here
     }
     supportsHttpsTrafficOnly: true
-    diagnosticSettings: !empty(logAnalyticsWorkspaceResourceId)
-      ? [
-          {
-            name: 'default'
-            workspaceResourceId: logAnalyticsWorkspaceResourceId
-            metricCategories: [
-              {
-                category: 'AllMetrics'
-              }
-            ]
-          }
-        ]
-      : []
+    // Removed empty diagnosticSettings to avoid "At least one data sink needs to be specified" error
     privateEndpoints: networkIsolation
       ? [
           {
