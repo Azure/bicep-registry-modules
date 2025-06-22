@@ -213,7 +213,7 @@ module testDeployment '../../../main.bicep' = [
         }
         {
           name: 'test-devbox-definition-custom-gallery-image'
-          imageResourceId: '${devcenterExpectedResourceID}/galleries/computegallery/images/dep-#_namePrefix_#-galid-dcdcmax'
+          imageResourceId: '${devcenterExpectedResourceID}/galleries/computegallery/images/dep-${namePrefix}-galid-dcdcmax'
           sku: {
             name: 'general_i_8c32gb256ssd_v2'
           }
