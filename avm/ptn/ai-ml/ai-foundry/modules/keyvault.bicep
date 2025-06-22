@@ -57,28 +57,30 @@ module keyvault 'br/public:avm/res/key-vault/vault:0.13.0' = {
     enableRbacAuthorization: true
     enableSoftDelete: true
     softDeleteRetentionInDays: 7
-    diagnosticSettings: !empty(logAnalyticsWorkspaceResourceId) ? [
-      {
-        name: 'sendToLogAnalytics'
-        workspaceResourceId: logAnalyticsWorkspaceResourceId
-        logCategoriesAndGroups: [
+    diagnosticSettings: !empty(logAnalyticsWorkspaceResourceId)
+      ? [
           {
-            category: 'AuditEvent'
-            enabled: true
-          }
-          {
-            category: 'AzurePolicyEvaluationDetails'
-            enabled: true
+            name: 'sendToLogAnalytics'
+            workspaceResourceId: logAnalyticsWorkspaceResourceId
+            logCategoriesAndGroups: [
+              {
+                category: 'AuditEvent'
+                enabled: true
+              }
+              {
+                category: 'AzurePolicyEvaluationDetails'
+                enabled: true
+              }
+            ]
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+                enabled: true
+              }
+            ]
           }
         ]
-        metricCategories: [
-          {
-            category: 'AllMetrics'
-            enabled: true
-          }
-        ]
-      }
-    ] : []
+      : []
     privateEndpoints: networkIsolation
       ? [
           {

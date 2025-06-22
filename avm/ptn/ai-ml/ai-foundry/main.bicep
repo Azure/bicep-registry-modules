@@ -107,8 +107,8 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     name: toLower('log-${name}')
     location: location
     tags: allTags
-    skuName: 'PerGB2018'  // Updated to current supported SKU
-    dataRetention: 90     // Standard retention for compliance
+    skuName: 'PerGB2018' // Updated to current supported SKU
+    dataRetention: 90 // Standard retention for compliance
   }
 }
 
