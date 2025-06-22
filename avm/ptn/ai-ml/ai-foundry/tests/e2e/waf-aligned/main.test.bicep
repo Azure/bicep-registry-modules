@@ -10,7 +10,7 @@ metadata description = 'Creates an AI Foundry account and project with Standard 
 param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
-param resourceLocation string = 'eastus' // Explicitly using eastus2 which supports AIServices
+param resourceLocation string = 'eastus2' // Using eastus2 which has better AIServices support for StandardPrivate
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 param serviceShort string = 'fndrywaf'
