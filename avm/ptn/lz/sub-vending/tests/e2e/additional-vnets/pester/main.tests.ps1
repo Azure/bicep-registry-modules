@@ -98,7 +98,7 @@ Describe 'Bicep Landing Zone (Sub) Vending Tests' {
         }
 
         It "Should have a Virtual Network with a subnet with the correct name with addressPrefix '10.120.1.0/24' and a NAT gateway attached" {
-            $additionalVnet2.Subnets[0].Name | Should -Be 'Subnet1'
+            $additionalVnet2.Subnets[0].Name | Should -Be 'data-subnet'
             $additionalVnet2.Subnets[0].AddressPrefix | Should -Be '10.90.1.0/24'
             $additionalVnet2.Subnets[0].NatGateway | Should -Not -BeNullOrEmpty
         }
