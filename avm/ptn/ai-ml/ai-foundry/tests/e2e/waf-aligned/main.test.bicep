@@ -39,7 +39,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'fn${substring(uniqueString(deployment().name, iteration), 0, 6)}' // Using uniqueString with iteration to avoid conflicts
+      name: 'fn${substring(uniqueString(deployment().name), 0, 6)}' // Using same uniqueString for both iterations for true idempotency testing
       location: resourceLocation
       aiFoundryType: 'StandardPrivate' // Replace with the required value@allowed(['Basic''StandardPublic''StandardPrivate'])
       userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test

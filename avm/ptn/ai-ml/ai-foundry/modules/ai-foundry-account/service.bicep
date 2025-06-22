@@ -95,7 +95,7 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     }
     deployments: aiModelDeployments
     customSubDomainName: nameFormatted
-    disableLocalAuth: networkIsolation
+    disableLocalAuth: networkIsolation // Only disable local auth for StandardPrivate (when networkIsolation is true)
     publicNetworkAccess: networkIsolation ? 'Disabled' : 'Enabled'
     roleAssignments: roleAssignments
     networkAcls: networkAcls

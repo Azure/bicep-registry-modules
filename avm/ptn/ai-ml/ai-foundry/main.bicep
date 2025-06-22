@@ -101,16 +101,16 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-// module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (toLower(aiFoundryType) != 'basic') {
-//   name: take('${name}-log-analytics-deployment', 64)
-//   params: {
-//     name: toLower('log-${name}')
-//     location: location
-//     tags: allTags
-//     skuName: 'PerNode'
-//     dataRetention: 60
-//   }
-// }
+module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (toLower(aiFoundryType) != 'basic') {
+  name: take('${name}-log-analytics-deployment', 64)
+  params: {
+    name: toLower('log-${name}')
+    location: location
+    tags: allTags
+    skuName: 'PerGB2018'  // Updated to current supported SKU
+    dataRetention: 90     // Standard retention for compliance
+  }
+}
 
 // module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (toLower(aiFoundryType) != 'basic') {
 //   name: take('${name}-app-insights-deployment', 64)

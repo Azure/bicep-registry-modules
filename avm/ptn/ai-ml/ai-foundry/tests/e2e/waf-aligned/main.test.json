@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3612613466427734838"
+      "templateHash": "2884030030977436962"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services in a network."
@@ -66,7 +66,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('fn{0}', substring(uniqueString(deployment().name, createArray('init', 'idem')[copyIndex()]), 0, 6))]"
+            "value": "[format('fn{0}', substring(uniqueString(deployment().name), 0, 6))]"
           },
           "location": {
             "value": "[parameters('resourceLocation')]"
@@ -86,7 +86,9 @@
           "vmSize": {
             "value": "Standard_DS4_v2"
           },
-          "aiModelDeployments": "[if(equals(createArray('init', 'idem')[copyIndex()], 'init'), createObject('value', createArray(createObject('name', 'textembed', 'model', createObject('name', 'text-embedding-ada-002', 'format', 'OpenAI', 'version', '2'), 'sku', createObject('name', 'Standard', 'capacity', 10)), createObject('name', 'gpt', 'model', createObject('name', 'gpt-4o', 'version', '2024-05-13', 'format', 'OpenAI'), 'sku', createObject('name', 'GlobalStandard', 'capacity', 10)))), createObject('value', createArray()))]"
+          "aiModelDeployments": {
+            "value": []
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -96,7 +98,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "15595584526553755208"
+              "templateHash": "3113248815933418334"
             },
             "name": "ai-foundry",
             "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -14262,7 +14264,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "5347104182700128078"
+                      "templateHash": "17652588634637040456"
                     }
                   },
                   "definitions": {
@@ -20814,7 +20816,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "6504158764956712223"
+                              "templateHash": "13281800907881576695"
                             }
                           },
                           "definitions": {
@@ -21175,7 +21177,7 @@
                                     "value": "[variables('nameFormatted')]"
                                   },
                                   "disableLocalAuth": {
-                                    "value": "[parameters('networkIsolation')]"
+                                    "value": true
                                   },
                                   "publicNetworkAccess": "[if(parameters('networkIsolation'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                                   "roleAssignments": {
@@ -23540,7 +23542,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "6504158764956712223"
+                              "templateHash": "13281800907881576695"
                             }
                           },
                           "definitions": {
@@ -23901,7 +23903,7 @@
                                     "value": "[variables('nameFormatted')]"
                                   },
                                   "disableLocalAuth": {
-                                    "value": "[parameters('networkIsolation')]"
+                                    "value": true
                                   },
                                   "publicNetworkAccess": "[if(parameters('networkIsolation'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                                   "roleAssignments": {
