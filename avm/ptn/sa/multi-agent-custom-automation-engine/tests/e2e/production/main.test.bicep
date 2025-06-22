@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Default configuration with WAF aligned parameter values'
-metadata description = 'This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using parameters that deploy the WAF aligned configuration.'
+metadata description = 'This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using parameters that deploy the [WAF aligned](https://learn.microsoft.com/azure/well-architected/) configuration.'
 
 // ========== //
 // Parameters //

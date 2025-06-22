@@ -96,65 +96,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>`.
 
-- [Default configuration with default parameter values](#example-1-default-configuration-with-default-parameter-values)
-- [Default configuration with WAF aligned parameter values](#example-2-default-configuration-with-waf-aligned-parameter-values)
+- [Default configuration with WAF aligned parameter values](#example-1-default-configuration-with-waf-aligned-parameter-values)
+- [Default configuration with default parameter values](#example-2-default-configuration-with-default-parameter-values)
 
-### Example 1: _Default configuration with default parameter values_
+### Example 1: _Default configuration with WAF aligned parameter values_
 
-This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
-
-
-<details>
-
-<summary>via Bicep module</summary>
-
-```bicep
-module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>' = {
-  name: 'multiAgentCustomAutomationEngineDeployment'
-  params: {
-    solutionPrefix: 'macaemin'
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    "solutionPrefix": {
-      "value": "macaemin"
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>'
-
-param solutionPrefix = 'macaemin'
-```
-
-</details>
-<p>
-
-### Example 2: _Default configuration with WAF aligned parameter values_
-
-This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using parameters that deploy the WAF aligned configuration.
+This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using parameters that deploy the [WAF aligned](https://learn.microsoft.com/azure/well-architected/) configuration.
 
 
 <details>
@@ -235,6 +182,59 @@ param enableTelemetry = true
 param solutionPrefix = 'macaewaf'
 param virtualMachineAdminPassword = '<virtualMachineAdminPassword>'
 param virtualMachineAdminUsername = 'adminuser'
+```
+
+</details>
+<p>
+
+### Example 2: _Default configuration with default parameter values_
+
+This instance deploys the [Multi-Agent Custom Automation Engine solution accelerator](https://github.com/microsoft/Multi-Agent-Custom-Automation-Engine-Solution-Accelerator) using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module multiAgentCustomAutomationEngine 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>' = {
+  name: 'multiAgentCustomAutomationEngineDeployment'
+  params: {
+    solutionPrefix: 'macaemin'
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "solutionPrefix": {
+      "value": "macaemin"
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/multi-agent-custom-automation-engine:<version>'
+
+param solutionPrefix = 'macaemin'
 ```
 
 </details>

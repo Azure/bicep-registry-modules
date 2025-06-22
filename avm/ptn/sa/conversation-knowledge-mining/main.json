@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2091456392731944950"
+      "templateHash": "13011193146396885726"
     },
     "name": "Conversation Knowledge Mining Solution Accelerator",
     "description": "This module deploys the [Conversation Knowledge Mining Solution Accelerator](https://github.com/microsoft/Conversation-Knowledge-Mining-Solution-Accelerator).\n\n> **Note:** This module is not intended for broad, generic use, as it was designed by the Commercial Solution Areas CTO team, as a Microsoft Solution Accelerator. Feature requests and bug fix requests are welcome if they support the needs of this organization but may not be incorporated if they aim to make this module more generic than what it needs to be for its primary use case. This module will likely be updated to leverage AVM resource modules in the future. This may result in breaking changes in upcoming versions when these features are implemented.\n"
@@ -7545,7 +7545,7 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
+                      "version": "0.36.1.42791",
                       "templateHash": "15954548978129725136"
                     },
                     "name": "Private Endpoints",
@@ -8061,7 +8061,7 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
+                              "version": "0.36.1.42791",
                               "templateHash": "5440815542537978381"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
@@ -10280,7 +10280,7 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
+                              "version": "0.36.1.42791",
                               "templateHash": "15954548978129725136"
                             },
                             "name": "Private Endpoints",
@@ -10796,7 +10796,7 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
+                                      "version": "0.36.1.42791",
                                       "templateHash": "5440815542537978381"
                                     },
                                     "name": "Private Endpoint Private DNS Zone Groups",
@@ -17447,7 +17447,7 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
+                              "version": "0.36.1.42791",
                               "templateHash": "15954548978129725136"
                             },
                             "name": "Private Endpoints",
@@ -17963,7 +17963,7 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
+                                      "version": "0.36.1.42791",
                                       "templateHash": "5440815542537978381"
                                     },
                                     "name": "Private Endpoint Private DNS Zone Groups",
@@ -19628,7 +19628,7 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
+                              "version": "0.36.1.42791",
                               "templateHash": "15954548978129725136"
                             },
                             "name": "Private Endpoints",
@@ -20144,7 +20144,7 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
+                                      "version": "0.36.1.42791",
                                       "templateHash": "5440815542537978381"
                                     },
                                     "name": "Private Endpoint Private DNS Zone Groups",
@@ -21940,7 +21940,7 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
+                              "version": "0.36.1.42791",
                               "templateHash": "15954548978129725136"
                             },
                             "name": "Private Endpoints",
@@ -22456,7 +22456,7 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
+                                      "version": "0.36.1.42791",
                                       "templateHash": "5440815542537978381"
                                     },
                                     "name": "Private Endpoint Private DNS Zone Groups",
@@ -34782,7 +34782,7 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
+                      "version": "0.36.1.42791",
                       "templateHash": "15954548978129725136"
                     },
                     "name": "Private Endpoints",
@@ -35298,7 +35298,7 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
+                              "version": "0.36.1.42791",
                               "templateHash": "5440815542537978381"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
@@ -46545,7 +46545,7 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
+                      "version": "0.36.1.42791",
                       "templateHash": "15954548978129725136"
                     },
                     "name": "Private Endpoints",
@@ -47061,7 +47061,7 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
+                              "version": "0.36.1.42791",
                               "templateHash": "5440815542537978381"
                             },
                             "name": "Private Endpoint Private DNS Zone Groups",
