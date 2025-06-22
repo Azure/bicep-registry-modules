@@ -101,7 +101,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0.11.2' = if (toLower(aiFoundryType) != 'basic') {
+module logAnalyticsWorkspace 'modules/logAnalytics.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-log-analytics-deployment', 64)
   params: {
     name: toLower('log-${name}')
@@ -111,20 +111,21 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     dataRetention: 90 // Standard retention for compliance
     enableTelemetry: enableTelemetry
     features: {
-      enableLogAccessUsingOnlyResourcePermissions: true // Required for AZR-000425 compliance
+      enableLogAccessUsingOnlyResourcePermissions: true // Required for access control compliance
     }
   }
 }
 
-// module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (toLower(aiFoundryType) != 'basic') {
-//   name: take('${name}-app-insights-deployment', 64)
-//   params: {
-//     name: toLower('appi-${name}')
-//     location: location
-//     tags: allTags
-//     workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
-//   }
-// }
+module applicationInsights 'modules/applicationInsights.bicep' = if (toLower(aiFoundryType) != 'basic') {
+  name: take('${name}-app-insights-deployment', 64)
+  params: {
+    name: toLower('appi-${name}')
+    location: location
+    tags: allTags
+    workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
+    enableTelemetry: enableTelemetry
+  }
+}
 
 module network 'modules/virtualNetwork.bicep' = if (toLower(aiFoundryType) == 'standardprivate') {
   name: take('${name}-network-deployment', 64)
@@ -179,6 +180,7 @@ module containerRegistry 'modules/containerRegistry.bicep' = if (toLower(aiFound
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    logAnalyticsWorkspaceResourceId: toLower(aiFoundryType) != 'basic' ? logAnalyticsWorkspace.outputs.resourceId : ''
     enableTelemetry: enableTelemetry
     tags: allTags
   }
@@ -211,6 +213,7 @@ module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic'
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
     userObjectId: userObjectId
+    logAnalyticsWorkspaceResourceId: toLower(aiFoundryType) != 'basic' ? logAnalyticsWorkspace.outputs.resourceId : ''
     enableTelemetry: enableTelemetry
     roleAssignments: union(
       empty(userObjectId)
@@ -248,6 +251,7 @@ module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    logAnalyticsWorkspaceResourceId: toLower(aiFoundryType) != 'basic' ? logAnalyticsWorkspace.outputs.resourceId : ''
     enableTelemetry: enableTelemetry
     roleAssignments: concat(
       empty(userObjectId)
@@ -286,6 +290,7 @@ module cosmosDb 'modules/cosmosDb.bicep' = if (toLower(aiFoundryType) != 'basic'
     networkIsolation: networkIsolation
     virtualNetworkResourceId: networkIsolation ? network.outputs.virtualNetworkId : ''
     virtualNetworkSubnetResourceId: networkIsolation ? network.outputs.vmSubnetId : ''
+    logAnalyticsWorkspaceResourceId: toLower(aiFoundryType) != 'basic' ? logAnalyticsWorkspace.outputs.resourceId : ''
     enableTelemetry: enableTelemetry
     databases: cosmosDatabases
     tags: allTags
@@ -384,3 +389,26 @@ output azureVirtualNetworkSubnetName string = networkIsolation ? network.outputs
 
 @description('Name of the deployed Azure Cosmos DB account.')
 output azureCosmosAccountName string = toLower(aiFoundryType) != 'basic' ? cosmosDb.outputs.cosmosDBname : ''
+
+@description('Name of the deployed Azure Log Analytics workspace.')
+output azureLogAnalyticsWorkspaceName string = toLower(aiFoundryType) != 'basic'
+  ? logAnalyticsWorkspace.outputs.name
+  : ''
+
+@description('Resource ID of the deployed Azure Log Analytics workspace.')
+output azureLogAnalyticsWorkspaceResourceId string = toLower(aiFoundryType) != 'basic'
+  ? logAnalyticsWorkspace.outputs.resourceId
+  : ''
+
+@description('Name of the deployed Azure Application Insights component.')
+output azureApplicationInsightsName string = toLower(aiFoundryType) != 'basic' ? applicationInsights.outputs.name : ''
+
+@description('Instrumentation key of the deployed Azure Application Insights component.')
+output azureApplicationInsightsInstrumentationKey string = toLower(aiFoundryType) != 'basic'
+  ? applicationInsights.outputs.instrumentationKey
+  : ''
+
+@description('Connection string of the deployed Azure Application Insights component.')
+output azureApplicationInsightsConnectionString string = toLower(aiFoundryType) != 'basic'
+  ? applicationInsights.outputs.connectionString
+  : ''

@@ -25,6 +25,9 @@ param roleAssignments roleAssignmentType[]?
 @description('Optional. Enable/Disable usage telemetry for module.')
 param enableTelemetry bool = true
 
+@description('Optional. Resource ID of the Log Analytics workspace for diagnostic logs.')
+param logAnalyticsWorkspaceResourceId string = ''
+
 module privateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (networkIsolation) {
   name: 'private-dns-search-deployment'
   params: {
@@ -71,6 +74,24 @@ module aiSearch 'br/public:avm/res/search/search-service:0.10.0' = {
             roleDefinitionIdOrName: 'Search Index Data Reader'
           }
         ]
+    diagnosticSettings: !empty(logAnalyticsWorkspaceResourceId)
+      ? [
+          {
+            name: 'default'
+            workspaceResourceId: logAnalyticsWorkspaceResourceId
+            metricCategories: [
+              {
+                category: 'AllMetrics'
+              }
+            ]
+            logCategories: [
+              {
+                category: 'OperationLogs'
+              }
+            ]
+          }
+        ]
+      : []
     // Removed empty diagnosticSettings that was causing "At least one data sink needs to be specified" error
     privateEndpoints: networkIsolation
       ? [

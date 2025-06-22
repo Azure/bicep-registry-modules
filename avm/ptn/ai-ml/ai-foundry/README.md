@@ -41,6 +41,8 @@ Creates an AI Foundry account and project with Standard Agent Services.
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleAssignments) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions) |
 | `Microsoft.DocumentDB/databaseAccounts/tables` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/tables) |
+| `Microsoft.Insights/components` | [2020-02-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components) |
+| `microsoft.insights/components/linkedStorageAccounts` | [2020-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts) |
 | `Microsoft.Insights/dataCollectionRuleAssociations` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRuleAssociations) |
 | `Microsoft.Insights/dataCollectionRules` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRules) |
 | `microsoft.insights/diagnosticSettings` | [2016-09-01](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2016-09-01/diagnosticSettings) |
@@ -66,10 +68,10 @@ Creates an AI Foundry account and project with Standard Agent Services.
 | `Microsoft.Network/privateDnsZones/SRV` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/SRV) |
 | `Microsoft.Network/privateDnsZones/TXT` | [2020-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2020-06-01/privateDnsZones/TXT) |
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
-| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/publicIPAddresses` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/publicIPAddresses) |
 | `Microsoft.Network/publicIPAddresses` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/publicIPAddresses) |
 | `Microsoft.Network/virtualNetworks` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/virtualNetworks) |
@@ -82,6 +84,7 @@ Creates an AI Foundry account and project with Standard Agent Services.
 | `Microsoft.OperationalInsights/workspaces/storageInsightConfigs` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/storageInsightConfigs) |
 | `Microsoft.OperationalInsights/workspaces/tables` | [2023-09-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationalInsights/2023-09-01/workspaces/tables) |
 | `Microsoft.OperationsManagement/solutions` | [2015-11-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.OperationsManagement/2015-11-01-preview/solutions) |
+| `Microsoft.Resources/deploymentScripts` | [2023-08-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Resources/2023-08-01/deploymentScripts) |
 | `Microsoft.Search/searchServices` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices) |
 | `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources) |
 | `Microsoft.SecurityInsights/onboardingStates` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.SecurityInsights/2024-03-01/onboardingStates) |
@@ -791,10 +794,15 @@ Specifies the size of the jump-box Virtual Machine.
 | `azureAiProjectName` | string | Name of the deployed Azure AI Project. |
 | `azureAiSearchName` | string | Name of the deployed Azure AI Search service. |
 | `azureAiServicesName` | string | Name of the deployed Azure AI Services account. |
+| `azureApplicationInsightsConnectionString` | string | Connection string of the deployed Azure Application Insights component. |
+| `azureApplicationInsightsInstrumentationKey` | string | Instrumentation key of the deployed Azure Application Insights component. |
+| `azureApplicationInsightsName` | string | Name of the deployed Azure Application Insights component. |
 | `azureBastionName` | string | Name of the deployed Azure Bastion host. |
 | `azureContainerRegistryName` | string | Name of the deployed Azure Container Registry. |
 | `azureCosmosAccountName` | string | Name of the deployed Azure Cosmos DB account. |
 | `azureKeyVaultName` | string | Name of the deployed Azure Key Vault. |
+| `azureLogAnalyticsWorkspaceName` | string | Name of the deployed Azure Log Analytics workspace. |
+| `azureLogAnalyticsWorkspaceResourceId` | string | Resource ID of the deployed Azure Log Analytics workspace. |
 | `azureStorageAccountName` | string | Name of the deployed Azure Storage Account. |
 | `azureVirtualNetworkName` | string | Name of the deployed Azure Virtual Network. |
 | `azureVirtualNetworkSubnetName` | string | Name of the deployed Azure Virtual Network Subnet. |
@@ -811,6 +819,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/cognitive-services/account:0.11.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
+| `br/public:avm/res/insights/component:0.6.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.13.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
 | `br/public:avm/res/operational-insights/workspace:0.11.2` | Remote reference |
