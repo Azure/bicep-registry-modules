@@ -110,6 +110,9 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     skuName: 'PerGB2018' // Updated to current supported SKU
     dataRetention: 90 // Standard retention for compliance
     enableTelemetry: enableTelemetry
+    features: {
+      enableLogAccessUsingOnlyResourcePermissions: true // Required for AZR-000425 compliance
+    }
   }
 }
 
