@@ -1198,6 +1198,7 @@ module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' =
     }
     // dependent resources
     associatedKeyVaultResourceId: avmKeyVault.outputs.resourceId
+    primaryUserAssignedIdentity: avmManagedIdentity.outputs.resourceId
     associatedStorageAccountResourceId: aiHubStorageResourceId //avmAiServices_storage_hub.outputs.resourceId
     associatedContainerRegistryResourceId: avmContainerRegistry.outputs.resourceId
     associatedApplicationInsightsResourceId: applicationInsights.outputs.applicationId
@@ -1261,6 +1262,7 @@ module avmAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.
     kind: 'Project'
     sku: 'Basic'
     friendlyName: '${namingAbbrs.ai.aiHubProject}${solutionPrefix}'
+    primaryUserAssignedIdentity: avmManagedIdentity.outputs.resourceId
     hubResourceId: avmAiHub.outputs.resourceId
     enableTelemetry: enableTelemetry
     tags: tags
