@@ -1177,6 +1177,8 @@ module avmAiServices_storage_hub 'br/public:avm/res/storage/storage-account:0.20
   }
 }
 
+var  aiHubStorageResourceId = avmAiServices_storage_hub.outputs.resourceId
+
 module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = {
   name: format(resourceNameFormatString, namingAbbrs.ai.aiHub)
   params: {
@@ -1192,7 +1194,7 @@ module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' =
     }
     // dependent resources
     associatedKeyVaultResourceId: avmKeyVault.outputs.resourceId
-    associatedStorageAccountResourceId: avmAiServices_storage_hub.outputs.resourceId
+    associatedStorageAccountResourceId: aiHubStorageResourceId //avmAiServices_storage_hub.outputs.resourceId
     associatedContainerRegistryResourceId: avmContainerRegistry.outputs.resourceId
     associatedApplicationInsightsResourceId: applicationInsights.outputs.applicationId
     enableTelemetry: enableTelemetry
