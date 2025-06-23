@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10376458647259834115"
+      "templateHash": "15456810750133115429"
     },
     "name": "Storage Account Blob Containers",
     "description": "This module deploys a Storage Account Blob Container."
@@ -93,20 +93,20 @@
       "type": "string",
       "maxLength": 24,
       "metadata": {
-        "description": "Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment."
+        "description": "Conditional. Name of the parent Storage Account. Required if the template is used in a standalone deployment."
       }
     },
     "blobServiceName": {
       "type": "string",
       "defaultValue": "default",
       "metadata": {
-        "description": "Optional. The name of the parent Blob Service. Required if the template is used in a standalone deployment."
+        "description": "Optional. Name of the parent Blob Service. Required if the template is used in a standalone deployment."
       }
     },
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. The name of the storage container to deploy."
+        "description": "Required. Name of the storage container to deploy."
       }
     },
     "defaultEncryptionScope": {

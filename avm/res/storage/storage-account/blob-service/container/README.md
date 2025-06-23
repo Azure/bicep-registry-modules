@@ -24,19 +24,19 @@ This module deploys a Storage Account Blob Container.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the storage container to deploy. |
+| [`name`](#parameter-name) | string | Name of the storage container to deploy. |
 
 **Conditional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`storageAccountName`](#parameter-storageaccountname) | string | The name of the parent Storage Account. Required if the template is used in a standalone deployment. |
+| [`storageAccountName`](#parameter-storageaccountname) | string | Name of the parent Storage Account. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`blobServiceName`](#parameter-blobservicename) | string | The name of the parent Blob Service. Required if the template is used in a standalone deployment. |
+| [`blobServiceName`](#parameter-blobservicename) | string | Name of the parent Blob Service. Required if the template is used in a standalone deployment. |
 | [`defaultEncryptionScope`](#parameter-defaultencryptionscope) | string | Default the container to use specified encryption scope for all writes. |
 | [`denyEncryptionScopeOverride`](#parameter-denyencryptionscopeoverride) | bool | Block override of encryption scope from the container default. |
 | [`enableNfsV3AllSquash`](#parameter-enablenfsv3allsquash) | bool | Enable NFSv3 all squash on blob container. |
@@ -51,21 +51,21 @@ This module deploys a Storage Account Blob Container.
 
 ### Parameter: `name`
 
-The name of the storage container to deploy.
+Name of the storage container to deploy.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `storageAccountName`
 
-The name of the parent Storage Account. Required if the template is used in a standalone deployment.
+Name of the parent Storage Account. Required if the template is used in a standalone deployment.
 
 - Required: Yes
 - Type: string
 
 ### Parameter: `blobServiceName`
 
-The name of the parent Blob Service. Required if the template is used in a standalone deployment.
+Name of the parent Blob Service. Required if the template is used in a standalone deployment.
 
 - Required: No
 - Type: string

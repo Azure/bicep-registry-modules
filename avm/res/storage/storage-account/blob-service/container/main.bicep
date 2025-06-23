@@ -2,13 +2,13 @@ metadata name = 'Storage Account Blob Containers'
 metadata description = 'This module deploys a Storage Account Blob Container.'
 
 @maxLength(24)
-@description('Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment.')
+@description('Conditional. Name of the parent Storage Account. Required if the template is used in a standalone deployment.')
 param storageAccountName string
 
-@description('Optional. The name of the parent Blob Service. Required if the template is used in a standalone deployment.')
+@description('Optional. Name of the parent Blob Service. Required if the template is used in a standalone deployment.')
 param blobServiceName string = 'default'
 
-@description('Required. The name of the storage container to deploy.')
+@description('Required. Name of the storage container to deploy.')
 param name string
 
 @description('Optional. Default the container to use specified encryption scope for all writes.')
