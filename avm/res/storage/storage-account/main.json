@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3682363270982275902"
+      "templateHash": "16182413376683419438"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -980,7 +980,7 @@
         "Enabled"
       ],
       "metadata": {
-        "description": "Optional. Allow large file shares if sets to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares)."
+        "description": "Optional. Allow large file shares if set to 'Enabled'. It cannot be disabled once it is enabled. Only supported on locally redundant and zone redundant file shares. It cannot be set on FileStorage storage accounts (storage accounts for premium file shares)."
       }
     },
     "azureFilesIdentityBasedAuthentication": {
