@@ -52,34 +52,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     source: '<source>'
     topicType: 'Microsoft.Storage.StorageAccounts'
     // Non-required parameters
-    eventSubscriptions: [
-      {
-        deliveryWithResourceIdentity: {
-          destination: {
-            endpointType: 'StorageQueue'
-            properties: {
-              queueName: '<queueName>'
-              resourceId: '<resourceId>'
-            }
-          }
-          identity: {
-            type: 'SystemAssigned'
-          }
-        }
-        name: 'egstmin001'
-      }
-    ]
-    externalResourceRoleAssignments: [
-      {
-        description: 'Allow Event Grid System Topic to send messages to storage queue'
-        resourceId: '<resourceId>'
-        roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
-      }
-    ]
     location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
   }
 }
 ```
@@ -107,41 +80,8 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
       "value": "Microsoft.Storage.StorageAccounts"
     },
     // Non-required parameters
-    "eventSubscriptions": {
-      "value": [
-        {
-          "deliveryWithResourceIdentity": {
-            "destination": {
-              "endpointType": "StorageQueue",
-              "properties": {
-                "queueName": "<queueName>",
-                "resourceId": "<resourceId>"
-              }
-            },
-            "identity": {
-              "type": "SystemAssigned"
-            }
-          },
-          "name": "egstmin001"
-        }
-      ]
-    },
-    "externalResourceRoleAssignments": {
-      "value": [
-        {
-          "description": "Allow Event Grid System Topic to send messages to storage queue",
-          "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
     }
   }
 }
@@ -162,34 +102,7 @@ param name = 'egstmin001'
 param source = '<source>'
 param topicType = 'Microsoft.Storage.StorageAccounts'
 // Non-required parameters
-param eventSubscriptions = [
-  {
-    deliveryWithResourceIdentity: {
-      destination: {
-        endpointType: 'StorageQueue'
-        properties: {
-          queueName: '<queueName>'
-          resourceId: '<resourceId>'
-        }
-      }
-      identity: {
-        type: 'SystemAssigned'
-      }
-    }
-    name: 'egstmin001'
-  }
-]
-param externalResourceRoleAssignments = [
-  {
-    description: 'Allow Event Grid System Topic to send messages to storage queue'
-    resourceId: '<resourceId>'
-    roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
-  }
-]
 param location = '<location>'
-param managedIdentities = {
-  systemAssigned: true
-}
 ```
 
 </details>
@@ -448,12 +361,12 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
       {
         description: 'Allow Event Grid System Topic to write to storage queue'
         resourceId: '<resourceId>'
-        roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+        roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
       }
       {
         description: 'Allow Event Grid System Topic to send messages to storage queue'
         resourceId: '<resourceId>'
-        roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+        roleDefinitionId: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
       }
     ]
     location: '<location>'
@@ -561,12 +474,12 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         {
           "description": "Allow Event Grid System Topic to write to storage queue",
           "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "974c5e8b-45b9-4653-ba55-5f855dd0fb88"
+          "roleDefinitionId": "974c5e8b-45b9-4653-ba55-5f855dd0fb88"
         },
         {
           "description": "Allow Event Grid System Topic to send messages to storage queue",
           "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
+          "roleDefinitionId": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
         }
       ]
     },
@@ -672,12 +585,12 @@ param externalResourceRoleAssignments = [
   {
     description: 'Allow Event Grid System Topic to write to storage queue'
     resourceId: '<resourceId>'
-    roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+    roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
   }
   {
     description: 'Allow Event Grid System Topic to send messages to storage queue'
     resourceId: '<resourceId>'
-    roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+    roleDefinitionId: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
   }
 ]
 param location = '<location>'
@@ -751,17 +664,11 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     ]
     eventSubscriptions: [
       {
-        deliveryWithResourceIdentity: {
-          destination: {
-            endpointType: 'StorageQueue'
-            properties: {
-              queueMessageTimeToLiveInSeconds: 86400
-              queueName: '<queueName>'
-              resourceId: '<resourceId>'
-            }
-          }
-          identity: {
-            type: 'SystemAssigned'
+        destination: {
+          endpointType: 'StorageQueue'
+          properties: {
+            queueName: '<queueName>'
+            resourceId: '<resourceId>'
           }
         }
         eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -777,20 +684,10 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         }
       }
     ]
-    externalResourceRoleAssignments: [
-      {
-        description: 'Allow Event Grid System Topic to send messages to storage queue'
-        resourceId: '<resourceId>'
-        roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
-      }
-    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
     }
     tags: {
       Environment: 'Non-Prod'
@@ -843,17 +740,11 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     "eventSubscriptions": {
       "value": [
         {
-          "deliveryWithResourceIdentity": {
-            "destination": {
-              "endpointType": "StorageQueue",
-              "properties": {
-                "queueMessageTimeToLiveInSeconds": 86400,
-                "queueName": "<queueName>",
-                "resourceId": "<resourceId>"
-              }
-            },
-            "identity": {
-              "type": "SystemAssigned"
+          "destination": {
+            "endpointType": "StorageQueue",
+            "properties": {
+              "queueName": "<queueName>",
+              "resourceId": "<resourceId>"
             }
           },
           "eventDeliverySchema": "CloudEventSchemaV1_0",
@@ -870,15 +761,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         }
       ]
     },
-    "externalResourceRoleAssignments": {
-      "value": [
-        {
-          "description": "Allow Event Grid System Topic to send messages to storage queue",
-          "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
-        }
-      ]
-    },
     "location": {
       "value": "<location>"
     },
@@ -886,11 +768,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
-      }
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
       }
     },
     "tags": {
@@ -935,17 +812,11 @@ param diagnosticSettings = [
 ]
 param eventSubscriptions = [
   {
-    deliveryWithResourceIdentity: {
-      destination: {
-        endpointType: 'StorageQueue'
-        properties: {
-          queueMessageTimeToLiveInSeconds: 86400
-          queueName: '<queueName>'
-          resourceId: '<resourceId>'
-        }
-      }
-      identity: {
-        type: 'SystemAssigned'
+    destination: {
+      endpointType: 'StorageQueue'
+      properties: {
+        queueName: '<queueName>'
+        resourceId: '<resourceId>'
       }
     }
     eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -961,20 +832,10 @@ param eventSubscriptions = [
     }
   }
 ]
-param externalResourceRoleAssignments = [
-  {
-    description: 'Allow Event Grid System Topic to send messages to storage queue'
-    resourceId: '<resourceId>'
-    roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
-  }
-]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
-}
-param managedIdentities = {
-  systemAssigned: true
 }
 param tags = {
   Environment: 'Non-Prod'
@@ -1003,7 +864,7 @@ param tags = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
-| [`externalResourceRoleAssignments`](#parameter-externalresourceroleassignments) | array | Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs. |
+| [`externalResourceRoleAssignments`](#parameter-externalresourceroleassignments) | array | Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
@@ -1298,7 +1159,7 @@ The retry policy for events.
 
 ### Parameter: `externalResourceRoleAssignments`
 
-Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs.
+Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID).
 
 - Required: No
 - Type: array
@@ -1309,7 +1170,7 @@ Array of role assignments to create on external resources. This is useful for sc
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
 | [`resourceId`](#parameter-externalresourceroleassignmentsresourceid) | string | The resource ID of the target resource to assign permissions to. |
-| [`roleDefinitionIdOrName`](#parameter-externalresourceroleassignmentsroledefinitionidorname) | string | The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe". |
+| [`roleDefinitionId`](#parameter-externalresourceroleassignmentsroledefinitionid) | string | The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe". |
 
 **Optional parameters**
 
@@ -1325,7 +1186,7 @@ The resource ID of the target resource to assign permissions to.
 - Required: Yes
 - Type: string
 
-### Parameter: `externalResourceRoleAssignments.roleDefinitionIdOrName`
+### Parameter: `externalResourceRoleAssignments.roleDefinitionId`
 
 The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".
 

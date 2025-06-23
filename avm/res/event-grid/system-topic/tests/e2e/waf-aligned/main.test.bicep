@@ -72,6 +72,13 @@ module testDeployment '../../../main.bicep' = [
       eventSubscriptions: [
         {
           name: '${namePrefix}${serviceShort}001'
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              resourceId: nestedDependencies.outputs.storageAccountResourceId
+              queueName: nestedDependencies.outputs.queueName
+            }
+          }
           expirationTimeUtc: '2099-01-01T11:00:21.715Z'
           filter: {
             isSubjectCaseSensitive: false
@@ -82,8 +89,6 @@ module testDeployment '../../../main.bicep' = [
             eventTimeToLiveInMinutes: 120
           }
           eventDeliverySchema: 'CloudEventSchemaV1_0'
-            }
-          }
         }
       ]
       diagnosticSettings: [
