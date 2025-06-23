@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/healthcare-apis/workspace/CHANGELOG.md).
 
-## 0.4.2
+## 0.4.3
 
 ### Changes
 

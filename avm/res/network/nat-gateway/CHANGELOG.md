@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/network/nat-gateway/CHANGELOG.md).
 
-## 1.2.2
+## 1.4.0
 
 ### Changes
 

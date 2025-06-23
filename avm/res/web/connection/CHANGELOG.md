@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/web/connection/CHANGELOG.md).
 
-## 0.4.1
+## 0.4.2
 
 ### Changes
 

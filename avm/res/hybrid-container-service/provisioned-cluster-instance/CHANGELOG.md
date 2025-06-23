@@ -2,7 +2,7 @@
 
 The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/res/hybrid-container-service/provisioned-cluster-instance/CHANGELOG.md).
 
-## 0.1.2
+## 0.2.0
 
 ### Changes
 
