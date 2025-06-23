@@ -105,83 +105,15 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/content-processing:<version>`.
 
-- [Defaults](#example-1-defaults)
-- [Sandbox](#example-2-sandbox)
-- [Waf-Aligned](#example-3-waf-aligned)
-- [Waf](#example-4-waf)
+- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
+- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
+- [waf-aligned configuration with default parameter values](#example-3-waf-aligned-configuration-with-default-parameter-values)
+- [waf-aligned configuration with default parameter values](#example-4-waf-aligned-configuration-with-default-parameter-values)
 
-### Example 1: _Defaults_
+### Example 1: _Sandbox configuration with default parameter values_
 
-<details>
+This instance deploys the [Content Processing Solution Accelerator] using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
 
-<summary>via Bicep module</summary>
-
-```bicep
-module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
-  name: 'contentProcessingDeployment'
-  params: {
-    // Required parameters
-    contentUnderstandingLocation: '<contentUnderstandingLocation>'
-    environmentName: 'scpmin'
-    gptDeploymentCapacity: 80
-    // Non-required parameters
-    enablePrivateNetworking: false
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via JSON parameters file</summary>
-
-```json
-{
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-    // Required parameters
-    "contentUnderstandingLocation": {
-      "value": "<contentUnderstandingLocation>"
-    },
-    "environmentName": {
-      "value": "scpmin"
-    },
-    "gptDeploymentCapacity": {
-      "value": 80
-    },
-    // Non-required parameters
-    "enablePrivateNetworking": {
-      "value": false
-    }
-  }
-}
-```
-
-</details>
-<p>
-
-<details>
-
-<summary>via Bicep parameters file</summary>
-
-```bicep-params
-using 'br/public:avm/ptn/sa/content-processing:<version>'
-
-// Required parameters
-param contentUnderstandingLocation = '<contentUnderstandingLocation>'
-param environmentName = 'scpmin'
-param gptDeploymentCapacity = 80
-// Non-required parameters
-param enablePrivateNetworking = false
-```
-
-</details>
-<p>
-
-### Example 2: _Sandbox_
 
 <details>
 
@@ -252,7 +184,84 @@ param enablePrivateNetworking = false
 </details>
 <p>
 
-### Example 3: _Waf-Aligned_
+### Example 2: _Sandbox configuration with default parameter values_
+
+This instance deploys the [Content Processing Solution Accelerator] using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
+  name: 'contentProcessingDeployment'
+  params: {
+    // Required parameters
+    contentUnderstandingLocation: '<contentUnderstandingLocation>'
+    environmentName: 'scpmin'
+    gptDeploymentCapacity: 80
+    // Non-required parameters
+    enablePrivateNetworking: false
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "contentUnderstandingLocation": {
+      "value": "<contentUnderstandingLocation>"
+    },
+    "environmentName": {
+      "value": "scpmin"
+    },
+    "gptDeploymentCapacity": {
+      "value": 80
+    },
+    // Non-required parameters
+    "enablePrivateNetworking": {
+      "value": false
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/sa/content-processing:<version>'
+
+// Required parameters
+param contentUnderstandingLocation = '<contentUnderstandingLocation>'
+param environmentName = 'scpmin'
+param gptDeploymentCapacity = 80
+// Non-required parameters
+param enablePrivateNetworking = false
+```
+
+</details>
+<p>
+
+### Example 3: _waf-aligned configuration with default parameter values_
+
+This instance deploys the [Content Processing Solution Accelerator]
+
 
 <details>
 
@@ -323,7 +332,10 @@ param enableScaling = true
 </details>
 <p>
 
-### Example 4: _Waf_
+### Example 4: _waf-aligned configuration with default parameter values_
+
+This instance deploys the [Content Processing Solution Accelerator]
+
 
 <details>
 

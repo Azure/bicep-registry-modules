@@ -513,17 +513,17 @@ module avmManagedIdentity './modules/managed-identity.bicep' = {
 }
 
 // Assign Owner role to the managed identity in the resource group
-module avmRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: format(resourceNameFormatString, 'rbac-owner')
-  params: {
-    resourceId: avmManagedIdentity.outputs.resourceId
-    principalId: avmManagedIdentity.outputs.principalId
-    roleDefinitionId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
-    principalType: 'ServicePrincipal'
-    enableTelemetry: enableTelemetry
-  }
-  scope: resourceGroup(resourceGroup().name)
-}
+// module avmRoleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-owner')
+//   params: {
+//     resourceId: avmManagedIdentity.outputs.resourceId
+//     principalId: avmManagedIdentity.outputs.principalId
+//     roleDefinitionId: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635'
+//     principalType: 'ServicePrincipal'
+//     enableTelemetry: enableTelemetry
+//   }
+//   scope: resourceGroup(resourceGroup().name)
+// }
 
 // ========== Key Vault Module ========== //
 module avmKeyVault './modules/key-vault.bicep' = {
@@ -965,6 +965,22 @@ module avmAiServices 'br/public:avm/res/cognitive-services/account:0.11.0' = {
         workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
       }
     ]
+    roleAssignments: [
+      {
+        principalId: avmManagedIdentity.outputs.principalId
+        roleDefinitionIdOrName: '8e3af657-a8ff-443c-a75c-2fe8c4bcb635' // Owner role
+      }
+      {
+        principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+        roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+        principalType: 'ServicePrincipal'
+      }
+      // {
+      //   principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
+      //   roleDefinitionIdOrName: 'Cognitive Services OpenAI User'
+      //   principalType: 'ServicePrincipal'
+      // }
+    ]
     networkAcls: {
       bypass: 'AzureServices'
       defaultAction: 'Deny'
@@ -1023,17 +1039,17 @@ module avmAiServices 'br/public:avm/res/cognitive-services/account:0.11.0' = {
 }
 
 // Role Assignment
-module avmAiServices_roleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: format(resourceNameFormatString, 'rbac-ai-services')
-  params: {
-    resourceId: avmAiServices.outputs.resourceId
-    principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId
-    roleName: 'Cognitive Services OpenAI User'
-    roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' //'Cognitive Services OpenAI User'
-    principalType: 'ServicePrincipal'
-    enableTelemetry: enableTelemetry
-  }
-}
+// module avmAiServices_roleAssignment 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-ai-services')
+//   params: {
+//     resourceId: avmAiServices.outputs.resourceId
+//     principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId!
+//     roleName: 'Cognitive Services OpenAI User'
+//     roleDefinitionId: '5e0bd9bd-7b93-4f28-af87-19fc36ad61bd' //'Cognitive Services OpenAI User'
+//     principalType: 'ServicePrincipal'
+//     enableTelemetry: enableTelemetry
+//   }
+// }
 
 module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = {
   name: format(resourceNameFormatString, 'aicu-')
@@ -1663,6 +1679,20 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
         name: 'Secondary Location'
       }
     ]
+    roleAssignments: [
+      {
+        principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId!
+        roleDefinitionIdOrName: 'App Configuration Data Reader'
+      }
+      {
+        principalId: avmContainerApp_API.outputs.?systemAssignedMIPrincipalId!
+        roleDefinitionIdOrName: 'App Configuration Data Reader'
+      }
+      {
+        principalId: avmContainerApp_Web.outputs.?systemAssignedMIPrincipalId!
+        roleDefinitionIdOrName: 'App Configuration Data Reader'
+      }
+    ]
     keyValues: [
       {
         name: 'APP_AZURE_OPENAI_ENDPOINT'
@@ -1807,41 +1837,41 @@ module avmAppConfig_update 'br/public:avm/res/app-configuration/configuration-st
   ]
 }
 
-module avmRoleAssignment_container_app 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: format(resourceNameFormatString, 'rbac-app-config-data-reader')
-  params: {
-    resourceId: avmAppConfig.outputs.resourceId
-    principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId
-    roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
-    roleName: 'App Configuration Data Reader'
-    principalType: 'ServicePrincipal'
-    enableTelemetry: enableTelemetry
-  }
-}
+// module avmRoleAssignment_container_app 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-app-config-data-reader')
+//   params: {
+//     resourceId: avmAppConfig.outputs.resourceId
+//     principalId: avmContainerApp.outputs.?systemAssignedMIPrincipalId
+//     roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
+//     roleName: 'App Configuration Data Reader'
+//     principalType: 'ServicePrincipal'
+//     enableTelemetry: enableTelemetry
+//   }
+// }
 
-module avmRoleAssignment_container_app_api 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: format(resourceNameFormatString, 'rbac-app-config-data-reader-api')
-  params: {
-    resourceId: avmAppConfig.outputs.resourceId
-    principalId: avmContainerApp_API.outputs.?systemAssignedMIPrincipalId
-    roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
-    roleName: 'App Configuration Data Reader'
-    principalType: 'ServicePrincipal'
-    enableTelemetry: enableTelemetry
-  }
-}
+// module avmRoleAssignment_container_app_api 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-app-config-data-reader-api')
+//   params: {
+//     resourceId: avmAppConfig.outputs.resourceId
+//     principalId: avmContainerApp_API.outputs.?systemAssignedMIPrincipalId
+//     roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
+//     roleName: 'App Configuration Data Reader'
+//     principalType: 'ServicePrincipal'
+//     enableTelemetry: enableTelemetry
+//   }
+// }
 
-module avmRoleAssignment_container_app_web 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: format(resourceNameFormatString, 'rbac-app-config-data-reader-web')
-  params: {
-    resourceId: avmAppConfig.outputs.resourceId
-    principalId: avmContainerApp_Web.outputs.?systemAssignedMIPrincipalId
-    roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
-    roleName: 'App Configuration Data Reader'
-    principalType: 'ServicePrincipal'
-    enableTelemetry: enableTelemetry
-  }
-}
+// module avmRoleAssignment_container_app_web 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-app-config-data-reader-web')
+//   params: {
+//     resourceId: avmAppConfig.outputs.resourceId
+//     principalId: avmContainerApp_Web.outputs.?systemAssignedMIPrincipalId
+//     roleDefinitionId: '516239f1-63e1-4d78-a4de-a74fb236a071' // Built-in
+//     roleName: 'App Configuration Data Reader'
+//     principalType: 'ServicePrincipal'
+//     enableTelemetry: enableTelemetry
+//   }
+// }
 
 // ========== Container App Update Modules ========== //
 module avmContainerApp_update 'br/public:avm/res/app/container-app:0.17.0' = {
@@ -1905,11 +1935,6 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.17.0' = {
         : []
     }
   }
-  dependsOn: [
-    avmStorageAccount_RoleAssignment_avmContainerApp_blob
-    avmStorageAccount_RoleAssignment_avmContainerApp_queue
-    avmRoleAssignment_container_app
-  ]
 }
 
 module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.17.0' = {
@@ -2036,11 +2061,6 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.17.0' =
       ]
     }
   }
-  dependsOn: [
-    avmStorageAccount_RoleAssignment_avmContainerApp_API_blob
-    avmStorageAccount_RoleAssignment_avmContainerApp_API_queue
-    avmRoleAssignment_container_app_api
-  ]
 }
 
 // ============ //
