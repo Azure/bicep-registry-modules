@@ -4,6 +4,7 @@ targetScope = 'resourceGroup'
 metadata name = 'Content Processing Solution Accelerator'
 metadata description = 'Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance.'
 
+
 // ========== get up parameters from parameter file ========== //
 @description('Required. Name of the environment to deploy the solution into.')
 param environmentName string
