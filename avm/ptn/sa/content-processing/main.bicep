@@ -1059,7 +1059,7 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     name: 'aicu-${solutionPrefix}'
     location: contentUnderstandingLocation
     sku: 'S0'
-    managedIdentities: { systemAssigned: true }
+    managedIdentities: { systemAssigned: false }
     kind: 'AIServices'
     tags: {
       app: solutionPrefix
@@ -1254,7 +1254,12 @@ module avmAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.
   params: {
     name: '${namingAbbrs.ai.aiHubProject}${solutionPrefix}'
     location: resourceGroupLocation
-    managedIdentities: { systemAssigned: false }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        avmManagedIdentity.outputs.resourceId
+      ]
+    }
     kind: 'Project'
     sku: 'Basic'
     friendlyName: '${namingAbbrs.ai.aiHubProject}${solutionPrefix}'
