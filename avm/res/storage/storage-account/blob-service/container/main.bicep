@@ -8,7 +8,7 @@ param storageAccountName string
 @description('Optional. The name of the parent Blob Service. Required if the template is used in a standalone deployment.')
 param blobServiceName string = 'default'
 
-@description('Required. The name of the storage container to deploy.')
+@description('Required. The name of the Storage Container to deploy.')
 param name string
 
 @description('Optional. Default the container to use specified encryption scope for all writes.')

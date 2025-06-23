@@ -3136,7 +3136,7 @@
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. The name of the storage container to deploy."
+                        "description": "Required. The name of the Storage Container to deploy."
                       }
                     },
                     "defaultEncryptionScope": {

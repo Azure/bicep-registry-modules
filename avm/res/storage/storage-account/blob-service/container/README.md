@@ -24,7 +24,7 @@ This module deploys a Storage Account Blob Container.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The name of the storage container to deploy. |
+| [`name`](#parameter-name) | string | The name of the Storage Container to deploy. |
 
 **Conditional parameters**
 
@@ -51,7 +51,7 @@ This module deploys a Storage Account Blob Container.
 
 ### Parameter: `name`
 
-The name of the storage container to deploy.
+The name of the Storage Container to deploy.
 
 - Required: Yes
 - Type: string
