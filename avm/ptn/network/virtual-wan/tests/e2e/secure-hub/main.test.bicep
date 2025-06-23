@@ -64,6 +64,10 @@ module testDeployment '../../../main.bicep' = [
             azureFirewallName: 'dep-${namePrefix}-fw-eastus-${serviceShort}'
             azureFirewallSku: 'Standard'
             azureFirewallPublicIPCount: 1
+            routingIntent: {
+              internetToFirewall: true
+              privateToFirewall: true
+            }
           }
         }
       ]

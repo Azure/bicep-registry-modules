@@ -379,14 +379,34 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     virtualHubParameters: [
       {
         hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: '<hubLocation>'
-        hubName: '<hubName>'
+        hubLocation: 'eastus'
+        hubName: 'dep-hub-eastus-nvwansechub'
         secureHubParameters: {
-          azureFirewallName: 'dep-fw-nvwansechub'
+          azureFirewallName: 'dep-fw-eastus-nvwansechub'
           azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
           deploySecureHub: true
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
+          routingIntent: {
+            internetToFirewall: true
+            privateToFirewall: true
+          }
+        }
+      }
+      {
+        hubAddressPrefix: '10.0.1.0/24'
+        hubLocation: 'westus2'
+        hubName: 'dep-hub-westus2-nvwansechub'
+        secureHubParameters: {
+          azureFirewallName: 'dep-fw-westus2-nvwansechub'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: true
+          firewallPolicyResourceId: '<firewallPolicyResourceId>'
+          routingIntent: {
+            internetToFirewall: true
+            privateToFirewall: true
+          }
         }
       }
     ]
@@ -415,14 +435,34 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       "value": [
         {
           "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "<hubLocation>",
-          "hubName": "<hubName>",
+          "hubLocation": "eastus",
+          "hubName": "dep-hub-eastus-nvwansechub",
           "secureHubParameters": {
-            "azureFirewallName": "dep-fw-nvwansechub",
+            "azureFirewallName": "dep-fw-eastus-nvwansechub",
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
             "deploySecureHub": true,
-            "firewallPolicyResourceId": "<firewallPolicyResourceId>"
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
+          }
+        },
+        {
+          "hubAddressPrefix": "10.0.1.0/24",
+          "hubLocation": "westus2",
+          "hubName": "dep-hub-westus2-nvwansechub",
+          "secureHubParameters": {
+            "azureFirewallName": "dep-fw-westus2-nvwansechub",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
           }
         }
       ]
@@ -451,14 +491,34 @@ using 'br/public:avm/ptn/network/virtual-wan:<version>'
 param virtualHubParameters = [
   {
     hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: '<hubLocation>'
-    hubName: '<hubName>'
+    hubLocation: 'eastus'
+    hubName: 'dep-hub-eastus-nvwansechub'
     secureHubParameters: {
-      azureFirewallName: 'dep-fw-nvwansechub'
+      azureFirewallName: 'dep-fw-eastus-nvwansechub'
       azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
       deploySecureHub: true
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
+    }
+  }
+  {
+    hubAddressPrefix: '10.0.1.0/24'
+    hubLocation: 'westus2'
+    hubName: 'dep-hub-westus2-nvwansechub'
+    secureHubParameters: {
+      azureFirewallName: 'dep-fw-westus2-nvwansechub'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: true
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
     }
   }
 ]
@@ -496,6 +556,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           azureFirewallSku: 'Standard'
           deploySecureHub: true
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
+          routingIntent: {
+            internetToFirewall: true
+            privateToFirewall: true
+          }
         }
       }
     ]
@@ -531,7 +595,11 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
             "deploySecureHub": true,
-            "firewallPolicyResourceId": "<firewallPolicyResourceId>"
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
           }
         }
       ]
@@ -568,6 +636,10 @@ param virtualHubParameters = [
       azureFirewallSku: 'Standard'
       deploySecureHub: true
       firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
     }
   }
 ]
@@ -1632,6 +1704,7 @@ Secure Hub parameters for the Virtual Hub.
 | [`firewallPolicyResourceId`](#parameter-virtualhubparameterssecurehubparametersfirewallpolicyresourceid) | string | Resource ID of the firewall policy. |
 | [`publicIPAddressObject`](#parameter-virtualhubparameterssecurehubparameterspublicipaddressobject) | object | Public IP address object for the Azure Firewall. |
 | [`publicIPResourceID`](#parameter-virtualhubparameterssecurehubparameterspublicipresourceid) | string | Resource ID of the public IP address. |
+| [`routingIntent`](#parameter-virtualhubparameterssecurehubparametersroutingintent) | object | Routing intent for the Azure Firewall. |
 
 ### Parameter: `virtualHubParameters.secureHubParameters.deploySecureHub`
 
@@ -1905,6 +1978,34 @@ Resource ID of the public IP address.
 
 - Required: No
 - Type: string
+
+### Parameter: `virtualHubParameters.secureHubParameters.routingIntent`
+
+Routing intent for the Azure Firewall.
+
+- Required: No
+- Type: object
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`internetToFirewall`](#parameter-virtualhubparameterssecurehubparametersroutingintentinternettofirewall) | bool | Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0). |
+| [`privateToFirewall`](#parameter-virtualhubparameterssecurehubparametersroutingintentprivatetofirewall) | bool | Configures Routing Intent to forward Private traffic to the firewall (RFC1918). |
+
+### Parameter: `virtualHubParameters.secureHubParameters.routingIntent.internetToFirewall`
+
+Configures Routing Intent to Forward Internet traffic to the firewall (0.0.0.0/0).
+
+- Required: No
+- Type: bool
+
+### Parameter: `virtualHubParameters.secureHubParameters.routingIntent.privateToFirewall`
+
+Configures Routing Intent to forward Private traffic to the firewall (RFC1918).
+
+- Required: No
+- Type: bool
 
 ### Parameter: `virtualHubParameters.sku`
 

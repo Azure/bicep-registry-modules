@@ -51,6 +51,7 @@ module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.4.0' = [
       hubRouteTables: virtualHub.?hubRouteTables
       hubVirtualNetworkConnections: virtualHub.?hubVirtualNetworkConnections
       lock: lock ?? {}
+      routingIntent: virtualHub.?secureHubParameters.?routingIntent
       sku: virtualHub.?sku
       tags: virtualHub.?tags
       virtualRouterAsn: virtualHub.?virtualRouterAsn
@@ -604,6 +605,9 @@ type virtualHubParameterType = {
 
     @description('Optional. Additional public IP configuration resource IDs.')
     additionalPublicIpConfigurationResourceIds: []?
+
+    @description('Optional. Routing intent for the Azure Firewall.')
+    routingIntent: routingIntentType?
 
     // Force-tunneling for Azure Firewall is not currently supported, but is currently being worked and support is expected in the near future; leaving for future use.
     /*
