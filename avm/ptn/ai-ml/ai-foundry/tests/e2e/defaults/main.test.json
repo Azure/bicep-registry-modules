@@ -5,10 +5,10 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2823565706507642271"
+      "templateHash": "10531403702882728498"
     },
     "name": "ai-foundry",
-    "description": "Creates an AI Foundry account and project with Standard Agent Services in a network."
+    "description": "Creates an AI Foundry account and project with Basic services."
   },
   "parameters": {
     "resourceGroupName": {
@@ -21,7 +21,7 @@
     },
     "serviceShort": {
       "type": "string",
-      "defaultValue": "fndrywaf",
+      "defaultValue": "fndrymin",
       "metadata": {
         "description": "Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints."
       }
@@ -40,7 +40,7 @@
   "resources": [
     {
       "type": "Microsoft.Resources/resourceGroups",
-      "apiVersion": "2025-04-01",
+      "apiVersion": "2024-11-01",
       "name": "[parameters('resourceGroupName')]",
       "location": "[variables('enforcedLocation')]"
     },
@@ -62,28 +62,22 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('stdprv{0}', substring(uniqueString(deployment().name, variables('enforcedLocation')), 0, 2))]"
+            "value": "[format('basic{0}', substring(uniqueString(deployment().name, variables('enforcedLocation')), 0, 3))]"
           },
           "location": {
             "value": "[variables('enforcedLocation')]"
           },
           "aiFoundryType": {
-            "value": "StandardPrivate"
+            "value": "Basic"
           },
           "userObjectId": {
             "value": "00000000-0000-0000-0000-000000000000"
           },
           "contentSafetyEnabled": {
-            "value": true
+            "value": false
           },
           "vmAdminPasswordOrKey": {
             "value": "$tart12345"
-          },
-          "vmSize": {
-            "value": "Standard_DS4_v2"
-          },
-          "aiModelDeployments": {
-            "value": []
           }
         },
         "template": {

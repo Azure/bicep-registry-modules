@@ -40,7 +40,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'aifdry${substring(uniqueString(deployment().name, enforcedLocation), 0, 3)}' // Shorter, clearer prefix for AI Foundry
+      name: 'stdprv${substring(uniqueString(deployment().name, enforcedLocation), 0, 2)}' // Clear StandardPrivate deployment naming
       location: enforcedLocation
       aiFoundryType: 'StandardPrivate' // Replace with the required value@allowed(['Basic''StandardPublic''StandardPrivate'])
       userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test
