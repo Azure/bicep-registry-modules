@@ -39,6 +39,9 @@ spec:
       - Azure.Firewall.PolicyMode
       - Azure.Redis.MinTLS
       - Azure.Redis.NonSslPort
+      - Azure.SQL.AADOnly
+      - Azure.SQL.MinTLS
+      - Azure.SQL.VAScan
       - Azure.Storage.DefenderCloud
       - Azure.Storage.Defender.MalwareScan
       - Azure.Storage.SecureTransfer
