@@ -1246,7 +1246,7 @@ module avmContainerAppEnv 'br/public:avm/res/app/managed-environment:0.11.2' = {
     ]
     enableTelemetry: enableTelemetry
     publicNetworkAccess: 'Enabled' // Always enabled for Container Apps Environment
-    zoneRedundant: false
+    //zoneRedundant: false
     // <========== WAF related parameters
 
     platformReservedCidr: '172.17.17.0/24'
