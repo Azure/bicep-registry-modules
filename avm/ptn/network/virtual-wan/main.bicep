@@ -59,13 +59,13 @@ module virtualHubModule 'br/public:avm/res/network/virtual-hub:0.4.0' = [
   }
 ]
 
-module firewallModule 'br/public:avm/res/network/azure-firewall:0.7.0' = [
+module firewallModule 'br/public:avm/res/network/azure-firewall:0.7.1' = [
   for (virtualHub, i) in virtualHubParameters!: if (virtualHub.?secureHubParameters.?deploySecureHub!) {
     name: virtualHub.?secureHubParameters.?azureFirewallName!
     params: {
       name: virtualHub.?secureHubParameters.?azureFirewallName!
       azureSkuTier: virtualHub.?secureHubParameters.?azureFirewallSku
-      virtualHubResoureId: virtualHubModule[i].outputs.resourceId // Misspelling has been called out in https://github.com/Azure/bicep-registry-modules/issues/5441
+      virtualHubResourceId: virtualHubModule[i].outputs.resourceId
       firewallPolicyId: virtualHub.?secureHubParameters.?firewallPolicyResourceId
       location: virtualHubModule[i].outputs.location
       hubIPAddresses: {

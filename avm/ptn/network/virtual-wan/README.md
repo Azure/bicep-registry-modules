@@ -42,7 +42,8 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [WAF-aligned](#example-3-waf-aligned)
+- [Using only defaults](#example-3-using-only-defaults)
+- [WAF-aligned](#example-4-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -238,7 +239,104 @@ param virtualWanParameters = {
 </details>
 <p>
 
-### Example 3: _WAF-aligned_
+### Example 3: _Using only defaults_
+
+This instance deploys the module with the minimum set of required parameters.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
+  name: 'virtualWanDeployment'
+  params: {
+    // Required parameters
+    virtualHubParameters: [
+      {
+        hubAddressPrefix: '10.0.0.0/24'
+        hubLocation: '<hubLocation>'
+        hubName: '<hubName>'
+        secureHubParameters: {
+          deploySecureHub: true
+        }
+      }
+    ]
+    virtualWanParameters: {
+      location: '<location>'
+      virtualWanName: 'dep-vw-nvwansechub'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "virtualHubParameters": {
+      "value": [
+        {
+          "hubAddressPrefix": "10.0.0.0/24",
+          "hubLocation": "<hubLocation>",
+          "hubName": "<hubName>",
+          "secureHubParameters": {
+            "deploySecureHub": true
+          }
+        }
+      ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "location": "<location>",
+        "virtualWanName": "dep-vw-nvwansechub"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/virtual-wan:<version>'
+
+// Required parameters
+param virtualHubParameters = [
+  {
+    hubAddressPrefix: '10.0.0.0/24'
+    hubLocation: '<hubLocation>'
+    hubName: '<hubName>'
+    secureHubParameters: {
+      deploySecureHub: true
+    }
+  }
+]
+param virtualWanParameters = {
+  location: '<location>'
+  virtualWanName: 'dep-vw-nvwansechub'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
