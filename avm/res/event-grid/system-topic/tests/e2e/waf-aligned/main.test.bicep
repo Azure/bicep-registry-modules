@@ -82,17 +82,6 @@ module testDeployment '../../../main.bicep' = [
             eventTimeToLiveInMinutes: 120
           }
           eventDeliverySchema: 'CloudEventSchemaV1_0'
-          deliveryWithResourceIdentity: {
-            identity: {
-              type: 'SystemAssigned'
-            }
-            destination: {
-              endpointType: 'StorageQueue'
-              properties: {
-                resourceId: nestedDependencies.outputs.storageAccountResourceId
-                queueMessageTimeToLiveInSeconds: 86400
-                queueName: nestedDependencies.outputs.queueName
-              }
             }
           }
         }
