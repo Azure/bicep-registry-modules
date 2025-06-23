@@ -24,7 +24,7 @@ This module deploys a Virtual Network Subnet.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`name`](#parameter-name) | string | The Name of the subnet resource. |
+| [`name`](#parameter-name) | string | Name of the subnet resource. |
 
 **Conditional parameters**
 
@@ -55,7 +55,7 @@ This module deploys a Virtual Network Subnet.
 
 ### Parameter: `name`
 
-The Name of the subnet resource.
+Name of the subnet resource.
 
 - Required: Yes
 - Type: string

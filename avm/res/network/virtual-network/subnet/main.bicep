@@ -1,7 +1,7 @@
 metadata name = 'Virtual Network Subnets'
 metadata description = 'This module deploys a Virtual Network Subnet.'
 
-@description('Required. The Name of the subnet resource.')
+@description('Required. Name of the subnet resource.')
 param name string
 
 @description('Conditional. The name of the parent virtual network. Required if the template is used in a standalone deployment.')

@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "14730196719311043994"
+      "templateHash": "738088093896353982"
     },
     "name": "Virtual Networks",
     "description": "This module deploys a Virtual Network (vNet)."
@@ -873,7 +873,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "15945035985510063163"
+              "templateHash": "8161900382747883934"
             },
             "name": "Virtual Network Subnets",
             "description": "This module deploys a Virtual Network Subnet."
@@ -959,7 +959,7 @@
             "name": {
               "type": "string",
               "metadata": {
-                "description": "Required. The Name of the subnet resource."
+                "description": "Required. Name of the subnet resource."
               }
             },
             "virtualNetworkName": {
