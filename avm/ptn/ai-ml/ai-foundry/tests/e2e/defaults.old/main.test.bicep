@@ -1,12 +1,13 @@
 targetScope = 'subscription'
 metadata name = 'ai-foundry'
-metadata description = 'Creates an AI Foundry account and project with Standard Agent Services in a network.'
+metadata description = 'Creates an AI Foundry account and project with Basic services.'
 // ========== //
 // Parameters //
 // ========== //
 
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
+// e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 
 // Due to AI Services capacity constraints, this region must be used in the AVM testing subscription
@@ -14,7 +15,8 @@ param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 var enforcedLocation = 'eastus2'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'fndrywaf'
+// e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
+param serviceShort string = 'fndrymin'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -25,7 +27,7 @@ param namePrefix string = '#_namePrefix_#'
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -40,14 +42,12 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'stdprv${substring(uniqueString(subscription().id, enforcedLocation), 0, 2)}' // Use subscription for consistent naming
+      name: 'basic${substring(uniqueString(deployment().name, enforcedLocation), 0, 3)}' // Clear Basic deployment naming
       location: enforcedLocation
-      aiFoundryType: 'StandardPrivate' // Replace with the required value@allowed(['Basic''StandardPublic''StandardPrivate'])
+      aiFoundryType: 'Basic' // Replace with the appropriate value
       userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test
-      contentSafetyEnabled: true // Set to true or false as required
+      contentSafetyEnabled: false // Set to true or false as required
       vmAdminPasswordOrKey: '$tart12345' // Replace with a secure password or key
-      vmSize: 'Standard_DS4_v2'
-      aiModelDeployments: [] // Simplified: no AI model deployments for testing to avoid conflicts
     }
   }
 ]

@@ -57,8 +57,8 @@ module filePrivateDnsZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = i
 }
 
 var nameFormatted = take(toLower(storageName), 12)
-var projUploadsContainerName = '${nameFormatted}projUploads'
-var sysDataContainerName = '${nameFormatted}sysdata'
+var projUploadsContainerName = '${nameFormatted}proj-uploads'
+var sysDataContainerName = '${nameFormatted}sys-data'
 
 module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   name: take('${nameFormatted}-storage-account-deployment', 64)

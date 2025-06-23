@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "2823565706507642271"
+      "templateHash": "10881320527994280033"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services in a network."
@@ -62,7 +62,7 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[format('stdprv{0}', substring(uniqueString(deployment().name, variables('enforcedLocation')), 0, 2))]"
+            "value": "[format('stdprv{0}', substring(uniqueString(subscription().id, variables('enforcedLocation')), 0, 2))]"
           },
           "location": {
             "value": "[variables('enforcedLocation')]"
@@ -94,7 +94,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13395826417772188955"
+              "templateHash": "527436883534630678"
             },
             "name": "ai-foundry",
             "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -31988,7 +31988,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "150128303180702796"
+                      "templateHash": "16736316110059089810"
                     }
                   },
                   "definitions": {
@@ -32140,8 +32140,8 @@
                   },
                   "variables": {
                     "nameFormatted": "[take(toLower(parameters('storageName')), 12)]",
-                    "projUploadsContainerName": "[format('{0}projUploads', variables('nameFormatted'))]",
-                    "sysDataContainerName": "[format('{0}sysdata', variables('nameFormatted'))]"
+                    "projUploadsContainerName": "[format('{0}proj-uploads', variables('nameFormatted'))]",
+                    "sysDataContainerName": "[format('{0}sys-data', variables('nameFormatted'))]"
                   },
                   "resources": {
                     "blobPrivateDnsZone": {
