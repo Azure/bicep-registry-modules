@@ -127,6 +127,10 @@ module storageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
     roleAssignments: roleAssignments
     blobServices: {
       containers: containers ?? []
+      containerDeleteRetentionPolicyEnabled: true
+      containerDeleteRetentionPolicyDays: 7
+      deleteRetentionPolicyEnabled: true
+      deleteRetentionPolicyDays: 6
     }
     enableTelemetry: enableTelemetry
   }

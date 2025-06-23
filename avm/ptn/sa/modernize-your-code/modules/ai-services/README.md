@@ -279,6 +279,7 @@ Values to establish private networking for the AI Services resource.
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
+| [`aiServicesPrivateDnsZoneResourceId`](#parameter-privatenetworkingaiservicesprivatednszoneresourceid) | string | The Resource ID of an existing "services.ai" Private DNS Zone Resource to link to the virtual network. If not provided, a new "services.ai" Private DNS Zone(s) will be created. |
 | [`cogServicesPrivateDnsZoneResourceId`](#parameter-privatenetworkingcogservicesprivatednszoneresourceid) | string | The Resource ID of an existing "cognitiveservices" Private DNS Zone Resource to link to the virtual network. If not provided, a new "cognitiveservices" Private DNS Zone(s) will be created. |
 | [`openAIPrivateDnsZoneResourceId`](#parameter-privatenetworkingopenaiprivatednszoneresourceid) | string | The Resource ID of an existing "openai" Private DNS Zone Resource to link to the virtual network. If not provided, a new "openai" Private DNS Zone(s) will be created. |
 
@@ -294,6 +295,13 @@ The Resource ID of the subnet to establish the Private Endpoint(s).
 The Resource ID of the virtual network.
 
 - Required: Yes
+- Type: string
+
+### Parameter: `privateNetworking.aiServicesPrivateDnsZoneResourceId`
+
+The Resource ID of an existing "services.ai" Private DNS Zone Resource to link to the virtual network. If not provided, a new "services.ai" Private DNS Zone(s) will be created.
+
+- Required: No
 - Type: string
 
 ### Parameter: `privateNetworking.cogServicesPrivateDnsZoneResourceId`

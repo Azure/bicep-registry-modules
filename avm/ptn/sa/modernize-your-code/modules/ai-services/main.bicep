@@ -95,6 +95,15 @@ module openAiPrivateDnsZone '../privateDnsZone.bicep' = if (privateNetworking !=
   }
 }
 
+module aiServicesPrivateDnsZone '../privateDnsZone.bicep' = if (privateNetworking != null && empty(privateNetworking.?aiServicesPrivateDnsZoneResourceId)) {
+  name: take('${name}-ai-services-pdns-deployment', 64)
+  params: {
+    name: 'privatelink.services.ai.${toLower(environment().name) == 'azureusgovernment' ? 'azure.us' : 'azure.com'}'
+    virtualNetworkResourceId: privateNetworking.?virtualNetworkResourceId ?? ''
+    tags: tags
+  }
+}
+
 var cogServicesPrivateDnsZoneResourceId = privateNetworking != null
   ? (empty(privateNetworking.?cogServicesPrivateDnsZoneResourceId)
       ? cognitiveServicesPrivateDnsZone.outputs.resourceId ?? ''
@@ -104,6 +113,12 @@ var openAIPrivateDnsZoneResourceId = privateNetworking != null
   ? (empty(privateNetworking.?openAIPrivateDnsZoneResourceId)
       ? openAiPrivateDnsZone.outputs.resourceId ?? ''
       : privateNetworking.?openAIPrivateDnsZoneResourceId)
+  : ''
+
+var aiServicesPrivateDnsZoneResourceId = privateNetworking != null
+  ? (empty(privateNetworking.?aiServicesPrivateDnsZoneResourceId)
+      ? aiServicesPrivateDnsZone.outputs.resourceId ?? ''
+      : privateNetworking.?aiServicesPrivateDnsZoneResourceId)
   : ''
 
 module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = {
@@ -122,7 +137,7 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     }
     deployments: deployments
     customSubDomainName: name
-    disableLocalAuth: false
+    disableLocalAuth: privateNetworking != null
     publicNetworkAccess: privateNetworking != null ? 'Disabled' : 'Enabled'
     diagnosticSettings: !empty(logAnalyticsWorkspaceResourceId)
       ? [
@@ -142,6 +157,9 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = 
                 }
                 {
                   privateDnsZoneResourceId: openAIPrivateDnsZoneResourceId
+                }
+                {
+                  privateDnsZoneResourceId: aiServicesPrivateDnsZoneResourceId
                 }
               ]
             }
@@ -219,4 +237,7 @@ type aiServicesPrivateNetworkingType = {
 
   @description('Optional. The Resource ID of an existing "openai" Private DNS Zone Resource to link to the virtual network. If not provided, a new "openai" Private DNS Zone(s) will be created.')
   openAIPrivateDnsZoneResourceId: string?
+
+  @description('Optional. The Resource ID of an existing "services.ai" Private DNS Zone Resource to link to the virtual network. If not provided, a new "services.ai" Private DNS Zone(s) will be created.')
+  aiServicesPrivateDnsZoneResourceId: string?
 }

@@ -89,7 +89,7 @@ module cosmosAccount 'br/public:avm/res/document-db/database-account:0.15.0' = {
     enableMultipleWriteLocations: !empty(secondaryLocation)
     backupPolicyType: !empty(secondaryLocation) ? 'Periodic' : 'Continuous'
     backupStorageRedundancy: zoneRedundant ? 'Zone' : 'Local'
-    disableKeyBasedMetadataWriteAccess: false
+    disableKeyBasedMetadataWriteAccess: true
     disableLocalAuthentication: privateNetworking != null
     diagnosticSettings: !empty(logAnalyticsWorkspaceResourceId)
       ? [{ workspaceResourceId: logAnalyticsWorkspaceResourceId }]

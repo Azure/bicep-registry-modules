@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "5055368721424670326"
+      "templateHash": "15647739526351181854"
     },
     "name": "AI Services and Project Module",
     "description": "This module creates an AI Services resource and an AI Foundry project within it. It supports private networking, OpenAI deployments, and role assignments."
@@ -81,6 +81,13 @@
           "nullable": true,
           "metadata": {
             "description": "Optional. The Resource ID of an existing \"openai\" Private DNS Zone Resource to link to the virtual network. If not provided, a new \"openai\" Private DNS Zone(s) will be created."
+          }
+        },
+        "aiServicesPrivateDnsZoneResourceId": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The Resource ID of an existing \"services.ai\" Private DNS Zone Resource to link to the virtual network. If not provided, a new \"services.ai\" Private DNS Zone(s) will be created."
           }
         }
       },
@@ -646,6 +653,117 @@
         }
       }
     },
+    "aiServicesPrivateDnsZone": {
+      "condition": "[and(not(equals(parameters('privateNetworking'), null())), empty(tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('{0}-ai-services-pdns-deployment', parameters('name')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('privatelink.services.ai.{0}', if(equals(toLower(environment().name), 'azureusgovernment'), 'azure.us', 'azure.com'))]"
+          },
+          "virtualNetworkResourceId": {
+            "value": "[coalesce(tryGet(parameters('privateNetworking'), 'virtualNetworkResourceId'), '')]"
+          },
+          "tags": {
+            "value": "[parameters('tags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "languageVersion": "2.0",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.36.1.42791",
+              "templateHash": "17330037200769804735"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. Private DNS zone name."
+              }
+            },
+            "virtualNetworkResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Required. The resource ID of the virtual network to link."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "nullable": true,
+              "metadata": {
+                "description": "Optional. Tags of the resource."
+              }
+            }
+          },
+          "resources": {
+            "privateDnsZone": {
+              "type": "Microsoft.Network/privateDnsZones",
+              "apiVersion": "2024-06-01",
+              "name": "[parameters('name')]",
+              "location": "global",
+              "tags": "[parameters('tags')]"
+            },
+            "virtualNetworkLink": {
+              "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+              "apiVersion": "2024-06-01",
+              "name": "[format('{0}/{1}', parameters('name'), format('{0}-vnetlink', last(split(parameters('virtualNetworkResourceId'), '/'))))]",
+              "location": "global",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "registrationEnabled": false,
+                "virtualNetwork": {
+                  "id": "[parameters('virtualNetworkResourceId')]"
+                }
+              },
+              "dependsOn": [
+                "privateDnsZone"
+              ]
+            }
+          },
+          "outputs": {
+            "resourceGroupName": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource group the private DNS zone was deployed into."
+              },
+              "value": "[resourceGroup().name]"
+            },
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "The name of the private DNS zone."
+              },
+              "value": "[parameters('name')]"
+            },
+            "resourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "The resource ID of the private DNS zone."
+              },
+              "value": "[resourceId('Microsoft.Network/privateDnsZones', parameters('name'))]"
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "The location the resource was deployed into."
+              },
+              "value": "[reference('privateDnsZone', '2024-06-01', 'full').location]"
+            }
+          }
+        }
+      }
+    },
     "cognitiveService": {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
@@ -686,14 +804,14 @@
             "value": "[parameters('name')]"
           },
           "disableLocalAuth": {
-            "value": false
+            "value": "[not(equals(parameters('privateNetworking'), null()))]"
           },
           "publicNetworkAccess": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "diagnosticSettings": "[if(not(empty(parameters('logAnalyticsWorkspaceResourceId'))), createObject('value', createArray(createObject('workspaceResourceId', parameters('logAnalyticsWorkspaceResourceId')))), createObject('value', createArray()))]",
           "roleAssignments": {
             "value": "[parameters('roleAssignments')]"
           },
-          "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), coalesce(reference('cognitiveServicesPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), coalesce(reference('openAiPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), '')))), 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
+          "privateEndpoints": "[if(not(equals(parameters('privateNetworking'), null())), createObject('value', createArray(createObject('privateDnsZoneGroup', createObject('privateDnsZoneGroupConfigs', createArray(createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), coalesce(reference('cognitiveServicesPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'cogServicesPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), coalesce(reference('openAiPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'openAIPrivateDnsZoneResourceId')), '')), createObject('privateDnsZoneResourceId', if(not(equals(parameters('privateNetworking'), null())), if(empty(tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), coalesce(reference('aiServicesPrivateDnsZone').outputs.resourceId.value, ''), tryGet(parameters('privateNetworking'), 'aiServicesPrivateDnsZoneResourceId')), '')))), 'subnetResourceId', coalesce(tryGet(parameters('privateNetworking'), 'subnetResourceId'), '')))), createObject('value', createArray()))]",
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
           }
@@ -2966,6 +3084,7 @@
         }
       },
       "dependsOn": [
+        "aiServicesPrivateDnsZone",
         "cognitiveServicesPrivateDnsZone",
         "openAiPrivateDnsZone"
       ]

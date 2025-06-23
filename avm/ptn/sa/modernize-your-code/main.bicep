@@ -150,6 +150,11 @@ module logAnalyticsWorkspace 'br/public:avm/res/operational-insights/workspace:0
     skuName: 'PerGB2018'
     dataRetention: 30
     diagnosticSettings: [{ useThisWorkspace: true }]
+
+    features: {
+      enableLogAccessUsingOnlyResourcePermissions: true
+      disableLocalAuth: enablePrivateNetworking
+    }
     tags: allTags
     enableTelemetry: enableTelemetry
   }
@@ -163,6 +168,10 @@ module applicationInsights 'br/public:avm/res/insights/component:0.6.0' = if (en
     workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId
     diagnosticSettings: [{ workspaceResourceId: logAnalyticsWorkspace.outputs.resourceId }]
     tags: allTags
+    retentionInDays: 365
+    kind: 'web'
+    disableIpMasking: false
+    flowType: 'Bluefield'
     enableTelemetry: enableTelemetry
   }
 }
@@ -257,33 +266,6 @@ module storageAccount 'modules/storageAccount.bicep' = {
   }
 }
 
-module keyVault 'modules/keyVault.bicep' = {
-  name: take('keyvault-${resourcesName}-deployment', 64)
-  #disable-next-line no-unnecessary-dependson
-  dependsOn: [logAnalyticsWorkspace, network] // required due to optional flags that could change dependency
-  params: {
-    name: take('kv-${resourcesName}', 24)
-    location: location
-    sku: 'standard'
-    logAnalyticsWorkspaceResourceId: enableMonitoring ? logAnalyticsWorkspace.outputs.resourceId : ''
-    privateNetworking: enablePrivateNetworking
-      ? {
-          virtualNetworkResourceId: network.outputs.vnetResourceId
-          subnetResourceId: network.outputs.subnetPrivateEndpointsResourceId
-        }
-      : null
-    roleAssignments: [
-      {
-        principalId: aiServices.outputs.?systemAssignedMIPrincipalId ?? ''
-        principalType: 'ServicePrincipal'
-        roleDefinitionIdOrName: 'Key Vault Reader'
-      }
-    ]
-    tags: allTags
-    enableTelemetry: enableTelemetry
-  }
-}
-
 module cosmosDb 'modules/cosmosDb.bicep' = {
   name: take('cosmos-${resourcesName}-deployment', 64)
   #disable-next-line no-unnecessary-dependson
@@ -334,15 +316,21 @@ module containerAppsEnvironment 'br/public:avm/res/app/managed-environment:0.11.
           }
         }
       : {}
-    workloadProfiles: enablePrivateNetworking
+    workloadProfiles: enableRedundancy
       ? [
-          // NOTE: workload profiles are required for private networking
+          {
+            maximumCount: 3
+            minimumCount: 3
+            name: 'CAW01'
+            workloadProfileType: 'D4'
+          }
+        ]
+      : [
           {
             name: 'Consumption'
             workloadProfileType: 'Consumption'
           }
         ]
-      : []
     tags: allTags
     enableTelemetry: enableTelemetry
   }
