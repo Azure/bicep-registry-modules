@@ -1069,7 +1069,7 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     disableLocalAuth: true
     enableTelemetry: enableTelemetry
 
-    publicNetworkAccess: (enablePrivateNetworking) ? 'Enabled' : 'Disabled' // Always enabled for AI Services
+    publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled' // Always enabled for AI Services
     // WAF related parameters
     //publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled'
     privateEndpoints: (enablePrivateNetworking)
@@ -1215,7 +1215,7 @@ module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' =
       }
     ]
 
-    publicNetworkAccess: (enablePrivateNetworking) ? 'Enabled' : 'Disabled' // Always enabled for AI Hub
+    publicNetworkAccess: (enablePrivateNetworking) ? 'Disabled' : 'Enabled' // Always enabled for AI Hub
     //<======================= WAF related parameters
     // publicNetworkAccess: (deployment_param.enable_waf) ? 'Disabled' : 'Enabled'
     privateEndpoints: (enablePrivateNetworking)
