@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.36.1.42791",
-      "templateHash": "8161900382747883934"
+      "version": "0.32.4.45862",
+      "templateHash": "6928993269407282230"
     },
     "name": "Virtual Network Subnets",
     "description": "This module deploys a Virtual Network Subnet."
@@ -92,7 +92,7 @@
     "name": {
       "type": "string",
       "metadata": {
-        "description": "Required. Name of the subnet resource."
+        "description": "Required. The Name of the subnet resource."
       }
     },
     "virtualNetworkName": {
@@ -115,7 +115,7 @@
       },
       "nullable": true,
       "metadata": {
-        "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` are empty."
+        "description": "Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty."
       }
     },
     "networkSecurityGroupResourceId": {

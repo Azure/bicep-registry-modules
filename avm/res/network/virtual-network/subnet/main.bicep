@@ -1,7 +1,7 @@
 metadata name = 'Virtual Network Subnets'
 metadata description = 'This module deploys a Virtual Network Subnet.'
 
-@description('Required. Name of the subnet resource.')
+@description('Required. The Name of the subnet resource.')
 param name string
 
 @description('Conditional. The name of the parent virtual network. Required if the template is used in a standalone deployment.')
@@ -10,7 +10,7 @@ param virtualNetworkName string
 @description('Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty.')
 param addressPrefix string?
 
-@description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` are empty.')
+@description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty.')
 param ipamPoolPrefixAllocations object[]?
 
 @description('Optional. The resource ID of the network security group to assign to the subnet.')
