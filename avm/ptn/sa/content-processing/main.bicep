@@ -1481,7 +1481,7 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.17.0' = {
     ingressExternal: true
     activeRevisionsMode: 'Single'
     ingressTransport: 'auto'
-    ingressAllowInsecure: true
+    //ingressAllowInsecure: true
     corsPolicy: {
       allowedOrigins: [
         '*'
@@ -1538,7 +1538,7 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.17.0' = {
     ingressExternal: true
     activeRevisionsMode: 'Single'
     ingressTransport: 'auto'
-    ingressAllowInsecure: true
+    //ingressAllowInsecure: true
     scaleSettings: {
       maxReplicas: enableScaling ? 3 : 2
       minReplicas: enableScaling ? 2 : 1
@@ -2042,7 +2042,7 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.17.0' =
     ingressExternal: true
     activeRevisionsMode: 'Single'
     ingressTransport: 'auto'
-    ingressAllowInsecure: true
+    //ingressAllowInsecure: true
     corsPolicy: {
       allowedOrigins: [
         '*'
