@@ -92,8 +92,8 @@ var formattedRoleAssignments = [
         roleAssignment.roleDefinitionIdOrName,
         '/providers/Microsoft.Authorization/roleDefinitions/'
       )
-      ? roleAssignment.roleDefinitionId
-      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionId))
+      ? roleAssignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
   })
 ]
 
