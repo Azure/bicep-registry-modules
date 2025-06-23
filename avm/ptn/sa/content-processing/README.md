@@ -105,12 +105,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/content-processing:<version>`.
 
-- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
+- [Default configuration with default parameter values](#example-1-default-configuration-with-default-parameter-values)
 - [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
 - [waf-aligned configuration with default parameter values](#example-3-waf-aligned-configuration-with-default-parameter-values)
 - [waf-aligned configuration with default parameter values](#example-4-waf-aligned-configuration-with-default-parameter-values)
 
-### Example 1: _Sandbox configuration with default parameter values_
+### Example 1: _Default configuration with default parameter values_
 
 This instance deploys the [Content Processing Solution Accelerator] using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
 
