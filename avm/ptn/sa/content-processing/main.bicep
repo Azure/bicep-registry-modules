@@ -1325,8 +1325,8 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.17.0' = {
     ingressExternal: false
     disableIngress: true
     scaleSettings: {
-      minReplicas: 1
-      maxReplicas: 1
+      minReplicas: 2
+      maxReplicas: 2
     }
     tags: tags
   }
