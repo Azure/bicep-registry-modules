@@ -69,6 +69,7 @@ param networkAcls object = {
 // }
 
 @description('Log Analytics Workspace Resource ID for diagnostic settings')
+@secure()
 param logAnalyticsWorkspaceResourceId string = ''
 
 module avmKeyVault 'br/public:avm/res/key-vault/vault:0.13.0' = {
