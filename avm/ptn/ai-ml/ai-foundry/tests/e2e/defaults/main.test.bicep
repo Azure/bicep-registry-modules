@@ -10,8 +10,9 @@ metadata description = 'Creates an AI Foundry account and project with Basic ser
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
 param resourceGroupName string = 'dep-${namePrefix}-bicep-${serviceShort}-rg'
 
-@description('Optional. The location to deploy resources to.')
-param resourceLocation string = 'swedencentral'
+// Due to AI Services capacity constraints, this region must be used in the AVM testing subscription
+#disable-next-line no-hardcoded-location
+var enforcedLocation = 'eastus2'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
 // e.g., for a module 'network/private-endpoint' you could use 'npe' as a prefix and then 'waf' as a suffix for the waf-aligned test
@@ -28,7 +29,7 @@ param namePrefix string = '#_namePrefix_#'
 // =================
 resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
   name: resourceGroupName
-  location: resourceLocation
+  location: enforcedLocation
 }
 
 // ============== //
@@ -39,10 +40,10 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2024-11-01' = {
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
     scope: resourceGroup
-    name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${iteration}'
+    name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
       name: 'fn${substring(uniqueString(deployment().name), 0, 6)}' // Using same uniqueString for both iterations for true idempotency testing
-      location: resourceLocation
+      location: enforcedLocation
       aiFoundryType: 'Basic' // Replace with the appropriate value
       userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test
       contentSafetyEnabled: false // Set to true or false as required
