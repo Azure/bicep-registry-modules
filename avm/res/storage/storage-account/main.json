@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "17008389782463241199"
+      "templateHash": "16182413376683419438"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -2565,7 +2565,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "14818533270270715551"
+              "templateHash": "10639682105009641581"
             },
             "name": "Storage Account blob Services",
             "description": "This module deploys a Storage Account Blob Service."
@@ -3036,7 +3036,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "15456810750133115429"
+                      "templateHash": "10376458647259834115"
                     },
                     "name": "Storage Account Blob Containers",
                     "description": "This module deploys a Storage Account Blob Container."
@@ -3123,20 +3123,20 @@
                       "type": "string",
                       "maxLength": 24,
                       "metadata": {
-                        "description": "Conditional. Name of the parent Storage Account. Required if the template is used in a standalone deployment."
+                        "description": "Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment."
                       }
                     },
                     "blobServiceName": {
                       "type": "string",
                       "defaultValue": "default",
                       "metadata": {
-                        "description": "Optional. Name of the parent Blob Service. Required if the template is used in a standalone deployment."
+                        "description": "Optional. The name of the parent Blob Service. Required if the template is used in a standalone deployment."
                       }
                     },
                     "name": {
                       "type": "string",
                       "metadata": {
-                        "description": "Required. Name of the storage container to deploy."
+                        "description": "Required. The name of the storage container to deploy."
                       }
                     },
                     "defaultEncryptionScope": {
