@@ -32,7 +32,7 @@ This module deploys a Virtual Network Subnet.
 | :-- | :-- | :-- |
 | [`addressPrefix`](#parameter-addressprefix) | string | The address prefix for the subnet. Required if `addressPrefixes` is empty. |
 | [`addressPrefixes`](#parameter-addressprefixes) | array | List of address prefixes for the subnet. Required if `addressPrefix` is empty. |
-| [`ipamPoolPrefixAllocations`](#parameter-ipampoolprefixallocations) | array | The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty. |
+| [`ipamPoolPrefixAllocations`](#parameter-ipampoolprefixallocations) | array | The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` are empty. |
 | [`virtualNetworkName`](#parameter-virtualnetworkname) | string | The name of the parent virtual network. Required if the template is used in a standalone deployment. |
 
 **Optional parameters**
@@ -76,7 +76,7 @@ List of address prefixes for the subnet. Required if `addressPrefix` is empty.
 
 ### Parameter: `ipamPoolPrefixAllocations`
 
-The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty.
+The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` are empty.
 
 - Required: No
 - Type: array

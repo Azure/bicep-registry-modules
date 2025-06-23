@@ -10,7 +10,7 @@ param virtualNetworkName string
 @description('Conditional. The address prefix for the subnet. Required if `addressPrefixes` is empty.')
 param addressPrefix string?
 
-@description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` is empty.')
+@description('Conditional. The address space for the subnet, deployed from IPAM Pool. Required if `addressPrefixes` and `addressPrefix` are empty.')
 param ipamPoolPrefixAllocations object[]?
 
 @description('Optional. The resource ID of the network security group to assign to the subnet.')
