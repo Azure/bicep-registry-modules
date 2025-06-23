@@ -598,6 +598,26 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
         principalId: avmManagedIdentity.outputs.principalId
         roleDefinitionIdOrName: 'Storage Blob Data Contributor'
       }
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Blob Data Contributor'
+        principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+        principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+        principalType: 'ServicePrincipal'
+      }
+      {
+        roleDefinitionIdOrName: 'Storage Queue Data Contributor'
+        principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
+        principalType: 'ServicePrincipal'
+      }
     ]
     networkAcls: {
       bypass: 'AzureServices'
@@ -663,53 +683,53 @@ module avmStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = {
   }
 }
 
-module avmStorageAccount_RoleAssignment_avmContainerApp_blob 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-app')
-  params: {
-    resourceId: avmStorageAccount.outputs.resourceId
-    principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
-    roleName: 'Storage Blob Data Contributor'
-    roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-    principalType: 'ServicePrincipal'
-    enableTelemetry: enableTelemetry
-  }
-}
+// module avmStorageAccount_RoleAssignment_avmContainerApp_blob 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-app')
+//   params: {
+//     resourceId: avmStorageAccount.outputs.resourceId
+//     principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+//     roleName: 'Storage Blob Data Contributor'
+//     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+//     principalType: 'ServicePrincipal'
+//     enableTelemetry: enableTelemetry
+//   }
+// }
 
-module avmStorageAccount_RoleAssignment_avmContainerApp_API_blob 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-api')
-  params: {
-    resourceId: avmStorageAccount.outputs.resourceId
-    principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
-    roleName: 'Storage Blob Data Contributor'
-    roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
-    principalType: 'ServicePrincipal'
-    enableTelemetry: enableTelemetry
-  }
-}
+// module avmStorageAccount_RoleAssignment_avmContainerApp_API_blob 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-api')
+//   params: {
+//     resourceId: avmStorageAccount.outputs.resourceId
+//     principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
+//     roleName: 'Storage Blob Data Contributor'
+//     roleDefinitionId: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+//     principalType: 'ServicePrincipal'
+//     enableTelemetry: enableTelemetry
+//   }
+// }
 
-module avmStorageAccount_RoleAssignment_avmContainerApp_queue 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: format(resourceNameFormatString, 'rbac-storage-contributor-container-app-queue')
-  params: {
-    resourceId: avmStorageAccount.outputs.resourceId
-    principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
-    roleName: 'Storage Queue Data Contributor'
-    roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
-    principalType: 'ServicePrincipal'
-    enableTelemetry: enableTelemetry
-  }
-}
+// module avmStorageAccount_RoleAssignment_avmContainerApp_queue 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-storage-contributor-container-app-queue')
+//   params: {
+//     resourceId: avmStorageAccount.outputs.resourceId
+//     principalId: avmContainerApp.outputs.systemAssignedMIPrincipalId!
+//     roleName: 'Storage Queue Data Contributor'
+//     roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+//     principalType: 'ServicePrincipal'
+//     enableTelemetry: enableTelemetry
+//   }
+// }
 
-module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-api-queue')
-  params: {
-    resourceId: avmStorageAccount.outputs.resourceId
-    principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
-    roleName: 'Storage Queue Data Contributor'
-    roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
-    principalType: 'ServicePrincipal'
-    enableTelemetry: enableTelemetry
-  }
-}
+// module avmStorageAccount_RoleAssignment_avmContainerApp_API_queue 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-storage-data-contributor-container-api-queue')
+//   params: {
+//     resourceId: avmStorageAccount.outputs.resourceId
+//     principalId: avmContainerApp_API.outputs.systemAssignedMIPrincipalId!
+//     roleName: 'Storage Queue Data Contributor'
+//     roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+//     principalType: 'ServicePrincipal'
+//     enableTelemetry: enableTelemetry
+//   }
+// }
 
 // module avmAppInsightsLogAnalyticsWorkspace './modules/app-insights.bicep' = {
 //   //name: format(deployment_param.resource_name_format_string, abbrs.managementGovernance.logAnalyticsWorkspace)
