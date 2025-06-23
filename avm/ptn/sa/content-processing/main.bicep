@@ -1188,7 +1188,6 @@ module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' =
     location: resourceGroupLocation
     sku: 'Basic'
     managedIdentities: {
-      systemAssigned: false
       userAssignedResourceIds: [
         avmManagedIdentity.outputs.resourceId
       ]
@@ -1255,7 +1254,6 @@ module avmAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.
     name: '${namingAbbrs.ai.aiHubProject}${solutionPrefix}'
     location: resourceGroupLocation
     managedIdentities: {
-      systemAssigned: false
       userAssignedResourceIds: [
         avmManagedIdentity.outputs.resourceId
       ]
