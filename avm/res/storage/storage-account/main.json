@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11420853700547056365"
+      "templateHash": "2002035157037571974"
     },
     "name": "Storage Accounts",
     "description": "This module deploys a Storage Account."
@@ -5672,7 +5672,7 @@
       },
       "value": "[listKeys('storageAccount', '2024-01-01').keys[0].value]"
     },
-    "secondayAccessKey": {
+    "secondaryAccessKey": {
       "type": "securestring",
       "metadata": {
         "description": "The secondary access key of the storage account."
