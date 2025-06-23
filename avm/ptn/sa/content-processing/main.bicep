@@ -1020,15 +1020,15 @@ module avmAiServices 'br/public:avm/res/cognitive-services/account:0.11.0' = {
                 }
                 {
                   name: 'ai-services-dns-zone-openai'
-                  privateDnsZoneResourceId: avmPrivateDnsZoneAiServices[1].outputs.resourceId
-                }
-                {
-                  name: 'ai-services-dns-zone-azure'
                   privateDnsZoneResourceId: avmPrivateDnsZoneAiServices[2].outputs.resourceId
                 }
                 {
-                  name: 'ai-services-dns-zone-contentunderstanding'
+                  name: 'ai-services-dns-zone-azure'
                   privateDnsZoneResourceId: avmPrivateDnsZoneAiServices[3].outputs.resourceId
+                }
+                {
+                  name: 'ai-services-dns-zone-contentunderstanding'
+                  privateDnsZoneResourceId: avmPrivateDnsZoneAiServices[1].outputs.resourceId
                 }
               ]
             }
@@ -1085,7 +1085,7 @@ module avmAiServices_cu 'br/public:avm/res/cognitive-services/account:0.11.0' = 
                 }
                 {
                   name: 'aicu-dns-zone-contentunderstanding'
-                  privateDnsZoneResourceId: avmPrivateDnsZoneAiServices[3].outputs.resourceId
+                  privateDnsZoneResourceId: avmPrivateDnsZoneAiServices[1].outputs.resourceId
                 }
               ]
             }
@@ -1185,7 +1185,7 @@ module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' =
     description: 'AI Hub for CPS template'
     location: resourceGroupLocation
     sku: 'Basic'
-    managedIdentities: { systemAssigned: true }
+    // managedIdentities: { systemAssigned: true }
     tags: {
       app: solutionPrefix
       location: resourceGroupLocation
