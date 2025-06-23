@@ -100,8 +100,8 @@ var formattedRoleAssignments = [
 var formattedExternalResourceRoleAssignments = [
   for (assignment, index) in (externalResourceRoleAssignments ?? []): union(assignment, {
     roleDefinitionId: contains(assignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-      ? assignment.roleDefinitionIdOrName
-      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', assignment.roleDefinitionIdOrName)
+      ? assignment.roleDefinitionId
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', assignment.roleDefinitionId)
   })
 ]
 
