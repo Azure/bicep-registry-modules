@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Multiple secure hub deployment'
+metadata description = 'This instance deploys a Virtual WAN with multiple Secure Hubs utilizing Azure Firewall.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtual-wan-${servic
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvwanmin'
+param serviceShort string = 'nvwansechub'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -35,6 +35,14 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
 // Test Execution //
 // ============== //
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    azureFirewallPolicyName: 'dep-${namePrefix}-fwp-${serviceShort}'
+  }
+}
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -48,10 +56,14 @@ module testDeployment '../../../main.bicep' = [
       virtualHubParameters: [
         {
           hubAddressPrefix: '10.0.0.0/24'
-          hubLocation: 'eastus'
-          hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
+          hubLocation: resourceLocation
+          hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
           secureHubParameters: {
-            deploySecureHub: false
+            deploySecureHub: true
+            firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
+            azureFirewallName: 'dep-${namePrefix}-fw-${serviceShort}'
+            azureFirewallSku: 'Standard'
+            azureFirewallPublicIPCount: 1
           }
         }
       ]

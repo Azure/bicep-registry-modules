@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Single secure hub deployment'
+metadata description = 'This instance deploys a Virtual WAN with a single Secure Hub itilizing Azure Firewall.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtual-wan-${servic
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvwansechub'
+param serviceShort string = 'nvwanmultisechub'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -56,12 +56,12 @@ module testDeployment '../../../main.bicep' = [
       virtualHubParameters: [
         {
           hubAddressPrefix: '10.0.0.0/24'
-          hubLocation: resourceLocation
-          hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
+          hubLocation: 'eastus'
+          hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
           secureHubParameters: {
             deploySecureHub: true
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
-            azureFirewallName: 'dep-${namePrefix}-fw-${serviceShort}'
+            azureFirewallName: 'dep-${namePrefix}-fw-eastus-${serviceShort}'
             azureFirewallSku: 'Standard'
             azureFirewallPublicIPCount: 1
           }

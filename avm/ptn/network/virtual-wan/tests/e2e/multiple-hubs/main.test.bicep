@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
-metadata name = 'Using only defaults'
-metadata description = 'This instance deploys the module with the minimum set of required parameters.'
+metadata name = 'Multiple hub deployment'
+metadata description = 'This instance deploys a Virtual WAN with multiple Virtual Hubs.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtual-wan-${servic
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvwanmin'
+param serviceShort string = 'nvwanmultihub'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -50,6 +50,14 @@ module testDeployment '../../../main.bicep' = [
           hubAddressPrefix: '10.0.0.0/24'
           hubLocation: 'eastus'
           hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
+          secureHubParameters: {
+            deploySecureHub: false
+          }
+        }
+        {
+          hubAddressPrefix: '10.0.1.0/24'
+          hubLocation: 'westus2'
+          hubName: 'dep-${namePrefix}-hub-westus2-${serviceShort}'
           secureHubParameters: {
             deploySecureHub: false
           }

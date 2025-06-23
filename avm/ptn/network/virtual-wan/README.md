@@ -42,8 +42,10 @@ The following section provides usage examples for the module, which were used to
 
 - [Using only defaults](#example-1-using-only-defaults)
 - [Using large parameter set](#example-2-using-large-parameter-set)
-- [Using only defaults](#example-3-using-only-defaults)
-- [WAF-aligned](#example-4-waf-aligned)
+- [Multiple hub deployment](#example-3-multiple-hub-deployment)
+- [Multiple secure hub deployment](#example-4-multiple-secure-hub-deployment)
+- [Single secure hub deployment](#example-5-single-secure-hub-deployment)
+- [WAF-aligned](#example-6-waf-aligned)
 
 ### Example 1: _Using only defaults_
 
@@ -62,8 +64,8 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     virtualHubParameters: [
       {
         hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: '<hubLocation>'
-        hubName: '<hubName>'
+        hubLocation: 'eastus'
+        hubName: 'dep-hub-eastus-nvwanmin'
         secureHubParameters: {
           deploySecureHub: false
         }
@@ -94,8 +96,8 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       "value": [
         {
           "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "<hubLocation>",
-          "hubName": "<hubName>",
+          "hubLocation": "eastus",
+          "hubName": "dep-hub-eastus-nvwanmin",
           "secureHubParameters": {
             "deploySecureHub": false
           }
@@ -126,8 +128,8 @@ using 'br/public:avm/ptn/network/virtual-wan:<version>'
 param virtualHubParameters = [
   {
     hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: '<hubLocation>'
-    hubName: '<hubName>'
+    hubLocation: 'eastus'
+    hubName: 'dep-hub-eastus-nvwanmin'
     secureHubParameters: {
       deploySecureHub: false
     }
@@ -239,9 +241,130 @@ param virtualWanParameters = {
 </details>
 <p>
 
-### Example 3: _Using only defaults_
+### Example 3: _Multiple hub deployment_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys a Virtual WAN with multiple Virtual Hubs.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
+  name: 'virtualWanDeployment'
+  params: {
+    // Required parameters
+    virtualHubParameters: [
+      {
+        hubAddressPrefix: '10.0.0.0/24'
+        hubLocation: 'eastus'
+        hubName: 'dep-hub-eastus-nvwanmultihub'
+        secureHubParameters: {
+          deploySecureHub: false
+        }
+      }
+      {
+        hubAddressPrefix: '10.0.1.0/24'
+        hubLocation: 'westus2'
+        hubName: 'dep-hub-westus2-nvwanmultihub'
+        secureHubParameters: {
+          deploySecureHub: false
+        }
+      }
+    ]
+    virtualWanParameters: {
+      location: '<location>'
+      virtualWanName: 'dep-vw-nvwanmultihub'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "virtualHubParameters": {
+      "value": [
+        {
+          "hubAddressPrefix": "10.0.0.0/24",
+          "hubLocation": "eastus",
+          "hubName": "dep-hub-eastus-nvwanmultihub",
+          "secureHubParameters": {
+            "deploySecureHub": false
+          }
+        },
+        {
+          "hubAddressPrefix": "10.0.1.0/24",
+          "hubLocation": "westus2",
+          "hubName": "dep-hub-westus2-nvwanmultihub",
+          "secureHubParameters": {
+            "deploySecureHub": false
+          }
+        }
+      ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "location": "<location>",
+        "virtualWanName": "dep-vw-nvwanmultihub"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/virtual-wan:<version>'
+
+// Required parameters
+param virtualHubParameters = [
+  {
+    hubAddressPrefix: '10.0.0.0/24'
+    hubLocation: 'eastus'
+    hubName: 'dep-hub-eastus-nvwanmultihub'
+    secureHubParameters: {
+      deploySecureHub: false
+    }
+  }
+  {
+    hubAddressPrefix: '10.0.1.0/24'
+    hubLocation: 'westus2'
+    hubName: 'dep-hub-westus2-nvwanmultihub'
+    secureHubParameters: {
+      deploySecureHub: false
+    }
+  }
+]
+param virtualWanParameters = {
+  location: '<location>'
+  virtualWanName: 'dep-vw-nvwanmultihub'
+}
+```
+
+</details>
+<p>
+
+### Example 4: _Multiple secure hub deployment_
+
+This instance deploys a Virtual WAN with multiple Secure Hubs utilizing Azure Firewall.
 
 
 <details>
@@ -348,7 +471,116 @@ param virtualWanParameters = {
 </details>
 <p>
 
-### Example 4: _WAF-aligned_
+### Example 5: _Single secure hub deployment_
+
+This instance deploys a Virtual WAN with a single Secure Hub itilizing Azure Firewall.
+
+
+<details>
+
+<summary>via Bicep module</summary>
+
+```bicep
+module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
+  name: 'virtualWanDeployment'
+  params: {
+    // Required parameters
+    virtualHubParameters: [
+      {
+        hubAddressPrefix: '10.0.0.0/24'
+        hubLocation: 'eastus'
+        hubName: 'dep-hub-eastus-nvwanmultisechub'
+        secureHubParameters: {
+          azureFirewallName: 'dep-fw-eastus-nvwanmultisechub'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: true
+          firewallPolicyResourceId: '<firewallPolicyResourceId>'
+        }
+      }
+    ]
+    virtualWanParameters: {
+      location: '<location>'
+      virtualWanName: 'dep-vw-nvwanmultisechub'
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via JSON parameters file</summary>
+
+```json
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    // Required parameters
+    "virtualHubParameters": {
+      "value": [
+        {
+          "hubAddressPrefix": "10.0.0.0/24",
+          "hubLocation": "eastus",
+          "hubName": "dep-hub-eastus-nvwanmultisechub",
+          "secureHubParameters": {
+            "azureFirewallName": "dep-fw-eastus-nvwanmultisechub",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>"
+          }
+        }
+      ]
+    },
+    "virtualWanParameters": {
+      "value": {
+        "location": "<location>",
+        "virtualWanName": "dep-vw-nvwanmultisechub"
+      }
+    }
+  }
+}
+```
+
+</details>
+<p>
+
+<details>
+
+<summary>via Bicep parameters file</summary>
+
+```bicep-params
+using 'br/public:avm/ptn/network/virtual-wan:<version>'
+
+// Required parameters
+param virtualHubParameters = [
+  {
+    hubAddressPrefix: '10.0.0.0/24'
+    hubLocation: 'eastus'
+    hubName: 'dep-hub-eastus-nvwanmultisechub'
+    secureHubParameters: {
+      azureFirewallName: 'dep-fw-eastus-nvwanmultisechub'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: true
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
+    }
+  }
+]
+param virtualWanParameters = {
+  location: '<location>'
+  virtualWanName: 'dep-vw-nvwanmultisechub'
+}
+```
+
+</details>
+<p>
+
+### Example 6: _WAF-aligned_
 
 This instance deploys the module in alignment with the best-practices of the Azure Well-Architected Framework.
 
