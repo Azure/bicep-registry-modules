@@ -105,15 +105,12 @@ The following section provides usage examples for the module, which were used to
 
 >**Note**: To reference the module, please use the following syntax `br/public:avm/ptn/sa/content-processing:<version>`.
 
-- [Sandbox configuration with default parameter values](#example-1-sandbox-configuration-with-default-parameter-values)
-- [Sandbox configuration with default parameter values](#example-2-sandbox-configuration-with-default-parameter-values)
-- [waf-aligned configuration with default parameter values](#example-3-waf-aligned-configuration-with-default-parameter-values)
-- [waf-aligned configuration with default parameter values](#example-4-waf-aligned-configuration-with-default-parameter-values)
+- [Defaults](#example-1-defaults)
+- [Sandbox](#example-2-sandbox)
+- [Waf-Aligned](#example-3-waf-aligned)
+- [Waf](#example-4-waf)
 
-### Example 1: _Sandbox configuration with default parameter values_
-
-This instance deploys the [Content Processing Solution Accelerator] using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
-
+### Example 1: _Defaults_
 
 <details>
 
@@ -184,10 +181,7 @@ param enablePrivateNetworking = false
 </details>
 <p>
 
-### Example 2: _Sandbox configuration with default parameter values_
-
-This instance deploys the [Content Processing Solution Accelerator] using only the required parameters. Optional parameters will take the default values, which are designed for Sandbox environments.
-
+### Example 2: _Sandbox_
 
 <details>
 
@@ -258,10 +252,7 @@ param enablePrivateNetworking = false
 </details>
 <p>
 
-### Example 3: _waf-aligned configuration with default parameter values_
-
-This instance deploys the [Content Processing Solution Accelerator]
-
+### Example 3: _Waf-Aligned_
 
 <details>
 
@@ -332,10 +323,7 @@ param enableScaling = true
 </details>
 <p>
 
-### Example 4: _waf-aligned configuration with default parameter values_
-
-This instance deploys the [Content Processing Solution Accelerator]
-
+### Example 4: _Waf_
 
 <details>
 
