@@ -46,6 +46,9 @@ param tags object = {
 @description('Optional. Set to true to use local build for container app images, otherwise use container registry images.')
 param useLocalBuild bool = false
 
+@description('Optional. Enable scaling for the container apps. Defaults to false.')
+param enableScaling bool = false
+
 // ========== Solution Prefix Variable ========== //
 var solutionPrefix = 'cps-${padLeft(take(toLower(uniqueString(subscription().id, environmentName, resourceGroup().location)), 12), 12, '0')}'
 // ========== Resource Naming Abbreviations ========== //
@@ -1324,9 +1327,25 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.17.0' = {
     activeRevisionsMode: 'Single'
     ingressExternal: false
     disableIngress: true
+    // scaleSettings: {
+    //   minReplicas: 1
+    //   maxReplicas: 1
+    // }
     scaleSettings: {
+      maxReplicas: enableScaling ? 3 : 1
       minReplicas: 1
-      maxReplicas: 1
+      rules: enableScaling
+        ? [
+            {
+              name: 'http-scaler'
+              http: {
+                metadata: {
+                  concurrentRequests: 100
+                }
+              }
+            }
+          ]
+        : []
     }
     tags: tags
   }
@@ -1422,18 +1441,20 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.17.0' = {
       }
     ]
     scaleSettings: {
-      minReplicas: 2
-      maxReplicas: 2
-      rules: [
-        {
-          name: 'http-scaler'
-          http: {
-            metadata: {
-              concurrentRequests: '100'
+      maxReplicas: enableScaling ? 3 : 1
+      minReplicas: 1
+      rules: enableScaling
+        ? [
+            {
+              name: 'http-scaler'
+              http: {
+                metadata: {
+                  concurrentRequests: 100
+                }
+              }
             }
-          }
-        }
-      ]
+          ]
+        : []
     }
     ingressExternal: true
     activeRevisionsMode: 'Single'
@@ -1497,18 +1518,20 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.17.0' = {
     ingressTransport: 'auto'
     ingressAllowInsecure: true
     scaleSettings: {
+      maxReplicas: enableScaling ? 3 : 1
       minReplicas: 1
-      maxReplicas: 1
-      rules: [
-        {
-          name: 'http-scaler'
-          http: {
-            metadata: {
-              concurrentRequests: '100'
+      rules: enableScaling
+        ? [
+            {
+              name: 'http-scaler'
+              http: {
+                metadata: {
+                  concurrentRequests: 100
+                }
+              }
             }
-          }
-        }
-      ]
+          ]
+        : []
     }
     containers: [
       {
@@ -1862,8 +1885,20 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.17.0' = {
     ingressExternal: false
     disableIngress: true
     scaleSettings: {
+      maxReplicas: enableScaling ? 3 : 1
       minReplicas: 1
-      maxReplicas: 1
+      rules: enableScaling
+        ? [
+            {
+              name: 'http-scaler'
+              http: {
+                metadata: {
+                  concurrentRequests: 100
+                }
+              }
+            }
+          ]
+        : []
     }
   }
   dependsOn: [

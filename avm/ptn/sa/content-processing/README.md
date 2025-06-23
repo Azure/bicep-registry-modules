@@ -275,6 +275,8 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     contentUnderstandingLocation: '<contentUnderstandingLocation>'
     environmentName: 'scpwaf'
     gptDeploymentCapacity: 80
+    // Non-required parameters
+    enableScaling: true
   }
 }
 ```
@@ -300,6 +302,10 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     },
     "gptDeploymentCapacity": {
       "value": 80
+    },
+    // Non-required parameters
+    "enableScaling": {
+      "value": true
     }
   }
 }
@@ -319,6 +325,8 @@ using 'br/public:avm/ptn/sa/content-processing:<version>'
 param contentUnderstandingLocation = '<contentUnderstandingLocation>'
 param environmentName = 'scpwaf'
 param gptDeploymentCapacity = 80
+// Non-required parameters
+param enableScaling = true
 ```
 
 </details>
@@ -406,6 +414,7 @@ param gptDeploymentCapacity = 80
 | :-- | :-- | :-- |
 | [`deploymentType`](#parameter-deploymenttype) | string | Type of GPT deployment to use: Standard | GlobalStandard. |
 | [`enablePrivateNetworking`](#parameter-enableprivatenetworking) | bool | Enable WAF for the deployment. |
+| [`enableScaling`](#parameter-enablescaling) | bool | Enable scaling for the container apps. Defaults to false. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`gptModelName`](#parameter-gptmodelname) | string | Name of the GPT model to deploy: gpt-4o-mini | gpt-4o | gpt-4. |
 | [`gptModelVersion`](#parameter-gptmodelversion) | string | Version of the GPT model to deploy:. |
@@ -454,6 +463,14 @@ Enable WAF for the deployment.
 - Required: No
 - Type: bool
 - Default: `True`
+
+### Parameter: `enableScaling`
+
+Enable scaling for the container apps. Defaults to false.
+
+- Required: No
+- Type: bool
+- Default: `False`
 
 ### Parameter: `enableTelemetry`
 

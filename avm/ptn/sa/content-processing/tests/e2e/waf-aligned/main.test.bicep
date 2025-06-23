@@ -51,6 +51,7 @@ module testDeployment '../../../main.bicep' = [
       contentUnderstandingLocation: resourceLocation
       environmentName: '${namePrefix}${serviceShort}'
       gptDeploymentCapacity: 80
+      enableScaling: true
     }
   }
 ]
