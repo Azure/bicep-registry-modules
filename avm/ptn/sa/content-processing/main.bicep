@@ -558,17 +558,17 @@ module avmKeyVault './modules/key-vault.bicep' = {
   scope: resourceGroup(resourceGroup().name)
 }
 
-module avmKeyVault_RoleAssignment_appConfig 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
-  name: format(resourceNameFormatString, 'rbac-keyvault-app-config')
-  params: {
-    resourceId: avmKeyVault.outputs.resourceId
-    principalId: avmAppConfig.outputs.systemAssignedMIPrincipalId!
-    roleDefinitionId: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7' // 'Key Vault Secrets User'
-    roleName: 'Key Vault Secret User'
-    principalType: 'ServicePrincipal'
-    enableTelemetry: enableTelemetry
-  }
-}
+// module avmKeyVault_RoleAssignment_appConfig 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = {
+//   name: format(resourceNameFormatString, 'rbac-keyvault-app-config')
+//   params: {
+//     resourceId: avmKeyVault.outputs.resourceId
+//     principalId: avmAppConfig.outputs.systemAssignedMIPrincipalId!
+//     roleDefinitionId: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7' // 'Key Vault Secrets User'
+//     roleName: 'Key Vault Secret User'
+//     principalType: 'ServicePrincipal'
+//     enableTelemetry: enableTelemetry
+//   }
+// }
 
 module avmContainerRegistry 'modules/container-registry.bicep' = {
   //name: format(deployment_param.resource_name_format_string, abbrs.containers.containerRegistry)
