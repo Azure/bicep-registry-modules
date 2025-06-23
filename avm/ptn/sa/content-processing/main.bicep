@@ -1187,7 +1187,7 @@ module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' =
     description: 'AI Hub for CPS template'
     location: resourceGroupLocation
     sku: 'Basic'
-    // managedIdentities: { systemAssigned: true }
+    managedIdentities: { systemAssigned: false }
     tags: {
       app: solutionPrefix
       location: resourceGroupLocation
@@ -1249,7 +1249,7 @@ module avmAiProject 'br/public:avm/res/machine-learning-services/workspace:0.12.
   params: {
     name: '${namingAbbrs.ai.aiHubProject}${solutionPrefix}'
     location: resourceGroupLocation
-    managedIdentities: { systemAssigned: true }
+    managedIdentities: { systemAssigned: false }
     kind: 'Project'
     sku: 'Basic'
     friendlyName: '${namingAbbrs.ai.aiHubProject}${solutionPrefix}'
