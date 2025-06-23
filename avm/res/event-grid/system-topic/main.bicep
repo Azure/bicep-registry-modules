@@ -294,7 +294,7 @@ type externalResourceRoleAssignmentType = {
   resourceId: string
   
   @description('Required. The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".')
-  roleDefinitionIdOrName: string
+  roleDefinitionId: string
   
   @description('Optional. Description of the role assignment.')
   description: string?
