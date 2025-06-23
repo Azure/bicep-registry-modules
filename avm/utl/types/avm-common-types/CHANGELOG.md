@@ -2,6 +2,16 @@
 
 The latest version of the changelog can be found [here](/Azure/bicep-registry-modules/blob/main/avm/utl/types/avm-common-types/CHANGELOG.md).
 
+## 0.6.0
+
+### Changes
+
+- Added `notes` as an optional property to the `lockType`
+
+### Breaking Changes
+
+- None
+
 ## 0.5.1
 
 ### Changes
