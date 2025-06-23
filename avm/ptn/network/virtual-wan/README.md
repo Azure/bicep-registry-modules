@@ -259,7 +259,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         hubLocation: '<hubLocation>'
         hubName: '<hubName>'
         secureHubParameters: {
+          azureFirewallName: 'dep-fw-nvwansechub'
+          azureFirewallSku: 'Standard'
           deploySecureHub: true
+          firewallPolicyResourceId: '<firewallPolicyResourceId>'
         }
       }
     ]
@@ -291,7 +294,10 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "hubLocation": "<hubLocation>",
           "hubName": "<hubName>",
           "secureHubParameters": {
-            "deploySecureHub": true
+            "azureFirewallName": "dep-fw-nvwansechub",
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>"
           }
         }
       ]
@@ -323,7 +329,10 @@ param virtualHubParameters = [
     hubLocation: '<hubLocation>'
     hubName: '<hubName>'
     secureHubParameters: {
+      azureFirewallName: 'dep-fw-nvwansechub'
+      azureFirewallSku: 'Standard'
       deploySecureHub: true
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
     }
   }
 ]
