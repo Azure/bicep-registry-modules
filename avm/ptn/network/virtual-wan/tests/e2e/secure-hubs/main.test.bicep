@@ -35,6 +35,14 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2023-07-01' = {
 // Test Execution //
 // ============== //
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    azureFirewallPolicyName: 'dep-${namePrefix}-fwp-${serviceShort}'
+  }
+}
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -52,6 +60,9 @@ module testDeployment '../../../main.bicep' = [
           hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
           secureHubParameters: {
             deploySecureHub: true
+            firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
+            azureFirewallName: 'dep-${namePrefix}-fw-${serviceShort}'
+            azureFirewallSku: 'Standard'
           }
         }
       ]
