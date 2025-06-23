@@ -1582,7 +1582,7 @@ module avmCosmosDB 'br/public:avm/res/document-db/database-account:0.15.0' = {
     defaultConsistencyLevel: 'Session'
     maxIntervalInSeconds: 5
     maxStalenessPrefix: 100
-    zoneRedundant: false
+    //zoneRedundant: false
 
     // WAF related parameters
     networkRestrictions: {
@@ -1870,7 +1870,7 @@ module avmContainerApp_update 'br/public:avm/res/app/container-app:0.17.0' = {
     disableIngress: true
     scaleSettings: {
       maxReplicas: enableScaling ? 3 : 1
-      minReplicas: 1
+      minReplicas: 2
       rules: enableScaling
         ? [
             {
@@ -1981,8 +1981,8 @@ module avmContainerApp_API_update 'br/public:avm/res/app/container-app:0.17.0' =
       }
     ]
     scaleSettings: {
-      minReplicas: 1
-      maxReplicas: 1
+      maxReplicas: enableScaling ? 3 : 1
+      minReplicas: 2
       rules: [
         {
           name: 'http-scaler'
