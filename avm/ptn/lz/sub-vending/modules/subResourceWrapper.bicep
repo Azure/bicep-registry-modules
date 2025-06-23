@@ -33,6 +33,9 @@ param virtualNetworkEnabled bool = false
 @sys.description('The name of the resource group to create the virtual network in.')
 param virtualNetworkResourceGroupName string = ''
 
+@sys.description('The name of the resource group to create the user-assigned managed identities in.')
+param userAssignedIdentityResourceGroupName string = ''
+
 @sys.description('Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group.')
 param virtualNetworkResourceGroupLockEnabled bool = true
 
@@ -79,8 +82,14 @@ param virtualNetworkBastionConfiguration bastionType?
 @sys.description('The resource ID of the virtual network or virtual wan hub in the hub to which the created virtual network will be peered/connected to via vitrual network peering or a vitrual hub connection.')
 param hubNetworkResourceId string = ''
 
-@sys.description('Enables the use of remote gateways in the spefcified hub virtual network. If no gateways exsit in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections.')
+@sys.description('Enables the use of remote gateways in the specified hub virtual network. If no gateways exist in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections.')
 param virtualNetworkUseRemoteGateways bool = true
+
+@sys.description('A list of additional virtual networks to create.')
+param additionalVirtualNetworks virtualNetworkType[] = []
+
+@sys.description('Flag to do mesh peering of all virtual networks deployed into the new subscription.')
+param peerAllVirtualNetworks bool = false
 
 @sys.description('Enables the ability for the Virtual WAN Hub Connection to learn the default route 0.0.0.0/0 from the Hub.')
 param virtualNetworkVwanEnableInternetSecurity bool = true
@@ -208,6 +217,18 @@ param deploymentScriptStorageAccountName string
 @sys.description('Optional. The number of blank ARM deployments to create sequentially to introduce a delay to the Subscription being moved to the target Management Group being, if set, to allow for background platform RBAC inheritance to occur.')
 param managementGroupAssociationDelayCount int = 15
 
+@sys.description('Optional. The list of user-assigned managed identities.')
+param userAssignedManagedIdentities userAssignedIdentityType[] = []
+
+@sys.description('Enables the deployment of a `CanNotDelete` resource locks to the user-assigned managed identities resource group.')
+param userAssignedIdentitiesResourceGroupLockEnabled bool = true
+
+@sys.description('The list of route tables to create.')
+param routeTables routeTableType[] = []
+
+@sys.description('The name of the resource group to create the route tables in.')
+param routeTablesResourceGroupName string = ''
+
 // VARIABLES
 
 // Deployment name variables
@@ -226,6 +247,10 @@ var deploymentNames = {
     'lz-vend-rsg-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, deployment().name)}',
     64
   )
+  createResourceGroupForIdentities: take(
+    'lz-vend-rsg-identity-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, deployment().name)}',
+    64
+  )
   tagResoruceGroupForLzNetworking: take(
     'lz-vend-tag-rsg-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, deployment().name)}',
     64
@@ -242,12 +267,20 @@ var deploymentNames = {
     'lz-vend-nsg-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
     64
   )
+  createLzRouteTable: take(
+    'lz-vend-routetable-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
+    64
+  )
   createBastionNsg: take(
     'lz-vend-bastion-nsg-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
     64
   )
   createBastionHost: take(
     'lz-vend-bastion-create-${uniqueString(subscriptionId, virtualNetworkResourceGroupName, virtualNetworkLocation, virtualNetworkName, deployment().name)}',
+    64
+  )
+  createUserAssignedIdentities: take(
+    'lz-vend-identity-create-${uniqueString(subscriptionId, userAssignedIdentityResourceGroupName, virtualNetworkLocation, deployment().name)}',
     64
   )
   createLzRoleAssignmentsSub: take('lz-vend-rbac-sub-create-${uniqueString(subscriptionId, deployment().name)}', 64)
@@ -271,8 +304,24 @@ var deploymentNames = {
     'lz-vend-pim-rbac-rsg-nself-create-${uniqueString(subscriptionId, deployment().name)}',
     64
   )
+  createLzUMIRoleAssignmentsSub: take(
+    'lz-vend-umi-rbac-sub-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
+  createLzUMIRoleAssignmentsRsgsSelf: take(
+    'lz-vend-umi-rbac-rsg-self-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
+  createLzUMIRoleAssignmentsRsgsNotSelf: take(
+    'lz-vend-umi-rbac-rsg-nself-create-${uniqueString(subscriptionId, deployment().name)}',
+    64
+  )
   createResourceGroupForDeploymentScript: take(
     'lz-vend-rsg-ds-create-${uniqueString(subscriptionId, deploymentScriptResourceGroupName, deploymentScriptLocation, deployment().name)}',
+    64
+  )
+  createResourceGroupForRouteTables: take(
+    'lz-vend-rsg-rt-create-${uniqueString(subscriptionId, routeTablesResourceGroupName, virtualNetworkLocation, deployment().name)}',
     64
   )
   registerResourceProviders: take(
@@ -349,6 +398,43 @@ var pimRoleAssignmentsResourceGroupNotSelf = filter(
   assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
 )
 
+// UMI Role Assignments filtering and splitting
+var umiRoleAssignmentsSubscription = [
+  for (item, i) in userAssignedManagedIdentities: filter(
+    item.?roleAssignments ?? [],
+    assignment => !contains(assignment.relativeScope, '/resourceGroups/')
+  )
+]
+
+var umiRoleAssignmentsSubscriptionFlattened = flatten(umiRoleAssignmentsSubscription)
+
+var umiRoleAssignmentsResourceGroups = [
+  for (item, i) in userAssignedManagedIdentities: filter(
+    item.?roleAssignments ?? [],
+    assignment => contains(assignment.relativeScope, '/resourceGroups/')
+  )
+]
+
+var umiRoleAssignmentsResourceGroupsFlattened = flatten(umiRoleAssignmentsResourceGroups)
+
+var umiRoleAssignmentsResourceGroupSelf = [
+  for (item, i) in userAssignedManagedIdentities: filter(
+    umiRoleAssignmentsResourceGroupsFlattened,
+    assignment => contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+  )
+]
+
+var umiRoleAssignmentsResourceGroupSelfFlattened = flatten(umiRoleAssignmentsResourceGroupSelf)
+
+var umiRoleAssignmentsResourceGroupNotSelf = [
+  for (item, i) in userAssignedManagedIdentities: filter(
+    umiRoleAssignmentsResourceGroupsFlattened,
+    assignment => !contains(assignment.relativeScope, '/resourceGroups/${virtualNetworkResourceGroupName}')
+  )
+]
+
+var umiRoleAssignmentsResourceGroupNotSelfFlattened = flatten(umiRoleAssignmentsResourceGroupNotSelf)
+
 // Check hubNetworkResourceId to see if it's a virtual WAN connection instead of normal virtual network peering
 var virtualHubResourceIdChecked = (!empty(hubNetworkResourceId) && contains(
     hubNetworkResourceId,
@@ -384,6 +470,54 @@ var virtualWanHubConnectionPropogatedLabels = !empty(virtualNetworkVwanPropagate
   : ['default']
 
 var resourceProvidersFormatted = replace(string(resourceProviders), '"', '\\"')
+
+var nsgArrayFormatted = !empty(additionalVirtualNetworks)
+  ? flatten(map(
+      additionalVirtualNetworks,
+      vnet =>
+        map(vnet.?subnets ?? [], subnet => {
+          vnetResourceGroupName: vnet.resourceGroupName
+          subnetName: subnet.name
+          nsgName: subnet.?networkSecurityGroup.?name ?? 'nsg-${subnet.name}-${vnet.name}-${substring(guid(vnet.name ?? 'vnet', vnet.resourceGroupName, subnet.name), 0, 4)}'
+          nsgLocation: subnet.?networkSecurityGroup.?location ?? vnet.location
+          nsgRules: subnet.?networkSecurityGroup.?securityRules ?? null
+          nsgTags: subnet.?networkSecurityGroup.?tags ?? null
+        })
+    ))
+  : []
+
+var allVirtualNetworks = (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))
+  ? concat(
+      [
+        {
+          name: virtualNetworkName
+          resourceGroupName: virtualNetworkResourceGroupName
+          location: virtualNetworkLocation
+          addressPrefixes: virtualNetworkAddressSpace
+        }
+      ],
+      additionalVirtualNetworks
+    )
+  : additionalVirtualNetworks
+
+var peeringCombinations = !empty(allVirtualNetworks) && peerAllVirtualNetworks
+  ? flatten(map(
+      allVirtualNetworks,
+      (sourceVnet, sourceIndex) =>
+        map(
+          filter(allVirtualNetworks, (targetVnet, targetIndex) => sourceIndex != targetIndex),
+          (targetVnet, targetIndex) => {
+            sourceName: sourceVnet.name
+            targetName: targetVnet.name
+            sourceResourceGroupName: sourceVnet.resourceGroupName
+            targetResourceGroupName: targetVnet.resourceGroupName
+            sourceIndex: sourceIndex
+            targetIndex: indexOf(allVirtualNetworks, targetVnet)
+            peeringName: 'peer-${sourceVnet.name}-to-${targetVnet.name}'
+          }
+        )
+    ))
+  : []
 
 // RESOURCES & MODULES
 
@@ -426,13 +560,29 @@ module tagSubscription 'tags.bicep' = if (!empty(subscriptionTags)) {
     tags: subscriptionTags
   }
 }
-module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.4.0' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createResourceGroupForLzNetworking 'br/public:avm/res/resources/resource-group:0.4.1' = if (virtualNetworkEnabled && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForLzNetworking
   params: {
     name: virtualNetworkResourceGroupName
     location: virtualNetworkLocation
     lock: virtualNetworkResourceGroupLockEnabled
+      ? {
+          kind: 'CanNotDelete'
+          name: 'CanNotDelete'
+        }
+      : null
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module createResourceGroupForIdentities 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(userAssignedManagedIdentities)) {
+  scope: subscription(subscriptionId)
+  name: deploymentNames.createResourceGroupForIdentities
+  params: {
+    name: userAssignedIdentityResourceGroupName
+    location: virtualNetworkLocation
+    lock: userAssignedIdentitiesResourceGroupLockEnabled
       ? {
           kind: 'CanNotDelete'
           name: 'CanNotDelete'
@@ -456,9 +606,10 @@ module tagResourceGroup 'tags.bicep' = if (virtualNetworkEnabled && !empty(virtu
   }
 }
 
-module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createLzVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   dependsOn: [
     createResourceGroupForLzNetworking
+    createLzRouteTable
   ]
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   name: deploymentNames.createLzVnet
@@ -486,13 +637,27 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
         ]
       : null
     subnets: [
-      for subnet in virtualNetworkSubnets: (!empty(virtualNetworkSubnets))
+      for (subnet, i) in virtualNetworkSubnets: (!empty(virtualNetworkSubnets))
         ? {
             name: subnet.name
             addressPrefix: subnet.?addressPrefix
             networkSecurityGroupResourceId: (virtualNetworkDeployBastion || subnet.name == 'AzureBastionSubnet')
               ? createBastionNsg.outputs.resourceId
-              : createLzNsg.outputs.resourceId
+              : resourceId(
+                  subscriptionId,
+                  virtualNetworkResourceGroupName,
+                  'Microsoft.Network/networkSecurityGroups',
+                  '${createLzNsg[i].outputs.name}'
+                )
+            routeTableResourceId: (!empty(subnet.?routeTableName) && !empty(routeTablesResourceGroupName))
+              ? resourceId(
+                  subscriptionId,
+                  routeTablesResourceGroupName,
+                  'Microsoft.Network/routeTables',
+                  subnet.?routeTableName ?? ''
+                )
+              : null
+            routeTableName: subnet.?routeTableName ?? null
             natGatewayResourceId: virtualNetworkDeployNatGateway && (subnet.?associateWithNatGateway ?? false)
               ? createNatGateway.outputs.resourceId
               : null
@@ -503,7 +668,7 @@ module createLzVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (virt
   }
 }
 
-module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (virtualNetworkDeployBastion && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
+module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (virtualNetworkDeployBastion && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) {
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
     createResourceGroupForLzNetworking
@@ -656,18 +821,53 @@ module createBastionNsg 'br/public:avm/res/network/network-security-group:0.5.0'
   }
 }
 
-module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(virtualNetworkSubnets)) {
-  scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
-  dependsOn: [
-    createResourceGroupForLzNetworking
-  ]
-  name: deploymentNames.createLzNsg
-  params: {
-    name: 'nsg-${virtualNetworkName}'
-    location: virtualNetworkLocation
-    enableTelemetry: enableTelemetry
+module createLzNsg 'br/public:avm/res/network/network-security-group:0.5.1' = [
+  for (subnet, i) in virtualNetworkSubnets: if (!empty(virtualNetworkSubnets)) {
+    scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
+    dependsOn: [
+      createResourceGroupForLzNetworking
+    ]
+    name: '${deploymentNames.createLzNsg}-${i}'
+    params: {
+      name: subnet.?networkSecurityGroup.name ?? 'nsg-${subnet.name}-${substring(guid(virtualNetworkName, virtualNetworkResourceGroupName, subnet.name, subscriptionId), 0, 5)}'
+      location: virtualNetworkLocation
+      securityRules: subnet.?networkSecurityGroup.?securityRules ?? null
+      enableTelemetry: enableTelemetry
+    }
   }
-}
+]
+
+module createLzRouteTable 'br/public:avm/res/network/route-table:0.4.1' = [
+  for (routeTable, i) in routeTables: if (!empty(routeTables) && !empty(routeTablesResourceGroupName)) {
+    scope: resourceGroup(subscriptionId, routeTablesResourceGroupName)
+    dependsOn: [
+      createResourceGroupForRouteTables
+    ]
+    name: '${deploymentNames.createLzRouteTable}-${i}'
+    params: {
+      name: routeTable.name
+      location: routeTable.location
+      routes: routeTable.?routes ?? []
+      enableTelemetry: enableTelemetry
+    }
+  }
+]
+
+module createAdditionalVnetNsgs 'br/public:avm/res/network/network-security-group:0.5.1' = [
+  for (nsg, i) in nsgArrayFormatted: if (!empty(additionalVirtualNetworks)) {
+    scope: resourceGroup(subscriptionId, nsg.vnetResourceGroupName)
+    dependsOn: [
+      createResourceGroupForadditionalLzNetworking
+    ]
+    params: {
+      name: nsg.nsgName ?? 'nsg-${nsg.subnetName}-${substring(guid(nsg.vnetResourceGroupName, nsg.subnetName), 0, 5)}'
+      securityRules: nsg.?nsgRules ?? null
+      location: nsg.?nsgLocation ?? additionalVirtualNetworks[i].location
+      tags: nsg.?nsgTags ?? null
+      enableTelemetry: enableTelemetry
+    }
+  }
+]
 
 module createLzVirtualWanConnection 'hubVirtualNetworkConnections.bicep' = if (virtualNetworkEnabled && virtualNetworkPeeringEnabled && !empty(virtualHubResourceIdChecked) && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName) && !empty(virtualWanHubResourceGroupName) && !empty(virtualWanHubSubscriptionId)) {
   dependsOn: [
@@ -695,7 +895,7 @@ module createLzVirtualWanConnection 'hubVirtualNetworkConnections.bicep' = if (v
   }
 }
 
-module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = [
+module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
   for assignment in roleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(roleAssignmentsSubscription)) {
     name: take(
       '${deploymentNames.createLzRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -707,6 +907,7 @@ module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignme
       roleDefinitionIdOrName: assignment.definition
       principalType: assignment.?principalType
       subscriptionId: subscriptionId
+      description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
         : null
@@ -727,7 +928,7 @@ module createLzRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignme
   }
 ]
 
-module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = [
+module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
   for assignment in roleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupSelf)) {
     dependsOn: [
       createResourceGroupForLzNetworking
@@ -743,6 +944,7 @@ module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-ass
       principalType: assignment.?principalType
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
+      description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
         : null
@@ -763,7 +965,7 @@ module createLzRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-ass
   }
 ]
 
-module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = [
+module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
   for assignment in roleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(roleAssignmentsResourceGroupNotSelf)) {
     name: take(
       '${deploymentNames.createLzRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -776,6 +978,39 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
       principalType: assignment.?principalType
       subscriptionId: subscriptionId
       resourceGroupName: split(assignment.relativeScope, '/')[2]
+      description: assignment.?description
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+module createLzUMIRoleAssignmentsSub 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
+  for (assignment, i) in umiRoleAssignmentsSubscriptionFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsSubscriptionFlattened)) {
+    name: take(
+      '${deploymentNames.createLzUMIRoleAssignmentsSub}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      64
+    )
+    params: {
+      location: deployment().location
+      principalId: createUserAssignedManagedIdentity[i].outputs.principalId
+      roleDefinitionIdOrName: assignment.definition
+      principalType: 'ServicePrincipal'
+      subscriptionId: subscriptionId
+      description: assignment.?description
       conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
         ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
         : null
@@ -796,7 +1031,75 @@ module createLzRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-
   }
 ]
 
-module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+module createLzUMIRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
+  for (assignment, i) in umiRoleAssignmentsResourceGroupSelfFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsResourceGroupSelfFlattened)) {
+    name: take(
+      '${deploymentNames.createLzUMIRoleAssignmentsRsgsSelf}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      64
+    )
+    params: {
+      location: deployment().location
+      principalId: createUserAssignedManagedIdentity[i].outputs.principalId
+      roleDefinitionIdOrName: assignment.definition
+      principalType: 'ServicePrincipal'
+      subscriptionId: subscriptionId
+      resourceGroupName: split(assignment.relativeScope, '/')[2]
+      description: assignment.?description
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+
+module createLzUMIRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = [
+  for (assignment, i) in umiRoleAssignmentsResourceGroupNotSelfFlattened: if (roleAssignmentEnabled && !empty(umiRoleAssignmentsResourceGroupNotSelfFlattened)) {
+    name: take(
+      '${deploymentNames.createLzUMIRoleAssignmentsRsgsNotSelf}-${uniqueString(createUserAssignedManagedIdentity[i].name,assignment.definition, assignment.relativeScope)}',
+      64
+    )
+    params: {
+      location: deployment().location
+      principalId: createUserAssignedManagedIdentity[i].outputs.principalId
+      roleDefinitionIdOrName: assignment.definition
+      principalType: 'ServicePrincipal'
+      subscriptionId: subscriptionId
+      resourceGroupName: split(assignment.relativeScope, '/')[2]
+      description: assignment.?description
+      conditionVersion: !(empty(assignment.?roleAssignmentCondition ?? {}))
+        ? (assignment.?roleAssignmentCondition.?conditionVersion ?? '2.0')
+        : null
+      condition: (empty(assignment.?roleAssignmentCondition ?? {}))
+        ? null
+        : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+            ? generateCodeRolesType(any(assignment.?roleAssignmentCondition.?roleConditionType))
+            : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipalTypes' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                ? generateCodeRolesAndPrincipalsTypes(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'constrainRolesAndPrincipals' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                    ? generateCodeRolesAndPrincipals(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                    : assignment.?roleAssignmentCondition.?roleConditionType.templateName == 'excludeRoles' && (empty(assignment.?roleAssignmentCondition.?delegationCode))
+                        ? generateCodeExcludeRoles(any(assignment.?roleAssignmentCondition.?roleConditionType))
+                        : !(empty(assignment.?roleAssignmentCondition.?delegationCode))
+                            ? assignment.?roleAssignmentCondition.?delegationCode
+                            : null
+    }
+  }
+]
+
+module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
   for assignment in pimRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsSubscription) && assignment.roleAssignmentType == 'Active') {
     name: take(
       '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -834,7 +1137,7 @@ module createLzPimActiveRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-
   }
 ]
 
-module createLzPimEligibleRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+module createLzPimEligibleRoleAssignmentsSub 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
   for assignment in pimRoleAssignmentsSubscription: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsSubscription) && assignment.roleAssignmentType == 'Eligible') {
     name: take(
       '${deploymentNames.createLzPimRoleAssignmentsSub}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -872,7 +1175,7 @@ module createLzPimEligibleRoleAssignmentsSub 'br/public:avm/ptn/authorization/pi
   }
 ]
 
-module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
   for assignment in pimRoleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupSelf) && assignment.roleAssignmentType == 'Eligible') {
     dependsOn: [
       createResourceGroupForLzNetworking
@@ -914,7 +1217,7 @@ module createLzPimEligibleRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorizati
   }
 ]
 
-module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
   for assignment in pimRoleAssignmentsResourceGroupSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupSelf) && assignment.roleAssignmentType == 'Active') {
     dependsOn: [
       createResourceGroupForLzNetworking
@@ -956,7 +1259,7 @@ module createLzPimActiveRoleAssignmentsRsgsSelf 'br/public:avm/ptn/authorization
   }
 ]
 
-module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
   for assignment in pimRoleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupNotSelf) && assignment.roleAssignmentType == 'Eligible') {
     name: take(
       '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -994,7 +1297,7 @@ module createLzEliglblePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authoriz
   }
 ]
 
-module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.0' = [
+module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorization/pim-role-assignment:0.1.1' = [
   for assignment in pimRoleAssignmentsResourceGroupNotSelf: if (roleAssignmentEnabled && !empty(pimRoleAssignmentsResourceGroupNotSelf) && assignment.roleAssignmentType == 'Active') {
     name: take(
       '${deploymentNames.createLzPimRoleAssignmentsRsgsNotSelf}-${uniqueString(assignment.principalId, assignment.definition, assignment.relativeScope)}',
@@ -1032,7 +1335,7 @@ module createLzActivePimRoleAssignmentsRsgsNotSelf 'br/public:avm/ptn/authorizat
   }
 ]
 
-module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.4.0' = if (!empty(resourceProviders)) {
+module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(resourceProviders)) {
   scope: subscription(subscriptionId)
   name: deploymentNames.createResourceGroupForDeploymentScript
   params: {
@@ -1042,7 +1345,17 @@ module createResourceGroupForDeploymentScript 'br/public:avm/res/resources/resou
   }
 }
 
-module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.0' = if (!empty(resourceProviders)) {
+module createResourceGroupForRouteTables 'br/public:avm/res/resources/resource-group:0.4.1' = if (!empty(routeTablesResourceGroupName) && !empty(routeTables)) {
+  scope: subscription(subscriptionId)
+  name: deploymentNames.createResourceGroupForRouteTables
+  params: {
+    name: routeTablesResourceGroupName
+    location: virtualNetworkLocation ?? deployment().location
+    enableTelemetry: enableTelemetry
+  }
+}
+
+module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createDeploymentScriptManagedIdentity
   dependsOn: [
@@ -1055,7 +1368,7 @@ module createManagedIdentityForDeploymentScript 'br/public:avm/res/managed-ident
   }
 }
 
-module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/role-assignment:0.2.0' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScript}', 64)
   params: {
     location: deploymentScriptLocation
@@ -1066,7 +1379,7 @@ module createRoleAssignmentsDeploymentScript 'br/public:avm/ptn/authorization/ro
   }
 }
 
-module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.2.1' = if (!empty(resourceProviders)) {
+module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/authorization/role-assignment:0.2.2' = if (!empty(resourceProviders)) {
   name: take('${deploymentNames.createRoleAssignmentsDeploymentScriptStorageAccount}', 64)
   params: {
     location: deploymentScriptLocation
@@ -1079,7 +1392,7 @@ module createRoleAssignmentsDeploymentScriptStorageAccount 'br/public:avm/ptn/au
   }
 }
 
-module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if (!empty(resourceProviders)) {
+module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.1' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   dependsOn: [
     createResourceGroupForDeploymentScript
@@ -1092,7 +1405,7 @@ module createDsNsg 'br/public:avm/res/network/network-security-group:0.5.0' = if
   }
 }
 
-module dsFilePrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.0' = if (!empty(resourceProviders)) {
+module dsFilePrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.1' = if (!empty(resourceProviders)) {
   name: deploymentNames.createDsFilePrivateDnsZone
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   params: {
@@ -1107,7 +1420,7 @@ module dsFilePrivateDNSZone 'br/public:avm/res/network/private-dns-zone:0.7.0' =
   }
 }
 
-module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.15.0' = if (!empty(resourceProviders)) {
+module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.20.0' = if (!empty(resourceProviders)) {
   dependsOn: [
     createRoleAssignmentsDeploymentScriptStorageAccount
   ]
@@ -1145,7 +1458,7 @@ module createDsStorageAccount 'br/public:avm/res/storage/storage-account:0.15.0'
   }
 }
 
-module createDsVnet 'br/public:avm/res/network/virtual-network:0.5.1' = if (!empty(resourceProviders)) {
+module createDsVnet 'br/public:avm/res/network/virtual-network:0.7.0' = if (!empty(resourceProviders)) {
   scope: resourceGroup(subscriptionId, deploymentScriptResourceGroupName)
   name: deploymentNames.createdsVnet
   params: {
@@ -1205,7 +1518,7 @@ module registerResourceProviders 'br/public:avm/res/resources/deployment-script:
   }
 }
 
-module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virtualNetworkDeployNatGateway && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
+module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = if (virtualNetworkDeployNatGateway && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
     createResourceGroupForLzNetworking
@@ -1252,8 +1565,56 @@ module createNatGateway 'br/public:avm/res/network/nat-gateway:1.2.1' = if (virt
     ]
   }
 }
+module createAdditonalNatGateway 'br/public:avm/res/network/nat-gateway:1.2.2' = [
+  for (vnet, i) in additionalVirtualNetworks: if (!empty(vnet.?subnets ?? []) && (vnet.?deployNatGateway ?? false)) {
+    scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
+    dependsOn: [
+      createResourceGroupForadditionalLzNetworking
+      registerResourceProviders
+    ]
+    params: {
+      name: vnet.?natGatewayConfiguration.?name ?? 'nat-gw-${vnet.name}'
+      zone: vnet.?natGatewayConfiguration.?zones ?? 0
+      location: vnet.location
+      enableTelemetry: enableTelemetry
+      tags: vnet.?tags
+      publicIPAddressObjects: [
+        for publicIp in vnet.?natGatewayConfiguration.?publicIPAddressProperties ?? []: {
+          name: publicIp.?name ?? '${vnet.?natGatewayConfiguration.?name}-pip'
+          publicIPAddressSku: 'Standard'
+          publicIPAddressVersion: 'IPv4'
+          publicIPAllocationMethod: 'Static'
+          zones: publicIp.zones ?? (vnet.?natGatewayConfiguration.?zones != 0
+            ? [vnet.?natGatewayConfiguration.?zones]
+            : null)
+          skuTier: 'Regional'
+          ddosSettings: !empty(virtualNetworkDdosPlanResourceId)
+            ? {
+                ddosProtectionPlan: {
+                  id: virtualNetworkDdosPlanResourceId
+                }
+                protectionMode: 'Enabled'
+              }
+            : null
+          enableTelemetry: enableTelemetry
+          idleTimeoutInMinutes: 4
+        }
+      ]
+      publicIPPrefixObjects: [
+        for publicIpPrefix in vnet.?natGatewayConfiguration.?publicIPAddressPrefixesProperties ?? []: {
+          name: publicIpPrefix.?name ?? '${vnet.?natGatewayConfiguration.?name}-prefix'
+          location: vnet.location
+          prefixLength: publicIpPrefix.?prefixLength
+          customIPPrefix: publicIpPrefix.?customIPPrefix
+          tags: vnet.?tags
+          enableTelemetry: enableTelemetry
+        }
+      ]
+    }
+  }
+]
 
-module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
+module createBastionHost 'br/public:avm/res/network/bastion-host:0.6.1' = if (virtualNetworkDeployBastion && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName))) {
   name: deploymentNames.createBastionHost
   scope: resourceGroup(subscriptionId, virtualNetworkResourceGroupName)
   dependsOn: [
@@ -1275,6 +1636,135 @@ module createBastionHost 'br/public:avm/res/network/bastion-host:0.5.0' = if (vi
     enableTelemetry: enableTelemetry
   }
 }
+
+module createUserAssignedManagedIdentity 'br/public:avm/res/managed-identity/user-assigned-identity:0.4.1' = [
+  for (identity, i) in userAssignedManagedIdentities: if (!empty(userAssignedManagedIdentities)) {
+    scope: resourceGroup(subscriptionId, userAssignedIdentityResourceGroupName)
+    dependsOn: [
+      createResourceGroupForIdentities
+    ]
+    name: '${deploymentNames.createUserAssignedIdentities}-${i}'
+    params: {
+      name: identity.?name ?? 'lz-identity-${deployment().location}-${i}'
+      location: identity.?location ?? deployment().location
+      tags: identity.?tags ?? {}
+      federatedIdentityCredentials: identity.?federatedIdentityCredentials ?? []
+      lock: identity.?lock ?? null
+      enableTelemetry: enableTelemetry
+    }
+  }
+]
+
+module createResourceGroupForadditionalLzNetworking 'br/public:avm/res/resources/resource-group:0.4.1' = [
+  for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
+    scope: subscription(subscriptionId)
+    params: {
+      name: vnet.resourceGroupName
+      location: vnet.?location ?? deployment().location
+      lock: vnet.?resourceGroupLockEnabled ?? true
+        ? {
+            kind: 'CanNotDelete'
+            name: 'CanNotDelete'
+          }
+        : null
+      enableTelemetry: enableTelemetry
+    }
+  }
+]
+
+module createAdditionalVnets 'br/public:avm/res/network/virtual-network:0.7.0' = [
+  for (vnet, i) in additionalVirtualNetworks: if (virtualNetworkEnabled && !empty(additionalVirtualNetworks)) {
+    scope: resourceGroup(subscriptionId, vnet.resourceGroupName)
+    dependsOn: [
+      createResourceGroupForadditionalLzNetworking
+      createAdditionalVnetNsgs
+      createLzRouteTable
+    ]
+    params: {
+      name: vnet.name
+      addressPrefixes: vnet.addressPrefixes
+      subnets: [
+        for subnet in (vnet.?subnets ?? []): {
+          name: subnet.name
+          addressPrefix: subnet.?addressPrefix
+          networkSecurityGroupResourceId: ((vnet.?deployBastion ?? false) || subnet.name == 'AzureBastionSubnet')
+            ? createBastionNsg.outputs.resourceId
+            : !empty(subnet.?networkSecurityGroup)
+                ? resourceId(
+                    subscriptionId,
+                    vnet.resourceGroupName,
+                    'Microsoft.Network/networkSecurityGroups',
+                    filter(nsgArrayFormatted, nsg => nsg.nsgName == subnet.?networkSecurityGroup.name)[0].nsgName
+                  )
+                : null
+          routeTableResourceId: (!empty(subnet.?routeTableName) && !empty(routeTablesResourceGroupName))
+            ? resourceId(
+                subscriptionId,
+                routeTablesResourceGroupName,
+                'Microsoft.Network/routeTables',
+                subnet.?routeTableName ?? ''
+              )
+            : null
+          natGatewayResourceId: (vnet.?deployNatGateway ?? false) && (subnet.?associateWithNatGateway ?? false)
+            ? createAdditonalNatGateway[i].outputs.resourceId
+            : null
+        }
+      ]
+      location: vnet.?location ?? deployment().location
+      tags: vnet.?tags ?? {}
+      dnsServers: vnet.?dnsServers ?? []
+      ddosProtectionPlanResourceId: vnet.?ddosProtectionPlanResourceId ?? null
+      peerings: vnet.?peerToHubNetwork ?? false
+        ? [
+            {
+              remoteVirtualNetworkResourceId: hubVirtualNetworkResourceIdChecked
+              allowForwardedTraffic: true
+              allowVirtualNetworkAccess: true
+              allowGatewayTransit: false
+              useRemoteGateways: vnet.?useRemoteGateways ?? false
+              remotePeeringEnabled: true
+              remotePeeringAllowForwardedTraffic: true
+              remotePeeringAllowVirtualNetworkAccess: true
+              remotePeeringAllowGatewayTransit: true
+              remotePeeringUseRemoteGateways: false
+            }
+          ]
+        : null
+      enableTelemetry: enableTelemetry
+    }
+  }
+]
+
+// Mesh peering for additional VNets only
+module meshPeerAdditionalVnets 'peering.bicep' = [
+  for (peering, i) in peeringCombinations: if (peerAllVirtualNetworks && !empty(additionalVirtualNetworks) && peering.sourceResourceGroupName != virtualNetworkResourceGroupName) {
+    scope: resourceGroup(subscriptionId, peering.sourceResourceGroupName)
+    dependsOn: [
+      createAdditionalVnets
+    ]
+    params: {
+      destinationVirtualNetworkName: peering.targetName
+      destinationVirtualNetworkResourceGroupName: peering.targetResourceGroupName
+      sourceVirtualNetworkName: peering.sourceName
+    }
+  }
+]
+
+// Mesh peering from primary VNet to additional VNets
+module meshPeerFromPrimaryVnet 'peering.bicep' = [
+  for (peering, i) in peeringCombinations: if (peerAllVirtualNetworks && (virtualNetworkEnabled && !empty(virtualNetworkName) && !empty(virtualNetworkAddressSpace) && !empty(virtualNetworkLocation) && !empty(virtualNetworkResourceGroupName)) && peering.sourceResourceGroupName == virtualNetworkResourceGroupName) {
+    scope: resourceGroup(subscriptionId, peering.sourceResourceGroupName)
+    dependsOn: [
+      createLzVnet
+      createAdditionalVnets
+    ]
+    params: {
+      destinationVirtualNetworkName: peering.targetName
+      destinationVirtualNetworkResourceGroupName: peering.targetResourceGroupName
+      sourceVirtualNetworkName: peering.sourceName
+    }
+  }
+]
 
 // OUTPUTS
 output failedProviders string = !empty(resourceProviders)
@@ -1338,6 +1828,9 @@ type roleAssignmentType = {
 
   @description('Optional. The principal type of the user, group, or service principal.')
   principalType: 'User' | 'Group' | 'ServicePrincipal'?
+
+  @description('Optional. The role assignment description.')
+  description: string?
 }
 
 // "Constrain Roles" - Condition template
@@ -1461,17 +1954,14 @@ type subnetType = {
   @description('Optional. Option to associate the subnet with the NAT gatway deployed by this module.')
   associateWithNatGateway: bool?
 
-  @description('Optional. The resource ID of the network security group to assign to the subnet.')
-  networkSecurityGroupResourceId: string?
+  @description('Optional. The network security group to be associated with this subnet.')
+  networkSecurityGroup: networkSecurityGroupType?
 
   @description('Optional. enable or disable apply network policies on private endpoint in the subnet.')
   privateEndpointNetworkPolicies: ('Disabled' | 'Enabled' | 'NetworkSecurityGroupEnabled' | 'RouteTableEnabled')?
 
   @description('Optional. enable or disable apply network policies on private link service in the subnet.')
   privateLinkServiceNetworkPolicies: ('Disabled' | 'Enabled')?
-
-  @description('Optional. The resource ID of the route table to assign to the subnet.')
-  routeTableResourceId: string?
 
   @description('Optional. An array of service endpoint policies.')
   serviceEndpointPolicies: object[]?
@@ -1484,6 +1974,9 @@ type subnetType = {
 
   @description('Optional. Set this property to Tenant to allow sharing subnet with other subscriptions in your AAD tenant. This property can only be set if defaultOutboundAccess is set to false, both properties can only be set if subnet is empty.')
   sharingScope: ('DelegatedServices' | 'Tenant')?
+
+  @description('Optional. The name of the route table to be associated with this subnet.')
+  routeTableName: string?
 }
 
 @export()
@@ -1598,4 +2091,209 @@ type timeBoundDateTimeRoleAssignmentScheduleType = {
 
   @description('Required. The start date and time for the role assignment.')
   startTime: string
+}
+
+@export()
+type roleAssignmentUMIType = {
+  @description('Required. The role definition ID or name.')
+  definition: string
+
+  @description('Required. The relative scope of the role assignment.')
+  relativeScope: string
+
+  @description('Optional. The condition for the role assignment.')
+  roleAssignmentCondition: roleAssignmentConditionType?
+
+  @description('Optional. The role assignment description.')
+  description: string?
+}
+
+@export()
+@description('Optional. The type of the user assigned managed identity.')
+type userAssignedIdentityType = {
+  @description('Required. The name of the user assigned managed identity.')
+  name: string
+
+  @description('Optional. The location of the user assigned managed identity.')
+  location: string?
+
+  @description('Optional. The locks for the user assigned managed identity.')
+  lock: object?
+
+  @description('Optional. The tags for the user assigned managed identity.')
+  tags: object?
+
+  @description('Optional. The role assignments for the user assigned managed identity.')
+  roleAssignments: roleAssignmentUMIType[]?
+
+  @description('Optional. The federated identity credentials for the user assigned managed identity.')
+  federatedIdentityCredentials: federatedIdentityCredentialType[]?
+}
+
+@description('The type for the federated identity credential.')
+type federatedIdentityCredentialType = {
+  @description('Required. The name of the federated identity credential.')
+  name: string
+
+  @description('Required. The list of audiences that can appear in the issued token.')
+  audiences: string[]
+
+  @description('Required. The URL of the issuer to be trusted.')
+  issuer: string
+
+  @description('Required. The identifier of the external identity.')
+  subject: string
+}
+
+@export()
+@description('Optional. The type of the virtual network.')
+type virtualNetworkType = {
+  @description('Required. The name of the virtual network resource.')
+  name: string
+
+  @description('Required. The address prefixes for the virtual network.')
+  addressPrefixes: array
+
+  @description('Required. The location of the virtual network.')
+  location: string
+
+  @description('Optional. The tags for the virtual network.')
+  tags: object?
+
+  @description('Optional. The subnets for the virtual network.')
+  subnets: subnetType[]?
+
+  @description('Optional. The option to peer the virtual network to the hub network.')
+  peerToHubNetwork: bool?
+
+  @description('Required. The name of the virtual network resource group.')
+  resourceGroupName: string
+
+  @description('Optional. Enables the deployment of a `CanNotDelete` resource locks to the virtual networks resource group.')
+  resourceGroupLockEnabled: bool?
+
+  @description('Optional. Enables the use of remote gateways in the spefcified hub virtual network. If no gateways exsit in the hub virtual network, set this to `false`, otherwise peering will fail to create. Set this to `false` for virtual wan hub connections.')
+  useRemoteGateways: bool?
+
+  @description('Optional. The list of DNS servers for the virtual network.')
+  dnsServers: array?
+
+  @description('Optional. The resource Id of the DDOS protection plan.')
+  ddosProtectionPlanResourceId: string?
+
+  @description('Optional. The option to deploy Azure Bastion in the virtual network.')
+  deployBastion: bool?
+
+  @description('Optional. Flag to deploy a NAT gateway.')
+  deployNatGateway: bool?
+
+  @description('Optional. The configuration for deploying a NAT gateway.')
+  natGatewayConfiguration: natGatewayType?
+}
+
+@export()
+@description('Network security group type.')
+type networkSecurityGroupType = {
+  @description('Optional. The name of the network security group.')
+  name: string?
+
+  @description('Optional. The location of the network security group.')
+  location: string?
+
+  @description('Optional. The tags of the network security group.')
+  tags: object?
+
+  @description('Optional. The security rules of the network security group.')
+  securityRules: nsgSecurityRuleType[]?
+}
+
+@export()
+@description('The type of a security rule.')
+type nsgSecurityRuleType = {
+  @description('Required. The name of the security rule.')
+  name: string
+
+  @description('Required. The properties of the security rule.')
+  properties: {
+    @description('Required. Whether network traffic is allowed or denied.')
+    access: ('Allow' | 'Deny')
+
+    @description('Optional. The description of the security rule.')
+    description: string?
+
+    @description('Optional. Optional. The destination address prefix. CIDR or destination IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used.')
+    destinationAddressPrefix: string?
+
+    @description('Optional. The destination address prefixes. CIDR or destination IP ranges.')
+    destinationAddressPrefixes: string[]?
+
+    @description('Optional. The resource IDs of the application security groups specified as destination.')
+    destinationApplicationSecurityGroupResourceIds: string[]?
+
+    @description('Optional. The destination port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.')
+    destinationPortRange: string?
+
+    @description('Optional. The destination port ranges.')
+    destinationPortRanges: string[]?
+
+    @description('Required. The direction of the rule. The direction specifies if rule will be evaluated on incoming or outgoing traffic.')
+    direction: ('Inbound' | 'Outbound')
+
+    @minValue(100)
+    @maxValue(4096)
+    @description('Required. Required. The priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule.')
+    priority: int
+
+    @description('Required. Network protocol this rule applies to.')
+    protocol: ('Ah' | 'Esp' | 'Icmp' | 'Tcp' | 'Udp' | '*')
+
+    @description('Optional. The CIDR or source IP range. Asterisk "*" can also be used to match all source IPs. Default tags such as "VirtualNetwork", "AzureLoadBalancer" and "Internet" can also be used. If this is an ingress rule, specifies where network traffic originates from.')
+    sourceAddressPrefix: string?
+
+    @description('Optional. The CIDR or source IP ranges.')
+    sourceAddressPrefixes: string[]?
+
+    @description('Optional. The resource IDs of the application security groups specified as source.')
+    sourceApplicationSecurityGroupResourceIds: string[]?
+
+    @description('Optional. The source port or range. Integer or range between 0 and 65535. Asterisk "*" can also be used to match all ports.')
+    sourcePortRange: string?
+
+    @description('Optional. The source port ranges.')
+    sourcePortRanges: string[]?
+  }
+}
+
+@export()
+@description('The route table type.')
+type routeTableType = {
+  @description('Required. The name of the route table resource.')
+  name: string
+
+  @description('Required. The location of the route table resource.')
+  location: string
+
+  @description('Optional. The tags for the route table resource.')
+  tags: object?
+
+  @description('Optional. The routes for the route table resource.')
+  routes: routeType[]?
+}
+
+@description('The type for a route.')
+type routeType = {
+  @description('Required. Name of the route.')
+  name: string
+
+  @description('Required. Properties of the route.')
+  properties: {
+    @description('Required. The type of Azure hop the packet should be sent to.')
+    nextHopType: ('VirtualAppliance' | 'VnetLocal' | 'Internet' | 'VirtualNetworkGateway' | 'None')
+
+    @description('Required. The destination CIDR to which the route applies.')
+    addressPrefix: string
+
+    @description('Optional. The IP address packets should be forwarded to. Next hop values are only allowed in routes where the next hop type is VirtualAppliance.')
+    nextHopIpAddress: string?
+  }
 }
