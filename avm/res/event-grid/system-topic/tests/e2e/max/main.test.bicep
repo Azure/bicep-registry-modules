@@ -138,7 +138,7 @@ module testDeployment '../../../main.bicep' = [
       externalResourceRoleAssignments: [
         {
           resourceId: nestedDependencies.outputs.storageAccountResourceId
-          roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+          roleDefinitionId: '974c5e8b-45b9-4653-ba55-5f855dd0fb88' // Storage Queue Data Contributor
           description: 'Allow Event Grid System Topic to write to storage queue'
         }
         {
