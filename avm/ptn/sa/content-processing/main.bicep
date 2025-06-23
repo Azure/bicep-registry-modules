@@ -1187,7 +1187,12 @@ module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' =
     description: 'AI Hub for CPS template'
     location: resourceGroupLocation
     sku: 'Basic'
-    managedIdentities: { systemAssigned: false }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        avmManagedIdentity.outputs.resourceId
+      ]
+    }
     tags: {
       app: solutionPrefix
       location: resourceGroupLocation
