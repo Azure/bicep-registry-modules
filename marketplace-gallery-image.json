@@ -1,0 +1,33 @@
+{
+  "type": "Microsoft.AzureStackHCI/marketplaceGalleryImages",
+  "apiVersion": "2025-04-01-preview",
+  "name": "string",
+  "extendedLocation": {
+    "name": "string",
+    "type": "string"
+  },
+  "location": "string",
+  "properties": {
+    "cloudInitDataSource": "string",
+    "containerId": "string",
+    "hyperVGeneration": "string",
+    "identifier": {
+      "offer": "string",
+      "publisher": "string",
+      "sku": "string"
+    },
+    "osType": "string",
+    "version": {
+      "name": "string",
+      "properties": {
+        "storageProfile": {
+          "osDiskImage": {
+          }
+        }
+      }
+    }
+  },
+  "tags": {
+    "{customized property}": "string"
+  }
+}
