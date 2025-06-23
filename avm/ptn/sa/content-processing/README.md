@@ -276,7 +276,9 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
     environmentName: 'scpwaf'
     gptDeploymentCapacity: 80
     // Non-required parameters
+    enablePrivateNetworking: true
     enableScaling: true
+    enableTelemetry: true
   }
 }
 ```
@@ -304,7 +306,13 @@ module contentProcessing 'br/public:avm/ptn/sa/content-processing:<version>' = {
       "value": 80
     },
     // Non-required parameters
+    "enablePrivateNetworking": {
+      "value": true
+    },
     "enableScaling": {
+      "value": true
+    },
+    "enableTelemetry": {
       "value": true
     }
   }
@@ -326,7 +334,9 @@ param contentUnderstandingLocation = '<contentUnderstandingLocation>'
 param environmentName = 'scpwaf'
 param gptDeploymentCapacity = 80
 // Non-required parameters
+param enablePrivateNetworking = true
 param enableScaling = true
+param enableTelemetry = true
 ```
 
 </details>

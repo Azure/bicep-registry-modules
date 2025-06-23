@@ -52,6 +52,8 @@ module testDeployment '../../../main.bicep' = [
       environmentName: '${namePrefix}${serviceShort}'
       gptDeploymentCapacity: 80
       enableScaling: true
+      enableTelemetry: true
+      enablePrivateNetworking: true
     }
   }
 ]
