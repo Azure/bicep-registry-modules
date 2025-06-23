@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "10376458647259834115"
+      "templateHash": "16437865284285189352"
     },
     "name": "Storage Account Blob Containers",
     "description": "This module deploys a Storage Account Blob Container."
