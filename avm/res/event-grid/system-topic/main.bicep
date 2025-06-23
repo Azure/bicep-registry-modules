@@ -88,18 +88,18 @@ var builtInRoleNames = {
 
 var formattedRoleAssignments = [
   for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
-    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
-        roleAssignment.roleDefinitionIdOrName,
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionId] ?? (contains(
+        roleAssignment.roleDefinitionId,
         '/providers/Microsoft.Authorization/roleDefinitions/'
       )
-      ? roleAssignment.roleDefinitionIdOrName
-      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+      ? roleAssignment.roleDefinitionId
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionId))
   })
 ]
 
 var formattedExternalResourceRoleAssignments = [
   for (assignment, index) in (externalResourceRoleAssignments ?? []): union(assignment, {
-    roleDefinitionId: contains(assignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+    roleDefinitionId: contains(assignment.roleDefinitionId, '/providers/Microsoft.Authorization/roleDefinitions/')
       ? assignment.roleDefinitionId
       : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', assignment.roleDefinitionId)
   })
@@ -229,7 +229,7 @@ module systemTopic_externalResourceRoleAssignments 'br/public:avm/ptn/authorizat
       principalId: systemTopic.identity.principalId
       principalType: 'ServicePrincipal'
       description: assignment.?description ?? 'Role assignment for Event Grid System Topic ${systemTopic.name}'
-      roleName: assignment.?roleName ?? assignment.roleDefinitionIdOrName
+      roleName: assignment.?roleName ?? assignment.roleDefinitionId
       enableTelemetry: enableReferencedModulesTelemetry
     }
   }
