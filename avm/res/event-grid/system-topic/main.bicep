@@ -88,7 +88,7 @@ var builtInRoleNames = {
 
 var formattedRoleAssignments = [
   for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
-    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionId] ?? (contains(
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
         roleAssignment.roleDefinitionId,
         '/providers/Microsoft.Authorization/roleDefinitions/'
       )
