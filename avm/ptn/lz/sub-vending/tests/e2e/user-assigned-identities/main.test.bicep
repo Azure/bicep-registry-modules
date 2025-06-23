@@ -1,5 +1,5 @@
-metadata name = 'Using PIM Active Role assignments.'
-metadata description = 'This instance deploys the module with PIM Active Role assignments.'
+metadata name = 'Using user-assigned managed identities.'
+metadata description = 'This instance deploys the module with user-assigned managed identities.'
 
 targetScope = 'managementGroup'
 
@@ -15,17 +15,10 @@ param subscriptionBillingScope string = ''
 param namePrefix string = '#_namePrefix_#'
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'ssapima'
+param serviceShort string = 'ssmsi'
 
 @description('Optional. A short guid for the subscription name.')
 param subscriptionGuid string = toLower(substring(newGuid(), 0, 4))
-
-@description('Optional. The start time of the the PIM role assignment.')
-param pimAssignmentStartDateTime string = utcNow()
-
-@description('Required. Principle ID of the user. This value is tenant-specific and must be stored in the CI Key Vault in a secret named \'CI-testUserObjectId\'.')
-@secure()
-param testUserObjectId string = ''
 
 module testDeployment '../../../main.bicep' = {
   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-${subscriptionGuid}'
@@ -41,31 +34,44 @@ module testDeployment '../../../main.bicep' = {
     subscriptionWorkload: 'Production'
     subscriptionManagementGroupAssociationEnabled: true
     subscriptionManagementGroupId: 'bicep-lz-vending-automation-child'
-    resourceProviders: {
-      'Microsoft.Network': []
-    }
+    resourceProviders: {}
     virtualNetworkEnabled: true
     virtualNetworkName: 'vnet-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
-    virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
     virtualNetworkLocation: resourceLocation
+    virtualNetworkResourceGroupName: 'rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
     virtualNetworkAddressSpace: [
-      '10.140.0.0/16'
+      '10.110.0.0/16'
     ]
     virtualNetworkResourceGroupLockEnabled: false
     roleAssignmentEnabled: true
-    pimRoleAssignments: [
+    userAssignedIdentityResourceGroupName: 'rg-identity-${namePrefix}-${serviceShort}'
+    userAssignedIdentitiesResourceGroupLockEnabled: false
+    userAssignedManagedIdentities: [
       {
-        principalId: testUserObjectId
-        relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
-        roleAssignmentType: 'Active'
-        requestType: 'AdminAssign'
-        definition: '/providers/Microsoft.Authorization/roleDefinitions/f58310d9-a9f6-439a-9e8d-f62e7b41a168'
-        scheduleInfo: {
-          duration: 'PT4H'
-          durationType: 'AfterDuration'
-          startTime: pimAssignmentStartDateTime
-        }
-        justification: 'This is a justification from an AVM test.'
+        name: 'test-identity-${namePrefix}-${serviceShort}'
+        location: resourceLocation
+        roleAssignments: [
+          {
+            definition: '/providers/Microsoft.Authorization/roleDefinitions/9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+            relativeScope: ''
+            description: 'Virtual Machine Contributor'
+          }
+          {
+            definition: '/providers/Microsoft.Authorization/roleDefinitions/602da2ba-a5c2-41da-b01d-5360126ab525'
+            relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
+            description: 'Virtual Machine Local User Login'
+          }
+        ]
+        federatedIdentityCredentials: [
+          {
+            name: 'test-federated-identity-credential-${namePrefix}-${serviceShort}-${subscriptionGuid}'
+            audiences: [
+              'api://AzureADTokenExchange'
+            ]
+            issuer: 'https://token.actions.githubusercontent.com'
+            subject: 'repo:githubOrganization/sampleRepository:ref:refs/heads/main'
+          }
+        ]
       }
     ]
   }
