@@ -1442,19 +1442,17 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.17.0' = {
     ]
     scaleSettings: {
       maxReplicas: enableScaling ? 3 : 1
-      minReplicas: 1
-      rules: enableScaling
-        ? [
-            {
-              name: 'http-scaler'
-              http: {
-                metadata: {
-                  concurrentRequests: 100
-                }
-              }
+      minReplicas: enableScaling ? 2 : 1
+      rules: [
+        {
+          name: 'http-scaler'
+          http: {
+            metadata: {
+              concurrentRequests: '100'
             }
-          ]
-        : []
+          }
+        }
+      ]
     }
     ingressExternal: true
     activeRevisionsMode: 'Single'
