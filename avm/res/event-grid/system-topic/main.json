@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "6095703872527508938"
+      "templateHash": "14874667569981956558"
     },
     "name": "Event Grid System Topics",
     "description": "This module deploys an Event Grid System Topic."
@@ -116,7 +116,7 @@
         "description": "Event subscription configuration."
       }
     },
-    "resourceRoleAssignmentType": {
+    "externalResourceRoleAssignmentType": {
       "type": "object",
       "properties": {
         "resourceId": {
@@ -462,10 +462,10 @@
         "description": "Optional. Array of role assignments to create."
       }
     },
-    "resourceRoleAssignments": {
+    "externalResourceRoleAssignments": {
       "type": "array",
       "items": {
-        "$ref": "#/definitions/resourceRoleAssignmentType"
+        "$ref": "#/definitions/externalResourceRoleAssignmentType"
       },
       "defaultValue": [],
       "metadata": {
@@ -509,11 +509,27 @@
       {
         "name": "formattedRoleAssignments",
         "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
-        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName))))]"
+        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+      },
+      {
+        "name": "formattedExternalResourceRoleAssignments",
+        "count": "[length(coalesce(parameters('externalResourceRoleAssignments'), createArray()))]",
+        "input": "[union(coalesce(parameters('externalResourceRoleAssignments'), createArray())[copyIndex('formattedExternalResourceRoleAssignments')], createObject('roleDefinitionId', if(contains(coalesce(parameters('externalResourceRoleAssignments'), createArray())[copyIndex('formattedExternalResourceRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('externalResourceRoleAssignments'), createArray())[copyIndex('formattedExternalResourceRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('externalResourceRoleAssignments'), createArray())[copyIndex('formattedExternalResourceRoleAssignments')].roleDefinitionIdOrName))))]"
       }
     ],
     "formattedUserAssignedIdentities": "[reduce(map(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createArray()), lambda('id', createObject(format('{0}', lambdaVariables('id')), createObject()))), createObject(), lambda('cur', 'next', union(lambdaVariables('cur'), lambdaVariables('next'))))]",
     "identity": "[if(not(empty(parameters('managedIdentities'))), createObject('type', if(coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false()), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'SystemAssigned,UserAssigned', 'SystemAssigned'), if(not(empty(coalesce(tryGet(parameters('managedIdentities'), 'userAssignedResourceIds'), createObject()))), 'UserAssigned', null())), 'userAssignedIdentities', if(not(empty(variables('formattedUserAssignedIdentities'))), variables('formattedUserAssignedIdentities'), null())), null())]",
+    "builtInRoleNames": {
+      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+      "EventGrid Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '1e241071-0855-49ea-94dc-649edcd759de')]",
+      "EventGrid Data Sender": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'd5a91429-5739-47e2-a06b-3470a27159e7')]",
+      "EventGrid EventSubscription Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '428e0ff0-5e57-4d9c-a221-2c70d0e0a443')]",
+      "EventGrid EventSubscription Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '2414bbcf-6497-4faf-8c65-045460748405')]",
+      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+    },
     "enableReferencedModulesTelemetry": false
   },
   "resources": {
@@ -847,13 +863,13 @@
       },
       "dependsOn": [
         "systemTopic",
-        "systemTopic_resourceRoleAssignments"
+        "systemTopic_externalResourceRoleAssignments"
       ]
     },
-    "systemTopic_resourceRoleAssignments": {
+    "systemTopic_externalResourceRoleAssignments": {
       "copy": {
-        "name": "systemTopic_resourceRoleAssignments",
-        "count": "[length(parameters('resourceRoleAssignments'))]"
+        "name": "systemTopic_externalResourceRoleAssignments",
+        "count": "[length(variables('formattedExternalResourceRoleAssignments'))]"
       },
       "condition": "[coalesce(tryGet(parameters('managedIdentities'), 'systemAssigned'), false())]",
       "type": "Microsoft.Resources/deployments",
@@ -866,9 +882,11 @@
         "mode": "Incremental",
         "parameters": {
           "resourceId": {
-            "value": "[parameters('resourceRoleAssignments')[copyIndex()].resourceId]"
+            "value": "[variables('formattedExternalResourceRoleAssignments')[copyIndex()].resourceId]"
           },
-          "roleDefinitionId": "[if(contains(parameters('resourceRoleAssignments')[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), createObject('value', parameters('resourceRoleAssignments')[copyIndex()].roleDefinitionIdOrName), createObject('value', subscriptionResourceId('Microsoft.Authorization/roleDefinitions', parameters('resourceRoleAssignments')[copyIndex()].roleDefinitionIdOrName)))]",
+          "roleDefinitionId": {
+            "value": "[variables('formattedExternalResourceRoleAssignments')[copyIndex()].roleDefinitionId]"
+          },
           "principalId": {
             "value": "[reference('systemTopic', '2025-02-15', 'full').identity.principalId]"
           },
@@ -876,10 +894,10 @@
             "value": "ServicePrincipal"
           },
           "description": {
-            "value": "[coalesce(tryGet(parameters('resourceRoleAssignments')[copyIndex()], 'description'), format('Role assignment for Event Grid System Topic {0}', parameters('name')))]"
+            "value": "[coalesce(tryGet(variables('formattedExternalResourceRoleAssignments')[copyIndex()], 'description'), format('Role assignment for Event Grid System Topic {0}', parameters('name')))]"
           },
           "roleName": {
-            "value": "[coalesce(tryGet(parameters('resourceRoleAssignments')[copyIndex()], 'roleName'), parameters('resourceRoleAssignments')[copyIndex()].roleDefinitionIdOrName)]"
+            "value": "[coalesce(tryGet(variables('formattedExternalResourceRoleAssignments')[copyIndex()], 'roleName'), variables('formattedExternalResourceRoleAssignments')[copyIndex()].roleDefinitionIdOrName)]"
           },
           "enableTelemetry": {
             "value": "[variables('enableReferencedModulesTelemetry')]"

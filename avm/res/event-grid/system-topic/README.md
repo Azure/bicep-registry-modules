@@ -69,17 +69,17 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         name: 'egstmin001'
       }
     ]
-    location: '<location>'
-    managedIdentities: {
-      systemAssigned: true
-    }
-    resourceRoleAssignments: [
+    externalResourceRoleAssignments: [
       {
         description: 'Allow Event Grid System Topic to send messages to storage queue'
         resourceId: '<resourceId>'
         roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
       }
     ]
+    location: '<location>'
+    managedIdentities: {
+      systemAssigned: true
+    }
   }
 }
 ```
@@ -126,15 +126,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         }
       ]
     },
-    "location": {
-      "value": "<location>"
-    },
-    "managedIdentities": {
-      "value": {
-        "systemAssigned": true
-      }
-    },
-    "resourceRoleAssignments": {
+    "externalResourceRoleAssignments": {
       "value": [
         {
           "description": "Allow Event Grid System Topic to send messages to storage queue",
@@ -142,6 +134,14 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
           "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
         }
       ]
+    },
+    "location": {
+      "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": true
+      }
     }
   }
 }
@@ -179,17 +179,17 @@ param eventSubscriptions = [
     name: 'egstmin001'
   }
 ]
-param location = '<location>'
-param managedIdentities = {
-  systemAssigned: true
-}
-param resourceRoleAssignments = [
+param externalResourceRoleAssignments = [
   {
     description: 'Allow Event Grid System Topic to send messages to storage queue'
     resourceId: '<resourceId>'
     roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
   }
 ]
+param location = '<location>'
+param managedIdentities = {
+  systemAssigned: true
+}
 ```
 
 </details>
@@ -444,15 +444,7 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         }
       }
     ]
-    location: '<location>'
-    lock: {
-      kind: 'CanNotDelete'
-      name: 'myCustomLockName'
-    }
-    managedIdentities: {
-      systemAssigned: true
-    }
-    resourceRoleAssignments: [
+    externalResourceRoleAssignments: [
       {
         description: 'Allow Event Grid System Topic to write to storage queue'
         resourceId: '<resourceId>'
@@ -464,6 +456,14 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
       }
     ]
+    location: '<location>'
+    lock: {
+      kind: 'CanNotDelete'
+      name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: true
+    }
     roleAssignments: [
       {
         name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
@@ -556,6 +556,20 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         }
       ]
     },
+    "externalResourceRoleAssignments": {
+      "value": [
+        {
+          "description": "Allow Event Grid System Topic to write to storage queue",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "974c5e8b-45b9-4653-ba55-5f855dd0fb88"
+        },
+        {
+          "description": "Allow Event Grid System Topic to send messages to storage queue",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -569,20 +583,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
       "value": {
         "systemAssigned": true
       }
-    },
-    "resourceRoleAssignments": {
-      "value": [
-        {
-          "description": "Allow Event Grid System Topic to write to storage queue",
-          "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "974c5e8b-45b9-4653-ba55-5f855dd0fb88"
-        },
-        {
-          "description": "Allow Event Grid System Topic to send messages to storage queue",
-          "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
-        }
-      ]
     },
     "roleAssignments": {
       "value": [
@@ -668,15 +668,7 @@ param eventSubscriptions = [
     }
   }
 ]
-param location = '<location>'
-param lock = {
-  kind: 'CanNotDelete'
-  name: 'myCustomLockName'
-}
-param managedIdentities = {
-  systemAssigned: true
-}
-param resourceRoleAssignments = [
+param externalResourceRoleAssignments = [
   {
     description: 'Allow Event Grid System Topic to write to storage queue'
     resourceId: '<resourceId>'
@@ -688,6 +680,14 @@ param resourceRoleAssignments = [
     roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
   }
 ]
+param location = '<location>'
+param lock = {
+  kind: 'CanNotDelete'
+  name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: true
+}
 param roleAssignments = [
   {
     name: 'c9beca28-efcf-4d1d-99aa-8f334484a2c2'
@@ -777,6 +777,13 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         }
       }
     ]
+    externalResourceRoleAssignments: [
+      {
+        description: 'Allow Event Grid System Topic to send messages to storage queue'
+        resourceId: '<resourceId>'
+        roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
@@ -785,13 +792,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
     managedIdentities: {
       systemAssigned: true
     }
-    resourceRoleAssignments: [
-      {
-        description: 'Allow Event Grid System Topic to send messages to storage queue'
-        resourceId: '<resourceId>'
-        roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
-      }
-    ]
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -870,6 +870,15 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
         }
       ]
     },
+    "externalResourceRoleAssignments": {
+      "value": [
+        {
+          "description": "Allow Event Grid System Topic to send messages to storage queue",
+          "resourceId": "<resourceId>",
+          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -883,15 +892,6 @@ module systemTopic 'br/public:avm/res/event-grid/system-topic:<version>' = {
       "value": {
         "systemAssigned": true
       }
-    },
-    "resourceRoleAssignments": {
-      "value": [
-        {
-          "description": "Allow Event Grid System Topic to send messages to storage queue",
-          "resourceId": "<resourceId>",
-          "roleDefinitionIdOrName": "c6a89b2d-59bc-44d0-9896-0f6e12d7b80a"
-        }
-      ]
     },
     "tags": {
       "value": {
@@ -961,6 +961,13 @@ param eventSubscriptions = [
     }
   }
 ]
+param externalResourceRoleAssignments = [
+  {
+    description: 'Allow Event Grid System Topic to send messages to storage queue'
+    resourceId: '<resourceId>'
+    roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
@@ -969,13 +976,6 @@ param lock = {
 param managedIdentities = {
   systemAssigned: true
 }
-param resourceRoleAssignments = [
-  {
-    description: 'Allow Event Grid System Topic to send messages to storage queue'
-    resourceId: '<resourceId>'
-    roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a'
-  }
-]
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
@@ -1003,10 +1003,10 @@ param tags = {
 | [`diagnosticSettings`](#parameter-diagnosticsettings) | array | The diagnostic settings of the service. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
 | [`eventSubscriptions`](#parameter-eventsubscriptions) | array | Event subscriptions to deploy. |
+| [`externalResourceRoleAssignments`](#parameter-externalresourceroleassignments) | array | Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`lock`](#parameter-lock) | object | The lock settings of the service. |
 | [`managedIdentities`](#parameter-managedidentities) | object | The managed identity definition for this resource. |
-| [`resourceRoleAssignments`](#parameter-resourceroleassignments) | array | Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs. |
 | [`roleAssignments`](#parameter-roleassignments) | array | Array of role assignments to create. |
 | [`tags`](#parameter-tags) | object | Tags of the resource. |
 
@@ -1296,6 +1296,56 @@ The retry policy for events.
 - Required: No
 - Type: object
 
+### Parameter: `externalResourceRoleAssignments`
+
+Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs.
+
+- Required: No
+- Type: array
+- Default: `[]`
+
+**Required parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`resourceId`](#parameter-externalresourceroleassignmentsresourceid) | string | The resource ID of the target resource to assign permissions to. |
+| [`roleDefinitionIdOrName`](#parameter-externalresourceroleassignmentsroledefinitionidorname) | string | The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe". |
+
+**Optional parameters**
+
+| Parameter | Type | Description |
+| :-- | :-- | :-- |
+| [`description`](#parameter-externalresourceroleassignmentsdescription) | string | Description of the role assignment. |
+| [`roleName`](#parameter-externalresourceroleassignmentsrolename) | string | Name of the role for logging purposes. |
+
+### Parameter: `externalResourceRoleAssignments.resourceId`
+
+The resource ID of the target resource to assign permissions to.
+
+- Required: Yes
+- Type: string
+
+### Parameter: `externalResourceRoleAssignments.roleDefinitionIdOrName`
+
+The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".
+
+- Required: Yes
+- Type: string
+
+### Parameter: `externalResourceRoleAssignments.description`
+
+Description of the role assignment.
+
+- Required: No
+- Type: string
+
+### Parameter: `externalResourceRoleAssignments.roleName`
+
+Name of the role for logging purposes.
+
+- Required: No
+- Type: string
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -1368,62 +1418,22 @@ The resource ID(s) to assign to the resource. Required if a user assigned identi
 - Required: No
 - Type: array
 
-### Parameter: `resourceRoleAssignments`
-
-Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs.
-
-- Required: No
-- Type: array
-- Default: `[]`
-
-**Required parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`resourceId`](#parameter-resourceroleassignmentsresourceid) | string | The resource ID of the target resource to assign permissions to. |
-| [`roleDefinitionIdOrName`](#parameter-resourceroleassignmentsroledefinitionidorname) | string | The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe". |
-
-**Optional parameters**
-
-| Parameter | Type | Description |
-| :-- | :-- | :-- |
-| [`description`](#parameter-resourceroleassignmentsdescription) | string | Description of the role assignment. |
-| [`roleName`](#parameter-resourceroleassignmentsrolename) | string | Name of the role for logging purposes. |
-
-### Parameter: `resourceRoleAssignments.resourceId`
-
-The resource ID of the target resource to assign permissions to.
-
-- Required: Yes
-- Type: string
-
-### Parameter: `resourceRoleAssignments.roleDefinitionIdOrName`
-
-The role definition ID (GUID) or full role definition resource ID. Example: "ba92f5b4-2d11-453d-a403-e96b0029c9fe" or "/subscriptions/{sub}/providers/Microsoft.Authorization/roleDefinitions/ba92f5b4-2d11-453d-a403-e96b0029c9fe".
-
-- Required: Yes
-- Type: string
-
-### Parameter: `resourceRoleAssignments.description`
-
-Description of the role assignment.
-
-- Required: No
-- Type: string
-
-### Parameter: `resourceRoleAssignments.roleName`
-
-Name of the role for logging purposes.
-
-- Required: No
-- Type: string
-
 ### Parameter: `roleAssignments`
 
 Array of role assignments to create.
 
 - Required: No
 - Type: array
+- Roles configurable by name:
+  - `'Contributor'`
+  - `'EventGrid Contributor'`
+  - `'EventGrid Data Sender'`
+  - `'EventGrid EventSubscription Contributor'`
+  - `'EventGrid EventSubscription Reader'`
+  - `'Owner'`
+  - `'Reader'`
+  - `'Role Based Access Control Administrator'`
+  - `'User Access Administrator'`
 
 **Required parameters**
 

@@ -135,7 +135,7 @@ module testDeployment '../../../main.bicep' = [
           principalType: 'ServicePrincipal'
         }
       ]
-      resourceRoleAssignments: [
+      externalResourceRoleAssignments: [
         {
           resourceId: nestedDependencies.outputs.storageAccountResourceId
           roleDefinitionIdOrName: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'

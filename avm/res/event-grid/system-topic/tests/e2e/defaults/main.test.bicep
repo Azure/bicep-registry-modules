@@ -88,7 +88,7 @@ module testDeployment '../../../main.bicep' = [
           }
         }
       ]
-      resourceRoleAssignments: [
+      externalResourceRoleAssignments: [
         {
           resourceId: nestedDependencies.outputs.storageAccountResourceId
           roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a' // Storage Queue Data Message Sender

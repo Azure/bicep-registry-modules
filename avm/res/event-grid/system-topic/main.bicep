@@ -25,7 +25,7 @@ import { roleAssignmentType } from 'br/public:avm/utl/types/avm-common-types:0.5
 param roleAssignments roleAssignmentType[]?
 
 @description('Optional. Array of role assignments to create on external resources. This is useful for scenarios where the system topic needs permissions on delivery or dead letter destinations (e.g., Storage Account, Service Bus). Each assignment specifies the target resource ID and role definition ID (GUID). Role names are not supported - use role definition GUIDs.')
-param resourceRoleAssignments resourceRoleAssignmentType[] = []
+param externalResourceRoleAssignments externalResourceRoleAssignmentType[] = []
 
 import { lockType } from 'br/public:avm/utl/types/avm-common-types:0.5.1'
 @description('Optional. The lock settings of the service.')
@@ -56,11 +56,52 @@ var identity = !empty(managedIdentities)
     }
   : null
 
+var builtInRoleNames = {
+  Contributor: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')
+  'EventGrid Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '1e241071-0855-49ea-94dc-649edcd759de'
+  )
+  'EventGrid Data Sender': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'd5a91429-5739-47e2-a06b-3470a27159e7'
+  )
+  'EventGrid EventSubscription Contributor': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '428e0ff0-5e57-4d9c-a221-2c70d0e0a443'
+  )
+  'EventGrid EventSubscription Reader': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '2414bbcf-6497-4faf-8c65-045460748405'
+  )
+  Owner: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')
+  Reader: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')
+  'Role Based Access Control Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    'f58310d9-a9f6-439a-9e8d-f62e7b41a168'
+  )
+  'User Access Administrator': subscriptionResourceId(
+    'Microsoft.Authorization/roleDefinitions',
+    '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9'
+  )
+}
+
 var formattedRoleAssignments = [
   for (roleAssignment, index) in (roleAssignments ?? []): union(roleAssignment, {
-    roleDefinitionId: contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+    roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(
+        roleAssignment.roleDefinitionIdOrName,
+        '/providers/Microsoft.Authorization/roleDefinitions/'
+      )
       ? roleAssignment.roleDefinitionIdOrName
-      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
+  })
+]
+
+var formattedExternalResourceRoleAssignments = [
+  for (assignment, index) in (externalResourceRoleAssignments ?? []): union(assignment, {
+    roleDefinitionId: contains(assignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+      ? assignment.roleDefinitionIdOrName
+      : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', assignment.roleDefinitionIdOrName)
   })
 ]
 
@@ -117,7 +158,7 @@ module systemTopics_eventSubscriptions 'event-subscription/main.bicep' = [
       retryPolicy: eventSubscription.?retryPolicy
     }
     dependsOn: [
-      systemTopic_resourceRoleAssignments
+      systemTopic_externalResourceRoleAssignments
     ]
   }
 ]
@@ -179,14 +220,12 @@ resource systemTopic_roleAssignments 'Microsoft.Authorization/roleAssignments@20
 ]
 
 // External resource role assignments using the pattern template
-module systemTopic_resourceRoleAssignments 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
-  for (assignment, index) in resourceRoleAssignments: if (managedIdentities.?systemAssigned ?? false) {
+module systemTopic_externalResourceRoleAssignments 'br/public:avm/ptn/authorization/resource-role-assignment:0.1.2' = [
+  for (assignment, index) in formattedExternalResourceRoleAssignments: if (managedIdentities.?systemAssigned ?? false) {
     name: '${uniqueString(deployment().name, location)}-EventGrid-SysTopic-ExtRoleAssign-${index}'
     params: {
       resourceId: assignment.resourceId
-      roleDefinitionId: contains(assignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
-        ? assignment.roleDefinitionIdOrName
-        : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', assignment.roleDefinitionIdOrName)
+      roleDefinitionId: assignment.roleDefinitionId
       principalId: systemTopic.identity.principalId
       principalType: 'ServicePrincipal'
       description: assignment.?description ?? 'Role assignment for Event Grid System Topic ${systemTopic.name}'
@@ -250,7 +289,7 @@ type eventSubscriptionType = {
 }
 
 @description('External resource role assignment configuration.')
-type resourceRoleAssignmentType = {
+type externalResourceRoleAssignmentType = {
   @description('Required. The resource ID of the target resource to assign permissions to.')
   resourceId: string
   
