@@ -68,33 +68,6 @@ module testDeployment '../../../main.bicep' = [
       source: nestedDependencies.outputs.storageAccountResourceId
       topicType: 'Microsoft.Storage.StorageAccounts'
       location: resourceLocation
-      managedIdentities: {
-        systemAssigned: true
-      }
-      eventSubscriptions: [
-        {
-          name: '${namePrefix}${serviceShort}001'
-          deliveryWithResourceIdentity: {
-            identity: {
-              type: 'SystemAssigned'
-            }
-            destination: {
-              endpointType: 'StorageQueue'
-              properties: {
-                resourceId: nestedDependencies.outputs.storageAccountResourceId
-                queueName: nestedDependencies.outputs.queueName
-              }
-            }
-          }
-        }
-      ]
-      externalResourceRoleAssignments: [
-        {
-          resourceId: nestedDependencies.outputs.storageAccountResourceId
-          roleDefinitionIdOrName: 'c6a89b2d-59bc-44d0-9896-0f6e12d7b80a' // Storage Queue Data Message Sender
-          description: 'Allow Event Grid System Topic to send messages to storage queue'
-        }
-      ]
     }
   }
 ]
