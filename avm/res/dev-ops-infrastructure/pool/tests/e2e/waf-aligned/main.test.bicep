@@ -77,6 +77,7 @@ module testDeployment '../../../main.bicep' = [
       images: [
         {
           wellKnownImageName: 'windows-2022/latest'
+          ephemeralType: 'CacheDisk'
         }
       ]
       fabricProfileSkuName: 'Standard_D2_v2'
@@ -90,6 +91,7 @@ module testDeployment '../../../main.bicep' = [
               azureDevOpsProjectName
             ]
             parallelism: 1
+            openAccess: false
           }
         ]
         permissionProfile: {

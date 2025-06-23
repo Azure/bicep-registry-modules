@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "15499300401811601696"
+      "templateHash": "15640152839449553255"
     },
     "name": "Managed DevOps Pool",
     "description": "This module deploys the Managed DevOps Pool resource."
@@ -124,6 +124,18 @@
             "description": "Optional. The percentage of the buffer to be allocated to this image."
           }
         },
+        "ephemeralType": {
+          "type": "string",
+          "allowedValues": [
+            "Automatic",
+            "CacheDisk",
+            "ResourceDisk"
+          ],
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. The ephemeral type of the image."
+          }
+        },
         "wellKnownImageName": {
           "type": "string",
           "nullable": true,
@@ -136,18 +148,6 @@
           "nullable": true,
           "metadata": {
             "description": "Conditional. The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set."
-          }
-        },
-        "ephemeralType": {
-          "type": "string",
-          "allowedValues": [
-            "Automatic",
-            "CacheDisk",
-            "ResourceDisk"
-          ],
-          "nullable": true,
-          "metadata": {
-            "description": "Optional. The ephemeral type of the image."
           }
         }
       },

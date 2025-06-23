@@ -363,6 +363,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
           'windows-2022'
         ]
         buffer: '*'
+        ephemeralType: 'Automatic'
         wellKnownImageName: 'windows-2022/latest'
       }
     ]
@@ -371,6 +372,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'AzureDevOps'
       organizations: [
         {
+          openAccess: false
           parallelism: 1
           projects: [
             '<azureDevOpsProjectName>'
@@ -383,10 +385,30 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       }
     }
     // Non-required parameters
+    diagnosticSettings: [
+      {
+        eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+        eventHubName: '<eventHubName>'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        name: 'customSetting'
+        storageAccountResourceId: '<storageAccountResourceId>'
+        workspaceResourceId: '<workspaceResourceId>'
+      }
+    ]
     location: '<location>'
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      systemAssigned: false
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     roleAssignments: [
       {
@@ -480,6 +502,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
             "windows-2022"
           ],
           "buffer": "*",
+          "ephemeralType": "Automatic",
           "wellKnownImageName": "windows-2022/latest"
         }
       ]
@@ -492,6 +515,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "AzureDevOps",
         "organizations": [
           {
+            "openAccess": false,
             "parallelism": 1,
             "projects": [
               "<azureDevOpsProjectName>"
@@ -505,6 +529,22 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       }
     },
     // Non-required parameters
+    "diagnosticSettings": {
+      "value": [
+        {
+          "eventHubAuthorizationRuleResourceId": "<eventHubAuthorizationRuleResourceId>",
+          "eventHubName": "<eventHubName>",
+          "metricCategories": [
+            {
+              "category": "AllMetrics"
+            }
+          ],
+          "name": "customSetting",
+          "storageAccountResourceId": "<storageAccountResourceId>",
+          "workspaceResourceId": "<workspaceResourceId>"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
     },
@@ -512,6 +552,14 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "systemAssigned": false,
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "roleAssignments": {
@@ -603,6 +651,7 @@ param images = [
       'windows-2022'
     ]
     buffer: '*'
+    ephemeralType: 'Automatic'
     wellKnownImageName: 'windows-2022/latest'
   }
 ]
@@ -611,6 +660,7 @@ param organizationProfile = {
   kind: 'AzureDevOps'
   organizations: [
     {
+      openAccess: false
       parallelism: 1
       projects: [
         '<azureDevOpsProjectName>'
@@ -623,10 +673,30 @@ param organizationProfile = {
   }
 }
 // Non-required parameters
+param diagnosticSettings = [
+  {
+    eventHubAuthorizationRuleResourceId: '<eventHubAuthorizationRuleResourceId>'
+    eventHubName: '<eventHubName>'
+    metricCategories: [
+      {
+        category: 'AllMetrics'
+      }
+    ]
+    name: 'customSetting'
+    storageAccountResourceId: '<storageAccountResourceId>'
+    workspaceResourceId: '<workspaceResourceId>'
+  }
+]
 param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  systemAssigned: false
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param roleAssignments = [
   {
@@ -693,6 +763,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     fabricProfileSkuName: 'Standard_D2_v2'
     images: [
       {
+        ephemeralType: 'CacheDisk'
         wellKnownImageName: 'windows-2022/latest'
       }
     ]
@@ -701,6 +772,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
       kind: 'AzureDevOps'
       organizations: [
         {
+          openAccess: false
           parallelism: 1
           projects: [
             '<azureDevOpsProjectName>'
@@ -753,6 +825,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
     "images": {
       "value": [
         {
+          "ephemeralType": "CacheDisk",
           "wellKnownImageName": "windows-2022/latest"
         }
       ]
@@ -765,6 +838,7 @@ module pool 'br/public:avm/res/dev-ops-infrastructure/pool:<version>' = {
         "kind": "AzureDevOps",
         "organizations": [
           {
+            "openAccess": false,
             "parallelism": 1,
             "projects": [
               "<azureDevOpsProjectName>"
@@ -811,6 +885,7 @@ param devCenterProjectResourceId = '<devCenterProjectResourceId>'
 param fabricProfileSkuName = 'Standard_D2_v2'
 param images = [
   {
+    ephemeralType: 'CacheDisk'
     wellKnownImageName: 'windows-2022/latest'
   }
 ]
@@ -819,6 +894,7 @@ param organizationProfile = {
   kind: 'AzureDevOps'
   organizations: [
     {
+      openAccess: false
       parallelism: 1
       projects: [
         '<azureDevOpsProjectName>'

@@ -336,14 +336,14 @@ type imageType = {
   @description('Optional. The percentage of the buffer to be allocated to this image.')
   buffer: string?
 
+  @description('Optional. The ephemeral type of the image.')
+  ephemeralType: ('Automatic' | 'CacheDisk' | 'ResourceDisk')?
+
   @description('Conditional. The image to use from a well-known set of images made available to customers. Required if `resourceId` is not set.')
   wellKnownImageName: string?
 
   @description('Conditional. The specific resource id of the marketplace or compute gallery image. Required if `wellKnownImageName` is not set.')
   resourceId: string?
-
-  @description('Optional. The ephemeral type of the image.')
-  ephemeralType: ('Automatic' | 'CacheDisk' | 'ResourceDisk')?
 }
 
 @export()
