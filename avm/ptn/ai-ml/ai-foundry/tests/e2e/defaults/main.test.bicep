@@ -46,7 +46,7 @@ module testDeployment '../../../main.bicep' = [
       aiFoundryType: 'Basic' // Replace with the appropriate value
       userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test
       contentSafetyEnabled: false // Set to true or false as required
-      vmAdminPasswordOrKey: 'P@ssw0rd123!' // Replace with a secure password or key
+      vmAdminPasswordOrKey: '$tart12345' // Replace with a secure password or key
     }
   }
 ]

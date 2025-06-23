@@ -47,6 +47,10 @@ module testDeployment '../../../main.bicep' = [
       vmAdminPasswordOrKey: '$tart12345' // Replace with a secure password or key
       vmSize: 'Standard_DS4_v2'
       aiModelDeployments: [] // Simplified: no AI model deployments for testing to avoid conflicts
+      // Application Insights configuration - leaving defaults
+      existingApplicationInsightsResourceId: '' // Will create new Application Insights
+      applicationInsightsApplicationType: 'web'
+      applicationInsightsRetentionInDays: 90
     }
   }
 ]

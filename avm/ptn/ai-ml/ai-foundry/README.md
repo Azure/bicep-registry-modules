@@ -41,6 +41,8 @@ Creates an AI Foundry account and project with Standard Agent Services.
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleAssignments) |
 | `Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/sqlRoleDefinitions) |
 | `Microsoft.DocumentDB/databaseAccounts/tables` | [2024-11-15](https://learn.microsoft.com/en-us/azure/templates/Microsoft.DocumentDB/2024-11-15/databaseAccounts/tables) |
+| `Microsoft.Insights/components` | [2020-02-02](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2020-02-02/components) |
+| `microsoft.insights/components/linkedStorageAccounts` | [2020-03-01-preview](https://learn.microsoft.com/en-us/azure/templates/microsoft.insights/2020-03-01-preview/components/linkedStorageAccounts) |
 | `Microsoft.Insights/dataCollectionRuleAssociations` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRuleAssociations) |
 | `Microsoft.Insights/dataCollectionRules` | [2023-03-11](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2023-03-11/dataCollectionRules) |
 | `Microsoft.Insights/diagnosticSettings` | [2021-05-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Insights/2021-05-01-preview/diagnosticSettings) |
@@ -68,10 +70,10 @@ Creates an AI Foundry account and project with Standard Agent Services.
 | `Microsoft.Network/privateDnsZones/virtualNetworkLinks` | [2024-06-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-06-01/privateDnsZones/virtualNetworkLinks) |
 | `Microsoft.Network/privateEndpoints` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints) |
 | `Microsoft.Network/privateEndpoints` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints) |
-| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2024-05-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-05-01/privateEndpoints/privateDnsZoneGroups) |
-| `Microsoft.Network/publicIPAddresses` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/publicIPAddresses) |
+| `Microsoft.Network/privateEndpoints/privateDnsZoneGroups` | [2023-11-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2023-11-01/privateEndpoints/privateDnsZoneGroups) |
 | `Microsoft.Network/publicIPAddresses` | [2024-07-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-07-01/publicIPAddresses) |
+| `Microsoft.Network/publicIPAddresses` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/publicIPAddresses) |
 | `Microsoft.Network/virtualNetworks` | [2024-03-01](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Network/2024-03-01/virtualNetworks) |
 | `Microsoft.Search/searchServices` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices) |
 | `Microsoft.Search/searchServices/sharedPrivateLinkResources` | [2025-02-01-preview](https://learn.microsoft.com/en-us/azure/templates/Microsoft.Search/2025-02-01-preview/searchServices/sharedPrivateLinkResources) |
@@ -116,7 +118,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     aiFoundryType: 'Basic'
     contentSafetyEnabled: false
     name: '<name>'
-    vmAdminPasswordOrKey: 'P@ssw0rd123!'
+    vmAdminPasswordOrKey: '$tart12345'
     // Non-required parameters
     location: '<location>'
     userObjectId: '00000000-0000-0000-0000-000000000000'
@@ -147,7 +149,7 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
       "value": "<name>"
     },
     "vmAdminPasswordOrKey": {
-      "value": "P@ssw0rd123!"
+      "value": "$tart12345"
     },
     // Non-required parameters
     "location": {
@@ -174,7 +176,7 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 param aiFoundryType = 'Basic'
 param contentSafetyEnabled = false
 param name = '<name>'
-param vmAdminPasswordOrKey = 'P@ssw0rd123!'
+param vmAdminPasswordOrKey = '$tart12345'
 // Non-required parameters
 param location = '<location>'
 param userObjectId = '00000000-0000-0000-0000-000000000000'
@@ -203,6 +205,9 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     vmAdminPasswordOrKey: '$tart12345'
     // Non-required parameters
     aiModelDeployments: []
+    applicationInsightsApplicationType: 'web'
+    applicationInsightsRetentionInDays: 90
+    existingApplicationInsightsResourceId: ''
     location: '<location>'
     userObjectId: '00000000-0000-0000-0000-000000000000'
     vmSize: 'Standard_DS4_v2'
@@ -239,6 +244,15 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "aiModelDeployments": {
       "value": []
     },
+    "applicationInsightsApplicationType": {
+      "value": "web"
+    },
+    "applicationInsightsRetentionInDays": {
+      "value": 90
+    },
+    "existingApplicationInsightsResourceId": {
+      "value": ""
+    },
     "location": {
       "value": "<location>"
     },
@@ -269,6 +283,9 @@ param name = '<name>'
 param vmAdminPasswordOrKey = '$tart12345'
 // Non-required parameters
 param aiModelDeployments = []
+param applicationInsightsApplicationType = 'web'
+param applicationInsightsRetentionInDays = 90
+param existingApplicationInsightsResourceId = ''
 param location = '<location>'
 param userObjectId = '00000000-0000-0000-0000-000000000000'
 param vmSize = 'Standard_DS4_v2'
@@ -294,8 +311,11 @@ param vmSize = 'Standard_DS4_v2'
 | :-- | :-- | :-- |
 | [`aiModelDeployments`](#parameter-aimodeldeployments) | array | Specifies the OpenAI deployments to create. |
 | [`allowedIpAddress`](#parameter-allowedipaddress) | string | IP address to allow access to the jump-box VM. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. If not specified, all IP addresses are allowed. |
+| [`applicationInsightsApplicationType`](#parameter-applicationinsightsapplicationtype) | string | Application type for Application Insights. |
+| [`applicationInsightsRetentionInDays`](#parameter-applicationinsightsretentionindays) | int | Retention period in days for Application Insights data. |
 | [`cosmosDatabases`](#parameter-cosmosdatabases) | array | List of Cosmos DB databases to create. |
 | [`enableTelemetry`](#parameter-enabletelemetry) | bool | Enable/Disable usage telemetry for module. |
+| [`existingApplicationInsightsResourceId`](#parameter-existingapplicationinsightsresourceid) | string | Resource ID of an existing Application Insights resource. If provided, the existing resource will be used instead of creating a new one. |
 | [`location`](#parameter-location) | string | Location for all Resources. |
 | [`networkAcls`](#parameter-networkacls) | object | A collection of rules governing the accessibility from specific network locations. |
 | [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project. |
@@ -484,6 +504,31 @@ IP address to allow access to the jump-box VM. This is necessary to provide secu
 - Required: No
 - Type: string
 - Default: `''`
+
+### Parameter: `applicationInsightsApplicationType`
+
+Application type for Application Insights.
+
+- Required: No
+- Type: string
+- Default: `'web'`
+- Allowed:
+  ```Bicep
+  [
+    'other'
+    'web'
+  ]
+  ```
+
+### Parameter: `applicationInsightsRetentionInDays`
+
+Retention period in days for Application Insights data.
+
+- Required: No
+- Type: int
+- Default: `90`
+- MinValue: 30
+- MaxValue: 730
 
 ### Parameter: `cosmosDatabases`
 
@@ -712,6 +757,14 @@ Enable/Disable usage telemetry for module.
 - Type: bool
 - Default: `True`
 
+### Parameter: `existingApplicationInsightsResourceId`
+
+Resource ID of an existing Application Insights resource. If provided, the existing resource will be used instead of creating a new one.
+
+- Required: No
+- Type: string
+- Default: `''`
+
 ### Parameter: `location`
 
 Location for all Resources.
@@ -781,6 +834,10 @@ Specifies the size of the jump-box Virtual Machine.
 | `azureAiProjectName` | string | Name of the deployed Azure AI Project. |
 | `azureAiSearchName` | string | Name of the deployed Azure AI Search service. |
 | `azureAiServicesName` | string | Name of the deployed Azure AI Services account. |
+| `azureApplicationInsightsConnectionString` | string | Connection string of the deployed Azure Application Insights component. |
+| `azureApplicationInsightsInstrumentationKey` | string | Instrumentation key of the deployed Azure Application Insights component. |
+| `azureApplicationInsightsName` | string | Name of the deployed Azure Application Insights component. |
+| `azureApplicationInsightsResourceId` | string | Resource ID of the deployed Azure Application Insights component. |
 | `azureBastionName` | string | Name of the deployed Azure Bastion host. |
 | `azureContainerRegistryName` | string | Name of the deployed Azure Container Registry. |
 | `azureCosmosAccountName` | string | Name of the deployed Azure Cosmos DB account. |
@@ -801,6 +858,7 @@ This section gives you an overview of all local-referenced module files (i.e., o
 | `br/public:avm/res/cognitive-services/account:0.11.0` | Remote reference |
 | `br/public:avm/res/container-registry/registry:0.9.1` | Remote reference |
 | `br/public:avm/res/document-db/database-account:0.15.0` | Remote reference |
+| `br/public:avm/res/insights/component:0.6.0` | Remote reference |
 | `br/public:avm/res/key-vault/vault:0.13.0` | Remote reference |
 | `br/public:avm/res/network/private-dns-zone:0.7.1` | Remote reference |
 | `br/public:avm/res/search/search-service:0.10.0` | Remote reference |

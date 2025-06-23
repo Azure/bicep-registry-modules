@@ -26,6 +26,15 @@ param aiServicesName string
 @description('Azure Search Service Name')
 param nameFormatted string
 
+@description('Optional. Name of the Application Insights resource')
+param applicationInsightsName string = ''
+
+@description('Optional. Resource ID of the Application Insights resource')
+param applicationInsightsResourceId string = ''
+
+@description('Optional. Connection string of the Application Insights resource')
+param applicationInsightsConnectionString string = ''
+
 @description('Name of the container for project uploads')
 param projUploadsContainerName string = ''
 
@@ -127,6 +136,20 @@ resource project_connection_cosmosdb 'Microsoft.CognitiveServices/accounts/proje
       ApiType: 'Azure'
       ResourceId: cosmosDBAccount.id
       location: cosmosDBAccount.location
+    }
+  }
+}
+
+resource project_connection_application_insights 'Microsoft.CognitiveServices/accounts/projects/connections@2025-04-01-preview' = if (toLower(aiFoundryType) != 'basic' && !empty(applicationInsightsName)) {
+  name: applicationInsightsName
+  parent: project
+  properties: {
+    category: 'ApplicationInsights'
+    target: applicationInsightsConnectionString
+    authType: 'AAD'
+    metadata: {
+      ApiType: 'Azure'
+      ResourceId: applicationInsightsResourceId
     }
   }
 }

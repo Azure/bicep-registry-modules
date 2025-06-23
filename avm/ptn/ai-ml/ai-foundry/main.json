@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "13395826417772188955"
+      "templateHash": "2952548309206400588"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -396,6 +396,33 @@
       "type": "bool",
       "metadata": {
         "description": "Required. Whether to include Azure AI Content Safety in the deployment."
+      }
+    },
+    "existingApplicationInsightsResourceId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. Resource ID of an existing Application Insights resource. If provided, the existing resource will be used instead of creating a new one."
+      }
+    },
+    "applicationInsightsApplicationType": {
+      "type": "string",
+      "defaultValue": "web",
+      "allowedValues": [
+        "web",
+        "other"
+      ],
+      "metadata": {
+        "description": "Optional. Application type for Application Insights."
+      }
+    },
+    "applicationInsightsRetentionInDays": {
+      "type": "int",
+      "defaultValue": 90,
+      "minValue": 30,
+      "maxValue": 730,
+      "metadata": {
+        "description": "Optional. Retention period in days for Application Insights data."
       }
     },
     "networkAcls": {
@@ -31857,6 +31884,864 @@
         "network"
       ]
     },
+    "applicationInsights": {
+      "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[take(format('{0}-application-insights-deployment', parameters('name')), 64)]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "name": {
+            "value": "[format('ai{0}{1}', parameters('name'), variables('resourceToken'))]"
+          },
+          "location": {
+            "value": "[parameters('location')]"
+          },
+          "existingApplicationInsightsResourceId": {
+            "value": "[parameters('existingApplicationInsightsResourceId')]"
+          },
+          "logAnalyticsWorkspaceResourceId": {
+            "value": ""
+          },
+          "applicationType": {
+            "value": "[parameters('applicationInsightsApplicationType')]"
+          },
+          "retentionInDays": {
+            "value": "[parameters('applicationInsightsRetentionInDays')]"
+          },
+          "enableTelemetry": {
+            "value": "[parameters('enableTelemetry')]"
+          },
+          "tags": {
+            "value": "[variables('allTags')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.36.1.42791",
+              "templateHash": "17606672138971944529"
+            }
+          },
+          "parameters": {
+            "name": {
+              "type": "string",
+              "metadata": {
+                "description": "Name of the Application Insights resource."
+              }
+            },
+            "location": {
+              "type": "string",
+              "metadata": {
+                "description": "Specifies the location for all the Azure resources."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "defaultValue": {},
+              "metadata": {
+                "description": "Optional. Tags to be applied to the resources."
+              }
+            },
+            "existingApplicationInsightsResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of an existing Application Insights resource. If provided, the existing resource will be used instead of creating a new one."
+              }
+            },
+            "logAnalyticsWorkspaceResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of the Log Analytics workspace to connect Application Insights to."
+              }
+            },
+            "enableTelemetry": {
+              "type": "bool",
+              "defaultValue": true,
+              "metadata": {
+                "description": "Optional. Enable/Disable usage telemetry for module."
+              }
+            },
+            "applicationType": {
+              "type": "string",
+              "defaultValue": "web",
+              "allowedValues": [
+                "web",
+                "other"
+              ],
+              "metadata": {
+                "description": "Optional. Application type for Application Insights."
+              }
+            },
+            "retentionInDays": {
+              "type": "int",
+              "defaultValue": 90,
+              "minValue": 30,
+              "maxValue": 730,
+              "metadata": {
+                "description": "Optional. Retention period in days for Application Insights data."
+              }
+            }
+          },
+          "variables": {
+            "nameFormatted": "[take(toLower(parameters('name')), 260)]",
+            "useExistingAppInsights": "[not(empty(parameters('existingApplicationInsightsResourceId')))]"
+          },
+          "resources": [
+            {
+              "condition": "[not(variables('useExistingAppInsights'))]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[take(format('{0}-appinsights-deployment', variables('nameFormatted')), 64)]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "name": {
+                    "value": "[variables('nameFormatted')]"
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "kind": {
+                    "value": "[parameters('applicationType')]"
+                  },
+                  "workspaceResourceId": {
+                    "value": "[parameters('logAnalyticsWorkspaceResourceId')]"
+                  },
+                  "retentionInDays": {
+                    "value": "[parameters('retentionInDays')]"
+                  },
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  },
+                  "enableTelemetry": {
+                    "value": "[parameters('enableTelemetry')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "languageVersion": "2.0",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.33.93.31351",
+                      "templateHash": "5735496719243704506"
+                    },
+                    "name": "Application Insights",
+                    "description": "This component deploys an Application Insights instance."
+                  },
+                  "definitions": {
+                    "diagnosticSettingFullType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of the diagnostic setting."
+                          }
+                        },
+                        "logCategoriesAndGroups": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category for a resource type this setting is applied to. Set the specific logs to collect here."
+                                }
+                              },
+                              "categoryGroup": {
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Name of a Diagnostic Log category group for a resource type this setting is applied to. Set to `allLogs` to collect all logs."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of logs that will be streamed. \"allLogs\" includes all possible logs for the resource. Set to `[]` to disable log collection."
+                          }
+                        },
+                        "metricCategories": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "category": {
+                                "type": "string",
+                                "metadata": {
+                                  "description": "Required. Name of a Diagnostic Metric category for a resource type this setting is applied to. Set to `AllMetrics` to collect all metrics."
+                                }
+                              },
+                              "enabled": {
+                                "type": "bool",
+                                "nullable": true,
+                                "metadata": {
+                                  "description": "Optional. Enable or disable the category explicitly. Default is `true`."
+                                }
+                              }
+                            }
+                          },
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name of metrics that will be streamed. \"allMetrics\" includes all possible metrics for the resource. Set to `[]` to disable metric collection."
+                          }
+                        },
+                        "logAnalyticsDestinationType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "AzureDiagnostics",
+                            "Dedicated"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. A string indicating whether the export to Log Analytics should use the default destination type, i.e. AzureDiagnostics, or use a destination type."
+                          }
+                        },
+                        "workspaceResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic log analytics workspace. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "storageAccountResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic storage account. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "eventHubAuthorizationRuleResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Resource ID of the diagnostic event hub authorization rule for the Event Hubs namespace in which the event hub should be created or streamed to."
+                          }
+                        },
+                        "eventHubName": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Name of the diagnostic event hub within the namespace to which logs are streamed. Without this, an event hub is created for each log category. For security reasons, it is recommended to set diagnostic settings to send data to either storage account, log analytics workspace or event hub."
+                          }
+                        },
+                        "marketplacePartnerResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic Logs."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a diagnostic setting. To be used if both logs & metrics are supported by the resource provider.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+                        }
+                      }
+                    },
+                    "lockType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the name of lock."
+                          }
+                        },
+                        "kind": {
+                          "type": "string",
+                          "allowedValues": [
+                            "CanNotDelete",
+                            "None",
+                            "ReadOnly"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Specify the type of lock."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a lock.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.5.1"
+                        }
+                      }
+                    },
+                    "roleAssignmentType": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The name (as GUID) of the role assignment. If not provided, a GUID will be generated."
+                          }
+                        },
+                        "roleDefinitionIdOrName": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The role to assign. You can provide either the display name of the role definition, the role definition GUID, or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                          }
+                        },
+                        "principalId": {
+                          "type": "string",
+                          "metadata": {
+                            "description": "Required. The principal ID of the principal (user/group/identity) to assign the role to."
+                          }
+                        },
+                        "principalType": {
+                          "type": "string",
+                          "allowedValues": [
+                            "Device",
+                            "ForeignGroup",
+                            "Group",
+                            "ServicePrincipal",
+                            "User"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The principal type of the assigned principal ID."
+                          }
+                        },
+                        "description": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The description of the role assignment."
+                          }
+                        },
+                        "condition": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to. e.g.: @Resource[Microsoft.Storage/storageAccounts/blobServices/containers:ContainerName] StringEqualsIgnoreCase \"foo_storage_container\"."
+                          }
+                        },
+                        "conditionVersion": {
+                          "type": "string",
+                          "allowedValues": [
+                            "2.0"
+                          ],
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. Version of the condition."
+                          }
+                        },
+                        "delegatedManagedIdentityResourceId": {
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {
+                            "description": "Optional. The Resource Id of the delegated managed identity resource."
+                          }
+                        }
+                      },
+                      "metadata": {
+                        "description": "An AVM-aligned type for a role assignment.",
+                        "__bicep_imported_from!": {
+                          "sourceTemplate": "br:mcr.microsoft.com/bicep/avm/utl/types/avm-common-types:0.3.0"
+                        }
+                      }
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Name of the Application Insights."
+                      }
+                    },
+                    "applicationType": {
+                      "type": "string",
+                      "defaultValue": "web",
+                      "allowedValues": [
+                        "web",
+                        "other"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Application type."
+                      }
+                    },
+                    "workspaceResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. Resource ID of the log analytics workspace which the data will be ingested to. This property is required to create an application with this API version. Applications from older versions will not have this property."
+                      }
+                    },
+                    "disableIpMasking": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Disable IP masking. Default value is set to true."
+                      }
+                    },
+                    "disableLocalAuth": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Disable Non-AAD based Auth. Default value is set to false."
+                      }
+                    },
+                    "forceCustomerStorageForProfiler": {
+                      "type": "bool",
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Optional. Force users to create their own storage account for profiler and debugger."
+                      }
+                    },
+                    "linkedStorageAccountResourceId": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Linked storage account resource ID."
+                      }
+                    },
+                    "publicNetworkAccessForIngestion": {
+                      "type": "string",
+                      "defaultValue": "Enabled",
+                      "allowedValues": [
+                        "Enabled",
+                        "Disabled"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The network access type for accessing Application Insights ingestion. - Enabled or Disabled."
+                      }
+                    },
+                    "publicNetworkAccessForQuery": {
+                      "type": "string",
+                      "defaultValue": "Enabled",
+                      "allowedValues": [
+                        "Enabled",
+                        "Disabled"
+                      ],
+                      "metadata": {
+                        "description": "Optional. The network access type for accessing Application Insights query. - Enabled or Disabled."
+                      }
+                    },
+                    "retentionInDays": {
+                      "type": "int",
+                      "defaultValue": 365,
+                      "allowedValues": [
+                        30,
+                        60,
+                        90,
+                        120,
+                        180,
+                        270,
+                        365,
+                        550,
+                        730
+                      ],
+                      "metadata": {
+                        "description": "Optional. Retention period in days."
+                      }
+                    },
+                    "samplingPercentage": {
+                      "type": "int",
+                      "defaultValue": 100,
+                      "minValue": 0,
+                      "maxValue": 100,
+                      "metadata": {
+                        "description": "Optional. Percentage of the data produced by the application being monitored that is being sampled for Application Insights telemetry."
+                      }
+                    },
+                    "flowType": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Used by the Application Insights system to determine what kind of flow this component was created by. This is to be set to 'Bluefield' when creating/updating a component via the REST API."
+                      }
+                    },
+                    "requestSource": {
+                      "type": "string",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Describes what tool created this Application Insights component. Customers using this API should set this to the default 'rest'."
+                      }
+                    },
+                    "kind": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The kind of application that this component refers to, used to customize UI. This value is a freeform string, values should typically be one of the following: web, ios, other, store, java, phone."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().location]",
+                      "metadata": {
+                        "description": "Optional. Location for all Resources."
+                      }
+                    },
+                    "lock": {
+                      "$ref": "#/definitions/lockType",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The lock settings of the service."
+                      }
+                    },
+                    "roleAssignments": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/roleAssignmentType"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Array of role assignments to create."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. Tags of the resource."
+                      }
+                    },
+                    "enableTelemetry": {
+                      "type": "bool",
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Optional. Enable/Disable usage telemetry for module."
+                      }
+                    },
+                    "diagnosticSettings": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/diagnosticSettingFullType"
+                      },
+                      "nullable": true,
+                      "metadata": {
+                        "description": "Optional. The diagnostic settings of the service."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "copy": [
+                      {
+                        "name": "formattedRoleAssignments",
+                        "count": "[length(coalesce(parameters('roleAssignments'), createArray()))]",
+                        "input": "[union(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')], createObject('roleDefinitionId', coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex('formattedRoleAssignments')].roleDefinitionIdOrName)))))]"
+                      }
+                    ],
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Role Based Access Control Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]",
+                      "Monitoring Metrics Publisher": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')]",
+                      "Application Insights Component Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'ae349356-3a1b-4a5e-921d-050484c6347e')]",
+                      "Application Insights Snapshot Debugger": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '08954f03-6346-4c2e-81c0-ec3a5cfae23b')]",
+                      "Monitoring Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '749f88d5-cbae-40b8-bcfc-e573ddc772fa')]"
+                    }
+                  },
+                  "resources": {
+                    "avmTelemetry": {
+                      "condition": "[parameters('enableTelemetry')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2024-03-01",
+                      "name": "[format('46d3xbcp.res.insights-component.{0}.{1}', replace('0.6.0', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
+                      "properties": {
+                        "mode": "Incremental",
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "resources": [],
+                          "outputs": {
+                            "telemetry": {
+                              "type": "String",
+                              "value": "For more information, see https://aka.ms/avm/TelemetryInfo"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "appInsights": {
+                      "type": "Microsoft.Insights/components",
+                      "apiVersion": "2020-02-02",
+                      "name": "[parameters('name')]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
+                      "kind": "[parameters('kind')]",
+                      "properties": {
+                        "Application_Type": "[parameters('applicationType')]",
+                        "DisableIpMasking": "[parameters('disableIpMasking')]",
+                        "DisableLocalAuth": "[parameters('disableLocalAuth')]",
+                        "ForceCustomerStorageForProfiler": "[parameters('forceCustomerStorageForProfiler')]",
+                        "WorkspaceResourceId": "[parameters('workspaceResourceId')]",
+                        "publicNetworkAccessForIngestion": "[parameters('publicNetworkAccessForIngestion')]",
+                        "publicNetworkAccessForQuery": "[parameters('publicNetworkAccessForQuery')]",
+                        "RetentionInDays": "[parameters('retentionInDays')]",
+                        "SamplingPercentage": "[parameters('samplingPercentage')]",
+                        "Flow_Type": "[parameters('flowType')]",
+                        "Request_Source": "[parameters('requestSource')]"
+                      }
+                    },
+                    "appInsights_roleAssignments": {
+                      "copy": {
+                        "name": "appInsights_roleAssignments",
+                        "count": "[length(coalesce(variables('formattedRoleAssignments'), createArray()))]"
+                      },
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "scope": "[format('Microsoft.Insights/components/{0}', parameters('name'))]",
+                      "name": "[coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'name'), guid(resourceId('Microsoft.Insights/components', parameters('name')), coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId, coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId))]",
+                      "properties": {
+                        "roleDefinitionId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].roleDefinitionId]",
+                        "principalId": "[coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()].principalId]",
+                        "description": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'description')]",
+                        "principalType": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'principalType')]",
+                        "condition": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition')]",
+                        "conditionVersion": "[if(not(empty(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'condition'))), coalesce(tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'conditionVersion'), '2.0'), null())]",
+                        "delegatedManagedIdentityResourceId": "[tryGet(coalesce(variables('formattedRoleAssignments'), createArray())[copyIndex()], 'delegatedManagedIdentityResourceId')]"
+                      },
+                      "dependsOn": [
+                        "appInsights"
+                      ]
+                    },
+                    "appInsights_lock": {
+                      "condition": "[and(not(empty(coalesce(parameters('lock'), createObject()))), not(equals(tryGet(parameters('lock'), 'kind'), 'None')))]",
+                      "type": "Microsoft.Authorization/locks",
+                      "apiVersion": "2020-05-01",
+                      "scope": "[format('Microsoft.Insights/components/{0}', parameters('name'))]",
+                      "name": "[coalesce(tryGet(parameters('lock'), 'name'), format('lock-{0}', parameters('name')))]",
+                      "properties": {
+                        "level": "[coalesce(tryGet(parameters('lock'), 'kind'), '')]",
+                        "notes": "[if(equals(tryGet(parameters('lock'), 'kind'), 'CanNotDelete'), 'Cannot delete resource or child resources.', 'Cannot delete or modify the resource or child resources.')]"
+                      },
+                      "dependsOn": [
+                        "appInsights"
+                      ]
+                    },
+                    "appInsights_diagnosticSettings": {
+                      "copy": {
+                        "name": "appInsights_diagnosticSettings",
+                        "count": "[length(coalesce(parameters('diagnosticSettings'), createArray()))]"
+                      },
+                      "type": "Microsoft.Insights/diagnosticSettings",
+                      "apiVersion": "2021-05-01-preview",
+                      "scope": "[format('Microsoft.Insights/components/{0}', parameters('name'))]",
+                      "name": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'name'), format('{0}-diagnosticSettings', parameters('name')))]",
+                      "properties": {
+                        "copy": [
+                          {
+                            "name": "metrics",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics'))))]",
+                            "input": {
+                              "category": "[coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')].category]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'metricCategories'), createArray(createObject('category', 'AllMetrics')))[copyIndex('metrics')], 'enabled'), true())]",
+                              "timeGrain": null
+                            }
+                          },
+                          {
+                            "name": "logs",
+                            "count": "[length(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs'))))]",
+                            "input": {
+                              "categoryGroup": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'categoryGroup')]",
+                              "category": "[tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'category')]",
+                              "enabled": "[coalesce(tryGet(coalesce(tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logCategoriesAndGroups'), createArray(createObject('categoryGroup', 'allLogs')))[copyIndex('logs')], 'enabled'), true())]"
+                            }
+                          }
+                        ],
+                        "storageAccountId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'storageAccountResourceId')]",
+                        "workspaceId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'workspaceResourceId')]",
+                        "eventHubAuthorizationRuleId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubAuthorizationRuleResourceId')]",
+                        "eventHubName": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'eventHubName')]",
+                        "marketplacePartnerId": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'marketplacePartnerResourceId')]",
+                        "logAnalyticsDestinationType": "[tryGet(coalesce(parameters('diagnosticSettings'), createArray())[copyIndex()], 'logAnalyticsDestinationType')]"
+                      },
+                      "dependsOn": [
+                        "appInsights"
+                      ]
+                    },
+                    "linkedStorageAccount": {
+                      "condition": "[not(empty(parameters('linkedStorageAccountResourceId')))]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('{0}-appInsights-linkedStorageAccount', uniqueString(deployment().name, parameters('location')))]",
+                      "properties": {
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
+                        },
+                        "mode": "Incremental",
+                        "parameters": {
+                          "appInsightsName": {
+                            "value": "[parameters('name')]"
+                          },
+                          "storageAccountResourceId": {
+                            "value": "[coalesce(parameters('linkedStorageAccountResourceId'), '')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.33.93.31351",
+                              "templateHash": "10861379689695100897"
+                            },
+                            "name": "Application Insights Linked Storage Account",
+                            "description": "This component deploys an Application Insights Linked Storage Account."
+                          },
+                          "parameters": {
+                            "appInsightsName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Conditional. The name of the parent Application Insights instance. Required if the template is used in a standalone deployment."
+                              }
+                            },
+                            "storageAccountResourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "Required. Linked storage account resource ID."
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "microsoft.insights/components/linkedStorageAccounts",
+                              "apiVersion": "2020-03-01-preview",
+                              "name": "[format('{0}/{1}', parameters('appInsightsName'), 'ServiceProfiler')]",
+                              "properties": {
+                                "linkedStorageAccount": "[parameters('storageAccountResourceId')]"
+                              }
+                            }
+                          ],
+                          "outputs": {
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the Linked Storage Account."
+                              },
+                              "value": "ServiceProfiler"
+                            },
+                            "resourceId": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource ID of the Linked Storage Account."
+                              },
+                              "value": "[resourceId('microsoft.insights/components/linkedStorageAccounts', parameters('appInsightsName'), 'ServiceProfiler')]"
+                            },
+                            "resourceGroupName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The resource group the agent pool was deployed into."
+                              },
+                              "value": "[resourceGroup().name]"
+                            }
+                          }
+                        }
+                      },
+                      "dependsOn": [
+                        "appInsights"
+                      ]
+                    }
+                  },
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the application insights component."
+                      },
+                      "value": "[parameters('name')]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the application insights component."
+                      },
+                      "value": "[resourceId('Microsoft.Insights/components', parameters('name'))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource group the application insights component was deployed into."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "applicationId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The application ID of the application insights component."
+                      },
+                      "value": "[reference('appInsights').AppId]"
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The location the resource was deployed into."
+                      },
+                      "value": "[reference('appInsights', '2020-02-02', 'full').location]"
+                    },
+                    "instrumentationKey": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Application Insights Instrumentation key. A read-only value that applications can use to identify the destination for all telemetry sent to Azure Application Insights. This value will be supplied upon construction of each new Application Insights component."
+                      },
+                      "value": "[reference('appInsights').InstrumentationKey]"
+                    },
+                    "connectionString": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Application Insights Connection String."
+                      },
+                      "value": "[reference('appInsights').ConnectionString]"
+                    }
+                  }
+                }
+              }
+            }
+          ],
+          "outputs": {
+            "applicationInsightsResourceId": {
+              "type": "string",
+              "value": "[if(variables('useExistingAppInsights'), parameters('existingApplicationInsightsResourceId'), reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-appinsights-deployment', variables('nameFormatted')), 64)), '2022-09-01').outputs.resourceId.value)]"
+            },
+            "applicationInsightsName": {
+              "type": "string",
+              "value": "[if(variables('useExistingAppInsights'), last(split(parameters('existingApplicationInsightsResourceId'), '/')), reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-appinsights-deployment', variables('nameFormatted')), 64)), '2022-09-01').outputs.name.value)]"
+            },
+            "applicationInsightsInstrumentationKey": {
+              "type": "string",
+              "value": "[if(variables('useExistingAppInsights'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('existingApplicationInsightsResourceId'), '/')[2], split(parameters('existingApplicationInsightsResourceId'), '/')[4]), 'Microsoft.Insights/components', last(split(parameters('existingApplicationInsightsResourceId'), '/'))), '2020-02-02').InstrumentationKey, reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-appinsights-deployment', variables('nameFormatted')), 64)), '2022-09-01').outputs.instrumentationKey.value)]"
+            },
+            "applicationInsightsConnectionString": {
+              "type": "string",
+              "value": "[if(variables('useExistingAppInsights'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('existingApplicationInsightsResourceId'), '/')[2], split(parameters('existingApplicationInsightsResourceId'), '/')[4]), 'Microsoft.Insights/components', last(split(parameters('existingApplicationInsightsResourceId'), '/'))), '2020-02-02').ConnectionString, reference(resourceId('Microsoft.Resources/deployments', take(format('{0}-appinsights-deployment', variables('nameFormatted')), 64)), '2022-09-01').outputs.connectionString.value)]"
+            }
+          }
+        }
+      }
+    },
     "storageAccount": {
       "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
       "type": "Microsoft.Resources/deployments",
@@ -51595,7 +52480,10 @@
           },
           "nameFormatted": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('aiSearch').outputs.searchName.value), createObject('value', ''))]",
           "projUploadsContainerName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.projUploadsContainerName.value), createObject('value', ''))]",
-          "sysDataContainerName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.sysDataContainerName.value), createObject('value', ''))]"
+          "sysDataContainerName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('storageAccount').outputs.sysDataContainerName.value), createObject('value', ''))]",
+          "applicationInsightsName": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('applicationInsights').outputs.applicationInsightsName.value), createObject('value', ''))]",
+          "applicationInsightsResourceId": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('applicationInsights').outputs.applicationInsightsResourceId.value), createObject('value', ''))]",
+          "applicationInsightsConnectionString": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), createObject('value', reference('applicationInsights').outputs.applicationInsightsConnectionString.value), createObject('value', ''))]"
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -51604,7 +52492,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "5920796108370055762"
+              "templateHash": "3287771554630195563"
             }
           },
           "parameters": {
@@ -51655,6 +52543,27 @@
               "type": "string",
               "metadata": {
                 "description": "Azure Search Service Name"
+              }
+            },
+            "applicationInsightsName": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Name of the Application Insights resource"
+              }
+            },
+            "applicationInsightsResourceId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Resource ID of the Application Insights resource"
+              }
+            },
+            "applicationInsightsConnectionString": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Optional. Connection string of the Application Insights resource"
               }
             },
             "projUploadsContainerName": {
@@ -51783,6 +52692,24 @@
               ]
             },
             {
+              "condition": "[and(not(equals(toLower(parameters('aiFoundryType')), 'basic')), not(empty(parameters('applicationInsightsName'))))]",
+              "type": "Microsoft.CognitiveServices/accounts/projects/connections",
+              "apiVersion": "2025-04-01-preview",
+              "name": "[format('{0}/{1}/{2}', parameters('aiServicesName'), parameters('defaultProjectName'), parameters('applicationInsightsName'))]",
+              "properties": {
+                "category": "ApplicationInsights",
+                "target": "[parameters('applicationInsightsConnectionString')]",
+                "authType": "AAD",
+                "metadata": {
+                  "ApiType": "Azure",
+                  "ResourceId": "[parameters('applicationInsightsResourceId')]"
+                }
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.CognitiveServices/accounts/projects', parameters('aiServicesName'), parameters('defaultProjectName'))]"
+              ]
+            },
+            {
               "condition": "[not(equals(toLower(parameters('aiFoundryType')), 'basic'))]",
               "type": "Microsoft.CognitiveServices/accounts/capabilityHosts",
               "apiVersion": "2025-04-01-preview",
@@ -51849,6 +52776,7 @@
       },
       "dependsOn": [
         "aiSearch",
+        "applicationInsights",
         "cognitiveServices",
         "cosmosDb",
         "storageAccount"
@@ -52503,6 +53431,34 @@
         "description": "Name of the deployed Azure AI Search service."
       },
       "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('aiSearch').outputs.searchName.value, '')]"
+    },
+    "azureApplicationInsightsName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the deployed Azure Application Insights component."
+      },
+      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('applicationInsights').outputs.applicationInsightsName.value, '')]"
+    },
+    "azureApplicationInsightsResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource ID of the deployed Azure Application Insights component."
+      },
+      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('applicationInsights').outputs.applicationInsightsResourceId.value, '')]"
+    },
+    "azureApplicationInsightsInstrumentationKey": {
+      "type": "string",
+      "metadata": {
+        "description": "Instrumentation key of the deployed Azure Application Insights component."
+      },
+      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('applicationInsights').outputs.applicationInsightsInstrumentationKey.value, '')]"
+    },
+    "azureApplicationInsightsConnectionString": {
+      "type": "string",
+      "metadata": {
+        "description": "Connection string of the deployed Azure Application Insights component."
+      },
+      "value": "[if(not(equals(toLower(parameters('aiFoundryType')), 'basic')), reference('applicationInsights').outputs.applicationInsightsConnectionString.value, '')]"
     },
     "azureAiProjectName": {
       "type": "string",
