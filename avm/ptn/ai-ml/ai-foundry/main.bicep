@@ -62,21 +62,6 @@ param aiFoundryType string
 @description('Required. Whether to include Azure AI Content Safety in the deployment.')
 param contentSafetyEnabled bool
 
-@description('Optional. Resource ID of an existing Application Insights resource. If provided, the existing resource will be used instead of creating a new one.')
-param existingApplicationInsightsResourceId string = ''
-
-@description('Optional. Application type for Application Insights.')
-@allowed([
-  'web'
-  'other'
-])
-param applicationInsightsApplicationType string = 'web'
-
-@description('Optional. Retention period in days for Application Insights data.')
-@minValue(30)
-@maxValue(730)
-param applicationInsightsRetentionInDays int = 90
-
 @description('Optional. A collection of rules governing the accessibility from specific network locations.')
 param networkAcls object = {
   defaultAction: 'Deny'
@@ -229,20 +214,6 @@ module aiSearch 'modules/aisearch.bicep' = if (toLower(aiFoundryType) != 'basic'
   }
 }
 
-module applicationInsights 'modules/applicationInsights.bicep' = if (toLower(aiFoundryType) != 'basic') {
-  name: take('${name}-application-insights-deployment', 64)
-  params: {
-    name: 'ai${name}${resourceToken}'
-    location: location
-    existingApplicationInsightsResourceId: existingApplicationInsightsResourceId
-    logAnalyticsWorkspaceResourceId: '' // Will be connected if Log Analytics is available
-    applicationType: applicationInsightsApplicationType
-    retentionInDays: applicationInsightsRetentionInDays
-    enableTelemetry: enableTelemetry
-    tags: allTags
-  }
-}
-
 module storageAccount 'modules/storageAccount.bicep' = if (toLower(aiFoundryType) != 'basic') {
   name: take('${name}-storage-account-deployment', 64)
   params: {
@@ -309,22 +280,12 @@ module project 'modules/aifoundryproject.bicep' = {
     nameFormatted: toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
     projUploadsContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.projUploadsContainerName : ''
     sysDataContainerName: toLower(aiFoundryType) != 'basic' ? storageAccount.outputs.sysDataContainerName : ''
-    applicationInsightsName: toLower(aiFoundryType) != 'basic'
-      ? applicationInsights.outputs.applicationInsightsName
-      : ''
-    applicationInsightsResourceId: toLower(aiFoundryType) != 'basic'
-      ? applicationInsights.outputs.applicationInsightsResourceId
-      : ''
-    applicationInsightsConnectionString: toLower(aiFoundryType) != 'basic'
-      ? applicationInsights.outputs.applicationInsightsConnectionString
-      : ''
   }
   dependsOn: toLower(aiFoundryType) != 'basic'
     ? [
         storageAccount
         aiSearch
         cosmosDb
-        applicationInsights
       ]
     : []
 }
@@ -371,26 +332,6 @@ output azureAiServicesName string = cognitiveServices.outputs.aiServicesName
 
 @description('Name of the deployed Azure AI Search service.')
 output azureAiSearchName string = toLower(aiFoundryType) != 'basic' ? aiSearch.outputs.searchName : ''
-
-@description('Name of the deployed Azure Application Insights component.')
-output azureApplicationInsightsName string = toLower(aiFoundryType) != 'basic'
-  ? applicationInsights.outputs.applicationInsightsName
-  : ''
-
-@description('Resource ID of the deployed Azure Application Insights component.')
-output azureApplicationInsightsResourceId string = toLower(aiFoundryType) != 'basic'
-  ? applicationInsights.outputs.applicationInsightsResourceId
-  : ''
-
-@description('Instrumentation key of the deployed Azure Application Insights component.')
-output azureApplicationInsightsInstrumentationKey string = toLower(aiFoundryType) != 'basic'
-  ? applicationInsights.outputs.applicationInsightsInstrumentationKey
-  : ''
-
-@description('Connection string of the deployed Azure Application Insights component.')
-output azureApplicationInsightsConnectionString string = toLower(aiFoundryType) != 'basic'
-  ? applicationInsights.outputs.applicationInsightsConnectionString
-  : ''
 
 @description('Name of the deployed Azure AI Project.')
 output azureAiProjectName string = project.outputs.projectName
