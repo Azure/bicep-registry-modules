@@ -580,7 +580,6 @@ This section gives you an overview of all local-referenced module files (i.e., o
 
 | Reference | Type |
 | :-- | :-- |
-| `br/public:avm/ptn/authorization/resource-role-assignment:0.1.2` | Remote reference |
 | `br/public:avm/res/app-configuration/configuration-store:0.6.3` | Remote reference |
 | `br/public:avm/res/app/container-app:0.17.0` | Remote reference |
 | `br/public:avm/res/app/managed-environment:0.11.2` | Remote reference |
