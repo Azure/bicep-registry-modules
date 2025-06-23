@@ -1177,7 +1177,7 @@ module avmAiServices_storage_hub 'br/public:avm/res/storage/storage-account:0.20
   }
 }
 
-var  aiHubStorageResourceId = avmAiServices_storage_hub.outputs.resourceId
+var aiHubStorageResourceId = '/subscriptions/${subscription().subscriptionId}/resourceGroups/${resourceGroup().name}/providers/Microsoft.Storage/storageAccounts/${avmAiServices_storage_hub.outputs.name}'
 
 module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' = {
   name: format(resourceNameFormatString, namingAbbrs.ai.aiHub)
