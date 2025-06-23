@@ -1331,22 +1331,22 @@ module avmContainerApp 'br/public:avm/res/app/container-app:0.17.0' = {
     //   minReplicas: 1
     //   maxReplicas: 1
     // }
-    scaleSettings: {
-      maxReplicas: enableScaling ? 3 : 1
-      minReplicas: 2
-      // rules: enableScaling
-      //   ? [
-      //       {
-      //         name: 'http-scaler'
-      //         http: {
-      //           metadata: {
-      //             concurrentRequests: 100
-      //           }
-      //         }
-      //       }
-      //     ]
-      //   : []
-    }
+    // scaleSettings: {
+    //   maxReplicas: enableScaling ? 3 : 1
+    //   minReplicas: 2
+    //   // rules: enableScaling
+    //   //   ? [
+    //   //       {
+    //   //         name: 'http-scaler'
+    //   //         http: {
+    //   //           metadata: {
+    //   //             concurrentRequests: 100
+    //   //           }
+    //   //         }
+    //   //       }
+    //   //     ]
+    //   //   : []
+    // }
     tags: tags
   }
 }
@@ -1440,20 +1440,20 @@ module avmContainerApp_API 'br/public:avm/res/app/container-app:0.17.0' = {
         ]
       }
     ]
-    scaleSettings: {
-      maxReplicas: enableScaling ? 3 : 1
-      minReplicas: enableScaling ? 2 : 1
-      rules: [
-        {
-          name: 'http-scaler'
-          http: {
-            metadata: {
-              concurrentRequests: '100'
-            }
-          }
-        }
-      ]
-    }
+    // scaleSettings: {
+    //   maxReplicas: enableScaling ? 3 : 1
+    //   minReplicas: enableScaling ? 2 : 1
+    //   rules: [
+    //     {
+    //       name: 'http-scaler'
+    //       http: {
+    //         metadata: {
+    //           concurrentRequests: '100'
+    //         }
+    //       }
+    //     }
+    //   ]
+    // }
     ingressExternal: true
     activeRevisionsMode: 'Single'
     ingressTransport: 'auto'
@@ -1515,22 +1515,22 @@ module avmContainerApp_Web 'br/public:avm/res/app/container-app:0.17.0' = {
     activeRevisionsMode: 'Single'
     ingressTransport: 'auto'
     ingressAllowInsecure: true
-    scaleSettings: {
-      maxReplicas: enableScaling ? 3 : 1
-      minReplicas: 1
-      rules: enableScaling
-        ? [
-            {
-              name: 'http-scaler'
-              http: {
-                metadata: {
-                  concurrentRequests: 100
-                }
-              }
-            }
-          ]
-        : []
-    }
+    // scaleSettings: {
+    //   maxReplicas: enableScaling ? 3 : 1
+    //   minReplicas: 1
+    //   rules: enableScaling
+    //     ? [
+    //         {
+    //           name: 'http-scaler'
+    //           http: {
+    //             metadata: {
+    //               concurrentRequests: 100
+    //             }
+    //           }
+    //         }
+    //       ]
+    //     : []
+    // }
     containers: [
       {
         name: '${namingAbbrs.containers.containerApp}${solutionPrefix}-web'
