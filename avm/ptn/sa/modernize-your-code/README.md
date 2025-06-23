@@ -272,7 +272,7 @@ param vmAdminUsername = 'adminuser'
 
 | Parameter | Type | Description |
 | :-- | :-- | :-- |
-| [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. |
+| [`solutionName`](#parameter-solutionname) | string | A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. This is to trigger a file change: 1/1. |
 
 **Optional parameters**
 
@@ -294,7 +294,7 @@ param vmAdminUsername = 'adminuser'
 
 ### Parameter: `solutionName`
 
-A unique application/solution name for all resources in this deployment. This should be 3-16 characters long.
+A unique application/solution name for all resources in this deployment. This should be 3-16 characters long. This is to trigger a file change: 1/1.
 
 - Required: Yes
 - Type: string
