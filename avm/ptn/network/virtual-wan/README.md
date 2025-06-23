@@ -260,6 +260,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
         hubName: '<hubName>'
         secureHubParameters: {
           azureFirewallName: 'dep-fw-nvwansechub'
+          azureFirewallPublicIPCount: 1
           azureFirewallSku: 'Standard'
           deploySecureHub: true
           firewallPolicyResourceId: '<firewallPolicyResourceId>'
@@ -295,6 +296,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
           "hubName": "<hubName>",
           "secureHubParameters": {
             "azureFirewallName": "dep-fw-nvwansechub",
+            "azureFirewallPublicIPCount": 1,
             "azureFirewallSku": "Standard",
             "deploySecureHub": true,
             "firewallPolicyResourceId": "<firewallPolicyResourceId>"
@@ -330,6 +332,7 @@ param virtualHubParameters = [
     hubName: '<hubName>'
     secureHubParameters: {
       azureFirewallName: 'dep-fw-nvwansechub'
+      azureFirewallPublicIPCount: 1
       azureFirewallSku: 'Standard'
       deploySecureHub: true
       firewallPolicyResourceId: '<firewallPolicyResourceId>'

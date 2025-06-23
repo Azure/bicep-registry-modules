@@ -63,6 +63,7 @@ module testDeployment '../../../main.bicep' = [
             firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
             azureFirewallName: 'dep-${namePrefix}-fw-${serviceShort}'
             azureFirewallSku: 'Standard'
+            azureFirewallPublicIPCount: 1
           }
         }
       ]
