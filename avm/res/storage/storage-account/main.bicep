@@ -737,7 +737,7 @@ output primaryAccessKey string = storageAccount.listKeys().keys[0].value
 
 @secure()
 @description('The secondary access key of the storage account.')
-output secondayAccessKey string = storageAccount.listKeys().keys[1].value
+output secondaryAccessKey string = storageAccount.listKeys().keys[1].value
 
 @secure()
 @description('The primary connection string of the storage account.')
