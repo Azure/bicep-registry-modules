@@ -310,59 +310,6 @@ module keyVault_keys 'key/main.bicep' = [
   }
 ]
 
-module teessst 'br/public:avm/res/network/private-endpoint:0.11.0' = {
-  name: '${uniqueString(deployment().name, location)}-keyVault'
-  scope: resourceGroup(
-    split(privateEndpoints[0].?resourceGroupResourceId ?? resourceGroup().id, '/')[2],
-    split(privateEndpoints[0].?resourceGroupResourceId ?? resourceGroup().id, '/')[4]
-  )
-  params: {
-    name: privateEndpoints[0].?name ?? 'pep-${last(split(keyVault.id, '/'))}-${privateEndpoints[0].?service ?? 'vault'}'
-    privateLinkServiceConnections: privateEndpoints[0].?isManualConnection != true
-      ? [
-          {
-            name: privateEndpoints[0].?privateLinkServiceConnectionName ?? '${last(split(keyVault.id, '/'))}-${privateEndpoints[0].?service ?? 'vault'}'
-            properties: {
-              privateLinkServiceId: keyVault.id
-              groupIds: [
-                privateEndpoints[0].?service ?? 'vault'
-              ]
-            }
-          }
-        ]
-      : null
-    manualPrivateLinkServiceConnections: privateEndpoints[0].?isManualConnection == true
-      ? [
-          {
-            name: privateEndpoints[0].?privateLinkServiceConnectionName ?? '${last(split(keyVault.id, '/'))}-${privateEndpoints[0].?service ?? 'vault'}'
-            properties: {
-              privateLinkServiceId: keyVault.id
-              groupIds: [
-                privateEndpoints[0].?service ?? 'vault'
-              ]
-              requestMessage: privateEndpoints[0].?manualConnectionRequestMessage ?? 'Manual approval required.'
-            }
-          }
-        ]
-      : null
-    subnetResourceId: privateEndpoints[0].subnetResourceId
-    enableTelemetry: enableReferencedModulesTelemetry
-    location: privateEndpoints[0].?location ?? reference(
-      split(privateEndpoints[0].subnetResourceId, '/subnets/')[0],
-      '2020-06-01',
-      'Full'
-    ).location
-    lock: privateEndpoints[0].?lock ?? lock
-    privateDnsZoneGroup: privateEndpoints[0].?privateDnsZoneGroup
-    roleAssignments: privateEndpoints[0].?roleAssignments
-    tags: privateEndpoints[0].?tags ?? tags
-    customDnsConfigs: privateEndpoints[0].?customDnsConfigs
-    ipConfigurations: privateEndpoints[0].?ipConfigurations
-    applicationSecurityGroupResourceIds: privateEndpoints[0].?applicationSecurityGroupResourceIds
-    customNetworkInterfaceName: privateEndpoints[0].?customNetworkInterfaceName
-  }
-}
-
 module keyVault_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.11.0' = [
   for (privateEndpoint, index) in (privateEndpoints ?? []): {
     name: '${uniqueString(deployment().name, location)}-keyVault-PrivateEndpoint-${index}'
