@@ -25,8 +25,8 @@ var projectResourceIds = [
       projectResourceIdOrName,
       '/subscriptions/'
     )
-    ? projectResourceIdOrName // It's already a resource ID
-    : resourceId('Microsoft.DevCenter/projects', projectResourceIdOrName) // It's a project name, construct the resource ID
+    ? projectResourceIdOrName // If it's already a resource ID
+    : resourceId('Microsoft.DevCenter/projects', projectResourceIdOrName) // If it's a project name, construct the resource ID
 ]
 
 // ============== //

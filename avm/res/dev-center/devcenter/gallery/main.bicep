@@ -8,9 +8,9 @@ metadata description = 'This module deploys a Dev Center Gallery.'
 @description('Conditional. The name of the parent dev center. Required if the template is used in a standalone deployment.')
 param devcenterName string
 
-@description('Required. It must be between 1 and 80 characters, can only include alphanumeric characters, underscores and periods, and can not start or end with "." or "_".')
-@minLength(1)
-@maxLength(80)
+@description('Required. It must be between 3 and 63 characters, can only include alphanumeric characters, underscores and periods, and can not start or end with "." or "_".')
+@minLength(3)
+@maxLength(63)
 param name string
 
 @description('Required. The resource ID of the backing Azure Compute Gallery. The devcenter identity (system or user) must have "Contributor" access to the gallery.')
@@ -18,8 +18,6 @@ param galleryResourceId string
 
 @description('Optional. The principal ID of the Dev Center identity (system or user) that will be assigned the "Contributor" role on the backing Azure Compute Gallery. This is only required if the Dev Center identity has not been granted the right permissions on the gallery. The portal experience handles this automatically.')
 param devCenterIdentityPrincipalId string?
-
-// To do ==> Support creating the Contributor role assignment for the Dev Center identity on the backing Azure Compute Gallery.
 
 // ============== //
 // Resources      //

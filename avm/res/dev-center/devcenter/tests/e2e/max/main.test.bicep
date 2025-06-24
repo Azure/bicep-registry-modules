@@ -280,6 +280,47 @@ module testDeployment '../../../main.bicep' = [
       projects: [
         {
           name: 'test-project-same-resource-group'
+          managedIdentities: {
+            userAssignedResourceIds: [
+              nestedDependencies1.outputs.managedIdentityResourceId
+            ]
+          }
+          catalogSettings: {
+            catalogItemSyncTypes: [
+              'EnvironmentDefinition'
+              'ImageDefinition'
+            ]
+          }
+          maxDevBoxesPerUser: 2
+          environmentTypes: [
+            {
+              name: 'dep-${namePrefix}-et-${serviceShort}'
+              displayName: 'My Sandbox Environment Type'
+              status: 'Enabled'
+              deploymentTargetSubscriptionResourceId: subscription().id
+              managedIdentities: {
+                systemAssigned: false
+                userAssignedResourceIds: [
+                  nestedDependencies1.outputs.managedIdentityResourceId
+                ]
+              }
+              creatorRoleAssignmentRoles: [
+                'acdd72a7-3385-48ef-bd42-f606fba81ae7' // 'Reader'
+              ]
+            }
+          ]
+          pools: [
+            {
+              name: 'sandbox-pool'
+              displayName: 'My Sandbox Pool - Managed Network'
+              devBoxDefinitionType: 'Reference'
+              devBoxDefinitionName: 'test-devbox-definition-builtin-gallery-image'
+              localAdministrator: 'Disabled'
+              virtualNetworkType: 'Managed'
+              singleSignOnStatus: 'Enabled'
+              managedVirtualNetworkRegion: 'westeurope'
+            }
+          ]
         }
         {
           name: 'test-project-another-resource-group'
