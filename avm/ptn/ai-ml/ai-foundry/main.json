@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "3382251704852908770"
+      "templateHash": "11408575500459637754"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -51604,7 +51604,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "7896310406144195603"
+              "templateHash": "15919088201808661979"
             }
           },
           "parameters": {
@@ -51801,7 +51801,10 @@
                 "vectorStoreConnections": [
                   "[parameters('nameFormatted')]"
                 ],
-                "storageConnections": "[if(not(empty(parameters('sysDataContainerName'))), createArray(parameters('storageName'), format('{0}-sysdata', parameters('storageName'))), createArray(parameters('storageName')))]",
+                "storageConnections": [
+                  "[parameters('storageName')]",
+                  "[format('{0}-sysdata', parameters('storageName'))]"
+                ],
                 "threadStorageConnections": [
                   "[parameters('cosmosDBName')]"
                 ]
