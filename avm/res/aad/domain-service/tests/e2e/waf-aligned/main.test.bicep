@@ -127,70 +127,73 @@ module testDeployment '../../../main.bicep' = {
   }
 }
 
-// module waitForDeployment 'main.wait.bicep' = {
-//   dependsOn: [testDeployment]
-//   scope: resourceGroup
-//   name: '${uniqueString(deployment().name, resourceLocation)}-waitForDeployment'
-//   params: {
-//     serviceShort: serviceShort
-//     resourceLocation: resourceLocation
-//     waitTimeInSeconds: '3000' // 50 min
-//     tags: {
-//       'hidden-title': 'This is visible in the resource name'
-//       Environment: 'Non-Prod'
-//       Role: 'DeploymentValidation'
-//     }
-//   }
-// }
+module waitForDeployment 'main.wait.bicep' = {
+  dependsOn: [testDeployment]
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-waitForDeployment'
+  params: {
+    serviceShort: serviceShort
+    resourceLocation: resourceLocation
+    waitTimeInSeconds: '3000' // 50 min
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
 
-// // copy from the init test. Will be executed after a wait time
-// module testDeploymentIdem '../../../main.bicep' = {
-//   dependsOn: [waitForDeployment]
-//   scope: resourceGroup
-//   name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-idem'
-//   params: {
-//     name: '${namePrefix}${serviceShort}001'
-//     location: resourceLocation
-//     domainName: '${namePrefix}.onmicrosoft.com'
-//     additionalRecipients: ['${namePrefix}@noreply.github.com']
-//     diagnosticSettings: [
-//       {
-//         name: 'customSetting'
-//         metricCategories: [
-//           {
-//             category: 'AllMetrics'
-//           }
-//         ]
-//         logCategoriesAndGroups: [
-//           {
-//             categoryGroup: 'allLogs'
-//           }
-//         ]
-//         storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
-//         workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
-//         eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
-//         eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
-//       }
-//     ]
-//     lock: {
-//       kind: 'None'
-//       name: 'myCustomLockName'
-//     }
-//     ldaps: 'Enabled'
-//     externalAccess: 'Enabled'
-//     pfxCertificate: keyVault.getSecret(nestedDependencies.outputs.certSecretName)
-//     pfxCertificatePassword: keyVault.getSecret(nestedDependencies.outputs.certPWSecretName)
-//     replicaSets: [
-//       {
-//         location: 'NorthEurope'
-//         subnetId: nestedDependencies.outputs.subnetResourceId
-//       }
-//     ]
-//     sku: 'Standard'
-//     tags: {
-//       'hidden-title': 'This is visible in the resource name'
-//       Environment: 'Non-Prod'
-//       Role: 'DeploymentValidation'
-//     }
-//   }
-// }
+// copy from the init test. Will be executed after a wait time
+module testDeploymentIdem '../../../main.bicep' = {
+  dependsOn: [waitForDeployment]
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-test-${serviceShort}-idem'
+  params: {
+    name: '${namePrefix}${serviceShort}001'
+    location: resourceLocation
+    domainName: '${namePrefix}.onmicrosoft.com'
+    additionalRecipients: ['${namePrefix}@noreply.github.com']
+    diagnosticSettings: [
+      {
+        name: 'customSetting'
+        metricCategories: [
+          {
+            category: 'AllMetrics'
+          }
+        ]
+        logCategoriesAndGroups: [
+          {
+            categoryGroup: 'allLogs'
+          }
+        ]
+        storageAccountResourceId: diagnosticDependencies.outputs.storageAccountResourceId
+        workspaceResourceId: diagnosticDependencies.outputs.logAnalyticsWorkspaceResourceId
+        eventHubAuthorizationRuleResourceId: diagnosticDependencies.outputs.eventHubAuthorizationRuleId
+        eventHubName: diagnosticDependencies.outputs.eventHubNamespaceEventHubName
+      }
+    ]
+    lock: {
+      kind: 'None'
+      name: 'myCustomLockName'
+    }
+    ldaps: 'Enabled'
+    externalAccess: 'Enabled'
+    pfxCertificate: keyVault.getSecret(nestedDependencies.outputs.certSecretName)
+    pfxCertificatePassword: keyVault.getSecret(nestedDependencies.outputs.certPWSecretName)
+    replicaSets: [
+      {
+        location: resourceLocation
+        subnetId: nestedDependencies.outputs.subnetResourceId
+      }
+      {
+        location: replicaLocation
+        subnetId: nestedDependencies.outputs.replicaSubnetResourceId
+      }
+    ]
+    tags: {
+      'hidden-title': 'This is visible in the resource name'
+      Environment: 'Non-Prod'
+      Role: 'DeploymentValidation'
+    }
+  }
+}
