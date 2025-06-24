@@ -51,7 +51,7 @@ jobs:
   #   PSRule validation   #
   #########################
   job_psrule_must: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Must have [${{ matrix.baseline }}] on [${{ matrix.testCases.name }}]"
+    name: "Required [${{ matrix.baseline }}] on [${{ matrix.testCases.name }}]"
     runs-on: ubuntu-latest
     if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
@@ -64,7 +64,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Run PSRule validation with baseline [${{ matrix.baseline }}] on [${{ matrix.testCases.path }}]"
+      - name: "Run Required PSRule validation with baseline [${{ matrix.baseline }}] on [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
@@ -74,7 +74,7 @@ jobs:
           psruleBaseline: ${{ matrix.baseline }}
 
   job_psrule_nice: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
-    name: "Nice to have [${{ matrix.baseline }}] on [${{ matrix.testCases.name }}]"
+    name: "Optional [${{ matrix.baseline }}] on [${{ matrix.testCases.name }}]"
     runs-on: ubuntu-latest
     if: ${{ inputs.psRuleModuleTestFilePaths != '' && (fromJson(inputs.workflowInput)).staticValidation == 'true'  }}
     strategy:
@@ -87,7 +87,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Set environment
         uses: ./.github/actions/templates/avm-setEnvironment
-      - name: "Run PSRule validation with baseline [${{ matrix.baseline }}] on [${{ matrix.testCases.path }}]"
+      - name: "Run Optional PSRule validation with baseline [${{ matrix.baseline }}] on [${{ matrix.testCases.path }}]"
         uses: ./.github/actions/templates/avm-validateModulePSRule
         with:
           templateFilePath: "${{ inputs.modulePath }}/${{ matrix.testCases.path }}"
