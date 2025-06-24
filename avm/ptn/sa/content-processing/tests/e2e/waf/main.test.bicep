@@ -10,7 +10,7 @@ metadata description = 'This instance deploys the [Content Processing Solution A
 @description('Optional. The name of the resource group to deploy for testing purposes.')
 @maxLength(90)
 // e.g., for a module 'network/private-endpoint' you could use 'dep-dev-network.privateendpoints-${serviceShort}-rg'
-param resourceGroupName string = 'dep-waf-${namePrefix}-sa.cps-${serviceShort}-rg'
+param resourceGroupName string = 'dep-waf-${namePrefix}-bk-sa.cps-${serviceShort}-rg'
 
 @description('Optional. The location to deploy resources to.')
 param resourceLocation string = deployment().location
