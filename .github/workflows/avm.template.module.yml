@@ -76,6 +76,7 @@ jobs:
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline.baselineName }}
+          softFailure: false
 
   job_psrule_opt: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
     name: "Optional [${{ matrix.baseline }}] on [${{ matrix.testCases.name }}]"
@@ -103,6 +104,7 @@ jobs:
           managementGroupId: "${{ secrets.ARM_MGMTGROUP_ID }}"
           psrulePath: "/utilities/pipelines/staticValidation/psrule"
           psruleBaseline: ${{ matrix.baseline }}
+          softFailure: true
 
 
   # job_psrule_test: # Note: Please don't change this job name. It is used by the setEnvironment action to define which PS modules to install on runners.
