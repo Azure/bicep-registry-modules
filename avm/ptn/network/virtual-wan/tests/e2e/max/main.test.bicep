@@ -56,6 +56,9 @@ module testDeployment '../../../main.bicep' = [
       virtualWanParameters: {
         virtualWanName: 'dep-${namePrefix}-vw-${serviceShort}'
         location: resourceLocation
+        allowBranchToBranchTraffic: true
+        allowVnetToVnetTraffic: true
+        type: 'Standard'
       }
       virtualHubParameters: [
         {
@@ -79,6 +82,18 @@ module testDeployment '../../../main.bicep' = [
               remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetwork1Id
             }
           ]
+          hubRoutingPreference: 'ASPath'
+          virtualRouterAsn: 65515
+          allowBranchToBranchTraffic: true
+          expressRouteParameters: {
+            deployExpressRouteGateway: true
+            expressRouteGatewayName: 'dep-${namePrefix}-ergw-eastus-${serviceShort}'
+          }
+          s2sVpnParameters: {
+            deployS2SVpnGateway: true
+            vpnGatewayName: 'dep-${namePrefix}-s2svpngw-eastus-${serviceShort}'
+            vpnGatewayScaleUnit: 1
+          }
         }
         {
           hubAddressPrefix: '10.0.1.0/24'
@@ -101,6 +116,18 @@ module testDeployment '../../../main.bicep' = [
               remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetwork2Id
             }
           ]
+          hubRoutingPreference: 'ASPath'
+          virtualRouterAsn: 65515
+          allowBranchToBranchTraffic: true
+          expressRouteParameters: {
+            deployExpressRouteGateway: true
+            expressRouteGatewayName: 'dep-${namePrefix}-ergw-westus2-${serviceShort}'
+          }
+          s2sVpnParameters: {
+            deployS2SVpnGateway: true
+            vpnGatewayName: 'dep-${namePrefix}-s2svpngw-westus2-${serviceShort}'
+            vpnGatewayScaleUnit: 1
+          }
         }
       ]
     }

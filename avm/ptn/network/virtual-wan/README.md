@@ -160,15 +160,26 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     // Required parameters
     virtualHubParameters: [
       {
+        allowBranchToBranchTraffic: true
+        expressRouteParameters: {
+          deployExpressRouteGateway: true
+          expressRouteGatewayName: 'dep-ergw-eastus-nvwanmax'
+        }
         hubAddressPrefix: '10.0.0.0/24'
         hubLocation: 'eastus'
         hubName: 'dep-hub-eastus-nvwanmax'
+        hubRoutingPreference: 'ASPath'
         hubVirtualNetworkConnections: [
           {
             name: 'dep-vnet1-eastus-nvwanmax'
             remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
           }
         ]
+        s2sVpnParameters: {
+          deployS2SVpnGateway: true
+          vpnGatewayName: 'dep-s2svpngw-eastus-nvwanmax'
+          vpnGatewayScaleUnit: 1
+        }
         secureHubParameters: {
           azureFirewallName: 'dep-fw-eastus-nvwanmax'
           azureFirewallPublicIPCount: 1
@@ -180,17 +191,29 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             privateToFirewall: true
           }
         }
+        virtualRouterAsn: 65515
       }
       {
+        allowBranchToBranchTraffic: true
+        expressRouteParameters: {
+          deployExpressRouteGateway: true
+          expressRouteGatewayName: 'dep-ergw-westus2-nvwanmax'
+        }
         hubAddressPrefix: '10.0.1.0/24'
         hubLocation: 'westus2'
         hubName: 'dep-hub-westus2-nvwanmax'
+        hubRoutingPreference: 'ASPath'
         hubVirtualNetworkConnections: [
           {
             name: 'dep-vnet2-westus2-nvwanmax'
             remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
           }
         ]
+        s2sVpnParameters: {
+          deployS2SVpnGateway: true
+          vpnGatewayName: 'dep-s2svpngw-westus2-nvwanmax'
+          vpnGatewayScaleUnit: 1
+        }
         secureHubParameters: {
           azureFirewallName: 'dep-fw-westus2-nvwanmax'
           azureFirewallPublicIPCount: 1
@@ -202,10 +225,14 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
             privateToFirewall: true
           }
         }
+        virtualRouterAsn: 65515
       }
     ]
     virtualWanParameters: {
+      allowBranchToBranchTraffic: true
+      allowVnetToVnetTraffic: true
       location: '<location>'
+      type: 'Standard'
       virtualWanName: 'dep-vw-nvwanmax'
     }
   }
@@ -228,15 +255,26 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     "virtualHubParameters": {
       "value": [
         {
+          "allowBranchToBranchTraffic": true,
+          "expressRouteParameters": {
+            "deployExpressRouteGateway": true,
+            "expressRouteGatewayName": "dep-ergw-eastus-nvwanmax"
+          },
           "hubAddressPrefix": "10.0.0.0/24",
           "hubLocation": "eastus",
           "hubName": "dep-hub-eastus-nvwanmax",
+          "hubRoutingPreference": "ASPath",
           "hubVirtualNetworkConnections": [
             {
               "name": "dep-vnet1-eastus-nvwanmax",
               "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>"
             }
           ],
+          "s2sVpnParameters": {
+            "deployS2SVpnGateway": true,
+            "vpnGatewayName": "dep-s2svpngw-eastus-nvwanmax",
+            "vpnGatewayScaleUnit": 1
+          },
           "secureHubParameters": {
             "azureFirewallName": "dep-fw-eastus-nvwanmax",
             "azureFirewallPublicIPCount": 1,
@@ -247,18 +285,30 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
               "internetToFirewall": true,
               "privateToFirewall": true
             }
-          }
+          },
+          "virtualRouterAsn": 65515
         },
         {
+          "allowBranchToBranchTraffic": true,
+          "expressRouteParameters": {
+            "deployExpressRouteGateway": true,
+            "expressRouteGatewayName": "dep-ergw-westus2-nvwanmax"
+          },
           "hubAddressPrefix": "10.0.1.0/24",
           "hubLocation": "westus2",
           "hubName": "dep-hub-westus2-nvwanmax",
+          "hubRoutingPreference": "ASPath",
           "hubVirtualNetworkConnections": [
             {
               "name": "dep-vnet2-westus2-nvwanmax",
               "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>"
             }
           ],
+          "s2sVpnParameters": {
+            "deployS2SVpnGateway": true,
+            "vpnGatewayName": "dep-s2svpngw-westus2-nvwanmax",
+            "vpnGatewayScaleUnit": 1
+          },
           "secureHubParameters": {
             "azureFirewallName": "dep-fw-westus2-nvwanmax",
             "azureFirewallPublicIPCount": 1,
@@ -269,13 +319,17 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
               "internetToFirewall": true,
               "privateToFirewall": true
             }
-          }
+          },
+          "virtualRouterAsn": 65515
         }
       ]
     },
     "virtualWanParameters": {
       "value": {
+        "allowBranchToBranchTraffic": true,
+        "allowVnetToVnetTraffic": true,
         "location": "<location>",
+        "type": "Standard",
         "virtualWanName": "dep-vw-nvwanmax"
       }
     }
@@ -296,15 +350,26 @@ using 'br/public:avm/ptn/network/virtual-wan:<version>'
 // Required parameters
 param virtualHubParameters = [
   {
+    allowBranchToBranchTraffic: true
+    expressRouteParameters: {
+      deployExpressRouteGateway: true
+      expressRouteGatewayName: 'dep-ergw-eastus-nvwanmax'
+    }
     hubAddressPrefix: '10.0.0.0/24'
     hubLocation: 'eastus'
     hubName: 'dep-hub-eastus-nvwanmax'
+    hubRoutingPreference: 'ASPath'
     hubVirtualNetworkConnections: [
       {
         name: 'dep-vnet1-eastus-nvwanmax'
         remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
       }
     ]
+    s2sVpnParameters: {
+      deployS2SVpnGateway: true
+      vpnGatewayName: 'dep-s2svpngw-eastus-nvwanmax'
+      vpnGatewayScaleUnit: 1
+    }
     secureHubParameters: {
       azureFirewallName: 'dep-fw-eastus-nvwanmax'
       azureFirewallPublicIPCount: 1
@@ -316,17 +381,29 @@ param virtualHubParameters = [
         privateToFirewall: true
       }
     }
+    virtualRouterAsn: 65515
   }
   {
+    allowBranchToBranchTraffic: true
+    expressRouteParameters: {
+      deployExpressRouteGateway: true
+      expressRouteGatewayName: 'dep-ergw-westus2-nvwanmax'
+    }
     hubAddressPrefix: '10.0.1.0/24'
     hubLocation: 'westus2'
     hubName: 'dep-hub-westus2-nvwanmax'
+    hubRoutingPreference: 'ASPath'
     hubVirtualNetworkConnections: [
       {
         name: 'dep-vnet2-westus2-nvwanmax'
         remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
       }
     ]
+    s2sVpnParameters: {
+      deployS2SVpnGateway: true
+      vpnGatewayName: 'dep-s2svpngw-westus2-nvwanmax'
+      vpnGatewayScaleUnit: 1
+    }
     secureHubParameters: {
       azureFirewallName: 'dep-fw-westus2-nvwanmax'
       azureFirewallPublicIPCount: 1
@@ -338,10 +415,14 @@ param virtualHubParameters = [
         privateToFirewall: true
       }
     }
+    virtualRouterAsn: 65515
   }
 ]
 param virtualWanParameters = {
+  allowBranchToBranchTraffic: true
+  allowVnetToVnetTraffic: true
   location: '<location>'
+  type: 'Standard'
   virtualWanName: 'dep-vw-nvwanmax'
 }
 ```
