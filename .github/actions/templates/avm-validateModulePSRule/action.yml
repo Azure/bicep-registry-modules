@@ -108,7 +108,7 @@ runs:
     #-----------------------------
     - name: Run PSRule analysis
       uses: microsoft/ps-rule@v2.9.0
-      continue-on-error: ${{ fromJSON(inputs.softFailure) }}
+      continue-on-error: ${{ inputs.softFailure }}
       with:
         modules: "PSRule.Rules.Azure"
         prerelease: true
