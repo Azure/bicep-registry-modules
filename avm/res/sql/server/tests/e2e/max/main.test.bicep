@@ -34,7 +34,7 @@ param baseTime string = utcNow('u')
 
 // General resources
 // =================
-resource resourceGroup 'Microsoft.Resources/resourceGroups@2021-04-01' = {
+resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
   name: resourceGroupName
   location: enforcedLocation
 }
@@ -131,6 +131,13 @@ module testDeployment '../../../main.bicep' = [
             kind: 'CanNotDelete'
             name: 'myCustomLockName'
           }
+          roleAssignments: [
+            {
+              roleDefinitionIdOrName: 'SQL DB Contributor'
+              principalId: nestedDependencies.outputs.serverIdentityPrincipalId
+              principalType: 'ServicePrincipal'
+            }
+          ]
         }
       ]
       databases: [
