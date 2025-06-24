@@ -66,6 +66,26 @@ module testDeployment '../../../main.bicep' = {
       {
         name: 'Subnet1'
         addressPrefix: '10.110.1.0/24'
+        networkSecurityGroup: {
+          name: 'nsg-${resourceLocation}-hs-${namePrefix}-${serviceShort}'
+          location: resourceLocation
+          securityRules: [
+            {
+              name: 'Allow-HTTPS'
+              properties: {
+                access: 'Allow'
+                direction: 'Inbound'
+                priority: 100
+                protocol: 'Tcp'
+                description: 'Allow HTTPS'
+                destinationAddressPrefix: '*'
+                sourceAddressPrefix: '*'
+                sourcePortRange: '*'
+                destinationPortRange: '443'
+              }
+            }
+          ]
+        }
       }
     ]
     virtualNetworkResourceGroupLockEnabled: false
@@ -83,10 +103,10 @@ module testDeployment '../../../main.bicep' = {
     roleAssignments: [
       {
         principalId: testUserObjectId
-        //Network contributor role
         definition: '/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7'
         relativeScope: '/resourceGroups/rsg-${resourceLocation}-net-hs-${namePrefix}-${serviceShort}'
         principalType: 'User'
+        description: 'Network contributor role'
       }
     ]
     resourceProviders: {
