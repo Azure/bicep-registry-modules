@@ -32,6 +32,7 @@ on:
       - ".github/workflows/avm.ptn.aca-lza.hosting-environment.yml"
       - "avm/ptn/aca-lza/hosting-environment/**"
       - "utilities/pipelines/**"
+      - "!utilities/pipelines/staticValidation/compliance/helper/child-module-publish-allowed-list.json"
       - "!utilities/pipelines/platform/**"
       - "!*/**/README.md"
 
