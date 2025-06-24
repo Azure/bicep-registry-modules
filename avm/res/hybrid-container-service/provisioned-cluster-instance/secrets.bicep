@@ -34,20 +34,20 @@ resource CRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
       'b24988ac-6180-42a0-ab88-20f7382dd24c'
-    ) // Contributor role
+    ) // Contributor
     principalType: 'ServicePrincipal'
   }
 }
 
-resource KVARole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource KVSORole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('msi-${managedIdentity.name}-KVA-RoleAssignment')
   scope: keyVault
   properties: {
     principalId: managedIdentity.properties.principalId
     roleDefinitionId: subscriptionResourceId(
       'Microsoft.Authorization/roleDefinitions',
-      '00482a5a-887f-4fb3-b363-3b7fe8e74483'
-    ) // Key Vault Administrator
+      'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
+    ) // Key Vault Secrets Officer
     principalType: 'ServicePrincipal'
   }
 }
@@ -72,7 +72,7 @@ resource newSshKey 'Microsoft.Resources/deploymentScripts@2023-08-01' = {
   tags: tags
   dependsOn: [
     CRole
-    KVARole
+    KVSORole
   ]
   kind: 'AzureCLI'
   identity: {
