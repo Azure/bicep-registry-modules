@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11659987442921916459"
+      "templateHash": "11979225801395199288"
     },
     "name": "Content Processing Solution Accelerator",
     "description": "Bicep template to deploy the Content Processing Solution Accelerator with AVM compliance."
@@ -26995,10 +26995,10 @@
       "dependsOn": [
         "avmContainerApp",
         "avmManagedIdentity",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').openAI)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').aiServices)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "avmVirtualNetwork",
         "logAnalyticsWorkspace"
       ]
@@ -29316,8 +29316,8 @@
         }
       },
       "dependsOn": [
-        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').contentUnderstanding)]",
+        "[format('avmPrivateDnsZones[{0}]', variables('dnsZoneIndex').cognitiveServices)]",
         "avmVirtualNetwork"
       ]
     },
@@ -35142,7 +35142,7 @@
             "value": "[reference('avmContainerRegistry').outputs.resourceId.value]"
           },
           "associatedApplicationInsightsResourceId": {
-            "value": "[reference('applicationInsights').outputs.applicationId.value]"
+            "value": "[reference('applicationInsights').outputs.resourceId.value]"
           },
           "enableTelemetry": {
             "value": "[parameters('enableTelemetry')]"
@@ -53505,19 +53505,19 @@
               },
               {
                 "name": "APP_STORAGE_BLOB_URL",
-                "value": "test"
+                "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format(parameters('resourceNameFormatString'), 'st')), '2022-09-01').serviceEndpoints.blob]"
               },
               {
                 "name": "APP_STORAGE_QUEUE_URL",
-                "value": "test"
+                "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format(parameters('resourceNameFormatString'), 'st')), '2022-09-01').serviceEndpoints.queue]"
               },
               {
                 "name": "APP_AI_PROJECT_CONN_STR",
-                "value": "test"
+                "value": "[format('{0}.api.azureml.ms;{1};{2};{3}', parameters('resourceGroupLocation'), subscription().subscriptionId, resourceGroup().name, format(parameters('resourceNameFormatString'), 'aihp-'))]"
               },
               {
                 "name": "APP_COSMOS_CONNSTR",
-                "value": "test"
+                "value": "[listOutputsWithSecureValues(resourceId('Microsoft.Resources/deployments', format(parameters('resourceNameFormatString'), 'cosmos-')), '2022-09-01').primaryReadWriteConnectionString]"
               }
             ]
           },

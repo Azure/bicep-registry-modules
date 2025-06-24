@@ -1257,7 +1257,7 @@ module avmAiHub 'br/public:avm/res/machine-learning-services/workspace:0.12.1' =
     primaryUserAssignedIdentity: avmManagedIdentity.outputs.resourceId
     associatedStorageAccountResourceId: aiHubStorageResourceId //avmAiServices_storage_hub.outputs.resourceId
     associatedContainerRegistryResourceId: avmContainerRegistry.outputs.resourceId
-    associatedApplicationInsightsResourceId: applicationInsights.outputs.applicationId
+    associatedApplicationInsightsResourceId: applicationInsights.outputs.resourceId
     enableTelemetry: enableTelemetry
     kind: 'Hub'
     connections: [
@@ -1832,20 +1832,20 @@ module avmAppConfig 'br/public:avm/res/app-configuration/configuration-store:0.6
       }
       {
         name: 'APP_STORAGE_BLOB_URL'
-        value: 'test' //avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
+        value: avmStorageAccount.outputs.serviceEndpoints.blob //TODO: replace with actual blob URL
       }
       {
         name: 'APP_STORAGE_QUEUE_URL'
-        value: 'test' //avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
+        value: avmStorageAccount.outputs.serviceEndpoints.queue //TODO: replace with actual queue URL
       }
       {
         name: 'APP_AI_PROJECT_CONN_STR'
-        value: 'test' //'${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
+        value: '${resourceGroupLocation}.api.azureml.ms;${subscription().subscriptionId};${resourceGroup().name};${avmAiProject.name}'
         //TODO: replace with actual AI project connection string
       }
       {
         name: 'APP_COSMOS_CONNSTR'
-        value: 'test' //avmCosmosDB.outputs.primaryReadWriteConnectionString
+        value: avmCosmosDB.outputs.primaryReadWriteConnectionString
       }
     ]
 
