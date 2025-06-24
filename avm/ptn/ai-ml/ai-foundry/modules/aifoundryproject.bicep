@@ -149,7 +149,6 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
     ]
     storageConnections: [
       storageName
-      '${storageName}-sysdata'
     ]
     threadStorageConnections: [
       cosmosDBName
@@ -157,6 +156,10 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
   }
   dependsOn: [
     accountCapabilityHost
+    project_connection_azureai_search
+    project_connection_azure_storage
+    project_connection_azure_storage_sysdata
+    project_connection_cosmosdb
   ]
 }
 
