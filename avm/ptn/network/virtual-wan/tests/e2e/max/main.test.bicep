@@ -1,7 +1,7 @@
 targetScope = 'subscription'
 
 metadata name = 'Using large parameter set'
-metadata description = 'This instance deploys the module with most of its features enabled.'
+metadata description = 'This instance deploys a Virtual WAN with multiple Secure Hubs and most features enabled.'
 
 // ========== //
 // Parameters //
@@ -15,7 +15,7 @@ param resourceGroupName string = 'dep-${namePrefix}-network.virtual-wan-${servic
 param resourceLocation string = deployment().location
 
 @description('Optional. A short identifier for the kind of deployment. Should be kept short to not run into resource-name length-constraints.')
-param serviceShort string = 'nvwamax'
+param serviceShort string = 'nvwanmax'
 
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
@@ -35,6 +35,18 @@ resource resourceGroup 'Microsoft.Resources/resourceGroups@2025-04-01' = {
 // Test Execution //
 // ============== //
 
+module nestedDependencies 'dependencies.bicep' = {
+  scope: resourceGroup
+  name: '${uniqueString(deployment().name, resourceLocation)}-nestedDependencies'
+  params: {
+    azureFirewallPolicyName: 'dep-${namePrefix}-fwp-${serviceShort}'
+    virtualNetwork1Name: 'dep-${namePrefix}-vnet1-${serviceShort}'
+    virtualNetwork1Location: 'eastus'
+    virtualNetwork2Name: 'dep-${namePrefix}-vnet2-${serviceShort}'
+    virtualNetwork2Location: 'westus2'
+  }
+}
+
 @batchSize(1)
 module testDeployment '../../../main.bicep' = [
   for iteration in ['init', 'idem']: {
@@ -48,11 +60,47 @@ module testDeployment '../../../main.bicep' = [
       virtualHubParameters: [
         {
           hubAddressPrefix: '10.0.0.0/24'
-          hubLocation: resourceLocation
-          hubName: 'dep-${namePrefix}-hub-${resourceLocation}-${serviceShort}'
+          hubLocation: 'eastus'
+          hubName: 'dep-${namePrefix}-hub-eastus-${serviceShort}'
           secureHubParameters: {
-            deploySecureHub: false
+            deploySecureHub: true
+            firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
+            azureFirewallName: 'dep-${namePrefix}-fw-eastus-${serviceShort}'
+            azureFirewallSku: 'Standard'
+            azureFirewallPublicIPCount: 1
+            routingIntent: {
+              internetToFirewall: true
+              privateToFirewall: true
+            }
           }
+          hubVirtualNetworkConnections: [
+            {
+              name: 'dep-${namePrefix}-vnet1-eastus-${serviceShort}'
+              remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetwork1Id
+            }
+          ]
+        }
+        {
+          hubAddressPrefix: '10.0.1.0/24'
+          hubLocation: 'westus2'
+          hubName: 'dep-${namePrefix}-hub-westus2-${serviceShort}'
+          secureHubParameters: {
+            deploySecureHub: true
+            firewallPolicyResourceId: nestedDependencies.outputs.azureFirewallPolicyId
+            azureFirewallName: 'dep-${namePrefix}-fw-westus2-${serviceShort}'
+            azureFirewallSku: 'Standard'
+            azureFirewallPublicIPCount: 1
+            routingIntent: {
+              internetToFirewall: true
+              privateToFirewall: true
+            }
+          }
+          hubVirtualNetworkConnections: [
+            {
+              name: 'dep-${namePrefix}-vnet2-westus2-${serviceShort}'
+              remoteVirtualNetworkResourceId: nestedDependencies.outputs.virtualNetwork2Id
+            }
+          ]
         }
       ]
     }

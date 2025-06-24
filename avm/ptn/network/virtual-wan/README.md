@@ -146,7 +146,7 @@ param virtualWanParameters = {
 
 ### Example 2: _Using large parameter set_
 
-This instance deploys the module with most of its features enabled.
+This instance deploys a Virtual WAN with multiple Secure Hubs and most features enabled.
 
 
 <details>
@@ -161,16 +161,52 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     virtualHubParameters: [
       {
         hubAddressPrefix: '10.0.0.0/24'
-        hubLocation: '<hubLocation>'
-        hubName: '<hubName>'
+        hubLocation: 'eastus'
+        hubName: 'dep-hub-eastus-nvwanmax'
+        hubVirtualNetworkConnections: [
+          {
+            name: 'dep-vnet1-eastus-nvwanmax'
+            remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+          }
+        ]
         secureHubParameters: {
-          deploySecureHub: false
+          azureFirewallName: 'dep-fw-eastus-nvwanmax'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: true
+          firewallPolicyResourceId: '<firewallPolicyResourceId>'
+          routingIntent: {
+            internetToFirewall: true
+            privateToFirewall: true
+          }
+        }
+      }
+      {
+        hubAddressPrefix: '10.0.1.0/24'
+        hubLocation: 'westus2'
+        hubName: 'dep-hub-westus2-nvwanmax'
+        hubVirtualNetworkConnections: [
+          {
+            name: 'dep-vnet2-westus2-nvwanmax'
+            remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+          }
+        ]
+        secureHubParameters: {
+          azureFirewallName: 'dep-fw-westus2-nvwanmax'
+          azureFirewallPublicIPCount: 1
+          azureFirewallSku: 'Standard'
+          deploySecureHub: true
+          firewallPolicyResourceId: '<firewallPolicyResourceId>'
+          routingIntent: {
+            internetToFirewall: true
+            privateToFirewall: true
+          }
         }
       }
     ]
     virtualWanParameters: {
       location: '<location>'
-      virtualWanName: 'dep-vw-nvwamax'
+      virtualWanName: 'dep-vw-nvwanmax'
     }
   }
 }
@@ -193,10 +229,46 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
       "value": [
         {
           "hubAddressPrefix": "10.0.0.0/24",
-          "hubLocation": "<hubLocation>",
-          "hubName": "<hubName>",
+          "hubLocation": "eastus",
+          "hubName": "dep-hub-eastus-nvwanmax",
+          "hubVirtualNetworkConnections": [
+            {
+              "name": "dep-vnet1-eastus-nvwanmax",
+              "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>"
+            }
+          ],
           "secureHubParameters": {
-            "deploySecureHub": false
+            "azureFirewallName": "dep-fw-eastus-nvwanmax",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
+          }
+        },
+        {
+          "hubAddressPrefix": "10.0.1.0/24",
+          "hubLocation": "westus2",
+          "hubName": "dep-hub-westus2-nvwanmax",
+          "hubVirtualNetworkConnections": [
+            {
+              "name": "dep-vnet2-westus2-nvwanmax",
+              "remoteVirtualNetworkResourceId": "<remoteVirtualNetworkResourceId>"
+            }
+          ],
+          "secureHubParameters": {
+            "azureFirewallName": "dep-fw-westus2-nvwanmax",
+            "azureFirewallPublicIPCount": 1,
+            "azureFirewallSku": "Standard",
+            "deploySecureHub": true,
+            "firewallPolicyResourceId": "<firewallPolicyResourceId>",
+            "routingIntent": {
+              "internetToFirewall": true,
+              "privateToFirewall": true
+            }
           }
         }
       ]
@@ -204,7 +276,7 @@ module virtualWan 'br/public:avm/ptn/network/virtual-wan:<version>' = {
     "virtualWanParameters": {
       "value": {
         "location": "<location>",
-        "virtualWanName": "dep-vw-nvwamax"
+        "virtualWanName": "dep-vw-nvwanmax"
       }
     }
   }
@@ -225,16 +297,52 @@ using 'br/public:avm/ptn/network/virtual-wan:<version>'
 param virtualHubParameters = [
   {
     hubAddressPrefix: '10.0.0.0/24'
-    hubLocation: '<hubLocation>'
-    hubName: '<hubName>'
+    hubLocation: 'eastus'
+    hubName: 'dep-hub-eastus-nvwanmax'
+    hubVirtualNetworkConnections: [
+      {
+        name: 'dep-vnet1-eastus-nvwanmax'
+        remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+      }
+    ]
     secureHubParameters: {
-      deploySecureHub: false
+      azureFirewallName: 'dep-fw-eastus-nvwanmax'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: true
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
+    }
+  }
+  {
+    hubAddressPrefix: '10.0.1.0/24'
+    hubLocation: 'westus2'
+    hubName: 'dep-hub-westus2-nvwanmax'
+    hubVirtualNetworkConnections: [
+      {
+        name: 'dep-vnet2-westus2-nvwanmax'
+        remoteVirtualNetworkResourceId: '<remoteVirtualNetworkResourceId>'
+      }
+    ]
+    secureHubParameters: {
+      azureFirewallName: 'dep-fw-westus2-nvwanmax'
+      azureFirewallPublicIPCount: 1
+      azureFirewallSku: 'Standard'
+      deploySecureHub: true
+      firewallPolicyResourceId: '<firewallPolicyResourceId>'
+      routingIntent: {
+        internetToFirewall: true
+        privateToFirewall: true
+      }
     }
   }
 ]
 param virtualWanParameters = {
   location: '<location>'
-  virtualWanName: 'dep-vw-nvwamax'
+  virtualWanName: 'dep-vw-nvwanmax'
 }
 ```
 
