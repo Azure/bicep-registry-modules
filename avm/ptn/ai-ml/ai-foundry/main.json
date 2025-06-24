@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "527436883534630678"
+      "templateHash": "18154934707419825929"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -354,10 +354,10 @@
     },
     "vmAdminPasswordOrKey": {
       "type": "securestring",
-      "minLength": 4,
+      "defaultValue": "",
       "maxLength": 70,
       "metadata": {
-        "description": "Required. Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters."
+        "description": "Optional. Specifies the password for the jump-box virtual machine. This is only required when aiFoundryType is StandardPrivate (when VM is deployed). Value should meet 3 of the following: uppercase character, lowercase character, numeric digit, special character, and NO control characters."
       }
     },
     "tags": {
@@ -417,7 +417,7 @@
     "allTags": "[union(variables('defaultTags'), parameters('tags'))]",
     "resourceToken": "[substring(uniqueString(subscription().id, parameters('location'), parameters('name')), 0, 5)]",
     "servicesUsername": "[take(replace(parameters('vmAdminUsername'), '.', ''), 20)]",
-    "shouldDeployVM": "[equals(toLower(parameters('aiFoundryType')), 'standardprivate')]"
+    "shouldDeployVM": "[and(equals(toLower(parameters('aiFoundryType')), 'standardprivate'), greaterOrEquals(length(parameters('vmAdminPasswordOrKey')), 4))]"
   },
   "resources": {
     "avmTelemetry": {
@@ -51939,7 +51939,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "9745791438980746196"
+              "templateHash": "1773852628490091571"
             }
           },
           "parameters": {
@@ -52121,6 +52121,35 @@
           },
           "resources": [
             {
+              "type": "Microsoft.Maintenance/maintenanceConfigurations",
+              "apiVersion": "2023-10-01-preview",
+              "name": "[format('{0}-maintenance-config', parameters('vmName'))]",
+              "location": "[parameters('location')]",
+              "tags": "[parameters('tags')]",
+              "properties": {
+                "extensionProperties": {
+                  "InGuestPatchMode": "User"
+                },
+                "maintenanceScope": "InGuestPatch",
+                "maintenanceWindow": {
+                  "startDateTime": "2024-06-16 00:00",
+                  "duration": "03:55",
+                  "timeZone": "UTC",
+                  "recurEvery": "1Day"
+                },
+                "visibility": "Custom",
+                "installPatches": {
+                  "rebootSetting": "IfRequired",
+                  "linuxParameters": {
+                    "classificationsToInclude": [
+                      "Critical",
+                      "Security"
+                    ]
+                  }
+                }
+              }
+            },
+            {
               "type": "Microsoft.Network/networkInterfaces",
               "apiVersion": "2024-07-01",
               "name": "[parameters('vmNicName')]",
@@ -52206,6 +52235,20 @@
               },
               "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', parameters('vmNicName'))]"
+              ]
+            },
+            {
+              "type": "Microsoft.Maintenance/configurationAssignments",
+              "apiVersion": "2023-04-01",
+              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
+              "name": "[format('{0}-maintenance-assignment', parameters('vmName'))]",
+              "properties": {
+                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('{0}-maintenance-config', parameters('vmName')))]",
+                "resourceId": "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
+              },
+              "dependsOn": [
+                "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', format('{0}-maintenance-config', parameters('vmName')))]",
+                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
               ]
             },
             {
@@ -52429,30 +52472,6 @@
                 "principalId": "[parameters('userObjectId')]"
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
-              ]
-            },
-            {
-              "type": "Microsoft.Maintenance/maintenanceConfigurations",
-              "apiVersion": "2023-10-01-preview",
-              "name": "myMaintenanceConfig",
-              "location": "[parameters('location')]",
-              "properties": {
-                "namespace": "Microsoft.Compute",
-                "extensionProperties": {}
-              }
-            },
-            {
-              "type": "Microsoft.Maintenance/configurationAssignments",
-              "apiVersion": "2023-04-01",
-              "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
-              "name": "maintenanceConfigurationAssignment",
-              "location": "[parameters('location')]",
-              "properties": {
-                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', 'myMaintenanceConfig')]"
-              },
-              "dependsOn": [
-                "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', 'myMaintenanceConfig')]",
                 "[resourceId('Microsoft.Compute/virtualMachines', parameters('vmName'))]"
               ]
             }

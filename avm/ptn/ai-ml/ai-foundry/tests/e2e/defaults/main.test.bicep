@@ -42,12 +42,12 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'basic${substring(uniqueString(deployment().name, enforcedLocation), 0, 3)}' // Clear Basic deployment naming
+      name: 'basic${substring(uniqueString(subscription().id, enforcedLocation), 0, 3)}' // Use subscription for consistent naming
       location: enforcedLocation
-      aiFoundryType: 'Basic' // Replace with the appropriate value
+      aiFoundryType: 'Basic' // Basic deployment - minimal resources only
       userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test
       contentSafetyEnabled: false // Set to true or false as required
-      vmAdminPasswordOrKey: '$tart12345' // Replace with a secure password or key
+      // Note: vmAdminPasswordOrKey not needed for Basic deployment (no VM deployed)
     }
   }
 ]

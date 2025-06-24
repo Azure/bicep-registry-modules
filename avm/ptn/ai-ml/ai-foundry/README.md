@@ -116,7 +116,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     aiFoundryType: 'Basic'
     contentSafetyEnabled: false
     name: '<name>'
-    vmAdminPasswordOrKey: '$tart12345'
     // Non-required parameters
     location: '<location>'
     userObjectId: '00000000-0000-0000-0000-000000000000'
@@ -146,9 +145,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "name": {
       "value": "<name>"
     },
-    "vmAdminPasswordOrKey": {
-      "value": "$tart12345"
-    },
     // Non-required parameters
     "location": {
       "value": "<location>"
@@ -174,7 +170,6 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 param aiFoundryType = 'Basic'
 param contentSafetyEnabled = false
 param name = '<name>'
-param vmAdminPasswordOrKey = '$tart12345'
 // Non-required parameters
 param location = '<location>'
 param userObjectId = '00000000-0000-0000-0000-000000000000'
@@ -200,11 +195,11 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     aiFoundryType: 'StandardPrivate'
     contentSafetyEnabled: true
     name: '<name>'
-    vmAdminPasswordOrKey: '$tart12345'
     // Non-required parameters
     aiModelDeployments: []
     location: '<location>'
     userObjectId: '00000000-0000-0000-0000-000000000000'
+    vmAdminPasswordOrKey: '$tart12345'
     vmSize: 'Standard_DS4_v2'
   }
 }
@@ -232,9 +227,6 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     "name": {
       "value": "<name>"
     },
-    "vmAdminPasswordOrKey": {
-      "value": "$tart12345"
-    },
     // Non-required parameters
     "aiModelDeployments": {
       "value": []
@@ -244,6 +236,9 @@ module aiFoundry 'br/public:avm/ptn/ai-ml/ai-foundry:<version>' = {
     },
     "userObjectId": {
       "value": "00000000-0000-0000-0000-000000000000"
+    },
+    "vmAdminPasswordOrKey": {
+      "value": "$tart12345"
     },
     "vmSize": {
       "value": "Standard_DS4_v2"
@@ -266,11 +261,11 @@ using 'br/public:avm/ptn/ai-ml/ai-foundry:<version>'
 param aiFoundryType = 'StandardPrivate'
 param contentSafetyEnabled = true
 param name = '<name>'
-param vmAdminPasswordOrKey = '$tart12345'
 // Non-required parameters
 param aiModelDeployments = []
 param location = '<location>'
 param userObjectId = '00000000-0000-0000-0000-000000000000'
+param vmAdminPasswordOrKey = '$tart12345'
 param vmSize = 'Standard_DS4_v2'
 ```
 
@@ -286,7 +281,6 @@ param vmSize = 'Standard_DS4_v2'
 | [`aiFoundryType`](#parameter-aifoundrytype) | string | Specifies the AI Foundry deployment type. Allowed values are Basic, StandardPublic, and StandardPrivate. |
 | [`contentSafetyEnabled`](#parameter-contentsafetyenabled) | bool | Whether to include Azure AI Content Safety in the deployment. |
 | [`name`](#parameter-name) | string | Name of the resource to create. |
-| [`vmAdminPasswordOrKey`](#parameter-vmadminpasswordorkey) | securestring | Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters. |
 
 **Optional parameters**
 
@@ -301,6 +295,7 @@ param vmSize = 'Standard_DS4_v2'
 | [`projectName`](#parameter-projectname) | string | Name of the AI Foundry project. |
 | [`tags`](#parameter-tags) | object | Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources. |
 | [`userObjectId`](#parameter-userobjectid) | string | Specifies the object id of a Microsoft Entra ID user. In general, this the object id of the system administrator who deploys the Azure resources. This defaults to the deploying user. |
+| [`vmAdminPasswordOrKey`](#parameter-vmadminpasswordorkey) | securestring | Specifies the password for the jump-box virtual machine. This is only required when aiFoundryType is StandardPrivate (when VM is deployed). Value should meet 3 of the following: uppercase character, lowercase character, numeric digit, special character, and NO control characters. |
 | [`vmAdminUsername`](#parameter-vmadminusername) | string | Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. |
 | [`vmSize`](#parameter-vmsize) | string | Specifies the size of the jump-box Virtual Machine. |
 
@@ -332,13 +327,6 @@ Name of the resource to create.
 
 - Required: Yes
 - Type: string
-
-### Parameter: `vmAdminPasswordOrKey`
-
-Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters.
-
-- Required: Yes
-- Type: securestring
 
 ### Parameter: `aiModelDeployments`
 
@@ -757,6 +745,14 @@ Specifies the object id of a Microsoft Entra ID user. In general, this the objec
 - Required: No
 - Type: string
 - Default: `[deployer().objectId]`
+
+### Parameter: `vmAdminPasswordOrKey`
+
+Specifies the password for the jump-box virtual machine. This is only required when aiFoundryType is StandardPrivate (when VM is deployed). Value should meet 3 of the following: uppercase character, lowercase character, numeric digit, special character, and NO control characters.
+
+- Required: No
+- Type: securestring
+- Default: `''`
 
 ### Parameter: `vmAdminUsername`
 

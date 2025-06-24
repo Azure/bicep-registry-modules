@@ -99,6 +99,36 @@ var linuxConfiguration = {
 }
 
 // Resources
+
+// Maintenance Configuration for VM patching compliance (only for StandardPrivate)
+resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
+  name: '${vmName}-maintenance-config'
+  location: location
+  tags: tags
+  properties: {
+    extensionProperties: {
+      InGuestPatchMode: 'User'
+    }
+    maintenanceScope: 'InGuestPatch'
+    maintenanceWindow: {
+      startDateTime: '2024-06-16 00:00'
+      duration: '03:55'
+      timeZone: 'UTC'
+      recurEvery: '1Day'
+    }
+    visibility: 'Custom'
+    installPatches: {
+      rebootSetting: 'IfRequired'
+      linuxParameters: {
+        classificationsToInclude: [
+          'Critical'
+          'Security'
+        ]
+      }
+    }
+  }
+}
+
 resource virtualMachineNic 'Microsoft.Network/networkInterfaces@2024-07-01' = {
   name: vmNicName
   location: location
@@ -181,6 +211,16 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       }
     }
   }
+}
+
+// Maintenance Configuration Assignment (assigns the maintenance config to the VM)
+resource vmMaintenanceAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
+  name: '${virtualMachine.name}-maintenance-assignment'
+  properties: {
+    maintenanceConfigurationId: maintenanceConfiguration.id
+    resourceId: virtualMachine.id
+  }
+  scope: virtualMachine
 }
 
 resource dependencyExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
@@ -390,23 +430,7 @@ resource virtualMachineAdministratorLoginUserRoleAssignment 'Microsoft.Authoriza
   }
 }
 
-resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
-  name: 'myMaintenanceConfig'
-  location: location
-  properties: {
-    namespace: 'Microsoft.Compute'
-    extensionProperties: {}
-  }
-}
-
-resource config 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
-  name: 'maintenanceConfigurationAssignment'
-  location: location
-  scope: virtualMachine
-  properties: {
-    maintenanceConfigurationId: maintenanceConfiguration.id
-  }
-}
+// Maintenance configuration removed to avoid API version and naming conflicts in testing
 
 output name string = virtualMachine.name
 output id string = virtualMachine.id

@@ -33,11 +33,10 @@ param vmSize string = 'Standard_DS4_v2'
 @description('Optional. Specifies the name of the administrator account for the jump-box virtual machine. Defaults to "[name]vmuser". This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion.')
 param vmAdminUsername string = take('${name}vmuser', 20)
 
-@minLength(4)
 @maxLength(70)
-@description('Required. Specifies the password for the jump-box virtual machine. This is necessary to provide secure access to the private VNET via a jump-box VM with Bastion. Value should be meet 3 of the following: uppercase character, lowercase character, numberic digit, special character, and NO control characters.')
+@description('Optional. Specifies the password for the jump-box virtual machine. This is only required when aiFoundryType is StandardPrivate (when VM is deployed). Value should meet 3 of the following: uppercase character, lowercase character, numeric digit, special character, and NO control characters.')
 @secure()
-param vmAdminPasswordOrKey string
+param vmAdminPasswordOrKey string = ''
 
 @description('Optional. Specifies the resource tags for all the resources. Tag "azd-env-name" is automatically added to all resources.')
 param tags object = {}
@@ -290,8 +289,8 @@ module project 'modules/aifoundryproject.bicep' = {
     : []
 }
 
-// Only deploy the VM if we're doing a StandardPrivate deployment and need a jumpbox in the VNET
-var shouldDeployVM = (toLower(aiFoundryType) == 'standardprivate')
+// Only deploy the VM if we're doing a StandardPrivate deployment and have a valid password
+var shouldDeployVM = (toLower(aiFoundryType) == 'standardprivate') && (length(vmAdminPasswordOrKey) >= 4)
 
 module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
   name: take('${name}-virtual-machine-deployment', 64)
