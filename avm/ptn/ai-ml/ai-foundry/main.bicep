@@ -301,9 +301,9 @@ module virtualMachine './modules/virtualMachine.bicep' = if (shouldDeployVM) {
     vmSubnetId: network.outputs.vmSubnetId
     storageAccountName: storageAccount.outputs.storageName
     storageAccountResourceGroup: resourceGroup().name
-    imagePublisher: 'MicrosoftWindowsDesktop'
-    imageOffer: 'Windows-11'
-    imageSku: 'win11-23h2-ent'
+    imagePublisher: 'MicrosoftWindowsServer'
+    imageOffer: 'WindowsServer'
+    imageSku: '2022-datacenter-azure-edition'
     authenticationType: 'password'
     vmAdminUsername: servicesUsername
     vmAdminPasswordOrKey: vmAdminPasswordOrKey

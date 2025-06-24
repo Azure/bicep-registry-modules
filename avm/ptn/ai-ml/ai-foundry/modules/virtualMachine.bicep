@@ -100,8 +100,8 @@ var linuxConfiguration = {
 
 // Resources
 
-// Maintenance Configuration for VM patching compliance (only for Windows Server with AutomaticByPlatform)
-resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = if (imagePublisher == 'MicrosoftWindowsServer') {
+// Maintenance Configuration for VM patching compliance (only for StandardPrivate)
+resource maintenanceConfiguration 'Microsoft.Maintenance/maintenanceConfigurations@2023-10-01-preview' = {
   name: '${vmName}-maintenance-config'
   location: location
   tags: tags
@@ -169,18 +169,13 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
       linuxConfiguration: (authenticationType == 'password') ? null : linuxConfiguration
       windowsConfiguration: (authenticationType == 'password')
         ? {
-            // Only apply AutomaticByPlatform patch mode for Windows Server images
-            patchSettings: (imagePublisher == 'MicrosoftWindowsServer')
-              ? {
-                  patchMode: 'AutomaticByPlatform'
-                  automaticByPlatformSettings: {
-                    rebootSetting: 'IfRequired'
-                    bypassPlatformSafetyChecksOnUserSchedule: true
-                  }
-                }
-              : {
-                  patchMode: 'AutomaticByOS'
-                }
+            patchSettings: {
+              patchMode: 'AutomaticByPlatform'
+              automaticByPlatformSettings: {
+                rebootSetting: 'IfRequired'
+                bypassPlatformSafetyChecksOnUserSchedule: true
+              }
+            }
             enableAutomaticUpdates: true
           }
         : null
@@ -230,8 +225,8 @@ resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-07-01' = {
   }
 }
 
-// Maintenance Configuration Assignment (assigns the maintenance config to the VM, only for Windows Server)
-resource vmMaintenanceAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = if (imagePublisher == 'MicrosoftWindowsServer') {
+// Maintenance Configuration Assignment (assigns the maintenance config to the VM)
+resource vmMaintenanceAssignment 'Microsoft.Maintenance/configurationAssignments@2023-04-01' = {
   name: '${virtualMachine.name}-maintenance-assignment'
   location: location
   scope: virtualMachine

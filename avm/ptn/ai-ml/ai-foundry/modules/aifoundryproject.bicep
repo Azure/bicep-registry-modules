@@ -147,14 +147,10 @@ resource projectCapabilityHost 'Microsoft.CognitiveServices/accounts/projects/ca
     vectorStoreConnections: [
       nameFormatted
     ]
-    storageConnections: !empty(sysDataContainerName)
-      ? [
-          storageName
-          '${storageName}-sysdata'
-        ]
-      : [
-          storageName
-        ]
+    storageConnections: [
+      storageName
+      '${storageName}-sysdata'
+    ]
     threadStorageConnections: [
       cosmosDBName
     ]
