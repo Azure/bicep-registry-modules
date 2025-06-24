@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.28.1.47646",
-      "templateHash": "14854637179607476263"
+      "templateHash": "11350246214376689372"
     },
     "name": "Azure Active Directory Domain Services",
     "description": "This module deploys an Azure Active Directory Domain Services (AADDS) instance.",
@@ -274,7 +274,7 @@
     "domainName": {
       "type": "string",
       "metadata": {
-        "example": "  - 'contoso.onmicrosoft.com'\n  - 'aaddscontoso.com'\n  ",
+        "example": "  - 'contoso.onmicrosoft.com'\r\n  - 'aaddscontoso.com'\r\n  ",
         "description": "Required. The domain name specific to the Azure ADDS service."
       },
       "minLength": 1
@@ -315,7 +315,7 @@
       "type": "array",
       "defaultValue": [],
       "metadata": {
-        "example": "  - ['john@doh.org']\n  - ['john@doh.org','jane@doh.org']\n  ",
+        "example": "  - ['john@doh.org']\r\n  - ['john@doh.org','jane@doh.org']\r\n  ",
         "description": "Optional. The email recipient value to receive alerts."
       }
     },
@@ -472,7 +472,7 @@
       "type": "object",
       "nullable": true,
       "metadata": {
-        "example": "  {\n      \"key1\": \"value1\",\n      \"key2\": \"value2\"\n  }\n  ",
+        "example": "  {\r\n      \"key1\": \"value1\",\r\n      \"key2\": \"value2\"\r\n  }\r\n  ",
         "description": "Optional. Tags of the resource."
       }
     },

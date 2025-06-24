@@ -899,10 +899,7 @@ In order to provision Entra Domain Services, the Service Principal that has been
 
 ### Network Security Group (NSG) requirements for AADDS
 
-- A network security group is created during the deployment of a managed domain. This network security group contains the required rules for correct service communication.
-  - Don't create or use an existing network security group with your own custom rules.
-
-- A network security group has to be created and assigned to the designated AADDS subnet before deploying this module. More details on the requirements are available [here](https://learn.microsoft.com/en-us/entra/identity/domain-services/network-considerations).
+- A network security group has to be created and assigned to the designated AADDS subnet before deploying this module
   - The following inbound rules should be allowed on the network security group
     | Name | Protocol | Source Port Range | Source Address Prefix | Destination Port Range | Destination Address Prefix |
     | - | - | - | - | - | - |
