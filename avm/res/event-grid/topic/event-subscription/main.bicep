@@ -16,7 +16,7 @@ param deadLetterWithResourceIdentity resourceInput<'Microsoft.EventGrid/topics/e
 @description('Optional. Delivery with Resource Identity Configuration. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#deliverywithresourceidentity-objects for more information).')
 param deliveryWithResourceIdentity resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.deliveryWithResourceIdentity?
 
-@description('Conditional. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).')
+@description('Conditional. Required if deliveryWithResourceIdentity is not provided. The destination for the event subscription. (See https://learn.microsoft.com/en-us/azure/templates/microsoft.eventgrid/eventsubscriptions?pivots=deployment-language-bicep#eventsubscriptiondestination-objects for more information).')
 param destination resourceInput<'Microsoft.EventGrid/topics/eventSubscriptions@2025-04-01-preview'>.properties.destination?
 
 @description('Optional. The event delivery schema for the event subscription.')
