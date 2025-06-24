@@ -109,8 +109,8 @@ runs:
       with:
         azPSVersion: "latest"
         inlineScript: |
-          Write-Verbose ("softFailure [{0}]" -f '${{ inputs.softFailure }}') -Verbose
-          Write-Verbose ("softFailure condition [{0}]" -f '${{ inputs.softFailure == 'true' }}') -Verbose
+          Write-Verbose ("softFailure [{0}]" -f ${{ inputs.softFailure }}) -Verbose
+          Write-Verbose ("softFailure condition [{0}]" -f ${{ inputs.softFailure == 'true' }}) -Verbose
 
     # [PSRule validation] task(s)
     #-----------------------------
