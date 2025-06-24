@@ -19,6 +19,9 @@ param serviceShort string = 'fndrywaf'
 @description('Optional. A token to inject into the name of each resource. This value can be automatically injected by the CI.')
 param namePrefix string = '#_namePrefix_#'
 
+@description('Used to generate unique names for resources to avoid soft-delete conflicts.')
+param utcValue string = utcNow()
+
 // ============ //
 // Dependencies //
 // ============ //
@@ -40,7 +43,7 @@ module testDeployment '../../../main.bicep' = [
     scope: resourceGroup
     name: '${uniqueString(deployment().name, enforcedLocation)}-test-${serviceShort}-${iteration}'
     params: {
-      name: 'stdprv${substring(uniqueString(subscription().id, enforcedLocation, 'fresh'), 0, 2)}' // Use subscription for consistent naming with fresh deployment
+      name: 'stdprv${substring(uniqueString(subscription().id, enforcedLocation, utcValue), 0, 2)}' // Use time-based uniqueness to avoid soft-delete conflicts
       location: enforcedLocation
       aiFoundryType: 'StandardPrivate' // Replace with the required value@allowed(['Basic''StandardPublic''StandardPrivate'])
       userObjectId: '00000000-0000-0000-0000-000000000000' // Using dummy GUID for test

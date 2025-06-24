@@ -90,7 +90,6 @@ module cognitiveService 'br/public:avm/res/cognitive-services/account:0.11.0' = 
     sku: sku
     kind: kind
     allowProjectManagement: true
-    restore: true // Enable restore to handle soft-deleted resources in idempotency testing
     managedIdentities: {
       systemAssigned: true
     }
