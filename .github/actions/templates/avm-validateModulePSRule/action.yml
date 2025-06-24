@@ -109,7 +109,7 @@ runs:
       with:
         azPSVersion: "latest"
         inlineScript: |
-          Write-Verbose ("softFailure [{0}]" -f '${{ inputs.softFailure }}'') -Verbose
+          Write-Verbose ("softFailure [{0}]" -f '${{ inputs.softFailure }}') -Verbose
           Write-Verbose ("softFailure fromJson [{0}]" -f '${{ fromJSON( inputs.softFailure ) }}') -Verbose
 
     # [PSRule validation] task(s)
