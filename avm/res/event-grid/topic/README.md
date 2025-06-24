@@ -131,12 +131,18 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     ]
     eventSubscriptions: [
       {
-        destination: {
-          endpointType: 'StorageQueue'
-          properties: {
-            queueMessageTimeToLiveInSeconds: 86400
-            queueName: '<queueName>'
-            resourceId: '<resourceId>'
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueMessageTimeToLiveInSeconds: 86400
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: '<userAssignedIdentity>'
           }
         }
         eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -147,7 +153,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         }
         name: 'egtmax001'
         retryPolicy: {
-          eventTimeToLive: '120'
+          eventTimeToLiveInMinutes: 120
           maxDeliveryAttempts: 10
         }
       }
@@ -163,6 +169,11 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     minimumTlsVersionAllowed: '1.2'
     privateEndpoints: [
@@ -186,6 +197,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
             roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
           }
         ]
+        service: 'topic'
         subnetResourceId: '<subnetResourceId>'
         tags: {
           Environment: 'Non-Prod'
@@ -201,9 +213,11 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
             }
           ]
         }
+        service: 'topic'
         subnetResourceId: '<subnetResourceId>'
       }
     ]
+    publicNetworkAccess: 'Disabled'
     roleAssignments: [
       {
         name: 'f80d2f24-53f6-41b3-811f-668b2273dcf8'
@@ -268,12 +282,18 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     "eventSubscriptions": {
       "value": [
         {
-          "destination": {
-            "endpointType": "StorageQueue",
-            "properties": {
-              "queueMessageTimeToLiveInSeconds": 86400,
-              "queueName": "<queueName>",
-              "resourceId": "<resourceId>"
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueMessageTimeToLiveInSeconds": 86400,
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "UserAssigned",
+              "userAssignedIdentity": "<userAssignedIdentity>"
             }
           },
           "eventDeliverySchema": "CloudEventSchemaV1_0",
@@ -284,7 +304,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
           },
           "name": "egtmax001",
           "retryPolicy": {
-            "eventTimeToLive": "120",
+            "eventTimeToLiveInMinutes": 120,
             "maxDeliveryAttempts": 10
           }
         }
@@ -308,6 +328,13 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "minimumTlsVersionAllowed": {
@@ -335,6 +362,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
               "roleDefinitionIdOrName": "<roleDefinitionIdOrName>"
             }
           ],
+          "service": "topic",
           "subnetResourceId": "<subnetResourceId>",
           "tags": {
             "Environment": "Non-Prod",
@@ -350,9 +378,13 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
               }
             ]
           },
+          "service": "topic",
           "subnetResourceId": "<subnetResourceId>"
         }
       ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
     },
     "roleAssignments": {
       "value": [
@@ -415,12 +447,18 @@ param diagnosticSettings = [
 ]
 param eventSubscriptions = [
   {
-    destination: {
-      endpointType: 'StorageQueue'
-      properties: {
-        queueMessageTimeToLiveInSeconds: 86400
-        queueName: '<queueName>'
-        resourceId: '<resourceId>'
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueMessageTimeToLiveInSeconds: 86400
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
       }
     }
     eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -431,7 +469,7 @@ param eventSubscriptions = [
     }
     name: 'egtmax001'
     retryPolicy: {
-      eventTimeToLive: '120'
+      eventTimeToLiveInMinutes: 120
       maxDeliveryAttempts: 10
     }
   }
@@ -447,6 +485,11 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param minimumTlsVersionAllowed = '1.2'
 param privateEndpoints = [
@@ -470,6 +513,7 @@ param privateEndpoints = [
         roleDefinitionIdOrName: '<roleDefinitionIdOrName>'
       }
     ]
+    service: 'topic'
     subnetResourceId: '<subnetResourceId>'
     tags: {
       Environment: 'Non-Prod'
@@ -485,9 +529,11 @@ param privateEndpoints = [
         }
       ]
     }
+    service: 'topic'
     subnetResourceId: '<subnetResourceId>'
   }
 ]
+param publicNetworkAccess = 'Disabled'
 param roleAssignments = [
   {
     name: 'f80d2f24-53f6-41b3-811f-668b2273dcf8'
@@ -549,12 +595,18 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     ]
     eventSubscriptions: [
       {
-        destination: {
-          endpointType: 'StorageQueue'
-          properties: {
-            queueMessageTimeToLiveInSeconds: 86400
-            queueName: '<queueName>'
-            resourceId: '<resourceId>'
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueMessageTimeToLiveInSeconds: 86400
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: '<userAssignedIdentity>'
           }
         }
         eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -565,7 +617,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         }
         name: 'egtwaf001'
         retryPolicy: {
-          eventTimeToLive: '120'
+          eventTimeToLiveInMinutes: 120
           maxDeliveryAttempts: 10
         }
       }
@@ -575,6 +627,11 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     lock: {
       kind: 'CanNotDelete'
       name: 'myCustomLockName'
+    }
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
     }
     privateEndpoints: [
       {
@@ -594,6 +651,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
         }
       }
     ]
+    publicNetworkAccess: 'Disabled'
     tags: {
       Environment: 'Non-Prod'
       'hidden-title': 'This is visible in the resource name'
@@ -639,12 +697,18 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     "eventSubscriptions": {
       "value": [
         {
-          "destination": {
-            "endpointType": "StorageQueue",
-            "properties": {
-              "queueMessageTimeToLiveInSeconds": 86400,
-              "queueName": "<queueName>",
-              "resourceId": "<resourceId>"
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueMessageTimeToLiveInSeconds": 86400,
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "UserAssigned",
+              "userAssignedIdentity": "<userAssignedIdentity>"
             }
           },
           "eventDeliverySchema": "CloudEventSchemaV1_0",
@@ -655,7 +719,7 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
           },
           "name": "egtwaf001",
           "retryPolicy": {
-            "eventTimeToLive": "120",
+            "eventTimeToLiveInMinutes": 120,
             "maxDeliveryAttempts": 10
           }
         }
@@ -671,6 +735,13 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
       "value": {
         "kind": "CanNotDelete",
         "name": "myCustomLockName"
+      }
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
       }
     },
     "privateEndpoints": {
@@ -692,6 +763,9 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
           }
         }
       ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
     },
     "tags": {
       "value": {
@@ -733,12 +807,18 @@ param diagnosticSettings = [
 ]
 param eventSubscriptions = [
   {
-    destination: {
-      endpointType: 'StorageQueue'
-      properties: {
-        queueMessageTimeToLiveInSeconds: 86400
-        queueName: '<queueName>'
-        resourceId: '<resourceId>'
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueMessageTimeToLiveInSeconds: 86400
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
       }
     }
     eventDeliverySchema: 'CloudEventSchemaV1_0'
@@ -749,7 +829,7 @@ param eventSubscriptions = [
     }
     name: 'egtwaf001'
     retryPolicy: {
-      eventTimeToLive: '120'
+      eventTimeToLiveInMinutes: 120
       maxDeliveryAttempts: 10
     }
   }
@@ -759,6 +839,11 @@ param location = '<location>'
 param lock = {
   kind: 'CanNotDelete'
   name: 'myCustomLockName'
+}
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
 }
 param privateEndpoints = [
   {
@@ -778,6 +863,7 @@ param privateEndpoints = [
     }
   }
 ]
+param publicNetworkAccess = 'Disabled'
 param tags = {
   Environment: 'Non-Prod'
   'hidden-title': 'This is visible in the resource name'
