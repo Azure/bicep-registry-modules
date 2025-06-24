@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "6673909519237571287"
+      "templateHash": "11923185510606941200"
     },
     "name": "ai-foundry",
     "description": "Creates an AI Foundry account and project with Standard Agent Services."
@@ -51604,7 +51604,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "15919088201808661979"
+              "templateHash": "7896310406144195603"
             }
           },
           "parameters": {
@@ -51801,10 +51801,7 @@
                 "vectorStoreConnections": [
                   "[parameters('nameFormatted')]"
                 ],
-                "storageConnections": [
-                  "[parameters('storageName')]",
-                  "[format('{0}-sysdata', parameters('storageName'))]"
-                ],
+                "storageConnections": "[if(not(empty(parameters('sysDataContainerName'))), createArray(parameters('storageName'), format('{0}-sysdata', parameters('storageName'))), createArray(parameters('storageName')))]",
                 "threadStorageConnections": [
                   "[parameters('cosmosDBName')]"
                 ]
@@ -51935,7 +51932,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "3362950809118755902"
+              "templateHash": "3437291696378547148"
             }
           },
           "parameters": {
@@ -52117,6 +52114,7 @@
           },
           "resources": [
             {
+              "condition": "[equals(parameters('imagePublisher'), 'MicrosoftWindowsServer')]",
               "type": "Microsoft.Maintenance/maintenanceConfigurations",
               "apiVersion": "2023-10-01-preview",
               "name": "[format('{0}-maintenance-config', parameters('vmName'))]",
@@ -52181,7 +52179,7 @@
                   "adminUsername": "[parameters('vmAdminUsername')]",
                   "adminPassword": "[variables('adminPassword')]",
                   "linuxConfiguration": "[if(equals(parameters('authenticationType'), 'password'), null(), variables('linuxConfiguration'))]",
-                  "windowsConfiguration": "[if(equals(parameters('authenticationType'), 'password'), createObject('patchSettings', createObject('patchMode', 'AutomaticByPlatform', 'automaticByPlatformSettings', createObject('rebootSetting', 'IfRequired', 'bypassPlatformSafetyChecksOnUserSchedule', true())), 'enableAutomaticUpdates', true()), null())]"
+                  "windowsConfiguration": "[if(equals(parameters('authenticationType'), 'password'), createObject('patchSettings', if(equals(parameters('imagePublisher'), 'MicrosoftWindowsServer'), createObject('patchMode', 'AutomaticByPlatform', 'automaticByPlatformSettings', createObject('rebootSetting', 'IfRequired', 'bypassPlatformSafetyChecksOnUserSchedule', true())), createObject('patchMode', 'AutomaticByOS')), 'enableAutomaticUpdates', true()), null())]"
                 },
                 "storageProfile": {
                   "copy": [
@@ -52235,6 +52233,7 @@
               ]
             },
             {
+              "condition": "[equals(parameters('imagePublisher'), 'MicrosoftWindowsServer')]",
               "type": "Microsoft.Maintenance/configurationAssignments",
               "apiVersion": "2023-04-01",
               "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('vmName'))]",
