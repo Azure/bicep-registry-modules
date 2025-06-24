@@ -67,7 +67,7 @@ module diagnosticDependencies '../../../../../../../utilities/e2e-template-asset
 // Test Execution //
 // ============== //
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' existing = {
   name: last(split(nestedDependencies.outputs.keyVaultResourceId, '/'))
   scope: resourceGroup
 }

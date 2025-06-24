@@ -70,6 +70,7 @@ resource virtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
     ]
   }
 }
+
 resource replicaVirtualNetwork 'Microsoft.Network/virtualNetworks@2024-07-01' = {
   name: replicaVirtualNetworkName
   location: replicaLocation
@@ -122,6 +123,7 @@ resource virtualNetworkPeeringToReplica 'Microsoft.Network/virtualNetworks/virtu
     }
   }
 }
+
 resource virtualNetworkPeeringFromReplica 'Microsoft.Network/virtualNetworks/virtualNetworkPeerings@2024-07-01' = {
   name: 'aadds-vnetpeering-${virtualNetworkName}'
   parent: replicaVirtualNetwork
@@ -196,6 +198,7 @@ resource nsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
     ]
   }
 }
+
 resource replicaNsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   name: '${replicaVirtualNetworkName}-aadds-subnet-nsg'
   location: replicaLocation
@@ -214,7 +217,6 @@ resource replicaNsgAaddSubnet 'Microsoft.Network/networkSecurityGroups@2024-07-0
           destinationPortRange: '443'
         }
       }
-      // Optional. Debugging for support
       {
         name: 'AllowRDP'
         properties: {
