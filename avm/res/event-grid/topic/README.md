@@ -37,7 +37,7 @@ The following section provides usage examples for the module, which were used to
 
 ### Example 1: _Using only defaults_
 
-This instance deploys the module with the minimum set of required parameters.
+This instance deploys the module with the minimum set of required parameters while demonstrating managed identity delivery and private endpoints.
 
 
 <details>
@@ -51,7 +51,44 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
     // Required parameters
     name: 'egtmin001'
     // Non-required parameters
+    eventSubscriptions: [
+      {
+        deliveryWithResourceIdentity: {
+          destination: {
+            endpointType: 'StorageQueue'
+            properties: {
+              queueName: '<queueName>'
+              resourceId: '<resourceId>'
+            }
+          }
+          identity: {
+            type: 'UserAssigned'
+            userAssignedIdentity: '<userAssignedIdentity>'
+          }
+        }
+        name: 'egtmin001'
+      }
+    ]
     location: '<location>'
+    managedIdentities: {
+      userAssignedResourceIds: [
+        '<managedIdentityResourceId>'
+      ]
+    }
+    privateEndpoints: [
+      {
+        privateDnsZoneGroup: {
+          privateDnsZoneGroupConfigs: [
+            {
+              privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+            }
+          ]
+        }
+        service: 'topic'
+        subnetResourceId: '<subnetResourceId>'
+      }
+    ]
+    publicNetworkAccess: 'Disabled'
   }
 }
 ```
@@ -73,8 +110,53 @@ module topic 'br/public:avm/res/event-grid/topic:<version>' = {
       "value": "egtmin001"
     },
     // Non-required parameters
+    "eventSubscriptions": {
+      "value": [
+        {
+          "deliveryWithResourceIdentity": {
+            "destination": {
+              "endpointType": "StorageQueue",
+              "properties": {
+                "queueName": "<queueName>",
+                "resourceId": "<resourceId>"
+              }
+            },
+            "identity": {
+              "type": "UserAssigned",
+              "userAssignedIdentity": "<userAssignedIdentity>"
+            }
+          },
+          "name": "egtmin001"
+        }
+      ]
+    },
     "location": {
       "value": "<location>"
+    },
+    "managedIdentities": {
+      "value": {
+        "userAssignedResourceIds": [
+          "<managedIdentityResourceId>"
+        ]
+      }
+    },
+    "privateEndpoints": {
+      "value": [
+        {
+          "privateDnsZoneGroup": {
+            "privateDnsZoneGroupConfigs": [
+              {
+                "privateDnsZoneResourceId": "<privateDnsZoneResourceId>"
+              }
+            ]
+          },
+          "service": "topic",
+          "subnetResourceId": "<subnetResourceId>"
+        }
+      ]
+    },
+    "publicNetworkAccess": {
+      "value": "Disabled"
     }
   }
 }
@@ -93,7 +175,44 @@ using 'br/public:avm/res/event-grid/topic:<version>'
 // Required parameters
 param name = 'egtmin001'
 // Non-required parameters
+param eventSubscriptions = [
+  {
+    deliveryWithResourceIdentity: {
+      destination: {
+        endpointType: 'StorageQueue'
+        properties: {
+          queueName: '<queueName>'
+          resourceId: '<resourceId>'
+        }
+      }
+      identity: {
+        type: 'UserAssigned'
+        userAssignedIdentity: '<userAssignedIdentity>'
+      }
+    }
+    name: 'egtmin001'
+  }
+]
 param location = '<location>'
+param managedIdentities = {
+  userAssignedResourceIds: [
+    '<managedIdentityResourceId>'
+  ]
+}
+param privateEndpoints = [
+  {
+    privateDnsZoneGroup: {
+      privateDnsZoneGroupConfigs: [
+        {
+          privateDnsZoneResourceId: '<privateDnsZoneResourceId>'
+        }
+      ]
+    }
+    service: 'topic'
+    subnetResourceId: '<subnetResourceId>'
+  }
+]
+param publicNetworkAccess = 'Disabled'
 ```
 
 </details>
